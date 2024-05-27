@@ -7,7 +7,6 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-
     public class UTexture : ObjectBinary
     {
         public byte[] Thumbnail; // Not ME3 or LE3

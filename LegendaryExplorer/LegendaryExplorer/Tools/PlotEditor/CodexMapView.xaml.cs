@@ -209,7 +209,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             CodexPages.Remove(SelectedCodexPage);
 
             AddCodexPage(dlg.ObjectId, codexSection);
-
         }
 
         public void ChangeCodexSectionId()
@@ -341,7 +340,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
 
             package = pcc;
-
         }
 
         public void RemoveCodexPage()

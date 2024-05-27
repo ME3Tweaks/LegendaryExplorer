@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             for (int i = 0; i < StaticReceivers.Length; i++)
             {
                 StaticReceiverData data = StaticReceivers[i];
-                Unsafe.AsRef(action).Invoke(ref data.PrimitiveComponent, $"StaticReceiver[{i}].PrimitiveComponent");
+                Unsafe.AsRef(in action).Invoke(ref data.PrimitiveComponent, $"StaticReceiver[{i}].PrimitiveComponent");
                 if (game >= MEGame.ME3)
                 {
                     ForEachUIndexInSpan(action, data.ShadowMap1D.AsSpan(), $"StaticReceiver[{i}].ShadowMap1D");

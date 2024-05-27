@@ -163,7 +163,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
     private bool CanMoveFocus( FocusNavigationDirection direction, bool reachedMax )
     {
       QueryMoveFocusEventArgs e = new QueryMoveFocusEventArgs( direction, reachedMax );
@@ -296,4 +295,3 @@ namespace Xceed.Wpf.Toolkit
     }
   }
 }
-

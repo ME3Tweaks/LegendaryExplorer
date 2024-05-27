@@ -15,7 +15,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     {
         protected FileExportLoaderControl(string memoryTrackerName) : base(memoryTrackerName)
         {
-
         }
 
         /// <summary>

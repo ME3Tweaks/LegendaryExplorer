@@ -77,7 +77,6 @@ namespace Xceed.Wpf.Toolkit
 
     #endregion Input PROPERTY
 
-
     #region AutoCompleteStartPosition PROPERTY
 
     private int m_autoCompleteStartPosition;

@@ -31,8 +31,6 @@ namespace LegendaryExplorer.GameInterop
         }
         #endregion
 
-
-
         //Currently will not work, as ASIs are not included in LEX due to anti-virus software freaking out about them :(
         /*public static void InstallInteropASI(MEGame game)
         {
@@ -245,7 +243,6 @@ namespace LegendaryExplorer.GameInterop
             }
         }
 
-
         public static bool IsGameInstalled(MEGame game) => MEDirectories.GetExecutablePath(game) is string exePath && File.Exists(exePath);
 
         public static void SelectGamePath(MEGame game) => GameController.GetInteropTargetForGame(game).SelectGamePath();
@@ -264,7 +261,6 @@ namespace LegendaryExplorer.GameInterop
 
             return false;
         }
-
 
         private static NamedPipeClientStream client;
         // private StreamReader pipeReader; // Reading pipes is way more complicated

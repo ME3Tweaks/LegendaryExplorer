@@ -44,9 +44,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       return property.Attributes.OfType<T>().FirstOrDefault();
     }
 
-
-
-
     internal static ITypeEditor CreateDefaultEditor( Type propertyType, TypeConverter typeConverter, PropertyItem propertyItem )
     {
       ITypeEditor editor = null;
@@ -144,19 +141,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
       return editor;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     #region Private class
 

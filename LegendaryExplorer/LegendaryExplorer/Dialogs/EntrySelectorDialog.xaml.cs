@@ -14,7 +14,6 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class EntrySelector : NotifyPropertyChangedWindowBase, IDisposable
     {
-
         [Flags]
         public enum SupportedTypes
         {
@@ -201,7 +200,6 @@ namespace LegendaryExplorer.Dialogs
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

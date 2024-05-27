@@ -148,7 +148,6 @@ namespace LegendaryExplorerCore.UnrealScript
                 log.LogError($"Parse failed! Exception: {e}");
                 return (null, tokens);
             }
-
         }
 
         //Used by M3. Do not delete
@@ -756,7 +755,6 @@ namespace LegendaryExplorerCore.UnrealScript
                         //check if the ordering matches the parent where they overlap. If not, existing ordering is broken
                         && parentVirtualFuncNames.AsSpan().SequenceEqual(existingClass.VirtualFunctionNames.AsSpan()[..parentVirtualFuncNames.Count], StringComparer.OrdinalIgnoreCase))
                     {
-
                         //same functions, so preserve the ordering 
                         cls.VirtualFunctionNames = existingClass.VirtualFunctionNames;
 
@@ -996,7 +994,6 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             SymbolTable symbols = lib.GetSymbolTable();
             symbols.RevertToObjectStack();
-
 
             if (symbols.TryGetType(export.ClassName, out Class propsClass))
             {

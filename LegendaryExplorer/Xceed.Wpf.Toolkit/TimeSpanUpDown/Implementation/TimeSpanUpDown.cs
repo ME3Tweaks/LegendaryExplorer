@@ -414,7 +414,6 @@ namespace Xceed.Wpf.Toolkit
       return (value1.Value > value2.Value);
     }
 
-
     #endregion
 
     #region Methods

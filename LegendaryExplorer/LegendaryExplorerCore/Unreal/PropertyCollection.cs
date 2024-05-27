@@ -716,7 +716,6 @@ namespace LegendaryExplorerCore.Unreal
         }
     }
 
-
     /// <summary>
     /// Base class for all the Unreal property types that go in <see cref="PropertyCollection"/>
     /// </summary>
@@ -778,7 +777,6 @@ namespace LegendaryExplorerCore.Unreal
             WriteTo(stream.Writer, pcc, valueOnly);
             return stream.Length;
         }
-
 
         /// <summary>
         /// Creates a deep copy of the property
@@ -877,7 +875,7 @@ namespace LegendaryExplorerCore.Unreal
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
             StructType = structType;
-            Properties = props ?? new PropertyCollection();
+            Properties = props ?? [];
             IsImmutable = isImmutable;
         }
 
@@ -890,7 +888,7 @@ namespace LegendaryExplorerCore.Unreal
         public StructProperty(string structType, bool isImmutable, params Property[] props) : base(null)
         {
             StructType = structType;
-            Properties = new PropertyCollection();
+            Properties = [];
             IsImmutable = isImmutable;
             foreach (var prop in props)
             {
@@ -1059,7 +1057,6 @@ namespace LegendaryExplorerCore.Unreal
             }
         }
 
-
         /// <summary>
         /// Creates a <see cref="FloatProperty"/>
         /// </summary>
@@ -1119,7 +1116,6 @@ namespace LegendaryExplorerCore.Unreal
 
         public event PropertyChangedEventHandler PropertyChanged;
     }
-
 
     /// <summary>
     /// Property containing a UIndex
@@ -1589,7 +1585,6 @@ namespace LegendaryExplorerCore.Unreal
                 var eNameNumber = stream.ReadInt32();
                 Value = new NameReference(eName, eNameNumber);
             }
-
         }
 
         ///<inheritdoc/>
@@ -1698,7 +1693,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <param name="name">The property name.</param>
         public ImmutableByteArrayProperty(NameReference name) : base(name)
         {
-            Bytes = Array.Empty<byte>();
+            Bytes = [];
         }
 
         internal ImmutableByteArrayProperty(long startOffset, int count, EndianReader stream, NameReference name) : base(name)
@@ -1740,7 +1735,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <summary>
         /// Do not use with <see cref="ImmutableByteArrayProperty"/>! Returns an empty list
         /// </summary>
-        public override IReadOnlyList<Property> Properties => new List<Property>();
+        public override IReadOnlyList<Property> Properties => [];
 
         /// <summary>
         /// Number of bytes
@@ -1751,7 +1746,7 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         public override void Clear()
         {
-            Bytes = Array.Empty<byte>();
+            Bytes = [];
         }
         /// <summary>
         /// Do not use with <see cref="ImmutableByteArrayProperty"/>! No-op
@@ -1788,7 +1783,7 @@ namespace LegendaryExplorerCore.Unreal
         /// Creates an empty <see cref="ArrayProperty{T}"/>
         /// </summary>
         /// <param name="name">The property name.</param>
-        public ArrayProperty(NameReference name) : this(new List<T>(), name)
+        public ArrayProperty(NameReference name) : this([], name)
         {
         }
 
@@ -1802,7 +1797,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         /// <summary>
-        /// 
+        /// Creates an <see cref="ArrayProperty<typeparamref name="T"/>"/> from a <see cref="List<typeparamref name="T"/>"/>
         /// </summary>
         /// <param name="values"></param>
         /// <param name="name">The property name.</param>
@@ -2192,7 +2187,6 @@ namespace LegendaryExplorerCore.Unreal
         private byte[] raw;
         private readonly string TypeName;
 
-        ///
         internal UnknownProperty(EndianReader stream, int size, string typeName = null, NameReference? name = null) : base(name)
         {
             ValueOffset = (int)stream.Position;
@@ -2201,7 +2195,7 @@ namespace LegendaryExplorerCore.Unreal
 #if AZURE
             Assert.Fail("Encountered an unknownproperty!");
 #endif
-            LECLog.Warning($@"Initializing an UnknownProperty object! Position: 0x{stream.Position - size:X8}");
+            LECLog.Warning($"Initializing an UnknownProperty object! Position: 0x{stream.Position - size:X8}");
         }
 
         ///<inheritdoc/>

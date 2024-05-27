@@ -170,7 +170,6 @@ namespace LegendaryExplorerCore.UDK
 
             #endregion
 
-
             var staticMeshActors = new List<ExportEntry>();
             var lightActors = new List<ExportEntry>();
             using IMEPackage tempPackage = MEPackageHandler.OpenMEPackageFromStream(MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(pcc.FilePath), MEGame.UDK));
@@ -552,7 +551,6 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifyLights(IMEPackage pcc)
         {
-
             var pointLightComponents = new List<ExportEntry>();
             var spotLightComponents = new List<ExportEntry>();
             //var directionalLightComponents = new List<ExportEntry>();
@@ -579,7 +577,6 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifySpotLights(IMEPackage pcc, IEnumerable<ExportEntry> spotLightComponents)
         {
-
             var drawLightRadiusComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
             var drawLightConeComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightConeComponent", "Class");
             var drawLightRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");

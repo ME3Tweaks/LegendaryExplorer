@@ -77,7 +77,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override List<(NameReference, string)> GetNames(MEGame game) => ColumnNames.Select((n, i) => (n, $"{ColumnNames}[{i}]")).ToList();
 
-
         //public enum DataType : byte
         //{
         //    INT = 0,

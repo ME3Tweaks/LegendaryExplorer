@@ -153,7 +153,6 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                 // set entry to defaults as varies between Page and section
                 entry.CodexSound = 0;
                 entry.CodexSoundString = "";
-
             }
 
             public BioCodexPage ReadCodexPage()
@@ -231,7 +230,6 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                 Write(entry.TextureIndex);
                 Write(entry.Priority);
 
-
             }
 
             public void Write(BioCodexPage page)
@@ -275,7 +273,6 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
                 {
                     Write(page.Section);
                 }
-
             }
 
             public void Write(BioCodexSection section)

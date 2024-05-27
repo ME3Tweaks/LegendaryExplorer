@@ -549,7 +549,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             {
                 return new LegendaryExplorerCore.Unreal.NameReference(pcc.GetNameEntry(index), instanceNum).Instanced;
 
-
             }
             return "";
         }
@@ -582,7 +581,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
                     case "transition":
                         return PlotDatabases.FindPlotTransitionByID(index, game)?.Path;
                 }
-
             }
             return "";
         }

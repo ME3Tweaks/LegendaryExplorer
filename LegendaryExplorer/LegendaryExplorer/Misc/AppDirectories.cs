@@ -61,7 +61,6 @@ namespace LegendaryExplorer.Misc
             }
         }
 
-
         /// <summary>
         /// Shared method for getting a standard open file dialog.
         /// </summary>

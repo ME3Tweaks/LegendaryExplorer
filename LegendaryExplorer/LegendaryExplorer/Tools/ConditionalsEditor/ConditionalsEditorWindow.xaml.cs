@@ -75,7 +75,6 @@ namespace LegendaryExplorer.Tools.ConditionalsEditor
                     window.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                     window.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, window, nameof(HexBoxMinWidth));
                     window.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, window, nameof(HexBoxMaxWidth));
-
                 }
             }));
 

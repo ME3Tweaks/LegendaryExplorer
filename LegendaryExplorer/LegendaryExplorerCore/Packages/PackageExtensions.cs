@@ -498,7 +498,6 @@ namespace LegendaryExplorerCore.Packages
 
             void findPropertyReferences(PropertyCollection props, ExportEntry exp)
             {
-
                 foreach (Property prop in props)
                 {
                     switch (prop)
@@ -759,7 +758,6 @@ namespace LegendaryExplorerCore.Packages
                         result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }
 
-
                     //find property references
                     findPropertyReferences(exp.GetProperties(), exp, "Property:");
 
@@ -957,7 +955,6 @@ namespace LegendaryExplorerCore.Packages
 
                 return newprops;
             }
-
         }
 
         private readonly struct ReferenceReplacer : IUIndexAction

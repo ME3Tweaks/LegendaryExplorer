@@ -64,18 +64,18 @@ namespace LegendaryExplorer.Tools.PackageEditor
         }
 
         public static readonly string[] ExportFileTypes =
-            {"GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile"};
+            ["GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile"];
 
         public static readonly string[] ExportIconTypes =
-        {
+        [
             "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
             "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class", "State",
             "TextureCube", "Bio2DA", "Bio2DANumberedRows"
-        };
+        ];
 
         //Objects in this collection are displayed on the left list view (names, imports, exports)
 
-        readonly Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new();
+        readonly Dictionary<ExportLoaderControl, TabItem> ExportLoaders = [];
 
         private CurrentViewMode _currentView;
 
@@ -104,14 +104,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; } = new();
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; } = [];
 
         //referenced by EntryMetaDataExportLoader's xaml, do not make private
-        public ObservableCollectionExtended<IndexedName> NamesList { get; } = new();
+        public ObservableCollectionExtended<IndexedName> NamesList { get; } = [];
 
-        public ObservableCollectionExtended<string> ClassDropdownList { get; } = new();
+        public ObservableCollectionExtended<string> ClassDropdownList { get; } = [];
 
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = new();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = [];
 
         private TreeViewEntry _selectedItem;
         public TreeViewEntry SelectedItem
@@ -144,10 +144,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
-
 
         private string _searchHintText = "Object name";
 
@@ -245,7 +243,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CreateObjectReferencerCommand { get; set; }
         public ICommand DeleteEntryCommand { get; set; }
 
-
         private void LoadCommands()
         {
             CalculateExportMD5Command = new GenericCommand(CalculateExportMD5, ExportIsSelected);
@@ -340,7 +337,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             // This part ported from Mass Effect 2 Randomizer POackag
             var rop = new RelinkerOptionsPackage() { Cache = new PackageCache() };
-            var referencer = new ExportEntry(Pcc, 0, Pcc.GetNextIndexedName("ObjectReferencer"), properties: new PropertyCollection() { new ArrayProperty<ObjectProperty>("ReferencedObjects") })
+            var referencer = new ExportEntry(Pcc, 0, Pcc.GetNextIndexedName("ObjectReferencer"), properties: [new ArrayProperty<ObjectProperty>("ReferencedObjects")])
             {
                 Class = EntryImporter.EnsureClassIsInFile(Pcc, "ObjectReferencer", rop)
             };
@@ -350,7 +347,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void DeleteEntry()
         {
-
             TrashEntryAndChildren();
         }
 
@@ -552,7 +548,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (TryGetSelectedExport(out var ee))
             {
-                var hash = MD5.Create().ComputeHash(ee.Data);
+                var hash = MD5.HashData(ee.Data);
                 StringBuilder result = new StringBuilder(hash.Length * 2);
                 for (int i = 0; i < hash.Length; i++)
                     result.Append(hash[i].ToString("x2"));
@@ -592,9 +588,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 impTV.SubText = fname;
                             }
                         }
-
                     }
-
 
                     return unresolvableImports;
                 }).ContinueWithOnUIThread(unresolvableImports =>
@@ -795,7 +789,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         {
                             var pf = new PathfindingEditor.PathfindingEditorWindow(exp);
                             pf.Show();
-
                         }
                         break;
                     case "Meshplorer":
@@ -863,7 +856,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 };
                 if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
                 {
-
                     string dir = m.FileName;
                     Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
                                                                 //your sample code                    
@@ -921,7 +913,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         foreach (var file in allfiles)
                         {
                             var fullpath = Path.GetFileNameWithoutExtension(file);
-                            var matchingExport = swfsInFile.FirstOrDefault(x =>
+                            var matchingExport = swfsInFile.Find(x =>
                                 x.FullPath.Equals(fullpath, StringComparison.InvariantCultureIgnoreCase));
                             if (matchingExport != null)
                             {
@@ -1024,7 +1016,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Goto_TextBox.Focus();
             Goto_TextBox.SelectAll();
         }
-
 
         internal async void SaveFileAs()
         {
@@ -1370,7 +1361,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         int static1966080 = ms.ReadInt32();
                         items.Add($"0x{ms.Position - 4:X2} Static 1966080: {static1966080} (0x{static1966080:X8})");
                     }
-
                 }
 
                 if (Pcc.Game != MEGame.UDK)
@@ -1398,7 +1388,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 //var savedPos = ms.Position;
                 ms.Skip(numChunks * 16); //skip chunk table so we can find package tag
 
-
                 var packageSource = ms.ReadUInt32(); //this needs to be read in so it can be properly written back out.
                 items.Add($"0x{ms.Position - 4:X4} Package Source: {packageSource:X8}");
 
@@ -1420,13 +1409,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         var pos = ms.Position;
                         var packageStr = ms.ReadUnrealString();
                         items.Add($"0x{pos:X4} Additional package to cook: {packageStr}");
-
                     }
                 }
             }
             catch
             {
-
             }
 
             new ListDialog(items, Path.GetFileName(Pcc.FilePath) + " package summary",
@@ -1454,7 +1441,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var positionInBranch = selected.Parent.Sublinks.IndexOf(selected);
                 Task.Run(() =>
                 {
-
                     List<IEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).Select(tvEntry => tvEntry.Entry).ToList();
 
                     IEntry entryWithReferences =
@@ -1558,7 +1544,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 return pcc.GetEntry(tocuIdx);
                             }
-
 
                             //find property references
                             if (GetReferencedEntryInProps(exp.GetProperties()) is IEntry entry)
@@ -1670,7 +1655,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     { DoubleClickEntryHandler = entryDoubleClick };
                     dlg.Show();
                 });
-
 
             }
         }
@@ -1908,7 +1892,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                                 data.Position = isbOffset;
 
                                 var audioName =
-                                    exp.ObjectName.Instanced.Substring(exp.ObjectName.Instanced.IndexOf(":") +
+                                    exp.ObjectName.Instanced.Substring(exp.ObjectName.Instanced.IndexOf(':') +
                                                                        1); // This is really weak 
                                 using FileStream fs2 = new FileStream(
                                     Path.Combine(outDir,
@@ -2106,7 +2090,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     case "BioSoundNodeWaveStreamingData":
                         {
-
                             // Requires ICB and ISB
                             string extension = Path.GetExtension(".icb");
                             var d = new OpenFileDialog
@@ -2221,10 +2204,10 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             if (wdiag.ShowDialog() == true)
                             {
                                 var brush = BrushComponent.Create();
-                                brush.CachedPhysBrushData.CachedConvexElements = new KCachedConvexDataElement[]
-                                {
+                                brush.CachedPhysBrushData.CachedConvexElements =
+                                [
                                     new KCachedConvexDataElement() { ConvexElementData = File.ReadAllBytes(wdiag.FileName) }
-                                };
+                                ];
                                 exp.WriteBinary(brush);
                             }
                             break;
@@ -2252,8 +2235,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     }
                 }
 
-                levelStreamingKismets = levelStreamingKismets
-                    .OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString()).ToList();
+                levelStreamingKismets = [.. levelStreamingKismets.OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString())];
                 if (bioworldinfo != null)
                 {
                     var streamingLevelsProp =
@@ -2280,7 +2262,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
         private void AddName(object obj)
         {
             const string input = "Enter a new name.";
@@ -2301,7 +2282,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
                 else
                 {
-
                     MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})",
                         "Name added");
                 }
@@ -2347,7 +2327,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void SearchReplaceNames()
         {
-
             string searchstr = PromptDialog.Prompt(this, "Input text to be replaced:", "Search and Replace Names",
                 defaultValue: "search text", selectText: true);
             if (string.IsNullOrEmpty(searchstr))
@@ -2445,7 +2424,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 string copy = "";
                 foreach (var ei in duplicates)
                 {
-
                     copy += ei.Message + "\n";
                 }
 
@@ -2485,7 +2463,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         continue; //Do not report these as requiring re-indexing.
                     if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<ExportEntry> indexList))
                     {
-                        indexList = new List<ExportEntry>();
+                        indexList = [];
                         duplicatesPackagePathIndexMapping[key] = indexList;
                     }
 
@@ -2736,9 +2714,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private bool PackageIsLoaded() => Pcc != null;
 
-
-
-
         #endregion
 
         public PackageEditorWindow() : this(submitTelemetry: true) { }
@@ -2772,7 +2747,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
             ExportLoaders[AnimNodeTab_AnimNodeLoader] = AnimNode_Tab;
-
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
 
@@ -2887,8 +2861,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ResetTreeView();
             NamesList.ClearEx();
             ClassDropdownList.ClearEx();
-            BackwardsIndexes = new Stack<int>();
-            ForwardsIndexes = new Stack<int>();
+            BackwardsIndexes = [];
+            ForwardsIndexes = [];
             StatusBar_LeftMostText.Text =
                 $"Loading {loadingName} ({FileSize.FormatSize(loadingSize)})";
             //Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
@@ -2963,7 +2937,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     parent.Sublinks.Add(entry);
                     entry.Parent = parent;
                     itemsToRemove.Add(entry); //remove from this level as we have added it to another already
-
                 }
             }
 
@@ -2972,7 +2945,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void InitializeTreeView()
         {
-
             IsBusy = true;
             if (Pcc == null)
             {
@@ -3145,7 +3117,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public override void HandleUpdate(List<PackageUpdate> updates)
         {
-            List<PackageChange> changes = updates.Select(x => x.Change).ToList();
+            List<PackageChange> changes = updates.ConvertAll(x => x.Change);
             if (changes.Any(x => x.HasFlag(PackageChange.Name)))
             {
                 foreach (ExportLoaderControl elc in ExportLoaders.Keys)
@@ -3174,13 +3146,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 changes.Any(x => x != PackageChange.ExportData && x.HasFlag(PackageChange.Export));
             bool hasSelection = GetSelected(out int selectedEntryUIndex);
 
-            List<PackageUpdate> addedChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd)).OrderBy(x => x.Index).ToList();
+            List<PackageUpdate> addedChanges = [.. updates.Where(x => x.Change.HasFlag(PackageChange.EntryAdd)).OrderBy(x => x.Index)];
             HashSet<int> headerChanges = updates.Where(x => x.Change.HasFlag(PackageChange.EntryHeader)).Select(x => x.Index).ToHashSet();
 
             // Reduces tree enumeration
             List<TreeViewEntry> treeViewItems = AllTreeViewNodesX[0].FlattenTree();
             var uindexMap = new Dictionary<int, TreeViewEntry>();
-            if (Enumerable.Any(addedChanges) || Enumerable.Any(headerChanges))
+            if (addedChanges.Count != 0 || headerChanges.Count != 0)
             {
                 foreach (TreeViewEntry tv in treeViewItems)
                 {
@@ -3194,13 +3166,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 //Find nodes that haven't been generated and added yet
 
-                List<IEntry> entriesToAdd = addedChanges.Select(change => Pcc.GetEntry(change.Index)).ToList();
+                List<IEntry> entriesToAdd = addedChanges.ConvertAll(change => Pcc.GetEntry(change.Index));
 
                 //Generate new nodes
                 var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
                 //might have to loop a few times if it contains children before parents
 
-                while (Enumerable.Any(entriesToAdd))
+                while (entriesToAdd.Count != 0)
                 {
                     var orphans = new List<IEntry>();
                     foreach (IEntry entry in entriesToAdd)
@@ -3286,7 +3258,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 SuppressSelectionEvent = false;
             }
 
-
             if (CurrentView == CurrentViewMode.Imports && hasImportChanges ||
                 CurrentView == CurrentViewMode.Exports && hasExportNonDataChanges ||
                 CurrentView == CurrentViewMode.Tree && (hasImportChanges || hasExportNonDataChanges))
@@ -3321,7 +3292,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             else
             {
                 //only modify the list
-                updates = updates.OrderBy(x => x.Index).ToList(); //ensure ascending order
+                updates = [.. updates.OrderBy(x => x.Index)]; //ensure ascending order
                 foreach (PackageUpdate update in updates)
                 {
                     if (update.Index >= Pcc.NameCount)
@@ -3402,7 +3373,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 exportLoader.LoadExport(exportEntry);
                                 tab.Visibility = Visibility.Visible;
-
                             }
                             else
                             {
@@ -3460,8 +3430,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
             }
         }
-
-
 
         /// <summary>
         /// Handler for when the Goto button is clicked
@@ -3628,15 +3596,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
-
         /// <summary>
         /// Drag/drop dragover handler for the entry list treeview
         /// </summary>
         /// <param name="dropInfo"></param>
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-            if ((dropInfo.Data as TreeViewEntry)?.Parent != null)
+            if (dropInfo.Data is TreeViewEntry { Parent: not null })
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Copy;
@@ -3652,7 +3618,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             if (dropInfo.TargetItem is TreeViewEntry targetItem && dropInfo.Data is TreeViewEntry sourceItem &&
                 sourceItem.Parent != null)
             {
-
                 var dragInfo = dropInfo.DragInfo;
                 var sourceWindow = Window.GetWindow(dragInfo.VisualSource) as PackageEditorWindow;
                 if (targetItem.Game.IsLEGame() != sourceItem.Game.IsLEGame() &&
@@ -3689,7 +3654,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     return;
                 }
-
 
                 if (sourceItem.Entry.FileRef == null)
                 {
@@ -3751,7 +3715,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 //MeasureProfiler.StartCollectingData(); // Start profiling
                 //var sw = new Stopwatch();
                 //sw.Start();
-
 
                 int numExports = Pcc.ExportCount;
                 //Import!
@@ -3903,9 +3866,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                     }
                 }
-
             }
-
         }
 
         /// <summary>
@@ -3957,7 +3918,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             //else
             //    start = n + 1;
 
-
             string searchTerm = Search_TextBox.Text.Trim();
 
             void LoopFunc(ref int integer, int count)
@@ -3980,7 +3940,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     integer = 0;
                 }
             }
-
 
             if (CurrentView == CurrentViewMode.Names)
             {
@@ -4072,7 +4031,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
         private void Window_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -4101,7 +4059,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PackageEditor_TouchComfyMode = !Settings.PackageEditor_TouchComfyMode;
@@ -4117,7 +4074,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 AllTreeViewNodesX[0].FlattenTree().ForEach(x => x.RefreshDisplayName());
             }
         }
-
 
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
@@ -4218,7 +4174,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             FileAssociations.AssociateOthers();
         }
 
-
         private void TLKManagerWPF_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             new TlkManagerNS.TLKManagerWPF().Show();
@@ -4246,8 +4201,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Settings.Interpreter_AdvancedDisplay =
                 !Settings.Interpreter_AdvancedDisplay;
         }
-
-
 
         private void InterpreterWPF_Colorize_MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -4347,7 +4300,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
-
         private void ReplaceReferenceLinks()
         {
             if (TryGetSelectedEntry(out IEntry selectedEntry))
@@ -4365,7 +4317,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         IsBusy = false;
                         MessageBox.Show($"Replaced {prevTask.Result} reference links.");
                     });
-
             }
         }
 
@@ -4403,6 +4354,5 @@ namespace LegendaryExplorer.Tools.PackageEditor
         }
 
         public string Toolname => "PackageEditor";
-
     }
 }

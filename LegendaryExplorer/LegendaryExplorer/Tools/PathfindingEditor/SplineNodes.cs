@@ -363,7 +363,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
     {
         private static readonly Color color = Color.Purple;
 
-
         public SplineParambleNode(float x, float y, bool arrow = false)
         {
             const float w = 5;

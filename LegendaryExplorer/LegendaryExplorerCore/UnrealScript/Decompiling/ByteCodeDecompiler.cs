@@ -130,7 +130,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 }
             }
 
-
             Scopes.Add(statements);
             CurrentScope.Push(Scopes.Count - 1);
             while (Position < Size && !CurrentIs(OpCodes.EndOfScript))
@@ -645,7 +644,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     byte token = PopByte();
                     if (token == (byte)OpCodes.DefaultParmValue) // default value assigned
                     {
-
                         ReadInt16(); //MemLength of value
                         var value = DecompileExpression();
                         PopByte(); // Opcodes.EndParmValue

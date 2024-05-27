@@ -28,7 +28,6 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
 
         public ObservableCollectionExtended<LoadedTLK> TLKSources { get; set; } = new();
 
-
         #region Busy variables
         private bool _isBusy;
         public bool IsBusy
@@ -153,7 +152,6 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                         tf.SaveToXML(saveFile);
                     };
                 }
-
             }
             BusyText = "Exporting TLK to XML";
             IsBusy = true;

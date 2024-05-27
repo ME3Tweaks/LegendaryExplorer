@@ -118,7 +118,6 @@ namespace LegendaryExplorer.DialogueEditor
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
             {
-
                 base.OnStartDrag(sender, e);
                 e.Handled = true;
                 e.PickedNode.MoveToFront();
@@ -236,7 +235,6 @@ namespace LegendaryExplorer.DialogueEditor
             }
             ConvGraphEditor = null;
             camera = null;
-
         }
 
         public void OnKeyDown(object o, KeyEventArgs e)

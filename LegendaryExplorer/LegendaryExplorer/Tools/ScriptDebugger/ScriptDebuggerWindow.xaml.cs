@@ -54,7 +54,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE3-ASI-Plugins/releases/tag/LE3UnrealScriptDebugger-v2.0");
                     break;
             }
-
         }
 
         public static readonly string ScriptDebuggerDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"ScriptDebugger\");
@@ -264,7 +263,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 ClearBreakState();
             }
         }
-
 
         private void Resume()
         {
@@ -615,7 +613,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 SetVisualBreakPoints(bp.FullFunctionPath);
             }
         }
-
 
         private void BreakPointSearchBox_OnTextChanged(SearchBox sender, string newtext)
         {

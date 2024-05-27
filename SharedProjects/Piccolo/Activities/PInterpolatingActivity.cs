@@ -34,7 +34,6 @@ using System.Text;
 using Piccolo.Util;
 
 namespace Piccolo.Activities {
-
 	#region Enums
 	/// <summary>
 	/// This enumeration is used by the PInterpolatingActivity class.  It represents the

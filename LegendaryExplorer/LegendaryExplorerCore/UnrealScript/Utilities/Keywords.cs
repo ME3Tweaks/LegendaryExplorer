@@ -2,7 +2,6 @@
 {
 	public static class Keywords
 	{
-
         public const string ARRAY = "array";     
         public const string DELEGATE = "delegate";     
         public const string CLASS = "Class";     

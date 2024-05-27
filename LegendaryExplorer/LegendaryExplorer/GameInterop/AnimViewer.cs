@@ -24,7 +24,6 @@ namespace LegendaryExplorer.GameInterop
             {
                 try
                 {
-
                     Debug.WriteLine($"AnimViewer Loading: {animSourceFilePath} #{animSequenceUIndex}");
 
                     using IMEPackage animSourceFile = MEPackageHandler.OpenMEPackage(animSourceFilePath);
@@ -34,7 +33,6 @@ namespace LegendaryExplorer.GameInterop
                     var animInterpData = pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence.InterpData_0");
                     var animTrack = pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence.InterpData_0.InterpGroup_0.InterpTrackAnimControl_0");
                     var dynamicAnimSet = pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence.KIS_DYN_Animset");
-
 
                     IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, pcc, new RelinkerOptionsPackage());
 
@@ -67,7 +65,6 @@ namespace LegendaryExplorer.GameInterop
                 {
                     MessageBox.Show($"Error loading {animSourceFilePath} #{animSequenceUIndex}");
                 }
-
             }
 
             string tempFilePath = Path.Combine(MEDirectories.GetCookedPath(pcc.Game), $"{saveAsName}.pcc");

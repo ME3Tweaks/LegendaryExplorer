@@ -105,9 +105,7 @@ namespace LegendaryExplorer.Tools.ClassViewer
             classObject.Descendents.ReplaceAll(list);
         }
 
-
         public ObservableCollectionExtended<ClassObject> RootObjects { get; } = new();
-
 
         public class ClassObject : NotifyPropertyChangedBase
         {

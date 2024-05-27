@@ -36,7 +36,6 @@ namespace LegendaryExplorerCore.Tests
                 var tbf2 = new TOCBinFile(reserialized);
                 Assert.AreEqual(tbf.HashBuckets.Sum(x=>x.TOCEntries.Count), tbf2.HashBuckets.Sum(x => x.TOCEntries.Count), $"Re-serialized TOC file has different amount of files! File: {tocF}");
             }
-
         }
 
         [TestMethod]

@@ -275,8 +275,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case (byte)OpCodes.StringRefConst:
                     return DecompileStringRefConst();
 
-
-
                 /*****
                  * TODO: all of these needs changes, see functions below.
                  * */
@@ -289,7 +287,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     return DecompileInstanceDelegate();
 
                 #endregion
-
 
                 // TODO: 41, debugInfo
 
@@ -593,7 +590,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                     break;
             }
-
         }
         static bool ResolveEnumValues(ref Expression a, ref Expression b)
         {
@@ -629,7 +625,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var expr = DecompileExpression();
             if (expr == null)
                 return null; // ERROR
-
 
             StartPositions.Pop();
             if (expr is NoneLiteral)

@@ -70,7 +70,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
 
             var dlcTable = new Dictionary<int, string>();
 
-
             // 2. READ AUTOLOAD.INI FROM EACH DLC.  BUILD TABLE OF DIRECTORIES & MOUNTS
             foreach (string dlcDir in dlcList)
             {
@@ -97,7 +96,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
             // ADD BASEGAME = 0
             dlcTable.Add(0, "BioGame");
 
-
             // 3. REMOVE ALL SEEKFREEPCPATHs/DLCMOVIEPATHS FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
             string userDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var bioEnginePath = Path.Combine(userDocs, "BioWare", "Mass Effect", "Config", "BIOEngine.ini");
@@ -110,7 +108,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
                 MessageBox.Show($"BioEngine not found. Run config or game to set it up. {e.FlattenException()}");
                 return;
             }
-
 
             var BioEngine = DuplicatingIni.LoadIni(bioEnginePath);
 
@@ -139,9 +136,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
             }
 
             BioEngine.WriteToFile(bioEnginePath);
-
-
-
 
             // 5. BUILD FILEINDEX.TXT FILE FOR EACH DLC AND BASEGAME
             // BACKUP BASEGAME Fileindex.txt => Fileindex.bak if not done already.
@@ -180,9 +174,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
                 }
             }
 
-
-
-
             //7. FINAL MESSAGE ON TOC TASKS
             TOCTasks.Add(new ListBoxTask
             {
@@ -200,7 +191,6 @@ namespace LegendaryExplorer.Tools.AutoTOC
         /// <param name="masterList"></param>
         private void GenerateFileList(string CookedPath, List<string> masterList)
         {
-
             string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
 
             //remove trailing slash

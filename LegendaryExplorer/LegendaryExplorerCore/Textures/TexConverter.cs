@@ -347,7 +347,6 @@ namespace LegendaryExplorerCore.Textures
                     width = outputBuffer.Width;
                     height = outputBuffer.Height;
                     pixelFormat = GetPixelFormatForDXGIFormat(outputBuffer.Format);
-
                 }
             }
             return result;

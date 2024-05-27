@@ -209,7 +209,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref vec);
+                    MemoryMarshal.Write(span, in vec);
                     sc.ms.Writer.Write(span);
                 }
             }
@@ -239,7 +239,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref plane);
+                    MemoryMarshal.Write(span, in plane);
                     sc.ms.Writer.Write(span);
                 }
             }
@@ -270,7 +270,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref rot);
+                    MemoryMarshal.Write(span, in rot);
                     sc.ms.Writer.Write(span);
                 }
             }
@@ -300,7 +300,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref quat);
+                    MemoryMarshal.Write(span, in quat);
                     sc.ms.Writer.Write(span);
                 }
             }
@@ -331,7 +331,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref vec);
+                    MemoryMarshal.Write(span, in vec);
                     sc.ms.Writer.Write(span);
                 }
             }
@@ -360,7 +360,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref vec);
+                    MemoryMarshal.Write(span, in vec);
                     sc.ms.Writer.Write(span);
                 }
             }
@@ -387,7 +387,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                MemoryMarshal.Write(span, ref norm);
+                MemoryMarshal.Write(span, in norm);
                 sc.ms.Writer.Write(span);
             }
         }
@@ -401,7 +401,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                MemoryMarshal.Write(span, ref influences);
+                MemoryMarshal.Write(span, in influences);
                 sc.ms.Writer.Write(span);
             }
         }

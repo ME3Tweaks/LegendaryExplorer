@@ -77,7 +77,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
         }
 
-
         public Texture2DMipInfo GetTopMip()
         {
             return Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
@@ -203,7 +202,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips.AddRange(mipmaps);
         }
 
-
         /// <summary>
         /// Gets texture data for the given mip.
         /// </summary>
@@ -237,7 +235,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <exception cref="FileNotFoundException"></exception>
         public static byte[] GetTextureData(MEGame game, byte[] mipData, StorageTypes storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset, string textureCacheName, string gamePathToUse = null, List<string> additionalTFCs = null, string packagePathForLocalLookup = null)
         {
-
             bool dataLoaded = false;
             var imagebytes = new byte[decompress ? uncompressedSize : compressedSize];
             //Debug.WriteLine("getting texture data for " + Export.FullPath);
@@ -523,7 +520,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             var mipmaps = new List<Texture2DMipInfo>();
             for (int m = 0; m < image.mipMaps.Count; m++)
             {
-
                 var mipmap = new Texture2DMipInfo
                 {
                     Export = Export,
@@ -543,7 +539,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     // New mipmaps
                     mipmap.storageType = CalculateStorageType(Mips[0].storageType, Export.Game, mipShouldBePackageStored);
                 }
-
 
                 //Investigate. this has something to do with archive storage types
                 //if (mod.arcTexture != null)
@@ -575,7 +570,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
 
             //todo: check to make sure TFC will not be larger than 2GiB
-
 
             Guid tfcGuid = Guid.NewGuid(); //make new guid as storage
             bool locallyStored = mipmaps[0].storageType is StorageTypes.pccUnc or StorageTypes.pccZlib or StorageTypes.pccLZO or StorageTypes.pccOodle;
@@ -611,7 +605,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         mipmap.compressedSize = mipmap.Mip.Length;
                     }
 
-
                     if (mipmap.storageType is StorageTypes.pccUnc or StorageTypes.extUnc)
                     {
                         mipmap.compressedSize = mipmap.uncompressedSize;
@@ -623,7 +616,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         mipmap.Mip = compressedMips[m];
                         mipmap.compressedSize = mipmap.Mip.Length;
                     }
-
 
                     if (mipmap.storageType is StorageTypes.extZlib or StorageTypes.extLZO or StorageTypes.extUnc or StorageTypes.extOodle)
                     {
@@ -668,7 +660,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                                 continue;
                             }
 
-
                             //Cache not found. Make new TFC
                             try
                             {
@@ -693,7 +684,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             ReplaceMips(mipmaps);
 
             //Set properties
-
 
             // The bottom 6 mips are apparently always pcc stored. If there is less than 6 mips, set neverstream to true, which tells game
             // and toolset to never look into archives for mips.
@@ -812,7 +802,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             //    }
             //}
 
-
             return messages;
         }
 
@@ -929,7 +918,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
             return true;
         }
-
 
         /// <summary>
         /// Exports the top mip to raw ARGB bytes

@@ -12,7 +12,6 @@ namespace LegendaryExplorer.SharedUI.Bases
     /// </summary>
     public abstract class TrackingNotifyPropertyChangedWindowBase : NotifyPropertyChangedWindowBase
     {
-
         // trackTelemetry doesn't use conditional parameter to prevent us from making new windows and then tracking it with telemetry for things like a dialog/
 
         /// <summary>

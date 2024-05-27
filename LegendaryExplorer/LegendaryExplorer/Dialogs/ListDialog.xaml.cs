@@ -39,7 +39,6 @@ namespace LegendaryExplorer.Dialogs
             TopText = message;
         }
 
-
         public ListDialog(IEnumerable<EntryStringPair> listItems, string title, string message, Window owner, int width = 0, int height = 0) : this(title, message, owner, width, height)
         {
             Items.ReplaceAll(listItems);

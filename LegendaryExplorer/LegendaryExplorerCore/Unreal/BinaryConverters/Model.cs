@@ -75,7 +75,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                 };
             }
-
         }
 
         public static Model Create()
@@ -102,7 +101,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            ref TAction a = ref Unsafe.AsRef(action);
+            ref TAction a = ref Unsafe.AsRef(in action);
 
             a.Invoke(ref Self, nameof(Self));
             for (int i = 0; i < Surfs.Length; i++)

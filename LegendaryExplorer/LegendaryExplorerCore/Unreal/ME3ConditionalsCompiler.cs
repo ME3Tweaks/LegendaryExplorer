@@ -1075,7 +1075,6 @@ namespace LegendaryExplorerCore.Unreal
 
             #region ByteCodeGen
 
-
             private static byte[] CodeBool(TreeNode node)
             {
                 byte[] Cout = new byte[0];
@@ -1144,7 +1143,6 @@ namespace LegendaryExplorerCore.Unreal
                 }
                 return Cout;
             }
-
 
             private static byte[] CodePlotBool(TreeNode node)
             {
@@ -1293,7 +1291,6 @@ namespace LegendaryExplorerCore.Unreal
                             Cout = CodePlotFloat(t1);
                             break;
                     }
-
                 }
                 if (node.Text == "expr")
                 {

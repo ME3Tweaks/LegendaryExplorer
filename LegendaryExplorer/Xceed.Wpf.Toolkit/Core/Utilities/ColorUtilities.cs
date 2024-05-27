@@ -75,7 +75,6 @@ namespace Xceed.Wpf.Toolkit.Core.Utilities
 
       if( s == 0 )
         h = 0.0;
-
       else
       {
         if( r == v )
@@ -88,7 +87,6 @@ namespace Xceed.Wpf.Toolkit.Core.Utilities
         h *= 60;
         if( h < 0.0 )
           h = h + 360;
-
       }
 
       return new HsvColor
@@ -178,7 +176,6 @@ namespace Xceed.Wpf.Toolkit.Core.Utilities
               break;
             }
         }
-
       }
 
       return Color.FromArgb( 255, ( byte )(  Math.Round(r * 255) ), ( byte )(  Math.Round(g * 255) ), ( byte )(  Math.Round(b * 255) ) );

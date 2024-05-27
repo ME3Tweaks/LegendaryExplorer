@@ -125,7 +125,6 @@ namespace LegendaryExplorerCore.Memory
         }
         #endregion
 
-
         /// <summary>
         /// Attempts to free all memory used by this memory manager. ONLY USE WHEN YOU ARE SURE THE MEMORY MANAGER IS NOT IN USE.
         /// </summary>

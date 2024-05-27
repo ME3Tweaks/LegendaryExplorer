@@ -64,7 +64,6 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 {
                     BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
                     InterpreterTab_Interpreter.UnloadExport();
-
                 }
                 else
                 {
@@ -118,7 +117,6 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     Filter = PSAFilter,
                     FileName = $"{sequenceName}.psa",
                     AddExtension = true,
-
                 };
                 if (dlg.ShowDialog(this) == true)
                 {
@@ -152,7 +150,6 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                         return;
                     }
 
-
                     if (props.GetProp<ObjectProperty>("m_pBioAnimSetData") is { Value: > 0 } bioAnimSetProp
                         && Pcc.TryGetUExport(bioAnimSetProp.Value, out ExportEntry bioAnimSet)
                         && bioAnimSet.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames") is {} trackNames)
@@ -181,7 +178,6 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     {
                         //No m_pBioAnimSetData specified. Import anyway I suppose, since we can't do any validation
                     }
-
 
                     AnimSequence selectedAnimSequence = psaSeqs[0];
                     if (psaSeqs.Count > 1)
@@ -358,7 +354,6 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
 
                 var selectedExport = EntrySelector.GetEntry<ExportEntry>(this, upk, "Select an AnimSequence, or an Animset",
                                                                                  entry => animSets.Contains(entry) || entry.ClassName == "AnimSequence" && animSets.Contains(entry.Parent));
-
 
                 var selectedAnimSequences = new List<AnimSequence>();
                 ExportEntry animSet;

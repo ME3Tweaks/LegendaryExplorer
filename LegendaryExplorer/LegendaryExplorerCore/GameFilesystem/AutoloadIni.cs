@@ -111,16 +111,16 @@ namespace LegendaryExplorerCore.GameFilesystem
          */
 
         // Packages
-        public List<string> Bio2DAs = new List<string>();
-        public List<string> GlobalTalkTables = new List<string>();
-        public List<string> DotUs = new List<string>();
-        public List<string> GlobalPackages = new List<string>();
-        public List<string> PlotManagerStateTransitionMaps = new List<string>();
-        public List<string> PlotManagerConsequenceMaps = new List<string>();
-        public List<string> PlotManagerOutcomeMaps = new List<string>();
-        public List<string> PlotManagerQuestMaps = new List<string>();
-        public List<string> PlotManagerCodexMaps = new List<string>();
-        public List<string> PlotManagerConditionals = new List<string>();
+        public List<string> Bio2DAs = [];
+        public List<string> GlobalTalkTables = [];
+        public List<string> DotUs = [];
+        public List<string> GlobalPackages = [];
+        public List<string> PlotManagerStateTransitionMaps = [];
+        public List<string> PlotManagerConsequenceMaps = [];
+        public List<string> PlotManagerOutcomeMaps = [];
+        public List<string> PlotManagerQuestMaps = [];
+        public List<string> PlotManagerCodexMaps = [];
+        public List<string> PlotManagerConditionals = [];
 
         // GUI
         // Not used by LE1 but set anyways by ME3TweaksCore Starter Kit
@@ -245,7 +245,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// Serializes this Autoload.ini to its text representation
         /// </summary>
         /// <returns></returns>
-        public string ToString()
+        public override string ToString()
         {
             DuplicatingIni ini = new DuplicatingIni();
             SerializeList(ini, "Packages", "2DA", Bio2DAs);

@@ -20,7 +20,6 @@ namespace Xceed.Wpf.Toolkit
 {
   public static class WizardCommands
   {
-
     private static RoutedCommand _cancelCommand = new RoutedCommand();
     public static RoutedCommand Cancel
     {

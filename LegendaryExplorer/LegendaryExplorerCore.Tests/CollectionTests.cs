@@ -20,7 +20,6 @@ public class CollectionTests
         };
         Assert.AreEqual(2, map.Count);
 
-
         map.Add("A", 3);
         Assert.AreEqual(3, map.Count);
 

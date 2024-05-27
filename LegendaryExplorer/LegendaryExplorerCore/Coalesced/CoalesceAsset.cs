@@ -164,7 +164,6 @@ namespace LegendaryExplorerCore.Coalesced
                     }
                 }
 
-
             }
 
             return ini;
@@ -184,7 +183,6 @@ namespace LegendaryExplorerCore.Coalesced
 
             return "";
         }
-
 
 		/// <summary>
 		/// Converts this asset to an Xml representation (Game 3)

@@ -37,7 +37,6 @@ using Piccolo.Event;
 using Piccolo.Util;
 
 namespace Piccolo {
-
 	#region Enums
 	/// <summary>
 	/// This enumeration is used by the PCamera class.  It represents the types
@@ -395,7 +394,6 @@ namespace Piccolo {
 		/// </remarks>
         private void PaintDebugInfo(PPaintContext paintContext) {
 			if (PDebug.DebugBounds || PDebug.DebugFullBounds) {
-
 				var nodes = new List<PNode>();
 
                 for (int i = 0; i < LayerCount; i++) {

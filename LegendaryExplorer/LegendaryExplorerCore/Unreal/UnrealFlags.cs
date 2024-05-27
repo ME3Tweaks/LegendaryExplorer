@@ -6,7 +6,6 @@ namespace LegendaryExplorerCore.Unreal
 {
     public static class UnrealFlags
     {
-
         /// <summary>
         /// Flags describing an class instance. This code is from UEExplorer.
         ///
@@ -123,7 +122,6 @@ namespace LegendaryExplorerCore.Unreal
             /// Package contains classes.
             /// </summary>
             Script = 0x00200000U,
-
 
             /// <summary>
             /// The package was build with -Debug
@@ -345,16 +343,12 @@ namespace LegendaryExplorerCore.Unreal
                                              // Not used
                                              // Not used
 
-
             // The following are not used with updated info
             //HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
             //EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
             //RemappedName = 0x0000080000000000,   // Name is remapped.
             //Preloading = 0x0000800000000000,   // Data is being preloaded from file.
             //Destroyed = 0x0080000000000000,	// Object Destroy has already been called.
-
-
-
 
             // ORIGINAL BELOW
             //InSingularFunc = 0x0000000000000002, // In a singular function.

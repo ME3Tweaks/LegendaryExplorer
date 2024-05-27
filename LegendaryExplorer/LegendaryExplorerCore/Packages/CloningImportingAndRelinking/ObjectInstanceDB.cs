@@ -302,7 +302,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (ifp.StartsWith(@"ObjectReferencer"))
                 return;
 
-
             int filePathIndex = FilePaths.IndexOf(export.FileRef.FilePath);
             if (export.Game != Game)
             {

@@ -67,7 +67,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Converters
       if( destinationType != typeof( string ) )
         throw new InvalidOperationException( "Can only convert to string." );
 
-
       IList strs = ( IList )value;
 
       if( strs == null )

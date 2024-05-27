@@ -530,9 +530,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
-
     #endregion //Base Class Overrides
 
     #region Event Handlers
@@ -600,18 +597,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     [Obsolete( "This method is obsolete and should no longer be used." )]
     private void ParentContainer_LayoutUpdated( object sender, EventArgs e )
     {
@@ -666,15 +651,11 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
     #endregion //Event Handlers
 
     #region Methods
 
     #region Private
-
-
 
     [Obsolete( "This method is obsolete and should no longer be used. Use WindowContainer.GetRestrictedLeft() instead." )]
     private double GetRestrictedLeft()

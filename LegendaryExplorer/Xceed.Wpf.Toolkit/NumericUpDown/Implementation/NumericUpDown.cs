@@ -19,7 +19,6 @@ using System.Globalization;
 using System.Windows;
 using Xceed.Wpf.Toolkit.Primitives;
 
-
 namespace Xceed.Wpf.Toolkit
 {
   public abstract class NumericUpDown<T> : UpDownBase<T>
@@ -165,7 +164,6 @@ namespace Xceed.Wpf.Toolkit
     #endregion //Properties
 
     #region Overrides
-
 
     #endregion
 

@@ -32,7 +32,6 @@
 // included to avoid specifying fully qualified paths in comment links.
 
 namespace Piccolo.Event {
-
 	/// <summary>
 	/// <b>PInputEventListener</b> defines an interface for objects that want to listen to
 	/// PNodes for input events.  If you are just using Piccolo's default input management
@@ -40,7 +39,6 @@ namespace Piccolo.Event {
 	/// for input events. 
 	/// </summary>
 	public interface PInputEventListener {
-
 		/// <summary>
 		/// Returns true if the filter accepts the given event and false otherwise.
 		/// </summary>

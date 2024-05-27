@@ -15,7 +15,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
             if (propertyItem != null)
             {
                 return new PropertyItemAutomationPeer(item, this);
-
             }
             return (ItemAutomationPeer)CreatePeerForElement(propertyItem);
         }

@@ -23,7 +23,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// </summary>
         public ME2ME3TalkFile()
         {
-
         }
 
         /// <summary>
@@ -46,7 +45,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
 
         /// <inheritdoc/>
         public List<TLKStringRef> StringRefs { get; set; }
-
 
         /// <summary>
         /// A delegate used for reporting progress
@@ -80,7 +78,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             /* jumping to the beginning of Huffmann Tree stored in TLK file */
             long pos = r.BaseStream.Position;
             r.BaseStream.Seek(pos + strRefCount * 8, SeekOrigin.Begin);
-
 
             var characterTree = new HuffmanNode[Header.treeNodeCount];
             for (int i = 0; i < Header.treeNodeCount; i++)
@@ -135,7 +132,11 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                 };
                 if (sref.BitOffset >= 0)
                 {
-                    if (!rawStrings.ContainsKey(sref.BitOffset))
+                    if (rawStrings.TryGetValue(sref.BitOffset, out string value))
+                    {
+                        sref.Data = value;
+                    }
+                    else
                     {
                         int tmpOffset = sref.BitOffset;
                         string partString = GetString(ref tmpOffset, builder, bits, characterTree);
@@ -151,10 +152,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                          * sref.Data = fullString;
                          */
                         sref.Data = partString;
-                    }
-                    else
-                    {
-                        sref.Data = rawStrings[sref.BitOffset];
                     }
                 }
                 StringRefs.Add(sref);

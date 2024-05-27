@@ -14,7 +14,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
     internal class TextureScanner : AssetScanner
     {
-
         public TextureScanner() : base()
         {
         }

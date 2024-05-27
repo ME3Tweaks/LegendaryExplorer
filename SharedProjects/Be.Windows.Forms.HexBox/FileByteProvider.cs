@@ -39,7 +39,6 @@ namespace Be.Windows.Forms
             /// <returns>true, if the is in the collection</returns>
             public bool Contains(long index)
             { return Dictionary.Contains(index); }
-
         }
         #endregion
 

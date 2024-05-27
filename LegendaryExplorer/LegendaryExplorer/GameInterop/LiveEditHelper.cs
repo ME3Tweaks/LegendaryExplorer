@@ -79,7 +79,6 @@ namespace LegendaryExplorer.GameInterop
             posTrack.Clear();
             rotTrack.Clear();
 
-
             for (int i = 0; i < cams.Length; i++)
             {
                 POV cam = cams[i];
@@ -109,7 +108,6 @@ namespace LegendaryExplorer.GameInterop
         {
             InteropHelper.TryPadFile(CamPathFilePath(game), 10_485_760);
         }
-
     }
 
     public class POV

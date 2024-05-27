@@ -14,7 +14,6 @@ using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 {
-
     public class BytecodeToken
     {
         public int NativeIndex;
@@ -64,7 +63,6 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
 
             return bcst;
         }
-
     }
 
     class ReturnToken : BytecodeToken
@@ -209,12 +207,10 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
         public NothingToken(int offset, string displayString = "") : base(displayString, offset) { }
     }
 
-
     class StopToken : BytecodeToken
     {
         public StopToken(int offset) : base("EX_Stop (stop state)", offset) { }
     }
-
 
     class EndOfScriptToken : BytecodeToken
     {
@@ -613,7 +609,6 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                         int exprSize = _reader.ReadInt16();
                         //Debug.WriteLine($" >> {contextId}: ExprSize {exprSize} at 0x{(_reader.BaseStream.Position - 2):X8}");
 
-
                         int bSize = _reader.ReadByte();
                         //Debug.WriteLine($" >> {contextId}: bSize {bSize} at 0x{(_reader.BaseStream.Position - 1):X8}");
 
@@ -1004,7 +999,6 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             //}
             // }
 
-
             var indexer = ReadNext();
             if (IsInvalid(indexer)) return WrapErrToken(arrayExpression + "." + methodName + "(" + indexer, indexer);
             return Token(arrayExpression + "." + methodName + "(" + indexer + ")", readerpos);
@@ -1117,7 +1111,6 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
                 EntryReferences[pos] = new ExportEntry(_package, 0, _package.Names[0]) { Index = Math.Abs(idx) - 1 }; //Force UIndex
                 return _package.Exports.First(); //this is so rest of parser won't crash. It's a real hack...
             }
-
 
             return entry;
         }

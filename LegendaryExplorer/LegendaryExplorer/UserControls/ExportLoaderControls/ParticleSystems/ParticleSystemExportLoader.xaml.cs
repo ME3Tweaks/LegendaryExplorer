@@ -165,7 +165,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void GenerateParticleModuleSize(ExportEntry export, ParticleSystemNode moduleNode)
         {
-            
         }
 
         public override void UnloadExport()

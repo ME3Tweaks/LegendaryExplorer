@@ -67,7 +67,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref TableD, SCExt.Serialize);
             sc.Serialize(ref LipSyncPhonemeNames, SCExt.Serialize);
 
-
             // Serialize length (at the start of the binary)
             var endingPosition = sc.ms.Position;
             length = (int)(endingPosition - startPos - 4);
@@ -160,7 +159,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float Z;
         // As we figure out what these do, we can take them out of the array
         public float[] unkFloats = new float[13];
-
 
         public List<FaceFXBoneNodeChild> Children;
     }
@@ -391,7 +389,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.SerializeFaceFXString(ref entry.Item2);
                 el.StringTuples[i] = entry;
             }
-
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref FaceFXAsset.FXATableDElement el)

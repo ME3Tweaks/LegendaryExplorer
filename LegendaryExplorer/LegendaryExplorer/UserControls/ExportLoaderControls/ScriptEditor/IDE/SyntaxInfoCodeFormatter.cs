@@ -9,7 +9,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
     public class SyntaxInfoCodeFormatter : PlainTextCodeFormatter , ICodeFormatter<(string, SyntaxInfo)>
     {
-
         private readonly SyntaxInfo SyntaxInfo = new();
 
         private int Position;

@@ -29,7 +29,7 @@ namespace LegendaryExplorerCore.Kismet
                 int i = 0;
                 foreach (var ol in outlinksProp)
                 {
-                    List<OutputLink> oLinks = new List<OutputLink>();
+                    List<OutputLink> oLinks = [];
                     outputLinksMapping.Add(oLinks);
 
                     var links = ol.GetProp<ArrayProperty<StructProperty>>("Links");
@@ -63,7 +63,6 @@ namespace LegendaryExplorerCore.Kismet
                 {
                     outlinkNames.Add(ol.GetProp<StrProperty>("LinkDesc"));
                 }
-
             }
             return outlinkNames;
         }
@@ -117,34 +116,33 @@ namespace LegendaryExplorerCore.Kismet
                     new ObjectProperty(destExport, "LinkedOp"),
                     new IntProperty(inputIndex, "InputLinkIdx"));
 
-                opOutputLinkProperties = new PropertyCollection
-                {
+                opOutputLinkProperties =
+                [
                     new StrProperty(outLinkDescription, "LinkDesc"),
                     new BoolProperty(false, "bHasImpulse"),
                     new BoolProperty(false, "bDisabled"),
                     new NameProperty("None", "LinkAction"),
                     new ObjectProperty(0, "LinkedOp"),
                     new FloatProperty(0, "ActivateDelay"),
-                    new ArrayProperty<StructProperty>(new List<StructProperty>() { inputLink }, "Links")
-                };
+                    new ArrayProperty<StructProperty>([inputLink], "Links")
+                ];
             }
             else
             {
                 // Just create a new output with no links
-                opOutputLinkProperties = new PropertyCollection
-                {
+                opOutputLinkProperties =
+                [
                     new StrProperty(outLinkDescription, "LinkDesc"),
                     new BoolProperty(false, "bHasImpulse"),
                     new BoolProperty(false, "bDisabled"),
                     new NameProperty("None", "LinkAction"),
                     new ObjectProperty(0, "LinkedOp"),
                     new FloatProperty(0, "ActivateDelay"),
-                    new ArrayProperty<StructProperty>(new List<StructProperty>(), "Links")
-                };
+                    new ArrayProperty<StructProperty>([], "Links")
+                ];
             }
 
             outLinksProp.Add(new StructProperty("SeqOpOutputLink", opOutputLinkProperties));
-
 
             source.WriteProperty(outLinksProp);
         }
@@ -442,7 +440,7 @@ namespace LegendaryExplorerCore.Kismet
         {
             var objects = sequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (objects == null)
-                return new List<IEntry>();
+                return [];
 
             return objects.Where(x => x.Value != 0).Select(x => x.ResolveToEntry(sequence.FileRef)).ToList();
         }
@@ -565,7 +563,6 @@ namespace LegendaryExplorerCore.Kismet
                 var outboundLinkNames = GetOutputLinkNames(elementToSkip);
                 outboundLinkIdx = outboundLinkNames.IndexOf(outboundLinkName);
             }
-
 
             // List of outbound link elements on the specified item we want to skip. These will be placed into the inbound item
             Debug.WriteLine($@"Attempting to skip {elementToSkip.UIndex} in {elementToSkip.FileRef.FilePath}");
@@ -917,7 +914,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <returns>List of any sequence objects that link to this node</returns>
         public static List<ExportEntry> FindOutputConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements, List<int> linkIdxsToMatchOn = null, List<string> filteredInputNames = null)
         {
-            List<ExportEntry> referencingNodes = new List<ExportEntry>();
+            List<ExportEntry> referencingNodes = [];
 
             foreach (var seqObj in sequenceElements)
             {
@@ -938,7 +935,7 @@ namespace LegendaryExplorerCore.Kismet
                     // This is not that reliable, as the inputs will be defined on the class, not the instance
                     // oops
                     var linkInputNamesArray = node.GetProperty<ArrayProperty<StructProperty>>("InputLinks");
-                    linkIdxsToMatchOn = new List<int>();
+                    linkIdxsToMatchOn = [];
                     for (int i = 0; i < linkInputNamesArray.Count; i++)
                     {
                         if (filteredInputNames.Contains(linkInputNamesArray[i].GetProp<NameProperty>("LinkDesc").Value.Instanced))
@@ -960,7 +957,6 @@ namespace LegendaryExplorerCore.Kismet
             return referencingNodes.Distinct().ToList();
         }
 
-
         /// <summary>
         /// Finds sequence objects with variable connections that come to this node
         /// </summary>
@@ -969,7 +965,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <returns>List of any sequence objects that link to this node</returns>
         public static List<ExportEntry> FindVariableConnectionsToNode(ExportEntry node, List<ExportEntry> sequenceElements)
         {
-            List<ExportEntry> referencingNodes = new List<ExportEntry>();
+            List<ExportEntry> referencingNodes = [];
 
             foreach (var seqObj in sequenceElements)
             {

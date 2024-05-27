@@ -43,7 +43,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 else
                 {
                     _audioFileReader = new WaveFileReader(audioBuffer);
-
                 }
                 //for debugging
                 //audioBuffer.WriteToFile(@"C:\users\Mgamerz\desktop\out.wav");

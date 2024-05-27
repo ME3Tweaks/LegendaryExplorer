@@ -39,7 +39,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                     var contains = new [] {"interptrack", "sfxscene"};
                     return prefixes.Any(pr => cr.Class.ToLower().StartsWith(pr)) || contains.Any(pr => cr.Class.ToLower().Contains(pr));
                 }),
-
             }, searchPredicate: ClassSearch);
 
             AnimationFilter = new SingleOptionFilter<AnimationRecord>(new IAssetSpecification<AnimationRecord>[]
@@ -47,7 +46,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 fileList,
                 new PredicateSpecification<AnimationRecord>("Only Animations", ar => !ar.IsAmbPerf, "Show animsequences only"),
                 new PredicateSpecification<AnimationRecord>("Only Performances (ME3)", ar => ar.IsAmbPerf),
-
             }, searchPredicate: t => t.Record.AnimSequence.ToLower().Contains(t.SearchText.ToLower()));
 
             MeshFilter = new SingleOptionFilter<MeshRecord>(new IAssetSpecification<MeshRecord>[]
@@ -55,7 +53,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                 fileList,
                 new PredicateSpecification<MeshRecord>("Only Skeletal Meshes", mr => mr.IsSkeleton),
                 new PredicateSpecification<MeshRecord>("Only Static Meshes", mr => !mr.IsSkeleton),
-
             }, searchPredicate: MeshSearch);
 
             ParticleFilter = new SingleOptionFilter<ParticleSysRecord>(new IAssetSpecification<ParticleSysRecord>[]
@@ -65,7 +62,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                     pr => pr.VFXType == ParticleSysRecord.VFXClass.ParticleSystem),
                 new PredicateSpecification<ParticleSysRecord>("Only Client Effects",
                     pr => pr.VFXType != ParticleSysRecord.VFXClass.ParticleSystem)
-
             }, searchPredicate: t => t.Record.PSName.ToLower().Contains(t.SearchText.ToLower()));
 
             GUIFilter = new GenericAssetFilter<GUIElement>(new IAssetSpecification<GUIElement>[] {fileList},
@@ -73,7 +69,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
             PlotElementFilter = new GenericAssetFilter<PlotRecord>(new IAssetSpecification<PlotRecord>[] {fileList},
                 searchPredicate: t => t.Record.DisplayText.ToLower().Contains(t.SearchText.ToLower()));
-
         }
 
         /// <summary>

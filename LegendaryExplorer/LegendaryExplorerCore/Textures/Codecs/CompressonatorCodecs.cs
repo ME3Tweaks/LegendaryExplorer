@@ -55,7 +55,6 @@ namespace LegendaryExplorerCore.Textures.Codecs
         [DllImport("CompressionWrappers.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern unsafe void DecompressAlphaBlock([Out] byte* alphaBlock, [In] uint* compressedBlock);
 
-
         public static uint[] CompressRGBABlock(byte[] rgbBlock)
         {
             if (rgbBlock.Length != BLOCK_SIZE_4X4X4)

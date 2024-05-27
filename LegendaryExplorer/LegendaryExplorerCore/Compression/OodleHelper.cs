@@ -26,7 +26,6 @@ namespace LegendaryExplorerCore.Compression
             ulong unused1, ulong unused2, ulong unused3,
             ulong unused4, ulong unused);
 
-
         [DllImport(CompressionHelper.OODLE_DLL_NAME)]
         private static extern unsafe int OodleLZ_Decompress(byte* buffer, long bufferSize, byte* outputBuffer, long outputBufferSize,
             uint a, uint b, uint c, ulong d, ulong e, ulong f, ulong g, ulong h, ulong i, ulong threadModule);
@@ -182,7 +181,6 @@ namespace LegendaryExplorerCore.Compression
                     string oodPath = Path.Combine(anLEExecutableFolder, CompressionHelper.OODLE_DLL_NAME);
                     if (File.Exists(oodPath) && paths.Length > 0)
                     {
-
                         // Todo: FIX: CANNOT RUN IN TEST MODE
                         // Access denied to directory
                         try
@@ -230,7 +228,6 @@ namespace LegendaryExplorerCore.Compression
             byte[] compressedBuffer = MemoryManager.GetByteArray(compressedBufferSize); // we will not use all of this. someday we will want to improve this i think
 
             int compressedCount = Compress(buffer, compressedBuffer.AsSpan());
-
 
             byte[] outputBuffer = new byte[compressedCount];
             Buffer.BlockCopy(compressedBuffer, 0, outputBuffer, 0, compressedCount);

@@ -37,7 +37,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Editors
 
     protected override void SetControlProperties( PropertyItem propertyItem )
     {
-
       var propertyGrid = propertyItem.ParentElement as PropertyGrid;
       if( propertyGrid != null )
       {
@@ -105,7 +104,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Editors
 
       base.ResolveValueBinding( propertyItem );
     }
-
   }
 
   public class PropertyGridEditorCollectionControl : CollectionControlButton

@@ -72,7 +72,6 @@ namespace LegendaryExplorerCore
             SYNCHRONIZATION_CONTEXT = scheduler;
         }
 
-
         /// <summary>
         /// Initializes the LegendaryExplorerCore library for use. Call this before using anything in this library. It registers things such as package loaders, initializes the object databases, and other startup tasks
         /// </summary>
@@ -92,7 +91,7 @@ namespace LegendaryExplorerCore
             PackageSaver.Initialize();
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;
             (MEGame, Action<string>)[] gameToLoaderMap =
-            {
+            [
                 (MEGame.ME1, ME1UnrealObjectInfo.loadfromJSON),
                 (MEGame.ME2, ME2UnrealObjectInfo.loadfromJSON),
                 (MEGame.ME3, ME3UnrealObjectInfo.loadfromJSON),
@@ -100,7 +99,7 @@ namespace LegendaryExplorerCore
                 (MEGame.LE2, LE2UnrealObjectInfo.loadfromJSON),
                 (MEGame.LE3, LE3UnrealObjectInfo.loadfromJSON),
                 (MEGame.UDK, UDKUnrealObjectInfo.loadfromJSON)
-            };
+            ];
             var jsonLoaders = new List<Action<string>>(gameToLoaderMap.Length);
             foreach ((MEGame game, Action<string> loader) in gameToLoaderMap)
             {
@@ -125,7 +124,6 @@ namespace LegendaryExplorerCore
             {
                 LECLog.Error($@"Error ensuring oodle dll: {e.Message}. {e.FlattenException()}");
             }
-
 
             LECLog.Information(@"LegendaryExplorerCore has initialized");
             initialized = true;

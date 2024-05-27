@@ -733,7 +733,6 @@ namespace LegendaryExplorer
 
         public static void saveFavorites()
         {
-
             if (FavoritesChanged != null)
             {
                 FavoritesChanged.Invoke(null, EventArgs.Empty);

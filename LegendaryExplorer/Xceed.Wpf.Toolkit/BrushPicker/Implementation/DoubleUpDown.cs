@@ -188,7 +188,6 @@ namespace ColorBox
         public DoubleUpDown()
             : this(Double.Parse, Decimal.ToDouble, (v1, v2) => v1 < v2, (v1, v2) => v1 > v2)
         {
-
         }
 
         #endregion       

@@ -129,7 +129,6 @@ namespace LegendaryExplorer.UnrealExtensions
                          * 5. Delete the project
                          * */
 
-
             string wwiseCLIPath = GetWwiseCliPath(game);
             if (string.IsNullOrEmpty(wwiseCLIPath)) throw new ArgumentException("Wwise CLI path not configured");
 
@@ -161,8 +160,6 @@ namespace LegendaryExplorer.UnrealExtensions
                 filesToConvert = new[] { fileOrFolderPath };
                 folderParent = Directory.GetParent(fileOrFolderPath).FullName;
             }
-
-
 
             XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", folderParent));
             foreach (string file in filesToConvert)

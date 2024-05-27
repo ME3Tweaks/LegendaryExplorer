@@ -49,7 +49,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       _propertyItemCollection = new PropertyItemCollection( new ObservableCollection<PropertyItem>() );
       UpdateFilter();
       UpdateCategorization( false );
-
     }
 
     public override IList Properties
@@ -73,7 +72,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
     protected PropertyItemCollection PropertyItems
     {
       get
@@ -94,7 +92,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       var propertyItem = item as PropertyItem;
       if( propertyItem != null )
         return propertyItem;
-
 
       var propertyStr = item as string;
       if( propertyStr != null )
@@ -161,11 +158,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     {
       this.RegenerateProperties();
     }
-
-
-
-
-
 
     protected internal override void SetPropertiesExpansion( bool isExpanded )
     {
@@ -329,9 +321,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       return null;
     }
 
-
-
-
     protected bool GetWillRefreshPropertyGrid( PropertyDescriptor propertyDescriptor )
     {
       if( propertyDescriptor == null )
@@ -459,7 +448,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       if( editor != null )
         editorElement = editor.ResolveEditor( propertyItem );
 
-
       if( (editorElement == null) && (definitionKey == null) && ( propertyItem.PropertyDescriptor != null ) )
         editorElement = this.GenerateCustomEditingElement( propertyItem.PropertyDescriptor.Name, propertyItem );
 
@@ -515,7 +503,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       return def;
     }
 
-
     public override void PrepareChildrenPropertyItem( PropertyItemBase propertyItem, object item )
     {
       _isPreparingItemFlag = true;
@@ -565,6 +552,5 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
         || string.Equals( propertyName, PropertyItemCollection.CategoryOrderPropertyName )
         || string.Equals( propertyName, PropertyItemCollection.PropertyOrderPropertyName );
     }
-
   }
 }

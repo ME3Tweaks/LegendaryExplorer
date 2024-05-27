@@ -38,7 +38,6 @@ namespace LegendaryExplorerCore.Tests
                 string me2DlcName = expectedGame == MEGame.ME2 ? mountProps[4] : null;
                 string me2HRDlcName = expectedGame == MEGame.ME2 ? mountProps[5] : null;
 
-
                 MountFile mf = new MountFile(mountFilePath);
                 Assert.AreEqual(expectedGame, mf.Game, $"Mount file {mountName} parsed to the wrong game");
                 Assert.AreEqual(expectedMountPriority, mf.MountPriority, $"Mount file {mountName} has wrong parsed mount priority");

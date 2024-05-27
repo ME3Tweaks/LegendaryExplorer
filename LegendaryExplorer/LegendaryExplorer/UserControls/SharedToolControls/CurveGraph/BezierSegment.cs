@@ -12,7 +12,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         public BezierSegment()
         {
-
         }
 
         public BezierSegment(CurveGraph g)

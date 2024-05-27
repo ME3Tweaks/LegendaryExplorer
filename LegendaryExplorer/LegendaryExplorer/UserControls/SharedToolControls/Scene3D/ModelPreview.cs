@@ -15,7 +15,6 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.Classes;
 
-
 // MODEL RENDERING OVERVIEW:
 // Construct a ModelPreview instance with an existing SkeletalMesh or StaticMesh.
 // Call ModelPreview.Render(...) every frame. Boom.
@@ -153,7 +152,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         public virtual void Dispose()
         {
-
         }
     }
 
@@ -277,7 +275,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
             }
             LODs.Add(new ModelPreviewLOD(mesh, sections));
-
         }
 
         /// <summary>
@@ -313,7 +310,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     //SharpDX takes items differently than unreal.
                     vertices.Add(new Scene3D.WorldVertex(new Vector3(-v.X, v.Z, v.Y), Vector3.Zero, new Vector2(uvVector[0].X, uvVector[0].Y)));
                 }
-
 
             }
 
@@ -355,10 +351,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                         triangles.Add(new Triangle(kdop.Triangles[i].Vertex1, kdop.Triangles[i].Vertex2, kdop.Triangles[i].Vertex3));
                     }
                 }
-
             }
-
-
 
             /*
             if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
@@ -377,7 +370,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     triangles.Add(new Triangle((uint)m.Mesh.RawTris.RawTriangles[i].v0, (uint)m.Mesh.RawTris.RawTriangles[i].v1, (uint)m.Mesh.RawTris.RawTriangles[i].v2));
                 }
             }*/
-
 
             //OLD CODE
             /* if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
@@ -399,7 +391,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
             // STEP 2: MATERIALS
             //foreach (var v in lodModel.Elements)
-
 
             //foreach (Unreal.Classes.MaterialInstanceConstant mat in m.Mesh.Mat.MatInst)
             //{
@@ -484,7 +475,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <returns>The decoded <see cref="float"/>.</returns>
         public static float HalfToFloat(ushort val)
         {
-
             ushort u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
@@ -561,7 +551,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 {
                     var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
                     AddMaterial(mat.ObjectName.Name, material);
-
                 }
             }
 
@@ -717,7 +706,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             public object meshObject;
             public List<ModelPreviewSection> sections;
             public List<PreloadedTextureData> texturePreviewMaterials;
-
 
         }
 

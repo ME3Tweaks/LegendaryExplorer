@@ -33,7 +33,6 @@ namespace LegendaryExplorerCore.Helpers
 {
     public static class StreamHelpers
     {
-
         public static MemoryStream ReadToMemoryStream(this Stream stream, long size)
         {
             MemoryStream memory = MemoryManager.GetMemoryStream((int)size);
@@ -100,10 +99,9 @@ namespace LegendaryExplorerCore.Helpers
         public static void WriteGuid(this Stream stream, Guid value)
         {
             Span<byte> data = stackalloc byte[16];
-            MemoryMarshal.Write(data, ref value);
+            MemoryMarshal.Write(data, in value);
             stream.Write(data);
         }
-
 
         public static void WriteToFile(this MemoryStream stream, string outfile)
         {
@@ -355,7 +353,7 @@ namespace LegendaryExplorerCore.Helpers
         public static void WriteUInt64(this Stream stream, ulong data)
         {
             Span<byte> buffer = stackalloc byte[sizeof(ulong)];
-            MemoryMarshal.Write(buffer, ref data);
+            MemoryMarshal.Write(buffer, in data);
             stream.Write(buffer);
         }
 
@@ -370,7 +368,7 @@ namespace LegendaryExplorerCore.Helpers
         public static void WriteInt64(this Stream stream, long data)
         {
             Span<byte> buffer = stackalloc byte[sizeof(long)];
-            MemoryMarshal.Write(buffer, ref data);
+            MemoryMarshal.Write(buffer, in data);
             stream.Write(buffer);
         }
 
@@ -385,7 +383,7 @@ namespace LegendaryExplorerCore.Helpers
         public static void WriteUInt32(this Stream stream, uint data)
         {
             Span<byte> buffer = stackalloc byte[sizeof(uint)];
-            MemoryMarshal.Write(buffer, ref data);
+            MemoryMarshal.Write(buffer, in data);
             stream.Write(buffer);
         }
 
@@ -400,7 +398,7 @@ namespace LegendaryExplorerCore.Helpers
         public static void WriteInt32(this Stream stream, int data)
         {
             Span<byte> buffer = stackalloc byte[sizeof(int)];
-            MemoryMarshal.Write(buffer, ref data);
+            MemoryMarshal.Write(buffer, in data);
             stream.Write(buffer);
         }
 
@@ -493,7 +491,6 @@ namespace LegendaryExplorerCore.Helpers
 
         private const int DEFAULT_BUFFER_SIZE = 8 * 1024;
 
-
         /// <summary>
         ///     Reads the given stream up to the end, returning the data as a byte
         ///     array, using the given buffer size.
@@ -563,17 +560,15 @@ namespace LegendaryExplorerCore.Helpers
             }
             // We could do all our own work here, but using MemoryStream is easier
             // and likely to be just as efficient.
-            using (var tempStream = new MemoryStream()) // do not use memory manager as GetBuffer() should not be used with it
+            using var tempStream = new MemoryStream(); // do not use memory manager as GetBuffer() should not be used with it
+            Copy(input, tempStream, buffer);
+            // No need to copy the buffer if it's the right size
+            if (tempStream.Length == tempStream.GetBuffer().Length)
             {
-                Copy(input, tempStream, buffer);
-                // No need to copy the buffer if it's the right size
-                if (tempStream.Length == tempStream.GetBuffer().Length)
-                {
-                    return tempStream.GetBuffer();
-                }
-                // Okay, make a copy that's the right size
-                return tempStream.ToArray();
+                return tempStream.GetBuffer();
             }
+            // Okay, make a copy that's the right size
+            return tempStream.ToArray();
         }
 
         /// <summary>
