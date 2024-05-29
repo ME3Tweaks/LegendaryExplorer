@@ -8,7 +8,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
 {
     public class LE3InteropTarget : InteropTarget
     {
-        public override MEGame Game => MEGame.LE1;
+        public override MEGame Game => MEGame.LE3;
         public override bool CanExecuteConsoleCommands => true;
         public override bool CanUpdateTOC => false;
         public override bool CanUseLLE => true;

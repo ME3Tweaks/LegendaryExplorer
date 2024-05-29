@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Controls
 {
@@ -51,9 +53,9 @@ namespace LegendaryExplorer.SharedUI.Controls
         //    EntrySelector_ComboBox.Focus();
         //}
 
-        public static string GetValue(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false)
+        public static string GetValue(Control owner, string promptText, string titleText, IEnumerable<object> items, string defaultValue = "", bool topMost = false, Func<string> getDefaultValueFunc = null)
         {
-            var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, defaultValue, topMost);
+            var dlg = new InputComboBoxWPF(owner, promptText, titleText, items, getDefaultValueFunc?.Invoke() ?? defaultValue, topMost);
             return dlg.ShowDialog() == true ? dlg.ChosenItem.ToString() : "";
         }
 
