@@ -1991,6 +1991,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public static string FormatFloat(float single)
         {
+            if (float.IsNaN(single))
+            {
+                return "NaN";
+            }
+            if (float.IsInfinity(single))
+            {
+                return float.IsNegative(single) ? "-Infinity" : "Infinity";
+            }
             //G9 ensures a fully accurate version of the float (no rounding) is written.
             //more details here: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#the-round-trip-r-format-specifier 
             string floatString = single.ToString("G9", NumberFormatInfo.InvariantInfo).Replace("E+", "e");

@@ -98,6 +98,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
             table.AddType(NameType);
 
+            //Add fake constants
+            objectClass.TypeDeclarations.Add(new Const("NaN", "NaN"){Literal = new FloatLiteral(float.NaN)});
+            objectClass.TypeDeclarations.Add(new Const("Infinity", "Infinity"){Literal = new FloatLiteral(float.PositiveInfinity)});
             
             Class packageType = null;
             switch (game)

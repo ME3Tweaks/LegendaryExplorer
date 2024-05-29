@@ -336,33 +336,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else
             {
+                var literalStart = CurrentPosition;
                 bool isNegative = Matches(TokenType.MinusSign, EF.Operator);
 
                 literal = ParseLiteral();
-                if (literal is not null)
-                {
-                    if (isNegative)
+                if (literal is null)
                     {
-                        switch (literal)
-                        {
-                            case FloatLiteral floatLiteral:
-                                floatLiteral.Value *= -1;
-                                break;
-                            case IntegerLiteral integerLiteral:
-                                integerLiteral.Value *= -1;
-                                break;
-                            default:
-                                throw ParseError("Malformed constant value!", CurrentPosition);
-                        }
-                    }
-                }
-                else
-                {
-                    if (isNegative)
-                    {
-                        throw ParseError("Unexpected '-' !", CurrentPosition);
-                    }
-
                     if (Consume(TokenType.Word) is { } token)
                     {
                         if (Consume(TokenType.NameLiteral) is { } objName)
@@ -372,7 +351,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         else
                         {
                             literal = ParseBasicRef(token);
-                            if (literal is SymbolReference {Node: Const cnst})
+                            if (literal is SymbolReference { Node: Const cnst })
                             {
                                 literal = cnst.Literal;
                             }
@@ -381,6 +360,22 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     else
                     {
                         throw ParseError("Expected a value!", CurrentPosition);
+                    }
+                }
+
+                if (isNegative)
+                {
+                    //clone the literals so we don't modify Const values
+                    switch (literal)
+                    {
+                        case FloatLiteral floatLiteral:
+                            literal = new FloatLiteral(floatLiteral.Value * -1, literalStart, floatLiteral.EndPos);
+                            break;
+                        case IntegerLiteral integerLiteral:
+                            literal = new IntegerLiteral(integerLiteral.Value * -1, literalStart, integerLiteral.EndPos);
+                            break;
+                        default:
+                            throw ParseError("Unexpected '-' !", literalStart);
                     }
                 }
             }
