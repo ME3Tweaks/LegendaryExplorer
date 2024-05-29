@@ -30,6 +30,7 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         // LE2 ============================================
         public static readonly int LE2_AUTOTOC = 30;
         public static readonly int LE2_DEBUGLOGGER_DEV = 71;
+        public static readonly int LE2_HOT_RELOAD = 78;
         public static readonly int LE2_LEX_INTEROP = 79;
         public static readonly int LE2_SCRIPT_DEBUGGER = 81;
 
@@ -37,6 +38,6 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         public static readonly int LE3_AUTOTOC = 31;
         public static readonly int LE3_DEBUGLOGGER_DEV = 72;
         public static readonly int LE3_LEX_INTEROP = 80;
-
+        public static readonly int LE3_SCRIPT_DEBUGGER = 86;
     }
 }
