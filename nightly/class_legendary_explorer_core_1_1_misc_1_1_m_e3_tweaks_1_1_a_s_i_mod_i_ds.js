@@ -11,9 +11,11 @@ var class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds =
     [ "LE1_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a1ab284e89ca48f56111122271636b847", null ],
     [ "LE2_AUTOTOC", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a80868fcd50f1319c5461996a01ba8e4d", null ],
     [ "LE2_DEBUGLOGGER_DEV", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ab7d520a28cec436ff2e3de528abb1a00", null ],
+    [ "LE2_HOT_RELOAD", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#af8fa5e1c6a128b2ea8d2ccf00f59523e", null ],
     [ "LE2_LEX_INTEROP", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a0b09b0d4df017d240bbe07612e2898ed", null ],
     [ "LE2_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a36dda5a9b7bc893f6b358f72b6a563d0", null ],
     [ "LE3_AUTOTOC", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a947665cdf86ea4bb12565a0f5286936e", null ],
     [ "LE3_DEBUGLOGGER_DEV", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a135a2aab76bf3bac60e699d7bdeb400b", null ],
-    [ "LE3_LEX_INTEROP", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f19076380bd723cd8a7f3436f4dfc11", null ]
+    [ "LE3_LEX_INTEROP", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f19076380bd723cd8a7f3436f4dfc11", null ],
+    [ "LE3_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ab7d87eb612a6d214b8649e44dad6fc9b", null ]
 ];
