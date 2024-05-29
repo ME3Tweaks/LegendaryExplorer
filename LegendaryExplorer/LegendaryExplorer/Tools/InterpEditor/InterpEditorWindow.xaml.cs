@@ -25,7 +25,6 @@ namespace LegendaryExplorer.Tools.InterpEditor
     /// </summary>
     public partial class InterpEditorWindow : WPFBase, IRecents
     {
-
         public InterpEditorWindow() : base("Interp Editor")
         {
             LoadCommands();

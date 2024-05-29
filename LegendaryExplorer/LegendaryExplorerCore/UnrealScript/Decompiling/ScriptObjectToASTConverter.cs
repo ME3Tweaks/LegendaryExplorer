@@ -16,7 +16,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
     internal static class ScriptObjectToASTConverter
     {
-
         public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib fileLib, PackageCache packageCache = null)
         {
             ExportEntry uClassExport = uClass.Export;
@@ -122,7 +121,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 member.Outer = ast;
             foreach (var member in States)
                 member.Outer = ast;
-
 
             var virtFuncLookup = new List<string>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
@@ -559,7 +557,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 body = new ByteCodeDecompiler(obj, containingClass, fileLib, parameters, returnVal?.VarType).Decompile();
             }
 
-
             var func = new Function(obj.Export.ObjectName.Instanced, obj.FunctionFlags, returnVal, body, parameters)
             {
                 NativeIndex = obj.NativeIndex,
@@ -606,7 +603,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 return defaults;
             }
         }
-
 
         public static Expression ConvertToLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
         {
@@ -670,8 +666,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 statements.Add(new AssignStatement(name, value));
             }
 
-
-
             return statements;
 
             Expression ConvertPropertyValue(Property prop)
@@ -710,6 +704,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         if (objRef == 0)
                             return new NoneLiteral();
                         var objEntry = pcc.GetEntry(objRef);
+                        if (objEntry is null)
+                        {
+                            return new SymbolReference(null, $"__INVALID_UINDEX: {objRef}");
+                        }
                         if (objEntry is ExportEntry objExp && usingSubObjects && objExp.InstancedFullPath.StartsWith(export.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
                         {
                             //subObject reference

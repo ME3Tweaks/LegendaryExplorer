@@ -29,7 +29,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 for (int i = 0; i < EntryGuidNumPairs.Length; i++)
                 {
-                    Unsafe.AsRef(action).Invoke(ref EntryGuidNumPairs[i].Entry, $"EntryGuidNumPair[{i}]");
+                    Unsafe.AsRef(in action).Invoke(ref EntryGuidNumPairs[i].Entry, $"EntryGuidNumPair[{i}]");
                 }
             }
         }
@@ -39,7 +39,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public static void Serialize(this SerializingContainer2 sc, ref EntryGuidNumPair egnp)
         {
-
             if (sc.IsLoading)
             {
                 egnp = new EntryGuidNumPair();

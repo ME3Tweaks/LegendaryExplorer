@@ -56,7 +56,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
     public Zoombox()
       : base()
     {
-
       this.InitCommands();
 
       // use the LayoutUpdated event to keep the Viewport in sync
@@ -1947,7 +1946,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
         return size;
       }
 
-
       // avoid returning infinity
       if( double.IsInfinity( constraint.Height ) )
       {
@@ -2031,9 +2029,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
 
       base.OnRender( drawingContext );
     }
-
-
-
 
     private static void RefocusView( DependencyObject o, DependencyPropertyChangedEventArgs e )
     {
@@ -2883,7 +2878,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
             }
             else if( view != ZoomboxView.Empty )
             {   // USING ABSOLUTE POSITION AND SCALE VALUES
-
               // ensure that the scale value falls within the valid range
               if( newRelativeScale > MaxScale )
               {

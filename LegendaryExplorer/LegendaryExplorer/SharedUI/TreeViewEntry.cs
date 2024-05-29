@@ -389,7 +389,6 @@ namespace LegendaryExplorer.SharedUI
 
                     if (_subtext == null)
                     {
-
                         // Parse if export or import
                         switch (Entry.ClassName)
                         {

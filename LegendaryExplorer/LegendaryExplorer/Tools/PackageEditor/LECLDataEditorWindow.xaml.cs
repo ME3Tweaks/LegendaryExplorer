@@ -46,7 +46,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
             InitializeComponent();
         }
 
-
         /// <summary>
         /// This is here as this is an editable list as the LECL data for it is not a collection type that supports
         /// collection notification

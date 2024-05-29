@@ -151,5 +151,4 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         public override bool MatchesSpecification(T item) => true;
     }
-
 }

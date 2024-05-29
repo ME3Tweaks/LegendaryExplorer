@@ -68,7 +68,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
 
         public void PrintPretty(string indent, StreamWriter str, bool last)
         {
-
             str.Write(indent);
             if (last)
             {

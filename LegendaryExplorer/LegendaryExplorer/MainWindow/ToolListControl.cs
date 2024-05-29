@@ -30,7 +30,6 @@ namespace LegendaryExplorer.MainWindow
                     t.open();
                 }
             }
-            
         }
 
         

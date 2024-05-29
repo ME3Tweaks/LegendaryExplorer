@@ -66,13 +66,7 @@ namespace LegendaryExplorerCore.Packages
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int hashCode = (int)Type;
-                hashCode = (hashCode * 397) ^ (Reference != null ? Reference.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ Transient.GetHashCode();
-                return hashCode;
-            }
+            return HashCode.Combine(Type, Reference, Transient);
         }
 
         public static bool operator ==(PropertyInfo left, PropertyInfo right)
@@ -94,7 +88,9 @@ namespace LegendaryExplorerCore.Packages
         [JsonIgnore]
         public string ClassName { get; set; }
 
-        public OrderedMultiValueDictionary<NameReference, PropertyInfo> properties = new();
+#pragma warning disable CS0618 // Type or member is obsolete
+        public OrderedMultiValueDictionary<NameReference, PropertyInfo> properties = [];
+#pragma warning restore CS0618 // Type or member is obsolete
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;

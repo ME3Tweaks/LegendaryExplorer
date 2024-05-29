@@ -9,7 +9,6 @@ using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
-
     [DebuggerDisplay("Class | {Name}")]
     public sealed class Class : ObjectType, IContainsFunctions, IContainsByteCode
     {

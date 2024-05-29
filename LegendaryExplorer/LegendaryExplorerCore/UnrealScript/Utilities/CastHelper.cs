@@ -33,7 +33,6 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
 /* StringRef*/ new []{ ECast.Max,  ECast.Max,            ECast.IntToStringRef, ECast.Max,          ECast.Max,             ECast.Max,           ECast.Max,         ECast.Max,                  ECast.Max,         ECast.Max,         ECast.Max,             ECast.Max,             ECast.Max,            ECast.Max,          ECast.Max,          },
         };
 
-
         public static ECast GetConversion(VariableType dest, VariableType src)
         {
             var destType = dest?.PropertyType ?? EPropertyType.None;

@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using static LegendaryExplorerCore.Kismet.SeqTools;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 {
@@ -107,7 +106,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 return;
             }
 
-            IEnumerable<ExportEntry> interps = GetAllSequenceElements(selectedSequence).Select(el => (ExportEntry)el);
+            IEnumerable<ExportEntry> interps = KismetHelper.GetAllSequenceElements(selectedSequence).Select(el => (ExportEntry)el);
 
             interps = interps.Where(export =>
             {
@@ -141,7 +140,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 
             MessageBox.Show($"Interps' anchor links were updated", "Success", MessageBoxButton.OK);
         }
-
 
         private static void ShowError(string errMsg)
         {

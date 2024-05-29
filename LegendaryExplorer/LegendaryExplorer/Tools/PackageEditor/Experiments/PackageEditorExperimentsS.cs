@@ -557,7 +557,6 @@ import java.util.*;"
                 levelExport.WriteBinary(levelBin);
                 levelExport.WriteProperty(otLevelExport.GetProperty<FloatProperty>("ShadowmapTotalSize"));
 
-
                 void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
                 {
                     if (otsmcExp.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLightsProp)
@@ -1054,7 +1053,6 @@ import java.util.*;"
             });
         }
 
-
         public static void ScanPackageHeader(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;
@@ -1210,7 +1208,6 @@ import java.util.*;"
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
 
-
             var unkOpcodes = new List<int>();//Enumerable.Range(0x5B, 8).ToList();
             unkOpcodes.Add(0);
             unkOpcodes.Add(1);
@@ -1226,42 +1223,44 @@ import java.util.*;"
                 foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
-                    using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
-                        .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
-                    using var packageCache = new PackageCache();
-                    packageCache.InsertIntoCache(baseFiles);
-                    if (game == MEGame.ME3)
+                    using (DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                               .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f))))
+                    using (var packageCache = new PackageCache())
                     {
-                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
-                    }
-
-                    foreach (string filePath in EnumerateOfficialFiles(game))
-                    {
-                        //ScanShaderCache(filePath);
-                        //ScanMaterials(filePath);
-                        //ScanStaticMeshComponents(filePath);
-                        //ScanLightComponents(filePath);
-                        //ScanLevel(filePath);
-                        //if (findClass(filePath, "ShaderCache", true)) break;
-                        //findClassesWithBinary(filePath);
-                        //ScanScripts2(filePath);
-                        //RecompileAllFunctions(filePath);
-                        //RecompileAllStates(filePath);
-                        //RecompileAllDefaults(filePath, packageCache);
-                        RecompileAllPropsOfNonScriptExports(filePath, packageCache);
-                        //RecompileAllStructs(filePath, packageCache);
-                        //RecompileAllEnums(filePath, packageCache);
-                        //RecompileAllClasses(filePath, packageCache);
-                        if (interestingExports.Any())
+                        packageCache.InsertIntoCache(baseFiles);
+                        if (game == MEGame.ME3)
                         {
-                            return;
+                            baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                        }
+
+                        foreach (string filePath in EnumerateOfficialFiles(game))
+                        {
+                            //ScanShaderCache(filePath);
+                            //ScanMaterials(filePath);
+                            //ScanStaticMeshComponents(filePath);
+                            //ScanLightComponents(filePath);
+                            //ScanLevel(filePath);
+                            //if (findClass(filePath, "ShaderCache", true)) break;
+                            //findClassesWithBinary(filePath);
+                            //ScanScripts2(filePath);
+                            //RecompileAllFunctions(filePath);
+                            //RecompileAllStates(filePath);
+                            //RecompileAllDefaults(filePath, packageCache);
+                            //RecompileAllPropsOfNonScriptExports(filePath, packageCache);
+                            //RecompileAllStructs(filePath, packageCache);
+                            //RecompileAllEnums(filePath, packageCache);
+                            RecompileAllClasses(filePath, packageCache);
+                            //if (interestingExports.Any())
+                            //{
+                            //    return;
+                            //}
                         }
                     }
+                    //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                    MemoryAnalyzer.ForceFullGC();
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
-                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
-                MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
                 if (extraInfo.Count > 0)
                 {
@@ -1506,7 +1505,6 @@ import java.util.*;"
                                         }
                                     }
 
-
                                 }
                             }
                         }
@@ -1655,7 +1653,6 @@ import java.util.*;"
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1707,7 +1704,6 @@ import java.util.*;"
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1786,7 +1782,6 @@ import java.util.*;"
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1938,37 +1933,37 @@ import java.util.*;"
                                 }
                                 foundClasses.Add(instancedFullPath);
                                 var log = new MessageLog();
-                                (ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
-                                if (ast is not Class classAST || log.HasErrors)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
-                                    return;
-                                }
-
-                                UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
-                                if (log.HasErrors)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
-                                    return;
-                                }
-                                if (vfTableChanged)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
-                                    return;
-                                }
-
-                                //(ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
-                                //if (ast is not Class || log.HasErrors)
+                                //(ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
+                                //if (ast is not Class classAST || log.HasErrors)
                                 //{
                                 //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                 //    return;
                                 //}
 
-                                //if (!fileLib.ReInitializeFile())
+                                //UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
+                                //if (log.HasErrors)
                                 //{
-                                //    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                 //    return;
                                 //}
+                                //if (vfTableChanged)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
+                                //    return;
+                                //}
+
+                                (ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
+                                if (ast is not Class || log.HasErrors)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                    //return;
+                                }
+
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 //if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 //{
                                 //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -2023,7 +2018,6 @@ import java.util.*;"
                             interestingExports.Add(import);
                             return true;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -2311,7 +2305,6 @@ import java.util.*;"
                 }
 
                 return (null, 0);
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
@@ -2370,7 +2363,7 @@ import java.util.*;"
 
                     using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
                     IEntry levStreamingClass =
-                        persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
+                        persistentUDK.GetEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded", "Class");
                     IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
                     int i = 1;
                     int firstLevStream = persistentUDK.ExportCount;
@@ -2397,7 +2390,6 @@ import java.util.*;"
                         .WriteProperty(streamingLevelsProp);
                     persistentUDK.Save();
                 }
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 if (prevTask.IsFaulted)
@@ -2406,7 +2398,6 @@ import java.util.*;"
                 }
                 pewpf.IsBusy = false;
             });
-
         }
 
         public static void MakeME1TextureFileList(PackageEditorWindow pewpf)
@@ -2461,7 +2452,6 @@ import java.util.*;"
                 }
 
                 return textureFiles;
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
@@ -2652,8 +2642,36 @@ import java.util.*;"
         public static void DumpSound(PackageEditorWindow packEd)
         {
             if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2", "LE3", "LE2" }, "LE3") is string gameStr &&
-                Enum.TryParse(gameStr, out MEGame game))
+                Enum.TryParse(gameStr, out MEGame game)
+                &&
+             InputComboBoxDialog.GetValue(packEd, "Choose language:", "Choose language", new[] { MELocalization.INT, MELocalization.FRA, MELocalization.DEU, MELocalization.ITA, MELocalization.POL }, MELocalization.INT.ToString()) is string loc &&
+                Enum.TryParse(loc, out MELocalization localization))
             {
+                var languagePrefixes = new List<string>();
+                switch (localization)
+                {
+                    case MELocalization.INT:
+                        languagePrefixes.Add("en_us");
+                        languagePrefixes.Add("en-us");
+                        break;
+                    case MELocalization.FRA:
+                        languagePrefixes.Add("fr_fr");
+                        languagePrefixes.Add("fr-fr");
+                        break;
+                    case MELocalization.DEU:
+                        languagePrefixes.Add("de_de");
+                        languagePrefixes.Add("de-de");
+                        break;
+                    case MELocalization.ITA:
+                        languagePrefixes.Add("it_it");
+                        languagePrefixes.Add("it-it");
+                        break;
+                    case MELocalization.POL:
+                        languagePrefixes.Add("pl-pl");
+                        // No ME3 loc
+                        break;
+                }
+
                 string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
                 if (string.IsNullOrWhiteSpace(tag))
                 {
@@ -2688,7 +2706,7 @@ import java.util.*;"
                         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                         foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                         {
-                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
+                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && languagePrefixes.Contains(parts[0]) && parts[1] == tag)
                             {
                                 string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
                                 using var fs = new FileStream(fileName, FileMode.Create);
@@ -2704,7 +2722,6 @@ import java.util.*;"
                     MessageBox.Show("Done");
                 });
             }
-
         }
 
         private record StringMEGamePair(string str, MEGame game);
@@ -2817,7 +2834,6 @@ import java.util.*;"
                 }
             });
         }
-
 
         public static void RecompileAll(PackageEditorWindow pew)
         {

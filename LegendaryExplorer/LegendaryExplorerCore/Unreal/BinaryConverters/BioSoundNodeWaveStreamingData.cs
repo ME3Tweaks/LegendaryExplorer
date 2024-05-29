@@ -46,7 +46,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-
         public static BioSoundNodeWaveStreamingData Create()
         {
             //Is there a way to create an empty ISACTBankPair in a way that makes any sense?

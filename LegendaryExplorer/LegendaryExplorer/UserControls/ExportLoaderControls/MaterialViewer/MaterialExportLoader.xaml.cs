@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
@@ -12,7 +15,9 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using SharpDX;
 using SharpDX.D3DCompiler;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
@@ -45,10 +50,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _topInfoText, value);
         }
 
+        public ICommand CreateShadersCopyCommand { get; set; }
+
         public MaterialExportLoader() : base("Material")
         {
+            LoadCommands();
             InitializeComponent();
             DataContext = this;
+        }
+
+        public void LoadCommands()
+        {
+            CreateShadersCopyCommand = new GenericCommand(CreateShadersCopy, CanCreateShadersCopy);
         }
 
         public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new();
@@ -112,7 +125,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void Dispose()
         {
-
         }
 
         private void MeshShaderMaps_TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -124,6 +136,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private void LoadShaders_Button_Click(object sender, RoutedEventArgs e)
+        {
+            LoadShaders();
+        }
+
+        private void LoadShaders()
         {
             IsBusy = true;
             BusyText = "Loading Shaders";
@@ -141,7 +158,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
                         if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
                         {
-                            string topInfoText = $"Shaders in #{seekFreeShaderCacheExport.UIndex} SeekFreeShaderCache";
+                            string topInfoText = $"Shaders in #{seekFreeShaderCacheExport.UIndex} SeekFreeShaderCache (Index {seekFreeShaderCache.MaterialShaderMaps.IndexOf(new(sps, msm))})";
                             return (GetMeshShaderMaps(msm, seekFreeShaderCache), topInfoText);
                         }
                     }
@@ -150,10 +167,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         BusyText = "Calculating Shader offsets\n(May take ~15s)";
                     }
-                    MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps);
+                    MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps, out int fileOffset);
                     if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
                     {
-                        var topInfoText = $"Shaders in {RefShaderCacheReader.GlobalShaderFileName(Pcc.Game)}";
+                        var topInfoText = $"Shaders in {RefShaderCacheReader.GlobalShaderFileName(Pcc.Game)} at 0x{fileOffset:X8}";
                         return (GetMeshShaderMaps(msmFromGlobalCache), topInfoText);
                     }
                 }
@@ -175,6 +192,110 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 OnDemand_Panel.Visibility = Visibility.Collapsed;
                 LoadedContent_Panel.Visibility = Visibility.Visible;
                 IsBusy = false;
+            });
+        }
+
+        private bool CanCreateShadersCopy() => CurrentLoadedExport?.ClassName == "Material" && !IsBusy && LoadedContent_Panel.Visibility == Visibility.Visible;
+
+        private void CreateShadersCopy()
+        {
+            IsBusy = true;
+            BusyText = "Copying Shaders";
+            Task.Run(() =>
+            {
+                StaticParameterSet sps = CurrentLoadedExport.ClassName switch
+                {
+                    "Material" => (StaticParameterSet)ObjectBinary.From<Material>(CurrentLoadedExport).SM3MaterialResource.ID,
+                    _ => throw new NotImplementedException("MaterialInstance shader cloning has not been implemented yet")
+                };
+                ShaderCache seekFreeShaderCache;
+                Guid newMatGuid;
+                if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is { } seekFreeShaderCacheExport)
+                {
+                    seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+                    if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
+                    {
+                        Dictionary<Guid, Guid> shaderGuidMap = msm.DeepCopyWithNewGuidsInto(seekFreeShaderCache, out newMatGuid);
+                        foreach ((Guid oldGuid, Guid newGuid) in shaderGuidMap)
+                        {
+                            if (!seekFreeShaderCache.Shaders.TryGetValue(oldGuid, out Shader oldShader))
+                            {
+                                throw new Exception($"Shader {oldGuid} not found!");
+                            }
+                            Shader newShader = oldShader.Clone();
+                            newShader.Guid = newGuid;
+                            seekFreeShaderCache.Shaders.Add(newGuid, newShader);
+                        }
+                        seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
+                        return newMatGuid;
+                    }
+                }
+                else
+                {
+                    seekFreeShaderCacheExport = new ExportEntry(Pcc, 0, "SeekFreeShaderCache", BitConverter.GetBytes(-1), binary: ShaderCache.Create())
+                    {
+                        Class = Pcc.GetEntryOrAddImport("Engine.ShaderCache", "Class"),
+                        ObjectFlags = UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForEdit | UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.Standalone
+                    };
+                    Pcc.AddExport(seekFreeShaderCacheExport);
+                    seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+                }
+
+                if (!RefShaderCacheReader.IsShaderOffsetsDictInitialized(Pcc.Game))
+                {
+                    BusyText = "Calculating Shader offsets\n(May take ~15s)";
+                }
+                MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps, out _);
+                if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
+                {
+                    Dictionary<Guid, Guid> shaderGuidMap = msmFromGlobalCache.DeepCopyWithNewGuidsInto(seekFreeShaderCache, out newMatGuid);
+                    Shader[] shaders = RefShaderCacheReader.GetShaders(Pcc.Game, shaderGuidMap.Keys, 
+                        out UMultiMap<NameReference, uint> shaderTypeCRCMap, out UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap);
+                    if (shaders is null)
+                    {
+                        throw new Exception("Unable to retrieve shaders from RefShaderCache");
+                    }
+                    foreach (Shader oldShader in shaders)
+                    {
+                        Shader newShader = oldShader.Clone();
+                        newShader.Guid = shaderGuidMap[oldShader.Guid];
+                        seekFreeShaderCache.Shaders.Add(newShader.Guid, newShader);
+                    }
+                    foreach ((NameReference key, uint value) in shaderTypeCRCMap)
+                    {
+                        seekFreeShaderCache.ShaderTypeCRCMap.TryAddUnique(key, value);
+                    }
+                    foreach ((NameReference key, uint value) in vertexFactoryTypeCRCMap)
+                    {
+                        seekFreeShaderCache.VertexFactoryTypeCRCMap.TryAddUnique(key, value);
+                    }
+                    seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
+                    return newMatGuid;
+                }
+                throw new Exception("Material Shader Map has dissapeared!");
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                if (prevTask.Exception is AggregateException aggregateException)
+                {
+                    new ExceptionHandlerDialog(aggregateException).ShowDialog();
+                    IsBusy = false;
+                    return;
+                }
+                Guid newMatGuid = prevTask.Result;
+                if (CurrentLoadedExport.ClassName is "Material")
+                {
+                    var matBin = ObjectBinary.From<Material>(CurrentLoadedExport);
+                    matBin.SM3MaterialResource.ID = newMatGuid;
+                    CurrentLoadedExport.WriteBinary(matBin);
+                }
+                else
+                {
+                    throw new NotImplementedException("MaterialInstance shader cloning has not been implemented yet");
+                }
+                LoadShaders();
+                MessageBox.Show(Window.GetWindow(this), "This material now has its own unique shaders in the local SeekFreeShaderCache. " +
+                                                        "Porting this material to another package will bring the shaders along to that package's shader cache.\n\n" +
+                                                        "You should change this material's name, so it will not conflict with other instances that use its original shaders.");
             });
         }
     }

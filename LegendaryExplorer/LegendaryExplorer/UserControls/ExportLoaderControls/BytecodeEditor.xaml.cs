@@ -165,7 +165,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int pos = CurrentLoadedExport.IsClass ? 4 : 0xC;
                 if (game is MEGame.UDK)
                 {
-
                     var nextItemCompilingChain = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                     ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
@@ -186,7 +185,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
-
                     var functionSuperclass = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                     ScriptHeaderBlocks.Add(new ScriptHeaderItem($"{CurrentLoadedExport.ClassName} superclass", functionSuperclass, pos, functionSuperclass != 0 ? CurrentLoadedExport.FileRef.GetEntry(functionSuperclass) : null));
 
@@ -206,17 +204,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size on disk", diskSize, pos));
                 }
 
-
-
                 List<int> objRefPositions = func.ScriptBlocks.SelectMany(tok => tok.inPackageReferences)
                                                 .Where(tup => tup.type == Token.INPACKAGEREFTYPE_ENTRY)
                                                 .Select(tup => tup.position).ToList();
                 int calculatedLength = diskSize + 4 * objRefPositions.Count;
                 DiskToMemPosMap = func.DiskToMemPosMap;
 
-
                 DecompiledScriptBoxTitle = $"Decompiled Script (calculated memory size: {calculatedLength} 0x{calculatedLength:X})";
-
 
                 if (CurrentLoadedExport.ClassName == "Function")
                 {
@@ -258,14 +252,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("Label Table Offset", EndianReader.ToInt16(footerdata, fpos, Pcc.Endian), fpos + footerstartpos) { length = 2 });
                     fpos += 0x2;
 
-
                     var stateFlagsBytes = footerdata.Slice(fpos, 0x4);
                     var stateFlags = (EStateFlags)EndianReader.ToInt32(stateFlagsBytes, 0, CurrentLoadedExport.FileRef.Endian);
                     var names = stateFlags.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     ScriptFooterBlocks.Add(new ScriptHeaderItem("State flags", string.Join(" ", names), fpos + footerstartpos));
                     fpos += 0x4;
-
-
 
                     //if ((stateFlags & EStateFlags.Simulated) != 0)
                     //{
@@ -311,7 +302,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("TextPos", EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian), pos));
                 pos += 4;
-
 
                 int scriptSize = EndianReader.ToInt32(data, pos, CurrentLoadedExport.FileRef.Endian);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", scriptSize, pos));
@@ -511,7 +501,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int index = (start - 0xC) / 4;
                     Function_Header.SelectedIndex = index;
                     selectedBox = Function_Header;
-
                 }
                 else if (start > CurrentLoadedExport.DataSize - 6)
                 {

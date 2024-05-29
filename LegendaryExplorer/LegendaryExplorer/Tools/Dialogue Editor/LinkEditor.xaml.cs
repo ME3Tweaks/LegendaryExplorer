@@ -112,7 +112,6 @@ namespace LegendaryExplorer.DialogueEditor
 
         private void GenerateTable()
         {
-
             datagrid_Links.ItemsSource = linkTable;
 
             var clnO = new DataGridTextColumn
@@ -156,7 +155,6 @@ namespace LegendaryExplorer.DialogueEditor
                     Foreground = Brushes.DarkSlateGray
                 };
                 datagrid_Links.Columns.Add(clnC);
-
 
                 var clnD = new DataGridComboBoxColumn
                 {
@@ -215,7 +213,6 @@ namespace LegendaryExplorer.DialogueEditor
                 clnH.Width = 60;
                 clnG.Width = 200;
             }
-
 
             datagrid_Links.MouseDoubleClick += Datagrid_Table_MouseDoubleClick;
         }

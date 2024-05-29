@@ -35,7 +35,6 @@ using Piccolo.Event;
 using Piccolo.Util;
 
 namespace Piccolo {
-
 	#region Delegates
 	/// <summary>
 	/// A delegate used to invoke the <c>ProcessScheduledInputs</c> method on
@@ -371,10 +370,8 @@ namespace Piccolo {
 
 			if (!processInputsScheduled && !processingInputs && 
 				(FullBoundsInvalid || ChildBoundsInvalid || PaintInvalid || ChildPaintInvalid)) {
-
 				PCanvas canvas = InvokeCanvas;
 				if (canvas is { IsHandleCreated: true } && processScheduledInputsDelegate != null) {
-				
 					processInputsScheduled = true;
 					canvas.BeginInvoke(processScheduledInputsDelegate);
 				}

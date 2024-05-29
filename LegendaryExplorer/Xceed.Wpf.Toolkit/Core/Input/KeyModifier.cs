@@ -14,7 +14,6 @@
 
   ***********************************************************************************/
 
-
 namespace Xceed.Wpf.Toolkit.Core.Input
 {
   public enum KeyModifier

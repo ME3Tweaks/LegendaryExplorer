@@ -80,7 +80,6 @@ namespace LegendaryExplorerCore.TLK.ME1
         /// </summary>
         public readonly string BioTlkSetName;
 
-
         #region Constructors
         /// <summary>
         /// Creates a new <see cref="ME1TalkFile"/> from the export at <paramref name="uIndex"/> in <paramref name="pcc"/>
@@ -113,7 +112,6 @@ namespace LegendaryExplorerCore.TLK.ME1
 
             // ME1 localizations for TLK are... fun
             Localization = getTlkLocalization(export);
-
         }
 
         private MELocalization getTlkLocalization(ExportEntry exportEntry)
@@ -135,7 +133,6 @@ namespace LegendaryExplorerCore.TLK.ME1
         }
 
         #endregion
-
 
         /// <summary>
         /// Replaces a string in the list of StringRefs.
@@ -211,7 +208,6 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
             return returnNullIfNotFound ? null : "No Data";
         }
-
 
         /// <summary>
         /// Find the matching string id for the specified string. Returns -1 if not found. The male parameter is not used.

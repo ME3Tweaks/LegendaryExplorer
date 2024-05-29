@@ -524,6 +524,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             byte[] data = CurrentLoadedExport.Data;
             var db = new ReadOptimizedByteProvider(data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
+            hb1_SelectionChanged(BinaryInterpreter_Hexbox, EventArgs.Empty);//reassigning the ByteProvider won't trigger this, leaving old info in statusbar
             int binarystart = 0;
             if (CurrentLoadedExport.ClassName != "Class")
             {
@@ -1112,7 +1113,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void BinaryInterpreter_TreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void BinaryInterpreter_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
@@ -1138,7 +1138,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
         {
-
             int start = (int)BinaryInterpreter_Hexbox.SelectionStart;
             int len = (int)BinaryInterpreter_Hexbox.SelectionLength;
             int size = (int)BinaryInterpreter_Hexbox.ByteProvider.Length;
@@ -1341,7 +1340,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void RemoveArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
@@ -1376,12 +1374,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Value_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void ValueTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-
         }
 
         public override void Dispose()

@@ -63,7 +63,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
             return outer as ObjectType;
         }
 
-
         public static bool TypeEqual(VariableType a, VariableType b)
         {
             if (a is DelegateType destDel && b is DelegateType srcDel)

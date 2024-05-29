@@ -129,7 +129,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
         //when the class matches.
 
-
         int RescanSelectionOffset;
         private readonly List<FrameworkElement> EditorSetElements = new();
 
@@ -137,7 +136,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool isLoadingNewData;
         private int ForcedRescanOffset;
         private bool ArrayElementJustAdded;
-
 
         /// <summary>
         /// Reference to the package that the property we copied from is from
@@ -199,7 +197,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
-
             }
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
@@ -310,7 +307,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var overwrite = MessageBox.Show(Window.GetWindow(this), $"This export already has a property named {existingProp.Name}. Do you want to overwrite it?", "Ovewrite warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes;
                 if (!overwrite) return; // Abort
             }
-
 
             // Write the property.
             CurrentLoadedExport.WriteProperty(CopiedProperty);
@@ -430,7 +426,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanOpenInMeshplorer()
         {
-
             if (CurrentLoadedExport != null && SelectedItem?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsUExport(op.Value))
             {
                 var entry = CurrentLoadedExport.FileRef.GetUExport(op.Value);
@@ -592,7 +587,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
             }
             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-
         }
 
         internal void SetHexboxSelectedOffset(int v)
@@ -640,7 +634,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanExpandOrCollapseChildren() => SelectedItem is UPropertyTreeViewEntry tvi && tvi.ChildrenProperties.Count > 0;
         private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry { HasTooManyChildrenToDisplay: false } tvi && tvi.ChildrenProperties.Count > 0;
-
 
         private void CollapseChildren()
         {
@@ -898,7 +891,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-
                 var topLevelTree = new UPropertyTreeViewEntry
                 {
                     DisplayName = $"Export {CurrentLoadedExport.UIndex}: {CurrentLoadedExport.InstancedFullPath} ({CurrentLoadedExport.ClassName})",
@@ -957,7 +949,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
-
 
         #region Static tree generating code (shared with BinaryInterpreterExportLoader)
         public static void GenerateUPropertyTreeForProperty(Property prop, UPropertyTreeViewEntry parent, ExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
@@ -1079,7 +1070,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         else if (index == 0)
                         {
                             parsedValue = "Null";
-
                         }
                         else
                         {
@@ -1099,7 +1089,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         else if (index == 0)
                         {
                             parsedValue = dp.Value.FunctionName.Instanced;
-
                         }
                         else
                         {
@@ -1235,7 +1224,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             IntProperty intProperty = (IntProperty)sp.Properties[i];
                             int value = intProperty.Value;
-                            MemoryMarshal.Write(guidBytes.Slice(i * 4), ref value);
+                            MemoryMarshal.Write(guidBytes.Slice(i * 4), in value);
                         }
 
                         parsedValue = new Guid(guidBytes).ToString();
@@ -1301,7 +1290,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (inChunkName != null && inChunkName.Value.Name != "None")
                         {
                             editableValue += $" InChunkName: {inChunkName.Value.Name}";
-
                         }
                     }
                     else if (sp.StructType == "SeqVarLink")
@@ -1941,7 +1929,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-
             Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             //Hide the non-used controls
@@ -2044,8 +2031,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return allEntriesNew;
         }
 
-
-
         private void UpdateParsedEditorValue(UPropertyTreeViewEntry treeViewEntry = null)
         {
             UPropertyTreeViewEntry tvi = treeViewEntry ?? SelectedItem;
@@ -2099,7 +2084,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             if (int.TryParse(Value_TextBox.Text, out int index))
                             {
-
                                 string str = TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                                 str = str?.Replace("\n", "[\\n]");
                                 if (str?.Length > 82)
@@ -2375,7 +2359,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             Interpreter_Hexbox.SelectionStartChanged += hb1_SelectionChanged;
             Interpreter_Hexbox.SelectionLengthChanged += hb1_SelectionChanged;
-
 
             // ??
             this.bind(HexBoxMinWidthProperty, Interpreter_Hexbox, nameof(Interpreter_Hexbox.MinWidth));
@@ -2755,7 +2738,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             Settings.StaticPropertyChanged -= SettingChanged;
 
-
             if (Interpreter_Hexbox != null)
             {
                 if (Interpreter_Hexbox.ByteProvider != null)
@@ -2858,7 +2840,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         static int ToByteColor(float f) => ((int)(f * 255)).Clamp(0, 255);
 
                         return _colorStructCode = $"#{ToByteColor(a):X2}{ToByteColor(r):X2}{ToByteColor(g):X2}{ToByteColor(b):X2}";
-
                     }
                 }
 
@@ -3051,7 +3032,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _parsedValue, value);
         }
 
-
         /// <summary>
         /// For UI binding only (as it can return EnumProperty)
         /// </summary>
@@ -3232,5 +3212,4 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return "UPropertyTreeViewEntry " + DisplayName;
         }
     }
-
 }

@@ -284,7 +284,6 @@ namespace Piccolo.Nodes {
 
 				float renderedFontSize = FontSizeInPoints * paintContext.Scale;
 				if (renderedFontSize < PUtil.GreekThreshold) {
-					
 					// .NET bug: DrawString throws a generic gdi+ exception when
 					// the scaled font size is very small.  So, we will render
 					// the text as a simple rectangle for small fonts

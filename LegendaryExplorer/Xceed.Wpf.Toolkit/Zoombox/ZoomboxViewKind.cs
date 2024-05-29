@@ -14,7 +14,6 @@
 
   ***********************************************************************************/
 
-
 namespace Xceed.Wpf.Toolkit.Zoombox
 {
   public enum ZoomboxViewKind

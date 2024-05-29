@@ -132,7 +132,6 @@ namespace LegendaryExplorerCore.Dialogue
         /// </summary>
         public void DetailedParse()
         {
-
             foreach (var spkr in Speakers)
             {
                 spkr.FaceFX_Male = GetFaceFX(spkr.SpeakerID, true);
@@ -315,7 +314,6 @@ namespace LegendaryExplorerCore.Dialogue
                                 {
                                     var datalink = linkedVars[0].Value;
                                     return Sequence.FileRef.GetUExport(datalink);
-
                                 }
                                 break;
                             }
@@ -648,7 +646,6 @@ namespace LegendaryExplorerCore.Dialogue
                     if (ffxo == null) //if no facefx then maybe soundobject conversation
                     {
                         wwevents = Export.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleSoundObjects");
-
                     }
                     else
                     {
@@ -785,7 +782,6 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
-
         /// <summary>
         /// Gets the FaceFXAnimset entry from the export for a given speaker ID
         /// </summary>
@@ -799,19 +795,19 @@ namespace LegendaryExplorerCore.Dialogue
                 ffxPropName = "m_aMaleFaceSets";
             }
             var ffxList = BioConvo.GetProp<ArrayProperty<ObjectProperty>>(ffxPropName);
-            if (ffxList != null && ffxList.Count > speakerID + 2)
+            int speakerIdx = speakerID + 2;
+            if (ffxList != null && ffxList.Count > speakerIdx)
             {
-                return Export.FileRef.GetEntry(ffxList[speakerID + 2].Value);
+                return Export.FileRef.GetEntry(ffxList[speakerIdx].Value);
             }
             else
             {
-                if (!Export.Game.IsGame3() || !Export.ObjectNameString.EndsWith("_dlg", StringComparison.OrdinalIgnoreCase))
+                if (!Export.Game.IsGame3() || !Export.ObjectNameString.EndsWith("_dlg", StringComparison.OrdinalIgnoreCase) || speakerIdx >= Speakers.Count)
                 {
                     return null;
                 }
                 // Some conversations in Game3 don't have the m_aFaceSets properties. This is a workaround.
-                var fxaName =
-                    $"FXA_{Export.ObjectNameString[..^4]}_{Speakers[speakerID + 2].SpeakerName}_{(isMale ? 'M' : 'F')}";
+                var fxaName = $"FXA_{Export.ObjectNameString[..^4]}_{Speakers[speakerIdx].SpeakerName}_{(isMale ? 'M' : 'F')}";
                 foreach (var entry in Export.FileRef.Exports)
                 {
                     if (string.Equals(entry.ObjectName, fxaName, StringComparison.OrdinalIgnoreCase))
@@ -849,7 +845,6 @@ namespace LegendaryExplorerCore.Dialogue
                 newreplyList.Add(reply.NodeProp);
             }
 
-
             if (Export.Game.IsGame3())
             {
                 var newSpeakerList = new ArrayProperty<NameProperty>( "m_aSpeakerList");
@@ -883,7 +878,6 @@ namespace LegendaryExplorerCore.Dialogue
                     BioConvo.RemoveNamedProperty(newSpeakerList.Name); // This ensures this property is removed so it reserializes the same as vanilla
                 }
             }
-
 
             if (newstartlist.Count > 0)
             {
@@ -935,7 +929,6 @@ namespace LegendaryExplorerCore.Dialogue
                 {
                     var lprop = e.GetProp<IntProperty>("nIndex");
                     newNodes.Enqueue(ReplyList[lprop.Value]);
-
                 }
                 visitedNodes.Add(startNode);
                 while (newNodes.Any())
@@ -962,7 +955,6 @@ namespace LegendaryExplorerCore.Dialogue
                             {
                                 var eprop = e.GetProp<IntProperty>("nIndex");
                                 newNodes.Enqueue(ReplyList[eprop.Value]);
-
                             }
                         }
                         visitedNodes.Add(thisnode);

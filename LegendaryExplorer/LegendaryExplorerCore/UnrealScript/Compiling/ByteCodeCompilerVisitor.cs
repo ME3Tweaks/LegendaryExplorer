@@ -130,7 +130,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
 
-
                 foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
                 {
                     if (parameter.DefaultParameter is Expression expr)
@@ -148,7 +147,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         WriteOpCode(OpCodes.Nothing);
                     }
                 }
-
 
                 if (func.IsNative)
                 {
@@ -193,7 +191,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 throw new Exception("Cannot compile a function to a state!");
             }
         }
-
 
         public static void Compile(State state, UState target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
@@ -562,7 +559,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ExpressionOnlyStatement node)
         {
-
             if (NeedsToEatReturnValue(node.Value, out IEntry returnProp))
             {
                 WriteOpCode(OpCodes.EatReturnValue);
@@ -589,7 +585,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     if (func.RetValNeedsDestruction)
                     {
-                        returnProp = Pcc.getEntryOrAddImport($"{ResolveReturnValue(func).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
+                        returnProp = Pcc.GetEntryOrAddImport($"{ResolveReturnValue(func).InstancedFullPath}.ReturnValue", PropertyTypeName(((DynamicArrayType)func.ReturnType).ElementType));
                         return true;
                     }
                     returnProp = null;
@@ -599,7 +595,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     if (varDecl.Flags.Has(EPropertyFlags.NeedCtorLink) || varDecl.VarType.Size(Game) > 64)
                     {
-                        returnProp = Pcc.getEntryOrAddImport($"{ResolveProperty(varDecl).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
+                        returnProp = Pcc.GetEntryOrAddImport($"{ResolveProperty(varDecl).InstancedFullPath}.{varDecl.Name}", PropertyTypeName(((DynamicArrayType)varDecl.VarType).ElementType));
                         return true;
                     }
                 }
@@ -715,7 +711,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             WriteOpCode(OpCodes.EndFunctionParms);
             skip?.End();
             return true;
-
         }
 
         public bool VisitNode(PreOpReference node)
@@ -922,13 +917,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     //struct is being accessed through an rvalue
                     case FunctionCall:
                     case DelegateCall:
-                    //case ArraySymbolRef: doesn't seem to count as an rvalue for dynamic arrays. does it for static arrays?
                     case CompositeSymbolRef csr when ContainsFunctionCall(csr):
                     case VectorLiteral:
                     case RotatorLiteral:
                     case InOpReference:
                     case PreOpReference:
                     case PostOpReference:
+                    case PrimitiveCast:
                         WriteByte(1);
                         break;
                     default:
@@ -1155,7 +1150,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-
         public bool VisitNode(DynArrayLength node)
         {
             WriteOpCode(OpCodes.DynArrayLength);
@@ -1301,7 +1295,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-
         public bool VisitNode(Label node)
         {
             node.StartOffset = Position;
@@ -1440,7 +1433,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         //TODO: remove? alreaty done in parser. doing again should have no effect
         static Expression AddConversion(VariableType destType, Expression expr)
         {
-
             if (expr is NoneLiteral noneLit)
             {
                 if (destType.PropertyType == EPropertyType.Delegate)
@@ -1527,18 +1519,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveProperty(VariableDeclaration decl)
         {
-            return Pcc.getEntryOrAddImport($"{ResolveSymbol(decl.Outer).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
+            return Pcc.GetEntryOrAddImport($"{ResolveSymbol(decl.Outer).InstancedFullPath}.{decl.Name}", PropertyTypeName(decl.VarType));
         }
 
-        private IEntry ResolveStruct(Struct s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
+        private IEntry ResolveStruct(Struct s) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "ScriptStruct");
 
-        private IEntry ResolveFunction(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
+        private IEntry ResolveFunction(Function f) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.{f.Name}", "Function");
 
-        private IEntry ResolveDelegateProperty(Function f) => Pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
+        private IEntry ResolveDelegateProperty(Function f) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(f.Outer).InstancedFullPath}.__{f.Name}__Delegate", "DelegateProperty");
 
-        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.getEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
+        private IEntry ResolveReturnValue(Function f) => f.ReturnType is null ? null : Pcc.GetEntryOrAddImport($"{ResolveFunction(f).InstancedFullPath}.ReturnValue", PropertyTypeName(f.ReturnType));
 
-        private IEntry ResolveState(State s) => Pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
+        private IEntry ResolveState(State s) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
         private IEntry ResolveObject(string instancedFullPath) => Pcc.FindEntry(instancedFullPath);
 

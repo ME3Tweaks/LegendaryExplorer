@@ -28,7 +28,6 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Gammtek.IO
 {
-
     [DebuggerDisplay("EndianReader @ {Position.ToString(\"X8\")}, endian is native to platform: {Endian.IsNative}")]
 
     /// <summary>
@@ -58,7 +57,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
                     Writer.Endian = Endian;
                 }
             }
-
         }
 
         /// <summary>
@@ -283,8 +281,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
             return val;
         }
-
-
 
         /// <summary>
         ///     Reads a 4-byte signed integer from the current stream and advances the current position of the stream by four bytes.
@@ -532,7 +528,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
         public const uint packageTagBigEndian = 0xC1832A9E;
 
-
         /// <summary>
         /// Reads boolean integer from the stream. 0 is false, > 0 is true
         /// </summary>
@@ -624,7 +619,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
         public EndianReader Skip(int count)
         {
-
             Seek(count, SeekOrigin.Current);
             return this;
         }

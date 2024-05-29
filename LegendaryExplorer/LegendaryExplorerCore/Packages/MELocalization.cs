@@ -100,7 +100,6 @@ namespace LegendaryExplorerCore.Packages
             return localizationName;
         }
 
-
         /// <summary>
         /// Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].
         /// </summary>

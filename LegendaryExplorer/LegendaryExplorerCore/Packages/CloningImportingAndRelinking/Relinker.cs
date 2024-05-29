@@ -4,9 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Collections.ObjectModel;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Misc;
@@ -23,10 +20,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// </summary>
     public class RelinkerOptionsPackage
     {
+#if DEBUG
+        /// <summary>
+        /// Used to denote a unique version of this object in the debugger
+        /// </summary>
+        public Guid aDebuggingGuid = Guid.NewGuid();
+#endif
+
         /// <summary>
         /// The mapping of source package entries to target package entries. Items in this dictionary will be relinked, and the dictionary will be populated as relinking occurs. Supply your own if you're doing a targeted relink, or let the relinker automatically build this
         /// </summary>
-        public ListenableDictionary<IEntry, IEntry> CrossPackageMap = new();
+        public ListenableDictionary<IEntry, IEntry> CrossPackageMap = [];
 
         /// <summary>
         /// Whether objects an export depends on should be imported during a relink.
@@ -47,7 +51,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// The results of the relink. If this is empty, everything was OK, otherwise warnings and errors will populate this list.
         /// </summary>
-        public List<EntryStringPair> RelinkReport { get; set; } = new();
+        public List<EntryStringPair> RelinkReport { get; set; } = [];
 
         /// <summary>
         /// Package Cache that can be used to open packages. Can speed up performance if many packages have to be opened in succession.
@@ -118,9 +122,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Since we only enumerate exports and append imports to this list we will not need to worry about recursive links
             //I am sure this won't come back to be a pain for me.
 
-            // Used for quick mapping lookups. We have to be able to listen to it
-            //var listenableCrossPackageMap = new ListenableDictionary<IEntry, IEntry>(rop.CrossPackageMap);
-
             // Used to perform a full relink. Items will be added to this list so they can be processed at the end
             var mappingList = rop.CrossPackageMap.ToList();
 
@@ -129,7 +130,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (args.Type == DictChangeType.AddItem)
                 {
                     mappingList.Add(new KeyValuePair<IEntry, IEntry>(args.Key, args.Value));
-                    //Debug.WriteLine($"Adding relink mapping {args.Key.ObjectName} {args.Key.UIndex} -> {args.Value.UIndex}");
+                    //Debug.WriteLine($"ROP {rop.aDebuggingGuid} -  Adding relink mapping {args.Key.ObjectName} {args.Key.UIndex} -> {args.Value.UIndex}");
                 }
             };
             //can't be a foreach since we might append things to the list
@@ -177,7 +178,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     if (sourceOK && destOK)
                     {
-
                         foreach (var f in functionsToRelink)
                         {
                             // crossgen debug
@@ -242,33 +242,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var newComponentMap = new UMultiMap<NameReference, int>();
                 foreach (var cmk in sourceExport.ComponentMap)
                 {
-                    // This code makes a lot of assumptions, like how components are always directly below the current export
-                    var nameIndex = relinkingExport.FileRef.FindNameOrAdd(cmk.Key.Name);
-
-                    // We can't call this method with our existing cross package map or it will have infinite recursion
-                    // so we cache our map and merge the results 
-                    var cachedMap = rop.CrossPackageMap;
-                    rop.CrossPackageMap = new ListenableDictionary<IEntry, IEntry>();
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, true, rop, out var newComponent);
+                    // 04/07/2024 - Remove temp cross package mapping and have this call skip its internal relink step since this call is already in a relink - Mgamerz
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, false, rop, out var newComponent);
                     newComponentMap.Add(cmk.Key, newComponent.UIndex - 1); // TODO: Relink the 
-
-                    foreach (var v in rop.CrossPackageMap)
-                    {
-                        cachedMap[v.Key] = v.Value;
-                    }
-
-                    rop.CrossPackageMap = cachedMap;
                 }
                 relinkingExport.ComponentMap = newComponentMap;
             }
-
-
 
             byte[] prePropBinary = relinkingExport.GetPrePropBinary();
             //Relink stack
             if (relinkingExport.HasStack)
             {
-
                 int uIndex = BitConverter.ToInt32(prePropBinary, 0);
                 var relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "Stack: Node", "", rop);
                 if (relinkResult is null)
@@ -294,7 +278,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Component's TemplateOwnerClass
             else if (relinkingExport.TemplateOwnerClassIdx is var toci and >= 0)
             {
-
                 int uIndex = BitConverter.ToInt32(prePropBinary, toci);
                 var relinkResult = relinkUIndex(sourceExport.FileRef, relinkingExport, ref uIndex, "TemplateOwnerClass", "", rop);
                 if (relinkResult is null)
@@ -337,7 +320,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //else
                 if (ObjectBinary.From(relinkingExport) is ObjectBinary objBin)
                 {
-
                     // This doesn't work on functions! Finding the children through the probe doesn't work
 
                     if (objBin.Export is { ClassName: "State" })
@@ -348,7 +330,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else if (relinkingExport.Game != sourcePcc.Game && objBin is UFunction uf)
                     {
-                        uf.ScriptBytes = Array.Empty<byte>(); // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
+                        uf.ScriptBytes = []; // This needs zero'd out so it doesn't try to relink anything. The relink will occur on the second pass
                     }
 
                     objBin.ForEachUIndex(relinkingExport.FileRef.Game, new RelinkingAction(sourcePcc, relinkingExport, rop));
@@ -481,12 +463,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-
         /// <summary>
         /// Relinks a uIndex that represents an import in the original package - that is, the UIndex is less than zero.
         /// </summary>
         /// <param name="importingPCC"></param>
-        /// <param name="destinationPcc"></param>
+        /// <param name="relinkingExport"></param>
         /// <param name="uIndex"></param>
         /// <param name="rop"></param>
         /// <returns></returns>
@@ -503,7 +484,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
                                                                                      //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
-
                 string DONOTEDIT_OriginalInstancedFullPath = originalInstancedFullPath;
                 // CROSSGEN-V
                 // Imports are not reliable across games (or even across a single game)
@@ -515,8 +495,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                         relinkingExport.FileRef))
                 {
                     // Find an export version instead that we can import
-                    var canddiates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath, relinkingExport.FileRef.Localization);
-                    if (canddiates == null || !canddiates.Any())
+                    var candidates = rop.TargetGameDonorDB.GetFilesContainingObject(originalInstancedFullPath, relinkingExport.FileRef.Localization);
+                    if (candidates?.Any() != true)
                     {
                         // Ruh Roh
                         Debug.WriteLine($@"No candidates for export substitution of an unsafe import: {originalInstancedFullPath}, we will port this as an import, but it may not work!");
@@ -527,15 +507,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         bool isForcedExport = false; // If we should append the package name to the path - but only if continueConvertingToExport = false
 
                         // Map the relative paths onto the game directory
-                        canddiates = canddiates.Select(x => Path.Combine(MEDirectories.GetDefaultGamePath(relinkingExport.Game), x)).ToList();
+                        candidates = candidates.ConvertAll(x => Path.Combine(MEDirectories.GetDefaultGamePath(relinkingExport.Game), x));
 
-                        if (canddiates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.FileRef))) // Some things are in multiple files, like things in startup files.
+                        if (candidates.Any(x => EntryImporter.IsSafeToImportFrom(Path.GetFileName(x), relinkingExport.FileRef))) // Some things are in multiple files, like things in startup files.
                         {
                             // It's been moved, we need to change how we import to it.
                             // Depending on if it's ForcedExport or not changes how we reference it
                             continueConvertingToExport = false; // Leave as an import
                         }
-
 
                         // See if cache has any of the packages open
                         IMEPackage newSourcePackage;
@@ -543,13 +522,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.Cache != null)
                         {
                             // See if any packages are already open to avoid wasting memory
-                            newSourcePackage = rop.Cache.GetFirstCachedPackage(canddiates);
-                            int index = 0;
-                            while (index < canddiates.Count && newSourcePackage == null)
+                            newSourcePackage = rop.Cache.GetFirstCachedPackage(candidates);
+                            for (int index = 0; index < candidates.Count && newSourcePackage == null; index++)
                             {
                                 // If db has missing file this enumerates to find the correct one
-                                newSourcePackage = rop.Cache.GetCachedPackage(canddiates[index], true); // Open package in the cache
-                                index++;
+                                newSourcePackage = rop.Cache.GetCachedPackage(candidates[index], true); // Open package in the cache
                             }
 
                             closePackageOnCompletion = false;
@@ -557,7 +534,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         else
                         {
                             // Just pick the first file
-                            newSourcePackage = MEPackageHandler.OpenMEPackage(canddiates[0]);
+                            newSourcePackage = MEPackageHandler.OpenMEPackage(candidates[0]);
                         }
 
                         // See if target export is ForcedExport
@@ -591,7 +568,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             return result;
                         }
                     }
-
                 }
 
                 // END CROSSGEN-V
@@ -606,7 +582,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             // We need to port the parent first
 
                             // Build the parent stack in order from top to bottom.
-                            Stack<IEntry> parentStack = new Stack<IEntry>();
+                            Stack<IEntry> parentStack = [];
                             var parentPointer = parentTest;
                             while (parentPointer != null)
                             {
@@ -689,7 +665,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             return new EntryStringPair(relinkingExport, $"Relink failed: Provided value is negative but is not an import for {prefix}{propertyName} in export {relinkingExport.UIndex} {relinkingExport.InstancedFullPath}: {uIndex}");
         }
 
-
         /// <summary>
         /// Relinks the specified uIndex (the index in the source importingPCC that now exists in the relinkingExport's data, but needs repointed to the right data) to the correct new UIndex.
         /// </summary>
@@ -697,10 +672,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="relinkingExport"></param>
         /// <param name="uIndex"></param>
         /// <param name="propertyName"></param>
-        /// <param name="crossPCCObjectMappingList"></param>
         /// <param name="prefix"></param>
-        /// <param name="importExportDependencies"></param>
-        /// <param name="targetGameDonorDB"></param>
+        /// <param name="rop">Option package for relinking</param>
         /// <returns></returns>
         private static EntryStringPair relinkUIndex(IMEPackage importingPCC, ExportEntry relinkingExport, ref int uIndex, string propertyName, string prefix, RelinkerOptionsPackage rop)
         {
@@ -843,7 +816,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             return null;
         }
-
 
         private static void RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport, RelinkerOptionsPackage rop)
         {

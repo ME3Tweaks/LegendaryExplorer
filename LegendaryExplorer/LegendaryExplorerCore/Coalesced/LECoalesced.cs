@@ -14,7 +14,6 @@ using LegendaryExplorerCore.Misc;
 namespace LegendaryExplorerCore.Coalesced
 {
 
-
     public static class BinaryExtensions
     {
         public static string ReadCoalescedString(this BinaryReader reader)
@@ -91,7 +90,6 @@ namespace LegendaryExplorerCore.Coalesced
     //    public LECoalescedSection(BinaryReader reader)
     //    {
     //        Name = reader.ReadCoalescedString();
-
 
     //    }
     //}
@@ -229,7 +227,6 @@ namespace LegendaryExplorerCore.Coalesced
                     {
                         currentSection.Entries.Add(new DuplicatingIni.IniEntry(chunks[0], chunks[1]));
                     }
-
                 }
 
                 if (currentSection is not null)

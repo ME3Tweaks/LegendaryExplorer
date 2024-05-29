@@ -99,8 +99,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OnPropertyChanged(nameof(IsModifiedProxy));
         }
 
-
-
         /// <summary>
         /// Opens ELFH with a file loader and an optional file.
         /// </summary>
@@ -143,7 +141,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public bool ShouldShowRecentsController => HostedControl is FileExportLoaderControl felc && felc.LoadedFile == null; // Only File Export Loaders support Recents
+        public bool ShouldShowRecentsController => HostedControl is FileExportLoaderControl felc && felc.LoadedFile == null && !felc.ForceHideRecents; // Only File Export Loaders support Recents
 
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
@@ -270,6 +268,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     RegisterPackage(LoadedExport.FileRef);
                     HostedControl.LoadExport(LoadedExport);
                     OnPropertyChanged(nameof(CurrentFile));
+                    OnPropertyChanged(nameof(ShouldShowRecentsController));
                 }
             }));
         }
@@ -295,7 +294,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ExportLoaderHostedWindow_OnDrop(object sender, DragEventArgs e)
         {
-
             if (e.Data.GetDataPresent(DataFormats.FileDrop) && HostedControl is FileExportLoaderControl felc)
             {
                 // Note that you can have more than one file.

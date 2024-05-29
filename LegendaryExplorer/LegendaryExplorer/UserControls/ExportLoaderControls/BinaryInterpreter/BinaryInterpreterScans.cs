@@ -67,7 +67,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-
                 //if (export.FileRef.Platform != MEPackage.GamePlatform.Xenon && export.FileRef.Game == MEGame.ME3)
                 //{
                 //    subnodes.Add(MakeInt32Node(bin, "PS3/WiiU Count of something??"));
@@ -81,12 +80,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(embeddedShaderCount);
                 for (int i = 0; i < embeddedShaderFileCount; i++)
                 {
-
                     NameReference shaderName = bin.ReadNameReference(Pcc);
                     var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
                     try
                     {
-
                         shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}")
                         { Length = 8 });
                         shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}")
@@ -141,7 +138,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             { Length = (int)(shaderEndOffset - (dataOffset + bin.Position)) });
 
                         embeddedShaderCount.Items.Add(shaderNode);
-
 
                         bin.JumpTo(shaderEndOffset - dataOffset);
                     }
@@ -349,7 +345,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(new BinInterpNode(bin.Position, $"UDK Unknown: {bin.ReadInt32()}"));
                 }
 
-
                 if (CurrentLoadedExport.Game.IsLEGame())
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
@@ -360,8 +355,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
                     { Length = 1 });
                 }
-
-
 
                 int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ? 2 : 1;
                 var nameMappings = new[] { "CompressedCacheMap", "ShaderTypeCRCMap" }; // hack...
@@ -381,7 +374,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         mappingNode.Items.Add(new BinInterpNode(bin.Position - 12, $"CRC:{shaderCRC:X8} {shaderName.Instanced}") { Length = 12 });
                     }
                 }
-
 
                 if (Pcc.Game == MEGame.ME1)
                 {
@@ -469,7 +461,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         shaderNode.Items.Add(new BinInterpNode(bin.Position, "Unparsed Shader Parameters") { Length = (shaderEndOffset - dataOffset) - (int)bin.Position });
                     }
 
-
                     bin.JumpTo(shaderEndOffset - dataOffset);
                 }
 
@@ -555,14 +546,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     if (Pcc.Game >= MEGame.ME3)
                     {
                         string[] uniformExpressionArrays =
-                        {
+                        [
                             "UniformPixelVectorExpressions",
                             "UniformPixelScalarExpressions",
                             "Uniform2DTextureExpressions",
                             "UniformCubeTextureExpressions",
                             "UniformVertexVectorExpressions",
                             "UniformVertexScalarExpressions"
-                        };
+                        ];
 
                         foreach (string uniformExpressionArrayName in uniformExpressionArrays)
                         {
@@ -1142,7 +1133,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
-
                 if (Pcc.Game == MEGame.ME3)
                 {
                     subnodes.Add(MakeLightMapNode(bin));
@@ -1619,12 +1609,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private List<ITreeItem> StartDominantLightScan(byte[] data)
         {
-
             var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-
 
                 if (Pcc.Game >= MEGame.ME3)
                 {
@@ -1645,13 +1633,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private List<ITreeItem> StartBioPawnScan(byte[] data, ref int binarystart)
         {
-
             var subnodes = new List<ITreeItem>();
             try
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-
 
                 int count;
                 subnodes.Add(new BinInterpNode(bin.Position, $"AnimationMap? ({count = bin.ReadInt32()})")
@@ -1769,7 +1755,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }));
 
-
                 binarystart = (int)bin.Position;
             }
             catch (Exception ex)
@@ -1797,7 +1782,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         MakeInt32Node(bin, "Index")
                     }
                 }, true));
-
 
                 binarystart = (int)bin.Position;
             }
@@ -1827,7 +1811,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }, true));
 
-
                 binarystart = (int)bin.Position;
             }
             catch (Exception ex)
@@ -1840,7 +1823,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private List<ITreeItem> StartShadowMap1DScan(byte[] data, int binarystart)
         {
-
             var subnodes = new List<ITreeItem>();
             try
             {
@@ -1920,7 +1902,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         })
                     });
                 }
-
 
                 binarystart = (int)bin.Position;
             }
@@ -2064,7 +2045,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Items = ReadList(leavesCount, i => MakeInt32Node(bin, $"{i}: iZone"))
                 });
 
-
                 subnodes.Add(MakeBoolIntNode(bin, "RootOutside"));
                 subnodes.Add(MakeBoolIntNode(bin, "Linked"));
 
@@ -2139,7 +2119,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 binarystart = (int)bin.Position;
-
             }
             catch (Exception ex)
             {
@@ -2205,7 +2184,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         node.Items.Add(MakeLightMapNode(bin));
                         if (Pcc.Game >= MEGame.ME3)
                         {
-
                             node.Items.Add(new BinInterpNode(bin.Position, $"ShadowMap1D ({count = bin.ReadInt32()})")
                             {
                                 Length = 4 + count * 4,
@@ -2504,7 +2482,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
                 subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
                 subnodes.Add(new BinInterpNode(bin.Position, "CompressedPS3Data") { Length = count });
-
             }
             catch (Exception ex)
             {
@@ -2909,7 +2886,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             });
                             offset += 4;
 
-
                             int Parameter = BitConverter.ToInt32(data, offset);  //Parameter
                             nTransition.Items.Add(new BinInterpNode
                             {
@@ -2992,7 +2968,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             };
                             offset += 36;
                             TransitionsIDs.Items.Add(nTransition);
-
                         }
                         else if (transTYPE == 6)  // TYPE 6 = LOCAL FLOAT
                         {
@@ -3332,7 +3307,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     for (int t = 0; t < tCount; t++)  //TASKS
                     {
-
                         var nTaskIDs = new BinInterpNode
                         {
                             Header = $"0x{offset:X5} Task: {t}",
@@ -3510,7 +3484,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         offset += 4;
                     }
-
                 }
 
                 int bsCount = BitConverter.ToInt32(data, offset);
@@ -3613,7 +3586,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         offset += 4;
                     }
-
                 }
 
                 int isCount = BitConverter.ToInt32(data, offset);
@@ -3716,7 +3688,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         offset += 4;
                     }
-
                 }
 
                 int fsCount = BitConverter.ToInt32(data, offset);
@@ -3927,7 +3898,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Tag = NodeType.StructLeafObject
                     });
                     offset += 4;
-
                 }
                 //START OF CODEX PAGES SECTION
                 int pCount = BitConverter.ToInt32(data, offset);
@@ -4050,7 +4020,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         offset += 4;
 
-
                         int sndStrLgth = BitConverter.ToInt32(data, offset); //String length for sound
                         string sndRef = "No sound data";
                         if (sndStrLgth > 0)
@@ -4166,7 +4135,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             int formatFlags = (header >> 24) & 0x0F;
                             AnimationCompressionFormat keyFormat = (AnimationCompressionFormat)((header >> 28) & 0x0F);
 
-
                             boneNode.Items.Add(new BinInterpNode(bin.Position - 4, $"PosKey Header: {numKeys} keys, Compression: {keyFormat}, FormatFlags:{formatFlags:X}") { Length = 4 });
 
                             for (int j = 0; j < numKeys; j++)
@@ -4261,7 +4229,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 default:
                                     throw new NotImplementedException($"{keyFormat} is not supported yet!");
                             }
-
                         }
                     }
                 }
@@ -4334,7 +4301,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-
                 subnodes.Add(MakeInt32Node(bin, "AnimBinary length"));
                 var startOffset = bin.Position;
                 for (int i = 0; i < boneList.Count; i++)
@@ -4395,7 +4361,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             boneNode.Items.Add(MakeVectorNode(bin, "Mins"));
                             boneNode.Items.Add(MakeVectorNode(bin, "Ranges"));
                         }
-
 
                         for (int j = 0; j < rotKeys; j++)
                         {
@@ -4486,9 +4451,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Reads the common header for FaceFX archives.
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="binaryStart"></param>
-        /// <param name="tree"></param>
         private (int version, MEGame game) ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
         {
             var archiveSize = bin.ReadInt32();
@@ -4621,7 +4583,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         });
                         if (Pcc.Game == MEGame.ME2)
                         {
-
                             animNodes.Add(MakeInt32Node(bin, "Unknown"));
                             animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                         }
@@ -4728,8 +4689,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 //Name Table
-
-
 
                 var nameTable = new List<string>();
                 int nameCount = bin.ReadInt32();
@@ -4896,7 +4855,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     });
                     combinerListNames.Add(nameTable[nameIdx]);
 
-
                     combinerNode.Add(new BinInterpNode(bin.Position - 8, $"Format: {formatType} - {(FxNodeType)formatType}"));
                     combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Table index: {nameIdx}"));
                     combinerNode.Add(new BinInterpNode(bin.Position, $"Minimum Value: {bin.ReadSingle()}") { Length = 4 });
@@ -4968,7 +4926,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 // Fix names for bone node functions now that we've parsed combiner table - this is terrible code
                 foreach (var bone in bonesList)
                 {
-                    var functions = (bone as BinInterpNode).Items.Last();
+                    var functions = (bone as BinInterpNode).Items[^1];
                     if (functions is BinInterpNode functionNode && functionNode.Header.Contains("Function"))
                     {
                         foreach (var funcItem in functionNode.Items)
@@ -4983,35 +4941,49 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
+                // Unknown Table C First 4 bytes
+                // Theory 1: This could refer to a number of "unique" entries, it seems to be a number of entries in the table that have only 1 string reference to the combiner.
+                //           Subtracting: (entries in this table that have 2 or more strings) - (total amount of combiner entires) = seems to result in same number that exists in these first 4 bytes.
+                byte[] unkHeaderC = bin.ReadBytes(4);
                 var unkListC = new List<ITreeItem>();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table C")
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table C - Combiner Mapping?")
                 {
                     Items = unkListC
                 });
 
                 for (int c = 0; c < combinerCount; c++)
                 {
+                    // Table begins with an unknown ID - this ID seems to be from some kind of global table as same entries with same names use same IDs across different FaceFX files
+                    //                                   (not 100% sure as only smallish sample of about 20 files was checked)
+                    int entryID = bin.ReadInt32();
+                    // Add tree item with entry ID as an idicator
                     var unkListCitems = new List<ITreeItem>();
-                    unkListC.Add(new BinInterpNode(bin.Position, $"{c}")
+                    unkListC.Add(new BinInterpNode(bin.Position - 4, $"{c}: {entryID}")
                     {
                         Items = unkListCitems
                     });
-                    int name;
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Name?: {name = bin.ReadInt32()} {nameTable[name]}") { Length = 4 });
-                    unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
+                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown int: {entryID}") { Length = 4 });
+                    // String count:
                     int stringCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"String count: {stringCount}") { Length = 4 });
-                    unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                    // Combiner entry name:
+                    int stringLength = bin.ReadInt32();
+                    string stringText = bin.ReadEndianASCIIString(stringLength);
+                    unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Combiner String: {stringText}") { Length = stringLength + 4 });
+                    // Combiner entry ID:
+                    int name = bin.ReadInt32();
+                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Combiner ID: {name} {combinerListNames[name]}") { Length = 4 });
+                    // Do the same for next strings if theres more than one.
                     for (int i = 1; i < stringCount; i++)
                     {
                         c++;
-                        unkListCitems.Add(MakeInt32Node(bin, "Unknown int"));
-                        unkListCitems.Add(new BinInterpNode(bin.Position, $"Unknown String: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                        stringLength = bin.ReadInt32();
+                        stringText = bin.ReadEndianASCIIString(stringLength);
+                        unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Combiner String: {stringText}") { Length = stringLength + 4 });
+                        name = bin.ReadInt32();
+                        unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Combiner ID: {name} {combinerListNames[name]}") { Length = 4 });
                     }
-
                 }
-
-
 
                 if (game == MEGame.ME2)
                 {
@@ -5021,8 +4993,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                     subnodes.Add(MakeInt32Node(bin, "Unknown"));
                 }
-
-                subnodes.Add(new BinInterpNode(bin.Position, $"unknown: {bin.ReadInt32()}"));
 
                 subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
 
@@ -5124,7 +5094,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i => new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 }
-
             }
             catch (Exception ex)
             {
@@ -5326,7 +5295,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.Skip(binaryStart);
 
@@ -5359,7 +5327,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // This seems missing on Xenon 2011. Not sure about others
                     subnodes.Add(MakeNameNode(bin, "Category"));
                     subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
-
                 }
 
                 if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Net))
@@ -5643,7 +5610,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     bin.JumpTo(start + size + 8);
                 }
-
             }
             catch (Exception ex)
             {
@@ -5680,7 +5646,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         break;
                     case HIRCType.EventAction:
                         {
-
                             node.Items.Add(new BinInterpNode(bin.Position, $"Scope: {(WwiseBank.EventActionScope)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
                             WwiseBank.EventActionType actType;
                             node.Items.Add(new BinInterpNode(bin.Position, $"Action Type: {actType = (WwiseBank.EventActionType)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
@@ -5840,7 +5805,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         //node.Items.Add(MakeByteNode(bin, "Unknown"));
                         //node.Items.Add(MakeByteNode(bin, "Unknown"));
 
-
                         goto default;
                     case HIRCType.RandomOrSequenceContainer:
                     case HIRCType.SwitchContainer:
@@ -5878,7 +5842,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         //node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
                         //node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes")); //Mixer end
 
-
                         ////Minimum is 4 x 4bytes but can expanded
                         //bool hasEffects = false; //Maybe something else
                         //node.Items.Add(new BinInterpNode(bin.Position, $"Unknown_Byte->Int + Unk4 + Float: {hasEffects = bin.ReadBoolByte()}") { Length = 1 }); //Count of something? effects?
@@ -5903,7 +5866,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         //    node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int"));
                         //    node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
                         //}
-
 
                         //node.Items.Add(MakeUInt32Node(bin, "Unknown_N_4bytes"));
                         //node.Items.Add(MakeUInt32Node(bin, "Unknown_O_4bytes"));
@@ -5937,7 +5899,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             {
                                 Length = (int)(endPos - bin.Position)
                             });
-
                         }
                         break;
                 }
@@ -6061,7 +6022,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(new BinInterpNode($"{CurrentLoadedExport.Game} is not supported for this scan."));
                     return subnodes;
                 }
-
             }
             catch (Exception ex)
             {
@@ -6218,7 +6178,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             //if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
             {
-
                 int pos = binarystart;
                 if (data.Length > binarystart)
                 {
@@ -6291,7 +6250,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                                 //finish writing function here
                                 pos = (int)stream.Position;
-
                             }
                         }
                         catch (Exception ex)
@@ -6371,7 +6329,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Name = $"_{pos + 4}"
                     });
                 }
-
             }
 
             yield return scriptNode;
@@ -6401,7 +6358,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
             }
             yield return probeMaskNode;
-
 
             if (Pcc.Game is not MEGame.UDK)
             {
@@ -6662,7 +6618,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     Header = $"{(pos - binarystart):X4} count: {count}",
                     Name = "_" + pos,
-
                 });
                 pos += 4;
                 for (int i = 0; i < count && pos < data.Length; i++)
@@ -6990,7 +6945,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         }
                                     })
                                 }
-
                             })
                         }
                     });
@@ -7119,7 +7073,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return node;
         }
 
-
         private static BinInterpNode MakeVectorNode(EndianReader bin, string name)
         {
             var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
@@ -7128,7 +7081,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             node.Items.Add(MakeFloatNode(bin, "Y"));
             node.Items.Add(MakeFloatNode(bin, "Z"));
             return node;
-
         }
 
         private static BinInterpNode MakeQuatNode(EndianReader bin, string name)
@@ -7150,7 +7102,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             node.Items.Add(MakeInt32Node(bin, "Yaw"));
             node.Items.Add(MakeInt32Node(bin, "Roll"));
             return node;
-
         }
 
         private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
@@ -7199,7 +7150,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             };
         }
-
 
         private static BinInterpNode MakeMaterialGuidNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null)
         {
@@ -7278,7 +7228,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     nodes.Add(MakeMaterialResourceNode(bin, "2nd Material Resource"));
                 }
-
             }
             catch (Exception ex)
             {
@@ -7823,7 +7772,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             return subnodes;
-
         }
 
         private List<ITreeItem> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
@@ -7858,7 +7806,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Tag = NodeType.Unknown,
                         Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SMCA binary data should be a length divisible by 64.",
                         Name = "_" + start
-
                     });
                     return subnodes;
                 }
@@ -7993,7 +7940,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
-
         }
 
         private List<ITreeItem> StartStaticLightCollectionActorScan(byte[] data, ref int binarystart)
@@ -8028,7 +7974,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Tag = NodeType.Unknown,
                         Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SLCA binary data should be a length divisible by 64.",
                         Name = "_" + start
-
                     });
                     return subnodes;
                 }
@@ -8099,7 +8044,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
-
         }
 
         [Flags]
@@ -8285,7 +8229,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         MakeInt32Node(bin, "FColor size"),
                                         MakeArrayNode(bin, "VertexData", k => MakeColorNode(bin, $"{k}"))
                                     }),
-
                                 }
                             }
                         }));
@@ -8467,7 +8410,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeUInt16Node(bin, "NonCriticalBuildVersion"));
                     subnodes.Add(MakeUInt16Node(bin, "LicenseeNonCriticalBuildVersion"));
                 }
-
             }
             catch (Exception ex)
             {
@@ -8499,7 +8441,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 MakeFloatNode(bin, "Max[2]")
                             }
                         }
-
                     }),
                     MakeInt32Node(bin, "kDOPNodeSize"),
                     MakeArrayNode(bin, "Nodes", i => new BinInterpNode(bin.Position, $"{i}")
@@ -8576,7 +8517,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (bin.Length == binarystart)
                     return subnodes; // no binary data
 
-
                 bin.JumpTo(binarystart);
                 if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3))
                 {
@@ -8594,7 +8534,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Header = $"0x{bin.Position:X4} MipMap #{l}",
                         Name = "_" + (bin.Position)
-
                     };
                     subnodes.Add(mipMapNode);
 
@@ -8603,7 +8542,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Header = $"0x{bin.Position - 4:X4} Storage Type: {storageType}",
                         Name = "_" + (bin.Position - 4)
-
                     });
 
                     var uncompressedSize = bin.ReadInt32();
@@ -8611,7 +8549,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Header = $"0x{bin.Position - 4:X4} Uncompressed Size: {uncompressedSize}",
                         Name = "_" + (bin.Position - 4)
-
                     });
 
                     var compressedSize = bin.ReadInt32();
@@ -8619,7 +8556,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Header = $"0x{bin.Position - 4:X4} Compressed Size: {compressedSize}",
                         Name = "_" + (bin.Position - 4)
-
                     });
 
                     var dataOffset = bin.ReadInt32();
@@ -8627,7 +8563,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Header = $"0x{bin.Position - 4:X4} Data Offset: 0x{dataOffset:X8}",
                         Name = "_" + (bin.Position - 4)
-
                     });
 
                     switch (storageType)
@@ -8873,12 +8808,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         subnode.Items.Add(MakeNameNode(bin, "SomeName"));
                         subnode.Items.Add(MakeInt32Node(bin, "SomeNum"));
                     }
-
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
 
             return subnodes;
@@ -8916,7 +8850,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 while (binarypos <= data.Length - datasize)
                 {
-
                     string nodeText = $"0x{binarypos:X4} : ";
                     var node = new BinInterpNode();
 
@@ -8940,7 +8873,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 int val = BitConverter.ToInt32(data, binarypos);
                                 if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
                                 {
-                                    nodeText += $"{val.ToString().PadRight(14, ' ')}{CurrentLoadedExport.FileRef.GetNameEntry(val)}";
+                                    nodeText += $"{val,-14}{CurrentLoadedExport.FileRef.GetNameEntry(val)}";
                                 }
                                 else
                                 {
@@ -8999,7 +8932,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         }),
                     }
                 }, true));
-
             }
             catch (Exception ex)
             {
@@ -9007,7 +8939,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             return subnodes;
         }
-
 
     }
 }

@@ -46,8 +46,6 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
             dispatcherTimer.Start();
         }
 
-
-
         private string _lastRefreshText;
         public string LastRefreshText { get => _lastRefreshText; set => SetProperty(ref _lastRefreshText, value); }
         private string _currentUsageText;
@@ -75,8 +73,6 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
         {
             LegendaryExplorerCore.Misc.MemoryAnalyzer.CleanupOldRefs();
         }
-
-
 
         private void MemoryAnalyzer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

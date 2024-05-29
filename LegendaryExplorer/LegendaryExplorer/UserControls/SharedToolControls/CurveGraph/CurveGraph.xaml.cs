@@ -28,7 +28,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     /// </summary>
     public partial class CurveGraph : NotifyPropertyChangedControlBase, IDisposable
     {
-
         private const int LINE_SPACING = 50;
 
         private bool dragging;
@@ -66,7 +65,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         // Using a DependencyProperty as the backing store for ComparisonCurve.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ComparisonCurveProperty =
             DependencyProperty.Register(nameof(ComparisonCurve), typeof(Curve), typeof(CurveGraph), new PropertyMetadata());
-
 
         public CurvePoint SelectedPoint
         {
@@ -142,7 +140,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         private static void OnVerticalScaleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-
         }
 
         private static void OnVerticalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

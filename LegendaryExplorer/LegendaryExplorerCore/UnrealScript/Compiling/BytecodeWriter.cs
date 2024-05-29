@@ -10,7 +10,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
     public class BytecodeWriter
     {
-
         protected readonly IMEPackage Pcc;
         protected readonly MEGame Game;
         private readonly byte extNativeIndex;

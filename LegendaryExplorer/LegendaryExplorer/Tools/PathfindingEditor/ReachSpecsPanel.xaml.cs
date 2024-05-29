@@ -90,7 +90,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public bool CreateReturningReachSpec { get => _createReturningReachSpec; set => SetProperty(ref _createReturningReachSpec, value); }
 
-
         public ReachSpecsPanel() : base("ReachSpecsPanel")
         {
             DataContext = this;
@@ -147,7 +146,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public ICommand ChangeExternalFileCommand { get; set; }
         public ICommand ToExternalNodeCommand { get; set; }
         public ICommand DeleteSelectedReachSpecCommand { get; set; }
-
 
         private void LoadCommands()
         {
@@ -233,7 +231,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     ExternalFile = null;
                     ExternalFileShortNameText = "Error opening file";
                     MessageBox.Show($"Unable to open file:\n{ex.Message}");
-
                 }
             }
         }
@@ -286,7 +283,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                                     }
                                 }
 
-
                             }
                         }
                         var sourcePoint = PathEdUtils.GetLocation(CurrentLoadedExport);
@@ -301,9 +297,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
             return false;
         }
-
-
-
 
         private void CreateReachSpec()
         {
@@ -320,7 +313,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                         PathEdUtils.CreateReachSpec(CurrentLoadedExport, CreateReturningReachSpec, destExport, (string)CreateReachspecType_ComboBox.SelectedItem, (ReachSpecSize)CreateReachSpecSize_ComboBox.SelectedItem, navguid.Properties);
                     }
-
                 }
                 else
                 {
@@ -362,7 +354,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 //pathNodeSizeComboBox.Enabled = true;
             }
 
-
             //Reachspecs
             ReachSpecs.ClearEx();
 
@@ -374,8 +365,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     if (prop.Value == 0) { continue; } //unassigned, will cause issue in game, but will be better for editor to not throw errors
                     var spec = new ReachSpec();
                     ExportEntry outgoingSpec = export.FileRef.GetUExport(prop.Value);
-
-
 
                     spec.SpecExport = outgoingSpec;
                     spec.StartNode = export;
@@ -406,7 +395,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             AllowChanges = true;
         }
 
-
         public override void UnloadExport()
         {
             AllowChanges = false;
@@ -432,7 +420,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 RecalculateDestinationUI();
             }
         }
-
 
         private void ReachSpecs_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -606,8 +593,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
         }
 
-
-
         [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName.Instanced} outbound from {StartNode.UIndex}")]
         public class ReachSpec
         {
@@ -649,7 +634,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             public NodeSize()
             {
-
             }
 
             public NodeSize(string header, int height, int radius, bool customsized = false)
@@ -706,7 +690,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         radius.Value = size.NodeRadius;
                         CurrentLoadedExport.WriteProperties(props);
                         RefreshSelectedReachSpec();
-
                     }
                 }
             }

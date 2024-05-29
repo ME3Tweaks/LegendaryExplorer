@@ -330,7 +330,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 //classObj.unkNameList1
                 //classObj.unkNameList2
 
-
                 classObj.Interfaces.Clear();
                 foreach (Class interfaceClass in classAST.Interfaces.OfType<Class>())
                 {
@@ -402,7 +401,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 foreach (Function stateFunc in curState.Functions)
                 {
-                    if (Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
+                    if (stateFunc.IsDefined && Enum.TryParse(stateFunc.Name, true, out EProbeFunctions enumVal))
                     {
                         stateObj.ProbeMask |= enumVal;
                     }
@@ -427,7 +426,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 EntryPruner.TrashEntryAndDescendants(removedFunc.Export);
             }
-
 
             return FinishStateCompilation;
 
@@ -470,7 +468,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static Action CreateFunctionStub(Function funcAST, IEntry parent, ref UFunction refFuncObj, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
-
             var functionName = NameReference.FromInstancedString(funcAST.Name);
             ExportEntry funcExport;
 
@@ -725,7 +722,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             propObj.PropertyFlags = varDeclAST.Flags;
             propObj.Category = NameReference.FromInstancedString(varDeclAST.Category);
 
-
             return FinishPropertyCompilation;
 
             void FinishPropertyCompilation()
@@ -737,7 +733,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         uByteProperty.Enum = varType is Enumeration ? CompilerUtils.ResolveSymbol(varType, pcc).UIndex : 0;
                         break;
                     case UClassProperty uClassProperty:
-                        uClassProperty.ObjectRef = pcc.getEntryOrAddImport("Core.Class").UIndex;
+                        uClassProperty.ObjectRef = pcc.GetEntryOrAddImport("Core.Class", "Class").UIndex;
                         uClassProperty.ClassRef = CompilerUtils.ResolveSymbol(((ClassType)varType).ClassLimiter, pcc).UIndex;
                         break;
                     case UDelegateProperty uDelegateProperty:
@@ -972,7 +968,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null, bool useTrash = true)
         {
-
             IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage());
 
             //reuse trash exports

@@ -18,4 +18,3 @@ namespace LegendaryExplorer.SharedUI.Converters
         }
     }
 }
-

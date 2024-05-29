@@ -48,7 +48,6 @@ namespace LegendaryExplorer.UnrealExtensions
                     }
                     catch (Exception)
                     {
-
                     }
                 }
             }
@@ -67,7 +66,6 @@ namespace LegendaryExplorer.UnrealExtensions
                     }
                     catch
                     {
-
                     }
                 }
             }
@@ -91,7 +89,6 @@ namespace LegendaryExplorer.UnrealExtensions
                     }
                     catch
                     {
-
                     }
                 }
             }
@@ -127,7 +124,6 @@ namespace LegendaryExplorer.UnrealExtensions
                     }
                     catch
                     {
-
                     }
                 }
             }
@@ -151,7 +147,6 @@ namespace LegendaryExplorer.UnrealExtensions
                     }
                     catch
                     {
-
                     }
                 }
             }

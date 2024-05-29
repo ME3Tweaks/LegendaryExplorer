@@ -115,7 +115,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
     public virtual void ClearChildrenPropertyItem( PropertyItemBase propertyItem, object item )
     {
-
       propertyItem.ParentNode = null;
 
       PropertyGrid.RaiseClearPropertyItemEvent( ( UIElement )PropertyContainer, propertyItem, item );
@@ -183,7 +182,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     protected virtual void OnEditorDefinitionsChanged() { }
 
     protected virtual void OnPropertyDefinitionsChanged() { }
-
 
     public virtual void OnEndInit() { }
 

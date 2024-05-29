@@ -83,7 +83,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         public virtual void Layout()
         {
-
         }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
         protected string GetComment() => GetIDString(ID);

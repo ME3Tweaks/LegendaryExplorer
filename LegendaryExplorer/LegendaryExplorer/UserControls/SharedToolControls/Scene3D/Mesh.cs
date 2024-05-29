@@ -9,12 +9,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     {
         public WorldMesh(Device Device) : base(Device)
         {
-
         }
 
         public WorldMesh(Device Device, List<Triangle> Triangles, List<WorldVertex> Vertices) : base(Device, Triangles, Vertices)
         {
-
         }
     }
 
@@ -176,7 +174,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public WorldVertex() : base(Vector3.Zero)
         {
-
         }
 
         public WorldVertex(Vector3 Position, Vector3 Normal, Vector2 UV) : base(Position)

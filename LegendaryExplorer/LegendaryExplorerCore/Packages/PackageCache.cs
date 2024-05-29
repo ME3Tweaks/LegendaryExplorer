@@ -134,12 +134,11 @@ namespace LegendaryExplorerCore.Packages
                 while (CacheMaxSize > 1 && Cache.Count > CacheMaxSize)
                 {
                     // Find the oldest package
-                    if (!ResidentPackages.Contains(accessOrder[0].Key))
+                    if (!IsResidentPackage(accessOrder[0].Key))
                     {
                         ReleasePackage(accessOrder[0].Key);
                     }
                     accessOrder.RemoveAt(0);
-
                 }
             }
 
@@ -150,6 +149,30 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Returns if this package is marked as a Resident Package. Packages without <see cref="IMEPackage.FilePath"/> set will return false.
+        /// </summary>
+        /// <param name="package">Package object to check</param>
+        /// <returns></returns>
+        public bool IsResidentPackage(IMEPackage package)
+        {
+            if (package.FilePath != null)
+            {
+                return IsResidentPackage(package.FilePath);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns if this package path (case insensitive) is marked as a Resident Package.
+        /// </summary>
+        /// <param name="packagePath">Path of the package file</param>
+        /// <returns></returns>
+        public virtual bool IsResidentPackage(string packagePath)
+        {
+            return ResidentPackages.Contains(packagePath, StringComparer.InvariantCultureIgnoreCase);
+        }
 
         /// <summary>
         /// Releases a package by it's filepath from the cache.
@@ -267,7 +290,6 @@ namespace LegendaryExplorerCore.Packages
 
             return null;
         }
-
 
         public virtual IReadOnlyCollection<IMEPackage> GetPackages()
         {

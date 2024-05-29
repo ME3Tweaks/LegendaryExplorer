@@ -19,7 +19,6 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
     public static class Texture2DExtensions
     {
 
-
         /*
         /// <summary>
         /// Creates a Direct 3D 11 textured based off the top mip of this Texture2D export

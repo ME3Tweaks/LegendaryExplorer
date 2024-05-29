@@ -95,7 +95,6 @@ namespace Be.Windows.Forms
         /// </summary>
         public event EventHandler LengthChanged;
 
-
         /// <summary>
         /// Reads a byte from the byte collection.
         /// </summary>

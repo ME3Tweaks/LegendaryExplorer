@@ -352,10 +352,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
     public class InterfacePropertyValue : ObjectPropertyValue
     {
-
         public InterfacePropertyValue(DebuggerInterface debugger, IntPtr address, string propName, FScriptInterface value) : base(debugger, address, propName, debugger.ReadObject(value.Object))
         {
-            
         }
     }
 

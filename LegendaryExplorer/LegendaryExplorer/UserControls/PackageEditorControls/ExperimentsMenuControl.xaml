@@ -48,6 +48,8 @@
 
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
+        <MenuItem Header="Dump all export uscript to folder" Click="DumpUScriptFromPackage_Click"/>
+        <MenuItem Header="Compile all export uscript from folder" Click="FromPackageUScriptFromFolder_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
         <MenuItem Header="Run MaterialInstanceScreenshot" Click="RunMaterialInstanceScreenshot_Click"/>
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
@@ -71,15 +73,11 @@
             <MenuItem Header="UnCompressed" Click="SavePackageUnCompressed_Click"/>
         </MenuItem>
         <MenuItem Header="Resolve all imports in game of opened package (see debug console)" Click="ResolveAllGameImports_Click"/>
-        <MenuItem Header="Bytecode scan all functions in package" Click="StartPackageBytecodeScan_Click"/>
-        <MenuItem Header="Test LODBias stuff" Click="LODBiasTest_Clicked"/>
         <MenuItem Header="Find Empty Mips" Click="FindEmptyMips_Clicked"/>
-        <MenuItem Header="Shader Cache Research" Click="ShaderCacheResearch_Click"/>
         <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
-        <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
         <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
         <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
 
@@ -87,10 +85,7 @@
         <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
         <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
 
-        <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
-        <MenuItem Header="Print native function indices from current file" Click="PrintNatives"/>
         <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
-        <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
         <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
         <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
         <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
@@ -99,7 +94,6 @@
         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
         <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
-        <MenuItem Header="Dump all exec function signatures" Click="DumpAllExecFunctionSignatures_Clicked"/>
         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>

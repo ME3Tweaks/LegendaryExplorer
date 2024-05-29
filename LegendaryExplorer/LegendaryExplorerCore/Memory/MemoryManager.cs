@@ -38,20 +38,24 @@ namespace LegendaryExplorerCore.Memory
                 throw new Exception("MaxBufferSize cannot be bigger than 2048MB");
             }
 
-            var maxBufSize = maxBufferSizeMB * (int) FileSize.MebiByte;
+            var maxBufSize = maxBufferSizeMB * (int)FileSize.MebiByte;
 
             UsePooledMemory = usePooledMemory;
-            MemManager = !usePooledMemory ? null : new RecyclableMemoryStreamManager(blockSize, 
-                (int)FileSize.MebiByte * 4,
-                maxBufSize,
-                useExponentialBuffer);
+            MemManager = !usePooledMemory
+                ? null
+                : new RecyclableMemoryStreamManager(
+                    new RecyclableMemoryStreamManager.Options()
+                    {
+                        BlockSize = blockSize,
+                        LargeBufferMultiple = (int)FileSize.MebiByte * 4,
+                        MaximumBufferSize = maxBufSize,
+                        UseExponentialLargeBuffer = useExponentialBuffer,
+                        GenerateCallStacks = generateCallStacks,
+                        AggressiveBufferReturn = aggressiveBufferReturn,
+                        MaximumSmallPoolFreeBytes = FileSize.MebiByte * maxFreeSmallPoolSizeMB
+                    });
             if (MemManager != null)
             {
-                // Setup Stream Manager
-                MemManager.GenerateCallStacks = generateCallStacks;
-                MemManager.AggressiveBufferReturn = aggressiveBufferReturn;
-                MemManager.MaximumFreeSmallPoolBytes = FileSize.MebiByte * maxFreeSmallPoolSizeMB;
-
                 // Setup Byte Array Manager
                 ByteArrayPool = ArrayPool<byte>.Create();
             }
@@ -64,12 +68,12 @@ namespace LegendaryExplorerCore.Memory
         #region MemoryStream Manager
         public static long LargePoolInUseSize => MemManager?.LargePoolInUseSize ?? 0;
         public static long LargePoolFreeSize => MemManager?.LargePoolFreeSize ?? 0;
-        public static long BlockSize => MemManager?.BlockSize ?? 0;
+        public static long BlockSize => MemManager?.Settings.BlockSize ?? 0;
         public static long SmallPoolInUseSize => MemManager?.SmallPoolInUseSize ?? 0;
-        public static long MaximumBufferSize => MemManager?.MaximumBufferSize ?? 0;
+        public static long MaximumBufferSize => MemManager?.Settings.MaximumBufferSize ?? 0;
         public static long SmallPoolFreeSize => MemManager?.SmallPoolFreeSize ?? 0;
-        public static long LargePoolTotalSize => MemManager?.MaximumFreeLargePoolBytes ?? 0;
-        public static long SmallPoolTotalSize => MemManager?.MaximumFreeSmallPoolBytes ?? 0;
+        public static long LargePoolTotalSize => MemManager?.Settings.MaximumLargePoolFreeBytes ?? 0;
+        public static long SmallPoolTotalSize => MemManager?.Settings.MaximumSmallPoolFreeBytes ?? 0;
         public static long SmallBlocksAvailable => MemManager?.SmallBlocksFree ?? 0;
         public static long LargeBlocksAvailable => MemManager?.LargeBuffersFree ?? 0;
 
@@ -121,7 +125,6 @@ namespace LegendaryExplorerCore.Memory
         }
         #endregion
 
-
         /// <summary>
         /// Attempts to free all memory used by this memory manager. ONLY USE WHEN YOU ARE SURE THE MEMORY MANAGER IS NOT IN USE.
         /// </summary>
@@ -129,16 +132,18 @@ namespace LegendaryExplorerCore.Memory
         {
             if (UsePooledMemory)
             {
-                bool isResetting = false;
-                //if (MemManager == null || (MemManager.LargePoolInUseSize == 0 && MemManager.SmallPoolInUseSize == 0)) // Only allow if no items are 'in use'
-                //{
+                bool isResetting = MemManager != null;
 
                 // Not really sure what good defaults are here to use.....
-                if (MemManager != null) isResetting = true;
-                MemManager = new RecyclableMemoryStreamManager((int)FileSize.KibiByte * 256, (int)FileSize.MebiByte, (int)FileSize.MebiByte * 16);
-                MemManager.GenerateCallStacks = false;
-                MemManager.AggressiveBufferReturn = true;
-                //}
+                MemManager = new RecyclableMemoryStreamManager(
+                    new RecyclableMemoryStreamManager.Options()
+                    {
+                        BlockSize = (int)FileSize.KibiByte * 256,
+                        LargeBufferMultiple = (int)FileSize.MebiByte,
+                        MaximumBufferSize = (int)FileSize.MebiByte * 16,
+                        GenerateCallStacks = false,
+                        AggressiveBufferReturn = true,
+                    });
 
                 ByteArrayPool = ArrayPool<byte>.Create();
 

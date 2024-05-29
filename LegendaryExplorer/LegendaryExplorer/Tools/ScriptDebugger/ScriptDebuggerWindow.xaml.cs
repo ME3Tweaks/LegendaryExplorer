@@ -35,9 +35,9 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         //MUST BE UPDATED WHEN A NEW VERSION OF THE ASI IS RELEASED!
         public string debuggerASIName => Game switch
         {
-            MEGame.LE1 => "LE1ScriptDebugger-v2.asi", // In M3
-            MEGame.LE2 => "LE2ScriptDebugger-v2.asi", // In M3
-            MEGame.LE3 => "LE3ScriptDebugger-v2.asi", 
+            MEGame.LE1 => "LE1ScriptDebugger-v3.asi", // In M3
+            MEGame.LE2 => "LE2ScriptDebugger-v3.asi", // In M3
+            MEGame.LE3 => "LE3ScriptDebugger-v3.asi",  // In M3
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
         private void GetDebuggerASI()
@@ -45,16 +45,15 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             switch (Game)
             {
                 case MEGame.LE1:
-                    ModManagerIntegration.RequestASIInstallation(MEGame.LE1, ASIModIDs.LE1_SCRIPT_DEBUGGER, 2);
+                    ModManagerIntegration.RequestASIInstallation(MEGame.LE1, ASIModIDs.LE1_SCRIPT_DEBUGGER, 3);
                     break;
                 case MEGame.LE2:
-                    ModManagerIntegration.RequestASIInstallation(MEGame.LE2, ASIModIDs.LE2_SCRIPT_DEBUGGER, 2);
+                    ModManagerIntegration.RequestASIInstallation(MEGame.LE2, ASIModIDs.LE2_SCRIPT_DEBUGGER, 3);
                     break;
                 case MEGame.LE3:
-                    HyperlinkExtensions.OpenURL("https://github.com/ME3Tweaks/LE3-ASI-Plugins/releases/tag/LE3UnrealScriptDebugger-v2.0");
+                    ModManagerIntegration.RequestASIInstallation(MEGame.LE3, ASIModIDs.LE3_SCRIPT_DEBUGGER, 3);
                     break;
             }
-
         }
 
         public static readonly string ScriptDebuggerDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"ScriptDebugger\");
@@ -264,7 +263,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 ClearBreakState();
             }
         }
-
 
         private void Resume()
         {
@@ -615,7 +613,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 SetVisualBreakPoints(bp.FullFunctionPath);
             }
         }
-
 
         private void BreakPointSearchBox_OnTextChanged(SearchBox sender, string newtext)
         {

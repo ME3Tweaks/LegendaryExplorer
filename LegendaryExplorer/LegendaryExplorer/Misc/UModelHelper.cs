@@ -41,7 +41,6 @@ namespace LegendaryExplorer.Misc
                 }
             }
 
-
             var umodel = Path.Combine(AppDirectories.StaticExecutablesDirectory, @"umodel", @"umodel.exe");
             if (File.Exists(umodel))
             {

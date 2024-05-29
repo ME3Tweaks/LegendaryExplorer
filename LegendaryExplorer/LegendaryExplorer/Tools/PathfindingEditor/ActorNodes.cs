@@ -270,7 +270,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
     public class BioPlaypenVolumeAdditive : ActorNode
     {
-
         private static readonly Color outlinePenColor = Color.Orange;
         private static readonly PointF[] outlineShape = { new PointF(10, 0), new PointF(50, 10), new PointF(40, 50), new PointF(0, 40) };
 
@@ -321,7 +320,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public override PointF[] GetDefaultShapePoints() => outlineShape;
     }
-
 
     //This is technically not a pathnode...
     public class SFXObjectiveSpawnPoint : ActorNode
@@ -420,7 +418,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public override PointF[] GetDefaultShapePoints() => outlineShape;
     }
-
 
     public class TargetPoint : ActorNode
     {
@@ -875,7 +872,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public BioTriggerStream(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon)
             : base(idx, x, y, p, grapheditor, drawAsPolygon)
         {
-
             var exportProps = export.GetProperties();
             var streamingStates = exportProps.GetProp<ArrayProperty<StructProperty>>("StreamingStates");
             if (streamingStates != null)
@@ -902,13 +898,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         foreach (string item in items)
                         {
                             commentText += $"   {item}\n";
-
                         }
                     }
                 }
                 comment.Text = commentText;
             }
-
         }
 
         public override Color GetDefaultShapeColor() => outlinePenColor;
@@ -945,7 +939,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             new PointF(35, 30), new PointF(35, 36), new PointF(34, 36), new PointF(32, 37), new PointF(32, 47), new PointF(30, 50),
             new PointF(20, 50), new PointF(18, 47), new PointF(18, 37), new PointF(16, 36), new PointF(15, 36), new PointF(15, 30),
             new PointF(9, 20), new PointF(9, 9)
-
             };
 
         public LightActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)

@@ -339,7 +339,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 return;
             }
 
-
             // Create a new extern
             var externalVar = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqVar_External");
             externalVar.idxLink = SelectedSequence.UIndex;
@@ -481,7 +480,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                                                             $"Tight loop in {Path.GetFileName(file)}, export {seqObjectRef.Value} {seqObj.InstancedFullPath}");
                                                     }
                                                 }
-
                                             }
                                         }
                                     }
@@ -885,7 +883,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 {
                     GoToExport(exp);
                 }
-
             }
             catch (Exception ex) when (!App.IsDebug)
             {
@@ -944,7 +941,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 RecentsController.SaveRecentList(true);
 
                 postloadPackage(fileName);
-
             }
             catch (Exception ex) when (!App.IsDebug)
             {
@@ -1423,7 +1419,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                 SequenceGraphEditor.UpdateEdge(edge);
 
-
             void LayoutTree(SBox sAction, float verticalSpacing)
             {
                 firstNode ??= sAction;
@@ -1608,7 +1603,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     }
                 }
             }
-
 
             if (updatedExports.Any(uIdx => Pcc.GetEntry(uIdx) is ExportEntry { IsClass: true }))
             {
@@ -1867,7 +1861,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("dialogueEditorMenuItem") is MenuItem dialogueEditorMenuItem)
                 {
-
                     if (obj is SAction sAction &&
                         (sAction.Export.ClassName.EndsWith("SeqAct_StartConversation") ||
                          sAction.Export.ClassName.EndsWith("StartAmbientConv")) &&
@@ -1883,7 +1876,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("openRefInPackEdMenuItem") is MenuItem openRefInPackEdMenuItem)
                 {
-
                     if (Pcc.Game.IsGame3() && obj is SVar sVar &&
                         Pcc.IsEntry(sVar.Export.GetProperty<ObjectProperty>("ObjValue")?.Value ?? 0))
                     {
@@ -1897,7 +1889,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("repointIncomingReferences") is MenuItem repointIncomingReferences)
                 {
-
                     if (obj is SVar sVar)
                     {
                         repointIncomingReferences.Visibility = Visibility.Visible;
@@ -1910,7 +1901,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("sequenceRefGotoMenuItem") is MenuItem sequenceRefGotoMenuItem)
                 {
-
                     if (obj is SAction sAction && sAction.Export != null &&
                         (sAction.Export.ClassName is "SequenceReference" or "Sequence"))
                     {
@@ -1953,7 +1943,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("seqLogAddItemMenuItem") is MenuItem seqLogAddItemMenuItem)
                 {
-
                     if (obj is SAction sAction && sAction.Export != null && sAction.Export.ClassName == "SeqAct_Log")
                     {
                         seqLogAddItemMenuItem.Visibility = Visibility.Visible;
@@ -1966,7 +1955,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                 if (contextMenu.GetChild("seqLogLogObjectMenuItem") is MenuItem seqLogLogObjectMenuItem)
                 {
-
                     if (obj is SVar sVar && sVar.Export != null)
                     {
                         seqLogLogObjectMenuItem.Visibility = Visibility.Visible;
@@ -2276,7 +2264,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             }
         }
 
-
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
             graphEditor.AllowDragging();
@@ -2400,12 +2387,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 RefreshView();
             }
-
         }
 
         private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
         {
-
             if (CurrentObjects_ListBox.SelectedItem is SObj obj)
             {
                 int uIndex;
@@ -2437,7 +2422,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         private void OpenInDialogueEditor_Clicked(object sender, RoutedEventArgs e)
         {
-
             if (CurrentObjects_ListBox.SelectedItem is SObj obj &&
                 (obj.Export.ClassName.EndsWith("SeqAct_StartConversation") ||
                  obj.Export.ClassName.EndsWith("StartAmbientConv")) &&
@@ -2578,7 +2562,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 foreach (ExportEntry exp in SequenceExports)
                 {
 
-
                     // Get the export for the sequence we will look for objects in
                     ExportEntry sequence = exp;
                     if (sequence.ClassName == "SequenceReference")
@@ -2676,7 +2659,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
                     if (filePath != null)
                     {
-
                         var plotEd = new PlotEditorWindow();
                         plotEd.Show();
                         plotEd.LoadFile(filePath);
@@ -2740,7 +2722,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     RefreshView();
                 }
             }
-
         }
 
         private void ShowAdditionalInfoInCommentTextMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -2837,7 +2818,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     var stringVarLink = varLinks.First(x => x.LinkDesc == "String");
                     stringVarLink.LinkedNodes.Add(newSeqObj);
 
-
                     VarLinkInfo linkToAttachTo = null;
                     if (sVar.Export.IsA("SeqVar_String"))
                     {
@@ -2876,7 +2856,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         // Just use Object
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
                     }
-
 
                     if (linkToAttachTo == null)
                     {
@@ -2966,7 +2945,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 seqEd.Show();
             }
         }
-
 
         private void LoadCustomClasses_Clicked(object sender, RoutedEventArgs e)
         {
@@ -3063,7 +3041,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                         EndBusy();
                     }
                 }, x => BusyText = x, entryDoubleClick, this);
-
             }
         }
 
@@ -3085,7 +3062,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     "Add switch outlinks", "1", true);
                 if (int.TryParse(result, out var howManyToAdd) && howManyToAdd > 0)
                 {
-
 
                     var sw = sAction.Export;
                     var currentIdx = KismetHelper.GetOutputLinksOfNode(sw).Count;

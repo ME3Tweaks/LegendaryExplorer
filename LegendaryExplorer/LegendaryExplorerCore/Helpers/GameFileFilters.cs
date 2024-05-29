@@ -14,6 +14,5 @@ namespace LegendaryExplorerCore.Helpers
         public const string ME1SaveFileFilter = "ME1 package files|*.u;*.upk;*sfm";
         public const string ME3ME2SaveFileFilter = "ME2/ME3 package files|*.pcc";
         public const string LESaveFileFilter = "LE package files|*.pcc";
-
     }
 }

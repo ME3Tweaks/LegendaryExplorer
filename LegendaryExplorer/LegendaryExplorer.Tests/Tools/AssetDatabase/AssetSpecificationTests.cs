@@ -100,7 +100,6 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
 
             spec.IsSelected = true;
             Assert.AreEqual(2, timesInvoked);
-
         }
     }
 }

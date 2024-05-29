@@ -78,5 +78,4 @@ namespace LegendaryExplorerCore.Dialogue
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
     }
-
 }

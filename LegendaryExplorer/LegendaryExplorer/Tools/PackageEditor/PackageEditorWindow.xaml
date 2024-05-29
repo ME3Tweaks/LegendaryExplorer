@@ -33,6 +33,7 @@
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
+        <SharedUI:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
@@ -270,12 +271,34 @@
                     <ColumnDefinition Width="6*" />
                 </Grid.ColumnDefinitions>
                 <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
-                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to previous (historically) selected entry.  You can also press the back button on your mouse" Command="{Binding NavigateBackCommand}">
-                    <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_ArrowLeft" Height="12" />
-                    </Button.Content>
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to previous (historically) selected entry.  You can also press the back button on your mouse or right click to view the list" Command="{Binding NavigateBackCommand}">
+                        <Button.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding BackwardsEntries}">
+                                <ContextMenu.DisplayMemberPath>InstancedFullPath</ContextMenu.DisplayMemberPath>
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Command" Value="{Binding Source={StaticResource bindingProxy}, Path=Data.NavigateToEntryCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding}" />
+                                    </Style>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <Button.Content>
+                            <fa5:FontAwesome Icon="Solid_ArrowLeft" Height="12" />
+                        </Button.Content>
                     </Button>
-                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to the next (historically) selected entry. You can also press the forward button on your mouse" Command="{Binding NavigateForwardCommand}">
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to the next (historically) selected entry. You can also press the forward button on your mouse or right click to view the list" Command="{Binding NavigateForwardCommand}">
+                        <Button.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding ForwardsEntries}">
+                                <ContextMenu.DisplayMemberPath>InstancedFullPath</ContextMenu.DisplayMemberPath>
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Command" Value="{Binding Source={StaticResource bindingProxy}, Path=Data.NavigateToEntryCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding}" />
+                                    </Style>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
                         <Button.Content>
                             <fa5:FontAwesome Icon="Solid_ArrowRight" Height="12" />
                         </Button.Content>

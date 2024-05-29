@@ -75,6 +75,13 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         /// <returns>True if request was made, false otherwise</returns>
         public static bool RequestASIInstallation(MEGame game, int ASIid, int version = 0)
         {
+            if (GetModManagerBuildNumber() >= 134)
+            {
+                // Mod Manager 9+
+                return InternalRequestModManagerTask($"--installasi {ASIid} --game {game} --asiversion {version}");
+            }
+
+            // Mod Manager 8
             return InternalRequestModManagerTask($"--installasi {ASIid} --game {game}");
         }
 

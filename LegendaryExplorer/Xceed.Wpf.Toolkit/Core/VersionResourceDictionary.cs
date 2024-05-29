@@ -100,7 +100,6 @@ namespace Xceed.Wpf.Toolkit.Core
       base.EndInit();
     }
 
-
     private enum InitState
     {
       NotInitialized,

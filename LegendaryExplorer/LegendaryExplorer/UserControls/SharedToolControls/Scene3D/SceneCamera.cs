@@ -23,7 +23,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public SceneCamera()
         {
-
         }
 
         public SceneCamera(Vector3 Position)

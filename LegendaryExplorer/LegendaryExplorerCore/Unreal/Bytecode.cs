@@ -340,7 +340,6 @@ namespace LegendaryExplorerCore.Unreal
             {0x0F81, "NATIVE_MoveSmooth"},
             {0x0F82, "NATIVE_SetPhysics"},
             {0x0F83, "NATIVE_AutonomousPhysics"},
-
             };
         #region NormalToken
         private const int EX_LocalVariable = 0x00;
@@ -440,9 +439,6 @@ namespace LegendaryExplorerCore.Unreal
         private const int EX_OptIfLocal = 0x63;
         private const int EX_OptIfInstance = 0x64;
         private const int EX_NamedFunction = 0x65;
-
-
-
 
         #endregion
 
@@ -1388,7 +1384,6 @@ namespace LegendaryExplorerCore.Unreal
                 pos++;
             else
                 pos += 2;
-
 
             switch (index)
             {
@@ -3700,7 +3695,6 @@ namespace LegendaryExplorerCore.Unreal
                 else
                     t.text += t2.text;
                 count++;
-
             }
             t.text += ");";
             int len = pos - start;
@@ -3775,7 +3769,6 @@ namespace LegendaryExplorerCore.Unreal
                 else
                     t.text += t2.text;
                 count++;
-
             }
             t.text += ");";
             int len = pos - start;
@@ -3807,7 +3800,6 @@ namespace LegendaryExplorerCore.Unreal
                 else
                     t.text += t2.text;
                 count++;
-
             }
             t.text += ");";
             int len = pos - start;
@@ -4637,7 +4629,6 @@ namespace LegendaryExplorerCore.Unreal
                 else
                     t.text += t2.text;
                 count++;
-
             }
             t.text += ")";
             int len = pos - start;
@@ -4945,7 +4936,6 @@ namespace LegendaryExplorerCore.Unreal
                 else
                     t.text += "\n";
 
-
                 int index = EndianReader.ToInt32(memory, endpos, export.FileRef.Endian);
                 int offset = EndianReader.ToInt32(memory, endpos + 8, export.FileRef.Endian);
                 if (export.FileRef.IsName(index))
@@ -4961,7 +4951,6 @@ namespace LegendaryExplorerCore.Unreal
                     }
                     else
                     {
-
 
                         t.text += name + " @ 0x" + offset.ToString("X8") + ")";
                         t.inPackageReferences.Add((position: endpos, type: Token.INPACKAGEREFTYPE_NAME, value: index));
@@ -4979,7 +4968,6 @@ namespace LegendaryExplorerCore.Unreal
             t.text += "\nLabel table offset: 0x" + labelTableOffset.ToString("X4");
 
             endpos += 4; //Skip extra 2
-
 
             t.raw = new byte[endpos - start];
             for (int i = 0; i < endpos - start; i++)
@@ -5072,6 +5060,5 @@ namespace LegendaryExplorerCore.Unreal
             return $"0x{pos.ToString("X" + paddingSize)} : {text}";
         }
     }
-
 
 }

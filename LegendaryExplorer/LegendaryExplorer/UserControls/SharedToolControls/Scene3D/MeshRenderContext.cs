@@ -171,7 +171,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             // Load the default position-texture shader
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, EmbeddedResources.StandardShader);
 
-
             this.ImmediateContext.OutputMerger.SetBlendState(this.AlphaBlendState);
         }
 

@@ -99,7 +99,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         IntegerNumber,
         FloatingNumber,
 
-
         INVALID
     }
 }

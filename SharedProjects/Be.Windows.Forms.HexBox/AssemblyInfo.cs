@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -16,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Be.Windows.Forms.HexBox")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -68,3 +69,5 @@ using System.Runtime.InteropServices;
 [assembly:CLSCompliant(true)]
 
 [assembly:ComVisible(false)]
+
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Windows Only Assembly")]

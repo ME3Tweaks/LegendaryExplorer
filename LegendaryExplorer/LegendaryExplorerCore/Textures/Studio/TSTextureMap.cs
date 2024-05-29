@@ -15,7 +15,6 @@ using PropertyChanged;
 
 namespace LegendaryExplorerCore.Textures.Studio
 {
-
     /// <summary>
     /// Describes a memory-unique texture, e.g. a unique full path.
     /// </summary>
@@ -103,7 +102,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 parentT = parentT.Parent;
             }
 
-
             TextureMapMemoryEntry lastParent = null;
             for (int i = 0; i < parents.Count; i++)
             {
@@ -130,7 +128,6 @@ namespace LegendaryExplorerCore.Textures.Studio
 
                     textureMapMemoryEntries[p.InstancedFullPath] = lastParent;
                 }
-
             }
 
             return lastParent;
@@ -235,7 +232,6 @@ namespace LegendaryExplorerCore.Textures.Studio
     {
         public TextureMapPackageEntry()
         {
-
         }
 
         /// <summary>
@@ -270,7 +266,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 {
                     CompressedMipInfos.Add(new MEMTextureMap.CompressedMipInfo() { Offset = em.DataOffset, CompressedSize = em.CompressedSize, UncompressedSize = em.UncompressedSize, StorageType = em.StorageType });
                 }
-
             }
 
             var props = exportEntry.GetProperties();
@@ -322,7 +317,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 {
                     crcCache[$"{TFCName}_{t2d.GetTopMip().externalOffset}"] = CRC;
                 }
-
             }
             catch (Exception)
             {
@@ -449,14 +443,12 @@ namespace LegendaryExplorerCore.Textures.Studio
             }
         }
 
-
         public static TextureMap GenerateMapForFolder(string rootDirectory,
             Func<IEntry, TextureMapMemoryEntry> nodeGeneratorDelegate,
             Action<TextureMapMemoryEntry> addRootElementDelegate,
             Action<string, int, int> progressDelegate = null,
             CancellationToken cts = default)
         {
-
             var rootNodes = new List<TextureMapMemoryEntry>();
             var game = MEGame.Unknown;
 
@@ -472,7 +464,6 @@ namespace LegendaryExplorerCore.Textures.Studio
             var packageFiles = Directory.GetFiles(rootDirectory, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
             var tfcs = Directory.GetFiles(rootDirectory, "*.tfc", SearchOption.AllDirectories).ToList();
             progressDelegate?.Invoke(@"Calculating texture map", 0, packageFiles.Count);
-
 
             // Pass 1: Find all unique memory texture paths
             int numDone = 0;
@@ -556,7 +547,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 CalculatedMap = rootNodes,
                 Game = game,
             };
-
         }
 
         public static void RegenerateEntries(string selectedFolder, List<TextureMapMemoryEntry> entriesToRefresh,

@@ -80,7 +80,6 @@ namespace LegendaryExplorerCore.Coalesced
             XDocument xDoc;
             XElement rootElement;
 
-
             foreach (var file in coal.Files)
             {
                 var fileId = Path.GetFileNameWithoutExtension(file.Name);
@@ -245,7 +244,6 @@ namespace LegendaryExplorerCore.Coalesced
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         /// <summary>

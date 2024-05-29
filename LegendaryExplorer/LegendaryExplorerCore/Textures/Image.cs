@@ -290,7 +290,7 @@ namespace LegendaryExplorerCore.Textures
         public static byte[] ToArray(SixLabors.ImageSharp.Image image, IImageFormat imageFormat)
         {
             using var memoryStream = new MemoryStream();
-            var imageEncoder = image.GetConfiguration().ImageFormatsManager.GetEncoder(imageFormat);
+            var imageEncoder = image.Configuration.ImageFormatsManager.GetEncoder(imageFormat);
             image.Save(memoryStream, imageEncoder);
             return memoryStream.ToArray();
         }
@@ -838,6 +838,5 @@ namespace LegendaryExplorerCore.Textures
 
             return false;
         }
-
     }
 }

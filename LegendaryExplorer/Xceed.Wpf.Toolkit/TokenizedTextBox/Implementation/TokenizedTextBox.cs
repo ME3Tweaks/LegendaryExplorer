@@ -123,7 +123,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
     #endregion //Properties
 
     #region Constructors

@@ -10,7 +10,6 @@ namespace LegendaryExplorerCore.Coalesced.Config
     /// </summary>
     public static class ConfigTools
     {
-
         /// <summary>
         /// Builds a combined config bundle representing the final set of the files on disk for the specified target
         /// </summary>
@@ -41,9 +40,9 @@ namespace LegendaryExplorerCore.Coalesced.Config
             if (game == MEGame.ME2)
                 return Path.Combine(MEDirectories.GetBioGamePath(game, gamePathOverride), @"Config", @"PC", @"Cooked", @"Coalesced.ini");
             if (game is MEGame.LE1 or MEGame.LE2)
-                return Path.Combine(MEDirectories.GetBioGamePath(game, gamePathOverride), @"Coalesced_INT.bin");
+                return Path.Combine(MEDirectories.GetCookedPath(game, gamePathOverride), @"Coalesced_INT.bin");
             if (game.IsGame3())
-                return Path.Combine(MEDirectories.GetBioGamePath(game, gamePathOverride), @"Coalesced.bin");
+                return Path.Combine(MEDirectories.GetCookedPath(game, gamePathOverride), @"Coalesced.bin");
 
             throw new Exception($@"Cannot fetch combined Coalesced path for unsupported game: {game}");
         }

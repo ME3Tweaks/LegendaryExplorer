@@ -24,8 +24,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                MorphLODModels = Array.Empty<MorphLODModel>(),
-                BoneOffsets = Array.Empty<BoneOffset>()
+                MorphLODModels = [],
+                BoneOffsets = []
             };
         }
 
@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref vert);
+                    MemoryMarshal.Write(span, in vert);
                     sc.ms.Writer.Write(span[..18]);
                 }
             }

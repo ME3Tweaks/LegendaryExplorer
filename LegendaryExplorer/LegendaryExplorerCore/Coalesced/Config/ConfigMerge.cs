@@ -121,7 +121,6 @@ namespace LegendaryExplorerCore.Coalesced.Config
                                 shouldLog: DebugConfigMerge);
                             targetSection.AddEntry(new CoalesceProperty(incomingProperty.Name, new CoalesceValue(prop.Value, game == MEGame.LE1 ? CoalesceParseAction.Add : prop.ParseAction))); // Add our property to the list
                             hasChanged = true;
-
                         }
                         break;
                     case CoalesceParseAction.RemoveProperty: // Type 1

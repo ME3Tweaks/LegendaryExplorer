@@ -15,7 +15,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public uint ID { get; set; }
 
-
         public byte SoundType { get; set; }
 
         public uint State { get; set; }

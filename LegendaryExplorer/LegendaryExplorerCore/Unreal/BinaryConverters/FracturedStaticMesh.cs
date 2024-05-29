@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             base.ForEachUIndex(game, in action);
-            Unsafe.AsRef(action).Invoke(ref SourceStaticMesh, nameof(SourceStaticMesh));
+            Unsafe.AsRef(in action).Invoke(ref SourceStaticMesh, nameof(SourceStaticMesh));
         }
     }
 

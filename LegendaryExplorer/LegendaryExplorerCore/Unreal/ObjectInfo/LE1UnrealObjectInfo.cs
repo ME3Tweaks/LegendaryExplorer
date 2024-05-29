@@ -233,7 +233,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //Custom additions are tweaks and additional classes either not automatically able to be determined
             //or new classes designed in the modding scene that must be present in order for parsing to work properly
 
-
             // The following is left only as examples if you are building new ones
             /*classes["BioSeqAct_ShowMedals"] = new ClassInfo
             {
@@ -731,8 +730,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 ObjInstanceVersion = 1
             };
             #endregion
-
-
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE1);
 

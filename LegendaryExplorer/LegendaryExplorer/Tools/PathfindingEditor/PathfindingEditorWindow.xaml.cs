@@ -859,7 +859,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         #region GraphGeneration
 
-
         /// <summary>
         /// Reads the persistent level export and loads the pathfindingnodemasters that will be used in the graph.
         /// This method will recursively call itself - do not pass in a parameter from an external call.
@@ -998,8 +997,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 return true; //file still loaded.
             }
 
-
-
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
             IsReadingLevel = false;
@@ -1030,15 +1027,12 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
             CreateConnections();
 
-
             #region Sequence References to nodes
             if (ShowSequenceReferences)
             {
-
                 var referencemap = new Dictionary<int, List<ExportEntry>>(); //node index mapped to list of things referencing it
                 foreach (ExportEntry export in Pcc.Exports)
                 {
-
                     if (export.ClassName == "SeqEvent_Touch" || export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
                     {
                         var props = export.GetProperties();
@@ -1080,7 +1074,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
             }
             #endregion
-
 
             TagsList.ClearEx();
             foreach (var node in GraphNodes)
@@ -1507,7 +1500,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 var debug = s.Tag;
                 var currentlocation = PathEdUtils.GetLocation(export);
                 CurrentNodeXY = $"{s.GlobalBounds.X},{s.GlobalBounds.Y}";
-
             }
             contextMenu.IsOpen = true;
             graphEditor.DisableDragging();
@@ -1538,7 +1530,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 OpenContextMenu();
             }
             ChangingSelectionByGraphClick = false;
-
         }
         private void actornode_DoubleClick(object sender, PInputEventArgs e)
         {
@@ -1797,7 +1788,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is ExportEntry export &&
                 float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
-
                 PathEdUtils.SetLocation(export, x, y, z);
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 s.SetOffset(x, y);
@@ -1832,7 +1822,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             else
             {
                 MessageBox.Show("No location property on this export.");
-
             }
         }
         private void CoordinateEditor_GotFocus(object sender, RoutedEventArgs e)
@@ -1877,7 +1866,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         private void HighlightCoverlinkSlots(ExportEntry coverlink)
         {
-
             var props = coverlink.GetProperty<ArrayProperty<StructProperty>>("Slots");
             if (props != null)
             {
@@ -1913,7 +1901,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
         }
         public List<int> CurrentlyHighlightedCoverlinkNodes { get; private set; }
-
 
         private void ChangeNodeType()
         {
@@ -2875,7 +2862,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -2948,7 +2934,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                             {
                                 var b = export.GetProperty<BoolProperty>("bTopNode");
                                 availableNodeChangeableType.Active = (b == null && !availableNodeChangeableType.Top) || (b != null && b == availableNodeChangeableType.Top);
-
                             }
                             else
                             {
@@ -3056,7 +3041,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                             }
                             break;
                     }
-
 
                 }
 
@@ -3346,7 +3330,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         {
             if (EntrySelector.GetEntry<ExportEntry>(this, Pcc) is ExportEntry selectedEntry)
             {
-
                 if (Pcc.AddToLevelActorsIfNotThere(selectedEntry))
                 {
                     RefreshGraph();
@@ -3379,7 +3362,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 }
                 else if (nodeEntry.ClassName.Contains("Component"))
                 {
-
                     var parent = nodeEntry.Parent as ExportEntry;
                     StaticCollectionActor sca;
                     if (parent.IsA("StaticMeshCollectionActor"))
@@ -3551,7 +3533,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             }
             if (nodeEntry.Parent is ExportEntry parent && (parent.IsA("StaticMeshCollectionActor") || parent.IsA("StaticLightCollectionActor")))
             {
-
                 StaticCollectionActor sca;
                 if (parent.IsA("StaticMeshCollectionActor"))
                 {
@@ -3630,7 +3611,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             {
                 string pathfindingChainFile = d.FileName;
 
-
                 var pointsStrs = File.ReadAllLines(pathfindingChainFile);
                 var points = new List<Point3D>();
                 int lineIndex = 0;
@@ -3647,7 +3627,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 var basePathNode = Pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
                 ExportEntry firstNode = null;
                 ExportEntry previousNode = null;
-
 
                 foreach (var point in points)
                 {
@@ -4168,7 +4147,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 FileName = $"{Pcc.Game}_{pccname}_group",
                 AddExtension = true,
                 CustomPlaces = AppDirectories.GameCustomPlaces
-
             };
             if (d.ShowDialog() == true)
             {
@@ -4486,7 +4464,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 {
                     for (int index = 0; index < components.Count; index++)
                     {
-
                         ((float posX, float posY, float posZ), Vector3 scale, Rotator rotation) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
                         Matrix4x4 newm = ActorUtils.ComposeLocalToWorld(new Vector3(posX + shifts.X, posY + shifts.Y, posZ + shifts.Z), rotation, scale);
@@ -4571,10 +4548,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     && actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components
                     && sca.LocalToWorldTransforms.Count >= components.Count)
                 {
-
                     for (int index = 0; index < components.Count; index++)
                     {
-
                         ((float posX, float posY, float posZ), Vector3 scale, (int uuPitch, int uuYaw, int uuRoll)) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
                         float calcX = posX * cosCalcYaw - posY * sinCalcYaw;
@@ -4673,10 +4648,8 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 if (ObjectBinary.From(actor) is StaticCollectionActor sca &&
                     actor.GetProperty<ArrayProperty<ObjectProperty>>(sca.ComponentPropName) is { } components && sca.LocalToWorldTransforms.Count >= components.Count)
                 {
-
                     for (int index = 0; index < components.Count; index++)
                     {
-
                         ((float posX, float posY, float posZ), Vector3 _, Rotator _) = sca.LocalToWorldTransforms[index].UnrealDecompose();
 
                         groupX += posX;
@@ -4805,7 +4778,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 level.CachedPhysPerTriSMDataMap = newPhysPerTrimap;
                 level.CachedPhysPerTriSMDataStore = newPhysPerTristore;
                 references.Clear();
-
 
                 //Clean up NAV data - how to clean up Nav ints?  [Just null unwanted refs]
                 if (norefsList.Contains(level.NavListStart))
@@ -4958,7 +4930,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             MessageBox.Show("Trashed selected actors and removed them from level.");
         }
         #endregion
-
 
         public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
         {

@@ -118,7 +118,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-
             //parse default parameter values
             if (func.HasOptionalParms)
             {
@@ -209,7 +208,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Body = body;
             Self = NodeUtils.GetContainingClass(body);
             SelfDeclaration = new VariableDeclaration(Self, default, "Self");
-
 
             ExpressionScopes = new();
             ExpressionScopes.Push((Symbols.CurrentScopeName, false));
@@ -407,7 +405,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     ParseError("Can only declare variables at the top of a function!", current);
                 }
 
-
                 if (CurrentToken.Type == TokenType.EOF)
                 {
                     break;
@@ -600,7 +597,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 return null;
             }
-
 
             if (Consume(TokenType.Assign) is { } assign)
             {
@@ -802,7 +798,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 AddConversion(func.ReturnType, ref value);
             }
 
-
             return new ReturnStatement(value, token.StartPos, token.EndPos);
         }
 
@@ -862,7 +857,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 ParseError("Switch statement must have a body!", body);
             }
-
 
             return new SwitchStatement(expression, body, token.StartPos, token.EndPos);
         }
@@ -1383,7 +1377,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else
                 {
-                    
                     if (bestMatch.LeftOperand.VarType is Class {IsInterface: true} c)
                     {
                         VariableType varType = lhs.ResolveType() ?? rhs.ResolveType() ?? c;
@@ -1484,7 +1477,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(TokenType.ExclamationMark, exprType);
                 return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
-
             }
             if (Matches(TokenType.MinusSign, EF.Operator))
             {
@@ -1535,7 +1527,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(TokenType.Complement, exprType);
                 return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
-
             }
 
             expr = CompositeRef();
@@ -1666,7 +1657,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 while (Matches(TokenType.Dot))
                 {
-
                     var lhsType = lhs.ResolveType();
                     if (lhsType is DynamicArrayType dynArrType)
                     {
@@ -1829,7 +1819,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             break;
                         }
                     }
-                    
                 }
 
                 return lhs;
@@ -1920,7 +1909,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         MemberType = variableDeclaration?.VarType
                     };
-
                 }
                 else
                 {
@@ -2521,7 +2509,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             //    }
             //    Tokens.Advance(-1);
             //}
-
 
             if (Matches(TokenType.Word))
             {

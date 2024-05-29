@@ -229,14 +229,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             Loaded += (s, e) =>
             {
                 // only at this point the control is ready
-                Window.GetWindow(this) // get the parent window
-                    .Closing += (s1, e1) =>
+                var window = Window.GetWindow(this); // get the parent window
+                //this will obviously always be true at runtime, but is NOT true in the designer.
+                if (window is not null)
                 {
-                    if (!e1.Cancel)
+                    window.Closing += (s1, e1) =>
                     {
-                        Dispose();
-                    }
-                };
+                        if (!e1.Cancel)
+                        {
+                            Dispose();
+                        }
+                    };
+                }
             };
         }
 
@@ -363,8 +367,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 D3DImage.RequestRender();
             }
         }
-
-
 
         public event EventHandler Render;
 

@@ -91,24 +91,21 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
     private USparseArray<SetElement> Elements;
     private SetElementId[] Hash;
     private int HashSize; //MUST be a power of two!
-    internal TKeyFuncs KeyFuncs;
 
     public int Count => Elements.Count;
 
     public USet()
     {
-        Elements = new USparseArray<SetElement>();
-        Hash = Array.Empty<SetElementId>();
+        Elements = [];
+        Hash = [];
         HashSize = 0;
-        KeyFuncs = default;
     }
 
     public USet(int capacity)
     {
         Elements = new USparseArray<SetElement>(capacity);
-        Hash = Array.Empty<SetElementId>();
+        Hash = [];
         HashSize = 0;
-        KeyFuncs = default;
     }
 
     public void Empty(int newCapacity = 0)
@@ -159,9 +156,9 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
     public void Add(T value, bool alwaysReplace = false)
     {
-        if (alwaysReplace || !KeyFuncs.AllowDuplicateKeys)
+        if (alwaysReplace || !TKeyFuncs.AllowDuplicateKeys)
         {
-            SetElementId existingId = FindId(KeyFuncs.GetKey(value));
+            SetElementId existingId = FindId(TKeyFuncs.GetKey(value));
 
             if (existingId.IsValidId())
             {
@@ -181,7 +178,7 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
     public bool TryAddUnique(T value)
     {
-        if (FindId(KeyFuncs.GetKey(value)).IsValidId())
+        if (FindId(TKeyFuncs.GetKey(value)).IsValidId())
         {
             return false;
         }
@@ -229,16 +226,16 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
         if (HashSize > 0)
         {
-            ref SetElementId nextElementId = ref GetTypedHash(KeyFuncs.GetKeyHash(key));
+            ref SetElementId nextElementId = ref GetTypedHash(TKeyFuncs.GetKeyHash(key));
             while (nextElementId.IsValidId())
             {
                 ref SetElement element = ref Elements[nextElementId];
-                if (KeyFuncs.Matches(KeyFuncs.GetKey(element.Value), key))
+                if (TKeyFuncs.Matches(TKeyFuncs.GetKey(element.Value), key))
                 {
                     Remove(nextElementId);
                     numRemovedElements++;
 
-                    if (!KeyFuncs.AllowDuplicateKeys)
+                    if (!TKeyFuncs.AllowDuplicateKeys)
                     {
                         break;
                     }
@@ -255,14 +252,13 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
     public bool Contains(TKey key) => FindId(key).IsValidId();
 
-
     public SetElementId FindId(TKey key)
     {
         if (HashSize > 0)
         {
-            for (SetElementId elementId = GetTypedHash(KeyFuncs.GetKeyHash(key)); elementId.IsValidId(); elementId = Elements[elementId].HashNextId)
+            for (SetElementId elementId = GetTypedHash(TKeyFuncs.GetKeyHash(key)); elementId.IsValidId(); elementId = Elements[elementId].HashNextId)
             {
-                if (KeyFuncs.Matches(KeyFuncs.GetKey(Elements[elementId].Value), key))
+                if (TKeyFuncs.Matches(TKeyFuncs.GetKey(Elements[elementId].Value), key))
                 {
                     return elementId;
                 }
@@ -276,9 +272,9 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
     {
         if (HashSize > 0)
         {
-            for (SetElementId elementId = GetTypedHash(KeyFuncs.GetKeyHash(key)); elementId.IsValidId(); elementId = Elements[elementId].HashNextId)
+            for (SetElementId elementId = GetTypedHash(TKeyFuncs.GetKeyHash(key)); elementId.IsValidId(); elementId = Elements[elementId].HashNextId)
             {
-                if (KeyFuncs.Matches(KeyFuncs.GetKey(Elements[elementId].Value), key))
+                if (TKeyFuncs.Matches(TKeyFuncs.GetKey(Elements[elementId].Value), key))
                 {
                     yield return elementId;
                 }
@@ -344,7 +340,7 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
     private void HashElement(SetElementId elementId, ref SetElement element)
     {
-        element.HashIndex = KeyFuncs.GetKeyHash(KeyFuncs.GetKey(element.Value)) & (HashSize - 1);
+        element.HashIndex = TKeyFuncs.GetKeyHash(TKeyFuncs.GetKey(element.Value)) & (HashSize - 1);
 
         ref SetElementId hashSlot = ref GetTypedHash(element.HashIndex);
         element.HashNextId = hashSlot;
@@ -401,22 +397,21 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
 
 public interface IKeyFuncs<in T, TKey>
 {
-    //TODO NET7: make these static
-    public TKey GetKey(T t);
+    public static abstract TKey GetKey(T t);
 
-    public bool Matches(TKey a, TKey b);
+    public static abstract bool Matches(TKey a, TKey b);
 
-    public int GetKeyHash(TKey key);
+    public static abstract int GetKeyHash(TKey key);
 
-    public bool AllowDuplicateKeys { get; }
+    public static abstract bool AllowDuplicateKeys { get; }
 }
 
 public struct DefaultKeyFuncs<T> : IKeyFuncs<T, T>
 {
-    public T GetKey(T t) => t;
+    public static T GetKey(T t) => t;
 
-    public bool Matches(T a, T b) => EqualityComparer<T>.Default.Equals(a, b);
+    public static bool Matches(T a, T b) => EqualityComparer<T>.Default.Equals(a, b);
 
-    public int GetKeyHash(T key) => key.GetHashCode();
-    public bool AllowDuplicateKeys => false;
+    public static int GetKeyHash(T key) => key.GetHashCode();
+    public static bool AllowDuplicateKeys => false;
 }

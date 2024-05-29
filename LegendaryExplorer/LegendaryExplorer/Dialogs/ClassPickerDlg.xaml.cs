@@ -14,7 +14,6 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class ClassPickerDlg : NotifyPropertyChangedWindowBase
     {
-
         private ClassInfo ChosenClass;
 
         private string _okButtonText = "Add";

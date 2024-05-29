@@ -183,7 +183,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         public static string CookedName => "CookedPCConsole";
 
-
         private static string _DefaultGamePath;
         /// <summary>
         /// Gets or sets the default game root path that is used when locating game folders.
@@ -219,8 +218,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// Gets the path to the basegame PCConsoleTOC.bin file for LE3
         /// </summary>
         public static string TocFile => DefaultGamePath != null ? Path.Combine(DefaultGamePath, @"BIOGame", "PCConsoleTOC.bin") : null;
-
-
 
         static LE3Directory()
         {

@@ -57,7 +57,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             i = 0;
             staticCollectionActor = null;
             return false;
-
         }
 
         public (Vector3 translation, Vector3 scale, Rotator rotation) GetDecomposedTransformationForIndex(int index) => LocalToWorldTransforms[index].UnrealDecompose();

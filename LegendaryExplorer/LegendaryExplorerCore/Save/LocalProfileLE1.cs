@@ -40,7 +40,6 @@ namespace LegendaryExplorerCore.Save
         /// </summary>
         public uint CRC { get; set; }
 
-
         public MemoryStream Serialize()
         {
             var ms = new MemoryStream();
@@ -53,7 +52,6 @@ namespace LegendaryExplorerCore.Save
             ms.WriteUInt32(Crc32.Compute(ms.ToArray())); // Use CRC method for coalesced. It seems to work
             return ms;
         }
-
 
         public static LocalProfileLE1 DeserializeLocalProfile(string filePath)
         {
@@ -79,7 +77,6 @@ namespace LegendaryExplorerCore.Save
             // Read checksum (CRC)
             CRC = stream.ReadUInt32();
         }
-
     }
 
     /// <summary>
@@ -217,7 +214,6 @@ namespace LegendaryExplorerCore.Save
                 bin.WriteFloat(arrayToSerialize[i]);
             }
         }
-
 
         public override void Serialize(Stream stream)
         {
@@ -582,7 +578,6 @@ namespace LegendaryExplorerCore.Save
             stream.WriteInt32(PlayedHours);
             stream.WriteInt32(PlayedMin);
             stream.WriteInt32(PlayedSec);
-
         }
     }
 

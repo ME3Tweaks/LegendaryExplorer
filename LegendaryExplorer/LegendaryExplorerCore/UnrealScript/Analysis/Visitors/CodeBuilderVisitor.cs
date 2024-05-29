@@ -55,9 +55,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return builder.GetOutput();
         }
 
-
         protected readonly TFormatter Formatter = new();
-        private readonly Stack<int> ExpressionPrescedence = new(new []{NOPRESCEDENCE});
+        private readonly Stack<float> ExpressionPrescedence = new(new float[]{NOPRESCEDENCE});
 
         private const int NOPRESCEDENCE = int.MaxValue;
 
@@ -134,7 +133,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", EF.Class);
                 Append(")");
             }
-
 
             EClassFlags flags = node.Flags;
             if (flags.Has(EClassFlags.Native))
@@ -256,7 +254,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             return true;
         }
-
 
         public bool VisitNode(VariableDeclaration node)
         {
@@ -1167,9 +1164,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(InOpReference node)
         {
             // [(] expression operatorkeyword expression [)]
-            bool scopeNeeded = node.Operator.Precedence > ExpressionPrescedence.Peek();
-            ExpressionPrescedence.Push(node.Operator.Precedence);
-
+            bool scopeNeeded = node.Operator.Precedence >= ExpressionPrescedence.Peek();
+            //Since operators are evaluated left to right, expressions with equal precedence on the left side do not require parens.
+            //Slightly increasing the precedence of current expression is hacky, but it works
+            ExpressionPrescedence.Push(node.Operator.Precedence + 0.01f); 
             if (scopeNeeded) Append("(");
             if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign && node.LeftOperand is PrimitiveCast { CastType.Name: "string" } lpc)
             {
@@ -1179,9 +1177,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 node.LeftOperand.AcceptVisitor(this);
             }
+            ExpressionPrescedence.Pop();
             Space();
             Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
             Space();
+            ExpressionPrescedence.Push(node.Operator.Precedence);
             if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType.Name: "string" } rpc)
             {
                 rpc.CastTarget.AcceptVisitor(this);
