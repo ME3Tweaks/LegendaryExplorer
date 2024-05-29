@@ -112,6 +112,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ObservableCollectionExtended<string> ClassDropdownList { get; } = [];
 
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; } = [];
+        public ObservableCollectionExtended<IEntry> BackwardsEntries { get; } = new();
+        public ObservableCollectionExtended<IEntry> ForwardsEntries { get; } = new();
 
         private TreeViewEntry _selectedItem;
         public TreeViewEntry SelectedItem
@@ -135,8 +137,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     {
                         // 0 = tree root
                         //Debug.WriteLine("Push onto backwards: " + oldIndex);
-                        BackwardsIndexes.Push(oldIndex.Value);
-                        ForwardsIndexes.Clear(); //forward list is no longer valid
+                        BackwardsEntries.Insert(0, Pcc.GetEntry(oldIndex.Value));
+                        ForwardsEntries.Clear(); //forward list is no longer valid
                     }
 
                     Preview();
@@ -311,8 +313,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             ForceReloadPackageCommand = new GenericCommand(() => ExperimentsMenu.ForceReloadPackageWithoutSharing(), () => ShowExperiments && ExperimentsMenu.CanForceReload());
 
-            NavigateForwardCommand = new GenericCommand(NavigateToNextEntry, () => CurrentView == CurrentViewMode.Tree && ForwardsIndexes != null && ForwardsIndexes.Any());
-            NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsIndexes != null && BackwardsIndexes.Any());
+            NavigateForwardCommand = new GenericCommand(NavigateToNextEntry, () => CurrentView == CurrentViewMode.Tree && ForwardsEntries != null && ForwardsEntries.Any());
+            NavigateBackCommand = new GenericCommand(NavigateToPreviousEntry, () => CurrentView == CurrentViewMode.Tree && BackwardsEntries.Any());
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
@@ -2861,10 +2863,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ResetTreeView();
             NamesList.ClearEx();
             ClassDropdownList.ClearEx();
-            BackwardsIndexes = [];
-            ForwardsIndexes = [];
-            StatusBar_LeftMostText.Text =
-                $"Loading {loadingName} ({FileSize.FormatSize(loadingSize)})";
+            BackwardsEntries.ClearEx();
+            ForwardsEntries.ClearEx();
+            StatusBar_LeftMostText.Text = $"Loading {loadingName} ({FileSize.FormatSize(loadingSize)})";
             //Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
         }
 
@@ -4259,23 +4260,20 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 NavigateToNextEntry();
         }
 
-        private Stack<int> BackwardsIndexes;
-        private Stack<int> ForwardsIndexes;
-
         private void NavigateToNextEntry()
         {
-            if (ForwardsIndexes != null && ForwardsIndexes.Any())
+            if (ForwardsEntries.Any())
             {
-                if (SelectedItem != null && SelectedItem.UIndex != 0 && ForwardsIndexes.Peek() != SelectedItem.UIndex)
+                if (SelectedItem != null && SelectedItem.UIndex != 0 && ForwardsEntries[0].UIndex != SelectedItem.UIndex)
                 {
                     //Debug.WriteLine("Push onto backwards: " + SelectedItem.UIndex);
-                    BackwardsIndexes.Push(SelectedItem.UIndex);
+                    BackwardsEntries.Insert(0, Pcc.GetEntry(SelectedItem.UIndex));
                 }
 
-                var index = ForwardsIndexes.Pop();
-                Debug.WriteLine("Navigate to " + index);
+                var entry = ForwardsEntries[0];
+                ForwardsEntries.RemoveAt(0);
                 IsBackForwardsNavigationEvent = true;
-                GoToNumber(index);
+                GoToNumber(entry.UIndex);
                 IsBackForwardsNavigationEvent = true;
             }
         }
@@ -4284,18 +4282,18 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void NavigateToPreviousEntry()
         {
-            if (BackwardsIndexes != null && BackwardsIndexes.Any())
+            if (BackwardsEntries.Any())
             {
-                if (SelectedItem != null && SelectedItem.UIndex != 0 && BackwardsIndexes.Peek() != SelectedItem.UIndex)
+                if (SelectedItem != null && SelectedItem.UIndex != 0 && BackwardsEntries[0].UIndex != SelectedItem.UIndex)
                 {
                     //Debug.WriteLine("Push onto forwards: " + SelectedItem.UIndex);
-                    ForwardsIndexes.Push(SelectedItem.UIndex);
+                    ForwardsEntries.Insert(0, Pcc.GetEntry(SelectedItem.UIndex));
                 }
 
-                var index = BackwardsIndexes.Pop();
-                Debug.WriteLine("Navigate to " + index);
+                var entry = BackwardsEntries[0];
+                BackwardsEntries.RemoveAt(0); // Might want to make this an extension method. M3 uses 'PullFromFront()'
                 IsBackForwardsNavigationEvent = true;
-                GoToNumber(index);
+                GoToNumber(entry.UIndex);
                 IsBackForwardsNavigationEvent = false;
             }
         }
