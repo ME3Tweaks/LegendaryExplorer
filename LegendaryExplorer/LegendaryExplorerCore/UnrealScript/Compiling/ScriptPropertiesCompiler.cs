@@ -318,6 +318,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 case DynamicArrayType dynamicArrayType:
                     VariableType elementType = dynamicArrayType.ElementType;
+                    if (literal is StringLiteral stringLit)
+                    {
+                        prop = new ImmutableByteArrayProperty(Convert.FromBase64String(stringLit.Value), propName);
+                        break;
+                    }
                     var properties = ((DynamicArrayLiteral)literal).Values.Select(lit => MakeProperty(null, elementType, lit, subObjectDict));
                     switch (elementType)
                     {

@@ -720,6 +720,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         return new StringLiteral(strProperty.Value);
                     case StructProperty structProperty:
                         return new StructLiteral(null, ConvertProperties(structProperty.Properties, export, structProperty.StructType, true, fileLib, usingSubObjects));
+                    case ImmutableByteArrayProperty byteArrayProperty:
+                        return new StringLiteral(Convert.ToBase64String(byteArrayProperty.Bytes));
                     case ArrayPropertyBase arrayPropertyBase:
                         return new DynamicArrayLiteral(null, arrayPropertyBase.Properties.Select(ConvertPropertyValue).ToList());
                     default:

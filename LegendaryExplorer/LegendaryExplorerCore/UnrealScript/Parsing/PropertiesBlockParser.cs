@@ -521,10 +521,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                     }
                     break;
-                case DynamicArrayType:
+                case DynamicArrayType arrayType:
                     if (literal is not DynamicArrayLiteral)
                     {
+                        if (arrayType.ElementType != SymbolTable.ByteType
+                            || literal is not StringLiteral stringLiteral
+                            || !Base64.IsValid(stringLiteral.Value))
+                        {
                         TypeError($"Expected a dynamic array literal!", literal);
+                    }
                     }
                     break;
                 case Enumeration enumeration:
