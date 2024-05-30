@@ -173,7 +173,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public PropertyRecord[] PropertyRecords { get; set; }
 
-        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => (IEnumerable<IAssetUsage>)Usages.AsEnumerable();
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages.Cast<IAssetUsage>(); // Boxes ClassUsages to IAssetRecord
         public ClassUsage[] Usages { get; set; }
 
         public ClassRecord(string @class, int definitionFile, int definitionUIndex, string superClass, PropertyRecord[] propertyRecords, ClassUsage[] usages)
