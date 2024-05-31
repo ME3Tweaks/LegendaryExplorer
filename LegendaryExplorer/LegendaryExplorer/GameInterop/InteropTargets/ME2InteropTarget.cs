@@ -37,7 +37,7 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override bool TryGetProcess(out Process process)
         {
             process = Process.GetProcessesByName("ME2Game").FirstOrDefault() ?? Process.GetProcessesByName("MassEffect2").FirstOrDefault();
-            return process != null;
+            return process != null && process.MainModule?.FileVersionInfo.ProductMajorPart < 2;
         }
 
         public override void SelectGamePath()

@@ -593,9 +593,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     foreach (ExportEntry child in exportEntry.GetChildren<ExportEntry>())
                     {
-                        var type = new VariableType(child.ClassName);
-                        var decl = new VariableDeclaration(type, default, child.ObjectName.Instanced);
-                        defaults.Add(new Subobject(decl, new Class(child.ClassName, null, null, default), GetStatements(child), child.HasArchetype));
+                        defaults.Add(new Subobject(child.ObjectName.Instanced, new Class(child.ClassName, null, null, default), GetStatements(child), child.HasArchetype));
                     }
                 }
 
@@ -606,7 +604,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
         public static Expression ConvertToLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
         {
-            var statements = ConvertProperties(new PropertyCollection { prop }, containingExport, containingExport.ObjectName.Instanced, false, lib, false);
+            var statements = ConvertProperties([prop], containingExport, containingExport.ObjectName.Instanced, false, lib, false);
             return statements[0].Value;
         }
 
@@ -684,7 +682,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         var symRef = new SymbolReference(null, funcName);
                         if (pcc.TryGetEntry(delegateProperty.Value.ContainingObjectUIndex, out IEntry containingObject))
                         {
-                            symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("Class")), symRef);
+                            if (containingObject is ExportEntry { IsDefaultObject: true })
+                            {
+                                symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("class")), symRef);
+                            }
+                            else
+                            {
+                                symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.InstancedFullPath), new VariableType(containingObject.ClassName)), symRef);
+                            }
                         }
                         return symRef;
                     case EnumProperty enumProperty:
@@ -720,6 +725,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         return new StringLiteral(strProperty.Value);
                     case StructProperty structProperty:
                         return new StructLiteral(null, ConvertProperties(structProperty.Properties, export, structProperty.StructType, true, fileLib, usingSubObjects));
+                    case ImmutableByteArrayProperty byteArrayProperty:
+                        return new StringLiteral(Convert.ToBase64String(byteArrayProperty.Bytes));
                     case ArrayPropertyBase arrayPropertyBase:
                         return new DynamicArrayLiteral(null, arrayPropertyBase.Properties.Select(ConvertPropertyValue).ToList());
                     default:

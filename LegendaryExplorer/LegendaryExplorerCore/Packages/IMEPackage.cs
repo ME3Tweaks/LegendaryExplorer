@@ -295,11 +295,22 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         ImportEntry FindImport(string instancedname);
         /// <summary>
-        /// Looks for an entry (imports first, then exports) with the same instanced name.
+        /// Looks for an entry with the same instanced path.
         /// </summary>
-        /// <param name="instancedname"></param>
+        /// <param name="instancedPath"></param>
         /// <returns></returns>
-        IEntry FindEntry(string instancedname);
+        /// <remarks>Can return the "wrong" one if multiple entries have the same path.
+        /// Use <see cref="FindEntry(string, string)"/> to distinguish by class</remarks>
+        IEntry FindEntry(string instancedPath);
+
+        /// <summary>
+        /// Looks for an entry with the same instanced path and class.
+        /// </summary>
+        /// <param name="instancedPath"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        /// <remarks>Falls back to a linear search if it finds a match on path but not class</remarks>
+        IEntry FindEntry(string instancedPath, string className);
         /// <summary>
         /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
         /// </summary>

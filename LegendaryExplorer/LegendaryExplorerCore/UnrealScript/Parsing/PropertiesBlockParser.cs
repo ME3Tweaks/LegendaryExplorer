@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
@@ -15,14 +16,24 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
     internal sealed class PropertiesBlockParser : StringParserBase
     {
-        private readonly Stack<ObjectType> ExpressionScopes;
-        private readonly Stack<Class> SubObjectClasses;
+        private readonly Stack<ObjectType> ExpressionScopes = [];
+        private readonly Stack<Class> SubObjectClasses = [];
         private readonly IMEPackage Pcc;
         private readonly bool IsStructDefaults;
         private readonly bool IsInDefaultsTree;
-        private readonly ObjectType Outer;
         private Func<IMEPackage, string, IEntry> MissingObjectResolver;
         private bool InSubOject;
+
+        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        {
+            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree)
+            {
+                MissingObjectResolver = missingObjectResolver
+            };
+            var statements = parser.Parse(false);
+
+            propsBlock.Statements = statements;
+        }
 
         public static void ParseStructDefaults(Struct s, IMEPackage pcc, SymbolTable symbols, MessageLog log)
         {
@@ -39,30 +50,36 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
-        public static void Parse(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        public static List<Subobject> ParseBulkPropsFile(TokenStream tokens, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
         {
-            var parser = new PropertiesBlockParser(propsBlock, pcc, symbols, log, isInDefaultsTree)
+            var parser = new PropertiesBlockParser(tokens, pcc, symbols, log, isInDefaultsTree)
             {
                 MissingObjectResolver = missingObjectResolver
             };
-            var statements = parser.Parse(false);
-
-            propsBlock.Statements = statements;
+            return parser.ParseBulkProps();
         }
 
-        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
+        private PropertiesBlockParser(IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree)
         {
             Symbols = symbols;
             Log = log;
-            Tokens = propsBlock.Tokens;
             Pcc = pcc;
-            Outer = (ObjectType)propsBlock.Outer;
-            IsStructDefaults = Outer is Struct;
             IsInDefaultsTree = isInDefaultsTree;
+        }
 
-            SubObjectClasses = new Stack<Class>();
-            ExpressionScopes = new Stack<ObjectType>();
-            ExpressionScopes.Push(Outer);
+        private PropertiesBlockParser(DefaultPropertiesBlock propsBlock, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree) : this(pcc, symbols, log, isInDefaultsTree)
+        {
+            Tokens = propsBlock.Tokens;
+            var outer = (ObjectType)propsBlock.Outer;
+            IsStructDefaults = outer is Struct;
+
+            ExpressionScopes.Push(outer);
+        }
+
+        private PropertiesBlockParser(TokenStream tokens, IMEPackage pcc, SymbolTable symbols, MessageLog log, bool isInDefaultsTree) : this(pcc, symbols, log, isInDefaultsTree)
+        {
+            Tokens = tokens;
+            IsStructDefaults = false;
         }
 
         private List<Statement> Parse(bool requireBrackets = true)
@@ -96,6 +113,20 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return statements;
         }
 
+        private List<Subobject> ParseBulkProps()
+        {
+            var objects = new List<Subobject>();
+
+            var current = ParseObjectDeclaration();
+            while (current is not null)
+            {
+                objects.Add(current);
+                current = ParseObjectDeclaration();
+            }
+
+            return objects;
+        }
+
         private Statement ParseTopLevelStatement()
         {
             if (CurrentIs("BEGIN") && (NextIs("Object") || NextIs("Template")))
@@ -120,7 +151,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 var subSubObjects = new List<Subobject>();
                 var statements = currentSubObj.Statements;
                 var objectClass = currentSubObj.Class;
-                var objectName = currentSubObj.NameDeclaration.Name;
+                var objectName = currentSubObj.NameDeclaration;
                 ExpressionScopes.Push(objectClass);
                 SubObjectClasses.Push(objectClass);
                 Symbols.PushScope(objectName);
@@ -160,12 +191,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             Tokens.Advance();
             bool isTemplate = objOrTemplateToken.Value.CaseInsensitiveEquals("Template");
 
-            if (Consume("Class") is not {} classKeywordToken || Consume(TokenType.Assign) is not {} classAssignToken)
+            if (!Matches("Class", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
             {
-                throw ParseError($"Expected 'Class=' after 'Begin {objOrTemplateToken.Value}'!", CurrentPosition);
+                throw ParseError("Expected 'Class=' after 'Begin Object'!", CurrentPosition);
             }
-            classKeywordToken.SyntaxType = EF.Keyword;
-            classAssignToken.SyntaxType = EF.Operator;
 
             var classNameToken = Consume(TokenType.Word);
             if (classNameToken is null)
@@ -184,12 +213,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"A '{objectClass.Name}' must be declared within a '{outerClass.Name}', not a '{SubObjectClasses.Peek().Name}'!", classNameToken);
             }
 
-            if (Consume("Name") is not {} nameKeywordToken || Consume(TokenType.Assign) is not {} nameAssignToken)
+            if (!Matches("Name", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
             {
                 throw ParseError("Expected 'Name=' after Class reference!", CurrentPosition);
             }
-            nameKeywordToken.SyntaxType = EF.Keyword;
-            nameAssignToken.SyntaxType = EF.Operator;
 
             var nameToken = Consume(TokenType.Word);
             if (nameToken is null)
@@ -225,7 +252,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             CurrentToken.SyntaxType = EF.Keyword;
             Tokens.Advance();
 
-            var subObj = new Subobject(new VariableDeclaration(objectClass, default, objectName), objectClass, new List<Statement>(), isTemplate, startPos, PrevToken.EndPos)
+            var subObj = new Subobject(objectName, objectClass, new List<Statement>(), isTemplate, startPos, PrevToken.EndPos)
             {
                 Tokens = new TokenStream(tokens, Tokens)
             };
@@ -233,6 +260,74 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError($"'{objectName}' has already been defined in this scope!", nameToken);
             }
+            return subObj;
+        }
+
+        private Subobject ParseObjectDeclaration()
+        {
+            var startPos = CurrentPosition;
+
+            if (!Matches("BEGIN", EF.Keyword))
+            {
+                return null;
+            }
+            if (!Matches("OBJECT", EF.Keyword))
+            {
+                return null;
+            }
+            if (!Matches("Class", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
+            {
+                throw ParseError("Expected 'Class=' after 'Begin Object'!", CurrentPosition);
+            }
+
+            var classNameToken = Consume(TokenType.Word) ?? throw ParseError("Expected name of class!", CurrentPosition);
+            classNameToken.SyntaxType = EF.Class;
+
+            if (!Symbols.TryGetType(classNameToken.Value, out Class objectClass))
+            {
+                throw ParseError($"{classNameToken} is not the name of a class!", classNameToken);
+            }
+
+            if (!Matches("Name", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
+            {
+                throw ParseError("Expected 'Name=' after Class reference!", CurrentPosition);
+            }
+
+            var nameToken = Consume(TokenType.NameLiteral) ?? throw ParseError("Expected full path of Object!", CurrentPosition);
+            string objectName = nameToken.Value;
+
+            var statements = new List<Statement>();
+            ExpressionScopes.Push(objectClass);
+            Symbols.PushScope(objectName);
+            try
+            {
+                while (true)
+                {
+                    if (CurrentIs("BEGIN") && NextIs("Object"))
+                    {
+                        throw ParseError("SubObject declarations are not allowed in this context!", startPos);
+                    }
+                    if (CurrentIs("END") && NextIs("Object"))
+                    {
+                        break;
+                    }
+                    statements.Add(ParseNonStructAssignment() ?? throw ParseError("Object declaration has no end!", startPos));
+                }
+            }
+            finally
+            {
+
+                Symbols.PopScope();
+                ExpressionScopes.Pop();
+            }
+            //END
+            CurrentToken.SyntaxType = EF.Keyword;
+            Tokens.Advance();
+            //Object
+            CurrentToken.SyntaxType = EF.Keyword;
+            Tokens.Advance();
+
+            var subObj = new Subobject(objectName, objectClass, statements, false, startPos, PrevToken.EndPos);
             return subObj;
         }
 
@@ -336,33 +431,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else
             {
+                var literalStart = CurrentPosition;
                 bool isNegative = Matches(TokenType.MinusSign, EF.Operator);
 
                 literal = ParseLiteral();
-                if (literal is not null)
+                if (literal is null)
                 {
-                    if (isNegative)
-                    {
-                        switch (literal)
-                        {
-                            case FloatLiteral floatLiteral:
-                                floatLiteral.Value *= -1;
-                                break;
-                            case IntegerLiteral integerLiteral:
-                                integerLiteral.Value *= -1;
-                                break;
-                            default:
-                                throw ParseError("Malformed constant value!", CurrentPosition);
-                        }
-                    }
-                }
-                else
-                {
-                    if (isNegative)
-                    {
-                        throw ParseError("Unexpected '-' !", CurrentPosition);
-                    }
-
                     if (Consume(TokenType.Word) is { } token)
                     {
                         if (Consume(TokenType.NameLiteral) is { } objName)
@@ -372,7 +446,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         else
                         {
                             literal = ParseBasicRef(token);
-                            if (literal is SymbolReference {Node: Const cnst})
+                            if (literal is SymbolReference { Node: Const cnst })
                             {
                                 literal = cnst.Literal;
                             }
@@ -381,6 +455,22 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     else
                     {
                         throw ParseError("Expected a value!", CurrentPosition);
+                    }
+                }
+
+                if (isNegative)
+                {
+                    //clone the literals so we don't modify Const values
+                    switch (literal)
+                    {
+                        case FloatLiteral floatLiteral:
+                            literal = new FloatLiteral(floatLiteral.Value * -1, literalStart, floatLiteral.EndPos);
+                            break;
+                        case IntegerLiteral integerLiteral:
+                            literal = new IntegerLiteral(integerLiteral.Value * -1, literalStart, integerLiteral.EndPos);
+                            break;
+                        default:
+                            throw ParseError("Unexpected '-' !", literalStart);
                     }
                 }
             }
@@ -455,13 +545,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         VariableType valueClass;
                         if (literal is ObjectLiteral objectLiteral)
                         {
-                            if (objectLiteral.Class is not ClassType && Pcc.FindEntry(objectLiteral.Name.Value) is null)
-                            {
-                                if (MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value) is null)
-                                {
-                                    TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!");
-                                }
-                            }
+                            VerifyObjectLiteral(objectLiteral);
                             valueClass = objectLiteral.Class;
                         }
                         else if (literal is SymbolReference {Node: Subobject {Class: Class subObjClass}})
@@ -514,6 +598,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             {
                                 literal = new CompositeSymbolRef(literal, NewSymbolReference(func, funcNameToken, false), true, literal.StartPos, funcNameToken.EndPos);
                             }
+                            else if (literal is ObjectLiteral {Class: Class cls} objLit && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken funcNameTok 
+                                     && Symbols.TryGetSymbolInScopeStack(funcNameTok.Value, out func, cls.GetScope()))
+                            {
+                                VerifyObjectLiteral(objLit);
+                                literal = new CompositeSymbolRef(literal, NewSymbolReference(func, funcNameTok, false), false, literal.StartPos, funcNameTok.EndPos);
+                            }
                             else
                             {
                                 TypeError("Expected a function reference!", literal);
@@ -526,10 +616,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                     }
                     break;
-                case DynamicArrayType:
+                case DynamicArrayType arrayType:
                     if (literal is not DynamicArrayLiteral)
                     {
-                        TypeError($"Expected a dynamic array literal!", literal);
+                        if (arrayType.ElementType != SymbolTable.ByteType
+                            || literal is not StringLiteral stringLiteral
+                            || !Base64.IsValid(stringLiteral.Value))
+                        {
+                            TypeError($"Expected a dynamic array literal!", literal);
+                        }
                     }
                     break;
                 case Enumeration enumeration:
@@ -630,6 +725,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
 
                     break;
+            }
+            return;
+
+            void VerifyObjectLiteral(ObjectLiteral objectLiteral)
+            {
+                if (objectLiteral.Class is not ClassType && Pcc.FindEntry(objectLiteral.Name.Value, objectLiteral.Class.Name) is null)
+                {
+                    if (MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value) is null)
+                    {
+                        TypeError($"Could not find '{objectLiteral.Name.Value}' in this file!", objectLiteral);
+                    }
+                }
             }
         }
 

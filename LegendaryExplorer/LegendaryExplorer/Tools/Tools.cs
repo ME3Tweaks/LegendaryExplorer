@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
@@ -28,6 +29,8 @@ using Newtonsoft.Json;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using System.Text;
+using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Tools.AnimationViewer;
 using LegendaryExplorer.Tools.ClassViewer;
 using LegendaryExplorer.Tools.PlotDatabase;
 using LegendaryExplorer.Tools.ScriptDebugger;
@@ -185,7 +188,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer 2 with.", "Live Level Editor 2 game selector",
-                        new[] { "LE1", "LE2", /*"LE3"*/ }, "LE2");
+                        new[] { "LE1", "LE2", /*"LE3"*/ }, "LE2", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate(AnimationViewerWindow2.SupportedGames));
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
@@ -213,7 +216,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Class Hierarchy Viewer with.", "Class Hierarchy Viewer game selector",
-                        new[] { "LE1", "LE2", "LE3", "ME1", "ME2", "ME3" }, "LE3");
+                        new[] { "LE1", "LE2", "LE3", "ME1", "ME2", "ME3" }, "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate());
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
@@ -232,7 +235,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-                                              new[] { "LE3", "LE2", "LE1", "ME3", "ME2" }, "LE3");
+                                              new[] { "LE3", "LE2", "LE1", "ME3", "ME2" }, "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate([MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3]));
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
@@ -273,7 +276,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Script Debugger with.", "Script Debugger game selector",
-                        new[] { "LE1", "LE2", "LE3" }, "LE3");
+                        ScriptDebuggerWindow.SupportedGames.Select(x => (object)x), "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate());
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {

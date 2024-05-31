@@ -966,5 +966,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         }
 
         public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2];
     }
 }

@@ -948,7 +948,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
             void SetStringTooltip(string text)
             {
-                SetInlinesTooltip(new Inline[] { new Run(text) { Foreground = SyntaxInfo.ColorBrushes[EF.None] } });
+                SetInlinesTooltip([new Run(text) { Foreground = SyntaxInfo.ColorBrushes[EF.None] }]);
             }
 
             void SetTooltip(TextBlock content)

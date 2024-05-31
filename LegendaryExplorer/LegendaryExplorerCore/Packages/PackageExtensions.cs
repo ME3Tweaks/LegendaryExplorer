@@ -89,7 +89,7 @@ namespace LegendaryExplorerCore.Packages
                 if (className is not null && !entry.ClassName.CaseInsensitiveEquals(className))
                 {
                     int lastIndexOf = instancedFullPath.LastIndexOf('.') + 1;
-                    string name = NameReference.FromInstancedString(lastIndexOf > 0 ? instancedFullPath[lastIndexOf..] : instancedFullPath);
+                    var name = NameReference.FromInstancedString(lastIndexOf > 0 ? instancedFullPath[lastIndexOf..] : instancedFullPath);
                     //matching ifp, but wrong class. fall back to linear search
                     foreach (IEntry ent in pcc.Exports.Concat<IEntry>(pcc.Imports))
                     {
@@ -641,7 +641,9 @@ namespace LegendaryExplorerCore.Packages
                 or "TerrainWeightMapTexture"
                 or "TextureFlipBook";
 
-        public static bool IsPartOfClassDefinition(this ExportEntry entry) =>
+        [Obsolete($"Use {nameof(IsScriptExport)} instead", true)]
+        public static bool IsPartOfClassDefinition(this ExportEntry entry) => IsScriptExport(entry);
+        public static bool IsScriptExport(this ExportEntry entry) =>
             entry.ClassName
                 is "Class"
                 or "Function"

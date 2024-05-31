@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
     {
         public static bool TryGetTrash<T>(this IMEPackage pcc, out T entry) where T : class, IEntry
         {
-            IEntry trashPackage = pcc.FindEntry(UnrealPackageFile.TrashPackageName);
+            IEntry trashPackage = pcc.FindEntry(UnrealPackageFile.TrashPackageName, "Package");
             if (trashPackage is null)
             {
                 entry = null;

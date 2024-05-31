@@ -343,7 +343,7 @@ namespace LegendaryExplorerCore.Packages
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
-        public IEntry FindEntry(string instancedname)
+        public IEntry FindEntry(string instancedPath)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -353,10 +353,27 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
+                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
             }
             // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
+        }
+
+        public IEntry FindEntry(string instancedPath, string className)
+        {
+            IEntry matchingEntry = FindEntry(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (IEntry entry in Exports.Concat<IEntry>(Imports))
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
         }
 
         public ImportEntry FindImport(string instancedname)

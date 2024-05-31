@@ -930,7 +930,7 @@ namespace LegendaryExplorerCore.Unreal
 
         ///<inheritdoc/>
         public override bool Equivalent(Property other) => other is StructProperty structProperty && base.Equivalent(structProperty) && structProperty.StructType.CaseInsensitiveEquals(StructType)
-                                                           && structProperty.Properties.Equivalent(Properties);
+                                                           && Properties.Equivalent(structProperty.Properties);
 
         /// <summary>
         /// Generates a StructProperty (with the specified name) from the specified Guid
@@ -1857,7 +1857,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 for (int i = 0; i < Count; i++)
                 {
-                    if (!Values[i].Equivalent(arrayProperty))
+                    if (!Values[i].Equivalent(arrayProperty[i]))
                     {
                         return false;
                     }

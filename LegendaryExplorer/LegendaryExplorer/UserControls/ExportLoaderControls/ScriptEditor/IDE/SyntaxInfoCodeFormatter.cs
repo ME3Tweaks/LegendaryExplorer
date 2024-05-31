@@ -14,7 +14,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         private int Position;
 
         public new (string, SyntaxInfo) GetOutput() => (base.GetOutput(), SyntaxInfo);
-        public override void Write(string text, EF formatType)
+        public override void AppendToNewLine(string text, EF formatType)
         {
             if (!ForceNoNewLines)
             {
