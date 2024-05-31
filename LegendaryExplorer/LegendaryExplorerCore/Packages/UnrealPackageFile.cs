@@ -427,6 +427,23 @@ namespace LegendaryExplorerCore.Packages
             return matchingEntry as ExportEntry;
         }
 
+        public ExportEntry FindExport(string instancedPath, string className)
+        {
+            ExportEntry matchingEntry = FindExport(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (ExportEntry entry in Exports)
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
 
         public bool TryGetUExport(int uIndex, out ExportEntry export)
