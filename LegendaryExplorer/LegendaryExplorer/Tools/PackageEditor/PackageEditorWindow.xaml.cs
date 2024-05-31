@@ -43,10 +43,10 @@ using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using LegendaryExplorerCore.Audio;
-using System.IO.Packaging;
 using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using GongSolutions.Wpf.DragDrop;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -244,6 +244,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CreatePackageExportCommand { get; set; }
         public ICommand CreateObjectReferencerCommand { get; set; }
         public ICommand DeleteEntryCommand { get; set; }
+        public ICommand ExportAllPropsCommand { get; set; }
+        public ICommand ApplyBulkPropEditsCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -311,6 +313,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             OpenOtherVersionCommand = new GenericCommand(OpenOtherVersion, IsLoadedPackageME);
             OpenHighestMountedCommand = new GenericCommand(OpenHighestMountedVersion, IsLoadedPackageME);
 
+            //do not change lambda to method group here! causes runtime error
             ForceReloadPackageCommand = new GenericCommand(() => ExperimentsMenu.ForceReloadPackageWithoutSharing(), () => ShowExperiments && ExperimentsMenu.CanForceReload());
 
             NavigateForwardCommand = new GenericCommand(NavigateToNextEntry, () => CurrentView == CurrentViewMode.Tree && ForwardsEntries != null && ForwardsEntries.Any());
@@ -320,6 +323,87 @@ namespace LegendaryExplorer.Tools.PackageEditor
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
             CreateObjectReferencerCommand = new GenericCommand(CreateObjectReferencer, IsLoadedPackageME);
             DeleteEntryCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
+
+            ExportAllPropsCommand = new GenericCommand(ExportAllProps, PackageIsLoaded);
+            ApplyBulkPropEditsCommand = new GenericCommand(ApplyBulkPropEdits, PackageIsLoaded);
+        }
+
+        private void ApplyBulkPropEdits()
+        {
+            var d = new OpenFileDialog
+            {
+                Title = "Select properties file",
+                Filter = "unrealscript file|*.uc",
+                FileName = $"{Pcc.FileNameNoExtension}_Props.uc",
+                CheckFileExists = true
+            };
+            if (d.ShowDialog() is not true) return;
+            var fileName = d.FileName;
+            SetBusy("Applying property edits");
+            Task.Run(() =>
+            {
+                string src = File.ReadAllText(fileName);
+                return UnrealScriptCompiler.CompileBulkPropertiesFile(src, Pcc);
+
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                EndBusy();
+                MessageLog log = prevTask.Result;
+                if (log.HasErrors || log.HasLexErrors)
+                {
+                    new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Errors", "Errors occured while applying property edits!", this).Show();
+                }
+                else
+                {
+                    // if (App.IsDebug)
+                    // {
+                    //     MessageBox.Show(this, $"Property edits successfully applied! {Pcc.Exports.FirstOrDefault(exp => exp.DataChanged)?.UIndex}");
+                    // }
+                    // else
+                    {
+                        MessageBox.Show(this, "Property edits successfully applied!");
+                    }
+                }
+            });
+        }
+
+        private void ExportAllProps()
+        {
+            SetBusy("Decompiling all properties");
+            Task.Run(() =>
+            {
+                string src = UnrealScriptCompiler.DecompileBulkProps(Pcc, out MessageLog log);
+                if (src is null || log.HasErrors)
+                {
+                    return log;
+                }
+                return (object)src;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                EndBusy();
+                switch (prevTask.Result)
+                {
+                    case string src:
+                    {
+                        var d = new SaveFileDialog
+                        {
+                            Title = "Save properties file",
+                            Filter = "unrealscript file|*.uc",
+                            FileName = $"{Pcc.FileNameNoExtension}_Props.uc"
+                        };
+                        if (d.ShowDialog() == true)
+                        {
+                            File.WriteAllText(d.FileName, src);
+                        }
+                        break;
+                        }
+                    case MessageLog log:
+                    {
+                        new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Errors", "Error(s) occured while decompiling properties", this).Show();
+                        break;
+                    }
+                }
+            });
         }
 
         private void CreateObjectReferencer()

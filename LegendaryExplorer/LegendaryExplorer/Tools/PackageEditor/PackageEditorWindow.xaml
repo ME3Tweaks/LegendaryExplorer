@@ -172,8 +172,12 @@
                     <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
                     <MenuItem Header="Create new Package export" ToolTip="Adds a new package export to the root of the current loaded package" Command="{Binding CreatePackageExportCommand}"/>
                     <MenuItem Header="Create ObjectReferencer" ToolTip="Adds an ObjectReferencer to the root of the package if one does not exist" Command="{Binding CreateObjectReferencerCommand}"/>
-                    <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
+                    <Separator/>
+                    <MenuItem Header="Bulk Property Editing">
+                        <MenuItem Header="Export properties to text file" Command="{Binding ExportAllPropsCommand}"/>
+                        <MenuItem Header="Apply property edits from text file" Command="{Binding ApplyBulkPropEditsCommand}"/>
+                    </MenuItem>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
                         <MenuItem Header="Bulk export...">

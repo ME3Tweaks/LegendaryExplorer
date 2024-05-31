@@ -1374,7 +1374,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value) ?? MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
+                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}", node.Class.Name) ?? ResolveObject(node.Name.Value, node.Class.Name) ?? MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
                 if (entry is null)
                 {
                     throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
@@ -1532,7 +1532,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveState(State s) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
-        private IEntry ResolveObject(string instancedFullPath) => Pcc.FindEntry(instancedFullPath);
+        private IEntry ResolveObject(string instancedFullPath, string className) => Pcc.FindEntry(instancedFullPath, className);
 
         public static string PropertyTypeName(VariableType type) =>
             type switch

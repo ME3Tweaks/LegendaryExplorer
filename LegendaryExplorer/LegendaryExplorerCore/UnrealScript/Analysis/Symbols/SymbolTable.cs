@@ -99,9 +99,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             table.AddType(NameType);
 
             //Add fake constants
-            objectClass.TypeDeclarations.Add(new Const("NaN", "NaN"){Literal = new FloatLiteral(float.NaN)});
+            float unrealNaN = BitConverter.UInt32BitsToSingle(uint.MaxValue);//specific NaN value to reserialize existing NaNs identically
+            objectClass.TypeDeclarations.Add(new Const("NaN", "NaN"){Literal = new FloatLiteral(unrealNaN)});
             objectClass.TypeDeclarations.Add(new Const("Infinity", "Infinity"){Literal = new FloatLiteral(float.PositiveInfinity)});
-            
+
             Class packageType = null;
             switch (game)
             {
@@ -319,7 +320,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var polysType = new Class("Polys", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(polysType);
             table.PushScope(polysType.Name); table.PopScope();
-
+            table.AddType(new Class("ShaderCache", objectClass, objectClass, intrinsicClassFlags));
             //NetConnection, ChildConnection, LightMapTexture2D, and CodecMovieBink are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
 

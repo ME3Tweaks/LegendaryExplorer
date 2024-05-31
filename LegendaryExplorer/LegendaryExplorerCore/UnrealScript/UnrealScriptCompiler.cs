@@ -150,6 +150,107 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
+        public static MessageLog CompileBulkPropertiesFile(string src, IMEPackage pcc, PackageCache packageCache = null)
+        {
+            var log = new MessageLog();
+            TokenStream tokens = Lexer.Lex(src, log);
+            if (log.HasLexErrors)
+            {
+                return log;
+            }
+            var lib = new FileLib(pcc);
+            if (!lib.Initialize(packageCache))
+            {
+                return lib.InitializationLog;
+            }
+            SymbolTable symbols = lib.GetSymbolTable();
+            symbols.RevertToObjectStack();
+            List<Subobject> subobjects;
+            try
+            {
+                subobjects = PropertiesBlockParser.ParseBulkPropsFile(tokens, pcc, symbols, log, false);
+            }
+            catch (ParseException)
+            {
+                log.LogError("Parse failed!");
+                return log;
+            }
+            catch (Exception e)
+            {
+                log.LogError($"Parse failed! Exception: {e}");
+                return log;
+            }
+            if (log.HasErrors) return log;
+
+            var map = new Dictionary<Subobject, ExportEntry>(subobjects.Count);
+            foreach (Subobject obj in subobjects)
+            {
+                IEntry entry = pcc.FindEntry(obj.NameDeclaration, obj.Class.Name);
+                if (entry is ExportEntry export)
+                {
+                    if (!map.TryAdd(obj, export))
+                    {
+                        log.LogError($"Duplicate declaration for object of class '{obj.Class.Name}' with full path '{obj.NameDeclaration}'", obj.StartPos);
+                    }
+                }
+                else
+                {
+                    log.LogError($"Could not find an export of class '{obj.Class.Name}' with full path '{obj.NameDeclaration}'", obj.StartPos);
+                }
+            }
+            if (log.HasErrors) return log;
+
+            try
+            {
+                foreach ((Subobject obj, ExportEntry export) in map)
+                {
+                    ScriptPropertiesCompiler.CompilePropertiesForNormalObject(obj.Statements, export, packageCache);
+                }
+            }
+            catch (Exception e)
+            {
+                log.LogError($"Exception: {e}");
+                return log;
+            }
+
+            return log;
+        }
+
+        public static string DecompileBulkProps(IMEPackage pcc, out MessageLog log, PackageCache packageCache = null)
+        {
+            var fileLib = new FileLib(pcc);
+            if (!fileLib.Initialize(packageCache))
+            {
+                log = fileLib.InitializationLog;
+                return null;
+            }
+            var ifps = new HashSet<(string, string)>(pcc.ExportCount);
+            var codeBuilder = new CodeBuilderVisitor<PlainTextStringBuilderCodeFormatter>();
+            log = new MessageLog();
+            foreach (ExportEntry export in pcc.Exports.Where(exp => !exp.IsScriptExport() && !exp.IsInDefaultsTree()))
+            {
+                string exportClassName = export.ClassName;
+                string ifp = export.InstancedFullPath;
+                if (!ifps.Add((ifp, exportClassName)))
+                {
+                    log.LogError($"Two exports have the same path and class: {ifp} ({exportClassName})");
+                    return null;
+                }
+                ASTNode ast = ExportToAstNode(export, fileLib, packageCache);
+                if (ast is not DefaultPropertiesBlock propsBlock)
+                {
+                    log.LogError($"Error decompiling #{export.UIndex} {ifp}");
+                    return null;
+                }
+                codeBuilder.AppendToNewLine($"//#{export.UIndex}");
+                ast = new Subobject(ifp, new Class(exportClassName, null, null, default), propsBlock.Statements);
+                ast.AcceptVisitor(codeBuilder);
+                codeBuilder.AppendToNewLine();
+            }
+
+            return codeBuilder.GetOutput();
+        }
+
         //Used by M3. Do not delete
         public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, PackageCache packageCache = null, string gameRootOverride = null)
         {
@@ -629,7 +730,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     else
                     {
-                        ScriptPropertiesCompiler.CompilePropertiesForNormalObject(propBlock, export, packageCache, gameRootOverride);
+                        ScriptPropertiesCompiler.CompilePropertiesForNormalObject(propBlock.Statements, export, packageCache, gameRootOverride);
                     }
                     log.LogMessage("Compiled!");
                     return (astNode, log);

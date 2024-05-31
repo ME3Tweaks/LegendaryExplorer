@@ -99,16 +99,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             defaultsExport.WriteProperties(props);
         }
 
-        public static void CompilePropertiesForNormalObject(DefaultPropertiesBlock defaultsAST, ExportEntry export, PackageCache packageCache = null, string gameRootOverride = null)
+        public static void CompilePropertiesForNormalObject(List<Statement> propertyStatements, ExportEntry export, PackageCache packageCache = null, string gameRootOverride = null)
         {
             IMEPackage pcc = export.FileRef;
 
             var compiler = new ScriptPropertiesCompiler(pcc, packageCache)
             {
-                Default__Export = export
+                Default__Export = export,
+                ShouldStripTransients = true
             };
 
-            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, export, null);
+            var props = compiler.ConvertStatementsToPropertyCollection(propertyStatements, export, null);
             
             export.WriteProperties(props);
         }
@@ -127,7 +128,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         {
                             throw new Exception("Subobjects not permitted!");
                         }
-                        var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration.Name);
+                        var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration);
                         existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
                         int netIndex = existingSubObject?.NetIndex ?? 0;
                         CreateSubObject(subObj, export, ref existingSubObject);
@@ -161,7 +162,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport, string gamePathOverride = null)
         {
-            var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
+            var objName = NameReference.FromInstancedString(subObject.NameDeclaration);
             IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), gamePathOverride);
             if (subExport is null)
             {
@@ -276,7 +277,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             entry = null;
                             break;
                         case SymbolReference { Node: Subobject subobject }:
-                            entry = subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration.Name)];
+                            entry = subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration)];
                             break;
                         case ObjectLiteral objectLiteral:
                             if (objectLiteral.Class is ClassType { ClassLimiter: Class @class })
@@ -285,7 +286,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             }
                             else
                             {
-                                entry = Pcc.FindEntry(objectLiteral.Name.Value) ?? MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
+                                entry = Pcc.FindEntry(objectLiteral.Name.Value, objectLiteral.Class.Name) ?? MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
                             }
                             break;
                         default:
@@ -308,7 +309,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         if (literal is CompositeSymbolRef csf)
                         {
-                            objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)csf.OuterSymbol).Class).ClassLimiter, Pcc)).UIndex;
+                            if (csf.OuterSymbol is ObjectLiteral { Class: ClassType { ClassLimiter: Class containingclass } })
+                            {
+                                objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass(containingclass, Pcc)).UIndex;
+                            }
+                            else
+                            {
+                                var objectLiteral = (ObjectLiteral)csf.OuterSymbol;
+                                objUIndex = Pcc.FindEntry(objectLiteral.Name.Value, objectLiteral.Class.Name)?.UIndex ?? MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value)?.UIndex ?? 0;
+                            }
                             literal = csf.InnerSymbol;
                         }
 

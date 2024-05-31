@@ -39,14 +39,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class InterpreterExportLoader : ExportLoaderControl
     {
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; } = new();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; } = [];
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterExportLoader.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
-        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence", "BioAnimNodeSequence" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
-                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo", "CoverLink" };
+        public static readonly string[] ExportToStringConverters = ["LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence", "BioAnimNodeSequence"];
+        public static readonly string[] IntToStringConverters = [ "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
+                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo", "CoverLink" ];
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
@@ -73,7 +73,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
-            "NavigateToEntryCommand", typeof(RelayCommand), typeof(InterpreterExportLoader), new PropertyMetadata(null));
+            nameof(NavigateToEntryCommand), typeof(RelayCommand), typeof(InterpreterExportLoader), new PropertyMetadata(null));
 
         public bool HideHexBox
         {
@@ -130,7 +130,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //when the class matches.
 
         int RescanSelectionOffset;
-        private readonly List<FrameworkElement> EditorSetElements = new();
+        private readonly List<FrameworkElement> EditorSetElements = [];
 
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
@@ -140,7 +140,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Reference to the package that the property we copied from is from
         /// </summary>
-        private WeakReference<IMEPackage> CopiedPropertyPackage { get; } = new WeakReference<IMEPackage>(null); // Default to null but ensure weak reference is generated.
+        private WeakReference<IMEPackage> CopiedPropertyPackage { get; } = new(null); // Default to null but ensure weak reference is generated.
 
         /// <summary>
         /// The currently copied property.
@@ -2957,7 +2957,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// List of children properties that link to this node.
         /// Only Struct and ArrayProperties will have this populated.
         /// </summary>
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; } = new();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; } = [];
         public UPropertyTreeViewEntry(Property property, string displayName = null)
         {
             Property = property;
