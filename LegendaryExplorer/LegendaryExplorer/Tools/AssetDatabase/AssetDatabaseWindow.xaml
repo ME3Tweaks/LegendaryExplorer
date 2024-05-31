@@ -138,11 +138,11 @@
                                 </Style.Triggers>
                             </Style>
                         </MenuItem.Resources>
-                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by Filelist" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current filelist." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=FileListFilter.IsSelected, Mode=TwoWay}"/>
-                        <MenuItem Header="Filelist Actions">
-                            <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing filelist."/>
-                            <MenuItem Header="Save" Command="{Binding SaveFileListCommand}" ToolTip="Save the current filelist."/>
-                            <MenuItem Header="Clear" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Clear the current filelist."/>
+                        <MenuItem Name="menu_fltrCustFiles" Header="Filter by File List" Command="{Binding FilterFilesCommand}" CommandParameter="CustFiles" ToolTip="Filter the entire database by the current custom file list." StaysOpenOnClick="True" IsCheckable="True" IsChecked="{Binding Path=FileListFilter.IsSelected, Mode=TwoWay}"/>
+                        <MenuItem Header="File List Actions">
+                            <MenuItem Header="Load" Command="{Binding LoadFileListCommand}" ToolTip="Load an existing file list."/>
+                            <MenuItem Header="Save" Command="{Binding SaveFileListCommand}" ToolTip="Save the current file list."/>
+                            <MenuItem Header="Clear" Command="{Binding EditFileListCommand}" CommandParameter="Clear" ToolTip="Clear the current file list."/>
                         </MenuItem>
                         <Separator/>
                         <MenuItem Header="Filter Animations" ItemsSource="{Binding AssetFilters.AnimationFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
@@ -247,7 +247,7 @@
                                                                 DockPanel.Dock="Bottom">
                                             <controls:ListBoxScroll.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Remove From Custom List" Command="{Binding EditFileListCommand}" CommandParameter="Remove" ToolTip="Remove this from Custom File List" />
+                                                    <MenuItem Header="Remove from File List" Command="{Binding EditFileListCommand}" CommandParameter="Remove" ToolTip="Remove this from Custom File List" />
                                                 </ContextMenu>
                                             </controls:ListBoxScroll.ContextMenu>
                                             <controls:ListBoxScroll.ItemTemplate>
@@ -299,7 +299,7 @@
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <Separator/>
-                                            <MenuItem Header="Add to Filtered Files" Command="{Binding EditFileListCommand}" CommandParameter="Add" ToolTip="Add this file to the filtered file list."/>
+                                            <MenuItem Header="Add to Custom File List" Command="{Binding EditFileListCommand}" CommandParameter="Add" ToolTip="Add this file to the custom file list."/>
                                             <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                         </ContextMenu>
                                     </ListView.ContextMenu>
@@ -1175,10 +1175,6 @@
                                     <controls:ListBoxScroll.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=IsDefault}" Value="True">
-                                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
-                                                    <Setter Property="TextElement.ToolTip" Value="Default value"/>
-                                                </DataTrigger>
                                                 <DataTrigger Binding="{Binding Path=IsMod}" Value="True">
                                                     <Setter Property="TextElement.Foreground" Value="IndianRed"/>
                                                     <Setter Property="TextElement.ToolTip" Value="Is Mod File"/>
