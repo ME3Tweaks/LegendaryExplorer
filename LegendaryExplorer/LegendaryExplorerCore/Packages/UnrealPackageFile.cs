@@ -362,7 +362,7 @@ namespace LegendaryExplorerCore.Packages
         public IEntry FindEntry(string instancedPath, string className)
         {
             IEntry matchingEntry = FindEntry(instancedPath);
-            if (matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
             {
                 return matchingEntry;
             }
