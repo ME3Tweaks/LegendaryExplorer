@@ -5,6 +5,8 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler =
     [ "CompileProperty", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a9b7ef24457f5ae683678f5b37a8be25c", null ],
     [ "ExportToAstNode", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a8b9abfd6c7ee56a2f7addd2a9da04d12", null ],
     [ "CompileOutlineAST", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a759abc89ffe1ce7222232755d8e46269", null ],
+    [ "CompileBulkPropertiesFile", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa45bf09a935660655fcd0fac6ff66d4b", null ],
+    [ "DecompileBulkProps", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a2d5dcfe427da667badcdd062910312c1", null ],
     [ "AddOrReplaceInClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a286766dd740a5ebb9bdd2bb4ca74ca2d", null ],
     [ "CompileClass", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aeade51937f367fb762927641628e4953", null ],
     [ "CompileFunction", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ac81349ee3370b1ac6b4cb6db7a493195", null ],

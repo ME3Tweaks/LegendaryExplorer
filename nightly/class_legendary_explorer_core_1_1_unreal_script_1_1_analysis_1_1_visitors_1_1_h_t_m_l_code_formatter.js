@@ -1,7 +1,7 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter =
 [
     [ "GetOutput", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html#af9e1989450e8d5b4df44d9c0dd111aa5", null ],
-    [ "Write", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html#a743b5f16e65a34d9666557adc9530262", null ],
+    [ "AppendToNewLine", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html#a6f9fdc748c3563c19889def066fac4ea", null ],
     [ "Append", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html#a4af6a9627ac7039754d6a2a31debc612", null ],
     [ "Space", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html#a5ed48ed3a256bdda99bcdd253b99da2b", null ],
     [ "ForceAlignment", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html#a428dc46997db3ee2457e4bac2d865be7", null ],

@@ -121,6 +121,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a8b9abfd6c7ee56a2f7addd2a9da04d12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a759abc89ffe1ce7222232755d8e46269"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html">TokenStream</a> tokens&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a759abc89ffe1ce7222232755d8e46269">CompileOutlineAST</a> (string script, string type, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="separator:a759abc89ffe1ce7222232755d8e46269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa45bf09a935660655fcd0fac6ff66d4b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa45bf09a935660655fcd0fac6ff66d4b">CompileBulkPropertiesFile</a> (string src, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="separator:aa45bf09a935660655fcd0fac6ff66d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d5dcfe427da667badcdd062910312c1"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a2d5dcfe427da667badcdd062910312c1">DecompileBulkProps</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, out <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
+<tr class="separator:a2d5dcfe427da667badcdd062910312c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a286766dd740a5ebb9bdd2bb4ca74ca2d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a286766dd740a5ebb9bdd2bb4ca74ca2d">AddOrReplaceInClass</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> classExport, string scriptText, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootOverride=null)</td></tr>
 <tr class="separator:a286766dd740a5ebb9bdd2bb4ca74ca2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeade51937f367fb762927641628e4953"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aeade51937f367fb762927641628e4953">CompileClass</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string scriptText, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export=null, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> parent=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null)</td></tr>
@@ -380,6 +384,90 @@ Static Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
           <td class="paramname"><em>game</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa45bf09a935660655fcd0fac6ff66d4b" name="aa45bf09a935660655fcd0fac6ff66d4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa45bf09a935660655fcd0fac6ff66d4b">&#9670;&#160;</a></span>CompileBulkPropertiesFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.CompileBulkPropertiesFile </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>pcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2d5dcfe427da667badcdd062910312c1" name="a2d5dcfe427da667badcdd062910312c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d5dcfe427da667badcdd062910312c1">&#9670;&#160;</a></span>DecompileBulkProps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler.DecompileBulkProps </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>pcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td>
+          <td class="paramname"><em>log</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>packageCache</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

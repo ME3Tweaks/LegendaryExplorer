@@ -3,6 +3,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions =
     [ "IsTrash", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a1625333f8fe1abb38ce4ea33c7c2ccd5", null ],
     [ "IsTexture", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a9756eea6568f94e7c0cb092d153d65f3", null ],
     [ "IsPartOfClassDefinition", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a6d759a3440dd864ae1d2b9fbd7899420", null ],
+    [ "IsScriptExport", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#aecb2222e0c81ff3422924fb9df0c6c58", null ],
     [ "IsDescendantOf", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a006617b30e7fbf9397e86d1fd7b57b24", null ],
     [ "GetChildren", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ab50161baa1000bf7d0e1d9d516bd84e6", null ],
     [ "GetChildren< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a1fdbe89f9b8fd53b75f45510dcf7b68a", null ],

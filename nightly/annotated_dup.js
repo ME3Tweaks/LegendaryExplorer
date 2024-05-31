@@ -766,7 +766,8 @@ var annotated_dup =
             [ "IAcceptASTVisitor", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_accept_a_s_t_visitor.html", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_accept_a_s_t_visitor" ],
             [ "IASTVisitor", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_a_s_t_visitor.html", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_a_s_t_visitor" ],
             [ "ICodeFormatter", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter" ],
-            [ "PlainTextCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter" ]
+            [ "PlainTextCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter" ],
+            [ "PlainTextStringBuilderCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_string_builder_code_formatter.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_string_builder_code_formatter" ]
           ] ]
         ] ],
         [ "Compiling", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_compiling.html", [

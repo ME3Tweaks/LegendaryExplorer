@@ -193,9 +193,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6473b9c9d9b44320d3146f927487903e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a6473b9c9d9b44320d3146f927487903e">FindImport</a> (string instancedname)</td></tr>
 <tr class="memdesc:a6473b9c9d9b44320d3146f927487903e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an import with the same instanced name.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a6473b9c9d9b44320d3146f927487903e">More...</a><br /></td></tr>
 <tr class="separator:a6473b9c9d9b44320d3146f927487903e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c6b5ae9cc43057fb52bd459988388ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a7c6b5ae9cc43057fb52bd459988388ba">FindEntry</a> (string instancedname)</td></tr>
-<tr class="memdesc:a7c6b5ae9cc43057fb52bd459988388ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an entry (imports first, then exports) with the same instanced name.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a7c6b5ae9cc43057fb52bd459988388ba">More...</a><br /></td></tr>
-<tr class="separator:a7c6b5ae9cc43057fb52bd459988388ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fc08d45e84c76fffc0287982237c772"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5fc08d45e84c76fffc0287982237c772">FindEntry</a> (string instancedPath)</td></tr>
+<tr class="memdesc:a5fc08d45e84c76fffc0287982237c772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an entry with the same instanced path.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5fc08d45e84c76fffc0287982237c772">More...</a><br /></td></tr>
+<tr class="separator:a5fc08d45e84c76fffc0287982237c772"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae42e7fafd3ff3907ee4d8f51ee3e81cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ae42e7fafd3ff3907ee4d8f51ee3e81cc">FindEntry</a> (string instancedPath, string className)</td></tr>
+<tr class="memdesc:ae42e7fafd3ff3907ee4d8f51ee3e81cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an entry with the same instanced path and class.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ae42e7fafd3ff3907ee4d8f51ee3e81cc">More...</a><br /></td></tr>
+<tr class="separator:ae42e7fafd3ff3907ee4d8f51ee3e81cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4be736ca9bbe81c69b9194f07001c91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad4be736ca9bbe81c69b9194f07001c91">InvalidateLookupTable</a> ()</td></tr>
 <tr class="memdesc:ad4be736ca9bbe81c69b9194f07001c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad4be736ca9bbe81c69b9194f07001c91">More...</a><br /></td></tr>
 <tr class="separator:ad4be736ca9bbe81c69b9194f07001c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1030,8 +1033,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="a7c6b5ae9cc43057fb52bd459988388ba" name="a7c6b5ae9cc43057fb52bd459988388ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c6b5ae9cc43057fb52bd459988388ba">&#9670;&#160;</a></span>FindEntry()</h2>
+<a id="a5fc08d45e84c76fffc0287982237c772" name="a5fc08d45e84c76fffc0287982237c772"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fc08d45e84c76fffc0287982237c772">&#9670;&#160;</a></span>FindEntry() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1040,20 +1043,60 @@ Events</h2></td></tr>
           <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Packages.IMEPackage.FindEntry </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>instancedname</em></td><td>)</td>
+          <td class="paramname"><em>instancedPath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Looks for an entry (imports first, then exports) with the same instanced name.  </p>
+<p>Looks for an entry with the same instanced path.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instancedname</td><td></td></tr>
+    <tr><td class="paramname">instancedPath</td><td></td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p >Can return the "wrong" one if multiple entries have the same path. Use <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ae42e7fafd3ff3907ee4d8f51ee3e81cc" title="Looks for an entry with the same instanced path and class.">FindEntry(string, string)</a> to distinguish by class</p>
+
+</div>
+</div>
+<a id="ae42e7fafd3ff3907ee4d8f51ee3e81cc" name="ae42e7fafd3ff3907ee4d8f51ee3e81cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae42e7fafd3ff3907ee4d8f51ee3e81cc">&#9670;&#160;</a></span>FindEntry() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Packages.IMEPackage.FindEntry </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>instancedPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>className</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Looks for an entry with the same instanced path and class.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">instancedPath</td><td></td></tr>
+    <tr><td class="paramname">className</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p >Falls back to a linear search if it finds a match on path but not class</p>
 
 </div>
 </div>

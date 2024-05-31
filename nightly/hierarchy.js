@@ -373,7 +373,8 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.ICodeFormatter< out TOutput >", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.ICodeFormatter< string >", "interface_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_i_code_formatter.html", [
       [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.HTMLCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_h_t_m_l_code_formatter.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.PlainTextCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html", null ]
+      [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.PlainTextCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Analysis.Visitors.PlainTextStringBuilderCodeFormatter", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_string_builder_code_formatter.html", null ]
     ] ],
     [ "ICollection", null, [
       [ "LegendaryExplorerCore.Gammtek.Collections.ObjectModel.ObservableDictionary< TKey, TValue >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_object_model_1_1_observable_dictionary.html", null ],
