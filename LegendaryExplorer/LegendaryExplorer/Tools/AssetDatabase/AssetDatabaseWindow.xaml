@@ -160,7 +160,8 @@
                             <MenuItem.ItemsSource>
                                 <CompositeCollection>
                                     <CollectionContainer Collection="{Binding Source={StaticResource TextureFilters}}"/>
-                                    <MenuItem Header="LOD Groups" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}" CommandParameter=""/>
+                                    <MenuItem Header="LOD Groups" Style="{x:Null}" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}" />
+                                 
                                 </CompositeCollection>
                             </MenuItem.ItemsSource>
                         </MenuItem>
@@ -1063,11 +1064,16 @@
                     </TabItem>
                     <!-- Plot-->
                     <TabItem Header="Plot Elements" TabIndex="9">
-                        <DockPanel>
-                            <TabControl x:Name="tabCtrl_plotUsage" SelectionChanged="PETabControl_SelectionChanged">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TabControl Grid.Column="0" x:Name="tabCtrl_plotUsage" SelectionChanged="PETabControl_SelectionChanged">
                                 <TabItem Header="Bools" TabIndex="1">
                                     <controls:ListBoxScroll x:Name="lstbx_PlotBool" ItemsSource="{Binding CurrentDataBase.PlotUsages.Bools}" 
-                                                            MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
+                                                          SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DisplayText}"/>
@@ -1082,7 +1088,7 @@
                                 </TabItem>
                                 <TabItem Header="Ints" TabIndex="2">
                                     <controls:ListBoxScroll x:Name="lstbx_PlotInt" ItemsSource="{Binding CurrentDataBase.PlotUsages.Ints}" 
-                                                            MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
+                                                            SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DisplayText}"/>
@@ -1097,7 +1103,7 @@
                                 </TabItem>
                                 <TabItem Header="Floats" TabIndex="3">
                                     <controls:ListBoxScroll x:Name="lstbx_PlotFloat" ItemsSource="{Binding CurrentDataBase.PlotUsages.Floats}" 
-                                                            MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
+                                                           SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DisplayText}"/>
@@ -1112,7 +1118,7 @@
                                 </TabItem>
                                 <TabItem Header="Transitions" TabIndex="4">
                                     <controls:ListBoxScroll x:Name="lstbx_PlotTrans" ItemsSource="{Binding CurrentDataBase.PlotUsages.Transitions}" 
-                                                            MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
+                                                            SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DisplayText}"/>
@@ -1128,7 +1134,7 @@
                                 </TabItem>
                                 <TabItem Header="Conditionals" TabIndex="5">
                                     <controls:ListBoxScroll x:Name="lstbx_PlotCond" ItemsSource="{Binding CurrentDataBase.PlotUsages.Conditionals}" 
-                                                            MinWidth="300" MaxWidth="500"  SelectionChanged="lstbx_PlotElement_SelectionChanged">
+                                                            SelectionChanged="lstbx_PlotElement_SelectionChanged">
                                         <controls:ListBoxScroll.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DisplayText}"/>
@@ -1143,8 +1149,8 @@
                                     </controls:ListBoxScroll>
                                 </TabItem>
                             </TabControl>
-
-                            <Grid DockPanel.Dock="Right">
+                            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+                            <Grid Grid.Column="2">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="24"/>
                                     <RowDefinition Height="*"/>
@@ -1190,7 +1196,7 @@
                                     </controls:ListBoxScroll.ContextMenu>
                                 </controls:ListBoxScroll>
                             </Grid>
-                        </DockPanel>
+                        </Grid>
                     </TabItem>
                 </TabControl>
             </DockPanel>
