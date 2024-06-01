@@ -243,6 +243,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
                 case ValidationPass.BodyPass:
                 {
+                    if (node.Parent is Class parentClass)
+                    {
+                        //loop in case we are compiling multiple classes at once and our direct parent has not inherited flags yet
+                        do
+                        {
+                            node.Flags |= parentClass.Flags & (EClassFlags.Inherit | EClassFlags.Config);
+                            if (node.Flags.Has(EClassFlags.Config) && node.ConfigName.CaseInsensitiveEquals("None"))
+                            {
+                                node.ConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
+                            }
+                            parentClass = parentClass.Parent as Class;
+                        } while (parentClass is not null);
+                    }
+
                     //from UDN: "Implementing multiple interface classes which have a common base is not supported and will result in incorrect vtable offsets"
                     if (node.Interfaces.Count > 1)
                     {
@@ -305,9 +319,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             node.Flags |= EClassFlags.HasCrossLevelRefs;
                         }
-                        if (decl.Flags.Has(EPropertyFlags.Config))
+                        if (decl.Flags.Has(EPropertyFlags.Config) && !node.Flags.Has(EClassFlags.Config))
                         {
-                            node.Flags |= EClassFlags.Config;
+                            Error("Cannot have a config var in a class with no specified config file.", decl.StartPos);
                         }
                         if (decl.Flags.Has(EPropertyFlags.Localized))
                         {
