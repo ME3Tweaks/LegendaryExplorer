@@ -394,6 +394,12 @@ namespace LegendaryExplorerCore.Helpers
                 return string.Empty;
             return char.ToUpper(str[0]) + str.Substring(1);
         }
+
+        /// <summary>
+        /// Returns if the given string ends with a package file extension.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static bool RepresentsPackageFilePath(this string path)
         {
             string extension = Path.GetExtension(path);
