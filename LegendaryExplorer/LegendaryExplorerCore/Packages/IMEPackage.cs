@@ -283,11 +283,17 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         List<EntryStringPair> CompareToPackage(Stream stream);
         /// <summary>
-        /// Looks for an export with the same instanced name.
+        /// Looks for an export with the same instanced name
         /// </summary>
         /// <param name="instancedname"></param>
         /// <returns></returns>
         ExportEntry FindExport(string instancedname);
+        /// <summary>
+        /// Looks for an export with the same instanced name and classname
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        ExportEntry FindExport(string instancedname, string className);
         /// <summary>
         /// Looks for an import with the same instanced name.
         /// </summary>
