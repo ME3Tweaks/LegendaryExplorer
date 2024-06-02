@@ -1,5 +1,7 @@
 var NAVTREEINDEX65 =
 {
+"class_var_link_info.html#a3b407a9d5cde52235d3e4fd92cbd8fe1":[1,0,32,4],
+"class_var_link_info.html#a60a321b28495cc3e11fb629ae92836de":[1,0,32,5],
 "class_var_link_info.html#aa96493339fe887670c7bdc09dfbe0166":[1,0,32,2],
 "class_var_link_info.html#ae0df781ac1150417908c8e1e58f36edb":[1,0,32,0],
 "class_var_link_info.html#af05bf6cabe88947281dde178eb9952e2":[1,0,32,1],
@@ -151,8 +153,8 @@ var NAVTREEINDEX65 =
 "functions_n.html":[1,2,0,14],
 "functions_o.html":[1,2,0,15],
 "functions_p.html":[1,2,0,16],
-"functions_prop.html":[1,2,4],
 "functions_prop.html":[1,2,4,0],
+"functions_prop.html":[1,2,4],
 "functions_prop_b.html":[1,2,4,1],
 "functions_prop_c.html":[1,2,4,2],
 "functions_prop_d.html":[1,2,4,3],
@@ -233,10 +235,10 @@ var NAVTREEINDEX65 =
 "interface_i_key_funcs.html#a8df87a282986d390419b4f1777b48767":[1,0,11,1],
 "interface_i_ref_enumerator.html":[1,0,15],
 "interface_i_ref_enumerator.html#a93627ebac3b926321b06985fc555c9fb":[1,0,15,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html":[1,0,0,6,0,0,6],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html":[0,5,1,6,0,0,6],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a02dcfce775ff447cfd03f494e8c7e086":[0,5,1,6,0,0,6,8],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html":[1,0,0,6,0,0,6],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a02dcfce775ff447cfd03f494e8c7e086":[1,0,0,6,0,0,6,8],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a02dcfce775ff447cfd03f494e8c7e086":[0,5,1,6,0,0,6,8],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a10f057e3c281101f5c91958cc69441fe":[0,5,1,6,0,0,6,1],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a10f057e3c281101f5c91958cc69441fe":[1,0,0,6,0,0,6,1],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a1d67a017ef87f8aa8b9fad25855c885c":[1,0,0,6,0,0,6,3],
@@ -245,9 +247,7 @@ var NAVTREEINDEX65 =
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a2e2843eae304f0715bf5c47dea21ae32":[0,5,1,6,0,0,6,5],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a5b1bc81c68ac79205da3c348eab70768":[0,5,1,6,0,0,6,4],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a5b1bc81c68ac79205da3c348eab70768":[1,0,0,6,0,0,6,4],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a8f5ab6ed18781a57bf79fd9c96490002":[0,5,1,6,0,0,6,7],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a8f5ab6ed18781a57bf79fd9c96490002":[1,0,0,6,0,0,6,7],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#aa83ff22cd5e2fcb1da2387455bd9b7a5":[0,5,1,6,0,0,6,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#aa83ff22cd5e2fcb1da2387455bd9b7a5":[1,0,0,6,0,0,6,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#af832cf042ec0645578833b581a999c19":[1,0,0,6,0,0,6,6]
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#a8f5ab6ed18781a57bf79fd9c96490002":[0,5,1,6,0,0,6,7],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_i_priority_queue.html#aa83ff22cd5e2fcb1da2387455bd9b7a5":[0,5,1,6,0,0,6,0]
 };

@@ -26,6 +26,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file =
     [ "FindEntry", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ac36c0e023c0e721c1445af1161d77f61", null ],
     [ "FindImport", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a98fa9daa8da9812ab13096526444b6db", null ],
     [ "FindExport", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa6d01bc78f034846a8819c7404134cb6", null ],
+    [ "FindExport", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a4c78ed400e0583af63d36edb075baa70", null ],
     [ "GetUExport", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a225d724fafb1a13fc501791b0884e7db", null ],
     [ "TryGetUExport", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a2661bd5913b05274c9713d8d2560b754", null ],
     [ "IsImport", "class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a69352994c5cf028a66da734ae8c1da69", null ],

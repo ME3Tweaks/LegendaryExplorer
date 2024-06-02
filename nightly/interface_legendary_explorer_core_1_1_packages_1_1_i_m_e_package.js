@@ -30,6 +30,7 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package =
     [ "CompareToPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aec8f7d17e215f370e66be59174531b6e", null ],
     [ "CompareToPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a065b32a6c158181eb529ef336dc45154", null ],
     [ "FindExport", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#afaca7e36ff55c73737229c680912a140", null ],
+    [ "FindExport", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a153bb9be40d4aefc6cf633f9ea2b8667", null ],
     [ "FindImport", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a6473b9c9d9b44320d3146f927487903e", null ],
     [ "FindEntry", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5fc08d45e84c76fffc0287982237c772", null ],
     [ "FindEntry", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ae42e7fafd3ff3907ee4d8f51ee3e81cc", null ],
