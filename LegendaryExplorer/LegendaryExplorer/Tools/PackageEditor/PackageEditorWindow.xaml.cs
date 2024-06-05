@@ -2955,7 +2955,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void InitializeTreeViewBackground_Completed(Task<List<TreeViewEntry>> prevTask)
         {
-            if (prevTask.Result != null)
+            if (prevTask.Exception == null && prevTask.Result != null)
             {
                 ResetTreeView();
                 AllTreeViewNodesX.AddRange(prevTask.Result);
