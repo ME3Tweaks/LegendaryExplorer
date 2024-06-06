@@ -73,7 +73,6 @@ var namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree =
     [ "RotatorLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal" ],
     [ "State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state" ],
     [ "StateGoto", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state_goto.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state_goto" ],
-    [ "Statement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_statement.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_statement" ],
     [ "StaticArrayType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_static_array_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_static_array_type" ],
     [ "StopStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_stop_statement.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_stop_statement" ],
     [ "StringLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_string_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_string_literal" ],
@@ -90,5 +89,7 @@ var namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree =
     [ "VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions" ],
     [ "VectorLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_vector_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_vector_literal" ],
     [ "WhileLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_while_loop.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_while_loop" ],
-    [ "ASTNodeType", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html#a51a5dd2e8fe17729be6ac214f6145fb5", null ]
+    [ "ASTNodeType", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html#a51a5dd2e8fe17729be6ac214f6145fb5", null ],
+    [ "CommentStatement", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html#ab78d0119ed18e48f0588929086dea679", null ],
+    [ "Statement", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html#a5de0adc6e466d6134e8fb2586740dd9c", null ]
 ];

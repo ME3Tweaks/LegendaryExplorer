@@ -866,7 +866,6 @@ var annotated_dup =
             [ "RotatorLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_rotator_literal" ],
             [ "State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state" ],
             [ "StateGoto", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state_goto.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state_goto" ],
-            [ "Statement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_statement.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_statement" ],
             [ "StaticArrayType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_static_array_type.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_static_array_type" ],
             [ "StopStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_stop_statement.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_stop_statement" ],
             [ "StringLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_string_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_string_literal" ],
@@ -896,7 +895,6 @@ var annotated_dup =
         ] ],
         [ "Parsing", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_parsing.html", [
           [ "LineLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_line_lookup" ],
-          [ "ParseException", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception" ],
           [ "TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream" ]
         ] ],
         [ "Utilities", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html", [

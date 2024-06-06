@@ -212,8 +212,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Coalesced.Exceptions.CBundleException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_bundle_exception.html", null ],
       [ "LegendaryExplorerCore.Coalesced.Exceptions.CToolException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html", null ],
       [ "LegendaryExplorerCore.Gammtek.IO.BufferAcquisitionException", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_buffer_acquisition_exception.html", null ],
-      [ "LegendaryExplorerCore.Textures.TextureSizeNotPowerOf2Exception", "class_legendary_explorer_core_1_1_textures_1_1_texture_size_not_power_of2_exception.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Parsing.ParseException", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_parse_exception.html", null ]
+      [ "LegendaryExplorerCore.Textures.TextureSizeNotPowerOf2Exception", "class_legendary_explorer_core_1_1_textures_1_1_texture_size_not_power_of2_exception.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Helpers.ExceptionExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_exception_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ExportBinaryConverter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_export_binary_converter.html", null ],
@@ -309,41 +308,6 @@ var hierarchy =
         ] ],
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html", null ],
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ],
-        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Statement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_statement.html", [
-          [ "LegendaryExplorerCore.UnrealScript.Decompiling.Jump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_jump.html", [
-            [ "LegendaryExplorerCore.UnrealScript.Decompiling.UnconditionalJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump.html", [
-              [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Goto", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_goto.html", null ]
-            ] ]
-          ] ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.AssertStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_assert_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.AssignStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_assign_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.BreakStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_break_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.CaseStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_case_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.CodeBody", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_code_body.html", [
-            [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DefaultPropertiesBlock", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_properties_block.html", null ],
-            [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Subobject", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_subobject.html", null ]
-          ] ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ContinueStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_continue_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DefaultCaseStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_case_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DoUntilLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_do_until_loop.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ErrorStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_error_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ExpressionOnlyStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_expression_only_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ForEachLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_for_each_loop.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ForLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_for_loop.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.IfStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_if_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Label", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_label.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ReplicationStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_replication_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ReturnStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_return_statement.html", [
-            [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ReturnNothingStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_return_nothing_statement.html", null ]
-          ] ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.StateGoto", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state_goto.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.StopStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_stop_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.SwitchStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_switch_statement.html", null ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", [
-            [ "LegendaryExplorerCore.UnrealScript.Language.Tree.FunctionParameter", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function_parameter.html", null ]
-          ] ],
-          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.WhileLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_while_loop.html", null ]
-        ] ],
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableIdentifier", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_identifier.html", null ],
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", [
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ClassType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class_type.html", null ],
@@ -476,7 +440,9 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.Language.Tree.IHasFileReference", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_i_has_file_reference.html", [
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Function", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.State", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html", null ],
-      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", [
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.FunctionParameter", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function_parameter.html", null ]
+      ] ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Util.IContainsByteCode", "interface_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_util_1_1_i_contains_byte_code.html", [
         [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Class", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html", null ],
@@ -989,6 +955,39 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Sphere", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sphere.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStateManagement.StateGroup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_state_group.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.Statement", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_statement.html", null ],
+    [ "Statement", null, [
+      [ "LegendaryExplorerCore.UnrealScript.Decompiling.Jump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_jump.html", [
+        [ "LegendaryExplorerCore.UnrealScript.Decompiling.UnconditionalJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump.html", [
+          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Goto", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_goto.html", null ]
+        ] ]
+      ] ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.AssertStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_assert_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.AssignStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_assign_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.BreakStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_break_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.CaseStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_case_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.CodeBody", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_code_body.html", [
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DefaultPropertiesBlock", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_properties_block.html", null ],
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Subobject", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_subobject.html", null ]
+      ] ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ContinueStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_continue_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DefaultCaseStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_case_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DoUntilLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_do_until_loop.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ErrorStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_error_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ExpressionOnlyStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_expression_only_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ForEachLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_for_each_loop.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ForLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_for_loop.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.IfStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_if_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Label", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_label.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ReplicationStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_replication_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ReturnStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_return_statement.html", [
+        [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ReturnNothingStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_return_nothing_statement.html", null ]
+      ] ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.StateGoto", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state_goto.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.StopStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_stop_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.SwitchStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_switch_statement.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableDeclaration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html", null ],
+      [ "LegendaryExplorerCore.UnrealScript.Language.Tree.WhileLoop", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_while_loop.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.StatementList", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_statement_list.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticLODModel", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_l_o_d_model.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshComponentLODInfo", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_component_l_o_d_info.html", null ],

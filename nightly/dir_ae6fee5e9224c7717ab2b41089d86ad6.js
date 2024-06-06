@@ -11,6 +11,7 @@ var dir_ae6fee5e9224c7717ab2b41089d86ad6 =
     [ "Class.cs", "_class_8cs.html", "_class_8cs" ],
     [ "ClassType.cs", "_class_type_8cs.html", "_class_type_8cs" ],
     [ "CodeBody.cs", "_code_body_8cs.html", "_code_body_8cs" ],
+    [ "CommentStatement.cs", "_comment_statement_8cs.html", "_comment_statement_8cs" ],
     [ "CompositeSymbolRef.cs", "_composite_symbol_ref_8cs.html", "_composite_symbol_ref_8cs" ],
     [ "ConditionalExpression.cs", "_conditional_expression_8cs.html", "_conditional_expression_8cs" ],
     [ "Const.cs", "_const_8cs.html", "_const_8cs" ],
