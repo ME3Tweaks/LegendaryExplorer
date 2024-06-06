@@ -1077,6 +1077,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             throw new NotImplementedException();
         }
 
+        public bool VisitNode(CommentStatement node)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool VisitNode(BooleanLiteral node)
         { throw new NotImplementedException(); }
         public bool VisitNode(FloatLiteral node)

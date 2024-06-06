@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private readonly string Text;
         private int CurrentIndex;
         
-        private readonly Dictionary<int, ScriptToken> Comments;
+        private readonly List<(int, ScriptToken)> Comments = [];
 
         private Lexer(string code, MessageLog log = null)
         {
@@ -31,7 +31,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             Builder = new StringBuilder();
             uint lineGuess = BitOperations.RoundUpToPowerOf2((uint)code.Length / 100);
             Lines = new List<int>((int)Math.Min(lineGuess, 524_288));
-            Comments = new Dictionary<int, ScriptToken>();
         }
         
         public static TokenStream Lex(string code, MessageLog log = null)
@@ -79,7 +78,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
                 if (token.Type == TokenType.SingleLineComment)
                 {
-                    Comments[Lines.Count] = token;
+                    Comments.Add((Lines.Count, token));
                 }
                 else
                 {
@@ -483,13 +482,13 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private ScriptToken MatchSingleLineComment()
         {
             int startPos = CurrentIndex;
-            CurrentIndex += 2;
+            int commentStart = CurrentIndex += 2;
             while (CurrentIndex < Text.Length && Text[CurrentIndex] is not '\n')
             {
                 ++CurrentIndex;
             }
             
-            return new ScriptToken(TokenType.SingleLineComment, null, startPos, CurrentIndex) { SyntaxType = EF.Comment };
+            return new ScriptToken(TokenType.SingleLineComment, Text.Substring(commentStart, CurrentIndex - commentStart), startPos, CurrentIndex) { SyntaxType = EF.Comment };
         }
         
         private ScriptToken MakeSymbolToken(TokenType type, string symbol)

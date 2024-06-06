@@ -328,7 +328,7 @@ public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFun
         }
         else
         {
-            Hash = Array.Empty<SetElementId>();
+            Hash = [];
         }
     }
 

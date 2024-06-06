@@ -204,7 +204,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.TypeDeclarations.Count > 0)
             {
                 AppendToNewLine();
-                AppendToNewLine("// Types", EF.Comment);
                 foreach (VariableType type in node.TypeDeclarations)
                     type.AcceptVisitor(this);
             }
@@ -212,7 +211,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.VariableDeclarations.Count > 0)
             {
                 AppendToNewLine();
-                AppendToNewLine("// Variables", EF.Comment);
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                     decl.AcceptVisitor(this);
             }
@@ -220,7 +218,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.Functions.Count > 0)
             {
                 AppendToNewLine();
-                AppendToNewLine("// Functions", EF.Comment);
                 foreach (Function func in node.Functions)
                     func.AcceptVisitor(this);
             }
@@ -228,7 +225,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.States.Count > 0)
             {
                 AppendToNewLine();
-                AppendToNewLine("// States", EF.Comment);
                 foreach (State state in node.States)
                     state.AcceptVisitor(this);
             }
@@ -725,12 +721,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 AppendToNewLine(";");
             }
 
-            AppendToNewLine("// State Functions", EF.Comment);
             foreach (Function func in node.Functions)
                 func.AcceptVisitor(this);
 
             AppendToNewLine();
-            AppendToNewLine("// State code", EF.Comment);
             if (node.Body.Statements.Count != 0)
             {
                 node.Body.AcceptVisitor(this);
@@ -1566,6 +1560,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 node.IndexArg.AcceptVisitor(this);
             }
             Append(")");
+            return true;
+        }
+
+        public bool VisitNode(CommentStatement node)
+        {
+            foreach (string comment in node.CommentLines)
+            {
+                AppendToNewLine($"//{comment}", EF.Comment);
+            }
             return true;
         }
 

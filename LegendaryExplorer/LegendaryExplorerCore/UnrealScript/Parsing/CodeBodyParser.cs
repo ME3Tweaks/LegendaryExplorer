@@ -137,7 +137,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw paramParser.ParseError("Could not parse default parameter value!", unparsedBody);
                     }
-
+                    
                     VariableType valueType = parsed.ResolveType();
                     if (!bodyParser.TypeCompatible(param.VarType, valueType, parsed.StartPos))
                     {
@@ -384,13 +384,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     if (current is Label label)
                     {
-                        if (Labels.ContainsKey(label.Name))
+                        if (!Labels.TryAdd(label.Name, label))
                         {
                             ParseError($"Label '{label.Name}' already exists on line {Tokens.LineLookup.GetLineFromCharIndex(Labels[label.Name].StartPos)}!", label);
                         }
                         else
                         {
-                            Labels.Add(label.Name, label);
                             LabelNests.Peek().Add(label);
                         }
                     }
