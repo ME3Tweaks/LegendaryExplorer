@@ -681,6 +681,7 @@ namespace LegendaryExplorerCore.Packages
 
         public string ParentInstancedFullPath => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string MemoryFullPath => IsForcedExport ? InstancedFullPath : $"{FileRef.FileNameNoExtension.StripUnrealLocalization()}.{InstancedFullPath}";
 
         public bool HasParent => _fileRef.IsEntry(_commonHeaderFields._idxLink);
 
@@ -1131,6 +1132,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if ((ExportFlags & EExportFlags.ForcedExport) != 0) return true;
                 if (Parent is ExportEntry exp) return exp.IsForcedExport;
+                // Need to handle ImportEntry parents, I think? Are all downlevel children marked in vanilla?
                 return false;
             }
         }

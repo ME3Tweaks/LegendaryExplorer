@@ -312,6 +312,7 @@ namespace LegendaryExplorerCore.Packages
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string MemoryFullPath => InstancedFullPath; // Imports will always be nested under their root package file
 
         bool headerChanged;
         public bool HeaderChanged
