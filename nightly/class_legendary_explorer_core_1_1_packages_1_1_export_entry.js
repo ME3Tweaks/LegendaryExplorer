@@ -67,6 +67,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_export_entry =
     [ "FullPath", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#aeb22d3f4a6ac087ebc1d1905f9f37924", null ],
     [ "ParentInstancedFullPath", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ac5ad2a91440251a0ea3865238e4f08a0", null ],
     [ "InstancedFullPath", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#afca7ccae53512b57592f10c02cc9735f", null ],
+    [ "MemoryFullPath", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ad64d7af4e4a5c632e52a64d9c47d4009", null ],
     [ "HasParent", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a8c4a1162326f736158846d096459909a", null ],
     [ "Parent", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ae8643fc4bb8fd9bc8b1dbadb7e843cce", null ],
     [ "HasArchetype", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a4fccc17337bfb965b3caa61f04ac1765", null ],

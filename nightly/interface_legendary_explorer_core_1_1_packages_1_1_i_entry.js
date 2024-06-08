@@ -15,6 +15,7 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_entry =
     [ "ClassName", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ac7dd3d8a33642e08d3c0e6451cd0b536", null ],
     [ "FullPath", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a0f39f0f5a755b46f1a910185a376e702", null ],
     [ "InstancedFullPath", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a295c6333b8f3f7f3b6a5c4d21d95c5aa", null ],
+    [ "MemoryFullPath", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a303bfd035ad9a2c22100a36b7d77fce0", null ],
     [ "ObjectNameString", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a9975ad7806a16909bad6b5c9d394e3c0", null ],
     [ "ObjectName", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a87fb9f6c019d02a25047c1210e6abcc9", null ],
     [ "ParentFullPath", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a9e2c64538e170adf1843cf01a8ec7e03", null ],
