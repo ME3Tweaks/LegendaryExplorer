@@ -128,6 +128,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a840441fef52dc11709093e33b2cda89d"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a840441fef52dc11709093e33b2cda89d">ReadAllFileBytesIntoMemoryStream</a> (string filePath)</td></tr>
 <tr class="memdesc:a840441fef52dc11709093e33b2cda89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Essentially just  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a840441fef52dc11709093e33b2cda89d">More...</a><br /></td></tr>
 <tr class="separator:a840441fef52dc11709093e33b2cda89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a058cac3448de9f8e248fa06afc0c8c49"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a058cac3448de9f8e248fa06afc0c8c49">CreateOptimizedLoadingMemoryStream</a> (byte[] buffer)</td></tr>
+<tr class="memdesc:a058cac3448de9f8e248fa06afc0c8c49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Essentially just  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a058cac3448de9f8e248fa06afc0c8c49">More...</a><br /></td></tr>
+<tr class="separator:a058cac3448de9f8e248fa06afc0c8c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac007f1091e08996f7dc161007d78e69b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ac007f1091e08996f7dc161007d78e69b">QuickOpenMEPackage</a> (string pathToFile)</td></tr>
 <tr class="memdesc:ac007f1091e08996f7dc161007d78e69b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a package, but only reads the header. No names, imports or exports are loaded (and an error will be thrown if any are accessed). The package is not decompressed and is not added to the package cache.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ac007f1091e08996f7dc161007d78e69b">More...</a><br /></td></tr>
 <tr class="separator:ac007f1091e08996f7dc161007d78e69b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -549,6 +552,41 @@ Static Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>filePath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Essentially just </p>
+<p ><code>new MemoryStream(File.ReadAllBytes(<em>filePath</em> ))</code>, but with some setup that improves decompression performance  </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a058cac3448de9f8e248fa06afc0c8c49" name="a058cac3448de9f8e248fa06afc0c8c49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a058cac3448de9f8e248fa06afc0c8c49">&#9670;&#160;</a></span>CreateOptimizedLoadingMemoryStream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static MemoryStream LegendaryExplorerCore.Packages.MEPackageHandler.CreateOptimizedLoadingMemoryStream </td>
+          <td>(</td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
