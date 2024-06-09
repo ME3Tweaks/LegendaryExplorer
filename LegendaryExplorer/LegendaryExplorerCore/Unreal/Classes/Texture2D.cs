@@ -423,7 +423,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedFormat = PixelFormat.Unknown)
         {
             var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
@@ -432,7 +432,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             PixelFormat pixelFormat = Image.getPixelFormatType(fmt);
             RemoveEmptyMipsFromMipList();
 
-            PixelFormat newPixelFormat = pixelFormat;
+            PixelFormat newPixelFormat = forcedFormat != PixelFormat.Unknown ? forcedFormat : pixelFormat;
 
             // Generate mips if necessary
             if (!image.checkDDSHaveAllMipmaps() || Mips.Count > 1 && image.mipMaps.Count <= 1 || image.pixelFormat != newPixelFormat)
@@ -763,6 +763,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         props.AddOrReplaceProp(new IntProperty(lodBias, @"InternalFormatLodBias"));
                     }
                 }
+            }
+
+            // Texture conversion
+            if (pixelFormat != newPixelFormat)
+            {
+                props.AddOrReplaceProp(new EnumProperty(Image.getEngineFormatType(newPixelFormat), "EPixelFormat", Export.Game, "Format"));
             }
 
             var mem = new EndianReader(new MemoryStream(0x400 + Mips.Sum(mip => mip.IsPackageStored ? 24 + mip.Mip.Length : 24))) { Endian = Export.FileRef.Endian };
