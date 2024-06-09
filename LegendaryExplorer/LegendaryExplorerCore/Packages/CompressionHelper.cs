@@ -323,9 +323,10 @@ namespace LegendaryExplorerCore.Packages
                 {
                     //Debug.WriteLine("Decompressing block " + blocknum);
                     var datain = chunks[i].Compressed.Span.Slice(pos, b.compressedsize);
+                    //Debug.WriteLine($"in {i}, {j}: {BitConverter.ToString(MD5.HashData(datain)).Replace(@"-", "").ToLowerInvariant()}");
                     //Buffer.BlockCopy(Chunks[i].Compressed, pos, datain, 0, b.compressedsize);
                     pos += b.compressedsize;
-                    if (b.compressedsize == b.uncompressedsize)
+                    if (platform is GamePlatform.PS3 or GamePlatform.WiiU && b.compressedsize == b.uncompressedsize)
                     {
                         // WiiU and PS3 files sometimes have weird case where one single block has same sizes and does not have LZMA compression flag for some reason
                         // These are very uncommon
@@ -361,6 +362,7 @@ namespace LegendaryExplorerCore.Packages
                                 throw new Exception("Unknown compression type for this package.");
                         }
                     }
+                    //Debug.WriteLine($"out {i}, {j}: {BitConverter.ToString(MD5.HashData(dataout.AsSpan(0, b.uncompressedsize))).Replace(@"-", "").ToLowerInvariant()}");
 
                     result.Seek(chunks[i].uncompressedOffset + currentUncompChunkOffset, SeekOrigin.Begin);
                     result.Write(dataout, 0, b.uncompressedsize); //cannot trust the length of the array as it's rented
@@ -478,6 +480,7 @@ namespace LegendaryExplorerCore.Packages
                 SegmentLength = b.uncompressedsize;
                 ReadOnlySpan<byte> datain = GetCompressedData(chunk, blockstart, b.compressedsize);
                 Span<byte> dataOut = Segment.AsSpan(0, b.uncompressedsize);
+                //Debug.WriteLine($"in {chunkIdx}, {blockIdx}: {BitConverter.ToString(MD5.HashData(datain)).Replace(@"-", "").ToLowerInvariant()}");
                 switch (CompressionType)
                 {
                     case UnrealPackageFile.CompressionType.LZO:
@@ -503,6 +506,7 @@ namespace LegendaryExplorerCore.Packages
                     default:
                         throw new Exception("Unknown compression type for this package.");
                 }
+                //Debug.WriteLine($"out {chunkIdx}, {blockIdx}: {BitConverter.ToString(MD5.HashData(dataOut)).Replace(@"-", "").ToLowerInvariant()}");
             }
 
             public override long Seek(long offset, SeekOrigin origin)
