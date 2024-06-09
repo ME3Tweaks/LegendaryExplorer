@@ -226,7 +226,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int mipCount = bin.ReadInt32();
             long mipCountPosition = os.Position;
             os.WriteInt32(mipCount);
-            List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
+            List<Texture2DMipInfo> mips = null;
             int offsetIdx = 0;
             int trueMipCount = 0;
             for (int i = 0; i < mipCount; i++)
@@ -268,6 +268,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
+                            
+                            // Only load mips if we need to.
+                            mips ??= Texture2D.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
                             texture = Texture2D.GetTextureData(mips[i], export.Game, export.Game != MEGame.UDK ? MEDirectories.GetDefaultGamePath(export.Game) : null, false); //copy in external textures
                             if (storageType != StorageTypes.pccUnc)
                             {
@@ -285,6 +288,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                 int width = bin.ReadInt32();
                 int height = bin.ReadInt32();
+
+#if DEBUG
+                if (width < 0 || height < 0)
+                {
+                    // This is invalid data!
+                    Debugger.Break();
+                }
+#endif
+
                 if (newGame == MEGame.UDK && storageType == StorageTypes.empty)
                 {
                     continue;
