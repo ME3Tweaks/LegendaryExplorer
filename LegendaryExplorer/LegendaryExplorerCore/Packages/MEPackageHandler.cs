@@ -254,7 +254,7 @@ namespace LegendaryExplorerCore.Packages
         public static MemoryStream ReadAllFileBytesIntoMemoryStream(string filePath)
         {
             byte[] buffer = File.ReadAllBytes(filePath);
-            //lengthy constructor is neccesary so that TryGetBuffer can be used in decompression code
+            //lengthy constructor is necessary so that TryGetBuffer can be used in decompression code
             return new MemoryStream(buffer, 0, buffer.Length, true, true);
         }
 
