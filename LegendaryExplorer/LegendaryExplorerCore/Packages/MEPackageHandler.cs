@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Packages
         public static bool GlobalSharedCacheEnabled = true;
 
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new(StringComparer.OrdinalIgnoreCase);
-        public static readonly ObservableCollection<IMEPackage> PackagesInTools = new();
+        public static readonly ObservableCollection<IMEPackage> PackagesInTools = [];
 
         // Package loading for UDK 2014/2015
         static Func<string, UDKPackage> UDKConstructorDelegate;
