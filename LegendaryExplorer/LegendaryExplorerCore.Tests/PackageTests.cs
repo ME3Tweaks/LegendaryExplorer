@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
@@ -49,6 +50,33 @@ namespace LegendaryExplorerCore.Tests
                             Assert.IsInstanceOfType(props.LastOrDefault(), typeof(NoneProperty),
                                 $"Error parsing properties on export {exp.UIndex} {exp.InstancedFullPath} in file {exp.FileRef.FilePath}");
                         }
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestOpeningMethods()
+        {
+            GlobalTest.Init();
+
+            var packagesPath = GlobalTest.GetTestPackageSerializationsDirectory();
+            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            foreach (var p in packages)
+            {
+                if (p.RepresentsPackageFilePath())
+                {
+                    // Open from stream
+                    var binStream = new MemoryStream(File.ReadAllBytes(p));
+                    var sourcePackageStream = MEPackageHandler.OpenMEPackageFromStream(binStream, Path.GetFileName(p));
+                    var sourcePackageDisk = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+
+                    for(int i = 0; i < sourcePackageStream.ExportCount; i++)
+                    {
+                        var sourceExportD = sourcePackageDisk.Exports[i];
+                        var sourceExportS = sourcePackageStream.Exports[i];
+                        Assert.IsTrue(sourceExportD.Data.SequenceEqual(sourceExportS.Data),
+                            $"Export {i+1} {sourceExportD.InstancedFullPath} in {p} did not deserialize the same between load from disk and load from stream!");
                     }
                 }
             }
