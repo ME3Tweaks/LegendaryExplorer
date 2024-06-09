@@ -254,6 +254,18 @@ namespace LegendaryExplorerCore.Packages
         public static MemoryStream ReadAllFileBytesIntoMemoryStream(string filePath)
         {
             byte[] buffer = File.ReadAllBytes(filePath);
+            return CreateOptimizedLoadingMemoryStream(buffer);
+        }
+
+        /// <summary>
+        /// Essentially just <code>new MemoryStream(File.ReadAllBytes(<paramref name="filePath"/>))</code>, but with some setup that improves decompression performance 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static MemoryStream CreateOptimizedLoadingMemoryStream(byte[] buffer)
+        {
+            // This method is here so that you don't have to remember all of this signature.
+
             //lengthy constructor is necessary so that TryGetBuffer can be used in decompression code
             return new MemoryStream(buffer, 0, buffer.Length, true, true);
         }
