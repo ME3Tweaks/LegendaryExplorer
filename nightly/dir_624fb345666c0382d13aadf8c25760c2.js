@@ -21,5 +21,6 @@ var dir_624fb345666c0382d13aadf8c25760c2 =
     [ "UInt16Extensions.cs", "_u_int16_extensions_8cs.html", "_u_int16_extensions_8cs" ],
     [ "UInt32Extensions.cs", "_u_int32_extensions_8cs.html", "_u_int32_extensions_8cs" ],
     [ "UInt64Extensions.cs", "_u_int64_extensions_8cs.html", "_u_int64_extensions_8cs" ],
-    [ "UIntPtrExtensions.cs", "_u_int_ptr_extensions_8cs.html", "_u_int_ptr_extensions_8cs" ]
+    [ "UIntPtrExtensions.cs", "_u_int_ptr_extensions_8cs.html", "_u_int_ptr_extensions_8cs" ],
+    [ "UnrealExtensions.cs", "_unreal_extensions_8cs.html", "_unreal_extensions_8cs" ]
 ];

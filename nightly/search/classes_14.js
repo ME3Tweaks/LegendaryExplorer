@@ -68,7 +68,7 @@ var searchData=
   ['unfunction_65',['UnFunction',['../class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_function.html',1,'LegendaryExplorerCore::ME1::Unreal::UnhoodBytecode']]],
   ['union_66',['Union',['../struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1k_d_o_p_node_1_1_union.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters::kDOPNode']]],
   ['unknownproperty_67',['UnknownProperty',['../class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html',1,'LegendaryExplorerCore::Unreal']]],
-  ['unrealextensions_68',['UnrealExtensions',['../class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html',1,'LegendaryExplorerCore::Helpers']]],
+  ['unrealextensions_68',['UnrealExtensions',['../class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions.html',1,'LegendaryExplorerCore.Gammtek.Extensions.UnrealExtensions'],['../class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html',1,'LegendaryExplorerCore.Helpers.UnrealExtensions']]],
   ['unrealflags_69',['UnrealFlags',['../class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html',1,'LegendaryExplorerCore::Unreal']]],
   ['unrealpackagefile_70',['UnrealPackageFile',['../class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html',1,'LegendaryExplorerCore::Packages']]],
   ['unrealscriptcompiler_71',['UnrealScriptCompiler',['../class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html',1,'LegendaryExplorerCore::UnrealScript']]],

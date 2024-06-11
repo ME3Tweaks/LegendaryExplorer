@@ -1098,6 +1098,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UnFunction", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_un_function.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.kDOPNode.Union", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1k_d_o_p_node_1_1_union.html", null ],
+    [ "LegendaryExplorerCore.Gammtek.Extensions.UnrealExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions.html", null ],
     [ "LegendaryExplorerCore.Helpers.UnrealExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_unreal_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.UnrealFlags", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", null ],

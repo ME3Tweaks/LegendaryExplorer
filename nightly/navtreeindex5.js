@@ -171,6 +171,7 @@ var NAVTREEINDEX5 =
 "_tex_converter_8cs.html":[2,0,0,0,21,7],
 "_text_builder_8cs.html":[2,0,0,0,11,0,0,4],
 "_texture2_d_8cs.html":[2,0,0,0,24,1,6],
+"_texture2_d_8cs.html#a45b5305d4576cba4e7b30cf4e5d78775":[2,0,0,0,24,1,6,3],
 "_texture2_d_8cs.html#aace610f795944b5957b2e8538ee25ace":[2,0,0,0,24,1,6,2],
 "_texture_c_r_c_8cs.html":[2,0,0,0,21,8],
 "_texture_compression_8cs.html":[2,0,0,0,24,21],
@@ -218,6 +219,7 @@ var NAVTREEINDEX5 =
 "_u_value_property_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,24,0,70,8],
 "_un_class_8cs.html":[2,0,0,0,11,0,0,6],
 "_un_function_8cs.html":[2,0,0,0,11,0,0,7],
+"_unreal_extensions_8cs.html":[2,0,0,0,6,4,22],
 "_unreal_flags_8cs.html":[2,0,0,0,24,25],
 "_unreal_package_file_8cs.html":[2,0,0,0,15,19],
 "_unreal_package_file_8cs.html#a3e0df23952f452387a53678322854238":[2,0,0,0,15,19,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "_world_8cs.html":[2,0,0,0,24,0,71],
 "_world_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,24,0,71,3],
 "_wwise_bank_8cs.html":[2,0,0,0,24,0,72],
-"_wwise_bank_8cs.html#a75ac72b3e7a21859ebd29065a6cd926b":[2,0,0,0,24,0,72,10],
-"_wwise_bank_import_8cs.html":[2,0,0,0,0,6],
-"_wwise_event_8cs.html":[2,0,0,0,24,0,73]
+"_wwise_bank_8cs.html#a75ac72b3e7a21859ebd29065a6cd926b":[2,0,0,0,24,0,72,10]
 };
