@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Image = LegendaryExplorerCore.Textures.Image;
+using PixelFormat = LegendaryExplorerCore.Textures.PixelFormat;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
@@ -391,7 +393,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public static byte[] CreateBlankTextureMip(int sizeX, int sizeY, PixelFormat format)
         {
             // Generates blank texture data in the given format
-            var blank = new Image(new byte[sizeX * sizeY], Image.ImageFormat.BMP);
+            Bitmap bmp = new Bitmap(sizeX, sizeY);
+            var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Bmp);
+            var blank = new Image(ms.ToArray(), Image.ImageFormat.BMP);
             blank.correctMips(format); // Generate the mip data
             return blank.mipMaps[0].data;
         }
