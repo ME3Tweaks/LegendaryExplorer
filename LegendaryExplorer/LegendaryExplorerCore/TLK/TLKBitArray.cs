@@ -54,6 +54,5 @@ namespace LegendaryExplorerCore.TLK
         /// <returns>True if the bit is 1, false if the bit is 0</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Get(int i)=> (intArray[i >> 5] & (1 << i)) != 0;
-        
     }
 }

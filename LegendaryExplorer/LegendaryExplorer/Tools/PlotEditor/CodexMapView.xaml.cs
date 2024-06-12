@@ -135,7 +135,11 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
 
             var codexPagePair = new KeyValuePair<int, BioCodexPage>(id, codexPage ?? new BioCodexPage());
-
+            if (package.Game == MEGame.LE1)
+            {
+                codexPagePair.Value.IsLE1 = true;
+            }
+            
             CodexPages.Add(codexPagePair);
 
             SelectedCodexPage = codexPagePair;
@@ -205,7 +209,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             CodexPages.Remove(SelectedCodexPage);
 
             AddCodexPage(dlg.ObjectId, codexSection);
-
         }
 
         public void ChangeCodexSectionId()
@@ -337,7 +340,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
 
             package = pcc;
-
         }
 
         public void RemoveCodexPage()

@@ -20,6 +20,5 @@ namespace LegendaryExplorer.SharedUI.Converters
         {
             throw new NotImplementedException();
         }
-
     }
 }

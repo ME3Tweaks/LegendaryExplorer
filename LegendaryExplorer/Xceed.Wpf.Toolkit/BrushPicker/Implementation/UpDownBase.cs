@@ -32,7 +32,6 @@ namespace ColorBox
 
         #endregion 
 
-
         #region Properties
 
         internal Spinner Spinner
@@ -411,7 +410,6 @@ namespace ColorBox
 
         #endregion //Properties
 
-
         #region Base Class Overrides
 
         protected override void OnAccessKey(AccessKeyEventArgs e)
@@ -544,7 +542,6 @@ namespace ColorBox
 
         #endregion
 
-
         #region Event Handlers
 
         private void OnSpinnerSpin(object sender, SpinEventArgs e)
@@ -554,7 +551,6 @@ namespace ColorBox
         }
 
         #endregion
-
 
         #region Events
 
@@ -578,7 +574,6 @@ namespace ColorBox
         #endregion
 
         #endregion //Events
-
 
         #region Methods
                        
@@ -739,4 +734,3 @@ namespace ColorBox
         #endregion
     }
 }
-

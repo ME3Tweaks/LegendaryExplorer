@@ -35,7 +35,6 @@ namespace LegendaryExplorerCore.TLK
         /// <param name="strRefID"></param>
         /// <param name="package">If not null, looks through the tlks in this package first</param>
         /// <param name="withFileName">Optional: Should the filename be appended to the returned string</param>
-
         public static string FindDataById(int strRefID, IMEPackage package, bool withFileName = false)
         {
             string s = "No Data";

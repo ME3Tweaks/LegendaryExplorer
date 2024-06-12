@@ -66,13 +66,7 @@ namespace LegendaryExplorerCore.Packages
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int hashCode = (int)Type;
-                hashCode = (hashCode * 397) ^ (Reference != null ? Reference.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ Transient.GetHashCode();
-                return hashCode;
-            }
+            return HashCode.Combine(Type, Reference, Transient);
         }
 
         public static bool operator ==(PropertyInfo left, PropertyInfo right)
@@ -94,7 +88,9 @@ namespace LegendaryExplorerCore.Packages
         [JsonIgnore]
         public string ClassName { get; set; }
 
-        public OrderedMultiValueDictionary<NameReference, PropertyInfo> properties = new();
+#pragma warning disable CS0618 // Type or member is obsolete
+        public OrderedMultiValueDictionary<NameReference, PropertyInfo> properties = [];
+#pragma warning restore CS0618 // Type or member is obsolete
         public string baseClass;
         //Relative to BIOGame
         public string pccPath;
@@ -287,11 +283,17 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         List<EntryStringPair> CompareToPackage(Stream stream);
         /// <summary>
-        /// Looks for an export with the same instanced name.
+        /// Looks for an export with the same instanced name
         /// </summary>
         /// <param name="instancedname"></param>
         /// <returns></returns>
         ExportEntry FindExport(string instancedname);
+        /// <summary>
+        /// Looks for an export with the same instanced name and classname
+        /// </summary>
+        /// <param name="instancedname"></param>
+        /// <returns></returns>
+        ExportEntry FindExport(string instancedname, string className);
         /// <summary>
         /// Looks for an import with the same instanced name.
         /// </summary>
@@ -299,11 +301,22 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         ImportEntry FindImport(string instancedname);
         /// <summary>
-        /// Looks for an entry (imports first, then exports) with the same instanced name.
+        /// Looks for an entry with the same instanced path.
         /// </summary>
-        /// <param name="instancedname"></param>
+        /// <param name="instancedPath"></param>
         /// <returns></returns>
-        IEntry FindEntry(string instancedname);
+        /// <remarks>Can return the "wrong" one if multiple entries have the same path.
+        /// Use <see cref="FindEntry(string, string)"/> to distinguish by class</remarks>
+        IEntry FindEntry(string instancedPath);
+
+        /// <summary>
+        /// Looks for an entry with the same instanced path and class.
+        /// </summary>
+        /// <param name="instancedPath"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        /// <remarks>Falls back to a linear search if it finds a match on path but not class</remarks>
+        IEntry FindEntry(string instancedPath, string className);
         /// <summary>
         /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
         /// </summary>

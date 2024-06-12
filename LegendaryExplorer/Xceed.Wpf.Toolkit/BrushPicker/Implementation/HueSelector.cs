@@ -41,7 +41,6 @@ namespace ColorBox
             return v;
         }
 
-
         public double HueOffset
         {
             get { return (double)GetValue(HueOffsetProperty); }
@@ -49,7 +48,6 @@ namespace ColorBox
         }
         public static readonly DependencyProperty HueOffsetProperty =
             DependencyProperty.Register("HueOffset", typeof(double), typeof(HueSelector), new UIPropertyMetadata(0.0));
-
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -123,7 +121,6 @@ namespace ColorBox
             SetHueOffset();
             return base.ArrangeOverride(finalSize);
         }
-
 
         private void SetHueOffset()
         {

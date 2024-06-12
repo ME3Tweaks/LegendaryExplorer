@@ -49,7 +49,6 @@ namespace Xceed.Wpf.Toolkit
 
     public CheckComboBox()
     {
-
       Keyboard.AddKeyDownHandler( this, OnKeyDown );
       Mouse.AddPreviewMouseDownOutsideCapturedElementHandler( this, OnMouseDownOutsideCapturedElement );
       _displayMemberPathValuesChangeHelper = new ValueChangeHelper( this.OnDisplayMemberPathValuesChanged );
@@ -215,7 +214,6 @@ namespace Xceed.Wpf.Toolkit
       if( _popup != null )
         _popup.Opened += Popup_Opened;
     }
-
 
     #endregion //Base Class Overrides
 

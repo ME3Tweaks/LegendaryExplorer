@@ -166,7 +166,6 @@ namespace LegendaryExplorerCore.Packages
         #region Names
         protected uint namesAdded;
 
-
         // Used to make name lookups quick when doing a contains operation as this method is called
         // quite often
         protected readonly CaseInsensitiveDictionary<int> nameLookupTable = new();
@@ -178,7 +177,6 @@ namespace LegendaryExplorerCore.Packages
         public bool IsName(int index) => index >= 0 && index < names.Count;
 
         public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
-
 
         public int FindNameOrAdd(string name)
         {
@@ -341,12 +339,11 @@ namespace LegendaryExplorerCore.Packages
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
 
-
             UpdateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
-        public IEntry FindEntry(string instancedname)
+        public IEntry FindEntry(string instancedPath)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -356,10 +353,27 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
+                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
             }
             // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
+        }
+
+        public IEntry FindEntry(string instancedPath, string className)
+        {
+            IEntry matchingEntry = FindEntry(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (IEntry entry in Exports.Concat<IEntry>(Imports))
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
         }
 
         public ImportEntry FindImport(string instancedname)
@@ -411,6 +425,23 @@ namespace LegendaryExplorerCore.Packages
             }
 
             return matchingEntry as ExportEntry;
+        }
+
+        public ExportEntry FindExport(string instancedPath, string className)
+        {
+            ExportEntry matchingEntry = FindExport(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (ExportEntry entry in Exports)
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
         }
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
@@ -623,7 +654,6 @@ namespace LegendaryExplorerCore.Packages
                     break;
                 }
             }
-
 
             //remove imports
             for (int i = ImportCount - 1; i >= 0; i--)

@@ -26,7 +26,6 @@ namespace ColorBox
         public static readonly DependencyProperty OffsetPaddingProperty =
             DependencyProperty.Register("OffsetPadding", typeof(Thickness), typeof(SaturationBrightnessSelector), new UIPropertyMetadata(new Thickness(0.0)));
 
-
         public double Hue
         {
             private get { return (double)GetValue(HueProperty); }
@@ -41,7 +40,6 @@ namespace ColorBox
             h.SetColor();
         }
 
-
         public double SaturationOffset
         {
             get { return (double)GetValue(SaturationOffsetProperty); }
@@ -49,7 +47,6 @@ namespace ColorBox
         }
         public static readonly DependencyProperty SaturationOffsetProperty =
             DependencyProperty.Register("SaturationOffset", typeof(double), typeof(SaturationBrightnessSelector), new UIPropertyMetadata(0.0));
-
 
         public double Saturation
         {
@@ -72,7 +69,6 @@ namespace ColorBox
             return v;
         }       
 
-
         public double BrightnessOffset
         {
             get { return (double)GetValue(BrightnessOffsetProperty); }
@@ -80,7 +76,6 @@ namespace ColorBox
         }
         public static readonly DependencyProperty BrightnessOffsetProperty =
             DependencyProperty.Register("BrightnessOffset", typeof(double), typeof(SaturationBrightnessSelector), new UIPropertyMetadata(0.0));
-
 
         public double Brightness
         {

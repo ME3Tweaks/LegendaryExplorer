@@ -61,30 +61,30 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ReplaceSingularWithRelink
         }
 
-        private static readonly byte[] me1Me2StackDummy =
-        {
+        private static ReadOnlySpan<byte> ME1ME2StackDummy =>
+        [
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-        };
+        ];
 
-        private static readonly byte[] me3StackDummy =
-        {
+        private static ReadOnlySpan<byte> ME3LEStackDummy =>
+        [
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-        };
+        ];
 
-        private static readonly byte[] UDKStackDummy =
-        {
+        private static ReadOnlySpan<byte> UDKStackDummy =>
+        [
             0xFF, 0xFF, 0xFF, 0xFF,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
-        };
+        ];
 
-        private static byte[] GetStackDummy(MEGame game) => game switch
+        private static ReadOnlySpan<byte> GetStackDummy(MEGame game) => game switch
         {
             MEGame.UDK => UDKStackDummy,
-            MEGame.ME1 => me1Me2StackDummy,
-            MEGame.ME2 => me1Me2StackDummy,
-            _ => me3StackDummy
+            MEGame.ME1 => ME1ME2StackDummy,
+            MEGame.ME2 => ME1ME2StackDummy,
+            _ => ME3LEStackDummy
         };
 
         public static List<EntryStringPair> ImportAndRelinkEntries(PortingOption portingOption, IEntry sourceEntry, IMEPackage destPcc, IEntry targetLinkEntry, bool shouldRelink, RelinkerOptionsPackage rop, out IEntry newEntry)
@@ -96,7 +96,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 portingOption = PortingOption.ReplaceSingular;
                 rop.ImportExportDependencies = true;
             }
-
 
             IMEPackage sourcePcc = sourceEntry.FileRef;
 
@@ -129,7 +128,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     newEntry = GetOrAddCrossImportOrPackage(sourceEntry.InstancedFullPath, sourcePcc, destPcc, rop, forcedLink: sourcePcc.Tree.NumChildrenOf(sourceEntry) == 0 ? link : (int?)null);
                 }
             }
-
 
             //if this node has children
             // Is it correct to import children if we clone all dependencies? Isn't relink supposed to take care of this?
@@ -183,7 +181,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //    ReindexExportEntriesWithSamePath(item.Value);
             //}
 
-            return relinkResults ?? new List<EntryStringPair>(); // Pass back empty list if we have no results
+            return relinkResults ?? []; // Pass back empty list if we have no results
 
             void importChildrenOf(IEntry sourceNode, IEntry newParent)
             {
@@ -230,9 +228,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, rop, forcedLink: newParent.UIndex);
                     }
 
-
                     importChildrenOf(node, entry);
-
 
                     // ORIGINAL CODE
                     //if (portingOption == PortingOption.MergeTreeChildren)
@@ -268,7 +264,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     //    entry = GetOrAddCrossImportOrPackage(node.InstancedFullPath, sourcePcc, destPcc, objectMapping: relinkMap, forcedLink: newParent.UIndex, targetDonorFileDB: targetGameDonorDB);
                     //}
 
-
                     //importChildrenOf(node, entry);
                 }
             }
@@ -294,19 +289,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         // CROSSGEN-V HACKS!
-        public static List<string> NonDonorItems = new List<string>();
+        public static List<string> NonDonorItems = [];
 
         // TODO: FIND WAY TO HANDLE DUPLICATE NAMED OBJECTS IN GAMES
         // 1: Identify badly named objects
         // 2: Probably have to find some hack or warning for entry lookups when these paths are encountered.
         // Note: The following list is not complete for ME1.
-        private static string[] badlyNamedME1Assets = new[]
-        {
+        private static readonly string[] badlyNamedME1Assets =
+        [
             "BIOA_JUG80_T.JUG80_SAIL",
             "BIOA_ICE60_T.checker",
-        };
+        ];
         // END CROSSGEN-V HACKS
-
 
         /// <summary>
         /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
@@ -314,8 +308,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="destPackage">Package to import to</param>
         /// <param name="sourceExport">Export object from the other package to import</param>
         /// <param name="link">Local parent node UIndex</param>
-        /// <param name="importExportDependencies">Whether to import exports that are referenced in header</param>
-        /// <param name="objectMapping"></param>
+        /// <param name="rop">Options for relinking</param>
         /// <returns></returns>
         public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
@@ -331,7 +324,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Port in donor instead
                 var ifp = sourceExport.InstancedFullPath;
 
-
                 //Debug.WriteLine($@"Porting {ifp}");
                 //if (ifp.Contains("TUR_ARM_HVYa_Des_Diff_Stack"))
                 //    Debugger.Break();
@@ -339,9 +331,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (donorFiles == null || !donorFiles.Any())
                 {
                     // Try without the front part
-                    if (ifp.Contains("."))
+                    if (ifp.Contains('.'))
                     {
-                        ifp = ifp.Substring(ifp.IndexOf(".") + 1);
+                        ifp = ifp.Substring(ifp.IndexOf('.') + 1);
                         donorFiles = rop.TargetGameDonorDB.GetFilesContainingObject(ifp, sourceExport.FileRef.Localization);
                     }
                 }
@@ -357,7 +349,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Force use to use a donor without the cache
                         rop.Cache?.ReleasePackages(); // Drop the cache so we have to look in the list of packages
                     }
-
 
                     foreach (var df in donorFiles)
                     {
@@ -469,14 +460,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
-
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
-                byte[] dummy = GetStackDummy(destPackage.Game);
+                var dummy = GetStackDummy(destPackage.Game);
                 prePropBinary = new byte[8 + dummy.Length];
                 sourceExport.DataReadOnly[..8].CopyTo(prePropBinary);
-                dummy.CopyTo(prePropBinary, 8);
+                dummy.CopyTo(prePropBinary.AsSpan(8));
             }
             else
             {
@@ -486,7 +476,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     var sourceSpan = sourceExport.DataReadOnly[..16];
                     int newNameIdx = destPackage.FindNameOrAdd(sourceExport.FileRef.GetNameEntry(MemoryMarshal.Read<int>(sourceSpan[4..])));
                     prePropBinary = sourceSpan.ToArray();
-                    MemoryMarshal.Write(prePropBinary.AsSpan(4), ref newNameIdx);
+                    MemoryMarshal.Write(prePropBinary.AsSpan(4), in newNameIdx);
                 }
                 else
                 {
@@ -499,7 +489,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //store copy of names list in case something goes wrong
             if (sourceExport.Game != destPackage.Game)
             {
-                List<string> names = destPackage.Names.ToList();
+                List<string> names = [.. destPackage.Names];
                 try
                 {
                     if (sourceExport.Game != destPackage.Game)
@@ -517,7 +507,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     throw; //should we throw?
                 }
             }
-
 
             //takes care of slight header differences between ME1/2 and ME3
             byte[] newHeader = sourceExport.GenerateHeader(destPackage, false); //The header needs relinked or it will be wrong if it has a component map!
@@ -562,10 +551,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             }
                         }
 
-                        if (classValue == null)
-                        {
-                            classValue = ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
-                        }
+                        classValue ??= ImportExport(destPackage, sourceClassExport, classParent?.UIndex ?? 0, rop);
                     }
                     break;
             }
@@ -602,11 +588,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             }
                         }
 
-                        if (superclass == null)
-                        {
-                            // Port as export
-                            superclass = ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, rop);
-                        }
+                        // Port as export
+                        superclass ??= ImportExport(destPackage, sourceSuperClassExport, superClassParent?.UIndex ?? 0, rop);
                     }
 
                     break;
@@ -643,10 +626,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             }
                         }
 
-                        if (archetype == null)
-                        {
-                            archetype = ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, rop);
-                        }
+                        archetype ??= ImportExport(destPackage, sourceArchetypeExport, archetypeParent?.UIndex ?? 0, rop);
                     }
 
                     break;
@@ -716,6 +696,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     prop.Value /= 1000;
                 }
             }
+
+            if (sourceExport.Game.IsGame3() != destPackage.Game.IsGame3() && sourceExport.IsA("Actor") && props.GetProp<StructProperty>("location") is { } locationProp)
+            {
+                locationProp.Name = destPackage.Game.IsGame3() ? "location" : "Location";
+            }
         }
 
         private static bool CanDonateObject(ExportEntry export)
@@ -736,12 +721,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             return true;
-
         }
 
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, RelinkerOptionsPackage rop)
         {
-
             using var res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
             if (incomingExport.HasStack)
             {
@@ -751,12 +734,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             else
             {
                 //int start = incomingExport.GetPropertyStart();
-                res.Writer.WriteZeros(incomingExport.GetPropertyStart());
+                // 06/08/2024 - When copying data over we should keep the pre-props binary instead of just writing zeros
+                res.Writer.Write(incomingExport.DataReadOnly.Slice(0,incomingExport.GetPropertyStart()));
                 //res.Writer.Write(new byte[start], 0, start);
             }
 
             //store copy of names list in case something goes wrong
-            List<string> names = targetExport.FileRef.Names.ToList();
+            List<string> names = [.. targetExport.FileRef.Names];
             try
             {
                 PropertyCollection props = incomingExport.GetProperties();
@@ -782,10 +766,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importFullNameInstanced">INSTANCED full path of an import from ImportingPCC</param>
         /// <param name="sourcePcc">PCC to import imports from</param>
         /// <param name="destinationPCC">PCC to add imports to</param>
+        /// <param name="rop">Options for relinking</param>
         /// <param name="forcedLink">force this as parent</param>
-        /// <param name="importNonPackageExportsToo"></param>
-        /// <param name="objectMapping"></param>
-        /// <param name="originalImportFullName">The original, uncorrected name that will exist in the source pcc</param>
         /// <returns></returns>
         public static IEntry GetOrAddCrossImportOrPackage(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, RelinkerOptionsPackage rop, int? forcedLink = null)
         {
@@ -835,7 +817,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 return newImport;
             }
 
-
             //recursively ensure parent exists. when importParts.Length == 1, this will return null
 
             // DEBUG---
@@ -846,7 +827,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //    parent = GetOrAddCrossImportOrPackageFromGlobalFile(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC, objectMapping);
             //}
             // ENDDEBUG
-
 
             parent ??= GetOrAddCrossImportOrPackage(string.Join('.', importParts[..^1]), sourcePcc, destinationPCC, rop);
 
@@ -880,7 +860,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
 
-
             if (sourceEntry is ExportEntry foundMatchingExport)
             {
                 // Try convert to import in destination package if user chose option
@@ -912,21 +891,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="importFullNameInstanced">GetFullPath() of an import from ImportingPCC</param>
         /// <param name="sourcePcc">PCC to import imports from</param>
         /// <param name="destinationPCC">PCC to add imports to</param>
-        /// <param name="objectMapping"></param>
+        /// <param name="rop">Options for relinking</param>
         /// <returns></returns>
         public static IEntry GenerateEntryForGlobalFileExport(string importFullNameInstanced, IMEPackage sourcePcc, IMEPackage destinationPCC, RelinkerOptionsPackage rop, Action<EntryStringPair> doubleClickCallback = null)
         {
             string packageName = sourcePcc.FileNameNoExtension;
             if (string.IsNullOrEmpty(importFullNameInstanced)) // If passing in an empty string, we're generating an import for the package file itself
             {
-                return destinationPCC.getEntryOrAddImport(packageName, "Package");
+                return destinationPCC.GetEntryOrAddImport(packageName, "Package");
             }
 
             string properImportInstancedFullPath = importFullNameInstanced;
 
             // We check if package name is same as the import being generated, as this export won't actually exist
             // in a global file
-            if (sourcePcc.FileNameNoExtension != importFullNameInstanced && importFullNameInstanced.IndexOf('.') == -1)
+            if (sourcePcc.FileNameNoExtension != importFullNameInstanced && !importFullNameInstanced.Contains('.'))
             {
                 // We might be passed in the expected import
                 // We need to strip off the filename if the export is not marked as ForcedExport.
@@ -1048,42 +1027,42 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         //SirCxyrtyx: These are not exhaustive lists, just the ones that I'm sure about
-        private static readonly string[] me1FilesSafeToImportFrom = { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" };
+        private static readonly string[] me1FilesSafeToImportFrom = ["Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u"];
 
         private static readonly string[] me1FilesSafeToImportFromPostLoad =
-        {
+        [
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
             
-        };
+        ];
 
         private static readonly string[] me2FilesSafeToImportFrom =
-        {
+        [
             "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
-        };
+        ];
 
         private static readonly string[] me2FilesSafeToImportFromPostLoad =
-        {
+        [
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
             
-        };
+        ];
 
         private static readonly string[] me3FilesSafeToImportFrom =
-        {
+        [
             //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
             "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
             //Assets: these files contain assets common enough that they are always loaded into memory
             "Startup.pcc", "GesturesConfig.pcc", "BIOG_Humanoid_MASTER_MTR_R.pcc", "BIOG_HMM_HED_PROMorph.pcc"
-        };
+        ];
 
         private static readonly string[] me3FilesSafeToImportFromPostLoad =
-        {
+        [
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
             "BIO_COMMON.pcc",
             "GesturesConfig.pcc" // Some animations
-        };
+        ];
         //TODO: make LE lists more exhaustive
         private static readonly string[] le1FilesSafeToImportFrom =
-        {
+        [
             // Determined from Debug Logger
             "Core.pcc",
             "Engine.pcc",
@@ -1104,54 +1083,54 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         // SFXWorldResources and SFXVehicleResources are always loaded
         // EXCEPT ON STA MAPS!!
         // At least according to coalesced, not sure if that's actually true
-        };
+        ];
 
         private static readonly string[] le1FilesSafeToImportFromPostLoad =
-        {
+        [
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
             
-        };
+        ];
 
         private static readonly string[] le2FilesSafeToImportFrom =
-        {
+        [
             "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
-        };
+        ];
 
         private static readonly string[] le2FilesSafeToImportFromPostLoad =
-        {
+        [
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
 
             // Add DLC startup files here?
             "Startup_METR_Patch01_INT.pcc"
-        };
+        ];
 
         private static readonly string[] le3FilesSafeToImportFrom =
-        {
+        [
             //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
             // Note: You must use MELoadedFiles for Startup.pcc as it exists in METR Patch and is not used by game! (and is also wrong file)
             "Core.pcc", "Engine.pcc", "Startup.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
-        };
+        ];
 
         private static readonly string[] le3FilesSafeToImportFromPostLoad =
-        {
+        [
             // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
             "BIO_COMMON.pcc",
             "GesturesConfig.pcc", // Some animations
             // "BioP_Global.pcc" // This only applies to combat files so not sure how this would be handled for non combat
             // Add DLC startup files here
-        };
+        ];
 
         // Advanced users can add to this list to make additional files be treated as safe
         // For example if they want to use a custom startup file
         // These only are allowed for post load usage!
         // These have size 0 since they are going to be very rarely used so don't allocate anything for them
         // Usages: Mass Effect Randomizer, probably DropTheSquid
-        private static SortedSet<string> me1FilesSafeToImportFromUser = new();
-        private static SortedSet<string> me2FilesSafeToImportFromUser = new();
-        private static SortedSet<string> me3FilesSafeToImportFromUser = new();
-        private static SortedSet<string> le1FilesSafeToImportFromUser = new();
-        private static SortedSet<string> le2FilesSafeToImportFromUser = new();
-        private static SortedSet<string> le3FilesSafeToImportFromUser = new();
+        private static readonly SortedSet<string> me1FilesSafeToImportFromUser = [];
+        private static readonly SortedSet<string> me2FilesSafeToImportFromUser = [];
+        private static readonly SortedSet<string> me3FilesSafeToImportFromUser = [];
+        private static readonly SortedSet<string> le1FilesSafeToImportFromUser = [];
+        private static readonly SortedSet<string> le2FilesSafeToImportFromUser = [];
+        private static readonly SortedSet<string> le3FilesSafeToImportFromUser = [];
 
         /// <summary>
         /// Gets the list of safe to import files from (user defined) for a game. For public read-only access use <see cref="UserSpecifiedSafeToImportFromFiles(MEGame)"/>
@@ -1169,7 +1148,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFromUser,
                 MEGame.LE2 => le2FilesSafeToImportFromUser,
                 MEGame.LE3 => le3FilesSafeToImportFromUser,
-                MEGame.UDK => new SortedSet<string>(), // Dunno how to do Set.Empty<string>()
+                MEGame.UDK => [], // Dunno how to do Set.Empty<string>()
                 _ => throw new Exception($"Cannot lookup user-defined safe post-load files for {game}")
             };
         }
@@ -1331,7 +1310,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFromPostLoad,
                 MEGame.LE2 => le2FilesSafeToImportFromPostLoad,
                 MEGame.LE3 => le3FilesSafeToImportFromPostLoad,
-                MEGame.UDK => Array.Empty<string>(),
+                MEGame.UDK => [],
                 _ => throw new Exception($"Cannot lookup post-load safe files for {game}")
             };
 
@@ -1375,18 +1354,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Returns true if a import can be resolved using the LEC resolver code. This is not 100% accurate to the game. The passed in package cache may have empty (no data) loaded packages
         /// inserted into it!
         /// </summary>
-        /// <param name="entry"></param>
-        /// <param name="globalCache"></param>
-        /// <param name="lookupCache"></param>
-        /// <param name="localization"></param>
-        /// <param name="filesToCheck"></param>
+        /// <param name="entry"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
+        /// <param name="globalCache"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
+        /// <param name="lookupCache"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
+        /// <param name="localization"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
+        /// <param name="localDirFiles"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
         /// <returns></returns>
         public static bool CanResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", IEnumerable<string> localDirFiles = null)
         {
             var exp = ResolveImport(entry, globalCache, lookupCache, localization, true, localDirFiles);
             return exp != null;
         }
-
 
         /// <summary>
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
@@ -1396,6 +1374,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <param name="unsafeLoad">If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</param>
+        /// <param name="localDirFiles">Files in the local directory. These will be checked last</param>
         /// <param name="gameRootOverride">The root path of the game. If null, the default path will be used</param>
         /// <returns></returns>
         public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null)
@@ -1429,7 +1408,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     var localPath = Path.Combine(containingDirectory, fileName);
                     if (!localPath.Equals(fullgamepath, StringComparison.InvariantCultureIgnoreCase) && (
-                            (localDirFiles != null && localDirFiles.Contains(localPath, StringComparer.InvariantCultureIgnoreCase))
+                            (localDirFiles?.Contains(localPath, StringComparer.InvariantCultureIgnoreCase) == true)
                             || (localDirFiles == null && File.Exists(localPath))))
                     {
                         var export = containsImportedExport(localPath);
@@ -1441,7 +1420,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
             }
             return null;
-
 
             IMEPackage openPackageMethod(string packagePath)
             {
@@ -1526,7 +1504,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns>List of filenames of potential files imported from - this does not include filepaths and not all files will be guaranteed to exist</returns>
         public static List<string> GetPossibleImportFiles(IMEPackage package, ImportEntry entry, string localization = @"INT", string gameRootOverride = null)
         {
-
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(package.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
             List<string> filesToCheck = new List<string>();
@@ -1573,7 +1550,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
-
 
             //add base definition files that are always loaded (Core, Engine, etc.)
             foreach (var fileName in FilesSafeToImportFrom(package.Game))
@@ -1649,16 +1625,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static List<string> GetBioXParentFiles(MEGame game, string filenameWithoutExtension, bool includeNonBioPTiers, bool includeLocalizations, string bioFileExt, string localization)
         {
             filenameWithoutExtension = filenameWithoutExtension.ToLower(); // Ensure lowercase
-            List<string> associatedFiles = new List<string>();
-            var isBioXfile = filenameWithoutExtension is not null &&
-                                         filenameWithoutExtension.Length > 5 &&
+            List<string> associatedFiles = [];
+            var isBioXfile = filenameWithoutExtension?.Length > 5 &&
                                          filenameWithoutExtension.StartsWith("bio") &&
                                          !filenameWithoutExtension.StartsWith("biog") && // BioG are cooked seek free and are not meant to be imported from
                                          filenameWithoutExtension[4] == '_';
             if (isBioXfile)
             {
                 // Do not include extensions in the results of this, they will be appended in resulting file
-                string bioXNextFileLookup(string filenameWithoutExtensionX)
+                static string bioXNextFileLookup(string filenameWithoutExtensionX)
                 {
                     //Lookup parents
                     var bioType = filenameWithoutExtensionX[3];
@@ -1742,7 +1717,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //backup some package state so we can undo changes if something goes wrong
             int exportCount = pcc.ExportCount;
             int importCount = pcc.ImportCount;
-            List<string> nameListBackup = pcc.Names.ToList();
+            List<string> nameListBackup = [.. pcc.Names];
 
             // If there is no package cache, we may have to open package
             // If we open package not with cache we should make sure we re-close the package
@@ -1779,7 +1754,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         string packageName = export.ParentName;
                         if (IsSafeToImportFrom($"{packageName}.pcc", MEGame.ME3, pcc.FilePath))
                         {
-                            return pcc.getEntryOrAddImport($"{packageName}.{className}");
+                            return pcc.GetEntryOrAddImport($"{packageName}.{className}", "Class");
                         }
                         else
                         {
@@ -1798,16 +1773,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // 'instancedFullPath' is only populated when inventoried at runtime.
                     if (info.forcedExport && info.instancedFullPath != null)
                     {
-                        return pcc.getEntryOrAddImport(info.instancedFullPath); // It's a forced export
+                        return pcc.GetEntryOrAddImport(info.instancedFullPath, "Class"); // It's a forced export
                     }
                     else if (info.instancedFullPath != null)
                     {
-                        return pcc.getEntryOrAddImport($"{package}.{info.instancedFullPath}");
+                        return pcc.GetEntryOrAddImport($"{package}.{info.instancedFullPath}", "Class");
                     }
                     else
                     {
                         // The original code pre 02/27/2023
-                        return pcc.getEntryOrAddImport($"{package}.{className}");
+                        return pcc.GetEntryOrAddImport($"{package}.{className}", "Class");
                     }
                 }
 
@@ -1970,7 +1945,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //Relink Component's TemplateOwnerClass
             else if (relinkingExport.TemplateOwnerClassIdx is var toci and >= 0)
             {
-
                 int uIndex = BitConverter.ToInt32(prePropBinary, toci);
                 AddReferenceLocal(uIndex);
             }
@@ -2088,9 +2062,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             foreach (var f in referencingEntries)
             {
                 // Make a new map for every iteration since this technically could add some items... somehow...
-                var objectMap = new ListenableDictionary<IEntry, IEntry>();
-                objectMap.Add(export, convertedItem); // Convert references to import
-                objectMap.Add(f.Key, f.Key); // Force this to relink on itself.
+                var objectMap = new ListenableDictionary<IEntry, IEntry>
+                {
+                    { export, convertedItem }, // Convert references to import
+                    { f.Key, f.Key } // Force this to relink on itself.
+                };
                 RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
                 {
                     CrossPackageMap = objectMap

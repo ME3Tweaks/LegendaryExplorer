@@ -94,5 +94,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         bool VisitNode(DynArrayFindStructMember node);
         bool VisitNode(DynArraySort node);
         bool VisitNode(DynArrayIterator node);
+        bool VisitNode(CommentStatement node);
     }
 }

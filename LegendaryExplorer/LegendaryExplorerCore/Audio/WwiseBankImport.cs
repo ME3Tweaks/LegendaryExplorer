@@ -13,7 +13,6 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Audio
 {
-
     /// <summary>
     /// Used only for WwiseBank import
     /// </summary>
@@ -55,7 +54,6 @@ namespace LegendaryExplorerCore.Audio
                     return "SoundbanksInfo.xml file was not found next to the .bnk file or in the directory above it (localized)!";
             }
 
-
             // Get info about what we need to do
             var infoDoc = XDocument.Load(soundBankInfo);
 
@@ -95,7 +93,6 @@ namespace LegendaryExplorerCore.Audio
                 }
             }
 
-
             var xmlBankPath = wwiseLanguage == null ? bankNameWithExtension : $"{wwiseLanguage}\\{bankNameWithExtension}";
             var soundBankChunk = infoDoc.Root.Descendants("SoundBank").FirstOrDefault(x => x.Element("Path")?.Value == xmlBankPath);
 
@@ -131,7 +128,6 @@ namespace LegendaryExplorerCore.Audio
             // Prepare the AFC
             var afcPath = Path.Combine(Directory.GetParent(package.FilePath).FullName, $"{bankName}.afc"); // Will need changed if localized!
             using var afcStream = File.Create(afcPath);
-
 
             // Import the streams
             List<ExportEntry> streamExports = new List<ExportEntry>();
@@ -203,7 +199,6 @@ namespace LegendaryExplorerCore.Audio
                         new ObjectProperty(bankExport, "Bank"))
                     { Name = "Relationships" });
                     p.Add(new IntProperty((int)eventInfo.Id, "Id"));
-
 
                     p.Add(new FloatProperty(20, "DurationSeconds")); // TODO: FIGURE THIS OUT!!! THIS IS A PLACEHOLDER
 

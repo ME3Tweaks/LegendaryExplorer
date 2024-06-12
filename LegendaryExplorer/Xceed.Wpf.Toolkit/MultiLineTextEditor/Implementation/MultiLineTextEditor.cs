@@ -160,7 +160,6 @@ namespace Xceed.Wpf.Toolkit
 
     protected virtual void OnTextChanged( string oldValue, string newValue )
     {
-
     }
 
     #endregion //Text
@@ -229,9 +228,6 @@ namespace Xceed.Wpf.Toolkit
       _textBox = GetTemplateChild( PART_TextBox ) as TextBox;
       _toggleButton = GetTemplateChild( PART_DropDownButton ) as ToggleButton;
     }
-
-
-
 
     #endregion //Bass Class Overrides
 

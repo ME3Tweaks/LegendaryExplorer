@@ -105,7 +105,6 @@ namespace LegendaryExplorerCore.Unreal
             return !string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
         }
 
-
         public static bool operator ==(string s, NameReference r)
         {
             return string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
@@ -122,7 +121,7 @@ namespace LegendaryExplorerCore.Unreal
             int _Idx = s.LastIndexOf('_');
             if (_Idx > 0)
             {
-                string numComponent = s.Substring(_Idx + 1);
+                var numComponent = s.AsSpan(_Idx + 1);
                 if (numComponent.Length > 0 
                     && !(numComponent.Length > 1 && numComponent[0] == '0') //if there's more than one character and a leading zero, it's just part of the string
                     && int.TryParse(numComponent, NumberStyles.None, null, out num))

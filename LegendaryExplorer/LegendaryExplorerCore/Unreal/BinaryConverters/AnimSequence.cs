@@ -255,7 +255,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             }
                             case AnimationCompressionFormat.ACF_Fixed48NoW:
                             {
-
                                 const float scale = 32767.0f;
                                 const ushort shift = 32767;
                                 float x = (ms.ReadUInt16() - shift) / scale;
@@ -479,7 +478,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 break;
                             case AnimationCompressionFormat.ACF_Fixed48NoW:
                             {
-
                                 const float scale = 32767.0f;
                                 const ushort shift = 32767;
                                 ms.WriteUInt16((ushort)(rot.X * scale + shift).Clamp(0, ushort.MaxValue));
@@ -500,7 +498,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             CompressedAnimationData = ms.ToArray();
             compressedDataSource = game;
-
 
             void PadTo4()
             {

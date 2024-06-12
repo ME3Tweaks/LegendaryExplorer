@@ -75,7 +75,6 @@ namespace LegendaryExplorerCore.Textures
                             {
                                 var p = vanillaInfo.ContainingPackages[0];
 
-
                                 // The vanilla texture map from me doesn't include TFC guid or TFC name (or compressed mip info either, it seems)
                                 // We need to open the package to find them
 
@@ -85,7 +84,6 @@ namespace LegendaryExplorerCore.Textures
                                 var cpPath = Path.Combine(MEDirectories.GetDefaultGamePath(ufp.Game), relativePath);
                                 var containingPackage = MEPackageHandler.UnsafePartialLoad(cpPath, x => x.UIndex == p.UIndex + 1);
                                 var matchingExport = containingPackage.GetUExport(p.UIndex + 1); // MEM uses 0 based indexing.
-
 
                                 var matchingTex = ObjectBinary.From<UTexture2D>(matchingExport);
                                 var matchingCompressedMips = matchingTex.Mips.Take(matchingTex.Mips.Count - 6).ToList(); // Bottom 6 are always package stored
@@ -104,13 +102,11 @@ namespace LegendaryExplorerCore.Textures
 
                                 var props = matchingExport.GetProperties();
 
-
                                 props.AddOrReplaceProp(matchingExport.GetProperty<NameProperty>(@"TextureFileCacheName"));
                                 props.AddOrReplaceProp(matchingExport.GetProperty<StructProperty>(@"TFCFileGuid"));
                                 props.RemoveNamedProperty(@"NeverStream");
 
                                 matchingExport.WritePropertiesAndBinary(props, tex);
-
                             }
                             else
                             {
@@ -124,7 +120,6 @@ namespace LegendaryExplorerCore.Textures
                                         mip.StorageType = storageType;
                                         data = TextureCompression.CompressTexture(mip.Mip, storageType);
                                         mip.CompressedSize = data.Length;
-
                                     }
 
                                     mip.DataOffset = (int)fs.Position;
@@ -149,7 +144,6 @@ namespace LegendaryExplorerCore.Textures
                         //                em.UncompressedSize, em.CompressedSize, em.DataOffset, null, null, null,
                         //                exp.FileRef.FilePath);
                         //            var texCRC = TextureCRC.Compute(texData);
-
 
                         //            // Write new
                         //            var offset = fs.Position;

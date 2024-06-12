@@ -17,7 +17,6 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class SetWwisePathDialog : NotifyPropertyChangedWindowBase
     {
-
         private string _wwise3773Path = Misc.AppSettings.Settings.Wwise_3773Path;
         public string Wwise3773Path
         {

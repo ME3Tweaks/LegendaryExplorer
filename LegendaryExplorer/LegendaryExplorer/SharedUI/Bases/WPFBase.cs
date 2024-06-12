@@ -83,7 +83,6 @@ namespace LegendaryExplorer.SharedUI.Bases
             Pcc = MEPackageHandler.OpenMEPackage(filePath, this);
         }
 
-
         protected void LoadMEPackage(Stream stream, string associatedFilePath = null)
         {
             UnLoadMEPackage();
@@ -160,8 +159,7 @@ namespace LegendaryExplorer.SharedUI.Bases
         /// If the loaded package is an ME-game package (not UDK or other game)
         /// </summary>
         /// <returns></returns>
-        public bool IsLoadedPackageME() => Pcc != null && Pcc.Game.IsMEGame();
-
+        public bool IsLoadedPackageME() => Pcc?.Game.IsMEGame() == true;
 
         /// <summary>
         /// Gets status bar text that displays the filename, the installation location, and if it is the highest mounted version of the file

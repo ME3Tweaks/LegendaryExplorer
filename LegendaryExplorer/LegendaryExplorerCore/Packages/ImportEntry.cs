@@ -51,45 +51,6 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
-        /// </summary>
-        /// <param name="game"></param>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static string GetPackageFile(MEGame game, string className)
-        {
-            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
-            if (classInfo != null)
-            {
-                return Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
-            }
-            else
-            {
-                return @"Core"; // ?? This could be engine, sfxgame...
-            }
-        }
-
-        /// <summary>
-        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
-        /// </summary>
-        /// <param name="game"></param>
-        /// <param name="className"></param>
-        /// <returns></returns>
-        public static string GetPackageFile(ExportEntry entry)
-        {
-            var entryClass = entry.Class;
-            if (entryClass == null)
-                return @"Core"; // Class is defined in Core
-            if (entryClass.HasParent)
-            {
-                // ForcedExport parent? Take the first forced export?
-                return entryClass.InstancedFullPath.Split(".").First();
-            }
-            
-            return GetPackageFile(entry.Game, entry.ClassName);
-        }
-
-        /// <summary>
         /// Creates an empty import associated with the specified package file.
         /// </summary>
         /// <param name="pccFile"></param>
@@ -184,7 +145,7 @@ namespace LegendaryExplorerCore.Packages
             }
             if (value.Length != HeaderLength)
             {
-                throw new ArgumentException(nameof(value), $"Import header must be exactly {HeaderLength} bytes");
+                throw new ArgumentException($"Import header must be exactly {HeaderLength} bytes", nameof(value));
             }
             var existingHeader = GenerateHeader();
             if (existingHeader.AsSpan().SequenceEqual(value))
@@ -219,13 +180,13 @@ namespace LegendaryExplorerCore.Packages
             var buff = new byte[HeaderLength];
             if (FileRef.Endian.IsNative)
             {
-                MemoryMarshal.Write(buff, ref _header);
+                MemoryMarshal.Write(buff, in _header);
             }
             else
             {
                 var reversedHeader = _header;
                 reversedHeader.ReverseEndianness();
-                MemoryMarshal.Write(buff, ref _header);
+                MemoryMarshal.Write(buff, in _header);
             }
             return buff;
         }
@@ -319,7 +280,6 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-
         public string ClassName
         {
             get => FileRef.Names[idxClassName];
@@ -352,6 +312,7 @@ namespace LegendaryExplorerCore.Packages
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string MemoryFullPath => InstancedFullPath; // Imports will always be nested under their root package file
 
         bool headerChanged;
         public bool HeaderChanged
@@ -365,7 +326,6 @@ namespace LegendaryExplorerCore.Packages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
             }
         }
-
 
         private bool _entryHasPendingChanges;
         public bool EntryHasPendingChanges
@@ -417,5 +377,43 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(MEGame game, string className)
+        {
+            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
+            if (classInfo != null)
+            {
+                return Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
+            }
+            else
+            {
+                return @"Core"; // ?? This could be engine, sfxgame...
+            }
+        }
+
+        /// <summary>
+        /// Looks up the class info for the given Export's class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(ExportEntry entry)
+        {
+            var entryClass = entry.Class;
+            if (entryClass == null)
+                return @"Core"; // Class is defined in Core
+            if (entryClass.HasParent)
+            {
+                // ForcedExport parent? Take the first forced export?
+                return entryClass.InstancedFullPath.Split(".").First();
+            }
+
+            return GetPackageFile(entry.Game, entry.ClassName);
+        }
     }
 }

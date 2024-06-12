@@ -34,8 +34,6 @@ namespace LegendaryExplorer.Misc
                 };
                 var fullURL = AppDirectories.StaticFilesBaseURL + staticExecutableName;
 
-
-
                 var syncObject = new object();
                 lock (syncObject)
                 {

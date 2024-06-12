@@ -57,7 +57,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
     #region Initialization
 
-
     internal DescriptorPropertyDefinitionBase( bool isPropertyGridCategorized
                                              )
     {
@@ -82,8 +81,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     {
       return null;
     }
-
-
 
     protected virtual int ComputeDisplayOrder( bool isPropertyGridCategorized )
     {
@@ -262,10 +259,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
-
-
-
     internal object ComputeDescriptionForItem( object item )
     {
       PropertyDescriptor pd = item as PropertyDescriptor;
@@ -296,10 +289,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
               ? attribute.Types
               : null;
     }
-
-
-
-
 
     internal object ComputeDisplayOrderForItem( object item )
     {
@@ -553,8 +542,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
-
     public string Description
     {
       get
@@ -625,14 +612,11 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
     internal bool IsPropertyGridCategorized
     {
       get;
       set;
     }
-
-
 
     #region Value Property (DP)
 
@@ -677,15 +661,12 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       _displayOrder = ComputeDisplayOrder( this.IsPropertyGridCategorized );
       _expandableAttribute = ComputeExpandableAttribute();
 
-
       _newItemTypes = ComputeNewItemTypes();
       _commandBindings = new CommandBinding[] { new CommandBinding( PropertyItemCommands.ResetValue, ExecuteResetValueCommand, CanExecuteResetValueCommand ) };
-
 
       BindingBase valueBinding = this.CreateValueBinding();
       BindingOperations.SetBinding( this, DescriptorPropertyDefinitionBase.ValueProperty, valueBinding );
     }
-
 
 
 

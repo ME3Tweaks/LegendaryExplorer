@@ -87,7 +87,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 1 package files", "*.sfm;*.u;*.upk;*.xxx"));
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3/LE package files", "*.pcc;*.xxx"));
 
-
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 CommonOpenFileDialog outputDlg = new()
@@ -142,7 +141,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
             get => _overallProgressMaximum;
             set => SetProperty(ref _overallProgressMaximum, value);
         }
-
 
         private string _currentOverallOperationText;
         public string CurrentOverallOperationText
@@ -227,7 +225,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
 
             //throw new NotImplementedException();
         }
-
 
         /// <summary>
         /// Dumps PCC data from all PCCs in the specified folder, recursively.
@@ -346,7 +343,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
             CommandManager.InvalidateRequerySuggested();
         }
 
-
         /// <summary>
         /// Writes a line to the console if verbose mode is turned on
         /// </summary>
@@ -462,7 +458,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 }
                 else
                 {
-
                     string[] acceptedExtensions = new string[] { ".pcc", ".u", ".upk", ".sfm" };
                     foreach (string filename in filenames)
                     {
@@ -623,9 +618,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
                     if (exp.Archetype != null)
                     {
                         stringoutput.Write($" (Archetype: {exp.Archetype?.InstancedFullPath})");
-
                     }
-
 
                     stringoutput.WriteLine(); // next line please
                     
@@ -679,7 +672,6 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 }
                 numDone++;
                 stringoutput.WriteLine($"--End of {datasets}");
-
 
                 // writeVerboseLine("Gathering names");
                 stringoutput.WriteLine("--Start of Names");

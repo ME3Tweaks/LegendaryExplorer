@@ -93,7 +93,6 @@ namespace LegendaryExplorerCore.Tests
                 new ExpectedPortingResults(false, null,"Engine.Material" , true),
                 new ExpectedPortingResults(false, null,"Engine.Texture2D" , true),
                 new ExpectedPortingResults(false, null,"Engine.TextureCube" , true),
-
             };
             TestPorting(nor, expectedResults);
         }

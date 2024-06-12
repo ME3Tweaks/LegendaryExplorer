@@ -5,7 +5,6 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {
-
     public class EZFilteringActiveConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

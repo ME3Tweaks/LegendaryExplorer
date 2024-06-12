@@ -66,7 +66,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
     public WindowControl()
     {
-
     }
 
     #endregion //Constructors
@@ -261,14 +260,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
     #endregion //IsActive
 
-
-
-
-
-
-
-
-
     #region Left
 
     public static readonly DependencyProperty LeftProperty = DependencyProperty.Register( "Left", typeof( double ), typeof( WindowControl ), new PropertyMetadata( 0.0, new PropertyChangedCallback( OnLeftPropertyChanged ), OnCoerceLeft ) );
@@ -380,22 +371,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
     }
 
     #endregion //TopProperty
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     #region WindowBackground
 
@@ -586,7 +561,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
       get { return true; }
     }
 
-
     #endregion //Internal Properties
 
     #region Base Class Overrides
@@ -641,7 +615,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
       _windowBlockMouseInputsPanel = this.Template.FindName( PART_BlockMouseInputsBorder, this ) as Border;
       this.UpdateBlockMouseInputsPanel();
-
 
 
     }
@@ -786,22 +759,12 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
     #endregion //CloseButtonClickedEvent
 
-
-
-
-
-
-
-
-
-
     #endregion //Events
 
     #region Event Handler
 
     private void HeaderPreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e )
     {
-
       MouseButtonEventArgs args = new MouseButtonEventArgs( Mouse.PrimaryDevice, 0, MouseButton.Left );
       args.RoutedEvent = ( e.ClickCount == 2 ) ? HeaderMouseLeftButtonDoubleClickedEvent : HeaderMouseLeftButtonClickedEvent;
       args.Source = this;
@@ -837,9 +800,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
       this.RaiseEvent( new RoutedEventArgs( CloseButtonClickedEvent, this ) );
     }
 
-
-
-
     #endregion // Event Handler
 
     #region Internal Methods
@@ -863,7 +823,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
     #endregion
 
     #region Private Methods
-
 
     #endregion //Private Methods
   }

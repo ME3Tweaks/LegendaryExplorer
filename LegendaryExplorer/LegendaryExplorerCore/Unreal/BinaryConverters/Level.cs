@@ -212,14 +212,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var actorSpan = Actors.AsSpan();
             for (int i = 0; i < actorSpan.Length; i++)
             {
-                Unsafe.AsRef(action).Invoke(ref actorSpan[i], $"Actors[{i}]");
+                Unsafe.AsRef(in action).Invoke(ref actorSpan[i], $"Actors[{i}]");
             }
             ForEachUIndexExceptActorList(game, action);
         }
 
         public void ForEachUIndexExceptActorList<TAction>(MEGame game, in TAction action) where TAction : struct, IUIndexAction
         {
-            ref TAction a = ref Unsafe.AsRef(action);
+            ref TAction a = ref Unsafe.AsRef(in action);
 
             a.Invoke(ref Self, nameof(Self));
             a.Invoke(ref Model, nameof(Model));
@@ -253,7 +253,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 a.Invoke(ref ArtPlaceable1, nameof(ArtPlaceable1));
                 a.Invoke(ref ArtPlaceable2, nameof(ArtPlaceable2));
             }
-
         }
     }
 

@@ -91,7 +91,6 @@ namespace LegendaryExplorerCore.Unreal
                 MEDirectories.GetBioGamePath(game, gamePathRoot)
             };
 
-
             if (Directory.Exists(MEDirectories.GetDLCPath(game, gamePathRoot)) && game != MEGame.LE1)
             {
                 var dlcFolders = new DirectoryInfo(MEDirectories.GetDLCPath(game, gamePathRoot)).GetDirectories();
@@ -240,7 +239,6 @@ namespace LegendaryExplorerCore.Unreal
                 files = files.Select(x => x.Substring(x.IndexOf(Path.DirectorySeparatorChar) + 1)).ToList(); //remove first slash
                 var entries = originalFilesList.Select((t, i) => (files[i], (int)new FileInfo(t).Length)).ToList();
                 return CreateTOCForEntries(entries);
-
             }
             throw new Exception("There are no TOCable files in the specified directory.");
         }
@@ -334,7 +332,6 @@ namespace LegendaryExplorerCore.Unreal
                         });
                     }
 
-
                     // Check fill rate. We must have over 75% fill rate or we will lower the hash table size by 25% and try again (down to 50% of file table size)
                     var emptyHashBucketsCount = hashBuckets.Count(x => x.TOCEntries.Count == 0);
                     // Debug.WriteLine($@"Hash fill rate: {100 - (emptyHashBucketsCount * 100.0f / hashTableSize)}%");
@@ -359,8 +356,6 @@ namespace LegendaryExplorerCore.Unreal
                         break;
                     }
                 }
-
-
 
                 tbf.HashBuckets = hashBuckets;
                 Debug.WriteLine($@"Hash table stats: File count: {tbf.HashBuckets.Sum(x => x.TOCEntries.Count)} Bucket count: {tbf.HashBuckets.Count}");

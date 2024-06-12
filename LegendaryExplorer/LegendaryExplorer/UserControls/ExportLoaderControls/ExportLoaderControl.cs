@@ -59,7 +59,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public virtual void SignalNamelistAboutToUpdate()
         {
-
         }
 
         /// <summary>
@@ -75,7 +74,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         public virtual void SignalNamelistChanged()
         {
-            
         }
 
         /// <summary>

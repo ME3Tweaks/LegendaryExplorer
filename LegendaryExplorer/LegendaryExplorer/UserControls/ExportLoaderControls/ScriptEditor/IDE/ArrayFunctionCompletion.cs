@@ -45,7 +45,6 @@ public class ArrayFunctionCompletion : ICompletionData
         return completions;
     }
 
-
     public object Description => _description;
 
     public object Content => Text;
@@ -54,7 +53,6 @@ public class ArrayFunctionCompletion : ICompletionData
 
     private static readonly ImageSource image = EFontAwesomeIcon.Solid_Cube.CreateImageSource(Brushes.Black, 0.1);
     public ImageSource Image => image;
-
 
     public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
     {

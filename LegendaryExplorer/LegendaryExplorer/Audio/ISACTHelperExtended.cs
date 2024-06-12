@@ -12,9 +12,8 @@ namespace LegendaryExplorer.Audio
 {
     internal partial class ISACTHelperExtended
     {
-
         [LibraryImport(@"ISACTTools.dll")]
-        private static partial int CreateIPSOgg(byte[] wavedata, uint waveDataLen, byte[] dstBuf, uint dstLen, float quality);
+        private static partial int CreateIPSOgg([In] byte[] wavedata, uint waveDataLen, [Out] byte[] dstBuf, uint dstLen, float quality);
 
         // Encodes a .wav file to .ogg
         public static byte[] ConvertWaveToOgg(byte[] wavData, float quality)

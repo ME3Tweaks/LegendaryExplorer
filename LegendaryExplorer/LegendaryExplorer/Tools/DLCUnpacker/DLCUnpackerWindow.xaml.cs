@@ -55,10 +55,8 @@ namespace LegendaryExplorer.Tools.DLCUnpacker
         {
             get => _unpackingPercentString;
             set => SetProperty(ref _unpackingPercentString, value);
-
         }
         private string _requiredSpaceText;
-
 
         private const string NotEnoughSpaceStr = "Not enough free space to unpack DLC.";
 

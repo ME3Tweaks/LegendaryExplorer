@@ -65,6 +65,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         public ICommand FindUsagesInFileCommand { get; set; }
         public ICommand GoToDefinitionCommand { get; set; }
+        public ICommand ToggleCommentCommand { get; set; }
 
         public UnrealScriptIDE() : base("UnrealScript IDE")
         {
@@ -82,6 +83,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
             FindUsagesInFileCommand = new GenericCommand(FindUsagesInFile, CanFindReferences);
             GoToDefinitionCommand = new GenericCommand(() => VisualLineDefinitionLinkText.GoToDefinition(contextMenuDefinitionNode, ScrollTo), () => contextMenuDefinitionNode is not null && CurrentFileLib.IsInitialized);
+            ToggleCommentCommand = new GenericCommand(ToggleComment, CanToggleComment);
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
@@ -177,7 +179,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
             textEditor.TextArea.TextEntering -= TextAreaOnTextEntering;
         }
-
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -461,11 +462,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         textEditor.SyntaxHighlighting = syntaxInfo;
                     }
 
-
                 }
                 catch (Exception e) //when (!App.IsDebug)
                 {
-                    ScriptText = $"/*Error occured while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}*/";
+                    ScriptText = $"/*Error occurred while decompiling {CurrentLoadedExport?.InstancedFullPath}:\n\n{e.FlattenException()}*/";
                 }
             });
         }
@@ -618,7 +618,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 //    break;
                 //}
             }
-
             
         }
 
@@ -784,8 +783,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
         }
 
-
-
         #region AvalonEditor
 
         private TextDocument _document;
@@ -873,7 +870,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 }
                 catch (Exception e)
                 {
-                    return new List<EntryStringPair> { new EntryStringPair($"Error occured: {e.FlattenException()}") };
+                    return [new EntryStringPair($"Error occured: {e.FlattenException()}")];
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -901,6 +898,87 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     }
                 }.Show();
             });
+        }
+
+        private bool CanToggleComment() => Document is not null;
+
+        private void ToggleComment()
+        {
+            TextArea textArea = textEditor.TextArea;
+            Selection selection = textArea.Selection;
+            if (!selection.IsEmpty)
+            {
+                int startLineNum = selection.StartPosition.Line;
+                int endLineNum = selection.EndPosition.Line;
+                //if the selection was made by dragging up, these must be swapped
+                if (startLineNum > endLineNum)
+                {
+                    (startLineNum, endLineNum) = (endLineNum, startLineNum);
+                }
+                DocumentLine startLine = Document.GetLineByNumber(startLineNum);
+                DocumentLine endLine = Document.GetLineByNumber(endLineNum);
+                textArea.Selection = selection = Selection.Create(textArea, startLine.Offset, endLine.EndOffset);
+                string text = selection.GetText();
+                string[] lines = text.Split('\n');
+                int commentCollumn = -1;
+                bool hasNonCommentedLines = false;
+                foreach (string line in lines)
+                {
+                    int whitespaceCount = line.CountLeadingWhitespace();
+                    if (whitespaceCount < line.Length)
+                    {
+                        //cast to uint so that -1 is "greater" than all positive numbers
+                        commentCollumn = (int)Math.Min((uint)whitespaceCount, (uint)commentCollumn);
+                        if (line[whitespaceCount] != '/' || line.Length > whitespaceCount + 1 && line[whitespaceCount + 1] != '/')
+                        {
+                            hasNonCommentedLines = true;
+                        }
+                    }
+                }
+                if (commentCollumn is -1)
+                {
+                    //oops, all whitespace!
+                    return;
+                }
+                if (hasNonCommentedLines)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        string lineText = lines[i];
+                        if (lineText.Length > commentCollumn && !string.IsNullOrWhiteSpace(lineText))
+                        {
+                            lines[i] = $"{lineText.AsSpan(0, commentCollumn)}//{lineText.AsSpan(commentCollumn)}";
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        string lineText = lines[i];
+                        if (lineText.IndexOf("//", StringComparison.Ordinal) is var commentStart and > 0 )
+                        {
+                            lines[i] = $"{lineText.AsSpan(0, commentStart)}{lineText.AsSpan(commentStart + 2)}";
+                        }
+                    }
+                }
+                textArea.PerformTextInput(string.Join('\n', lines));
+            }
+            else
+            {
+                DocumentLine line = Document.GetLineByNumber(textArea.Caret.Line);
+                string lineText = Document.GetText(line);
+                ReadOnlySpan<char> indentation = lineText.AsSpan(0, lineText.CountLeadingWhitespace());
+                textArea.Selection = Selection.Create(textArea, line.Offset, line.EndOffset);
+                if (lineText.Length >= indentation.Length + 2 && lineText.AsSpan(indentation.Length, 2) is "//")
+                {
+                    textArea.PerformTextInput($"{indentation}{lineText.AsSpan(indentation.Length + 2)}");
+                }
+                else
+                {
+                    textArea.PerformTextInput($"{indentation}//{lineText.AsSpan(indentation.Length)}");
+                }
+            }
         }
 
         private readonly ToolTip _hoverToolTip = new();
@@ -953,12 +1031,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
             void SetStringTooltip(string text)
             {
-                SetInlinesTooltip(new Inline[] { new Run(text) { Foreground = SyntaxInfo.ColorBrushes[EF.None] } });
+                SetInlinesTooltip([new Run(text) { Foreground = SyntaxInfo.ColorBrushes[EF.None] }]);
             }
 
             void SetTooltip(TextBlock content)
             {
-
                 content.Background = ToolTipBackgroundBrush;
                 _hoverToolTip.Content = content;
                 _hoverToolTip.Background = ToolTipBackgroundBrush;

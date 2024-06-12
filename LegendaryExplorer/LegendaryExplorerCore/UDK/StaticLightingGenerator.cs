@@ -26,9 +26,9 @@ namespace LegendaryExplorerCore.UDK
             string meshFile = Path.Combine(UDKDirectory.SharedPath, $"{meshPackageName}.upk");
             MEPackageHandler.CreateAndSavePackage(meshFile, MEGame.UDK);
             using IMEPackage meshPackage = MEPackageHandler.OpenUDKPackage(meshFile);
-            meshPackage.getEntryOrAddImport("Core.Package");
+            meshPackage.GetEntryOrAddImport("Core.Package", "Class");
 
-            IEntry defMat = meshPackage.getEntryOrAddImport("EngineMaterials.DefaultMaterial", "Material", "Engine");
+            IEntry defMat = meshPackage.GetEntryOrAddImport("EngineMaterials.DefaultMaterial", "Material", "Engine");
             var allMats = new HashSet<int>();
             var relinkerOptionsPackage = new RelinkerOptionsPackage();
             ListenableDictionary<IEntry, IEntry> relinkMap = relinkerOptionsPackage.CrossPackageMap;
@@ -170,7 +170,6 @@ namespace LegendaryExplorerCore.UDK
 
             #endregion
 
-
             var staticMeshActors = new List<ExportEntry>();
             var lightActors = new List<ExportEntry>();
             using IMEPackage tempPackage = MEPackageHandler.OpenMEPackageFromStream(MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(pcc.FilePath), MEGame.UDK));
@@ -178,7 +177,7 @@ namespace LegendaryExplorerCore.UDK
                 var topLevelMeshPackages = new List<IEntry>();
                 foreach (ExportEntry exportEntry in staticMeshes)
                 {
-                    IEntry imp = tempPackage.getEntryOrAddImport(exportEntry.InstancedFullPath, "StaticMesh", "Engine");
+                    IEntry imp = tempPackage.GetEntryOrAddImport(exportEntry.InstancedFullPath, "StaticMesh", "Engine");
                     while (imp.Parent != null)
                     {
                         imp = imp.Parent;
@@ -220,9 +219,9 @@ namespace LegendaryExplorerCore.UDK
                 #region StaticMeshActors
                 {
                     var emptySMCBin = new StaticMeshComponent();
-                    IEntry staticMeshActorClass = tempPackage.getEntryOrAddImport("Engine.StaticMeshActor");
-                    tempPackage.getEntryOrAddImport("Engine.Default__StaticMeshActor", "StaticMeshActor", "Engine");
-                    IEntry staticMeshComponentArchetype = tempPackage.getEntryOrAddImport("Engine.Default__StaticMeshActor.StaticMeshComponent0",
+                    IEntry staticMeshActorClass = tempPackage.GetEntryOrAddImport("Engine.StaticMeshActor", "Class");
+                    tempPackage.GetEntryOrAddImport("Engine.Default__StaticMeshActor", "StaticMeshActor", "Engine");
+                    IEntry staticMeshComponentArchetype = tempPackage.GetEntryOrAddImport("Engine.Default__StaticMeshActor.StaticMeshComponent0",
                                                                                          "StaticMeshComponent", "Engine");
                     int smaIndex = 2;
                     int smcIndex = 2;
@@ -309,7 +308,7 @@ namespace LegendaryExplorerCore.UDK
                             staticMeshActors.Add(sma);
                         }
                     }
-                    IEntry topMeshPackageImport = tempPackage.getEntryOrAddImport(meshPackageName, "Package");
+                    IEntry topMeshPackageImport = tempPackage.GetEntryOrAddImport(meshPackageName, "Package");
                     foreach (IEntry mp in topLevelMeshPackages)
                     {
                         mp.Parent = topMeshPackageImport;
@@ -319,9 +318,9 @@ namespace LegendaryExplorerCore.UDK
 
                 #region LightActors
                 {
-                    IEntry pointLightClass = tempPackage.getEntryOrAddImport("Engine.PointLight");
-                    IEntry spotLightClass = tempPackage.getEntryOrAddImport("Engine.SpotLight");
-                    IEntry directionalLightClass = tempPackage.getEntryOrAddImport("Engine.DirectionalLight");
+                    IEntry pointLightClass = tempPackage.GetEntryOrAddImport("Engine.PointLight", "Class");
+                    IEntry spotLightClass = tempPackage.GetEntryOrAddImport("Engine.SpotLight", "Class");
+                    IEntry directionalLightClass = tempPackage.GetEntryOrAddImport("Engine.DirectionalLight", "Class");
 
                     int plaIndex = 1;
                     int plcIndex = 1;
@@ -552,7 +551,6 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifyLights(IMEPackage pcc)
         {
-
             var pointLightComponents = new List<ExportEntry>();
             var spotLightComponents = new List<ExportEntry>();
             //var directionalLightComponents = new List<ExportEntry>();
@@ -579,13 +577,12 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifySpotLights(IMEPackage pcc, IEnumerable<ExportEntry> spotLightComponents)
         {
-
-            var drawLightRadiusComponentClass = pcc.getEntryOrAddImport("Engine.DrawLightRadiusComponent");
-            var drawLightConeComponentClass = pcc.getEntryOrAddImport("Engine.DrawLightConeComponent");
-            var drawLightRadiusArchetype = pcc.getEntryOrAddImport("Engine.Default__SpotLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
-            var drawLightSourceRadiusArchetype = pcc.getEntryOrAddImport("Engine.Default__SpotLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
-            var drawInnerConeArchetype = pcc.getEntryOrAddImport("Engine.Default__SpotLight.DrawInnerCone0", packageFile: "Engine", className: "DrawLightConeComponent");
-            var drawOuterConeArchetype = pcc.getEntryOrAddImport("Engine.Default__SpotLight.DrawOuterCone0", packageFile: "Engine", className: "DrawLightConeComponent");
+            var drawLightRadiusComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
+            var drawLightConeComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightConeComponent", "Class");
+            var drawLightRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
+            var drawLightSourceRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
+            var drawInnerConeArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawInnerCone0", packageFile: "Engine", className: "DrawLightConeComponent");
+            var drawOuterConeArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawOuterCone0", packageFile: "Engine", className: "DrawLightConeComponent");
             int dlcIndex = 1;
             int dlrIndex = 1;
             byte[] prePropBinary = new byte[8];
@@ -651,9 +648,9 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifyPointLights(IMEPackage pcc, IEnumerable<ExportEntry> pointLightComponents)
         {
-            var drawLightRadiusComponentClass = pcc.getEntryOrAddImport("Engine.DrawLightRadiusComponent");
-            var drawLightRadiusArchetype = pcc.getEntryOrAddImport("Engine.Default__PointLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
-            var drawLightSourceRadiusArchetype = pcc.getEntryOrAddImport("Engine.Default__PointLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
+            var drawLightRadiusComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
+            var drawLightRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__PointLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
+            var drawLightSourceRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__PointLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
             int dlrIndex = 1;
             byte[] prePropBinary = new byte[8];
             foreach (ExportEntry plc in pointLightComponents)

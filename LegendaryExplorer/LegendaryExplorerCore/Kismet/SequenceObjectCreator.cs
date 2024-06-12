@@ -265,7 +265,6 @@ namespace LegendaryExplorerCore.Kismet
 
                                     foreach (StructProperty varLink in varLinksProp)
                                     {
-
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
                                             EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, rop) is IEntry portedExpectedVar)
@@ -393,7 +392,6 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="cache">PackageCache for relinker</param>
         /// <param name="handleRelinkResults">Invoked when relinking is complete and the export has been added. You can inspect the object for failed relink operations, for example.</param>
         /// <returns></returns>
-
         public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, PackageCache cache = null, Action<RelinkerOptionsPackage> handleRelinkResults = null)
         {
             var rop = new RelinkerOptionsPackage() { Cache = cache ?? new PackageCache() };

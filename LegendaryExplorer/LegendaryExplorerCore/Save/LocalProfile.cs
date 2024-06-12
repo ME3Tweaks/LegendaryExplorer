@@ -55,7 +55,6 @@ namespace LegendaryExplorerCore.Save
         /// </summary>
         public object Data { get; set; }
 
-
         // Various convenient methods
         public int DataAsInt => (int)Data;
         public double DataAsDouble => (double)Data;
@@ -178,7 +177,6 @@ namespace LegendaryExplorerCore.Save
         /// <param name="game">Game the stream is for</param>
         private LocalProfile(Stream stream, MEGame game)
         {
-
             var reader = new EndianReader(stream) { Endian = Endian.Big }; // LE3 uses big endian
 
             // 1. Decompress data
@@ -292,9 +290,6 @@ namespace LegendaryExplorerCore.Save
 
             return finalStream;
         }
-
-
-
 
         // Enums
 

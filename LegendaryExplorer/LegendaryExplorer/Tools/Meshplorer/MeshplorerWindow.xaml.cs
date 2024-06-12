@@ -57,7 +57,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
                     InterpreterTab_Interpreter.UnloadExport();
                     Mesh3DViewer.UnloadExport();
-
                 }
                 else
                 {
@@ -70,7 +69,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
-
 
         /// <summary>
         /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constructor instead.
@@ -176,7 +174,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
             {
                 try
                 {
-
                     switch (ObjectBinary.From(CurrentExport))
                     {
                         case SkeletalMesh skelMesh:
@@ -207,7 +204,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
             {
                 try
                 {
-
                     MEPackageHandler.CreateAndSavePackage(d.FileName, MEGame.UDK);
                     using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
@@ -249,7 +245,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
         {
             ReplaceFromUDK(false);
         }
-
 
         private void ReplaceFromUDK(bool lodOnly)
         {
@@ -306,7 +301,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                                 }
                             }
 
-
                             newMesh.Materials = originalMesh.Materials.ArrayClone();
 
                             var lods = CurrentExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
@@ -336,7 +330,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                                 {
                                     MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
                                 }
-
 
                             }
                             else
@@ -390,7 +383,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                                     CurrentExport.WriteProperty(lods);
                                 }
                             }
-
                         }
                         else
                         {
@@ -486,7 +478,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
                 StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3LEStaticMesh();
-                CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
+                CurrentExport.Class = Pcc.GetEntryOrAddImport("Engine.StaticMesh", "Class");
                 CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {
                     new BoolProperty(true, "UseSimpleBoxCollision"),
@@ -496,8 +488,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
         }
 
         private bool PackageIsLoaded() => Pcc != null;
-
-
 
         private async void SaveFile()
         {

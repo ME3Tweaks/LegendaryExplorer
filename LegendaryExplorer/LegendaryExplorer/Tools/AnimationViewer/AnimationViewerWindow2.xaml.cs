@@ -214,7 +214,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
             }
             Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -540,14 +539,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 CommandManager.InvalidateRequerySuggested();
                 EndBusy();
             });
-
         }
 
         private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled;
 
         private void StartGame()
         {
-
             // This doesn't work...
             //InteropHelper.SendMessageToGame($"CACHEPACKAGE {animViewerStagePath}", Game);
             //Thread.Sleep(50); // Give it a sec...
@@ -572,7 +569,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 AnimViewer.SetUpAnimStreamFile(Game, null, 0, $"{Game}AnimViewer_StreamAnim"); //placeholder for making sure file is in TOC
             });
         }
-
 
         #endregion
 
@@ -856,7 +852,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void StopAnimation_Click(object sender, RoutedEventArgs e)
         {
-
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
@@ -933,8 +928,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             }
         }
 
-
-
         private void UpdateCamRotation()
         {
             if (noUpdate) return;
@@ -973,5 +966,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         }
 
         public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2];
     }
 }

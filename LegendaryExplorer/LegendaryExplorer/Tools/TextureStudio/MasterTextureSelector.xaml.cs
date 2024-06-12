@@ -37,7 +37,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             set => SetProperty(ref _selectorMode, value);
         }
 
-
         private TreeViewEntry _selectedItem;
 
         public TreeViewEntry SelectedItem
@@ -99,7 +98,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             var linkSelector = EntrySelector.GetEntryWithNoOption<IEntry>(this, Pcc, @"Select the parent the new texture should have. If you want the new texture directly at the root, select [Package root].", x => x.ClassName == "Package");
             if (linkSelector.selectedPackageRoot || linkSelector.selectedEntry != null)
             {
-
                 OpenFileDialog selectDDS = new OpenFileDialog
                 {
                     Title = "Select texture file",
@@ -138,7 +136,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             Close();
         }
 
-
         #endregion
 
         public void LoadFile(string file)
@@ -149,12 +146,10 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         public override void HandleUpdate(List<PackageUpdate> updates)
         {
-
         }
 
         private void InitializeTreeView()
         {
-
             IsBusy = true;
             if (Pcc == null)
             {
@@ -203,7 +198,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                     parent.Sublinks.Add(entry);
                     entry.Parent = parent;
                     itemsToRemove.Add(entry); //remove from this level as we have added it to another already
-
                 }
             }
 

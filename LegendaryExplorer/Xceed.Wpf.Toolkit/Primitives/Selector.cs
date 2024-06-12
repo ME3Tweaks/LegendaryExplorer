@@ -46,8 +46,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
     private ValueChangeHelper _selectedMemberPathValuesHelper;
     private ValueChangeHelper _valueMemberPathValuesHelper;
 
-
-
     #endregion //Members
 
     #region Constructors
@@ -205,13 +203,11 @@ namespace Xceed.Wpf.Toolkit.Primitives
           }
         }
 
-
         _selectedItems = value;
       }
     }
 
     #endregion SelectedItems
-
 
     #region SelectedItemsOverride property
 
@@ -243,7 +239,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
     }
 
     #endregion
-
 
     #region SelectedMemberPath Property
 
@@ -476,7 +471,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
       if( String.IsNullOrEmpty( propertyPath )
         || propertyPath == "." )
         return item;
-
 
       PropertyInfo prop = item.GetType().GetProperty( propertyPath );
       return ( prop != null )
@@ -960,7 +954,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
     #endregion
   }
-
 
   public delegate void ItemSelectionChangedEventHandler( object sender, ItemSelectionChangedEventArgs e );
   public class ItemSelectionChangedEventArgs : RoutedEventArgs

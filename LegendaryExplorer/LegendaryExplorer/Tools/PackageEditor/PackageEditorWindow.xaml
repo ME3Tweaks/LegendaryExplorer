@@ -33,6 +33,7 @@
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
+        <SharedUI:BindingProxy x:Key="bindingProxy" Data="{Binding}"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
@@ -171,8 +172,12 @@
                     <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
                     <MenuItem Header="Create new Package export" ToolTip="Adds a new package export to the root of the current loaded package" Command="{Binding CreatePackageExportCommand}"/>
                     <MenuItem Header="Create ObjectReferencer" ToolTip="Adds an ObjectReferencer to the root of the package if one does not exist" Command="{Binding CreateObjectReferencerCommand}"/>
-                    <Separator/>
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
+                    <Separator/>
+                    <MenuItem Header="Bulk Property Editing">
+                        <MenuItem Header="Export properties to text file" Command="{Binding ExportAllPropsCommand}"/>
+                        <MenuItem Header="Apply property edits from text file" Command="{Binding ApplyBulkPropEditsCommand}"/>
+                    </MenuItem>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
                         <MenuItem Header="Bulk export...">
@@ -270,12 +275,34 @@
                     <ColumnDefinition Width="6*" />
                 </Grid.ColumnDefinitions>
                 <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
-                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to previous (historically) selected entry.  You can also press the back button on your mouse" Command="{Binding NavigateBackCommand}">
-                    <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_ArrowLeft" Height="12" />
-                    </Button.Content>
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to previous (historically) selected entry.  You can also press the back button on your mouse or right click to view the list" Command="{Binding NavigateBackCommand}">
+                        <Button.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding BackwardsEntries}">
+                                <ContextMenu.DisplayMemberPath>InstancedFullPath</ContextMenu.DisplayMemberPath>
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Command" Value="{Binding Source={StaticResource bindingProxy}, Path=Data.NavigateToEntryCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding}" />
+                                    </Style>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <Button.Content>
+                            <fa5:FontAwesome Icon="Solid_ArrowLeft" Height="12" />
+                        </Button.Content>
                     </Button>
-                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to the next (historically) selected entry. You can also press the forward button on your mouse" Command="{Binding NavigateForwardCommand}">
+                    <Button Padding="7,0" VerticalAlignment="Stretch" ToolTip="Navigate to the next (historically) selected entry. You can also press the forward button on your mouse or right click to view the list" Command="{Binding NavigateForwardCommand}">
+                        <Button.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding ForwardsEntries}">
+                                <ContextMenu.DisplayMemberPath>InstancedFullPath</ContextMenu.DisplayMemberPath>
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Command" Value="{Binding Source={StaticResource bindingProxy}, Path=Data.NavigateToEntryCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding}" />
+                                    </Style>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
                         <Button.Content>
                             <fa5:FontAwesome Icon="Solid_ArrowRight" Height="12" />
                         </Button.Content>

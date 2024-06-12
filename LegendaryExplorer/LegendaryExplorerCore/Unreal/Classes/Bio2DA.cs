@@ -56,7 +56,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// </summary>
         public List<string> RowNamesUI { get; }
 
-
         public int RowCount => RowNames?.Count ?? 0;
 
         public int ColumnCount => ColumnNames?.Count ?? 0;
@@ -145,7 +144,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
 
                 mergedRows.Add(localRowIdx); // Mark this row as being merged
-                Debug.WriteLine($"Writing {destRowIdx}----------------------------");
+                // Debug.WriteLine($"Writing {destRowIdx}----------------------------");
                 foreach (var colName in ColumnNames)
                 {
                     // Debug.WriteLine($"Writing {rowIdx},{colName}");
@@ -264,7 +263,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             IsIndexed = binary.IsIndexed;
         }
 
-
         /// <summary>
         /// Initializes a blank Bio2DA. Cells is not initialized, the caller must set up this Bio2DA.
         /// </summary>
@@ -347,7 +345,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 exportToWriteTo.RemoveProperty("m_lstRowNumbers"); // No rows.
                 exportToWriteTo.WriteBinary(binary);
             }
-
         }
 
         internal string GetColumnNameByIndex(int columnIndex)
@@ -363,7 +360,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             return mappedColumnNames[columnName];
         }
-
 
         public int GetRowIndexByName(string rowname)
         {

@@ -15,7 +15,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     {
         protected FileExportLoaderControl(string memoryTrackerName) : base(memoryTrackerName)
         {
-
         }
 
         /// <summary>
@@ -124,6 +123,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// Name of the tool. If using the recents system this MUST be set to non-null
         /// </summary>
         public abstract string Toolname { get; }
+
+        /// <summary>
+        /// Forcibly hides the recents control
+        /// </summary>
+        public bool ForceHideRecents { get; set; }
 
         //internal abstract void RecentFile_click(object sender, RoutedEventArgs e);
 

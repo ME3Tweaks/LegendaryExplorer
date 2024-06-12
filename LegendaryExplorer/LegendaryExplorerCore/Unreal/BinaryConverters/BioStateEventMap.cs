@@ -85,7 +85,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public BioStateEventElementType Type;
         }
 
-
         public class BioStateEventElementBool : BioStateEventElement
         {
             public int GlobalBool;
@@ -244,7 +243,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     sc.Serialize(ref elementSubstate);
                     break;
             }
-
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementBool element)

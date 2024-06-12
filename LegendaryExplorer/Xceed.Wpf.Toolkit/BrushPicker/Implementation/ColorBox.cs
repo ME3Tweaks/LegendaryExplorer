@@ -204,8 +204,6 @@ namespace ColorBox
             }
         }
 
-
-
         double GradientOriginX
         {
             get { return (double)GetValue(GradientOriginXProperty); }
@@ -598,7 +596,6 @@ namespace ColorBox
             return v;
         }
 
-
         private double Brightness
         {
             get { return (double)GetValue(BrightnessProperty); }
@@ -614,7 +611,6 @@ namespace ColorBox
             if (v > 1) return 1.0;
             return v;
         }
-
 
         private double Saturation
         {
@@ -632,7 +628,6 @@ namespace ColorBox
             return v;
         }
 
-
         private double Alpha
         {
             get { return (double)GetValue(AlphaProperty); }
@@ -649,7 +644,6 @@ namespace ColorBox
             return v;
         }
 
-
         private int A
         {
             get { return (int)GetValue(AProperty); }
@@ -658,7 +652,6 @@ namespace ColorBox
         private static readonly DependencyProperty AProperty =
             DependencyProperty.Register("A", typeof(int), typeof(ColorBox),
             new FrameworkPropertyMetadata(255, new PropertyChangedCallback(UpdateColorRGB), new CoerceValueCallback(RGBCoerce)));
-
 
         private int R
         {
@@ -669,7 +662,6 @@ namespace ColorBox
             DependencyProperty.Register("R", typeof(int), typeof(ColorBox),
             new FrameworkPropertyMetadata(default(int), new PropertyChangedCallback(UpdateColorRGB), new CoerceValueCallback(RGBCoerce)));
 
-
         private int G
         {
             get { return (int)GetValue(GProperty); }
@@ -678,7 +670,6 @@ namespace ColorBox
         private static readonly DependencyProperty GProperty =
             DependencyProperty.Register("G", typeof(int), typeof(ColorBox),
             new FrameworkPropertyMetadata(default(int), new PropertyChangedCallback(UpdateColorRGB), new CoerceValueCallback(RGBCoerce)));
-
 
         private int B
         {
@@ -761,7 +752,6 @@ namespace ColorBox
         }
 
         #endregion
-
 
         internal void SetBrush()
         {

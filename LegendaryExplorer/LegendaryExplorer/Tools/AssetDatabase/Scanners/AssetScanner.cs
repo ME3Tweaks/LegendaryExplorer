@@ -10,7 +10,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
     internal abstract class AssetScanner
     {
-
         protected AssetScanner()
         {
         }

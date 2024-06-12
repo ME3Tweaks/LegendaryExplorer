@@ -12,7 +12,6 @@ namespace NAudio.WaveFormRenderer
             BottomPeakPen = Pens.Peru;
         }
 
-
         public override Pen TopPeakPen { get; set; }
 
         // not needed

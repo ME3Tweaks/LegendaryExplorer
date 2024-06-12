@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -255,23 +256,23 @@ namespace LegendaryExplorerCore.UnrealScript
                         case MEGame.ME3:
                         {
                             associatedFiles.Remove("BIOP_MP_COMMON.pcc");
-                            if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
+                            if (Pcc.FindEntry("SFXGameMPContent", "Package") is IEntry mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
                             {
                                 associatedFiles.Add("BIOP_MP_COMMON.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
                             }
@@ -354,38 +355,6 @@ namespace LegendaryExplorerCore.UnrealScript
             return symbols;
         }
 
-        private static bool IsScriptExport(ExportEntry exp)
-        {
-            switch (exp.ClassName)
-            {
-                case "Class":
-                case "State":
-                case "Enum":
-                case "Const":
-                case "Function":
-                case "ScriptStruct":
-                case "IntProperty":
-                case "BoolProperty":
-                case "FloatProperty":
-                case "NameProperty":
-                case "StrProperty":
-                case "StringRefProperty":
-                case "ByteProperty":
-                case "ObjectProperty":
-                case "ComponentProperty":
-                case "InterfaceProperty":
-                case "ArrayProperty":
-                case "StructProperty":
-                case "BioMask4Property":
-                case "MapProperty":
-                case "ClassProperty":
-                case "DelegateProperty":
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         void IWeakPackageUser.HandleUpdate(List<PackageUpdate> updates)
         {
             if (_symbols is null)
@@ -394,7 +363,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
-                if (Pcc.GetEntry(update.Index) is ExportEntry exp && IsScriptExport(exp))
+                if (Pcc.GetEntry(update.Index) is ExportEntry exp && exp.IsScriptExport())
                 {
                     ReInitializeFile();
                     InitializationStatusChange?.Invoke(true);
@@ -432,7 +401,14 @@ namespace LegendaryExplorerCore.UnrealScript
                         }
                         else
                         {
-                            cls = ScriptObjectToASTConverter.ConvertClass(GetCachedObjectBinary<UClass>(export, packageCache), false, this, packageCache);
+                            var uClass = GetCachedObjectBinary<UClass>(export, packageCache);
+                            cls = ScriptObjectToASTConverter.ConvertClass(uClass, false, this, packageCache);
+
+                            //don't do this if we're just adding a new class to the db
+                            if (classOverride is null)
+                            {
+                                GlobalUnrealObjectInfo.AddOrReplaceClassInDB(uClass, packageCache);
+                            }
                         }
                         log.CurrentClass = cls;
                         if (!cls.IsFullyDefined)
@@ -614,7 +590,6 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             return ObjectBinary.From<T>(export, packageCache);
         }
-
 
         [Conditional("DEBUGSCRIPT")]
         private static void DisplayError(string scriptText, string logText)

@@ -16,7 +16,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
     internal static class ScriptObjectToASTConverter
     {
-
         public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib fileLib, PackageCache packageCache = null)
         {
             ExportEntry uClassExport = uClass.Export;
@@ -122,7 +121,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 member.Outer = ast;
             foreach (var member in States)
                 member.Outer = ast;
-
 
             var virtFuncLookup = new List<string>(uClass.VirtualFunctionTable?.Length ?? 0);
             if (pcc.Game.IsGame3())
@@ -559,7 +557,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 body = new ByteCodeDecompiler(obj, containingClass, fileLib, parameters, returnVal?.VarType).Decompile();
             }
 
-
             var func = new Function(obj.Export.ObjectName.Instanced, obj.FunctionFlags, returnVal, body, parameters)
             {
                 NativeIndex = obj.NativeIndex,
@@ -596,9 +593,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     foreach (ExportEntry child in exportEntry.GetChildren<ExportEntry>())
                     {
-                        var type = new VariableType(child.ClassName);
-                        var decl = new VariableDeclaration(type, default, child.ObjectName.Instanced);
-                        defaults.Add(new Subobject(decl, new Class(child.ClassName, null, null, default), GetStatements(child), child.HasArchetype));
+                        defaults.Add(new Subobject(child.ObjectName.Instanced, new Class(child.ClassName, null, null, default), GetStatements(child), child.HasArchetype));
                     }
                 }
 
@@ -607,10 +602,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
         }
 
-
         public static Expression ConvertToLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
         {
-            var statements = ConvertProperties(new PropertyCollection { prop }, containingExport, containingExport.ObjectName.Instanced, false, lib, false);
+            var statements = ConvertProperties([prop], containingExport, containingExport.ObjectName.Instanced, false, lib, false);
             return statements[0].Value;
         }
 
@@ -670,8 +664,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 statements.Add(new AssignStatement(name, value));
             }
 
-
-
             return statements;
 
             Expression ConvertPropertyValue(Property prop)
@@ -690,7 +682,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         var symRef = new SymbolReference(null, funcName);
                         if (pcc.TryGetEntry(delegateProperty.Value.ContainingObjectUIndex, out IEntry containingObject))
                         {
-                            symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("Class")), symRef);
+                            if (containingObject is ExportEntry { IsDefaultObject: true })
+                            {
+                                symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.ClassName), new VariableType("class")), symRef);
+                            }
+                            else
+                            {
+                                symRef = new CompositeSymbolRef(new ObjectLiteral(new NameLiteral(containingObject.InstancedFullPath), new VariableType(containingObject.ClassName)), symRef);
+                            }
                         }
                         return symRef;
                     case EnumProperty enumProperty:
@@ -710,6 +709,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         if (objRef == 0)
                             return new NoneLiteral();
                         var objEntry = pcc.GetEntry(objRef);
+                        if (objEntry is null)
+                        {
+                            return new SymbolReference(null, $"__INVALID_UINDEX: {objRef}");
+                        }
                         if (objEntry is ExportEntry objExp && usingSubObjects && objExp.InstancedFullPath.StartsWith(export.InstancedFullPath, StringComparison.OrdinalIgnoreCase))
                         {
                             //subObject reference
@@ -722,6 +725,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         return new StringLiteral(strProperty.Value);
                     case StructProperty structProperty:
                         return new StructLiteral(null, ConvertProperties(structProperty.Properties, export, structProperty.StructType, true, fileLib, usingSubObjects));
+                    case ImmutableByteArrayProperty byteArrayProperty:
+                        return new StringLiteral(Convert.ToBase64String(byteArrayProperty.Bytes));
                     case ArrayPropertyBase arrayPropertyBase:
                         return new DynamicArrayLiteral(null, arrayPropertyBase.Properties.Select(ConvertPropertyValue).ToList());
                     default:

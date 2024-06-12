@@ -29,7 +29,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
   /// </summary>
   public class PropertyItemsControl : ItemsControl
   {
-
     public PropertyItemsControl()
     {
       var propertyItemsControlProperties = TypeDescriptor.GetProperties( this, new Attribute[] { new PropertyFilterAttribute( PropertyFilterOptions.All ) } );
@@ -99,7 +98,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     {
       return ( item is PropertyItemBase );
     }
-
 
     protected override void PrepareContainerForItemOverride( DependencyObject element, object item )
     {

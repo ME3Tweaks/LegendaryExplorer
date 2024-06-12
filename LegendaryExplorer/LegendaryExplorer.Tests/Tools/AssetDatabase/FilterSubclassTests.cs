@@ -61,6 +61,5 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             Assert.IsFalse(AssetFilters.MeshSearch(("bones:5000", r1)));
         }
 
-
     }
 }

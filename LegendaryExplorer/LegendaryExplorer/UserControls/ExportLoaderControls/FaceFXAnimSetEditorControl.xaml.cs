@@ -206,7 +206,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         #endregion
 
-
         private void LoadFaceFXAnimset()
         {
             Lines.Clear();
@@ -230,7 +229,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     // Cut off the start of the string
                     idStr = idStr.Substring(voPos + 3);
-
 
                     idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // Hack
                 }
@@ -1193,7 +1191,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 graph.SelectedCurve = SelectedAnimation.ToCurve(SaveChanges);
                 graph.Paint(true);
                 SaveChanges();
-
             }
             catch (Exception exp)
             {
@@ -1202,7 +1199,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 MessageBox.Show($"{exp.FlattenException()}", "Error");
 #endif
             }
-
         }
 
         public interface IFaceFXBinary
@@ -1334,7 +1330,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 default:
                     return;
             }*/
-
 
         }
 

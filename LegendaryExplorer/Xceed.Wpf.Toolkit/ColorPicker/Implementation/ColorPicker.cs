@@ -329,7 +329,6 @@ namespace Xceed.Wpf.Toolkit
 
     protected virtual void OnMaxDropDownWidthChanged( double oldValue, double newValue )
     {
-
     }
 
     #endregion
@@ -628,7 +627,6 @@ namespace Xceed.Wpf.Toolkit
 
     public ColorPicker()
     {
-
 #if VS2008
         this.RecentColors = new ObservableCollection<ColorItem>();
 #else
@@ -689,7 +687,6 @@ namespace Xceed.Wpf.Toolkit
         _selectionChanged = false;
       }
     }
-
 
 #endregion //Base Class Overrides
 

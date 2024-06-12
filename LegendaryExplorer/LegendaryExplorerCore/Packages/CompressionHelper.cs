@@ -16,7 +16,6 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class CompressionHelper
     {
-
 #if AZURE
         public const string OODLE_DLL_NAME = @"C:\Users\Public\LEDC.dll";
 #else
@@ -41,7 +40,6 @@ namespace LegendaryExplorerCore.Packages
 
         private const int CHUNK_HEADER_MAGIC = -1641380927;
 
-
         /// <summary>
         /// Represents an item in the Chunk table of a package
         /// </summary>
@@ -60,7 +58,6 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Represents the header of chunk (that is pointed to by the chunk table)
         /// </summary>
-
         public struct ChunkHeader
         {
             public int magic;
@@ -80,7 +77,6 @@ namespace LegendaryExplorerCore.Packages
             public ArraySegment<byte> uncompressedData;
             public byte[] compressedData;
         }
-
 
         /// <summary>
         /// Decompresses a fully compressed package file. These only occur on console platforms. 
@@ -107,7 +103,6 @@ namespace LegendaryExplorerCore.Packages
                 blockCount = decompressedSize / blockSize;
                 if (decompressedSize % blockSize != 0) blockCount++; //Add one to decompress the final data
             }
-
 
             MemoryStream outStream = MemoryManager.GetMemoryStream();
             List<(int blockCompressedSize, int blockDecompressedSize)> blockTable = new List<(int blockCompressedSize, int blockDecompressedSize)>();
@@ -317,7 +312,6 @@ namespace LegendaryExplorerCore.Packages
 
             var dataout = MemoryManager.GetByteArray(maxUncompressedBlockSize);
 
-
             for (int i = 0; i < chunks.Count; i++)
             {
                 int pos = 16 + 8 * chunks[i].blocks.Length;
@@ -390,7 +384,6 @@ namespace LegendaryExplorerCore.Packages
             raw.BaseStream.CopyToEx(result, firstChunkOffset); // Copy the header in
                                                                // Does header need adjusted here to be accurate? 
                                                                // Do we change it to show decompressed, as the actual state, or the state of what it was on disk?
-
 
             // Cleanup memory
             MemoryManager.ReturnByteArray(dataout);
@@ -667,7 +660,6 @@ namespace LegendaryExplorerCore.Packages
         {
             private readonly FileStream BaseStream;
             private readonly byte[] compressedBlock;
-
 
             //filestream position must be immediately after numchunks. Should only be used for PC ME games. No console or UDK
             public PackageDecompressionFileStream(FileStream fs, int maxUncompressedBlockSize, UnrealPackageFile.CompressionType compressionType, int numChunks)

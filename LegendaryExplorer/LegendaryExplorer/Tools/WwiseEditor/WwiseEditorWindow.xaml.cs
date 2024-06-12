@@ -212,7 +212,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
                 WwiseBankExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"));
 
-
                 if (WwiseBankExports.IsEmpty())
                 {
                     UnLoadMEPackage();
@@ -468,7 +467,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             foreach (WwiseEdEdge edge in graphEditor.edgeLayer)
                 WwiseGraphEditor.UpdateEdge(edge);
 
-
             void LayoutTree(WwiseHircObjNode WGeneric, float verticalSpacing)
             {
                 if (firstNode == null) firstNode = WGeneric;
@@ -590,7 +588,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 bool showContextMenu = false;
                 if (contextMenu.GetChild("openInPackEdMenuItem") is MenuItem openInPackEdMenuItem)
                 {
-
                     if (obj is WExport)
                     {
                         openInPackEdMenuItem.Visibility = Visibility.Visible;

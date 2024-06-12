@@ -41,7 +41,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             return rect;
         }
 
-
         private int currentActorIndex = 0; // The Actor (0 based) to prep
         private List<string> completedMaterials = new List<string>();
         private int currentMaterialIndex = 164; // The cursor pointer
@@ -103,7 +102,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             materialName = sourceMat.InstancedFullPath;
             Debug.WriteLine($"Preparing {materialName}, index {currentMaterialIndex}");
-
 
             // Port in the donor material.
             EntryExporter.ExportExportToPackage(sourceMat, templatePackage, out var newMatEntry, globalCache);

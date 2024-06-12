@@ -203,7 +203,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         public static string CookedName => "CookedPCConsole";
 
-
         private static string _gamePath;
         /// <summary>
         /// Gets or sets the default game root path that is used when locating game folders.
@@ -301,6 +300,5 @@ namespace LegendaryExplorerCore.GameFilesystem
             "CharTextures2",
             "CharTextures3",
         };
-
     }
 }

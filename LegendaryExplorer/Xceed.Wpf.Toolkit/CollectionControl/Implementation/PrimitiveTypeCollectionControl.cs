@@ -59,7 +59,6 @@ namespace Xceed.Wpf.Toolkit
 
     protected virtual void OnIsOpenChanged( bool oldValue, bool newValue )
     {
-
     }
 
     #endregion //IsOpen
@@ -195,7 +194,6 @@ namespace Xceed.Wpf.Toolkit
     #endregion //Constructors
 
     #region Overrides
-
 
 #endregion
 

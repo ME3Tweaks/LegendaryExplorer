@@ -380,7 +380,6 @@ namespace LegendaryExplorerCore.Packages
                 start += count1 * 2 + 4;
             }
 
-
             if (!exp1.IsDefaultObject && exp1.IsA("Component") || (exp1.Game == MEGame.UDK && exp1.ClassName.EndsWith("Component")))
             {
                 int toc1 = EndianReader.ToInt32(pp1, start, exp1.FileRef.Endian);
@@ -429,7 +428,6 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-
         /// <summary>
         /// Scrubs object and name references from the binary data array, then compares if the data is identical. Use on exports that have been ported across files to identify possible relink misses
         /// If the data is not identical, then not all data has been parsed or relinked
@@ -469,7 +467,6 @@ namespace LegendaryExplorerCore.Packages
             objBin2.WriteTo(er2.Writer, exp2.FileRef);
             var originalWrittenBin2 = er2.ToArray();
 
-
             // Find differences
             int binStart = exp1.propsEnd();
             for (int i = 0; i < originalWrittenBin1.Length; i++)
@@ -479,7 +476,6 @@ namespace LegendaryExplorerCore.Packages
                     if (isDebug)
                     {
                         Debug.WriteLine($"BINARY DIFF ON {exp1.InstancedFullPath} at 0x{(binStart + i):X5}: Left: {originalWrittenBin1[i]:X2} Right {originalWrittenBin2[i]:X2}");
-
                     }
                     else
                     {
@@ -489,8 +485,6 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
         }
-
-
 
         /// <summary>
         /// Scrubs object and name references from the binary data array, then compares if the data is identical. Use on exports that have been ported across files to identify possible relink misses
@@ -531,7 +525,6 @@ namespace LegendaryExplorerCore.Packages
                     var nameIdx = BitConverter.ToInt32(originalWrittenBin1, pos);
                     if (nameIdx != 0 && exp1.FileRef.IsName(nameIdx))
                     {
-
                         var name1 = exp1.FileRef.GetNameEntry(nameIdx);
                         //if (isDebug)
                         //    Debugger.Break();

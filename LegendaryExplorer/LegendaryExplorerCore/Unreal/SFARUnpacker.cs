@@ -81,7 +81,6 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         public int CurrentFilesProcessed { get; set; }
 
-
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         /// <summary>

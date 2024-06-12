@@ -2,7 +2,6 @@
 
 namespace LegendaryExplorer.SharedUI
 {
-
     /// <summary>
     /// Helper for taskbar operations. Designed so it can avoid strange issues where setting taskbar stuff crashes the app instead
     /// due to some fun bugs in wpf

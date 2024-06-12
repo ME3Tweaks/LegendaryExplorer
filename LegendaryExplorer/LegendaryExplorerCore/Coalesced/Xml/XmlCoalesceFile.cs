@@ -6,7 +6,6 @@ using System.Linq;
 using System.Xml.Linq;
 using LegendaryExplorerCore.Gammtek.IO;
 
-
 namespace LegendaryExplorerCore.Coalesced.Xml
 {
 	public class XmlCoalesceFile : CoalesceFile

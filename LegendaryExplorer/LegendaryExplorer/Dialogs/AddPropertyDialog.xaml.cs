@@ -19,7 +19,6 @@ namespace LegendaryExplorer.Dialogs
     /// </summary>
     public partial class AddPropertyDialog : TrackingNotifyPropertyChangedWindowBase
     {
-
         public class AddPropertyItem
         {
             public AddPropertyItem() { }
@@ -105,9 +104,7 @@ namespace LegendaryExplorer.Dialogs
         /// <summary>
         /// Mapping of class names to the class properties
         /// </summary>
-
         private readonly Dictionary<string, List<AddPropertyItem>> classToClassPropertyMap;
-
 
         #region Binding properties
         // The selected class
@@ -207,7 +204,6 @@ namespace LegendaryExplorer.Dialogs
             AddPropertyCommand = new GenericCommand(AddProperty, CanAddProperty);
         }
 
-
         private void AddProperty()
         {
             DialogResult = true;
@@ -220,8 +216,6 @@ namespace LegendaryExplorer.Dialogs
         }
 
         #endregion
-
-
 
         public static (NameReference, int, PropertyInfo)? GetProperty(ExportEntry export, List<PropNameStaticArrayIdxPair> _existingProperties, MEGame game, Window callingWindow = null)
         {

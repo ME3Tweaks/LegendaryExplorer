@@ -21,9 +21,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             if (game is not MEGame.UDK)
             {
-                Unsafe.AsRef(action).Invoke(ref SuperClass, nameof(SuperClass));
+                Unsafe.AsRef(in action).Invoke(ref SuperClass, nameof(SuperClass));
             }
-            Unsafe.AsRef(action).Invoke(ref Next, nameof(Next));
+            Unsafe.AsRef(in action).Invoke(ref Next, nameof(Next));
         }
     }
 }

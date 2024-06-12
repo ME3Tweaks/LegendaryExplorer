@@ -6,16 +6,16 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
     public class ObjectReader
     {
         protected byte[] _data;
-        public int Size;
-        public int Position;
+        protected readonly int Size;
+        protected int Position;
 
-        public ObjectReader(byte[] data)
+        protected ObjectReader(byte[] data)
         {
             _data = data;
             Size = _data.Length;
         }
 
-        public void Reset()
+        protected void Reset()
         {
             Position = 0;
         }
@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             return tmp;
         }
 
-        public byte[] ReadRawData(int numBytes)
+        protected byte[] ReadRawData(int numBytes)
         {
             if (Position + numBytes > Size || numBytes <= 0)
                 return null;
@@ -37,47 +37,47 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             return raw;
         }
 
-        public byte ReadByte()
+        protected byte ReadByte()
         {
             return Position + 1 > Size ? (byte)0 : _data[_position(1)];
         }
 
-        public int ReadInt32()
+        protected int ReadInt32()
         {
             return Position + 4 > Size ? 0 : BitConverter.ToInt32(_data, _position(4));
         }
 
-        public short ReadInt16()
+        protected short ReadInt16()
         {
             return Position + 2 > Size ? (short)0 : BitConverter.ToInt16(_data, _position(2));
         }
 
-        public long ReadInt64()
+        protected long ReadInt64()
         {
             return Position + 8 > Size ? 0 : BitConverter.ToInt64(_data, _position(8));
         }
 
-        public uint ReadUInt32()
+        protected uint ReadUInt32()
         {
             return Position + 4 > Size ? 0 : BitConverter.ToUInt32(_data, _position(4));
         }
 
-        public ushort ReadUInt16()
+        protected ushort ReadUInt16()
         {
             return Position + 2 > Size ? (ushort)0 : BitConverter.ToUInt16(_data, _position(2));
         }
 
-        public ulong ReadUInt64()
+        protected ulong ReadUInt64()
         {
             return Position + 8 > Size ? 0 : BitConverter.ToUInt64(_data, _position(8));
         }
 
-        public float ReadFloat()
+        protected float ReadFloat()
         {
             return Position + 4 > Size ? 0 : BitConverter.ToSingle(_data, _position(4));
         }
 
-        public string ReadString()
+        protected string ReadString()
         {
             var size = ReadInt32();
             bool unicode = false;
@@ -103,15 +103,14 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             }
         }
 
-        public string ReadNullTerminatedString()
+        protected unsafe string ReadNullTerminatedString()
         {
-            var str = "";
-            var curr = ReadByte();
-            while (curr != 0)
+            string str;
+            fixed (byte* p = _data.AsSpan(Position))
             {
-                str += (char)curr;
-                curr = ReadByte();
+                str = new string((sbyte*)p);
             }
+            Position += str.Length + 1;
             return str;
         }
     }

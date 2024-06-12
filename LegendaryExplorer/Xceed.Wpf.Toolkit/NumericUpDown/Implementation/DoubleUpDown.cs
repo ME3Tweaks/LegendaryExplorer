@@ -39,7 +39,6 @@ namespace Xceed.Wpf.Toolkit
 
     #region Properties
 
-
     #region AllowInputSpecialValues
 
     public static readonly DependencyProperty AllowInputSpecialValuesProperty =

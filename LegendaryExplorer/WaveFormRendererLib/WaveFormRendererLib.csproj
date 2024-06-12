@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<Version>2.0.0</Version>
 		<Authors>Mark Heath</Authors>
 		<Description>WaveForm rendering component</Description>
@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NAudio.Core" Version="2.1.0" />
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="NAudio.Core" Version="2.2.1" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
 	</ItemGroup>
 </Project>

@@ -316,9 +316,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
-
     #endregion
 
     #region Events

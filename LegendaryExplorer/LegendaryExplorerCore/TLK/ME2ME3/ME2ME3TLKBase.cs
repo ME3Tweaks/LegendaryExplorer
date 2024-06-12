@@ -90,7 +90,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// <param name="fs">Stream to read from</param>
         public abstract void LoadTlkDataFromStream(Stream fs);
 
-
         /// <summary>
         /// Starts reading <paramref name="bits"/> array at position <paramref name="bitOffset"/>. Read data is
         /// used on a Huffman Tree to decode read bits into real strings.
@@ -118,8 +117,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                     nextNodeID = curNode.RightNodeID;
                 else
                     nextNodeID = curNode.LeftNodeID;
-
-
 
                 /* it's an internal node - keep looking for a leaf */
                 if (nextNodeID >= 0)

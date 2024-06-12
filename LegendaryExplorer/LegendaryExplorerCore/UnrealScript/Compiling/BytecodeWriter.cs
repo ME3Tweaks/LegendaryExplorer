@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -10,10 +11,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 {
     public class BytecodeWriter
     {
-
         protected readonly IMEPackage Pcc;
         protected readonly MEGame Game;
         private readonly byte extNativeIndex;
+
+        protected ushort Position { get; private set; }
+        private readonly List<byte> bytecode = [];
 
         protected BytecodeWriter(IMEPackage pcc)
         {
@@ -22,12 +25,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             extNativeIndex = (byte)(Game.IsGame3() ? 0x70 : 0x60);
         }
 
-        protected byte[] GetByteCode() => bytecode.ToArray();
+        protected byte[] GetByteCode() => [.. bytecode];
 
         protected int GetMemLength() => Position;
-
-        protected ushort Position { get; private set; }
-        private readonly List<byte> bytecode = new();
 
         protected void WriteByte(byte b)
         {
@@ -35,17 +35,32 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             bytecode.Add(b);
         }
 
-        protected void WriteBytes(byte[] bytes)
+        protected void WriteBytes(ReadOnlySpan<byte> bytes)
         {
             Position += (ushort)bytes.Length;
             bytecode.AddRange(bytes);
         }
 
-        protected void WriteInt(int i) => WriteBytes(BitConverter.GetBytes(i));
+        protected void WriteInt(int i)
+        {
+            Span<byte> bytes = stackalloc byte[sizeof(int)];
+            MemoryMarshal.Write(bytes, i);
+            WriteBytes(bytes);
+        }
 
-        protected void WriteFloat(float f) => WriteBytes(BitConverter.GetBytes(f));
+        protected void WriteFloat(float f)
+        {
+            Span<byte> bytes = stackalloc byte[sizeof(float)];
+            MemoryMarshal.Write(bytes, f);
+            WriteBytes(bytes);
+        }
 
-        protected void WriteUShort(ushort us) => WriteBytes(BitConverter.GetBytes(us));
+        protected void WriteUShort(ushort us)
+        {
+            Span<byte> bytes = stackalloc byte[sizeof(ushort)];
+            MemoryMarshal.Write(bytes, us);
+            WriteBytes(bytes);
+        }
 
         protected void WriteOpCode(OpCodes opCode) => WriteByte((byte)opCode);
 

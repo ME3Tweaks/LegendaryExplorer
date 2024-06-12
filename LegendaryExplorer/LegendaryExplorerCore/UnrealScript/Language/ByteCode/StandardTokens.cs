@@ -108,7 +108,6 @@
         // 66-6F are unknown, probably invalid, throws assert failure by the looks of it
         // none of them are defined in GNatives
 
-
         // 63 and 64 also share
 
         // 0x00 - 0x6F seem to be standard

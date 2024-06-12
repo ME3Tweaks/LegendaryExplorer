@@ -68,11 +68,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
     #endregion //AdvancedOptionsTooltip
 
-
-
-
-
-
     #region Description
 
     public static readonly DependencyProperty DescriptionProperty =
@@ -444,7 +439,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       e.Handled = true;
     }
 
-
     private void PropertyItemBase_GotFocus( object sender, RoutedEventArgs e )
     { 
       IsSelected = true;
@@ -502,11 +496,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     #endregion //Methods
 
     #region IPropertyContainer Members
-
-
-
-
-
 
     Style IPropertyContainer.PropertyContainerStyle
     {
@@ -593,8 +582,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
       return null;
     }
-
-
 
 #endregion
 

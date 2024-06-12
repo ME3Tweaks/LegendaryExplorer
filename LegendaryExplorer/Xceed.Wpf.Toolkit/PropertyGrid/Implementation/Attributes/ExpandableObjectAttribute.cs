@@ -26,13 +26,9 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Attributes
     {
     }
 
-
     #endregion
 
     #region Properties
-
-
-
 
     #endregion
   }

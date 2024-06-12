@@ -116,7 +116,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 _ => throw new ArgumentOutOfRangeException(nameof(Outer))
             };
 
-
         public string FilePath { get; init; }
         public int UIndex { get; init; }
     }

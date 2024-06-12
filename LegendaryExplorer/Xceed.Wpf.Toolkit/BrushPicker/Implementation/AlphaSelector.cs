@@ -41,7 +41,6 @@ namespace ColorBox
             return v;
         }
 
-
         public double AlphaOffset
         {
             get { return (double)GetValue(AlphaOffsetProperty); }
@@ -49,7 +48,6 @@ namespace ColorBox
         }
         public static readonly DependencyProperty AlphaOffsetProperty =
             DependencyProperty.Register("AlphaOffset", typeof(double), typeof(AlphaSelector), new UIPropertyMetadata(0.0));        
-
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -111,7 +109,6 @@ namespace ColorBox
             dc.DrawRectangle(lb, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
             SetAlphaOffset();
-
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -119,7 +116,6 @@ namespace ColorBox
             SetAlphaOffset();
             return base.ArrangeOverride(finalSize);
         }
-
 
         private void SetAlphaOffset()
         {

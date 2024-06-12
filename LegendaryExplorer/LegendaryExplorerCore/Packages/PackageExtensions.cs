@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -50,8 +51,31 @@ namespace LegendaryExplorerCore.Packages
             return "";
         }
 
-        //if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, don't use this method)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Use GetEntryOrAddImport instead, which requires className be specified", true)]
         public static IEntry getEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className = "Class", string packageFile = "Core")
+        {
+            return GetEntryOrAddImport(pcc, instancedFullPath, className, packageFile);
+        }
+
+        /// <summary>
+        /// Finds existing <see cref="ExportEntry"/> or <see cref="ImportEntry"/> in <paramref name="pcc"/>.
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <param name="instancedFullPath">The ifp of the object to find or add as an import. </param>
+        /// <param name="className">Found entry must be of this class. (Will disambiguate when two entries of different classes have the same ifp.)
+        /// Also used in creation of <see cref="ImportEntry"/> if neccesary.</param>
+        /// <param name="packageFile">Used in creation of <see cref="ImportEntry"/> if neccesary. Should be the packagefile the class is defined in. </param>
+        /// <remarks>if neccessary, will fill in parents as Package Imports (if the import you need has non-Package parents, ensure they exist first)
+        /// <code>
+        /// //Without the first two lines, the class and function entries would get created as Package Imports if they did not exist.
+        /// pcc.GetEntryOrAddImport("Engine.Actor", "Class");
+        /// pcc.GetEntryOrAddImport("Engine.Actor.SpecialHandling", "Function");
+        /// IEntry entry = pcc.GetEntryOrAddImport("Engine.Actor.SpecialHandling.ReturnValue", "ObjectProperty");
+        /// </code>
+        /// </remarks>
+        /// <returns></returns>
+        public static IEntry GetEntryOrAddImport(this IMEPackage pcc, string instancedFullPath, string className, string packageFile = "Core")
         {
             if (string.IsNullOrEmpty(instancedFullPath))
             {
@@ -61,15 +85,34 @@ namespace LegendaryExplorerCore.Packages
             //see if this import exists locally
             var entry = pcc.FindEntry(instancedFullPath);
             if (entry != null)
-                return entry;
+            {
+                if (className is not null && !entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    int lastIndexOf = instancedFullPath.LastIndexOf('.') + 1;
+                    var name = NameReference.FromInstancedString(lastIndexOf > 0 ? instancedFullPath[lastIndexOf..] : instancedFullPath);
+                    //matching ifp, but wrong class. fall back to linear search
+                    foreach (IEntry ent in pcc.Exports.Concat<IEntry>(pcc.Imports))
+                    {
+                        if (ent.ObjectName == name && ent.InstancedFullPath.CaseInsensitiveEquals(instancedFullPath) 
+                                                   && ent.ClassName.CaseInsensitiveEquals(className))
+                        {
+                            return ent;
+                        }
+                    }
+                }
+                else
+                {
+                    return entry;
+                }
+            }
 
             string[] pathParts = instancedFullPath.Split('.');
 
-            IEntry parent = pcc.getEntryOrAddImport(string.Join(".", pathParts.Take(pathParts.Length - 1)), "Package");
+            IEntry parent = pcc.GetEntryOrAddImport(string.Join(".", pathParts[..^1]), null);
 
             var import = new ImportEntry(pcc, parent, NameReference.FromInstancedString(pathParts.Last()))
             {
-                ClassName = className,
+                ClassName = className ?? "Package",
                 PackageFile = packageFile
             };
             pcc.AddImport(import);
@@ -455,7 +498,6 @@ namespace LegendaryExplorerCore.Packages
 
             void findPropertyReferences(PropertyCollection props, ExportEntry exp)
             {
-
                 foreach (Property prop in props)
                 {
                     switch (prop)
@@ -599,7 +641,9 @@ namespace LegendaryExplorerCore.Packages
                 or "TerrainWeightMapTexture"
                 or "TextureFlipBook";
 
-        public static bool IsPartOfClassDefinition(this ExportEntry entry) =>
+        [Obsolete($"Use {nameof(IsScriptExport)} instead", true)]
+        public static bool IsPartOfClassDefinition(this ExportEntry entry) => IsScriptExport(entry);
+        public static bool IsScriptExport(this ExportEntry entry) =>
             entry.ClassName
                 is "Class"
                 or "Function"
@@ -715,7 +759,6 @@ namespace LegendaryExplorerCore.Packages
                     {
                         result.AddToListAt(exp, $"TemplateOwnerClass (Data offset 0x{toci:X})");
                     }
-
 
                     //find property references
                     findPropertyReferences(exp.GetProperties(), exp, "Property:");
@@ -914,7 +957,6 @@ namespace LegendaryExplorerCore.Packages
 
                 return newprops;
             }
-
         }
 
         private readonly struct ReferenceReplacer : IUIndexAction

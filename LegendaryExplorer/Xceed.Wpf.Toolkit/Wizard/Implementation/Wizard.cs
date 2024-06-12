@@ -200,7 +200,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
     public static readonly DependencyProperty FinishButtonClosesWindowProperty = DependencyProperty.Register( "FinishButtonClosesWindow", typeof( bool ), typeof( Wizard ), new UIPropertyMetadata( true ) );
     public bool FinishButtonClosesWindow
     {
@@ -356,9 +355,6 @@ namespace Xceed.Wpf.Toolkit
         CommandManager.InvalidateRequerySuggested();
       }
     }
-
-
-
 
     #endregion //Base Class Overrides
 

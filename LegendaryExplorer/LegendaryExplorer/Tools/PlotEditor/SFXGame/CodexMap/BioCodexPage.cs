@@ -38,6 +38,8 @@
 
 		private int _section;
 
+		public bool IsLE1 { get; set; } = false;
+
         /// <summary>
         /// </summary>
         /// <param name="title"></param>
