@@ -23,6 +23,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         private PixelFormat _pixelFormat = PixelFormat.DXT5;
         private string _chosenName;
         private bool _isMipped = true;
+        private bool _isUsedInSWF;
 
         public int SizeX
         {
@@ -52,6 +53,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             get => _isMipped;
             set => SetProperty(ref _isMipped, value);
+        }
+
+        public bool IsUsedInSWF
+        {
+            get => _isUsedInSWF;
+            set
+            {
+                SetProperty(ref _isUsedInSWF, value);
+                if (value)
+                    IsMipped = false; // SWF images cannot be mipped
+            }
         }
 
         /// <summary>
@@ -93,7 +105,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 MessageBox.Show(this, ex.Message, "Invalid settings", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            GeneratedExport = Texture2D.CreateTexture(Package, NameReference.FromInstancedString(ChosenName), SizeX, SizeY, PixelFormat, IsMipped, Parent as ExportEntry);
+
+            var nameToUse = ChosenName;
+            if (IsUsedInSWF)
+            {
+                nameToUse += "_I1";
+            }
+            GeneratedExport = Texture2D.CreateTexture(Package, NameReference.FromInstancedString(nameToUse), SizeX, SizeY, PixelFormat, IsMipped, Parent as ExportEntry);
+            if (IsUsedInSWF)
+            {
+                Texture2D.CreateSWFForTexture(GeneratedExport);
+            }
             Close();
         }
 

@@ -334,7 +334,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             var tc = new TextureCreatorDialog(this, Pcc, SelectedItem?.Entry);
 
-
             tc.ShowDialog();
 
             if (tc.GeneratedExport != null)
