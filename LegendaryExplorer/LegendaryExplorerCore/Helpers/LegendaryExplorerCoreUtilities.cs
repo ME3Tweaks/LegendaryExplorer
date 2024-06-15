@@ -89,6 +89,7 @@ namespace LegendaryExplorerCore.Helpers
             if (stream == null)
             {
                 Debug.WriteLine($"{assetName} not found in embedded resources");
+                Debugger.Break();
                 return false;
             }
             return true;
