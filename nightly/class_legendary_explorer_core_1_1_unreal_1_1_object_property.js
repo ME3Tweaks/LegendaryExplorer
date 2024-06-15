@@ -9,6 +9,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_property =
     [ "Equals", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a2bfdafc7861acf3af95adba823335fc3", null ],
     [ "Equals", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#aa0d44b8c2d0015e608d94c5aa0c2f60a", null ],
     [ "GetHashCode", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a7901dd7512f7ed0e626c836840b23d27", null ],
+    [ "operator ObjectProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#ad7047ea55d0a3c7382f68a380aed27e2", null ],
+    [ "operator ObjectProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a03ebe09f9a5b83fdb734d40dc746964c", null ],
     [ "InternalPropType", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a4afbbd1a4c7d9dcffe9b661ccfce7f0a", null ],
     [ "PropType", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a42551d2970bac6b850f16b149a8ab6d1", null ],
     [ "Value", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a823ce1ca72484911247a5b60ee19898c", null ],

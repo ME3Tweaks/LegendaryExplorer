@@ -22,6 +22,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d =
     [ "GetPNG", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a433e75319e4f8a3ad50307486dae3af2", null ],
     [ "ToImage", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a71c07f2fbfc9a032271357852207eb26", null ],
     [ "CreateTexture", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#aed74c59f69c11c0e4fd61adbf0a00fe8", null ],
+    [ "CreateSWFForTexture", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#af4ee5ffedac17d5efcd10abea366123b", null ],
     [ "NeverStream", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ac424085e58d867b1be9b4a6119755cd4", null ],
     [ "Export", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#aaacf35979065df5d83303a69ae0df43f", null ],
     [ "TextureGuid", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ae8384fb889959a9d59d00c9b731fe17c", null ],
