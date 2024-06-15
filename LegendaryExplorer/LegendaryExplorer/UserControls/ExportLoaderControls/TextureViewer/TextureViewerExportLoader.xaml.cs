@@ -302,7 +302,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Title = "Select texture file",
 #if WINDOWS
-                Filter = "All supported types|*.png;*.dds;*.tga|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga",
+                Filter = "All supported types|*.png;*.dds;*.tga;*.jpg|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga|JPEG files (*.jpg)|*.jpg",
 #else
                 Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
 #endif
