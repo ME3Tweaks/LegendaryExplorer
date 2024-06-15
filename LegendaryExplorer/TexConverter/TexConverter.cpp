@@ -287,8 +287,8 @@ HRESULT LoadTextureFromMemory(const void* inputDataBuffer, size_t bufferSize, in
 	else if (imageType == 1) { // DDS
 		hr = DirectX::LoadFromDDSMemory(inputDataBuffer, bufferSize, DirectX::DDS_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
 	}
-	else if (imageType == 2) { // PNG
-		hr = DirectX::LoadFromWICMemory(inputDataBuffer, bufferSize, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
+	else if (imageType == 2) { // WIC (PNG, JPG)
+		hr = DirectX::LoadFromWICMemory(inputDataBuffer, bufferSize, DirectX::WIC_FLAGS::WIC_FLAGS_IGNORE_SRGB, nullptr, *outputBuffer->_ScratchImage);
 	}
 	else if (imageType == 3) { // TGA
 		hr = DirectX::LoadFromTGAMemory(inputDataBuffer, bufferSize, nullptr, *outputBuffer->_ScratchImage);
