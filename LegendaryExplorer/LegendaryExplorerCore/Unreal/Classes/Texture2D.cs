@@ -402,6 +402,24 @@ namespace LegendaryExplorerCore.Unreal.Classes
         }
 
         /// <summary>
+        /// Generates the data for a mipped blank (black) texture of the given size.
+        /// </summary>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static List<MipMap> CreateBlankTextureMips(int sizeX, int sizeY, PixelFormat format)
+        {
+            // Generates blank texture data in the given format
+            Bitmap bmp = new Bitmap(sizeX, sizeY);
+            var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Bmp);
+            var blank = new Image(ms.ToArray(), Image.ImageFormat.BMP);
+            blank.correctMips(format); // Generate the mip data
+            return blank.mipMaps;
+        }
+
+        /// <summary>
         /// Generates the data for a single mip from the given data and type.
         /// </summary>
         /// <param name="inputData"></param>
@@ -1079,6 +1097,60 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 return null;
             }
             set => _textureCacheName = value; //This isn't INotifyProperty enabled so we don't need to SetProperty this
+        }
+
+
+        /// <summary>
+        /// Creates a new Texture2D export with the given parameters.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="textureName"></param>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="pixelFormat"></param>
+        /// <param name="mipped"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateTexture(IMEPackage package, NameReference textureName, int sizeX, int sizeY, PixelFormat pixelFormat, bool mipped, ExportEntry parent = null)
+        {
+
+            // There's probably more properties to set, but right now this seems OK, I suppose...
+            var exp = ExportCreator.CreateExport(package, textureName, @"Texture2D", parent: parent, indexed: false);
+            var props = exp.GetProperties();
+            props.AddOrReplaceProp(new EnumProperty(Image.getEngineFormatType(pixelFormat), @"EPixelFormat", package.Game, @"Format"));
+            props.AddOrReplaceProp(new IntProperty(sizeX, @"SizeX"));
+            props.AddOrReplaceProp(new IntProperty(sizeY, @"SizeY"));
+            props.AddOrReplaceProp(new BoolProperty(true, @"NeverStream"));
+
+            if (!mipped)
+            {
+                props.AddOrReplaceProp(new BoolProperty(true, @"CompressionNoMipmaps"));
+            }
+
+            // In LE this does not matter but we will set one anyways.
+            props.AddOrReplaceProp(new EnumProperty(@"TEXTUREGROUP_UI", @"TextureGroup", package.Game, @"LODGroup"));
+            exp.WriteProperties(props);
+
+
+            UTexture2D texTemp = UTexture2D.Create();
+            if (!mipped)
+            {
+                // Generate a single mip
+                var mipData = Texture2D.CreateBlankTextureMip(sizeX, sizeY, pixelFormat);
+                texTemp.Mips.Add(new UTexture2D.Texture2DMipMap(mipData, sizeX, sizeY));
+            }
+            else
+            {
+                var mipDatas = Texture2D.CreateBlankTextureMips(sizeX, sizeY, pixelFormat);
+                foreach (var mip in mipDatas)
+                {
+                    texTemp.Mips.Add(new UTexture2D.Texture2DMipMap(mip.data, mip.width, mip.height));
+                }
+            }
+
+            exp.WriteBinary(texTemp);
+
+            return exp;
         }
 
         public string MipDisplayString

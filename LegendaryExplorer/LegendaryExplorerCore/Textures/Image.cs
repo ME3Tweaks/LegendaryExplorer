@@ -757,6 +757,12 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
+        /// <summary>
+        /// Gets the enum value for the given PixelFormat enum, used in properties of a texture
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static string getEngineFormatType(PixelFormat format)
         {
             switch (format)
