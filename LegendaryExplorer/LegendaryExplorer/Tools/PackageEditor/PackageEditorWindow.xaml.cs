@@ -332,7 +332,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void CreateTexture()
         {
-            var tc = new TextureCreatorDialog(Pcc, SelectedItem?.Entry as IEntry) { Owner = this};
+            var tc = new TextureCreatorDialog(this, Pcc, SelectedItem?.Entry);
 
 
             tc.ShowDialog();

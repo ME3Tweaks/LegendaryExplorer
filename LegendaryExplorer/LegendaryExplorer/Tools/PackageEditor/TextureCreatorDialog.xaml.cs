@@ -64,8 +64,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
         /// </summary>
         public PixelFormat[] PixelFormats { get; } = Enum.GetValues<PixelFormat>();
 
-        public TextureCreatorDialog(IMEPackage package, IEntry parent)
+        public TextureCreatorDialog(Window window, IMEPackage package, IEntry parent)
         {
+            Owner = window; // must be here for centering
             Parent = parent;
             Package = package;
             InitializeComponent();
@@ -98,8 +99,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void ValidateSettings()
         {
+            if (SizeX < 0 || SizeY < 0 || SizeX > 8192 || SizeY > 8192)
+                throw new Exception(@"Texture dimensions must be greater than zero and less than 8192.");
             if (!BitOperations.IsPow2(SizeX) || !BitOperations.IsPow2(SizeY))
                 throw new TextureSizeNotPowerOf2Exception();
+            if (string.IsNullOrWhiteSpace(ChosenName))
+                throw new Exception(@"Name cannot be empty.");
         }
 
         private void Cancel_Click2(object sender, RoutedEventArgs e)
