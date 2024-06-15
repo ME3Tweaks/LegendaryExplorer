@@ -9,6 +9,7 @@
 
 #define EXTENSION_DDS ".dds"
 #define EXTENSION_PNG ".png"
+#define EXTENSION_JPG ".jpg" // Not often used but fine when you don't care about quality, e.g. placeholders
 #define EXTENSION_TGA ".tga"
 
 #ifdef WIN32
@@ -215,8 +216,8 @@ HRESULT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer) {
 	else if (strcasecmp(extension, EXTENSION_DDS) == 0) {
 		hr = DirectX::LoadFromDDSFile(StringConverter.from_bytes(inputFilename).c_str(), DirectX::DDS_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
 	}
-	else if (strcasecmp(extension, EXTENSION_PNG) == 0) {
-		hr = DirectX::LoadFromWICFile(StringConverter.from_bytes(inputFilename).c_str(), DirectX::WIC_FLAGS::WIC_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
+	else if (strcasecmp(extension, EXTENSION_PNG) == 0 || strcasecmp(extension, EXTENSION_JPG) == 0) {
+		hr = DirectX::LoadFromWICFile(StringConverter.from_bytes(inputFilename).c_str(), DirectX::WIC_FLAGS::WIC_FLAGS_IGNORE_SRGB, nullptr, *outputBuffer->_ScratchImage);
 	}
 	else if (strcasecmp(extension, EXTENSION_TGA) == 0) {
 		hr = DirectX::LoadFromTGAFile(StringConverter.from_bytes(inputFilename).c_str(), nullptr, *outputBuffer->_ScratchImage);
