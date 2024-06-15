@@ -1051,54 +1051,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             image.correctMips(dstFormat);
             return image;
         }
-    }
-
-    [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
-    public class Texture2DMipInfo
-    {
-        public ExportEntry Export;
-        public bool NeverStream; //copied from parent
-        public int index;
-        public int uncompressedSize;
-        public int compressedSize;
-        public int width;
-        public int height;
-        public int externalOffset;
-        public StorageTypes storageType;
-        private string _textureCacheName;
-        public byte[] Mip;
-
-        public bool IsPackageStored => !((StorageFlags)storageType).Has(StorageFlags.externalFile);
-
-        public string TextureCacheName
-        {
-            get
-            {
-                if (Export.Game != MEGame.ME1) return _textureCacheName; //ME2/ME3 have property specifying the name. ME1 uses package lookup
-
-                //ME1 externally references the UPKs. I think. It doesn't load external textures from SFMs
-                string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper() + ".upk"; //get top package name
-
-                if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extUnc)
-                {
-                    return baseName;
-                }
-
-                //NeverStream is set if there are more than 6 mips. Some sort of design implementation of ME1 texture streaming
-                if (baseName != "" && !NeverStream)
-                {
-                    var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
-                    if (gameFiles.ContainsKey(baseName)) //I am pretty sure these will only ever resolve to UPKs...
-                    {
-                        return baseName;
-                    }
-                }
-
-                return null;
-            }
-            set => _textureCacheName = value; //This isn't INotifyProperty enabled so we don't need to SetProperty this
-        }
-
 
         /// <summary>
         /// Creates a new Texture2D export with the given parameters.
@@ -1152,6 +1104,54 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             return exp;
         }
+    }
+
+    [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
+    public class Texture2DMipInfo
+    {
+        public ExportEntry Export;
+        public bool NeverStream; //copied from parent
+        public int index;
+        public int uncompressedSize;
+        public int compressedSize;
+        public int width;
+        public int height;
+        public int externalOffset;
+        public StorageTypes storageType;
+        private string _textureCacheName;
+        public byte[] Mip;
+
+        public bool IsPackageStored => !((StorageFlags)storageType).Has(StorageFlags.externalFile);
+
+        public string TextureCacheName
+        {
+            get
+            {
+                if (Export.Game != MEGame.ME1) return _textureCacheName; //ME2/ME3 have property specifying the name. ME1 uses package lookup
+
+                //ME1 externally references the UPKs. I think. It doesn't load external textures from SFMs
+                string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper() + ".upk"; //get top package name
+
+                if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extUnc)
+                {
+                    return baseName;
+                }
+
+                //NeverStream is set if there are more than 6 mips. Some sort of design implementation of ME1 texture streaming
+                if (baseName != "" && !NeverStream)
+                {
+                    var gameFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
+                    if (gameFiles.ContainsKey(baseName)) //I am pretty sure these will only ever resolve to UPKs...
+                    {
+                        return baseName;
+                    }
+                }
+
+                return null;
+            }
+            set => _textureCacheName = value; //This isn't INotifyProperty enabled so we don't need to SetProperty this
+        }
+
 
         public string MipDisplayString
         {
