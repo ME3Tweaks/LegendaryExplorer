@@ -270,11 +270,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             var index = properties.GetProp<IntProperty>("m_nIndex");
                             if (index != null)
                             {
-                                var label = PlotDatabases.FindPlotConditionalByID(index.Value, export.Game)?.Path;
-                                if (label != null)
-                                {
-                                    res += label + "\n";
-                                }
+                                res += PlotDatabases.FindPlotConditionalByID(index.Value, export.Game)?.Path ?? $"Conditional {index.Value}";
+                                res += "\n";
                             }
                         }
                         break;
@@ -283,11 +280,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             var index = properties.GetProp<IntProperty>("m_nIndex");
                             if (index != null)
                             {
-                                var label = PlotDatabases.FindPlotBoolByID(index.Value, export.Game)?.Path;
-                                if (label != null)
-                                {
-                                    res += label + "\n";
-                                }
+                                res += PlotDatabases.FindPlotBoolByID(index.Value, export.Game)?.Path ?? $"Plot Bool {index.Value}";
+                                res += "\n";
                             }
                         }
                         break;
@@ -297,11 +291,8 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                             var index = properties.GetProp<IntProperty>("m_nIndex");
                             if (index != null)
                             {
-                                var label = PlotDatabases.FindPlotTransitionByID(index.Value, export.Game)?.Path;
-                                if (label != null)
-                                {
-                                    res += label + "\n";
-                                }
+                                res += PlotDatabases.FindPlotTransitionByID(index.Value, export.Game)?.Path ?? $"Transition {index.Value}";
+                                res += "\n";
                             }
                         }
                         break;
@@ -1638,9 +1629,9 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                 {
                     case ObjectProperty objProp when objProp.Name == "oSequenceReference":
                         {
-                            string seqName = Pcc.GetEntry(objProp.Value)?.ObjectName ?? "";
+                            string seqName = Pcc.GetEntry(objProp.Value)?.ObjectName.Instanced ?? "";
                             if (Pcc.IsUExport(objProp.Value)
-                                && seqName == "Sequence"
+                                && seqName.StartsWith("Sequence")
                                 && Pcc.GetUExport(objProp.Value).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
                             {
                                 seqName = objNameProp;

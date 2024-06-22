@@ -80,7 +80,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         /// <param name="dlcDirectory">Path to a DLC folder</param>
         /// <param name="game">Game of DLC</param>
-        /// <returns>Mount priority</returns>
+        /// <returns>Mount priority, or 0 if file defining mount file is not found</returns>
         public static int GetMountPriority(string dlcDirectory, MEGame game)
         {
             if (game.IsGame1())
@@ -96,16 +96,31 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
                 // DLC folder is Game1 mod
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
-                var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
-                if (int.TryParse(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value, out var value))
+                if (File.Exists(autoLoadPath)) // This helps suppress exceptions.
                 {
-                    return value;
+                    var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
+                    if (int.TryParse(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value, out var value))
+                    {
+                        return value;
+                    }
+                    LECLog.Error($@"Invalid mount priority value in Autoload.ini: {dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value}");
+                }
+                else
+                {
+                    LECLog.Error($@"Could not find Autoload.ini file in DLC folder: {autoLoadPath}");
                 }
 
-                LECLog.Error($@"Invalid mount priority value in Autoload.ini: {dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value}");
                 return 0;
             }
-            return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
+
+            var mp = GetMountDLCFromDLCDir(dlcDirectory, game);
+            if (File.Exists(mp))
+            {
+                return MountFile.GetMountPriority(mp);
+            }
+
+            LECLog.Error($@"Could not find mount.dlc file in DLC folder: {mp}");
+            return 0;
         }
 
         /// <summary>
