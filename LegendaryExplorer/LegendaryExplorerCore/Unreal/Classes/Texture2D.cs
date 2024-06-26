@@ -141,7 +141,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
                 else
                 {
-                    throw e; //rethrow
+                    throw; //rethrow
                 }
             }
             if (imageBytes == null)
