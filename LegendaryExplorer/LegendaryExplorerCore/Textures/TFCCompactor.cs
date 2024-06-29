@@ -206,6 +206,7 @@ namespace LegendaryExplorerCore.Textures
             }
 
             // Packages are not updated in this step so if something goes wrong it doesn't blow up the files
+            progressDelegate?.Invoke("Building TFC files", 0, 0);
             foreach (var v in textureMap.CalculatedMap)
             {
                 var entries = v.GetAllTextureEntries().ToList();
