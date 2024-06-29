@@ -227,7 +227,7 @@ namespace LegendaryExplorerCore.UnrealScript
             var ifps = new HashSet<(string, string)>(pcc.ExportCount);
             var codeBuilder = new CodeBuilderVisitor<PlainTextStringBuilderCodeFormatter>();
             log = new MessageLog();
-            foreach (ExportEntry export in pcc.Exports.Where(exp => !exp.IsScriptExport() && !exp.IsInDefaultsTree()))
+            foreach (ExportEntry export in pcc.Exports.Where(exp => !exp.IsScriptExport() && !exp.IsInDefaultsTree() && !exp.IsTrash()))
             {
                 string exportClassName = export.ClassName;
                 string ifp = export.InstancedFullPath;
