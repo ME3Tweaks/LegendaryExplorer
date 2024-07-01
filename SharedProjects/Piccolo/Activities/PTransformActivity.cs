@@ -135,7 +135,6 @@ namespace Piccolo.Activities {
 		/// <param name="aDestination">The destination matrix.</param>
 		public PTransformActivity(long duration, long stepInterval, int loopCount, ActivityMode mode, Target aTarget, PMatrix aDestination) :
 			base(duration, stepInterval, loopCount, mode) {
-
 			source = new float[6];
 			destination = new float[6];
 			ActivityTarget = aTarget;

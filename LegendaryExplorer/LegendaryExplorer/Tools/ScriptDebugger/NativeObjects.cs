@@ -146,7 +146,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             return obj;
         }
 
-
         public class NObject
         {
             private const int OFFSET_LINKER = 0x2C; //ULinkerLoad*
@@ -182,7 +181,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 }
                 return $"{outer.GetFullPath()}.{Name.Instanced}";
             }
-
 
             protected T ReadValue<T>(int offset) where T : unmanaged => MemoryMarshal.Read<T>(buff.AsSpan(offset));
             protected T ReadObject<T>(int offset) where T : NObject => (T)Debugger.ReadObject(ReadValue<IntPtr>(offset));
@@ -615,7 +613,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     {
                         return new EnumPropertyValue(Debugger, address, name, Debugger.GetNameReference(enumValues[byteVal]), enumValues.ToList());
                     }
-
                 }
                 return new BytePropertyValue(Debugger, address, name, byteVal);
             }

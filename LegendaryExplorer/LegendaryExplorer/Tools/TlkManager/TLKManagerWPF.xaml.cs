@@ -58,7 +58,6 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1TLKItems.AddRange(LE1TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
             LE2TLKItems.AddRange(LE2TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
             LE3TLKItems.AddRange(LE3TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
-
         }
 
         #region Commands

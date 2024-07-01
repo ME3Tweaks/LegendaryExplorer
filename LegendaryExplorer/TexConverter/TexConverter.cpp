@@ -9,6 +9,7 @@
 
 #define EXTENSION_DDS ".dds"
 #define EXTENSION_PNG ".png"
+#define EXTENSION_JPG ".jpg" // Not often used but fine when you don't care about quality, e.g. placeholders
 #define EXTENSION_TGA ".tga"
 
 #ifdef WIN32
@@ -53,14 +54,14 @@ HRESULT Initialize() {
 	HRESULT hr = S_OK;
 
 	hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &D3DDevice, nullptr, nullptr);
-	
+
 	return hr;
 }
 
 HRESULT Dispose() {
 
 	D3DDevice->Release();
-	
+
 	return S_OK;
 }
 
@@ -149,7 +150,7 @@ HRESULT SaveTexture(const TextureBuffer* inputBuffer, const char* outputFilename
 
 	DirectX::Image image = { inputBuffer->Width, inputBuffer->Height, inputBuffer->Format, 0, 0, inputBuffer->PixelData };
 	DirectX::ComputePitch(inputBuffer->Format, inputBuffer->Width, inputBuffer->Height, image.rowPitch, image.slicePitch, DirectX::CP_FLAGS::CP_FLAGS_NONE);
-	
+
 	const char* extension = FindExtension(outputFilename);
 	if (extension == nullptr) {
 		hr = E_INVALIDARG; // No extension
@@ -215,8 +216,8 @@ HRESULT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer) {
 	else if (strcasecmp(extension, EXTENSION_DDS) == 0) {
 		hr = DirectX::LoadFromDDSFile(StringConverter.from_bytes(inputFilename).c_str(), DirectX::DDS_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
 	}
-	else if (strcasecmp(extension, EXTENSION_PNG) == 0) {
-		hr = DirectX::LoadFromWICFile(StringConverter.from_bytes(inputFilename).c_str(), DirectX::WIC_FLAGS::WIC_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
+	else if (strcasecmp(extension, EXTENSION_PNG) == 0 || strcasecmp(extension, EXTENSION_JPG) == 0) {
+		hr = DirectX::LoadFromWICFile(StringConverter.from_bytes(inputFilename).c_str(), DirectX::WIC_FLAGS::WIC_FLAGS_IGNORE_SRGB, nullptr, *outputBuffer->_ScratchImage);
 	}
 	else if (strcasecmp(extension, EXTENSION_TGA) == 0) {
 		hr = DirectX::LoadFromTGAFile(StringConverter.from_bytes(inputFilename).c_str(), nullptr, *outputBuffer->_ScratchImage);
@@ -233,8 +234,10 @@ HRESULT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer) {
 
 	// If the output buffer's format is UNKNOWN, then no conversion was requested
 	if (outputBuffer->Format == DXGI_FORMAT_UNKNOWN || outputBuffer->Format == outputBuffer->_ScratchImage->GetMetadata().format) {
-		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetPixels();
-		outputBuffer->PixelDataLength = outputBuffer->_ScratchImage->GetPixelsSize();
+		size_t row, slice;
+		DirectX::ComputePitch(outputBuffer->_ScratchImage->GetImages()->format, outputBuffer->_ScratchImage->GetImages()->width, outputBuffer->_ScratchImage->GetImages()->height, row, slice);
+		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetImages()->pixels;
+		outputBuffer->PixelDataLength = slice;
 		outputBuffer->Width = outputBuffer->_ScratchImage->GetMetadata().width;
 		outputBuffer->Height = outputBuffer->_ScratchImage->GetMetadata().height;
 		outputBuffer->Format = outputBuffer->_ScratchImage->GetMetadata().format;
@@ -245,8 +248,10 @@ HRESULT LoadTexture(const char* inputFilename, TextureBuffer* outputBuffer) {
 		TextureBuffer convertedTexture = { };
 		convertedTexture.Format = outputBuffer->Format;
 
-		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetPixels();
-		outputBuffer->PixelDataLength = outputBuffer->_ScratchImage->GetPixelsSize();
+		size_t row, slice;
+		DirectX::ComputePitch(outputBuffer->_ScratchImage->GetImages()->format, outputBuffer->_ScratchImage->GetImages()->width, outputBuffer->_ScratchImage->GetImages()->height, row, slice);
+		outputBuffer->PixelData = outputBuffer->_ScratchImage->GetImages()->pixels;
+		outputBuffer->PixelDataLength = slice;
 		outputBuffer->Width = outputBuffer->_ScratchImage->GetMetadata().width;
 		outputBuffer->Height = outputBuffer->_ScratchImage->GetMetadata().height;
 		outputBuffer->Format = outputBuffer->_ScratchImage->GetMetadata().format;
@@ -282,8 +287,8 @@ HRESULT LoadTextureFromMemory(const void* inputDataBuffer, size_t bufferSize, in
 	else if (imageType == 1) { // DDS
 		hr = DirectX::LoadFromDDSMemory(inputDataBuffer, bufferSize, DirectX::DDS_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
 	}
-	else if (imageType == 2) { // PNG
-		hr = DirectX::LoadFromWICMemory(inputDataBuffer, bufferSize, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, nullptr, *outputBuffer->_ScratchImage);
+	else if (imageType == 2) { // WIC (PNG, JPG)
+		hr = DirectX::LoadFromWICMemory(inputDataBuffer, bufferSize, DirectX::WIC_FLAGS::WIC_FLAGS_IGNORE_SRGB, nullptr, *outputBuffer->_ScratchImage);
 	}
 	else if (imageType == 3) { // TGA
 		hr = DirectX::LoadFromTGAMemory(inputDataBuffer, bufferSize, nullptr, *outputBuffer->_ScratchImage);
@@ -334,7 +339,7 @@ HRESULT LoadTextureFromMemory(const void* inputDataBuffer, size_t bufferSize, in
 }
 
 HRESULT FreePixelData(TextureBuffer* textureBuffer) {
-	
+
 	if (textureBuffer == nullptr || textureBuffer->_ScratchImage == nullptr) {
 		return E_INVALIDARG; // No buffer or no data in buffer
 	}
@@ -344,6 +349,6 @@ HRESULT FreePixelData(TextureBuffer* textureBuffer) {
 	textureBuffer->_ScratchImage = nullptr;
 	textureBuffer->PixelData = nullptr;
 	textureBuffer->PixelDataLength = 0;
-	
+
 	return S_OK;
 }

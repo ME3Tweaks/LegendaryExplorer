@@ -159,7 +159,6 @@ namespace LegendaryExplorerCore.Audio
         //        //var datasize = EndianReader.ToUInt32(DataAsStored, 0x0C, FileEndianness);
         //        var actualSampleRate = EndianReader.ToUInt32(DataAsStored, 0x10, FileEndianness);
 
-
         //        var seconds = (double)pcmBytes / actualSampleRate / (bps / 8);
         //        //var seconds = (double)samplecount / actualSampleRate;
         //        return TimeSpan.FromSeconds(seconds);

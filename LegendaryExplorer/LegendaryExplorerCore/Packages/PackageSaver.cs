@@ -82,7 +82,6 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-
         /// <summary>
         /// Saves the package to disk on a different thread
         /// </summary>

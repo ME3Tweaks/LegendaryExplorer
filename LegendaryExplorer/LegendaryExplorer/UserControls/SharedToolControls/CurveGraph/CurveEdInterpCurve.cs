@@ -29,7 +29,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
     public class CurveEdInterpCurve : NotifyPropertyChangedBase
     {
-
         private readonly MEGame game;
         private readonly CurveType curveType;
         private readonly EInterpMethodType interpMethod = EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents;
@@ -217,7 +216,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             //removed
             else
             {
-
                 foreach (var curve in Curves)
                 {
                     if (curve != c)

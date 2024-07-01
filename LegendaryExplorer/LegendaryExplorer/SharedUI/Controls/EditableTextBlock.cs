@@ -133,7 +133,6 @@ namespace LegendaryExplorer.SharedUI.Controls
         }
     }
 
-
     /// <summary>
     /// Adorner class which shows textbox over the text block when the Edit mode is on.
     /// </summary>

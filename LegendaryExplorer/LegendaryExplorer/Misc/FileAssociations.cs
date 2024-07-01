@@ -16,7 +16,6 @@ namespace LegendaryExplorer.Misc
 
     public class FileAssociations
     {
-
         private const int SHCNE_ASSOCCHANGED = 0x8000000;
         private const int SHCNF_FLUSH = 0x1000;
 

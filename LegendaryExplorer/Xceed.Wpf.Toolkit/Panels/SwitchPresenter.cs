@@ -319,4 +319,3 @@ namespace Xceed.Wpf.Toolkit.Panels
     #endregion
   }
 }
-

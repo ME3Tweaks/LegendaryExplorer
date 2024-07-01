@@ -126,7 +126,6 @@ namespace LegendaryExplorerCore.TLK.ME1
                 }
             }
 
-
             /* writing properties */
             export.WriteProperty(new IntProperty(_inputData.Count, "m_nHashTableSize"));
 

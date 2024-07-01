@@ -96,7 +96,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
     #endregion // IsInvalid
 
     #region PropertyDescriptor

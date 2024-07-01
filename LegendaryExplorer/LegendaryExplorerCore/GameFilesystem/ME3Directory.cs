@@ -183,7 +183,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         public static string CookedName => "CookedPCConsole";
 
-
         private static string _DefaultGamePath;
         /// <summary>
         /// Gets or sets the default game root path that is used when locating game folders.
@@ -225,8 +224,6 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// TFCs that reside in the basegame directory
         /// </summary>
         public static readonly string[] BasegameTFCs = { "CharTextures", "Movies", "Textures", "Lighting" };
-
-
 
         static ME3Directory()
         {

@@ -13,7 +13,6 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Audio
 {
-
     /// <summary>
     /// Used only for WwiseBank import
     /// </summary>

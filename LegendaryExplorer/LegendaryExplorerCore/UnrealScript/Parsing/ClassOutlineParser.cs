@@ -338,7 +338,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             };
             Tokens.AddDefinitionLink(@class, name);
             return @class;
-            
         }
 
         private Const ParseConstant()
@@ -783,7 +782,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 funcs.Add(func);
                 func = TryParseFunction();
             }
-
 
             if (!ParseScopeSpan(true, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {

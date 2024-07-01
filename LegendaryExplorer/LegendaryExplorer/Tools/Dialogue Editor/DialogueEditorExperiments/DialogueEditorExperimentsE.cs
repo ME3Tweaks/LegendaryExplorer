@@ -16,7 +16,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
     /// <summary>
     /// Class for Exkywor's preset buttons and stuff
     /// </summary>
-    class DialogueEditorExperimentsE
+    static class DialogueEditorExperimentsE
     {
         #region Update Native Node String Ref
         /// <summary>
@@ -93,7 +93,6 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 UpdateFaceFX(FXAControl_F, currStringRef, newStringRef);
                 UpdateFaceFX(FXAControl_M, currStringRef, newStringRef);
             }
-
 
             if (int.TryParse(newStringRef, out int intRef))
             {
@@ -455,9 +454,9 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 List<VarLinkInfo> varLinks = KismetHelper.GetVariableLinksOfNode(oldInterp);
                 foreach (VarLinkInfo link in varLinks)
                 {
-                    if (link.LinkDesc == "Data") { link.LinkedNodes = new(); }
+                    if (link.LinkDesc == "Data") { link.LinkedNodes = []; }
                 }
-                SeqTools.WriteVariableLinksToNode(newInterp, varLinks);
+                KismetHelper.WriteVariableLinksToNode(newInterp, varLinks);
                 KismetHelper.CreateVariableLink(newInterp, "Data", newInterpData);
 
                 // Write the new nodeID

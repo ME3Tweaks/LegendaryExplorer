@@ -309,7 +309,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
             }
         }
 
-
         #endregion
 
         #region TreeView
@@ -326,7 +325,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 else SetFocusByPlotElement(GetRootNodes()[0]);
             }
         }
-
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -378,7 +376,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
 
         private static TreeViewItem FindTviFromObjectRecursive(ItemsControl ic, object o)
         {
-
             //Search for the object model in first level children (recursively)
             TreeViewItem tvi = ic.ItemContainerGenerator.ContainerFromItem(o) as TreeViewItem;
             if (tvi != null) return tvi;
@@ -397,7 +394,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                     else
                     {
                         tvi = FindTviFromObjectRecursive(tvi2, o);
-
                     }
                     if (tvi != null) return tvi;
                 }
@@ -405,7 +401,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
 
             return null;
         }
-
 
         #endregion
 
@@ -661,7 +656,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                     newItem_Name.Focus();
                     break;
             }
-
         }
 
         private void RevertPanelsToDefault()
@@ -1050,7 +1044,7 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 }
                 mpc.AddMod(mod);
             }
-            mpc.SaveModsToDisk(AppDirectories.AppDataFolder, true);
+            mpc.SaveModsToDisk(AppDirectories.AppDataFolder);
         }
 
         private void form_KeyUp(object sender, KeyEventArgs e)
@@ -1604,7 +1598,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                     "AchievementID",
                     "GalaxyAtWar",
                     "NewLabel"
-
                 };
                 for (int colindex = 0; colindex < headers.Count; colindex++)
                 {
@@ -1618,7 +1611,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 AddPlotsToList(SelectedNode, rawlist, true);
                 foreach (PlotElement pe in rawlist)
                 {
-
                     if (pe.ElementId <= 100000 || pe.Type == PlotElementType.Mod)
                         continue;
                     if (pe.Type == PlotElementType.Category)
@@ -1672,10 +1664,8 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 workbook.SaveAs(d.FileName);
                 MessageBox.Show("Done");
 
-
             }
         }
-
 
         private string GetCurrentMod(PlotElement pe)
         {
@@ -1689,7 +1679,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
             else
             {
                 modname = GetCurrentMod(pe.Parent);
-                
             }
             if(modname == null)
             {
@@ -1744,7 +1733,6 @@ namespace LegendaryExplorer.Tools.PlotDatabase
                 {
                     return PlotElementTypeExtensions.GetDescription(elementType);
                 }
-
             }
             return null;
         }
@@ -1753,6 +1741,5 @@ namespace LegendaryExplorer.Tools.PlotDatabase
         {    // Don't need any convert back
             return null;
         }
-
     }
 }

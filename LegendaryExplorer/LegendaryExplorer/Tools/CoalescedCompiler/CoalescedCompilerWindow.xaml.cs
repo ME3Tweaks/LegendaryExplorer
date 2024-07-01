@@ -260,7 +260,6 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
                 }
                 else
                 {
-
                     string ext = Path.GetExtension(files[0]).ToLower();
                     if (ext != ".bin" && ext != ".xml" && ext != ".extractedbin")
                     {
@@ -278,19 +277,16 @@ namespace LegendaryExplorer.Tools.CoalescedCompiler
                 // Note that you can have more than one file.
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-
                 if (Directory.Exists(files[0]))
                 {
                     var dirFiles = (new DirectoryInfo(files[0])).GetFiles();
                     var extractedBin = dirFiles.FirstOrDefault(f => f.Extension == "extractedbin");
                     if(extractedBin != default(FileInfo)) SetSourceFile(extractedBin.FullName);
-
                 }
                 else
                 {
                     SetSourceFile(files[0]);
                 }
-
             }
 		}
 

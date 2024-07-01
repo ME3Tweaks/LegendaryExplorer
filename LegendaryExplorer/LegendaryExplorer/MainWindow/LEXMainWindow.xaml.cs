@@ -205,7 +205,6 @@ namespace LegendaryExplorer.MainWindow
         private static bool IsCloseCommandExecuting;
         private static bool IsMainWindowTryingToClose;
 
-
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Close(); // Attempt to close the main window. This will trigger closing logic that can be aborted.
@@ -241,7 +240,6 @@ namespace LegendaryExplorer.MainWindow
             e.Cancel = !IsAllowedToClose;
             IsMainWindowTryingToClose = false;
             Debug.WriteLine("MainWindowClosingEND " + !IsAllowedToClose);
-
         }
 
         private void MinimizeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -263,7 +261,6 @@ namespace LegendaryExplorer.MainWindow
 
         private void MainWindow_Closing(object sender, ExecutedRoutedEventArgs e)
         {
-
         }
     }
 }

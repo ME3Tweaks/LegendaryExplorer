@@ -541,7 +541,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
                 var questMap = BinaryBioQuestMap.Load(stream);
 
                 SetFromQuestMap(questMap, pcc.Game);
-                
             }
         }
 
@@ -842,7 +841,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
                     txt_PlotitmDesc.Text = GlobalFindStrRefbyID(SelectedQuestPlotItem.Name, CodexMapView.package);
                 }
                 else txt_PlotitmDesc.Text = "";
-
             }
         }
     }

@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         private Stack<ushort> StartPositions;
         private List<List<Statement>> Scopes;
         private Stack<int> CurrentScope;
-        private readonly List<ForEachLoop> decompiledForEachLoops = new();
+        private readonly List<ForEachLoop> decompiledForEachLoops = [];
         
         private readonly List<FunctionParameter> Parameters;
         private readonly VariableType ReturnType;
@@ -95,12 +95,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         {
             Position = 0;
             _totalPadding = 0;
-            CurrentScope = new Stack<int>();
-            StatementLocations = new Dictionary<ushort, Statement>();
-            StartPositions = new Stack<ushort>();
-            Scopes = new List<List<Statement>>();
-            LabelTable = new List<LabelTableEntry>();
-            ForEachScopes = new Stack<ushort>();
+            CurrentScope = [];
+            StatementLocations = [];
+            StartPositions = [];
+            Scopes = [];
+            LabelTable = [];
+            ForEachScopes = [];
             var statements = new List<Statement>();
             var codeBody = new CodeBody(statements);
 
@@ -114,7 +114,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (DataContainer is UFunction func && func.FunctionFlags.Has(EFunctionFlags.Native))
             {
                 var comment = new ExpressionOnlyStatement(new SymbolReference(null, "// Native function"));
-                return new CodeBody(new List<Statement> { comment });
+                return new CodeBody([comment]);
             }
 
             if (ContainingClass.Export.ObjectName == "SFXGalaxyMapObject")
@@ -122,14 +122,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 //these functions are broken and cannot be decompiled. instead of trying, we construct a simpler, functionally identical version
                 if (DataContainer.Export.ObjectName == "GetEditorLabel") 
                 {
-                    return new CodeBody(new List<Statement> { new ReturnStatement(new SymbolReference(null, "sLabel")) });
+                    return new CodeBody([new ReturnStatement(new SymbolReference(null, "sLabel"))]);
                 }
                 if (DataContainer.Export.ObjectName == "InitializeAppearance")
                 {
-                    return new CodeBody(new List<Statement> { new ReturnStatement() });
+                    return new CodeBody([new ReturnStatement()]);
                 }
             }
-
 
             Scopes.Add(statements);
             CurrentScope.Push(Scopes.Count - 1);
@@ -172,7 +171,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     ushort loc = LocationStatements[statement];
                     if (!ReplicatedProperties.TryGetValue(loc, out List<string> propNames))
                     {
-                        propNames = new() { "#ERROR_MISSING_PROPERTY#" };
+                        propNames = ["#ERROR_MISSING_PROPERTY#"];
                     }
                     List<SymbolReference> replicatedVariables = propNames.Select(s => new SymbolReference(null, s)).ToList();
                     newStatements.Add(new ReplicationStatement(exprStatement.Value, replicatedVariables));
@@ -221,9 +220,16 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
             //a void return at the end of a function is a bytecode implementation detail, get rid of it.
             //This will also get rid of returnnothings, so loop to make sure we get both
-            while (statements.Count > 0 && statements.Last() is ReturnStatement {Value: null})
+            for (int i = statements.Count - 1; i >= 0; i--)
             {
-                statements.RemoveAt(statements.Count - 1);
+                if (statements[i] is ReturnStatement { Value: null})
+                {
+                    statements.RemoveAt(i);
+                }
+                else if (statements[i] is not CommentStatement)
+                {
+                    break;
+                }
             }
 
             return codeBody;
@@ -531,9 +537,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     int lastStatementIdx;
 
                     //if this switch has breaks in it, get the end of the switch, else the last statement is the default case
-                    if (switchEnds.TryGetValue(defaultCaseStatements.Count, out ushort jumpLoc))
+                    if (switchEnds.Remove(defaultCaseStatements.Count, out ushort jumpLoc))
                     {
-                        switchEnds.Remove(defaultCaseStatements.Count);
                         defaultCaseStatements.Pop();
                         Statement jumpToStatement = StatementLocations[jumpLoc];
                         lastStatementIdx = statements.IndexOf(jumpToStatement) - 1;
@@ -645,7 +650,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     byte token = PopByte();
                     if (token == (byte)OpCodes.DefaultParmValue) // default value assigned
                     {
-
                         ReadInt16(); //MemLength of value
                         var value = DecompileExpression();
                         PopByte(); // Opcodes.EndParmValue

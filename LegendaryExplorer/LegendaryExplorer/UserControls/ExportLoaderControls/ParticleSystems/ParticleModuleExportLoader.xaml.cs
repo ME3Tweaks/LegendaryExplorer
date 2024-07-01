@@ -25,7 +25,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void LoadCommands()
         {
-
         }
 
         public override bool CanParse(ExportEntry exportEntry) => exportEntry.IsA("ParticleModule");
@@ -47,7 +46,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var lookupTable = sp.GetProp<ArrayProperty<FloatProperty>>("LookupTable");
                     if (lookupTable != null && lookupTable.Any())
                     {
-
                         float min = lookupTable[0];
                         float max = lookupTable[1];
 
@@ -55,7 +53,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         List<Vector3> vectors = new List<Vector3>();
                         while (index < lookupTable.Count)
                         {
-
                             Vector3 v = new Vector3(lookupTable[index], lookupTable[index + 1], lookupTable[index + 2]);
                             vectors.Add(v);
                             index += 3;
@@ -80,7 +77,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var lookupTable = sp.GetProp<ArrayProperty<FloatProperty>>("LookupTable");
                     if (lookupTable != null && lookupTable.Any())
                     {
-
                         float min = lookupTable[0];
                         float max = lookupTable[1];
 
@@ -135,7 +131,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
-
         }
 
         public override void UnloadExport()
@@ -227,7 +222,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return "Z: " + Vector.X;
                 }
             }
-
         }
 
         public ObservableCollectionExtended<DistributionFloat> DistributionFloats { get; } = new ObservableCollectionExtended<DistributionFloat>();

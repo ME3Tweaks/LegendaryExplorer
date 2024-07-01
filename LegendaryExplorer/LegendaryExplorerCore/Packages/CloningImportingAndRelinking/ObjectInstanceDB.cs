@@ -204,8 +204,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="package">Package object to inventory</param>
         /// <param name="filePath">Path to package file on disk</param>
         /// <param name="insertAtStart">If true, add new instances of objects to the start of a list, so they will be preferred.</param>
-        /// <param name="objectsToAddPrediate">Predicate to determine which objects to add to the database. If null, all objects will be added.</param>
-        public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true, Func<ExportEntry, bool> objectsToAddPrediate = null)
+        /// <param name="objectsToAddPredicate">Predicate to determine which objects to add to the database. If null, all objects will be added.</param>
+        public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true, Func<ExportEntry, bool> objectsToAddPredicate = null)
         {
             int filePathIndex = FilePaths.Count;
             if (package.Game != Game)
@@ -226,7 +226,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Index objects
-            foreach (ExportEntry exp in package.Exports.Where(objectsToAddPrediate ?? AlwaysAdd))
+            foreach (ExportEntry exp in package.Exports.Where(objectsToAddPredicate ?? AlwaysAdd))
             {
                 string ifp = exp.InstancedFullPath;
 
@@ -327,7 +327,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // These items will never be indexed
             if (ifp.StartsWith(@"ObjectReferencer"))
                 return;
-
 
             int filePathIndex = FilePaths.IndexOf(export.FileRef.FilePath);
             if (export.Game != Game)

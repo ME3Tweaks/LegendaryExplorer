@@ -36,7 +36,6 @@ using System.Windows.Forms;
 using Piccolo.Util;
 
 namespace Piccolo.Event {
-
 	#region Input Event Types
 	/// <summary>
 	/// This enumeration is used by the PInputEventArgs.  It represents the
@@ -549,7 +548,6 @@ namespace Piccolo.Event {
 				throw new InvalidOperationException("Can't get DragDropKeyState from a " + type + " event");
 			}
 		}
-
 
 		/// <summary>
 		/// Gets or sets a value indicating whether an event handler has handled this

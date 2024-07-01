@@ -92,9 +92,6 @@ namespace Xceed.Wpf.Toolkit
 
     #region Base Class Overrides
 
-
-
-
     #endregion
   }
 

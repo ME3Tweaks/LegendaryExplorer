@@ -24,8 +24,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected int CurrentPosition => Tokens.CurrentItem.StartPos;
 
-        public static readonly List<ASTNodeType> SemiColonExceptions = new()
-        {
+        public static readonly List<ASTNodeType> SemiColonExceptions =
+        [
             ASTNodeType.WhileLoop,
             ASTNodeType.ForLoop,
             ASTNodeType.ForEachLoop,
@@ -33,16 +33,17 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ASTNodeType.SwitchStatement,
             ASTNodeType.CaseStatement,
             ASTNodeType.DefaultStatement,
-            ASTNodeType.StateLabel
-        };
+            ASTNodeType.StateLabel,
+            ASTNodeType.SingleLineComment
+        ];
 
-        public static readonly List<ASTNodeType> CompositeTypes = new()
-        {
+        public static readonly List<ASTNodeType> CompositeTypes =
+        [
             ASTNodeType.Class,
             ASTNodeType.Struct,
             ASTNodeType.Enumeration,
             ASTNodeType.ObjectLiteral
-        };
+        ];
 
         protected SymbolTable Symbols;
 
@@ -280,7 +281,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public ScriptToken Consume(string str)
         {
-
             ScriptToken token = null;
             if (CurrentIs(str))
             {
@@ -291,7 +291,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
 
         public ScriptToken Consume(params string[] strs) => strs.Select(Consume).NonNull().FirstOrDefault();
-
 
         protected bool TypeCompatible(VariableType dest, VariableType src, int errorPosition, bool coerce = false)
         {
@@ -596,7 +595,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return symRef;
-
         }
 
         public Expression ParseConstValue()
@@ -630,8 +628,5 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         }
     }
 
-    public class ParseException : Exception
-    {
-        public ParseException(string msg) : base(msg){}
-    }
+    public class ParseException(string msg) : Exception(msg);
 }

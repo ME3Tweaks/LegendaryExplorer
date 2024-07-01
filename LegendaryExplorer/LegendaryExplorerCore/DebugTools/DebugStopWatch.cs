@@ -19,7 +19,6 @@ namespace LegendaryExplorerCore.DebugTools
             Stopwatch.Start();
         }
 
-
         public void Dispose()
         {
             Stopwatch.Stop();

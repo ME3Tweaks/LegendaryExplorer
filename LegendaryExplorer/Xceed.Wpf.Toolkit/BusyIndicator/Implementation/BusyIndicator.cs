@@ -67,7 +67,6 @@ namespace Xceed.Wpf.Toolkit
       ChangeVisualState( false );
     }
 
-
     #endregion //Base Class Overrides
 
     #region Properties

@@ -78,7 +78,6 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
         }
     }
 
-
     /// <summary>
     /// Holds references to custom asset types for use in various tools - will be inventoried on app boot
     /// </summary>
@@ -88,7 +87,6 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
 
         // Add more here
     }
-
 
     /// <summary>
     /// Interaction logic for SafeToImportFromEditorWindow.xaml
@@ -121,7 +119,6 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             get => _selectedCustomClassDirectory;
             set => SetProperty(ref _selectedCustomClassDirectory, value);
         }
-
 
         public CustomFilesManagerWindow() : base("LEX Custom Files Manager", true)
         {
@@ -204,7 +201,6 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             }
         }
 
-
         private void RemoveCustomAssetDirectory()
         {
             var selected = SelectedCustomClassDirectory;
@@ -238,7 +234,6 @@ namespace LegendaryExplorer.Tools.CustomFilesManager
             CustomAssets.CustomSequences[MEGame.LE1] = new();
             CustomAssets.CustomSequences[MEGame.LE2] = new();
             CustomAssets.CustomSequences[MEGame.LE3] = new();
-
 
             // Inventory
             foreach (var dir in Settings.CustomAssetDirectories)

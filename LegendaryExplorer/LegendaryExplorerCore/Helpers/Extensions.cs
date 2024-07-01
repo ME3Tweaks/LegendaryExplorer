@@ -310,7 +310,6 @@ namespace LegendaryExplorerCore.Helpers
             }
         }
 
-
         //IEnumerable containing everything before item
         public static IEnumerable<T> Before<T>(this IEnumerable<T> src, T item)
         {
@@ -395,6 +394,12 @@ namespace LegendaryExplorerCore.Helpers
                 return string.Empty;
             return char.ToUpper(str[0]) + str.Substring(1);
         }
+
+        /// <summary>
+        /// Returns if the given string ends with a package file extension.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static bool RepresentsPackageFilePath(this string path)
         {
             string extension = Path.GetExtension(path);
@@ -498,7 +503,6 @@ namespace LegendaryExplorerCore.Helpers
             return string.Equals(value, Encoding.Latin1.GetString(Encoding.Latin1.GetBytes(value)));
         }
     }
-
 
     public static class IOExtensions
     {
@@ -844,7 +848,6 @@ namespace LegendaryExplorerCore.Helpers
 
             var sy = Math.Sin(yaw);
             var cy = Math.Cos(yaw);
-
 
             var syAxis = new Vector3((float)-sy, (float)cy, 0f);
 

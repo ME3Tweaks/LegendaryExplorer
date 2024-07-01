@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache cache = null, RelinkerOptionsPackage customROP = null)
+        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache cache = null, RelinkerOptionsPackage customROP = null, ObjectInstanceDB targetDb = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
@@ -55,12 +55,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
             if (newEntry == null)
             {
-
                 var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true,
                     customROP ?? new RelinkerOptionsPackage()
                     {
                         ImportExportDependencies = true,
                         Cache = cache,
+                        TargetGameDonorDB = targetDb
                     }, out newEntry);
                 issues.AddRange(relinkResults2);
             }
@@ -125,7 +125,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 PrepareGlobalFileForPorting(source.FileRef, packagename);
             }
-
 
             Stack<IEntry> parentStack = new Stack<IEntry>();
             IEntry entry = source;

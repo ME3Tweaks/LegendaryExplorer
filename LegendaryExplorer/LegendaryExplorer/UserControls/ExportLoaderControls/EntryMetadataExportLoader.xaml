@@ -44,6 +44,7 @@
             <RowDefinition Name="Row_ObjectName" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
             <RowDefinition Name="Row_Index" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
             <RowDefinition Name="Row_InstancedFullPath" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+            <RowDefinition Name="Row_MemoryFullPath" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
 
             <RowDefinition Name="Row_ExpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
             <RowDefinition Name="Row_ImpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
@@ -91,26 +92,27 @@
         <TextBlock Name="InfoTab_ObjectName_TextBlock" VerticalAlignment="Center" Text="0x0C Object name:" Grid.Row="0" Grid.Column="0"/>
         <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="{Binding ObjectIndexOffsetText}" Grid.Row="1" Grid.Column="0"/>
         <TextBlock Name="InfoTab_InstancedFullPath" VerticalAlignment="Center" Text="Instanced Full Path:" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_MemoryFullPath" VerticalAlignment="Center" Text="In-Memory Path:" Grid.Row="3" Grid.Column="0"/>
 
-        <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="3" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToExportClass_Clicked"/>
-        <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="4" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="4" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToExportClass_Clicked"/>
+        <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="5" Grid.Column="0"/>
         <!--Import-->
 
-        <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="5" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToSuperclass_Clicked"/>
+        <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="6" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToSuperclass_Clicked"/>
 
-        <TextBlock Name="InfoTab_Link_TextBlock" VerticalAlignment="Center" Text="0x08 Link:" Grid.Row="6" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="0x00 Package file:" Grid.Row="7" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="0x14 Archetype:" Grid.Row="8" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToArchetype_Clicked"/>
-        <TextBlock VerticalAlignment="Center" Text="0x18 Object flags:" Grid.Row="9" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="11" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="0x20 Export data size:" Grid.Row="12" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="0x24 Data offset (hex):" Grid.Row="13" Grid.Column="0"/>
-        <TextBlock VerticalAlignment="Center" Text="0x24 Data offset (dec):" Grid.Row="14" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_Link_TextBlock" VerticalAlignment="Center" Text="0x08 Link:" Grid.Row="7" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x00 Package file:" Grid.Row="8" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x14 Archetype:" Grid.Row="9" Grid.Column="0" Cursor="Hand" Foreground="DodgerBlue" TextDecorations="Underline" PreviewMouseDown="GoToArchetype_Clicked"/>
+        <TextBlock VerticalAlignment="Center" Text="0x18 Object flags:" Grid.Row="10" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="12" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x20 Export data size:" Grid.Row="13" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x24 Data offset (hex):" Grid.Row="14" Grid.Column="0"/>
+        <TextBlock VerticalAlignment="Center" Text="0x24 Data offset (dec):" Grid.Row="15" Grid.Column="0"/>
         
-        <TextBlock Name="InfoTab_ExportFlags_TextBlock"  VerticalAlignment="Center" Text="0x?? ExportFlags:" Grid.Row="15" Grid.Column="0"/>
-        <TextBlock Name="InfoTab_GenerationNetObjectCount_TextBlock" VerticalAlignment="Center" Text="0x?? GenerationNetObjectCount:" Grid.Row="16" Grid.Column="0"/>
-        <TextBlock Name="InfoTab_GUID_TextBlock" VerticalAlignment="Center" Text="0x?? GUID:" Grid.Row="17" Grid.Column="0"/>
-        <TextBlock Name="InfoTab_PackageFlags_TextBlock" VerticalAlignment="Center" Text="0x?? PackageFlags:" Grid.Row="18" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_ExportFlags_TextBlock"  VerticalAlignment="Center" Text="0x?? ExportFlags:" Grid.Row="16" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_GenerationNetObjectCount_TextBlock" VerticalAlignment="Center" Text="0x?? GenerationNetObjectCount:" Grid.Row="17" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_GUID_TextBlock" VerticalAlignment="Center" Text="0x?? GUID:" Grid.Row="18" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_PackageFlags_TextBlock" VerticalAlignment="Center" Text="0x?? PackageFlags:" Grid.Row="19" Grid.Column="0"/>
 
         <!--rightside-->
         <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" 
@@ -126,80 +128,84 @@
 
         <TextBox Text="{Binding CurrentLoadedEntry.InstancedFullPath, Mode=OneWay}"  VerticalAlignment="Center" Grid.Row="2"
                  IsReadOnly="True"
-                 Grid.Column="1" Grid.ColumnSpan="2" TextChanged="Info_IndexTextBox_TextChanged" 
-                 GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"
-                 ToolTip="The memory unique full name of this entry."/>
+                 Grid.Column="1"
+                 ToolTip="The unique full name of this entry."/>
 
-        <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" 
+        <TextBox Text="{Binding CurrentLoadedEntry.MemoryFullPath, Mode=OneWay}"  VerticalAlignment="Center" Grid.Row="3"
+                 IsReadOnly="True"
+                 Grid.Column="1"
+                 ToolTip="The path this object uses when in-memory in the game."/>
+
+        <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" 
                   SelectionChanged="Info_ClassComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
                   ToolTip="Class for this entry&#10;Type a UIndex value to automatically select it"
                   ItemsSource="{Binding AllClassesList, Mode=OneTime}"/>
         
-        <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" 
+        <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=OneTime}" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_ImpClass_ComboBox_GotFocus" 
                   SelectionChanged="Info_ImpClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="Name"
                   ToolTip="Class for this entry&#10;Type a name value to automatically select it"/>
 
-        <ComboBox Name="InfoTab_Superclass_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" 
+        <ComboBox Name="InfoTab_Superclass_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Superclass_ComboBox_GotFocus" 
                   SelectionChanged="Info_SuperClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"
                   ItemsSource="{Binding AllSuperClassesList, Mode=OneTime}"/>
 
-        <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
+        <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 
                   SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Parent for this entry&#10;Set to 0 to make this item a top level entry&#10;Type a UIndex value to automatically select it"
                   ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
         
-        <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" 
+        <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Mode=OneTime}" 
                   ItemsPanel="{StaticResource VSP}" 
                   GotFocus="InfoTab_PackageFile_ComboBox_GotFocus" SelectionChanged="Info_PackageFileComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="Name"
                   ToolTip="Filename (without extension) that contains the class for this import&#10;Type a name value to automatically select it"/>
 
-        <ComboBox Name="InfoTab_Archetype_ComboBox" VerticalAlignment="Center" Grid.Row="8" 
+        <ComboBox Name="InfoTab_Archetype_ComboBox" VerticalAlignment="Center" Grid.Row="9" 
                   Grid.Column="1" ItemsPanel="{StaticResource VSP}"  GotFocus="InfoTab_Archetype_ComboBox_GotFocus" 
                   SelectionChanged="Info_ArchetypeComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Archetype for this entry&#10;Set to 0 to indicate no archetype&#10;Type a UIndex value to automatically select it"
                   ItemsSource="{Binding AllEntriesList, Mode=OneTime}"/>
 
-        <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="9" Grid.Column="1"
+        <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="10" Grid.Column="1"
                             GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"
                             ToolTip="Flags for this entry&#10;It is very rare you will ever need to change these"/>
-        <Separator Grid.ColumnSpan="2" Grid.Row="10"/>
+        <Separator Grid.ColumnSpan="2" Grid.Row="11"/>
 
-        <TextBox Name="InfoTab_Headersize_TextBox" VerticalAlignment="Center" IsEnabled="False" Grid.Row="11" Grid.Column="1" IsReadOnly="true"/>
-        <TextBox Name="InfoTab_ExportDataSize_TextBox" Grid.Row="12" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
-        <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Grid.Row="13" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
-        <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Grid.Row="14" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-        <xctk:CheckComboBox Name="InfoTab_ExportFlags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="15" Grid.Column="1"
+        <TextBox Name="InfoTab_Headersize_TextBox" VerticalAlignment="Center" IsEnabled="False" Grid.Row="12" Grid.Column="1" IsReadOnly="true"/>
+        <TextBox Name="InfoTab_ExportDataSize_TextBox" Grid.Row="13" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
+        <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Grid.Row="14" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
+        <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Grid.Row="15" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+        <xctk:CheckComboBox Name="InfoTab_ExportFlags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="16" Grid.Column="1"
                             GotFocus="InfoTab_ExportFlags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_ExportFlags_ComboBox_ItemSelectionChanged"
                             ToolTip="ExportFlags for this entry&#10;It is very rare you will ever need to change these"/>
-        <TextBox Name="InfoTab_GenerationNetObjectCount_TextBox" Grid.Row="16" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-        <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-        <TextBox Name="InfoTab_PackageFlags_TextBox" Grid.Row="18" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="19">
+        <TextBox Name="InfoTab_GenerationNetObjectCount_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+        <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="18" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+        <TextBox Name="InfoTab_PackageFlags_TextBox" Grid.Row="19" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="20">
             <Button Name="Info_HeaderHexSaveChanges" Content="Save all changes"  Margin="0,0,3,0" Padding="5,2" Command="{Binding SaveHexChangesCommand}"/>
             <TextBlock Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="{Binding HexChanged, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </StackPanel>
         <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
         <!--Grid.Row="10" Grid.ColumnSpan="2"-->
-        <sharedUi:WindowsFormsHostEx x:Name="Header_Hexbox_Host" Grid.Row="20" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
+        <sharedUi:WindowsFormsHostEx x:Name="Header_Hexbox_Host" Grid.Row="21" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
             <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" 
                          LineInfoVisible="True" VScrollBarVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" 
                          StringViewVisible="True">
             </hb1:HexBox>
         </sharedUi:WindowsFormsHostEx>
         <Image Grid.Row="20" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" Visibility="Collapsed" Name="hexboxImageSub" Stretch="None" />
-        <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="21" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
-        <TextBlock Name="Header_Hexbox_ComponentsLabel" Grid.Row="22" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
+        <TextBlock Name="Header_Hexbox_SelectedBytesLabel" Grid.Row="22" Grid.ColumnSpan="2" Text="Selected item: " TextWrapping="Wrap"/>
+        <TextBlock Name="Header_Hexbox_ComponentsLabel" Grid.Row="23" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
     </Grid>
 </exportLoaderControls:ExportLoaderControl>

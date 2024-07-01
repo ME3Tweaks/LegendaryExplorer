@@ -16,7 +16,7 @@ namespace LegendaryExplorer.Startup
 #endif
         public static unsafe void Show()
         {
-            Win32.SetProcessDpiAwarenessContext((DPI_AWARENESS_CONTEXT)Win32.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            Win32.SetProcessDpiAwarenessContext(Win32.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
             var wcex = new WNDCLASSEXW
             {
                 style = CS.CS_NOCLOSE,
@@ -32,12 +32,12 @@ namespace LegendaryExplorer.Startup
             };
             fixed (char* className = "LEXSplashScreen")
             {
-                wcex.lpszClassName = (ushort*)className;
+                wcex.lpszClassName = className;
                 if (Win32.RegisterClassExW(&wcex) == 0)
                 {
                     return;
                 }
-                _splashHwnd = Win32.CreateWindowExW(0, (ushort*)className, null, WS.WS_VISIBLE | WS.WS_POPUP, 0, 0, 0, 0, HWND.NULL, HMENU.NULL, HINSTANCE.NULL, null);
+                _splashHwnd = Win32.CreateWindowExW(0, className, null, WS.WS_VISIBLE | WS.WS_POPUP, 0, 0, 0, 0, HWND.NULL, HMENU.NULL, HINSTANCE.NULL, null);
                 if (_splashHwnd == HWND.NULL)
                 {
                     return;

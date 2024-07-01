@@ -7,6 +7,5 @@ namespace LegendaryExplorerCore.Tests.helpers
 {
     public static class Extensions
     {
-
     }
 }

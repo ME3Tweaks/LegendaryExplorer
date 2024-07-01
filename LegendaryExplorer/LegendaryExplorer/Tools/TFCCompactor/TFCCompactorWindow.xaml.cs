@@ -186,7 +186,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
         //    {
         //        string staticExecutablesDirectory = Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, "staticexecutables")).FullName;
 
-
         //        string memCS = Path.Combine(staticExecutablesDirectory, "MassEffectModderNoGuiCS.exe");
         //        if (!File.Exists(memCS))
         //        {
@@ -198,7 +197,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
         //                return;
         //            }
         //        }
-
 
         //        string memQT = Path.Combine(staticExecutablesDirectory, "MassEffectModderNoGuiQT.exe");
         //        if (!File.Exists(memQT))
@@ -289,8 +287,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             var rootNodes = new List<TextureMapMemoryEntry>();
             void addRootNode(TextureMapMemoryEntry x) => rootNodes.Add(x);
             TextureMapMemoryEntry generateNode(IEntry x) => new(x);
-
-
 
             LoadedTextureMap = TextureMapGenerator.GenerateMapForFolder(BaseFolder, generateNode, addRootNode, scanProgress);
 
@@ -422,8 +418,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 CurrentOperationText = "Compacting...";
                 LegendaryExplorerCore.Textures.TFCCompactor.CompactTFC(pack, errorCallback, scanProgress, LoadedTextureMap);
             };
-
-
 
             //if (movieScan)
             //{
@@ -795,7 +789,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             //            Thread.Sleep(100); //this is kind of hacky but it works
             //        }
 
-
             //        //Restore old path in MEM ini
             //        if (!string.IsNullOrEmpty(oldValue))
             //        {
@@ -931,7 +924,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 BaseFolder = null;
             }
         }
-
 
         /// <summary>
         /// Depth-first recursive delete, with handling for descendant 

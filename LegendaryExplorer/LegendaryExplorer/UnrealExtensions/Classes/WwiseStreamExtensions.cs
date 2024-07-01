@@ -11,7 +11,6 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 {
     public static class WwiseStreamExtensions
     {
-
         /// <summary>
         /// This method is deprecated and will be removed eventually
         /// </summary>
@@ -119,7 +118,6 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
 
         private static void ImportWwiseOgg(this WwiseStream ws, string pathafc, Stream wwiseOggStream)
         {
-
             // 07/03/2022 - Change logic to remove check if file exists as we can create AFCs.
             // - Mgamerz
             if (wwiseOggStream == null)
@@ -127,7 +125,6 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 Debug.WriteLine("Improperly setup ImportWwiseOgg() call!");
                 return;
             }
-
 
             MemoryStream convertedStream = new MemoryStream();
             if (ws.Export.FileRef.Game is MEGame.ME3)
@@ -147,7 +144,6 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
                 return;
             }
 
-
             //Open AFC
             // Disabled 07/03/2022 - Not really sure what this did
             // - Mgamerz
@@ -158,7 +154,6 @@ namespace LegendaryExplorer.UnrealExtensions.Classes
             //fs.Seek(ws.DataOffset, SeekOrigin.Begin);
             //fs.Read(Header, 0, 94);
             //fs.Close();
-
 
             //append new wav
             var fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);

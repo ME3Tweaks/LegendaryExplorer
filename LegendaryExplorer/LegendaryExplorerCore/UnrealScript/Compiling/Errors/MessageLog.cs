@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public Class Filter; 
 
-        private readonly List<LogMessage> content;
+        private readonly List<LogMessage> content = [];
         public IReadOnlyList<LogMessage> Content => content.AsReadOnly();
 
         public IReadOnlyList<LogMessage> AllErrors => content.Where(m => m is Error or LineError).ToList();
@@ -27,10 +27,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         //and the MessageLog is the one thing that gets passed through all the layers... bleh
         public TokenStream Tokens;
 
-        public MessageLog()
-        {
-            content = new List<LogMessage>();
-        }
         public void LogMessage(string msg)
         {
             if (Filter is not null && CurrentClass is not null && Filter != CurrentClass)

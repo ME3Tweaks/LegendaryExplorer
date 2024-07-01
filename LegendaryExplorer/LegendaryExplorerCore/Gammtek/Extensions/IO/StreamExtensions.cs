@@ -852,8 +852,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.IO
         //            }
         //        }
 
-
-
         public static void WriteInt16(this Stream stream, short value, ByteOrder byteOrder = ByteOrder.LittleEndian)
         {
             if (ShouldSwap(byteOrder))

@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             base.ForEachUIndex(game, in action);
-            Unsafe.AsRef(action).Invoke(ref ArraySizeEnum, nameof(ArraySizeEnum));
+            Unsafe.AsRef(in action).Invoke(ref ArraySizeEnum, nameof(ArraySizeEnum));
         }
     }
 

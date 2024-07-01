@@ -130,7 +130,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                     otherHandle.Slope = Slope;
                 }
             }
-
         }
 
         public void TangentUpdate()

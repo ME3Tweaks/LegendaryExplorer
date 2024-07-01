@@ -45,7 +45,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         public ICommand ForceReloadPackageCommand { get; set; }
 
-
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
@@ -86,7 +85,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         internal bool CanForceReload() => GetPEWindow()?.Pcc != null;
 
-
         public PackageEditorWindow GetPEWindow()
         {
             if (Window.GetWindow(this) is PackageEditorWindow pew)
@@ -106,7 +104,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             var exp = GetPEWindow().InterpreterTab_Interpreter.CurrentLoadedExport;
             var properties = exp?.GetProperties();
         }
-
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
@@ -156,7 +153,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 MessageBox.Show(GetPEWindow(), "Done");
             });
         }
-
 
         private void BuildLE2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
@@ -256,7 +252,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
 
 
-
         }
 
         private void BuildAllObjectInfo_Clicked(object sender, RoutedEventArgs e)
@@ -302,13 +297,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.SearchObjectInfos(GetPEWindow());
         }
 
-
         private void ReInventoryCustomClasses_Click(object sender, RoutedEventArgs e)
         {
             // Todo: Move this into a 'general' class
             PackageEditorExperimentsM.RebuildInternalResourceClassInformations(GetPEWindow());
         }
-
 
         private void GenerateObjectInfoDiff_Click(object sender, RoutedEventArgs e)
         {
@@ -562,16 +555,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.DumpAllLE1TLK(GetPEWindow());
         }
 
-        private void StartPackageBytecodeScan_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.EnumerateAllFunctions(GetPEWindow());
-        }
-
-        private void LODBiasTest_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.TestLODBias(GetPEWindow());
-        }
-
         private void ResolveAllGameImports_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckAllGameImports(GetPEWindow().Pcc);
@@ -581,7 +564,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             var pew = GetPEWindow();
             string myBasePath = ME1Directory.DefaultGamePath;
-            string[] extensions = { ".u", ".upk" };
+            string[] extensions = [".u", ".upk"];
             FileInfo[] files = new DirectoryInfo(ME1Directory.CookedPCPath)
                 .EnumerateFiles("*", SearchOption.AllDirectories)
                 .Where(f => extensions.Contains(f.Extension.ToLower()))
@@ -593,40 +576,38 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 pew.StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 int basePathLen = myBasePath.Length;
-                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
+                using IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName);
+                List<ExportEntry> tlkExports = pack.Exports.Where(x =>
+                    (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
+                if (tlkExports.Count > 0)
                 {
-                    List<ExportEntry> tlkExports = pack.Exports.Where(x =>
-                        (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
-                    if (tlkExports.Count > 0)
+                    string subPath = f.FullName.Substring(basePathLen);
+                    Debug.WriteLine($"Found exports in {f.FullName.AsSpan(basePathLen)}");
+                    foreach (ExportEntry exp in tlkExports)
                     {
-                        string subPath = f.FullName.Substring(basePathLen);
-                        Debug.WriteLine("Found exports in " + f.FullName.Substring(basePathLen));
-                        foreach (ExportEntry exp in tlkExports)
+                        var talkFile = new ME1TalkFile(exp);
+                        foreach (var sref in talkFile.StringRefs)
                         {
-                            var talkFile = new ME1TalkFile(exp);
-                            foreach (var sref in talkFile.StringRefs)
+                            if (sref.StringID == 0) continue; //skip blank
+                            if (sref.Data is null or "-1" or "") continue; //skip blank
+
+                            if (!stringMapping.TryGetValue(sref.StringID, out var dictEntry))
                             {
-                                if (sref.StringID == 0) continue; //skip blank
-                                if (sref.Data == null || sref.Data == "-1" || sref.Data == "") continue; //skip blank
-
-                                if (!stringMapping.TryGetValue(sref.StringID, out var dictEntry))
-                                {
-                                    dictEntry = new KeyValuePair<string, List<string>>(sref.Data, new List<string>());
-                                    stringMapping[sref.StringID] = dictEntry;
-                                }
-
-                                if (sref.StringID == 158104)
-                                {
-                                    Debugger.Break();
-                                }
-
-                                dictEntry.Value.Add($"{subPath} in uindex {exp.UIndex} \"{exp.ObjectName}\"");
+                                dictEntry = new KeyValuePair<string, List<string>>(sref.Data, []);
+                                stringMapping[sref.StringID] = dictEntry;
                             }
+
+                            if (sref.StringID == 158104)
+                            {
+                                Debugger.Break();
+                            }
+
+                            dictEntry.Value.Add($"{subPath} in uindex {exp.UIndex} \"{exp.ObjectName}\"");
                         }
                     }
-
-                    i++;
                 }
+
+                i++;
             }
 
             int total = stringMapping.Count;
@@ -651,30 +632,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             pew.StatusBar_LeftMostText.Text = "Done";
         }
 
-        private void BuildME1NativeFunctionsInfo_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.BuildME1NativeFunctionsInfo();
-        }
-
         private void ListNetIndexes_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ListNetIndexes(GetPEWindow());
         }
 
 
-        private void PrintNatives(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.PrintAllNativeFuncsToDebug(GetPEWindow().Pcc);
-        }
-
         private void FindAllFilesWithSpecificName(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.FindNamedObject(GetPEWindow());
-        }
-
-        private void FindME12DATables_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.FindME1ME22DATables();
         }
 
         private void FindAllME3PowerCustomAction_Click(object sender, RoutedEventArgs e)
@@ -687,7 +653,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.FindAllME2Powers();
         }
 
-
         private void GenerateNewGUIDForPackageFile_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.GenerateNewGUIDForFile(GetPEWindow());
@@ -698,7 +663,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.GenerateGUIDCacheForFolder(GetPEWindow());
         }
-
 
         private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
         {
@@ -749,19 +713,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             Task.Run(() => PackageEditorExperimentsM.CheckAllGameImports(pew.Pcc)).ContinueWithOnUIThread(prevTask => { pew.IsBusy = false; });
         }
 
-        private void CreateTestPatchDelta_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.BuildTestPatchComparison();
-        }
-
         private void TintAllNormalizedAverageColor_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.TintAllNormalizedAverageColors(GetPEWindow().Pcc);
-        }
-
-        private void DumpAllExecFunctionSignatures_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.DumpAllExecFunctionsFromGame();
         }
 
         private void RebuildLevelNetindexing_Clicked(object sender, RoutedEventArgs e)
@@ -816,11 +770,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             {
                 Debug.WriteLine($"{uIndex} {propName}");
             }
-        }
-
-        private void ShaderCacheResearch_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.ShaderCacheResearch(GetPEWindow());
         }
 
         private void PrintLoadedPackages_Clicked(object sender, RoutedEventArgs e)
@@ -958,7 +907,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             using (var tempPcc = MEPackageHandler.OpenMEPackage(tempFilePath, forceLoadFromDisk: true))
             {
                 //insert PlayerStart if neccesary
-                if (!(tempPcc.Exports.FirstOrDefault(exp => exp.ClassName == "PlayerStart") is ExportEntry playerStart))
+                if (tempPcc.Exports.FirstOrDefault(exp => exp.ClassName == "PlayerStart") is null)
                 {
                     var levelExport = tempPcc.Exports.First(exp => exp.ClassName == "Level");
                     Level level = ObjectBinary.From<Level>(levelExport);
@@ -975,10 +924,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         }
                     }
 
-                    playerStart = new ExportEntry(tempPcc, levelExport, tempPcc.GetNextIndexedName("PlayerStart"), properties: new PropertyCollection
-                    {
+                    ExportEntry playerStart = new ExportEntry(tempPcc, levelExport, tempPcc.GetNextIndexedName("PlayerStart"), properties:
+                    [
                         CommonStructs.Vector3Prop(x, y, z, "location")
-                    })
+                    ])
                     {
                         Class = tempPcc.GetEntryOrAddImport("Engine.PlayerStart", "Class")
                     };
@@ -989,7 +938,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
                 tempPcc.Save();
             }
-
 
             Process.Start(MEDirectories.GetExecutablePath(Pcc.Game), $"{tempMapName} -nostartupmovies");
         }
@@ -1148,7 +1096,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     if (pew.Pcc.Game is MEGame.ME3)
                     {
                         (List<Token> tokens, _) = Bytecode.ParseBytecode(export.GetBinaryData<UFunction>().ScriptBytes, export);
-                        if (tokens.FirstOrDefault(tok => tok.op == opCode) is Token token)
+                        if (tokens.Find(tok => tok.op == opCode) is Token token)
                         {
                             exportsWithOpcode.Add(new EntryStringPair(export, token.posStr));
                         }
@@ -1158,7 +1106,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         var func = LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader.ReadFunction(export);
                         func.Decompile(new LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.TextBuilder(), false, true);
                         if (func.Statements.statements.Count > 0
-                            && func.Statements.statements[0].Reader.ReadTokens.FirstOrDefault(tok => (short)tok.OpCode == opCode) is { })
+                            && func.Statements.statements[0].Reader.ReadTokens.Find(tok => (short)tok.OpCode == opCode) is { })
                         {
                             exportsWithOpcode.Add(new EntryStringPair(export, ""));
                         }
@@ -1296,9 +1244,7 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                         };
                         dlg.Show();
                     });
-
                 }
-
             }
             else
             {

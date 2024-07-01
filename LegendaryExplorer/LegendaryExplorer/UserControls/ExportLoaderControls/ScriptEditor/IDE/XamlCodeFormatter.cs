@@ -21,7 +21,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             return Inlines;
         }
 
-        public void Write(string text, EF formatType)
+        public void AppendToNewLine(string text, EF formatType)
         {
             if (!ForceNoNewLines)
             {

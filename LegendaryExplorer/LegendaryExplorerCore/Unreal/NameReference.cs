@@ -105,7 +105,6 @@ namespace LegendaryExplorerCore.Unreal
             return !string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);
         }
 
-
         public static bool operator ==(string s, NameReference r)
         {
             return string.Equals(s, r._name, StringComparison.OrdinalIgnoreCase);

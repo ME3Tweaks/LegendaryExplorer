@@ -9,7 +9,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
     /// </summary>
     public partial class StatusBarGameIDIndicator : NotifyPropertyChangedControlBase
     {
-
         public string GameType
         {
             get => (string)GetValue(GameTypeProperty);

@@ -14,7 +14,6 @@ namespace LegendaryExplorer.SharedUI.Controls
     /// </summary>
     public partial class GenericToolBox : NotifyPropertyChangedControlBase
     {
-
         public ObservableCollectionExtended<object> Items { get; set; } = new();
 
         private object _selectedItem;

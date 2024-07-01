@@ -17,7 +17,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class LE3UnrealObjectInfo
     {
-
         public static Dictionary<string, ClassInfo> Classes = new();
         public static Dictionary<string, ClassInfo> Structs = new();
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
@@ -249,7 +248,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //Custom additions are tweaks and additional classes either not automatically able to be determined
             //or new classes designed in the modding scene that must be present in order for parsing to work properly
 
-
             // The following is left only as examples if you are building new ones
             /*classes["BioSeqAct_ShowMedals"] = new ClassInfo
             {
@@ -329,7 +327,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             };
             sequenceObjects["SFXSeqAct_CheckForNewGAWAssetsFixed"] = new SequenceObjectInfo();
-
 
             classes["SFXSeqAct_SetEquippedWeaponVisibility"] = new ClassInfo
             {
@@ -577,7 +574,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXGalaxyMapReaperEGM",
                 properties =
                 {
-
                    new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
                 }
             };

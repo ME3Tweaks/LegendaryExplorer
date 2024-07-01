@@ -161,16 +161,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                CompileErrors = Array.Empty<string>(),
-                TextureDependencyLengthMap = new (),
-                UniformExpressionTextures = Array.Empty<UIndex>(),
-                UniformPixelVectorExpressions = Array.Empty<MaterialUniformExpression>(),
-                UniformPixelScalarExpressions = Array.Empty<MaterialUniformExpression>(),
-                Uniform2DTextureExpressions = Array.Empty<MaterialUniformExpressionTexture>(),
-                UniformCubeTextureExpressions = Array.Empty<MaterialUniformExpressionTexture>(),
-                TextureLookups = Array.Empty<TextureLookup>(),
-                Me1MaterialUniformExpressionsList = Array.Empty<ME1MaterialUniformExpressionsElement>(),
-                unkList = Array.Empty<(int, float, int)>(),
+                CompileErrors = [],
+                TextureDependencyLengthMap = [],
+                UniformExpressionTextures = [],
+                UniformPixelVectorExpressions = [],
+                UniformPixelScalarExpressions = [],
+                Uniform2DTextureExpressions = [],
+                UniformCubeTextureExpressions = [],
+                TextureLookups = [],
+                Me1MaterialUniformExpressionsList = [],
+                unkList = [],
             };
         }
 
@@ -238,11 +238,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 //seperating this monstrosity out so the poor jit can ignore it in the common case (LE)
                 NonLE_UIndexes(game, action, prefix);
             }
-
         }
         private void NonLE_UIndexes<TAction>(MEGame meGame, TAction uIndexAction, string prefix) where TAction : struct, IUIndexAction
         {
-            TAction a = Unsafe.AsRef(uIndexAction);
+            TAction a = Unsafe.AsRef(in uIndexAction);
             for (int i = 0; i < UniformPixelVectorExpressions.Length; i++)
             {
                 switch (UniformPixelVectorExpressions[i])
@@ -340,14 +339,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             public bool Equals(StaticSwitchParameter other)
             {
-                if (ReferenceEquals(null, other)) return false;
+                if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return ParameterName.Equals(other.ParameterName) && Value == other.Value && ExpressionGUID.Equals(other.ExpressionGUID);
             }
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
+                if (obj is null) return false;
                 if (ReferenceEquals(this, obj)) return true;
                 if (obj.GetType() != this.GetType()) return false;
                 return Equals((StaticSwitchParameter) obj);
@@ -370,14 +369,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             public bool Equals(StaticComponentMaskParameter other)
             {
-                if (ReferenceEquals(null, other)) return false;
+                if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return ParameterName.Equals(other.ParameterName) && R == other.R && G == other.G && B == other.B && A == other.A && ExpressionGUID.Equals(other.ExpressionGUID);
             }
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
+                if (obj is null) return false;
                 if (ReferenceEquals(this, obj)) return true;
                 if (obj.GetType() != this.GetType()) return false;
                 return Equals((StaticComponentMaskParameter) obj);
@@ -397,14 +396,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             public bool Equals(NormalParameter other)
             {
-                if (ReferenceEquals(null, other)) return false;
+                if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return ParameterName.Equals(other.ParameterName) && CompressionSettings == other.CompressionSettings && bOverride == other.bOverride && ExpressionGUID.Equals(other.ExpressionGUID);
             }
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
+                if (obj is null) return false;
                 if (ReferenceEquals(this, obj)) return true;
                 if (obj.GetType() != this.GetType()) return false;
                 return Equals((NormalParameter) obj);
@@ -507,9 +506,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new StaticParameterSet
             {
                 BaseMaterialId = guid,
-                StaticSwitchParameters = Array.Empty<StaticSwitchParameter>(),
-                StaticComponentMaskParameters = Array.Empty<StaticComponentMaskParameter>(),
-                NormalParameters = Array.Empty<NormalParameter>()
+                StaticSwitchParameters = [],
+                StaticComponentMaskParameters = [],
+                NormalParameters = []
             };
         }
 
@@ -543,7 +542,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public virtual List<(NameReference, string)> GetNames(MEGame game)
         {
-            return new List<(NameReference, string)>(0);
+            return [];
         }
 
         public static MaterialUniformExpression Create(SerializingContainer2 sc)
@@ -659,14 +658,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
             // TODO: IMPROVE TEXT
-            var names = new List<(NameReference, string)>();
-            names.Add((A.ExpressionType, $"{ExpressionType}.A.ExpressionType"));
-            names.AddRange(A.GetNames(game));
-            names.Add((B.ExpressionType, $"{ExpressionType}.B.ExpressionType"));
-            names.AddRange(B.GetNames(game));
-            return names;
+            return [
+                (A.ExpressionType, $"{ExpressionType}.A.ExpressionType"),
+                .. A.GetNames(game),
+                (B.ExpressionType, $"{ExpressionType}.B.ExpressionType"),
+                .. B.GetNames(game),
+            ];
         }
-
     }
     // FMaterialUniformExpressionAppendVector
     public class MaterialUniformExpressionAppendVector : MaterialUniformExpressionBinaryOp
@@ -917,7 +915,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                paramSet.NormalParameters = new StaticParameterSet.NormalParameter[0];
+                paramSet.NormalParameters = [];
             }
         }
         public static void Serialize(this SerializingContainer2 sc, ref StaticParameterSet.StaticSwitchParameter param)

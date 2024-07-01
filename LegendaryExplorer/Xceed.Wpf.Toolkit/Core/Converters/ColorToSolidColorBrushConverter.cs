@@ -42,7 +42,6 @@ namespace Xceed.Wpf.Toolkit.Core.Converters
       return value;
     }
 
-
     /// <summary>
     /// Converts a SolidColorBrush to a Color.
     /// </summary>

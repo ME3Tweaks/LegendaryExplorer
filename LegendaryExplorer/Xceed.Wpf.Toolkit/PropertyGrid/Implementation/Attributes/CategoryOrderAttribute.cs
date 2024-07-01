@@ -80,4 +80,3 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Attributes
     #endregion
   }
 }
-

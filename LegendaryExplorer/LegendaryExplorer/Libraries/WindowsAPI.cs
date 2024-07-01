@@ -10,7 +10,6 @@ namespace LegendaryExplorer.Libraries
 {
     internal static unsafe partial class WindowsAPI
     {
-
         [LibraryImport("user32.dll", EntryPoint = "SendMessageW")]
         public static partial long SendMessage(IntPtr hWnd, uint msg, nint wParam, long lParam);
 
@@ -39,14 +38,11 @@ namespace LegendaryExplorer.Libraries
         [LibraryImport("user32.dll")]
         public static partial int GetWindowRect(IntPtr hwnd, out Rectangle rect);
 
-
         [LibraryImport("Shell32.dll")]
         public static partial int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
 
-
         [LibraryImport("gdi32.dll")]
         public static partial IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, in uint pcFonts);
-
 
         [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16, EntryPoint = "GetModuleHandleW")]
         public static partial IntPtr GetModuleHandle(string lpModuleName);

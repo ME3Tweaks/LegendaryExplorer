@@ -23,7 +23,6 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
     /// </summary>
     public partial class FaceFXEditorWindow : WPFBase, IRecents
     {
-
         public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new();
 
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";

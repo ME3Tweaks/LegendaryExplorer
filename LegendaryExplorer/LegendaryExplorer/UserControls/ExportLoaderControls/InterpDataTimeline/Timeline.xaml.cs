@@ -354,7 +354,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 label.Content = linepos.ToString("0.00");
                 Guide.Children.Add(label);
             }
-
         }
 
         #region Scrolling and Dragging
@@ -374,7 +373,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             DrawGuideLines();
             e.Handled = true;
         }
-
 
         private bool dragging;
         private Point dragPos;

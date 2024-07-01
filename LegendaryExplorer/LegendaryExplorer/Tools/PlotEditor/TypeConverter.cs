@@ -43,7 +43,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 #endif
     public class TypeConverter : IValueConverter
     {
-
         /// <summary>
         ///     Initializes a new instance of the TypeConverter class.
         /// </summary>

@@ -218,7 +218,6 @@ namespace Xceed.Wpf.Toolkit
       Pie pie = ( Pie )d;
       if( pie.IsUpdatingEndAngle || pie.IsUpdatingStartAngle || pie.IsUpdatingSweepDirection )
       {
-
         double slice = Math.Max( -360.0, Math.Min( 360.0, ( pie.EndAngle - pie.StartAngle ) ) ) / ( ( pie.SweepDirection == SweepDirection.Clockwise ) ? 360.0 : -360.0 );
         double newValue = DoubleHelper.AreVirtuallyEqual( slice, 0 ) ? 0 : ( slice < 0 ) ? slice + 1 : slice;
         if( !DoubleHelper.AreVirtuallyEqual( ( double )value, newValue ) )

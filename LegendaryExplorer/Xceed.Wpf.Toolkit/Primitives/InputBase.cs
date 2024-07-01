@@ -78,7 +78,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
     protected virtual void OnCultureInfoChanged( CultureInfo oldValue, CultureInfo newValue )
     {
-
     }
 
     #endregion //CultureInfo
@@ -163,7 +162,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
 
     protected virtual void OnTextChanged( string oldValue, string newValue )
     {
-
     }
 
     #endregion //Text
@@ -182,7 +180,6 @@ namespace Xceed.Wpf.Toolkit.Primitives
         SetValue( TextAlignmentProperty, value );
       }
     }
-
 
     #endregion //TextAlignment
 

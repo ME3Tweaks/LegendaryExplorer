@@ -10,7 +10,6 @@ namespace LegendaryExplorerCore.Coalesced.Config
     /// </summary>
     public static class ConfigTools
     {
-
         /// <summary>
         /// Builds a combined config bundle representing the final set of the files on disk for the specified target
         /// </summary>

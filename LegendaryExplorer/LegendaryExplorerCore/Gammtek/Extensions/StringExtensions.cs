@@ -219,7 +219,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             }
         }
 
-
         /// <summary>
         /// Wraps a sting to a max length
         /// </summary>
@@ -240,7 +239,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
         /// <returns>List of Strings</returns>
         public static List<String> WrapLines(this string text, int maxLength)
         {
-
             // Return empty list of strings if the text was empty
             if (text.Length == 0) return new List<string>();
 
@@ -250,7 +248,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
             foreach (var currentWord in words)
             {
-
                 if ((currentLine.Length > maxLength) || ((currentLine.Length + currentWord.Length) > maxLength))
                 {
                     lines.Add(currentLine);
@@ -261,12 +258,10 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
                     currentLine += " " + currentWord;
                 else
                     currentLine += currentWord;
-
             }
 
             if (currentLine.Length > 0)
                 lines.Add(currentLine);
-
 
             return lines;
         }

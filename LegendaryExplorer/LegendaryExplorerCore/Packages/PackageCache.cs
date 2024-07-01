@@ -139,7 +139,6 @@ namespace LegendaryExplorerCore.Packages
                         ReleasePackage(accessOrder[0].Key);
                     }
                     accessOrder.RemoveAt(0);
-
                 }
             }
 
@@ -149,7 +148,6 @@ namespace LegendaryExplorerCore.Packages
                 //Debugger.Break();
             }
         }
-
 
         /// <summary>
         /// Returns if this package is marked as a Resident Package. Packages without <see cref="IMEPackage.FilePath"/> set will return false.
@@ -175,7 +173,6 @@ namespace LegendaryExplorerCore.Packages
         {
             return ResidentPackages.Contains(packagePath, StringComparer.InvariantCultureIgnoreCase);
         }
-
 
         /// <summary>
         /// Releases a package by it's filepath from the cache.
@@ -293,7 +290,6 @@ namespace LegendaryExplorerCore.Packages
 
             return null;
         }
-
 
         public virtual IReadOnlyCollection<IMEPackage> GetPackages()
         {

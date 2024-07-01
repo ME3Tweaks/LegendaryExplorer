@@ -39,6 +39,5 @@ namespace Be.Windows.Forms
                 return _designMode;
             }
         }
-
     }
 }

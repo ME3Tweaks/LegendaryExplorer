@@ -62,7 +62,7 @@ namespace LegendaryExplorerCore.Tests
         }
 
         public static string GetTestMiniGamePath(MEGame game) => Path.Combine(GetTestDataDirectory(), "packages", "PC", game.ToString());
-
+        public static string GetTestPackageSerializationsDirectory() => Path.Combine(GetTestDataDirectory(), "packageserialization");
         public static string GetTestPackagesDirectory() => Path.Combine(GetTestDataDirectory(), "packages");
         public static string GetTestSFARsDirectory() => Path.Combine(GetTestDataDirectory(), "sfars");
         public static string GetTestMountsDirectory() => Path.Combine(GetTestDataDirectory(), "mounts");

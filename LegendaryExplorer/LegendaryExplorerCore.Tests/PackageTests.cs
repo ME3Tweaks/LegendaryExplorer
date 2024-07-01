@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
@@ -55,6 +56,33 @@ namespace LegendaryExplorerCore.Tests
         }
 
         [TestMethod]
+        public void TestOpeningMethods()
+        {
+            GlobalTest.Init();
+
+            var packagesPath = GlobalTest.GetTestPackageSerializationsDirectory();
+            var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            foreach (var p in packages)
+            {
+                if (p.RepresentsPackageFilePath())
+                {
+                    // Open from stream
+                    var binStream = new MemoryStream(File.ReadAllBytes(p));
+                    var sourcePackageStream = MEPackageHandler.OpenMEPackageFromStream(binStream, Path.GetFileName(p));
+                    var sourcePackageDisk = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
+
+                    for(int i = 0; i < sourcePackageStream.ExportCount; i++)
+                    {
+                        var sourceExportD = sourcePackageDisk.Exports[i];
+                        var sourceExportS = sourcePackageStream.Exports[i];
+                        Assert.IsTrue(sourceExportD.Data.SequenceEqual(sourceExportS.Data),
+                            $"Export {i+1} {sourceExportD.InstancedFullPath} in {p} did not deserialize the same between load from disk and load from stream!");
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
         public void TestCompression()
         {
             GlobalTest.Init();
@@ -80,7 +108,6 @@ namespace LegendaryExplorerCore.Tests
                     // Is PC
                     var uncompressedPS = originalLoadedPackage.SaveToStream(false);
                     var compressedPS = originalLoadedPackage.SaveToStream(true);
-
 
                     uncompressedPS.Position = compressedPS.Position = 0;
 
@@ -348,7 +375,6 @@ namespace LegendaryExplorerCore.Tests
                         {
                             //Function_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
                         }
-
                     }
                     //}
                 }
@@ -422,7 +448,6 @@ namespace LegendaryExplorerCore.Tests
                                 "A name was replaced, but the Names[] array accessor for the replaced name returned the wrong name!");
                         }
                     }
-
                 }
             }
         }
@@ -454,6 +479,5 @@ namespace LegendaryExplorerCore.Tests
             }
             Assert.AreEqual(2, numExportsLoaded);
         }
-
     }
 }

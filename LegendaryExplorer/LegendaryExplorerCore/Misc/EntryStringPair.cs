@@ -22,7 +22,6 @@ namespace LegendaryExplorerCore.Misc
         // Todo: Add support for tool IDs?
         public LEXOpenable()
         {
-
         }
 
         public LEXOpenable(IEntry entry)

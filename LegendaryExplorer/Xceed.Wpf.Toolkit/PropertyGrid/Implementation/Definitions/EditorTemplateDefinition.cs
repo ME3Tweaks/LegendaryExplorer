@@ -25,7 +25,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
   public class EditorTemplateDefinition : EditorDefinitionBase
   {
 
-
     #region EditingTemplate
     public static readonly DependencyProperty EditingTemplateProperty =
         DependencyProperty.Register( "EditingTemplate", typeof( DataTemplate ), typeof( EditorTemplateDefinition ), new UIPropertyMetadata( null ) );

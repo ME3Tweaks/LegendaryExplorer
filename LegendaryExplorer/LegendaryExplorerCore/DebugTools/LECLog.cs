@@ -60,7 +60,6 @@ namespace LegendaryExplorerCore.DebugTools
                         Log.Fatal(line);
                     else
                         Log.Error(line);
-
                 }
 
                 if (exception.StackTrace != null)

@@ -184,8 +184,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
             OutStream.Write(buffer);
         }
 
-
-
         public void WriteBytes(byte[] bytes) => Write(bytes);
 
         public void WriteByte(byte b)
@@ -251,7 +249,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
         public void WriteGuid(Guid value)
         {
             Span<byte> data = stackalloc byte[16];
-            MemoryMarshal.Write(data, ref value);
+            MemoryMarshal.Write(data, in value);
 
             if (NoConvert)
             {

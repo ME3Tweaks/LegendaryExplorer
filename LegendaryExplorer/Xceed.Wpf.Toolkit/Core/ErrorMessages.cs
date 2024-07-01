@@ -22,7 +22,6 @@ namespace Xceed.Wpf.Toolkit.Core
   {
     #region Static Fields
 
-
     public const string EndAngleCannotBeSetDirectlyInSlice = "EndAngleCannotBeSetDirectlyInSlice";
     public const string SliceCannotBeSetDirectlyInEndAngle = "SliceCannotBeSetDirectlyInEndAngle";
     public const string SliceOOR = "SliceOOR";
@@ -38,7 +37,6 @@ namespace Xceed.Wpf.Toolkit.Core
     public const string RegionOnlyAccessibleOnRegionalView = "RegionOnlyAccessibleOnRegionalView";
     public const string UnableToConvertToZoomboxView = "UnableToConvertToZoomboxView";
     public const string ViewStackCannotBeManipulatedNow = "ViewStackCannotBeManipulatedNow";
-
 
     public const string SuppliedValueWasNotVisibility = "SuppliedValueWasNotVisibility";
     public const string NegativeTimeSpanNotSupported = "NegativeTimeSpanNotSupported";
@@ -65,7 +63,6 @@ namespace Xceed.Wpf.Toolkit.Core
     public const string RowValueIsReadOnly = "Cannot modify 'StackDefinitionCollection' in read-only state.";
     public const string StackValueIsReadOnly = "Cannot modify 'StackDefinitionCollection' in read-only state.";
     public const string UnexpectedType = "Expected type '{0}', got '{1}'.";
-
 
     private static readonly ResourceManager _resourceManager;
 

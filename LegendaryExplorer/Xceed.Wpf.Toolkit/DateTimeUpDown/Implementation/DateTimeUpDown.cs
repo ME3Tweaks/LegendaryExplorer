@@ -265,7 +265,6 @@ namespace Xceed.Wpf.Toolkit
       //DateTimePicker. 
       if( this.Kind != DateTimeKind.Unspecified )
       {
-
         //Keep the current kind (Local or Utc) 
         //by imposing it to the parsed text value.
         //
@@ -692,7 +691,6 @@ namespace Xceed.Wpf.Toolkit
       base.OnKeyDown( e );
     }
 
-
 #endregion //Base Class Overrides
 
     #region Methods
@@ -716,7 +714,6 @@ namespace Xceed.Wpf.Toolkit
       this.SyncTextAndValueProperties( false, null );
 
       _processTextChanged = true;
-
     }
 
     private static int GetElementLengthByFormat( string format )

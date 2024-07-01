@@ -45,7 +45,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
 
             LoadFile(dlg.FileName);
-
         }
 
         public void LoadFile(string path)
@@ -91,7 +90,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (CodexMapControl != null)
             {
-
                 if (CodexMapView.TryFindCodexMap(Pcc, out ExportEntry export, out int _))
                 {
                     using var stream = new MemoryStream();
@@ -106,7 +104,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (QuestMapControl != null)
             {
-
                 if (QuestMapControl.TryFindQuestMap(Pcc, out ExportEntry export, out int _))
                 {
                     using var stream = new MemoryStream();
@@ -121,7 +118,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (StateEventMapControl != null)
             {
-
                 if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export))
                 {
                     using var stream = new MemoryStream();
@@ -136,7 +132,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (ConsequenceMapControl != null)
             {
-
                 if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export, "ConsequenceMap"))
                 {
                     using var stream = new MemoryStream();

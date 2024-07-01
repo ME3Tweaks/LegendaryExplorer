@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-
 namespace LegendaryExplorerCore.Gammtek
 {
 	public static class ThrowHelper

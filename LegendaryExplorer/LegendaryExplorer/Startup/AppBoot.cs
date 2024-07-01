@@ -114,7 +114,6 @@ namespace LegendaryExplorer.Startup
                 CustomFilesManagerWindow.InstallCustomStartupFiles();
             }).ContinueWithOnUIThread(x =>
             {
-
                 var mainWindow = new LEXMainWindow();
                 app.MainWindow = mainWindow;
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;

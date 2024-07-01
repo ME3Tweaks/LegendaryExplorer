@@ -377,33 +377,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
     #endregion //IsVirtualizing
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     #region NameColumnWidth
 
     public static readonly DependencyProperty NameColumnWidthProperty = DependencyProperty.Register( "NameColumnWidth", typeof( double ), typeof( PropertyGrid ), new UIPropertyMetadata( 150.0, OnNameColumnWidthChanged ) );
@@ -462,13 +435,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     }
 
     #endregion //Properties
-
-
-
-
-
-
-
 
     #region PropertyContainerStyle
 
@@ -692,17 +658,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     }
 
     #endregion //SelectedObjectName
-
-
-
-
-
-
-
-
-
-
-
 
     #region SelectedPropertyItem
 
@@ -1046,7 +1001,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       NameColumnWidth = Math.Min( Math.Max( this.ActualWidth * 0.1, NameColumnWidth + e.HorizontalChange ), this.ActualWidth * 0.9 );
     }
 
-
     private void PropertyGrid_PropertyValueChanged( object sender, PropertyValueChangedEventArgs e )
     {
       var modifiedPropertyItem = e.OriginalSource as PropertyItem;
@@ -1068,7 +1022,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
     #endregion //Event Handlers
 
     #region Commands
@@ -1086,17 +1039,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     #endregion //Commands
 
     #region Methods
-
-
-
-
-
-
-
-
-
-
-
 
     public double GetScrollPosition()
     {
@@ -1220,11 +1162,8 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
         }
       }
 
-
-
       _containerHelper = new ObjectContainerHelper( this, SelectedObject );
       ( ( ObjectContainerHelper )_containerHelper ).GenerateProperties();
-
 
       if( _containerHelper != null )
       {
@@ -1240,19 +1179,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       // will be different when the property parent is updated.
       this.Notify( this.PropertyChanged, () => this.Properties );
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void UpdateThumb()
     {
@@ -1304,9 +1230,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
         _containerHelper.UpdateValuesFromSource();
       }
     }
-
-
-
 
     #endregion //Methods
 
@@ -1371,11 +1294,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
     public event IsPropertyBrowsableHandler IsPropertyBrowsable;
 
     #endregion
-
-
-
-
-
 
     #region PreparePropertyItemEvent Attached Routed Event
 
@@ -1542,7 +1460,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       }
     }
 
-
     bool? IPropertyContainer.IsPropertyVisible( PropertyDescriptor pd )
     {
       var handler = this.IsPropertyBrowsable;
@@ -1558,11 +1475,7 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       return null;
     }
 
-
-
-
     #endregion
-
 
     #endregion
 
@@ -1678,16 +1591,5 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
   }
 
   #endregion
-
-
-
-
-
-
-
-
-
-
-
 
 }

@@ -118,7 +118,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
             dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3/LE package files", "*.pcc"));
 
-
             if (dlg.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 CommonSaveFileDialog outputDlg = new()
@@ -336,7 +335,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                 xltags.Cell(1, 2).Value = "StrRef";
                 xltags.Cell(1, 3).Value = "FriendlyName";
 
-
                 var xlanims = workbook.Worksheets.Add("Animations");
                 xlanims.Cell(1, 1).Value = "Name";
                 xlanims.Cell(1, 2).Value = "Package";
@@ -435,7 +433,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                     MessageBox.Show("Dialogue Dump was completed.", "Success", MessageBoxButton.OK);
                     CurrentOverallOperationText = "Dump completed";
                 }
-
             }
             catch
             {
@@ -515,7 +512,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                 }
                 else
                 {
-
                     string[] acceptedExtensions = { ".pcc", ".u", ".upk", ".sfm" };
                     foreach (string filename in filenames)
                     {
@@ -690,7 +686,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                         string convName = exp.ObjectName.Instanced;
                         int convIdx = exp.UIndex;
 
-
                         var convo = exp.GetProperties();
                         if (convo.Count > 0)
                         {
@@ -704,7 +699,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                                     speakers.AddRange(s_speakers.Select(s =>
                                         s.GetProp<NameProperty>("sSpeakerTag").Value.Instanced));
                                 }
-
                             }
                             else
                             {
@@ -773,7 +767,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                                     var lineStrRef = reply.GetProp<StringRefProperty>("srText").Value;
                                     if (lineStrRef > 0)
                                     {
-
                                         //Get StringRef Text
                                         string lineTLKstring = GlobalFindStrRefbyID(lineStrRef, GameBeingDumped,
                                             exp.FileRef);
@@ -812,7 +805,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                         if (className == "BioSeqAct_StartConversation" || className == "SFXSeqAct_StartConversation" ||
                             className == "SFXSeqAct_StartAmbientConv")
                         {
-
                             string convo = "not found"; //Find Conversation 
                             var oconv = exp.GetProperty<ObjectProperty>("Conv");
                             if (oconv != null)
@@ -886,7 +878,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                             //Write to Background thread 
                             var excelout = new List<string> { "ConvoOwners", convo, ownertag, fileName };
                             dumper._xlqueue.Add(excelout);
-
                         }
 
                         if (dumper.shouldDoDebugOutput)
@@ -930,7 +921,6 @@ namespace LegendaryExplorer.Tools.DialogueDumper
                             }
                             else if (className == "SFXStuntActor" || className == "SFXPointOfInterest")
                             {
-
                                 var tagprop = exp.GetProperty<NameProperty>("Tag");
                                 tag = tagprop.Value;
                                 var modules = exp.GetProperty<ArrayProperty<ObjectProperty>>("Modules").ToList();

@@ -36,7 +36,6 @@ using System.Windows.Markup;
 [assembly: AssemblyCopyright( "" )]
 [assembly: AssemblyCulture( "" )]
 
-
 // Needed to enable xbap scenarios
 [assembly: AllowPartiallyTrustedCallers]
 
@@ -45,7 +44,6 @@ using System.Windows.Markup;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
-
 
 [assembly: InternalsVisibleTo( "Xceed.Wpf.Toolkit.Themes.Office2007" + ",PublicKey=" +
     "0024000004800000940000000602000000240000525341310004000001000100d59d8147eb2015" +
@@ -68,10 +66,6 @@ using System.Windows.Markup;
     "131b925dcf84a73d22264352eca7c3fcf9387f3eee1d60ac7974f04866e6c72928dc0609abe341" +
     "f92cbfb5")]
 
-
-
-
-
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
 //inside a <PropertyGroup>.  For example, if you are using US english
@@ -80,7 +74,6 @@ using System.Windows.Markup;
 //the line below to match the UICulture setting in the project file.
 
 //[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
-
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.SourceAssembly, //where theme specific resource dictionaries are located

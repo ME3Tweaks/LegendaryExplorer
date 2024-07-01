@@ -47,7 +47,37 @@ namespace LegendaryExplorer.GameInterop
             return GetInteropTargetForGame(game)?.TryGetProcess(out meProcess) ?? false;
         }
 
-        private static bool hasRegisteredForMessages; 
+
+
+        #region For delegates for things like tools to determine which game is running
+        /// <summary>
+        /// Returns the running game
+        /// </summary>
+        /// <returns></returns>
+        public static MEGame? GetRunningMEGame(MEGame[] games = null)
+        {
+            foreach (var game in games ?? Enum.GetValues<MEGame>())
+            {
+                if (IsGameOpen(game))
+                {
+                    return game;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the running game as a string
+        /// </summary>
+        /// <returns></returns>
+        public static Func<string> GetRunningMEGameStrDelegate(MEGame[] games = null)
+        {
+            return () => GetRunningMEGame(games)?.ToString();
+        }
+        #endregion
+
+        private static bool hasRegisteredForMessages;
         public static void InitializeMessageHook(Window window)
         {
             if (hasRegisteredForMessages) return;

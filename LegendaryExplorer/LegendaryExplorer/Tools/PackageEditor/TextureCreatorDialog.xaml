@@ -1,0 +1,51 @@
+﻿<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.PackageEditor.TextureCreatorDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
+             xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             SizeToContent="Height"
+             Width="500"
+             Title="Blank Texture Generator"
+             WindowStartupLocation="CenterOwner"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <xctk:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </Window.Resources>
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Name:" Margin="0,2"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="Width:" Margin="0,2"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="Height:" Margin="0,2"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Text="Format:" Margin="0,2"/>
+        <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding IsMipped}" Content="Has mipmaps"  Margin="0,2"
+                  IsEnabled="{Binding IsUsedInSWF, Converter={StaticResource InverseBoolConverter}}"/>
+        <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding IsUsedInSWF}" Content="For SWF/GFx"  Margin="0,2"/>
+
+
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ChosenName, UpdateSourceTrigger=PropertyChanged}"  Margin="0,2"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SizeX, UpdateSourceTrigger=PropertyChanged}"  Margin="0,2"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SizeY, UpdateSourceTrigger=PropertyChanged}"  Margin="0,2"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding PixelFormats}" SelectedItem="{Binding PixelFormat}" Margin="0,2"/>
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <Button Content="Cancel" Click="Cancel_Click2" Padding="5" Margin="3,3,3,0"/>
+            <Button Content="Generate" Click="GenerateTexture_Click" Padding="5" Margin="0,3,0,0"/>
+        </StackPanel>
+    </Grid>
+</misc:NotifyPropertyChangedWindowBase>

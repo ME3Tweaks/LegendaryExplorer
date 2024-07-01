@@ -166,7 +166,6 @@ namespace LegendaryExplorerCore.Packages
         #region Names
         protected uint namesAdded;
 
-
         // Used to make name lookups quick when doing a contains operation as this method is called
         // quite often
         protected readonly CaseInsensitiveDictionary<int> nameLookupTable = new();
@@ -178,7 +177,6 @@ namespace LegendaryExplorerCore.Packages
         public bool IsName(int index) => index >= 0 && index < names.Count;
 
         public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
-
 
         public int FindNameOrAdd(string name)
         {
@@ -341,12 +339,11 @@ namespace LegendaryExplorerCore.Packages
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
 
-
             UpdateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
-        public IEntry FindEntry(string instancedname, string className = null)
+        public IEntry FindEntry(string instancedPath)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -356,18 +353,25 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
-                if (className != null && matchingEntry != null && !matchingEntry.ClassName.CaseInsensitiveEquals(className))
-                {
-                    // Possible duplicate object in package with different class was found. BioWare has a few of these
-                    return null;
-                }
+                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
             }
             // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
         }
 
-        public ImportEntry FindImport(string instancedname, string className = null)
+        public IEntry FindEntry(string instancedPath, string className)
+        {
+            IEntry matchingEntry = FindEntry(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+
+            // No matching entry.
+            return null;
+        }
+
+        public ImportEntry FindImport(string instancedname)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -387,22 +391,30 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
-                if (className != null)
-                {
-                    return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname && x.ClassName == className);
-                }
-                return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+                return Imports.FirstOrDefault(x => x.InstancedFullPath.CaseInsensitiveEquals(instancedname));
             }
 
-            if (className != null && matchingEntry != null && !matchingEntry.ClassName.CaseInsensitiveEquals(className))
-            {
-                // Possible duplicate object in package with different class was found. BioWare has a few of these
-                return null;
-            }
             return matchingEntry as ImportEntry;
         }
 
-        public ExportEntry FindExport(string instancedname, string className = null)
+        public ImportEntry FindImport(string instancedPath, string className)
+        {
+            ImportEntry matchingEntry = FindImport(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (ImportEntry entry in Imports)
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
+        public ExportEntry FindExport(string instancedname)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -422,19 +434,29 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
-                if (className != null)
-                {
-                    return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname && x.ClassName == className);
-                }
-                return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+                return Exports.FirstOrDefault(x => x.InstancedFullPath.CaseInsensitiveEquals(instancedname));
             }
-            if (className != null && matchingEntry != null && !matchingEntry.ClassName.CaseInsensitiveEquals(className))
-            {
-                // Possible duplicate object in package with different class was found. BioWare has a few of these
-                return null;
-            }
+
             return matchingEntry as ExportEntry;
         }
+
+        public ExportEntry FindExport(string instancedPath, string className)
+        {
+            ExportEntry matchingEntry = FindExport(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (ExportEntry entry in Exports)
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
 
@@ -646,7 +668,6 @@ namespace LegendaryExplorerCore.Packages
                     break;
                 }
             }
-
 
             //remove imports
             for (int i = ImportCount - 1; i >= 0; i--)

@@ -368,8 +368,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-
-
         public event EventHandler Render;
 
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)

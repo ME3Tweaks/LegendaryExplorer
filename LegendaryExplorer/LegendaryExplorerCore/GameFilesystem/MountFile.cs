@@ -75,7 +75,6 @@ namespace LegendaryExplorerCore.GameFilesystem
     //ME1_SaveFileDependency = 0x100, //not an actual value.
     //ME1_NoSaveFileDependency = 0x101 //not an actual value.
 
-
     /// <summary>
     /// Interposer for the mount flag enum types
     /// </summary>

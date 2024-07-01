@@ -10,7 +10,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
     {
         public ConversationScanner() : base()
         {
-
         }
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
@@ -45,7 +44,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     {
                         db.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                     }
-
                 }
 
                 var replyprop = e.Properties.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");

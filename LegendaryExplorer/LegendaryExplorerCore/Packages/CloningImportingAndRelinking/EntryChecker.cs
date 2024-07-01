@@ -14,7 +14,6 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
-
     public class ReferenceCheckPackage
     {
         // The list of generated warnings, errors, and blocking errors
@@ -76,7 +75,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-
         public void ClearMessages()
         {
             BlockingErrors.Clear();
@@ -90,7 +88,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// </summary>
     public class EntryChecker
     {
-
         /// <summary>
         /// Checks object and name references for invalid values and if values are of the incorrect typing. Returns localized messages, if you do not want localized messages, pass it the NonLocalizedStringConverter delegate from this class.
         /// </summary>
@@ -159,8 +156,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningLinkOutsideTables, prefix, exp.idxLink), exp);
                     }
-
-
 
                     if (exp.HasComponentMap)
                     {
@@ -275,7 +270,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
             catch (Exception)
             {
-
                 item.AddBlockingError(localizationDelegate(LECLocalizationShim.string_interp_refCheckInvalidNameValue, relativePath ?? fName, nameBeingChecked, itemBeingChecked), entry);
             }
         }
@@ -286,7 +280,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (property is UnknownProperty up)
             {
                 item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningFoundBrokenPropertyData, prefix), entry);
-
             }
             else if (property is ObjectProperty op)
             {
@@ -312,13 +305,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningReferenceNotInImportTable, prefix, op.Name.Name, op.Value), entry);
                         validRef = false;
-
                     }
                     else
                     {
                         item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_nested_warningReferenceNoInImportTable, prefix, op.Value), entry);
                         validRef = false;
-
                     }
                 }
                 else if (op.Value != 0 && entry.FileRef.GetEntry(op.Value).ClassName == "Package" &&
@@ -347,7 +338,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     if (referencedEntry.ClassName == @"Class" && op.Value > 0)
                     {
-
                         // Make sure we have info about this class.
                         var lookupEnt = referencedEntry as ExportEntry;
                         while (lookupEnt != null && lookupEnt.IsClass && !GlobalUnrealObjectInfo.GetClasses(entry.FileRef.Game).ContainsKey(lookupEnt.ObjectName))

@@ -128,6 +128,5 @@ namespace LegendaryExplorer.MainWindow
         {
             FileAssociations.AssociateOthers();
         }
-
     }
 }

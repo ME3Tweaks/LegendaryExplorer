@@ -54,7 +54,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     ModManagerIntegration.RequestASIInstallation(MEGame.LE3, ASIModIDs.LE3_SCRIPT_DEBUGGER, 3);
                     break;
             }
-
         }
 
         public static readonly string ScriptDebuggerDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"ScriptDebugger\");
@@ -88,7 +87,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             get => _inBreakState;
             set
-            { 
+            {
                 SetProperty(ref _inBreakState, value);
                 CommandManager.InvalidateRequerySuggested();
             }
@@ -154,7 +153,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             GameInstalledReq.FullfilledText = $"{game.ToGameName()} is installed";
             GameInstalledReq.UnFullfilledText = $"Can't find {game.ToGameName()} installation!";
             GameInstalledReq.ButtonText = $"Set {game} path";
-            
+
             SetScriptDBBusy("Waiting for Game Path to be set...");
             if (InteropHelper.IsGameInstalled(Game))
             {
@@ -265,7 +264,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             }
         }
 
-
         private void Resume()
         {
             if (CanResume())
@@ -313,7 +311,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 return false;
             }
-            
+
             string asiPath = GetDebuggerAsiWritePath();
             return File.Exists(asiPath);
         }
@@ -363,7 +361,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             if (_selectedScriptDatabaseEntry is not null)
             {
                 (string functionPath, string filePath, int uIndex, bool _) = _selectedScriptDatabaseEntry;
-                if (File.Exists(filePath) && scriptDatabase.GetStatements(filePath, uIndex) is {} statements)
+                if (File.Exists(filePath) && scriptDatabase.GetStatements(filePath, uIndex) is { } statements)
                 {
                     Statements.AddRange(statements);
                     foreach (CallStackEntry callStackEntry in CallStack)
@@ -395,7 +393,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 Statements.Replace(new ScriptStatement("Waiting for the function database to finish generating...", -1));
                 return;
             }
-            if (scriptDatabase?.GetFunctionLocationFromPath(_selectedCallStackEntry.FunctionPathInFile, _selectedCallStackEntry.FunctionFilePath) is (int uIndex, bool forcedExport) 
+            if (scriptDatabase?.GetFunctionLocationFromPath(_selectedCallStackEntry.FunctionPathInFile, _selectedCallStackEntry.FunctionFilePath) is (int uIndex, bool forcedExport)
                      && uIndex != 0)
             {
                 SelectedScriptDatabaseEntry = new ScriptDatabaseEntry(_selectedCallStackEntry.FunctionPathInFile, _selectedCallStackEntry.FunctionFilePath, uIndex, forcedExport);
@@ -506,6 +504,8 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             set => SetProperty(ref _cancelScriptDBBusyCommand, value);
         }
 
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2, MEGame.LE3];
+
         public void SetScriptDBBusy(string scriptDBBusyText, Action onCancel = null)
         {
             ScriptDBBusyText = scriptDBBusyText;
@@ -615,7 +615,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 SetVisualBreakPoints(bp.FullFunctionPath);
             }
         }
-
 
         private void BreakPointSearchBox_OnTextChanged(SearchBox sender, string newtext)
         {

@@ -124,7 +124,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                     return returnValue;
                 }
 
-
                 referencesFiltered.ReplaceAll(referencesFiltered.Where(x => FilterReferences(x)).ToList()); //Must use tolist or we'll get concurrent modification
                 string finalAfcPath = null;
                 var compactionResult = AFCCompactor.CompactAFC(SelectedGame, DLCInputFolder, NewAFCName, referencesFiltered, showBrokenAudio,
@@ -157,10 +156,8 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                 if (finalAfcPath != null && File.Exists(finalAfcPath))
                 {
                     LegendaryExplorerCoreUtilities.OpenAndSelectFileInExplorer(finalAfcPath);
-
                 }
                 return (compactionResult, dependencyList);
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 if (prevTask.Result.compactionResult)
@@ -177,7 +174,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                 IsBusy = false;
                 Analytics.TrackEvent("Compacted AFC");
             });
-
         }
 
         private bool CanCompactAFC()
@@ -195,7 +191,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
         public GenericCommand SelectDLCInputFolderCommand { get; set; }
         public GenericCommand CompactAFCCommand { get; set; }
         #endregion
-
 
         #region Binding Vars
         public ObservableCollectionExtended<MEGame> GameOptions { get; } = new(new[] { MEGame.ME2, MEGame.ME3, MEGame.LE2, MEGame.LE3 });
@@ -222,7 +217,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
             get => _progressValue;
             set => SetProperty(ref _progressValue, value);
         }
-
 
         private string _statusText;
         public string StatusText
@@ -283,7 +277,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
                         SelectedGame = cookedFolder.Contains("CookedPCConsole", StringComparison.OrdinalIgnoreCase) ? MEGame.ME3 : MEGame.ME2;
                     }
 
-
                     if (foldername.ToLower().StartsWith("cookedpc"))
                     {
                         foldername = Path.GetFileName(Directory.GetParent(_dlcInputFolder).FullName);
@@ -323,7 +316,6 @@ namespace LegendaryExplorer.Tools.AFCCompactorWindow
         }
 
         #endregion
-
 
         private void ScanForReferences()
         {

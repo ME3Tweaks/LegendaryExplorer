@@ -42,7 +42,6 @@ using Piccolo.Util;
 
 namespace Piccolo
 {
-
     #region Delegates
     /// <summary>
     /// A delegate that recieves low level paint invalidated events.
@@ -546,7 +545,6 @@ namespace Piccolo
             public PNodeBoundsActivity(PNode target, RectangleF dst, long duration)
                 : base(duration, PUtil.DEFAULT_ACTIVITY_STEP_RATE)
             {
-
                 this.Target = target;
                 this.dst = dst;
             }
@@ -2229,7 +2227,6 @@ namespace Piccolo
             }
         }
 
-
         /// <summary>
         /// Gets all property event handlers for this node, that are associated with the
         /// specified property key.
@@ -2720,7 +2717,6 @@ namespace Piccolo
             // 1. Only compute new bounds if invalid flags are set.
             if (FullBoundsInvalid || ChildBoundsInvalid || BoundsVolatile || ChildBoundsVolatile)
             {
-
                 // 2. If my bounds are volatile and they have not been changed then signal a change. 
                 // For most cases this will do nothing, but if a node's bounds depend on its model,
                 // then validate bounds has the responsibility of making the bounds match the model's

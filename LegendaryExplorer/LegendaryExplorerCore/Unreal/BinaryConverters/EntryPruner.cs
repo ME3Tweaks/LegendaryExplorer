@@ -425,10 +425,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                     // sp.Properties.RemoveNamedProperty("ForcedFireLinks"); // Not sure what this is. // Transient so it's not serialized
 
-
                     var newExposedCoverPackedProperties = new ArrayProperty<IntProperty>("ExposedCoverPackedProperties");
                     var newDangerCoverPackedProperties = new ArrayProperty<IntProperty>("CoverTurnTargetPackedProperties");
-
 
                     sp.Properties.Insert(1, newFireLinks);
 
@@ -439,14 +437,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     newStruct.Properties.Insert(12, new IntProperty(0, "TurnTargetPackedProperties"));  // We will not have anything to populate this with.
                     newStruct.Properties.Insert(13, new IntProperty(0, "CoverTurnTargetPackedProperties")); // We will not have anything to populate this with.
 
-
                     newStruct.Properties.Insert(28, new BoolProperty(false, "bCanCoverTurn_Left")); // Index needs validated
                     newStruct.Properties.Insert(29, new BoolProperty(false, "bCanCoverTurn_Right"));
 
                     newStruct.Properties.Insert(36, new BoolProperty(false, "bAllowCoverTurn"));
                     newStruct.Properties.Insert(39, new BoolProperty(false, "bUnSafeCover"));
-
-
 
                     newProp.Add(newStruct);
                 }

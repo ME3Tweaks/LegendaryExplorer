@@ -51,7 +51,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         private static readonly ImageSource image = EFontAwesomeIcon.Solid_Table.CreateImageSource(Brushes.Black, 0.1);
         public ImageSource Image => image;
 
-
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, Text);

@@ -198,12 +198,10 @@ namespace LegendaryExplorer.DialogueEditor
                 foreach (var e in edges)
                 {
                     g.edgeLayer.RemoveChild(e);
-
                 }
                 outLink.Edges.Clear();
             }
         }
-
 
         protected float GetTitleBox(string s, float w)
         {
@@ -264,7 +262,6 @@ namespace LegendaryExplorer.DialogueEditor
                     Pickable = false
                 };
             }
-
 
             DText nodeID = new DText(n, titleColor) //Add node count to left side
             {
@@ -496,14 +493,11 @@ namespace LegendaryExplorer.DialogueEditor
 
         public void OnMouseEnter(object sender, PInputEventArgs e)
         {
-
         }
 
         public void OnMouseLeave(object sender, PInputEventArgs e)
         {
-
         }
-
 
     }
 
@@ -562,7 +556,6 @@ namespace LegendaryExplorer.DialogueEditor
 
         public override void Layout(float x, float y)
         {
-
             if (NodeUID < 1000)
             {
                 outlinePen = new Pen(entryPenColor);
@@ -740,7 +733,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         public void RefreshInputLinks()
         {
-
             if (InputEdges.Any() && InLinks != null)
             {
                 foreach (DiagEdEdge edge in InputEdges)
@@ -756,7 +748,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         public override void CreateOutlink(PNode n1, PNode n2)
         {
-
         }
 
         public class InputDragHandler : PDragEventHandler
@@ -820,7 +811,6 @@ namespace LegendaryExplorer.DialogueEditor
             originalY = y;
             listname = $"E{NodeID} {node.Line}";
 
-
             GetOutputLinks(Node);
         }
 
@@ -849,7 +839,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         public override void GetOutputLinks(DialogueNodeExtended node)
         {
-
             if (node != null)
             {
                 Links.Clear();
@@ -894,7 +883,6 @@ namespace LegendaryExplorer.DialogueEditor
                     int n = 0;
                     foreach (var reply in Links)
                     {
-
                         OutputLink l = new OutputLink
                         {
                             Links = new List<int>(),
@@ -979,7 +967,6 @@ namespace LegendaryExplorer.DialogueEditor
             var newReplyListProp = new ArrayProperty<StructProperty>("ReplyListNew");
             var oldReplyListProp = start.NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
 
-
             if (oldReplyListProp != null && oldReplyListProp.Count > 0)
             {
                 foreach (var rprop in oldReplyListProp)
@@ -998,7 +985,6 @@ namespace LegendaryExplorer.DialogueEditor
 
             Node.NodeProp.Properties.AddOrReplaceProp(newReplyListProp);
             Editor.PushLocalGraphChanges(this);
-
         }
         public override void RemoveOutlink(int linkconnection, int linkIndex)
         {
@@ -1012,11 +998,9 @@ namespace LegendaryExplorer.DialogueEditor
 
     public sealed class DiagNodeReply : DiagNode
     {
-
         public DiagNodeReply(DialogueEditorWindow editor, DialogueNodeExtended node, float x, float y, ConvGraphEditor ConvGraphEditor)
             : base(editor, node, x, y, ConvGraphEditor)
         {
-
             Editor = editor;
             Node = node;
             NodeProp = node.NodeProp;
@@ -1122,7 +1106,6 @@ namespace LegendaryExplorer.DialogueEditor
         }
         public override void CreateOutlink(PNode n1, PNode n2)
         {
-
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
             DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
             if (end.GetType() != typeof(DiagNodeEntry))
@@ -1155,12 +1138,10 @@ namespace LegendaryExplorer.DialogueEditor
             oldEntriesProp.RemoveAt(linkconnection);
             NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
             Editor.PushLocalGraphChanges(this);
-
         }
     }
     public class DText : PText
     {
-
         private readonly Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
 
