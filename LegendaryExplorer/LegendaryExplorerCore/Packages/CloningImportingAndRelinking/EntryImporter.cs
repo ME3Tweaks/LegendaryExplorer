@@ -564,17 +564,28 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             // Try convert to import
 
                             var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
-                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath);
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath, testImport.ClassName);
                             if (existingImport != null)
                             {
                                 // Do not add a duplicate. Use the existing import
                                 classValue = existingImport;
                             }
-                            if (classValue == null && EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+
+                            if (classValue == null)
                             {
-                                destPackage.AddImport(testImport);
-                                classValue = testImport;
-                                // Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                existingImport = destPackage.FindImport(testImport.InstancedFullPath, testImport.ClassName);
+                                if (existingImport != null)
+                                {
+                                    // Do not add a duplicate. Use the existing import
+                                    classValue = existingImport; // we don't break here so if any further logic is added it executes
+                                }
+
+                                if (classValue == null && EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+                                {
+                                    destPackage.AddImport(testImport);
+                                    classValue = testImport;
+                                    // Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                }
                             }
                         }
 
@@ -774,7 +785,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //int start = incomingExport.GetPropertyStart();
                 // 06/08/2024 - When copying data over we should keep the pre-props binary instead of just writing zeros
-                res.Writer.Write(incomingExport.DataReadOnly.Slice(0,incomingExport.GetPropertyStart()));
+                res.Writer.Write(incomingExport.DataReadOnly.Slice(0, incomingExport.GetPropertyStart()));
                 //res.Writer.Write(new byte[start], 0, start);
             }
 
@@ -1042,7 +1053,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (matchingSourceExport.Class != null)
                 {
                     pf = matchingSourceExport.Class.GetRootName(); // This is correct 'most' times but not always
-                    // Try to determine what file the class is defined out of
+                                                                   // Try to determine what file the class is defined out of
                     if (pf != "Engine" && pf != "Core" && pf != "SFXGame" && pf != "BIOC_Base")
                     {
                         Debug.WriteLine($@"Converting export to import in global file, unknown base class root {pf} for {matchingSourceExport.InstancedFullPath}. We are going to convert it to 'Core'");
