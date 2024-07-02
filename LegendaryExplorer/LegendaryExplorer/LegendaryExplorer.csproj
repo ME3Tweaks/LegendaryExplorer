@@ -148,6 +148,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='WinDebug'">
+		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="MainWindow\SettingsWindow.tt">
