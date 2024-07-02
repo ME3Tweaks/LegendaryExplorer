@@ -17,8 +17,7 @@ namespace LegendaryExplorerCore.Unreal
     public static class UDKUnrealObjectInfo
     {
         public static readonly GameObjectInfo ObjectInfo = new UDKObjectInfo();
-
-
+        
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimComponent", "AimTransform", "AimOffsetProfile", "FontCharacter",

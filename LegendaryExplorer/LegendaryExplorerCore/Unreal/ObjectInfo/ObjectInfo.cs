@@ -177,7 +177,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
     public class ME2ObjectInfo : GameObjectInfo
     {
-        public override MEGame Game => MEGame.LE2;
+        public override MEGame Game => MEGame.ME2;
 
         protected override void AddCustomAndNativeClasses()
         {
@@ -252,7 +252,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             _sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
 
-            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.ME2);
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
 
             _classes["LightMapTexture2D"] = new ClassInfo
             {
@@ -603,7 +603,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             //Native Classes: these classes are defined in C++ only
 
-            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.ME3);
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
 
             _classes["LightMapTexture2D"] = new ClassInfo
             {
@@ -1310,7 +1310,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             #endregion
 
-            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.LE1);
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
 
             // Native classes 
             _classes["LightMapTexture2D"] = new ClassInfo
@@ -1383,7 +1383,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             _sequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
 
-            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.LE2);
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
             _classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
@@ -1848,7 +1848,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 inputLinks = new List<string> { "Send Mail", "Open UI" }
             };
 
-            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.LE3);
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
 
             _classes["LightMapTexture2D"] = new ClassInfo
             {
@@ -1926,7 +1926,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public UDKObjectInfo() : base() { }
         protected override void AddCustomAndNativeClasses()
         {
-            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.UDK);
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, Game);
 
             _classes["LightMapTexture2D"] = new ClassInfo
             {
