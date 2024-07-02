@@ -1,6 +1,4 @@
-﻿using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Utilities;
+﻿using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree

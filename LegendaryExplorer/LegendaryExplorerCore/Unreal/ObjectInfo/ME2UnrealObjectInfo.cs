@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -17,48 +15,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class ME2UnrealObjectInfo
     {
-        internal static Dictionary<string, ClassInfo> Classes = new();
-        internal static Dictionary<string, ClassInfo> Structs = new();
-        internal static Dictionary<string, List<NameReference>> Enums = new();
-        internal static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
-
-        public static bool IsLoaded;
-        public static void loadfromJSON(string jsonTextOverride = null)
-        {
-            if (!IsLoaded)
-            {
-                LECLog.Information(@"Loading property db for ME2");
-                try
-                {
-                    var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.ME2);
-                    if (infoText != null)
-                    {
-                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
-                        SequenceObjects = blob.SequenceObjects;
-                        Classes = blob.Classes;
-                        Structs = blob.Structs;
-                        Enums = blob.Enums;
-
-                        AddCustomAndNativeClasses(Classes, SequenceObjects);
-
-                        foreach ((string className, ClassInfo classInfo) in Classes)
-                        {
-                            classInfo.ClassName = className;
-                        }
-                        foreach ((string className, ClassInfo classInfo) in Structs)
-                        {
-                            classInfo.ClassName = className;
-                        }
-                        IsLoaded = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LECLog.Information($@"Property database load failed for ME2: {ex.Message}");
-                    return;
-                }
-            }
-        }
+        public static readonly GameObjectInfo ObjectInfo = new ME2ObjectInfo();
 
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
@@ -66,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 className = className.Substring(9);
             }
-            Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
+            Dictionary<string, ClassInfo> temp = inStruct ? ObjectInfo.Structs : ObjectInfo.Classes;
             bool infoExists = temp.TryGetValue(className, out ClassInfo info);
             if (!infoExists && nonVanillaClassInfo != null)
             {
@@ -83,7 +40,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (!infoExists && !inStruct && containingExport != null && containingExport.IsDefaultObject && containingExport.Class is ExportEntry classExp)
             {
                 info = generateClassInfo(classExp, false);
-                Classes[containingExport.ClassName] = info;
+                ObjectInfo.Classes[containingExport.ClassName] = info;
                 infoExists = true;
             }
 
@@ -144,29 +101,16 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return ImmutableStructs.Contains(structName);
         }
 
-        /// <summary>
-        /// Ensures the object info is loaded
-        /// </summary>
-        internal static void EnsureLoaded()
-        {
-            if (!IsLoaded)
-            {
-                loadfromJSON();
-            }
-        }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new();
-        
+
         #region Generating
         //call this method to regenerate ME2ObjectInfo.json
         //Takes a long time (10 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int, int> progressDelegate = null)
         {
             MemoryManager.SetUsePooledMemory(usePooledMemory);
-            Enums.Clear();
-            Structs.Clear();
-            Classes.Clear();
-            SequenceObjects.Clear();
+            ObjectInfo.Reset();
 
             var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.ME2).Where(x => Path.GetExtension(x) == ".pcc").ToList();
             int totalFiles = allFiles.Count * 2;
@@ -182,22 +126,22 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     string className = exportEntry.ClassName;
                     if (className == "Enum")
                     {
-                        generateEnumValues(exportEntry, Enums);
+                        generateEnumValues(exportEntry, ObjectInfo.Enums);
                     }
                     else if (className == "Class")
                     {
                         string objectName = exportEntry.ObjectName;
-                        if (!Classes.ContainsKey(objectName))
+                        if (!ObjectInfo.Classes.ContainsKey(objectName))
                         {
-                            Classes.Add(objectName, generateClassInfo(exportEntry));
+                            ObjectInfo.Classes.Add(objectName, generateClassInfo(exportEntry));
                         }
                     }
                     else if (className == "ScriptStruct")
                     {
                         string objectName = exportEntry.ObjectName;
-                        if (!Structs.ContainsKey(objectName))
+                        if (!ObjectInfo.Structs.ContainsKey(objectName))
                         {
-                            Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                            ObjectInfo.Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                         }
                     }
                 }
@@ -206,14 +150,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
 
             //native classes not defined in data files
-            Classes["LightMapTexture2D"] = new ClassInfo
+            ObjectInfo.Classes["LightMapTexture2D"] = new ClassInfo
             {
                 baseClass = "Texture2D",
                 exportIndex = 0,
                 pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
             };
 
-            Classes["StaticMesh"] = new ClassInfo
+            ObjectInfo.Classes["StaticMesh"] = new ClassInfo
             {
                 baseClass = "Object",
                 exportIndex = 0,
@@ -232,14 +176,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
 
             //SFXPhysicalMaterialDecals missing items
-            ClassInfo sfxpmd = Classes["SFXPhysicalMaterialDecals"];
+            ClassInfo sfxpmd = ObjectInfo.Classes["SFXPhysicalMaterialDecals"];
             string[] decalComponentArrays = { "HeavyPistol", "AutoPistol", "HandCannon", "SMG", "Shotgun", "HeavyShotgun", "FlakGun", "AssaultRifle", "Needler", "Machinegun", "SniperRifle", "AntiMatRifle", "MassCannon", "ParticleBeam" };
             foreach (string decal in decalComponentArrays)
             {
                 sfxpmd.properties.Add(decal, new PropertyInfo(PropertyType.ArrayProperty, "DecalComponent"));
             }
 
-            Classes["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
+            ObjectInfo.Classes["SFXWeapon"].properties.Add("InstantHitDamageTypes", new PropertyInfo(PropertyType.ArrayProperty, "Class"));
 
             foreach (string filePath in allFiles)
             {
@@ -251,10 +195,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     if (exportEntry.IsA("SequenceObject"))
                     {
                         string className = exportEntry.ClassName;
-                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        if (!ObjectInfo.SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                         {
                             seqObjInfo = new SequenceObjectInfo();
-                            SequenceObjects.Add(className, seqObjInfo);
+                            ObjectInfo.SequenceObjects.Add(className, seqObjInfo);
                         }
 
                         int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
@@ -268,108 +212,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 progressDelegate?.Invoke(numDone, totalFiles);
             }
 
-            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented);
+            var jsonText = JsonConvert.SerializeObject(new { ObjectInfo.SequenceObjects, ObjectInfo.Classes, ObjectInfo.Structs, ObjectInfo.Enums }, Formatting.Indented);
             File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
-            Enums.Clear();
-            Structs.Clear();
-            Classes.Clear();
-            SequenceObjects.Clear();
-            loadfromJSON(jsonText);
+            ObjectInfo.Reset();
+            ObjectInfo.LoadData(jsonText);
         }
 
-        private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
-        {
-            //CUSTOM ADDITIONS
-            classes["SeqAct_SendMessageToME3Explorer"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 2,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_SendMessageToME3Explorer"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
 
-            classes["SeqAct_ME3ExpDumpActors"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 4,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_ME3ExpDumpActors"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_ME3ExpAcessDumpedActorsList"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 6,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_ME3ExpAcessDumpedActorsList"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_ME3ExpGetPlayerCamPOV"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 8,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
-            sequenceObjects["SeqAct_ME3ExpGetPlayerCamPOV"] = new SequenceObjectInfo { ObjInstanceVersion = 2 };
-
-            classes["SeqAct_GetLocationAndRotation"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 10,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<NameReference, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector"))
-                }
-            };
-            sequenceObjects["SeqAct_GetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
-
-            classes["SeqAct_SetLocationAndRotation"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                exportIndex = 16,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("bSetRotation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bSetLocation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_oTarget", new PropertyInfo(PropertyType.ObjectProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("Location", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                    new KeyValuePair<NameReference, PropertyInfo>("RotationVector", new PropertyInfo(PropertyType.StructProperty, "Vector")),
-                }
-            };
-            sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
-
-            ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.ME2);
-
-            classes["LightMapTexture2D"] = new ClassInfo
-            {
-                baseClass = "Texture2D",
-                pccPath = @"CookedPC\Engine.pcc"
-            };
-
-            classes["StaticMesh"] = new ClassInfo
-            {
-                baseClass = "Object",
-                pccPath = @"CookedPC\Engine.pcc",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
-                    new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
-                }
-            };
-        }
 
         public static ClassInfo generateClassInfo(ExportEntry export, bool isStruct = false)
         {
@@ -383,7 +233,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (!isStruct)
             {
                 var classBinary = ObjectBinary.From<UClass>(export);
-                info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
+                info.isAbstract = LegendaryExplorerCore.Helpers.Enums.Has(classBinary.ClassFlags, UnrealFlags.EClassFlags.Abstract);
             }
 
             if (pcc.FilePath != null)
@@ -421,7 +271,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
-            var enumTable = NewEnums ?? Enums;
+            var enumTable = NewEnums ?? ObjectInfo.Enums;
             string enumName = export.ObjectName.Instanced;
             if (!enumTable.ContainsKey(enumName))
             {
@@ -540,7 +390,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// </summary>
         public static readonly string[] NativeClasses =
         {
-            
+
         };
     }
 }

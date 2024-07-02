@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
 using System.Numerics;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;

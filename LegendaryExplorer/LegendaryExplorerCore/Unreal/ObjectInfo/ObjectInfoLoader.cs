@@ -1,10 +1,7 @@
-﻿using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Packages;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {

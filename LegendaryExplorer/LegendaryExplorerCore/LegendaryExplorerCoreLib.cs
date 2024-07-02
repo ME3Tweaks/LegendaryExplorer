@@ -1,7 +1,6 @@
 ﻿using LegendaryExplorerCore.Packages;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
@@ -10,7 +9,6 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Serilog;
-using Serilog.Core;
 
 namespace LegendaryExplorerCore
 {
@@ -94,13 +92,13 @@ namespace LegendaryExplorerCore
             {
                 (MEGame, Action<string>)[] gameToLoaderMap =
                 [
-                    (MEGame.ME1, ME1UnrealObjectInfo.loadfromJSON),
-                    (MEGame.ME2, ME2UnrealObjectInfo.loadfromJSON),
-                    (MEGame.ME3, ME3UnrealObjectInfo.loadfromJSON),
-                    (MEGame.LE1, LE1UnrealObjectInfo.loadfromJSON),
-                    (MEGame.LE2, LE2UnrealObjectInfo.loadfromJSON),
-                    (MEGame.LE3, LE3UnrealObjectInfo.loadfromJSON),
-                    (MEGame.UDK, UDKUnrealObjectInfo.loadfromJSON)
+                    (MEGame.ME1, ME1UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.ME2, ME2UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.ME3, ME3UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LE1, LE1UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LE2, LE2UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LE3, LE3UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.UDK, UDKUnrealObjectInfo.ObjectInfo.LoadData)
                 ];
                 var jsonLoaders = new List<Action<string>>(gameToLoaderMap.Length);
                 foreach ((MEGame game, Action<string> loader) in gameToLoaderMap)

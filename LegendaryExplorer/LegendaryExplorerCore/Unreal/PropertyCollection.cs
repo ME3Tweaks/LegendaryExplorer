@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -344,19 +343,22 @@ namespace LegendaryExplorerCore.Unreal
                 bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
 
                 MEGame structValueLookupGame = pcc.Game;
+                
+                // This should be done already...
+                //GlobalUnrealObjectInfo.EnsureLoaded(pcc.Game);
                 switch (pcc.Game)
                 {
-                    case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME1 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME2 when parsingEntry != null && parsingEntry.FileRef.Platform == MEPackage.GamePlatform.PS3 && ME3UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                         structValueLookupGame = MEGame.ME3;
                         break;
-                    case MEGame.ME3 when ME3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.UDK when UDKUnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.ME2 when ME2UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.ME1 when ME1UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.LE3 when LE3UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.LE2 when LE2UnrealObjectInfo.Structs.ContainsKey(structType):
-                    case MEGame.LE1 when LE1UnrealObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME3 when ME3UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.UDK when UDKUnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME2 when ME2UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.ME1 when ME1UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE3 when LE3UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE2 when LE2UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LE1 when LE1UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                         break;
                     default:
                         Debug.WriteLine("Unknown struct type: " + structType);

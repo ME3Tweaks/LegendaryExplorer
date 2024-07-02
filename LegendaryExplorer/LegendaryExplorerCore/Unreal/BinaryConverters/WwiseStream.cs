@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
