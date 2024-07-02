@@ -4,6 +4,7 @@ using LegendaryExplorerCore.Packages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
@@ -15,8 +16,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public abstract MEGame Game { get; }
         public bool IsLoaded { get; private set; }
 
+        [JsonProperty("Classes")]
         protected CaseInsensitiveDictionary<ClassInfo> _classes;
-
+        [JsonIgnore]
         public CaseInsensitiveDictionary<ClassInfo> Classes
         {
             get
@@ -27,8 +29,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
+        [JsonProperty("Structs")]
         protected CaseInsensitiveDictionary<ClassInfo> _structs;
-
+        [JsonIgnore]
         public CaseInsensitiveDictionary<ClassInfo> Structs
         {
             get
@@ -39,8 +42,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
+        [JsonProperty("Enums")]
         protected CaseInsensitiveDictionary<List<NameReference>> _enums;
-
+        [JsonIgnore]
         public CaseInsensitiveDictionary<List<NameReference>> Enums
         {
             get
@@ -51,8 +55,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
+        [JsonProperty("SequenceObjects")]
         protected CaseInsensitiveDictionary<SequenceObjectInfo> _sequenceObjects;
-
+        [JsonIgnore]
         public CaseInsensitiveDictionary<SequenceObjectInfo> SequenceObjects
         {
             get
@@ -61,6 +66,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     LoadData();
                 return _sequenceObjects;
             }
+        }
+
+        protected GameObjectInfo()
+        {
+            _classes = new CaseInsensitiveDictionary<ClassInfo>();
+            _enums = new CaseInsensitiveDictionary<List<NameReference>>();
+            _structs = new CaseInsensitiveDictionary<ClassInfo>();
+            _sequenceObjects = new CaseInsensitiveDictionary<SequenceObjectInfo>();
         }
 
         public void LoadData(string jsonTextOverride = null)
@@ -73,20 +86,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(Game);
                     if (infoText != null)
                     {
-                        var blob = JsonConvert.DeserializeAnonymousType(infoText,
-                            new { SequenceObjects, Classes, Structs, Enums });
-                        _sequenceObjects = blob.SequenceObjects;
-                        _classes = blob.Classes;
-                        _structs = blob.Structs;
-                        _enums = blob.Enums;
+                        // Yes, it's ME1ObjectInfo. It is not abstract.
+                        var blob = JsonConvert.DeserializeObject<ME1ObjectInfo>(infoText);
+                        _sequenceObjects = blob._sequenceObjects;
+                        _classes = blob._classes;
+                        _structs = blob._structs;
+                        _enums = blob._enums;
 
                         AddCustomAndNativeClasses();
-                        foreach ((string className, ClassInfo classInfo) in Classes)
+                        foreach ((string className, ClassInfo classInfo) in _classes)
                         {
                             classInfo.ClassName = className;
                         }
 
-                        foreach ((string className, ClassInfo classInfo) in Structs)
+                        foreach ((string className, ClassInfo classInfo) in _structs)
                         {
                             classInfo.ClassName = className;
                         }
@@ -1402,6 +1415,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
     public class LE3ObjectInfo : GameObjectInfo
     {
         public override MEGame Game => MEGame.LE3;
+
         protected override void AddCustomAndNativeClasses()
         {
             //Custom additions
@@ -1430,7 +1444,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 93, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("CasualAppearanceID", new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("CasualAppearanceID",
+                        new PropertyInfo(PropertyType.IntProperty)),
                 }
             };
             _sequenceObjects["SFXSeqAct_OverrideCasualAppearance"] = new SequenceObjectInfo
@@ -1446,15 +1461,24 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 66, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
                 }
             };
             _sequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
@@ -1466,15 +1490,24 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 42, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials",
+                        new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
                 }
             };
             _sequenceObjects["SFXSeqAct_SetStuntMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
@@ -1519,8 +1552,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 22, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets",
+                        new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_pDefaultFaceFXAsset",
+                        new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
                 }
             };
             _sequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
@@ -1533,13 +1568,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 32, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bAutoLookAtPlayer", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NoticeEnableDistance", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDisableDistance", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMinTime", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMaxTime", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDuration", new PropertyInfo(PropertyType.FloatProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets",
+                        new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bAutoLookAtPlayer",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NoticeEnableDistance",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDisableDistance",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMinTime",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMaxTime",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDuration",
+                        new PropertyInfo(PropertyType.FloatProperty))
                 }
             };
             _sequenceObjects["SFXSeqAct_SetAutoLookAtPlayer"] = new SequenceObjectInfo
@@ -1555,7 +1597,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 101, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("PlayerObject", new PropertyInfo(PropertyType.ObjectProperty, "Player"))
+                    new KeyValuePair<NameReference, PropertyInfo>("PlayerObject",
+                        new PropertyInfo(PropertyType.ObjectProperty, "Player"))
                 }
             };
             _sequenceObjects["SFXSeqAct_GetControllerType"] = new SequenceObjectInfo
@@ -1571,9 +1614,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 exportIndex = 108, //in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("CategoryId", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewTitleRef", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewDescriptionRef", new PropertyInfo(PropertyType.StringRefProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("CategoryId",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewTitleRef",
+                        new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("NewDescriptionRef",
+                        new PropertyInfo(PropertyType.StringRefProperty))
                 }
             };
             _sequenceObjects["SFXSeqAct_SetGAWCategoryTitles"] = new SequenceObjectInfo
@@ -1589,10 +1635,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 //exportIndex = 0, not in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("ExitRequestPin", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_TerminalGUIResouce", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo" )),
-                    new KeyValuePair<NameReference, PropertyInfo>("TerminalDataClass", new PropertyInfo(PropertyType.ObjectProperty, "Class" )),
-                    new KeyValuePair<NameReference, PropertyInfo>("TerminalName", new PropertyInfo(PropertyType.NameProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("ExitRequestPin",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_TerminalGUIResouce",
+                        new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo")),
+                    new KeyValuePair<NameReference, PropertyInfo>("TerminalDataClass",
+                        new PropertyInfo(PropertyType.ObjectProperty, "Class")),
+                    new KeyValuePair<NameReference, PropertyInfo>("TerminalName",
+                        new PropertyInfo(PropertyType.NameProperty))
                 }
             };
 
@@ -1604,8 +1654,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 //exportIndex = 0, not in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo" ))
+                    new KeyValuePair<NameReference, PropertyInfo>("bFromMainMenu",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_oGuiReferenced",
+                        new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
                 }
             };
 
@@ -1617,15 +1669,24 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 //exportIndex = 0, not in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoGalaxyObjects", new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fFuelEfficiency", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fFuelTank", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterSpeed", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fSystemSpeed", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fAcceleration", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fDeceleration ", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterAcceleration", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterDeceleration", new PropertyInfo(PropertyType.FloatProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_aoGalaxyObjects",
+                        new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fFuelEfficiency",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fFuelTank",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterSpeed",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fSystemSpeed",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fAcceleration",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fDeceleration ",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterAcceleration",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterDeceleration",
+                        new PropertyInfo(PropertyType.FloatProperty))
                 }
             };
             _sequenceObjects["SFXSeqAct_SetGalaxyMapOptions"] = new SequenceObjectInfo
@@ -1641,11 +1702,16 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 //exportIndex = 0, not in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoGalaxyObjects", new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
-                    new KeyValuePair<NameReference, PropertyInfo>("ScanParticleSystemRadius", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("MaxSpeed", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("Acceleration", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fScanDetectionRange", new PropertyInfo(PropertyType.FloatProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_aoGalaxyObjects",
+                        new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ScanParticleSystemRadius",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("MaxSpeed",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("Acceleration",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_fScanDetectionRange",
+                        new PropertyInfo(PropertyType.FloatProperty))
                 }
             };
             _sequenceObjects["SFXSeqAct_SetReaperAggression"] = new SequenceObjectInfo
@@ -1659,7 +1725,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 //exportIndex = 0, not in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("WeaponClassName", new PropertyInfo(PropertyType.NameProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("WeaponClassName",
+                        new PropertyInfo(PropertyType.NameProperty))
                 }
             };
             _sequenceObjects["SFXSeqAct_AwardWeaponByName"] = new SequenceObjectInfo
@@ -1673,7 +1740,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXCluster",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("DisplayGAWCondition", new PropertyInfo(PropertyType.IntProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("DisplayGAWCondition",
+                        new PropertyInfo(PropertyType.IntProperty))
                 }
             };
             _classes["SFXSystemEGM"] = new ClassInfo
@@ -1681,9 +1749,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXSystem",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseWwisePair", new PropertyInfo(PropertyType.StructProperty, "WwiseAudioPair")),
-                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseStopEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent"))
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseWwisePair",
+                        new PropertyInfo(PropertyType.StructProperty, "WwiseAudioPair")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseStopEvent",
+                        new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent"))
                 }
             };
             _classes["SFXPlanet_Invaded"] = new ClassInfo
@@ -1691,11 +1762,16 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "BioPlanet",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("InvasionCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("PlanetPreviewCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("PreInvasionDescription", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bNoPlanetScan", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("InvasionCondition",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("PlanetPreviewCondition",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("PreInvasionDescription",
+                        new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bNoPlanetScan",
+                        new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
             _classes["SFXGalaxyMapShipAppearance"] = new ClassInfo
@@ -1703,8 +1779,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXGalaxyMapPlanetAppearance",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("AmbientColor", new PropertyInfo(PropertyType.StructProperty, "LinearColor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bNeedsLightEnvironment", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("AmbientColor",
+                        new PropertyInfo(PropertyType.StructProperty, "LinearColor")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bNeedsLightEnvironment",
+                        new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
             _classes["SFXGalaxyMapFuelDepotDestroyable"] = new ClassInfo
@@ -1712,13 +1790,20 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXGalaxyMapDestroyedFuelDepot",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("DestructionCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("HideFuelSettingCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyAppearance", new PropertyInfo(PropertyType.ObjectProperty, "SFXGalaxyMapObjectAppearanceBase")),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDisplayName", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDescription", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyTexture", new PropertyInfo(PropertyType.ObjectProperty, "Texture2D")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bEmptyDepot", new PropertyInfo(PropertyType.BoolProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("DestructionCondition",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("HideFuelSettingCondition",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyAppearance",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SFXGalaxyMapObjectAppearanceBase")),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDisplayName",
+                        new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDescription",
+                        new PropertyInfo(PropertyType.StringRefProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("EmptyTexture",
+                        new PropertyInfo(PropertyType.ObjectProperty, "Texture2D")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bEmptyDepot",
+                        new PropertyInfo(PropertyType.BoolProperty))
                 }
             };
             _classes["SFXGalaxyMapReaperEGM"] = new ClassInfo
@@ -1726,7 +1811,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXGalaxyMapReaper",
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("EGMSettingCondition", new PropertyInfo(PropertyType.IntProperty))
+                    new KeyValuePair<NameReference, PropertyInfo>("EGMSettingCondition",
+                        new PropertyInfo(PropertyType.IntProperty))
                 }
             };
             _classes["SFXGalaxyMapCerberusShip"] = new ClassInfo
@@ -1734,7 +1820,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "SFXGalaxyMapReaperEGM",
                 properties =
                 {
-                   new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
+                    new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance",
+                        new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
                 }
             };
             //Kinkojiro - New Class - not in resources as has Mail gui. Let me know if anyone wants.
@@ -1745,10 +1832,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 //exportIndex = 0, not in LE3Resources.pcc
                 properties =
                 {
-                    new KeyValuePair<NameReference, PropertyInfo>("Honorifics", new PropertyInfo(PropertyType.ArrayProperty, "StrProperty")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bSortMail", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_MailGUIResource", new PropertyInfo(PropertyType.ObjectProperty, "GFXMovieInfo")),
-                    new KeyValuePair<NameReference, PropertyInfo>("MailDataClass", new PropertyInfo(PropertyType.ObjectProperty, "SFXGUIData_Mail")),
+                    new KeyValuePair<NameReference, PropertyInfo>("Honorifics",
+                        new PropertyInfo(PropertyType.ArrayProperty, "StrProperty")),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_bSortMail",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("m_MailGUIResource",
+                        new PropertyInfo(PropertyType.ObjectProperty, "GFXMovieInfo")),
+                    new KeyValuePair<NameReference, PropertyInfo>("MailDataClass",
+                        new PropertyInfo(PropertyType.ObjectProperty, "SFXGUIData_Mail")),
                 }
             };
             _sequenceObjects["SFXSeqAct_MailGUI_Sorted"] = new SequenceObjectInfo
@@ -1758,6 +1849,84 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
 
             GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.LE3);
+
+            _classes["LightMapTexture2D"] = new ClassInfo
+            {
+                baseClass = "Texture2D",
+                pccPath = @"CookedPCConsole\Engine.pcc"
+            };
+
+            _classes["StaticMesh"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = @"CookedPCConsole\Engine.pcc",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup",
+                        new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution",
+                        new PropertyInfo(PropertyType.IntProperty)),
+                }
+            };
+
+            _classes["FracturedStaticMesh"] = new ClassInfo
+            {
+                baseClass = "StaticMesh",
+                pccPath = @"CookedPCConsole\Engine.pcc",
+                properties =
+                {
+                    new KeyValuePair<NameReference, PropertyInfo>("LoseChunkOutsideMaterial",
+                        new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("bSpawnPhysicsChunks",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bCompositeChunksExplodeOnImpact",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ExplosionVelScale",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMinHealth",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("FragmentDestroyEffects",
+                        new PropertyInfo(PropertyType.ArrayProperty, "ParticleSystem")),
+                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMaxHealth",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("bAlwaysBreakOffIsolatedIslands",
+                        new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("DynamicOutsideMaterial",
+                        new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
+                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinVel",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ChunkAngVel",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinHorizontalScale",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                }
+            };
+        }
+    }
+
+    public class UDKObjectInfo : GameObjectInfo
+    {
+        public override MEGame Game => MEGame.UDK;
+        public UDKObjectInfo() : base() { }
+        protected override void AddCustomAndNativeClasses()
+        {
+            GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.UDK);
 
             _classes["LightMapTexture2D"] = new ClassInfo
             {
@@ -1804,61 +1973,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<NameReference, PropertyInfo>("ChunkLinHorizontalScale", new PropertyInfo(PropertyType.FloatProperty)),
                 }
             };
-        }
-
-        public class UDKObjectInfo : GameObjectInfo
-        {
-            public override MEGame Game => MEGame.UDK;
-            protected override void AddCustomAndNativeClasses()
-            {
-                GlobalUnrealObjectInfo.AddIntrinsicClasses(_classes, MEGame.UDK);
-
-                 _classes["LightMapTexture2D"] = new ClassInfo
-                {
-                    baseClass = "Texture2D",
-                    pccPath = @"CookedPCConsole\Engine.pcc"
-                };
-
-                 _classes["StaticMesh"] = new ClassInfo
-                {
-                    baseClass = "Object",
-                    pccPath = @"CookedPCConsole\Engine.pcc",
-                    properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
-                    new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
-                }
-                };
-
-                 _classes["FracturedStaticMesh"] = new ClassInfo
-                {
-                    baseClass = "StaticMesh",
-                    pccPath = @"CookedPCConsole\Engine.pcc",
-                    properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("LoseChunkOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bSpawnPhysicsChunks", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bCompositeChunksExplodeOnImpact", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ExplosionVelScale", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMinHealth", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("FragmentDestroyEffects", new PropertyInfo(PropertyType.ArrayProperty, "ParticleSystem")),
-                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMaxHealth", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bAlwaysBreakOffIsolatedIslands", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("DynamicOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinVel", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ChunkAngVel", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinHorizontalScale", new PropertyInfo(PropertyType.FloatProperty)),
-                }
-                };
-            }
         }
     }
 }

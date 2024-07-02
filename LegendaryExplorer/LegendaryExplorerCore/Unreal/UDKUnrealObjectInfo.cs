@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal
 {
     public static class UDKUnrealObjectInfo
     {
-        public static readonly GameObjectInfo ObjectInfo = new LE3ObjectInfo.UDKObjectInfo();
+        public static readonly GameObjectInfo ObjectInfo = new UDKObjectInfo();
 
 
 
