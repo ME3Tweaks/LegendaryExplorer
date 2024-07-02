@@ -1235,6 +1235,24 @@ namespace LegendaryExplorerCore.Unreal
             return Value.GetHashCode();
         }
 
+        /// <summary>
+        /// Creates a new object property from the given import, with no name. Only use in object arrays!
+        /// </summary>
+        /// <param name="entry"></param>
+        public static implicit operator ObjectProperty(ImportEntry entry)
+        {
+            return new ObjectProperty(entry.UIndex);
+        }
+
+        /// <summary>
+        /// Creates a new object property from the given export, with no name. Only use in object arrays!
+        /// </summary>
+        /// <param name="entry"></param>
+        public static implicit operator ObjectProperty(ExportEntry entry)
+        {
+            return new ObjectProperty(entry.UIndex);
+        }
+
 #pragma warning disable
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore

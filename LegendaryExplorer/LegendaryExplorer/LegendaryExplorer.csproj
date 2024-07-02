@@ -13,7 +13,7 @@
 		<PreserveCompilationContext>false</PreserveCompilationContext>
 		<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>6.3.0.0</Version>
+		<Version>6.4.0.0</Version>
 		<EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries> <!-- Hot reload is completely broken without this -->
 	</PropertyGroup>
 
@@ -118,6 +118,7 @@
 		<PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
 		<!--Do not upgrade SingleInstance-->
 		<PackageReference Include="HMBSbige.SingleInstance" Version="[5.0.0]" />
+		<PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
 		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.5.3" />
 		<PackageReference Include="LibVLCSharp.WPF" Version="3.8.5" />
 		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
@@ -139,7 +140,7 @@
 		<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.6" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.10.0"> <!-- This is needed for trimming during build -->

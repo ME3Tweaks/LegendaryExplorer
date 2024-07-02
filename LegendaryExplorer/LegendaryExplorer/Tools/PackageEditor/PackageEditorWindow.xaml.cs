@@ -243,6 +243,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CreateClassCommand { get; set; }
         public ICommand CreatePackageExportCommand { get; set; }
         public ICommand CreateObjectReferencerCommand { get; set; }
+        public ICommand CreateTextureCommand { get; set; }
         public ICommand DeleteEntryCommand { get; set; }
         public ICommand ExportAllPropsCommand { get; set; }
         public ICommand ApplyBulkPropEditsCommand { get; set; }
@@ -322,10 +323,24 @@ namespace LegendaryExplorer.Tools.PackageEditor
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
             CreateObjectReferencerCommand = new GenericCommand(CreateObjectReferencer, IsLoadedPackageME);
+            CreateTextureCommand = new GenericCommand(CreateTexture, IsLoadedPackageME);
             DeleteEntryCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
 
             ExportAllPropsCommand = new GenericCommand(ExportAllProps, PackageIsLoaded);
             ApplyBulkPropEditsCommand = new GenericCommand(ApplyBulkPropEdits, PackageIsLoaded);
+        }
+
+        private void CreateTexture()
+        {
+            var tc = new TextureCreatorDialog(this, Pcc, SelectedItem?.Entry);
+
+            tc.ShowDialog();
+
+            if (tc.GeneratedExport != null)
+            {
+                GoToEntry(tc.GeneratedExport.InstancedFullPath);
+            }
+
         }
 
         private void ApplyBulkPropEdits()
@@ -384,24 +399,24 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 switch (prevTask.Result)
                 {
                     case string src:
-                    {
-                        var d = new SaveFileDialog
                         {
-                            Title = "Save properties file",
-                            Filter = "unrealscript file|*.uc",
-                            FileName = $"{Pcc.FileNameNoExtension}_Props.uc"
-                        };
-                        if (d.ShowDialog() == true)
-                        {
-                            File.WriteAllText(d.FileName, src);
-                        }
-                        break;
+                            var d = new SaveFileDialog
+                            {
+                                Title = "Save properties file",
+                                Filter = "unrealscript file|*.uc",
+                                FileName = $"{Pcc.FileNameNoExtension}_Props.uc"
+                            };
+                            if (d.ShowDialog() == true)
+                            {
+                                File.WriteAllText(d.FileName, src);
+                            }
+                            break;
                         }
                     case MessageLog log:
-                    {
-                        new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Errors", "Error(s) occured while decompiling properties", this).Show();
-                        break;
-                    }
+                        {
+                            new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Errors", "Error(s) occured while decompiling properties", this).Show();
+                            break;
+                        }
                 }
             });
         }
@@ -2955,7 +2970,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void InitializeTreeViewBackground_Completed(Task<List<TreeViewEntry>> prevTask)
         {
-            if (prevTask.Result != null)
+            if (prevTask.Exception == null && prevTask.Result != null)
             {
                 ResetTreeView();
                 AllTreeViewNodesX.AddRange(prevTask.Result);

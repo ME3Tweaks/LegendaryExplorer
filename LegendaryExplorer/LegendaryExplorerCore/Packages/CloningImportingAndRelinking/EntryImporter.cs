@@ -734,7 +734,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             else
             {
                 //int start = incomingExport.GetPropertyStart();
-                res.Writer.WriteZeros(incomingExport.GetPropertyStart());
+                // 06/08/2024 - When copying data over we should keep the pre-props binary instead of just writing zeros
+                res.Writer.Write(incomingExport.DataReadOnly.Slice(0,incomingExport.GetPropertyStart()));
                 //res.Writer.Write(new byte[start], 0, start);
             }
 

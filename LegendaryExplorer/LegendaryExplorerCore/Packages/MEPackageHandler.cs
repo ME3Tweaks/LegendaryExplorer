@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Packages
         public static bool GlobalSharedCacheEnabled = true;
 
         static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new(StringComparer.OrdinalIgnoreCase);
-        public static readonly ObservableCollection<IMEPackage> PackagesInTools = new();
+        public static readonly ObservableCollection<IMEPackage> PackagesInTools = [];
 
         // Package loading for UDK 2014/2015
         static Func<string, UDKPackage> UDKConstructorDelegate;
@@ -254,7 +254,19 @@ namespace LegendaryExplorerCore.Packages
         public static MemoryStream ReadAllFileBytesIntoMemoryStream(string filePath)
         {
             byte[] buffer = File.ReadAllBytes(filePath);
-            //lengthy constructor is neccesary so that TryGetBuffer can be used in decompression code
+            return CreateOptimizedLoadingMemoryStream(buffer);
+        }
+
+        /// <summary>
+        /// Essentially just <code>new MemoryStream(File.ReadAllBytes(<paramref name="filePath"/>))</code>, but with some setup that improves decompression performance 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static MemoryStream CreateOptimizedLoadingMemoryStream(byte[] buffer)
+        {
+            // This method is here so that you don't have to remember all of this signature.
+
+            //lengthy constructor is necessary so that TryGetBuffer can be used in decompression code
             return new MemoryStream(buffer, 0, buffer.Length, true, true);
         }
 

@@ -27,8 +27,9 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// MEM writes this to every single package file it modifies
         /// </summary>
-        private static ReadOnlySpan<byte> MEMPackageTag => "ThisIsMEMEndOfFileMarker"u8;
-        private const int MEMPackageTagLength = 24;
+        public static ReadOnlySpan<byte> MEMPackageTag => "ThisIsMEMEndOfFileMarker"u8;
+
+        public const int MEMPackageTagLength = 24;
 
         /// <summary>
         /// LEC-saved LE packages will always end in this, assuming MEM did not save later

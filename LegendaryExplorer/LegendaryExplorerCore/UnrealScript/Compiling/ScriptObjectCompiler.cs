@@ -286,7 +286,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 if (classAST.ReplicationBlock.Statements.Count is 0)
                 {
                     classObj.ScriptBytecodeSize = 0;
-                    classObj.ScriptBytes = Array.Empty<byte>();
+                    classObj.ScriptBytes = [];
                 }
                 else
                 {
@@ -473,7 +473,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             if (refFuncObj is null)
             {
-                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = Array.Empty<byte>(), FriendlyName = functionName });
+                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = [], FriendlyName = functionName });
                 refFuncObj = funcExport.GetBinaryData<UFunction>();
             }
             else
@@ -978,7 +978,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 trashExport.SuperClass = super;
                 trashExport.Parent = parent;
                 trashExport.Archetype = null;
-                trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], className == "Class" ? null : new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary(Array.Empty<byte>()));
+                trashExport.WritePrePropsAndPropertiesAndBinary(new byte[4], className == "Class" ? null : new PropertyCollection(), (ObjectBinary)binary ?? new GenericObjectBinary([]));
                 return trashExport;
             }
 

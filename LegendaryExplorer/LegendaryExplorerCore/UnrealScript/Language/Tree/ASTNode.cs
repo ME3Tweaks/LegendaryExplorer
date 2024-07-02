@@ -72,6 +72,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         DefaultPropertiesBlock,
         SubObject,
 
+        SingleLineComment,
+
         INVALID
     }
 

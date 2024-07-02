@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
 
@@ -50,6 +51,19 @@ namespace LegendaryExplorer.Misc
                         if (libraryPath.HasValue && Directory.Exists(libraryPath.Value))
                         {
                             list.Add(new FileDialogCustomPlace(libraryPath.Value));
+                        }
+                        else
+                        {
+                            // Read registry key for local lookup
+                            var executable = ModManagerIntegration.GetModManagerExecutableLocation();
+                            if (executable != null)
+                            {
+                                var path = Path.Combine(Directory.GetParent(executable).FullName, "mods");
+                                if (Directory.Exists(path))
+                                {
+                                    list.Add(new FileDialogCustomPlace(path));
+                                }
+                            }
                         }
                     }
                     catch (Exception)

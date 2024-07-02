@@ -227,7 +227,7 @@ namespace LegendaryExplorerCore.UnrealScript
             var ifps = new HashSet<(string, string)>(pcc.ExportCount);
             var codeBuilder = new CodeBuilderVisitor<PlainTextStringBuilderCodeFormatter>();
             log = new MessageLog();
-            foreach (ExportEntry export in pcc.Exports.Where(exp => !exp.IsScriptExport() && !exp.IsInDefaultsTree()))
+            foreach (ExportEntry export in pcc.Exports.Where(exp => !exp.IsScriptExport() && !exp.IsInDefaultsTree() && !exp.IsTrash()))
             {
                 string exportClassName = export.ClassName;
                 string ifp = export.InstancedFullPath;
@@ -352,7 +352,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return log;
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null)
+        public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null, string intendedClassName = null)
         {
             if (!ReferenceEquals(lib.Pcc, pcc))
             {
@@ -365,6 +365,11 @@ namespace LegendaryExplorerCore.UnrealScript
                 if (astNode is not Class cls)
                 {
                     log.LogError("Tried to parse a Class, but no Class was found!");
+                    return (null, log);
+                }
+                if (intendedClassName is not null && !cls.Name.CaseInsensitiveEquals(intendedClassName))
+                {
+                    log.LogError($"Class name was '{cls.Name}', expected '{intendedClassName}'!");
                     return (null, log);
                 }
                 if (!lib.IsInitialized)
