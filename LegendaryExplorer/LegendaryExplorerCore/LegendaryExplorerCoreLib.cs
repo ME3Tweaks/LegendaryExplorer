@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore
         /// <param name="packageSavingFailed">Delegate that invoked when a package fails to save</param>
         /// <param name="logger">Serilog logger to use for logging operations. If null, no logging is performed.</param>
         /// <param name="objectDBsToLoad">Only load object info for specified games. If null, all are loaded.</param>
-        public static void InitLib(TaskScheduler uiSyncContext, Action<string> packageSavingFailed = null, ILogger logger = null, MEGame[] objectDBsToLoad = null)
+        public static void InitLib(TaskScheduler uiSyncContext, Action<string> packageSavingFailed = null, ILogger logger = null, MEGame[] objectDBsToLoad = null, bool usePropertyDBLazyLoad = false)
         {
             if (initialized) return;
             LECLog.logger = logger;
@@ -90,27 +90,30 @@ namespace LegendaryExplorerCore
             MEPackageHandler.Initialize();
             PackageSaver.Initialize();
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;
-            (MEGame, Action<string>)[] gameToLoaderMap =
-            [
-                (MEGame.ME1, ME1UnrealObjectInfo.loadfromJSON),
-                (MEGame.ME2, ME2UnrealObjectInfo.loadfromJSON),
-                (MEGame.ME3, ME3UnrealObjectInfo.loadfromJSON),
-                (MEGame.LE1, LE1UnrealObjectInfo.loadfromJSON),
-                (MEGame.LE2, LE2UnrealObjectInfo.loadfromJSON),
-                (MEGame.LE3, LE3UnrealObjectInfo.loadfromJSON),
-                (MEGame.UDK, UDKUnrealObjectInfo.loadfromJSON)
-            ];
-            var jsonLoaders = new List<Action<string>>(gameToLoaderMap.Length);
-            foreach ((MEGame game, Action<string> loader) in gameToLoaderMap)
+            if (!usePropertyDBLazyLoad)
             {
-                if (objectDBsToLoad is null || objectDBsToLoad.Contains(game))
+                (MEGame, Action<string>)[] gameToLoaderMap =
+                [
+                    (MEGame.ME1, ME1UnrealObjectInfo.loadfromJSON),
+                    (MEGame.ME2, ME2UnrealObjectInfo.loadfromJSON),
+                    (MEGame.ME3, ME3UnrealObjectInfo.loadfromJSON),
+                    (MEGame.LE1, LE1UnrealObjectInfo.loadfromJSON),
+                    (MEGame.LE2, LE2UnrealObjectInfo.loadfromJSON),
+                    (MEGame.LE3, LE3UnrealObjectInfo.loadfromJSON),
+                    (MEGame.UDK, UDKUnrealObjectInfo.loadfromJSON)
+                ];
+                var jsonLoaders = new List<Action<string>>(gameToLoaderMap.Length);
+                foreach ((MEGame game, Action<string> loader) in gameToLoaderMap)
                 {
-                    jsonLoaders.Add(loader);
+                    if (objectDBsToLoad is null || objectDBsToLoad.Contains(game))
+                    {
+                        jsonLoaders.Add(loader);
+                    }
                 }
-            }
-            Parallel.ForEach(jsonLoaders, action => action(null));
 
-            LECLog.Information(@"Loaded property databases");
+                Parallel.ForEach(jsonLoaders, action => action(null));
+                LECLog.Information(@"Loaded property databases");
+            }
 
             try
             {

@@ -595,8 +595,37 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return result;
         }
 
+        private static void EnsureLoaded(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    ME1UnrealObjectInfo.EnsureLoaded();
+                    break;
+                case MEGame.ME2:
+                    ME2UnrealObjectInfo.EnsureLoaded();
+                    break;
+                case MEGame.ME3:
+                    ME3UnrealObjectInfo.EnsureLoaded();
+                    break;
+                case MEGame.LE1:
+                    LE1UnrealObjectInfo.EnsureLoaded();
+                    break;
+                case MEGame.LE2:
+                    LE2UnrealObjectInfo.EnsureLoaded();
+                    break;
+                case MEGame.LE3:
+                    LE3UnrealObjectInfo.EnsureLoaded();
+                    break;
+                case MEGame.UDK:
+                    UDKUnrealObjectInfo.EnsureLoaded();
+                    break;
+            };
+        }
+
         public static Dictionary<string, ClassInfo> GetClasses(MEGame game)
         {
+            EnsureLoaded(game);
             return game switch
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.Classes,
@@ -612,6 +641,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static Dictionary<string, ClassInfo> GetStructs(MEGame game)
         {
+            EnsureLoaded(game);
             return game switch
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.Structs,
@@ -627,6 +657,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static Dictionary<string, List<NameReference>> GetEnums(MEGame game)
         {
+            EnsureLoaded(game);
             return game switch
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.Enums,
@@ -642,6 +673,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         public static Dictionary<string, SequenceObjectInfo> GetSequenceObjects(MEGame game)
         {
+            EnsureLoaded(game);
             return game switch
             {
                 MEGame.ME1 => ME1UnrealObjectInfo.SequenceObjects,

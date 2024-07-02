@@ -18,10 +18,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class ME1UnrealObjectInfo
     {
-        public static CaseInsensitiveDictionary<ClassInfo> Classes = new();
-        public static CaseInsensitiveDictionary<ClassInfo> Structs = new();
-        public static CaseInsensitiveDictionary<List<NameReference>> Enums = new();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
+        internal static CaseInsensitiveDictionary<ClassInfo> Classes = new();
+        internal static CaseInsensitiveDictionary<ClassInfo> Structs = new();
+        internal static CaseInsensitiveDictionary<List<NameReference>> Enums = new();
+        internal static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
         public static void loadfromJSON(string jsonTextOverride = null)
@@ -144,6 +144,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             //    return reAttempt; //will be null if not found.
             //}
             return null;
+        }
+
+        /// <summary>
+        /// Ensures the object info is loaded
+        /// </summary>
+        internal static void EnsureLoaded()
+        {
+            if (!IsLoaded)
+            {
+                loadfromJSON();
+            }
         }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new();

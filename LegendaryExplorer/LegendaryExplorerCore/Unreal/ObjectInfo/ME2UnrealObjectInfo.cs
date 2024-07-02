@@ -17,10 +17,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class ME2UnrealObjectInfo
     {
-        public static Dictionary<string, ClassInfo> Classes = new();
-        public static Dictionary<string, ClassInfo> Structs = new();
-        public static Dictionary<string, List<NameReference>> Enums = new();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
+        internal static Dictionary<string, ClassInfo> Classes = new();
+        internal static Dictionary<string, ClassInfo> Structs = new();
+        internal static Dictionary<string, List<NameReference>> Enums = new();
+        internal static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         public static bool IsLoaded;
         public static void loadfromJSON(string jsonTextOverride = null)
@@ -142,6 +142,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public static bool IsImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
+        }
+
+        /// <summary>
+        /// Ensures the object info is loaded
+        /// </summary>
+        internal static void EnsureLoaded()
+        {
+            if (!IsLoaded)
+            {
+                loadfromJSON();
+            }
         }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new();

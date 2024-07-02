@@ -18,10 +18,10 @@ namespace LegendaryExplorerCore.Unreal
     public static class UDKUnrealObjectInfo
     {
         public static bool IsLoaded;
-        public static Dictionary<string, ClassInfo> Classes = new();
-        public static Dictionary<string, ClassInfo> Structs = new();
-        public static Dictionary<string, List<NameReference>> Enums = new();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
+        internal static Dictionary<string, ClassInfo> Classes = new();
+        internal static Dictionary<string, ClassInfo> Structs = new();
+        internal static Dictionary<string, List<NameReference>> Enums = new();
+        internal static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimComponent", "AimTransform", "AimOffsetProfile", "FontCharacter",
@@ -145,6 +145,17 @@ namespace LegendaryExplorerCore.Unreal
             //    return reAttempt; //will be null if not found.
             //}
             return null;
+        }
+
+        /// <summary>
+        /// Ensures the object info is loaded
+        /// </summary>
+        internal static void EnsureLoaded()
+        {
+            if (!IsLoaded)
+            {
+                loadfromJSON();
+            }
         }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesUDK = new();
