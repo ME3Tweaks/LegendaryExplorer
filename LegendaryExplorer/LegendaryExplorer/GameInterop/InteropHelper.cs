@@ -32,8 +32,6 @@ namespace LegendaryExplorer.GameInterop
         }
         #endregion
 
-
-
         //Currently will not work, as ASIs are not included in LEX due to anti-virus software freaking out about them :(
         /*public static void InstallInteropASI(MEGame game)
         {
@@ -250,7 +248,6 @@ namespace LegendaryExplorer.GameInterop
                 HyperlinkExtensions.OpenURL(GameController.GetInteropTargetForGame(game).InteropASIDownloadLink);
             }
         }
-
 
         public static bool IsGameInstalled(MEGame game) => MEDirectories.GetExecutablePath(game) is string exePath && File.Exists(exePath);
 

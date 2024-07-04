@@ -363,38 +363,6 @@ namespace LegendaryExplorerCore.UnrealScript
             return symbols;
         }
 
-        private static bool IsScriptExport(ExportEntry exp)
-        {
-            switch (exp.ClassName)
-            {
-                case "Class":
-                case "State":
-                case "Enum":
-                case "Const":
-                case "Function":
-                case "ScriptStruct":
-                case "IntProperty":
-                case "BoolProperty":
-                case "FloatProperty":
-                case "NameProperty":
-                case "StrProperty":
-                case "StringRefProperty":
-                case "ByteProperty":
-                case "ObjectProperty":
-                case "ComponentProperty":
-                case "InterfaceProperty":
-                case "ArrayProperty":
-                case "StructProperty":
-                case "BioMask4Property":
-                case "MapProperty":
-                case "ClassProperty":
-                case "DelegateProperty":
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         void IWeakPackageUser.HandleUpdate(List<PackageUpdate> updates)
         {
             if (_symbols is null)
@@ -403,7 +371,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
-                if (Pcc.GetEntry(update.Index) is ExportEntry exp && IsScriptExport(exp))
+                if (Pcc.GetEntry(update.Index) is ExportEntry exp && exp.IsScriptExport())
                 {
                     ReInitializeFile(new UnrealScriptOptionsPackage() { GamePathOverride = GameRootPath}); // We can't use custom resolver here unfortunately. Should we cache the last used USOP?
                     InitializationStatusChange?.Invoke(true);
@@ -630,7 +598,6 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             return ObjectBinary.From<T>(export, usop.Cache);
         }
-
 
         [Conditional("DEBUGSCRIPT")]
         private static void DisplayError(string scriptText, string logText)

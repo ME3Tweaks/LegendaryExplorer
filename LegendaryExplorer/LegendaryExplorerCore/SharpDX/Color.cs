@@ -992,7 +992,6 @@ namespace LegendaryExplorerCore.SharpDX
             return !left.Equals(ref right);
         }
 
-
         /// <summary>
         /// Performs an explicit conversion from <see cref="Color"/> to <see cref="Vector3"/>.
         /// </summary>
@@ -1013,7 +1012,6 @@ namespace LegendaryExplorerCore.SharpDX
             return new Vector4(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
         }
 
-
         ///// <summary>
         ///// Performs an implicit conversion from <see cref="Color"/> to <see cref="RawColor4"/>.
         ///// </summary>
@@ -1023,7 +1021,6 @@ namespace LegendaryExplorerCore.SharpDX
         //{
         //    return value.ToColor4();
         //}
-
 
         ///// <summary>
         ///// Performs an implicit conversion from <see cref="Color"/> to <see cref="RawColor4"/>.

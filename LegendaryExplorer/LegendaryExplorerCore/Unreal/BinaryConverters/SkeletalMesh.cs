@@ -27,7 +27,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float[] unkFloats; //UDK
         public uint unk3; //UDK
 
-
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref Bounds);

@@ -52,7 +52,6 @@ namespace LegendaryExplorer.Dialogs
         private bool _portGlobalsAsImports = true;
         public bool PortGlobalsAsImports { get => _portGlobalsAsImports; set => SetProperty(ref _portGlobalsAsImports, value); }
 
-
         public bool PortExportsMemorySafe { get; set; }
         public bool PortExportsAsImportsWhenPossible { get; set; }
 
@@ -100,7 +99,6 @@ namespace LegendaryExplorer.Dialogs
             CloneTreeCommand = new GenericCommand(CloneTree, CanCloneTree);
             CloneAllReferencesCommand = new GenericCommand(CloneAllReferences);
             SeeAllReferencesCommand = new GenericCommand(SeeAllReferences);
-
         }
 
         private void SeeAllReferences()

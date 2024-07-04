@@ -362,7 +362,6 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
         public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
 
-
         private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
         /// <summary>
         /// Loads settings from disk.

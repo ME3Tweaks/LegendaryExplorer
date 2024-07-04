@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+using NSubstitute;
 
 namespace LegendaryExplorer.Tests.Tools.AssetDatabase
 {
@@ -11,30 +11,30 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
         [TestMethod]
         public void TestGenericAssetFilter()
         {
-            var match = new Mock<IAssetSpecification<int>>();
-            match.Setup(x => x.MatchesSpecification(1)).Returns(true);
-            match.Setup(x => x.IsSelected).Returns(true);
-            match.Setup(x => x.ShowInUI).Returns(true);
+            var match = Substitute.For<IAssetSpecification<int>>();
+            match.MatchesSpecification(1).Returns(true);
+            match.IsSelected.Returns(true);
+            match.ShowInUI.Returns(true);
 
-            var noMatch = new Mock<IAssetSpecification<int>>();
-            noMatch.Setup(x => x.MatchesSpecification(1)).Returns(false);
-            noMatch.SetupSequence(x => x.IsSelected).Returns(false).Returns(true);
-            noMatch.Setup(x => x.ShowInUI).Returns(true);
+            var noMatch = Substitute.For<IAssetSpecification<int>>();
+            noMatch.MatchesSpecification(1).Returns(false);
+            noMatch.IsSelected.ReturnsForAnyArgs(false, true);
+            noMatch.ShowInUI.Returns(true);
 
-            var notInUI = new Mock<IAssetSpecification<int>>();
-            notInUI.Setup(x => x.MatchesSpecification(1)).Returns(true);
-            notInUI.SetupSequence(x => x.IsSelected).Returns(false);
-            notInUI.Setup(x => x.ShowInUI).Returns(false);
+            var notInUI = Substitute.For<IAssetSpecification<int>>();
+            notInUI.MatchesSpecification(1).Returns(true);
+            notInUI.IsSelected.ReturnsForAnyArgs(false);
+            notInUI.ShowInUI.Returns(false);
 
-            var f = new GenericAssetFilter<int>(new []{match.Object, noMatch.Object, notInUI.Object});
+            var f = new GenericAssetFilter<int>([match, noMatch, notInUI]);
 
             Assert.IsTrue(f.Filter(1));
-            match.Verify(x => x.MatchesSpecification(1), Times.Once); // Selected
-            noMatch.Verify(x => x.MatchesSpecification(1), Times.Never); // Is not selected
-            notInUI.Verify(x => x.MatchesSpecification(1), Times.Once); // Hidden in UI - Always on
+            match.Received(1).MatchesSpecification(1); // Selected
+            noMatch.DidNotReceive().MatchesSpecification(1); // Is not selected
+            notInUI.Received(1).MatchesSpecification(1); // Hidden in UI - Always on
 
             Assert.IsFalse(f.Filter(1)); // noMatch is now selected
-            noMatch.Verify(x => x.MatchesSpecification(1), Times.Once);
+            noMatch.Received(1).MatchesSpecification(1);
 
             Assert.IsFalse(f.Filter("Obj not of type T"));
         }
@@ -59,6 +59,5 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             f.SetSelected(spec3);
             Assert.AreEqual(0, f.Filters.Count(s => s.IsSelected));
         }
-
     }
 }

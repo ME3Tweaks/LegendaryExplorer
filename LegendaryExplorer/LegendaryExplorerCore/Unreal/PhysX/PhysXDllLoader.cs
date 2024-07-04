@@ -14,7 +14,6 @@ namespace LegendaryExplorerCore.Unreal.PhysX
     {
         internal const string PHYSXCOOKING64_DLL = "PhysXCooking64.dll";
 
-
         private static bool cookingDllLoaded;
 
         private static void LoadCookingDll(string dllPath)

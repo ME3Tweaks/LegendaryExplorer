@@ -252,7 +252,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void OpenWithJPEX_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         public override bool CanParse(ExportEntry exportEntry)

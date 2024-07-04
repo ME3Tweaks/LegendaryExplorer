@@ -95,6 +95,4 @@ namespace LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode
             return result;
         }
     }
-
 }
-

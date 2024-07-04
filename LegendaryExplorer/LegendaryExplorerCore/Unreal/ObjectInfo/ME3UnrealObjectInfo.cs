@@ -616,7 +616,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             AddCore("DelegateProperty", "Property");
             AddCore("StringRefProperty", "Property");
 
-
             classes["LevelBase"] = new ClassInfo
             {
                 baseClass = "Object",

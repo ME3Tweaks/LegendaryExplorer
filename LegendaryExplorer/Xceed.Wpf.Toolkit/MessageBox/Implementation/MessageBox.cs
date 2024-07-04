@@ -382,9 +382,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
-
     #endregion //Base Class Overrides
 
     #region Methods
@@ -392,7 +389,6 @@ namespace Xceed.Wpf.Toolkit
     #region Public Static
 
     #region Show with Window as Owner
-
 
     /// <summary>
     /// Displays a message box that has a message and that returns a result.
@@ -456,7 +452,6 @@ namespace Xceed.Wpf.Toolkit
       return ShowCore( null, IntPtr.Zero, messageText, caption, button, MessageBoxImage.None, MessageBoxResult.None, messageBoxStyle );
     }
 
-
     public static MessageBoxResult Show( Window owner, string messageText, string caption, MessageBoxButton button )
     {
         return Show(owner, messageText, caption, button, (Style)null);
@@ -466,7 +461,6 @@ namespace Xceed.Wpf.Toolkit
     {
       return ShowCore( owner, IntPtr.Zero, messageText, caption, button, MessageBoxImage.None, MessageBoxResult.None, messageBoxStyle );
     }
-
 
     public static MessageBoxResult Show( string messageText, string caption, MessageBoxButton button, MessageBoxImage icon )
     {
@@ -497,7 +491,6 @@ namespace Xceed.Wpf.Toolkit
       return ShowCore( owner, IntPtr.Zero, messageText, caption, button, icon, MessageBoxResult.None, messageBoxStyle );
     }
 
-
     public static MessageBoxResult Show( string messageText, string caption, MessageBoxButton button, MessageBoxImage icon, MessageBoxResult defaultResult )
     {
         return Show(messageText, caption, button, icon, defaultResult, (Style)null);
@@ -521,7 +514,6 @@ namespace Xceed.Wpf.Toolkit
     {
         return Show(owner, messageText, caption, button, icon, defaultResult, (Style) null);
     }
-
 
     public static MessageBoxResult Show( Window owner, string messageText, string caption, MessageBoxButton button, MessageBoxImage icon, MessageBoxResult defaultResult, Style messageBoxStyle )
     {
@@ -696,10 +688,6 @@ namespace Xceed.Wpf.Toolkit
     }
 
     #endregion //Protected
-
-
-
-
 
     #region Private
 
@@ -1149,7 +1137,6 @@ namespace Xceed.Wpf.Toolkit
       if( Closed != null )
         Closed( this, e );
     }
-
 
     #endregion
 

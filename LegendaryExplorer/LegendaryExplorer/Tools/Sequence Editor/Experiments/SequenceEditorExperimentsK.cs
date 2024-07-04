@@ -137,7 +137,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             System.Windows.MessageBox.Show($"Interps' anchor links were updated", "Success", MessageBoxButton.OK);
         }
 
-
         private static void ShowError(string errMsg)
         {
             System.Windows.MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);

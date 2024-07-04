@@ -157,8 +157,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
         private bool ScanCanceled;
         #endregion
 
-
-
         public TextureStudioWindow()
         {
             LoadCommands();
@@ -211,7 +209,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void LoadTextureMap()
         {
-
         }
 
         private void CloseWorkspace()
@@ -392,7 +389,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 }
             }
             return null;
-
         }
 
         /// <summary>
@@ -433,12 +429,10 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
             }
 
-
             // Todo: Support subpackage folders
 
             sExp.idxLink = masterPackageExport.UIndex;
             sExp.ObjectName = masterTextureExport.ObjectName;
-
 
         }
 
@@ -531,7 +525,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 ME1MasterTexturePackages.Add(sfd.FileName); // Todo: Make sure this is unique and within the mod folder
                 Texture2D.AdditionalME1MasterTexturePackages.Add(sfd.FileName); // TODO: THIS NEEDS CLEANED UP AND MANAGED IN TEXTURE2D.CS
             }
-
         }
 
         private void RemoveAllEmptyMips()
@@ -645,7 +638,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             CancellationSource.Cancel();
         }
 
-
         private bool CanScanFolder() => !IsBusy;
 
         #endregion
@@ -711,7 +703,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                             SelectEntry(twpf);
                         }
                     }
-
                 }
             };
             IsBusy = true;
@@ -744,7 +735,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
         {
             return new TextureMapMemoryEntryWPF(entry);
         }
-
 
         private void ScanFolderThread(object sender, DoWorkEventArgs e)
         {
@@ -814,7 +804,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 }
             }
 
-
             Thread.Sleep(200); //UI will take a few moments to update so we will stall this busy overlay
             BusyProgressIndeterminate = true;
         }
@@ -851,8 +840,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         #endregion
 
-
-
         #region Test Methods
 
         /// <summary>
@@ -880,7 +867,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         foreach (var extTex in t2d.Mips.Where(x => !x.IsLocallyStored))
                         {
                             var textureData = dpackage.ReadFromEntry(cacheEntry, extTex.DataOffset, extTex.UncompressedSize);
-
                         }
                     }
                 }

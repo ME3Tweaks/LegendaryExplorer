@@ -25,14 +25,20 @@
         </xctk:BusyIndicator.ProgressBarStyle>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="0"/>
                 <RowDefinition/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
+            <!--<ToolBar></ToolBar>-->
+            <ide:UnrealScriptTextEditor x:Name="textEditor" Grid.Row="1" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
                                         FontFamily="Consolas" ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
-                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
+                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped" >
+                <avalonedit:TextEditor.InputBindings>
+                    <!-- OemQuestion is the forward slash key -->
+                    <KeyBinding Key="OemQuestion" Modifiers="Control" Command="{Binding ToggleCommentCommand}"/>
+                </avalonedit:TextEditor.InputBindings>
                 <avalonedit:TextEditor.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="Find"/>
@@ -191,8 +197,8 @@
                     </Style>
                 </avalonedit:TextEditor.Resources>
             </ide:UnrealScriptTextEditor>
-            <GridSplitter Grid.Row="1" Height="5"  HorizontalAlignment="Stretch"/>
-            <Grid Grid.Row="2"  HorizontalAlignment="Stretch" >
+            <GridSplitter Grid.Row="2" Height="5"  HorizontalAlignment="Stretch"/>
+            <Grid Grid.Row="3"  HorizontalAlignment="Stretch" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>

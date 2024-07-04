@@ -102,17 +102,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.ForEachUIndex(game, in action);
             if (game is MEGame.UDK)
             {
-                Unsafe.AsRef(action).Invoke(ref SuperClass, nameof(SuperClass));
+                Unsafe.AsRef(in action).Invoke(ref SuperClass, nameof(SuperClass));
             }
             if (game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK)
             {
-                Unsafe.AsRef(action).Invoke(ref ScriptText, nameof(ScriptText));
+                Unsafe.AsRef(in action).Invoke(ref ScriptText, nameof(ScriptText));
             }
-            Unsafe.AsRef(action).Invoke(ref Children, "ChildListStart");
+            Unsafe.AsRef(in action).Invoke(ref Children, "ChildListStart");
 
             if (game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK)
             {
-                Unsafe.AsRef(action).Invoke(ref CppText, nameof(CppText));
+                Unsafe.AsRef(in action).Invoke(ref CppText, nameof(CppText));
             }
             if (Export.ClassName is not "ScriptStruct")
             {
@@ -127,7 +127,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             foreach ((int position, int type, int value) in refs)
                             {
                                 int temp = value;
-                                Unsafe.AsRef(action).Invoke(ref temp, $"Reference inside of function at 0x{position:X}");
+                                Unsafe.AsRef(in action).Invoke(ref temp, $"Reference inside of function at 0x{position:X}");
                             }
                         }
                     }
@@ -146,7 +146,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         foreach ((long key, IEntry value) in entryRefs)
                         {
                             int temp = value.UIndex;
-                            Unsafe.AsRef(action).Invoke(ref temp, $"Reference inside of function at 0x{key:X}");
+                            Unsafe.AsRef(in action).Invoke(ref temp, $"Reference inside of function at 0x{key:X}");
                         }
                     }
                     catch (Exception e)

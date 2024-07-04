@@ -71,7 +71,6 @@ namespace LegendaryExplorer.Dialogs
             Owner = w;
         }
 
-
         public ICommand ConvertAudioCommand { get; private set; }
 
         void LoadCommands()

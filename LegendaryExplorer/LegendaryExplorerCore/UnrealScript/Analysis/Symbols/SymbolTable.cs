@@ -14,7 +14,6 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 {
-
     internal class SymbolTable
     {
         private class OperatorDefinitions
@@ -99,7 +98,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
             table.AddType(NameType);
 
-            
+            //Add fake constants
+            float unrealNaN = BitConverter.UInt32BitsToSingle(uint.MaxValue);//specific NaN value to reserialize existing NaNs identically
+            objectClass.TypeDeclarations.Add(new Const("NaN", "NaN"){Literal = new FloatLiteral(unrealNaN)});
+            objectClass.TypeDeclarations.Add(new Const("Infinity", "Infinity"){Literal = new FloatLiteral(float.PositiveInfinity)});
+
             Class packageType = null;
             switch (game)
             {
@@ -317,12 +320,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var polysType = new Class("Polys", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(polysType);
             table.PushScope(polysType.Name); table.PopScope();
-
+            table.AddType(new Class("ShaderCache", objectClass, objectClass, intrinsicClassFlags));
             //NetConnection, ChildConnection, LightMapTexture2D, and CodecMovieBink are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
 
             return table;
-
         }
 
         private bool me3le3operatorsInitialized;
@@ -343,7 +345,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var vector2DType = TypeDict["Vector2D"];
             var colorType = TypeDict["Color"];
             var linearColorType = TypeDict["LinearColor"];
-
 
             const EPropertyFlags parm = EPropertyFlags.Parm;
             const EPropertyFlags outFlags = parm | EPropertyFlags.OutParm;
@@ -408,7 +409,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 160, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 161, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 162, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
-
 
             AddOperator(new InOpDeclaration(TokenType.Power, 12, 170, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 171, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
@@ -502,7 +502,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             AddOperator(new InOpDeclaration(TokenType.PlusSign, 16, 270, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.MinusSign, 16, 271, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
 
-
             //operators without a nativeIndex. must be linked directly to their function representations
             AddOperator(new InOpDeclaration(TokenType.ClockwiseFrom, 24, 0, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B"))
             {
@@ -557,7 +556,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 Implementer = (Function)objectScope["Multiply_LinearColorFloat"]
             });
-
 
             Operators.InFixOperatorSymbols.AddRange(Operators.InfixOperators.Keys);
             me3le3operatorsInitialized = true;

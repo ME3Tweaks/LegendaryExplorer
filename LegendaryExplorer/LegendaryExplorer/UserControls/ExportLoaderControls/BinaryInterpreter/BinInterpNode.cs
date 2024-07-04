@@ -151,7 +151,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-
         public bool IsProgramaticallySelecting;
         private bool isSelected;
         public bool IsSelected

@@ -187,7 +187,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         if (!Structs.ContainsKey(objectName))
                         {
                             Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
-
                         }
                     }
                 }
@@ -332,7 +331,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 }
             };
             sequenceObjects["SeqAct_SetLocationAndRotation"] = new SequenceObjectInfo { ObjInstanceVersion = 0 };
-
 
             ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.ME2);
 

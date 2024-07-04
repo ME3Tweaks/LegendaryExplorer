@@ -36,7 +36,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 for (int i = 0; i < NameEntryGuidPairs.Length; i++)
                 {
-                    Unsafe.AsRef(action).Invoke(ref NameEntryGuidPairs[i].Entry, $"NameEntryGuid[{i}]");
+                    Unsafe.AsRef(in action).Invoke(ref NameEntryGuidPairs[i].Entry, $"NameEntryGuid[{i}]");
                 }
             }
         }

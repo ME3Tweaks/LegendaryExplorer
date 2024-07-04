@@ -139,7 +139,6 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                 PhysXStreamVTable[12] = (delegate* unmanaged[MemberFunction]<PhysXStream*, void*, uint, PhysXStream*>)&StoreBuffer;
             }
 
-
             [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvMemberFunction) })]
             public static void Destructor(PhysXStream* @this)
             {
@@ -149,7 +148,6 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                     @this->Data = null;
                 }
             }
-
 
             [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvMemberFunction) })]
             public static byte ReadByte(PhysXStream* @this)

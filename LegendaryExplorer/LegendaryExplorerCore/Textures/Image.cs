@@ -757,6 +757,12 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
+        /// <summary>
+        /// Gets the enum value for the given PixelFormat enum, used in properties of a texture
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static string getEngineFormatType(PixelFormat format)
         {
             switch (format)
@@ -806,7 +812,7 @@ namespace LegendaryExplorerCore.Textures
         /// Loads an image from an array and converts it internally to the specified pixel format
         /// </summary>
         /// <param name="buffer">Full data of a file to load</param>
-        /// <param name="imageType">1 = DDS 2 = PNG 3 = TGA</param>
+        /// <param name="imageType">1 = DDS, 2 = PNG, 3 = TGA</param>
         /// <param name="targetFormat">The destination image pixel format</param>
         /// <returns>Image with the specified pixel format</returns>
         public static Image LoadFromFileMemory(byte[] buffer, int imageType, PixelFormat targetFormat)
@@ -838,6 +844,5 @@ namespace LegendaryExplorerCore.Textures
 
             return false;
         }
-
     }
 }

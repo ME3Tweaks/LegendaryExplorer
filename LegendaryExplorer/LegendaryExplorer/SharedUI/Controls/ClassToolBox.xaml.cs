@@ -14,7 +14,6 @@ namespace LegendaryExplorer.SharedUI.Controls
     /// </summary>
     public partial class ClassToolBox : NotifyPropertyChangedControlBase
     {
-
         public ObservableCollectionExtended<ClassInfo> Classes { get; set; } = new();
 
         private ClassInfo _selectedItem;

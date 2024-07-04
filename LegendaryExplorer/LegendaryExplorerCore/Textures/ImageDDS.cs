@@ -663,6 +663,5 @@ namespace LegendaryExplorerCore.Textures
 
             return dst;
         }
-
     }
 }

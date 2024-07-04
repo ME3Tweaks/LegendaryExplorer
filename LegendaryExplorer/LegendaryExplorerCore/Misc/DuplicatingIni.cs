@@ -115,7 +115,6 @@ namespace LegendaryExplorerCore.Misc
             return di;
         }
 
-
         /// <summary>
         /// Converts this DuplicatingIni object into an ini file as a string.
         /// </summary>

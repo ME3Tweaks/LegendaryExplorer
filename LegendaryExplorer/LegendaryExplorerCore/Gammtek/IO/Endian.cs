@@ -38,7 +38,6 @@ namespace LegendaryExplorerCore.Gammtek.IO
         private Endian(bool isNative)
         {
             IsNative = isNative;
-
         }
 
         /// <summary>

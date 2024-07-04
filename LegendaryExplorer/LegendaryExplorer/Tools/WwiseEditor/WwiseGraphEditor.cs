@@ -208,7 +208,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
             {
-
                 base.OnStartDrag(sender, e);
                 e.Handled = true;
                 e.PickedNode.MoveToFront();

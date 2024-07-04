@@ -22,7 +22,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// <summary>
     /// Class for 'Others' package experiments who aren't main devs
     /// </summary>
-    class PackageEditorExperimentsO
+    static class PackageEditorExperimentsO
     {
         public static void DumpPackageToT3D(IMEPackage package)
         {
@@ -46,7 +46,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                                 break;
                         }
-
                     }
                 }
             }
@@ -107,7 +106,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             Writer.Close();
         }
 
-
         //UDK version, need to figure out how to apply rotation properly
         public static void ExportT3D_UDK(StaticMesh STM, string Filename, Matrix4x4 m, Vector3 IncScale3D)
         {
@@ -158,8 +156,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
             Writer.Close();
         }
-
-
 
         //an attempt to recreate the assembling process in MaxScript similar to unreal t3d
         //Rotation is buggy, doesn't properly for now
@@ -371,7 +367,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 foreach (string s in paramsAndValsString.Split(";"))
                 { // Check that all strings are <parameter>:<values>
-                    if (!s.Contains(":"))
+                    if (!s.Contains(':'))
                     {
                         ShowError("Wrong formatting for parameter and values");
                         return;
@@ -430,30 +426,34 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 // Filter the parameter from the properties list
                                 List<StructProperty> filtered = oldList.Where(property =>
                                 {
-                                    NameProperty nameProperty = (NameProperty)property.Properties.Where(prop => prop.Name.Equals("ParameterName")).First();
+                                    NameProperty nameProperty = (NameProperty)property.Properties.First(prop => prop.Name.Equals("ParameterName"));
                                     string name = nameProperty.Value;
-                                    if (string.IsNullOrEmpty(name)) { return false; };
+                                    if (string.IsNullOrEmpty(name)) { return false; }
                                     return !name.Equals(pAv.Key, StringComparison.OrdinalIgnoreCase);
                                 }).ToList();
 
-                                PropertyCollection props = new();
+                                PropertyCollection props = [];
 
                                 // Generate and add the ExpressionGUID
-                                PropertyCollection expressionGUIDprops = new();
-                                expressionGUIDprops.Add(new IntProperty(0, "A"));
-                                expressionGUIDprops.Add(new IntProperty(0, "B"));
-                                expressionGUIDprops.Add(new IntProperty(0, "C"));
-                                expressionGUIDprops.Add(new IntProperty(0, "D"));
+                                PropertyCollection expressionGUIDprops =
+                                [
+                                    new IntProperty(0, "A"),
+                                    new IntProperty(0, "B"),
+                                    new IntProperty(0, "C"),
+                                    new IntProperty(0, "D"),
+                                ];
 
                                 props.Add(new StructProperty("Guid", expressionGUIDprops, "ExpressionGUID", true));
 
                                 if (parameterType.Equals("Vector"))
                                 {
-                                    PropertyCollection color = new();
-                                    color.Add(new FloatProperty(pAv.Value[0], "R"));
-                                    color.Add(new FloatProperty(pAv.Value[1], "G"));
-                                    color.Add(new FloatProperty(pAv.Value[2], "B"));
-                                    color.Add(new FloatProperty(pAv.Value[3], "A"));
+                                    PropertyCollection color =
+                                    [
+                                        new FloatProperty(pAv.Value[0], "R"),
+                                        new FloatProperty(pAv.Value[1], "G"),
+                                        new FloatProperty(pAv.Value[2], "B"),
+                                        new FloatProperty(pAv.Value[3], "A"),
+                                    ];
 
                                     props.Add(new StructProperty("LinearColor", color, "ParameterValue", true));
                                     props.Add(new NameProperty(pAv.Key, "ParameterName"));
@@ -537,7 +537,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     new[] { "True", "False" }, "True");
                 if (string.IsNullOrEmpty(stateString)) { return; }
                 bool state = stateString.Equals("True");
-
 
                 foreach (string file in Directory.EnumerateFiles(dlcPath, "*", SearchOption.AllDirectories).Where(f => Path.GetExtension(f).Equals(".pcc")))
                 {
@@ -724,7 +723,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     targetMorphFace.LODs[l][i].Y = modelMorphFace.LODs[l][i].Y;
                     targetMorphFace.LODs[l][i].Z = modelMorphFace.LODs[l][i].Z;
                 }
-
             }
 
             targetMorph.WriteBinary(targetMorphFace);
@@ -872,7 +870,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 MessageBox.Show($"Removed references to the mesh in the following objects: {string.Join(", ", removedReferences.ToArray())}",
                     "Success", MessageBoxButton.OK);
-
             }
             else
             {
@@ -984,7 +981,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     ShowError($"ID {id} is invalid");
                     return;
-
                 }
                 ExportEntry targetExport;
                 if (!pew.Pcc.TryGetUExport(targetID, out targetExport))
@@ -998,7 +994,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         ShowError($"Target export {id}'s class is not MaterialInstanceConstant or BioMaterialInstanceConstant");
                         return;
-
                     }
                 }
                 else
@@ -1007,12 +1002,10 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     {
                         ShowError($"Target export {id}'s class is not BioMaterialOverride");
                         return;
-
                     }
                 }
                 targetExports.Add(targetExport);
             }
-
 
             ArrayProperty<StructProperty> TextureValues = new($"{(isBMO ? "TextureParameterValues" : "m_aTextureOverrides")}");
             ArrayProperty<StructProperty> VectorValues = new($"{(isBMO ? "VectorParameterValues" : "m_aColorOverrides")}");
@@ -1374,7 +1367,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             MessageBox.Show("Sequence cleaned of non-Conversation InterpGroups and  non-VOElements InterpTracks.", "Success", MessageBoxButton.OK);
             return;
-
         }
 
         /// <summary>
@@ -1391,11 +1383,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 .Where(el => el.ClassName == "InterpData"));
 
             // Keep only InterpGroups named "Conversation" and only the BioEvtSysTrackVOElements InterpTracks
-            foreach (ExportEntry interpData in interpDatas)
+            foreach (ExportEntry interpData in interpDatas.Cast<ExportEntry>())
             {
                 ArrayProperty<ObjectProperty> interpGroupsRefs = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
                 if (interpGroupsRefs == null) { continue; }
-                List<ObjectProperty> filteredGroupsRefs = new();
+                List<ObjectProperty> filteredGroupsRefs = [];
 
                 // Save "Conversation" InterpGroup, trash the rest
                 foreach (ObjectProperty groupRef in interpGroupsRefs)
@@ -1514,7 +1506,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 .Where(el => el.ClassName == "BioSeqEvt_ConvNode"));
 
             Dictionary<int, int> remappedIDs = new(); // Save references of old id for update of entry and reply lists
-            foreach (ExportEntry convNode in convNodes)
+            foreach (ExportEntry convNode in convNodes.Cast<ExportEntry>())
             {
                 PropertyCollection nodeProps = convNode.GetProperties();
 
@@ -1675,7 +1667,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 RenameISACTAudio(pcc, bioConversation, tlkFileSet, oldName, newName, conversation);
-
             }
             else
             {
@@ -1828,7 +1819,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     pew.Pcc.TryGetUExport(m_oTlkFileSet.Value, out tlkFileSet);
                 }
                 RenameISACTAudio(pew.Pcc, bioConversation, tlkFileSet, oldName, newName, conversation);
-
             }
             else
             {
@@ -2169,6 +2159,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
+        /// <summary>
         /// Get a list containing all FXAs in a BioConversation.
         /// </summary>
         /// <param name="pcc">Pcc to operate on.</param>

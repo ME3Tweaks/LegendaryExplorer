@@ -19,8 +19,6 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override string BinkBypassMD5 { get; }
         public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
 
-
-
         public override InteropModInfo ModInfo { get; } = new("DLC_MOD_InteropLE1")
         {
             LiveEditorFilename = "LE1LiveEditor",

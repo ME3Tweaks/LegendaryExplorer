@@ -41,7 +41,6 @@ namespace Piccolo.Util {
 	/// PLayer.CamerasReference</see>.
 	/// </remarks>
 	public class PCameraList : CollectionBase {
-
 		/// <summary>
 		/// Constructs a new PCameraList.
 		/// </summary>

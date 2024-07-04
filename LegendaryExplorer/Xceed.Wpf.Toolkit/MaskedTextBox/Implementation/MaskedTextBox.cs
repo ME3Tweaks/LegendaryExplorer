@@ -397,7 +397,6 @@ namespace Xceed.Wpf.Toolkit
 
     public static readonly DependencyProperty IsMaskCompletedProperty = MaskedTextBox.IsMaskCompletedPropertyKey.DependencyProperty;
 
-
     public bool IsMaskCompleted
     {
       get
@@ -932,7 +931,6 @@ namespace Xceed.Wpf.Toolkit
 
     #endregion Text Property
 
-
     #region COMMANDS
 
     private void OnPreviewCanExecuteCommands( object sender, CanExecuteRoutedEventArgs e )
@@ -1240,7 +1238,6 @@ namespace Xceed.Wpf.Toolkit
 
     #endregion DRAG DROP
 
-
     #region VALUE FROM TEXT
 
     protected override bool QueryValueFromTextCore( string text, out object value )
@@ -1286,7 +1283,6 @@ namespace Xceed.Wpf.Toolkit
     }
 
     #endregion TEXT FROM VALUE
-
 
     #region PROTECTED METHODS
 
@@ -1419,7 +1415,6 @@ namespace Xceed.Wpf.Toolkit
 
     #endregion PROTECTED METHODS
 
-
     #region INTERNAL PROPERTIES
 
     internal bool IsForcingMask
@@ -1547,7 +1542,6 @@ namespace Xceed.Wpf.Toolkit
         }
         else
         {
-
         }
       }
 
@@ -1615,7 +1609,6 @@ namespace Xceed.Wpf.Toolkit
       return this.PlaceChar( m_maskedTextProvider, ch, startPosition, length, overwrite, out caretIndex );
     }
 
-
     private bool PlaceChar( MaskedTextProvider provider, char ch, int startPosition, int length, bool overwrite, out int caretPosition )
     {
       if( this.ShouldQueryAutoCompleteMask( provider.Clone() as MaskedTextProvider, ch, startPosition ) )
@@ -1678,7 +1671,6 @@ namespace Xceed.Wpf.Toolkit
 
     public event EventHandler<AutoCompletingMaskEventArgs> AutoCompletingMask;
 
-
     private bool PlaceCharCore( MaskedTextProvider provider, char ch, int startPosition, int length, bool overwrite, out int caretPosition )
     {
       caretPosition = startPosition;
@@ -1731,7 +1723,6 @@ namespace Xceed.Wpf.Toolkit
       int endPosition = ( startPosition + selectionLength ) - 1;
       tentativeCaretIndex = -1;
 
-
       bool success = false;
 
       foreach( char ch in text )
@@ -1764,7 +1755,6 @@ namespace Xceed.Wpf.Toolkit
 
       if( ( selectionLength > 0 ) && ( startPosition <= endPosition ) )
       {
-
         // Erase the remaining of the assigned edit character.
         int notUsed;
         MaskedTextResultHint notUsedHint;
@@ -1779,7 +1769,6 @@ namespace Xceed.Wpf.Toolkit
     {
       if( this.IsReadOnly )
         return false;
-
 
       if( selectionLength == 0 )
       {
@@ -1810,7 +1799,6 @@ namespace Xceed.Wpf.Toolkit
     {
       if( this.IsReadOnly )
         return;
-
 
       if( selectionLength == 0 )
       {
@@ -1910,7 +1898,6 @@ namespace Xceed.Wpf.Toolkit
         return text.ToLower();
 
       //System.Diagnostics.Debug.Assert( provider.EditPositionCount > 0 );
-
 
       bool includePrompt = ( this.IsReadOnly ) ? false : ( !this.HidePromptOnLeave || this.IsFocused );
 

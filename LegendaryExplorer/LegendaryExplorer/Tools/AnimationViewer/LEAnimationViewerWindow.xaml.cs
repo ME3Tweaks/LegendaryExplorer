@@ -214,7 +214,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
             }
             Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -556,7 +555,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             });
         }
 
-
         #endregion
 
         public void LoadAnimation(AnimationRecord anim)
@@ -837,7 +835,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void StopAnimation_Click(object sender, RoutedEventArgs e)
         {
-
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
@@ -914,8 +911,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             }
         }
 
-
-
         private void UpdateCamRotation()
         {
             if (noUpdate) return;
@@ -954,5 +949,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         }
 
         public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2];
     }
 }

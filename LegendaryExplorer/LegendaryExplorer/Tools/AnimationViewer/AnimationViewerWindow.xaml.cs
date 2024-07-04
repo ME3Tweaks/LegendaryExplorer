@@ -85,7 +85,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
             }
             Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -354,7 +353,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 CommandManager.InvalidateRequerySuggested();
                 EndBusy();
             });
-
         }
 
         private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled;
@@ -373,7 +371,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 BusyText = "Launching Mass Effect 3...";
             });
         }
-
 
         #endregion
 
@@ -628,7 +625,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void StopAnimation_Click(object sender, RoutedEventArgs e)
         {
-
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
@@ -704,8 +700,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 }
             }
         }
-
-
 
         private void UpdateCamRotation()
         {

@@ -23,7 +23,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
     internal class ClassValidationVisitor : IASTVisitor
     {
-
         private readonly SymbolTable Symbols;
         private readonly MessageLog Log;
         private bool Success;
@@ -247,24 +246,38 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         return Success;
                     }
                 case ValidationPass.BodyPass:
+                {
+                    if (node.Parent is Class parentClass)
                     {
-                        //from UDN: "Implementing multiple interface classes which have a common base is not supported and will result in incorrect vtable offsets"
-                        if (node.Interfaces.Count > 1)
+                        //loop in case we are compiling multiple classes at once and our direct parent has not inherited flags yet
+                        do
                         {
-                            var interfaceParents = new HashSet<string>();
-                            foreach (VariableType interfaceClass in node.Interfaces)
+                            node.Flags |= parentClass.Flags & (EClassFlags.Inherit | EClassFlags.Config);
+                            if (node.Flags.Has(EClassFlags.Config) && node.ConfigName.CaseInsensitiveEquals("None"))
                             {
-                                var parentInterface = (interfaceClass as Class)?.Parent as Class;
-                                while (parentInterface is not null && !parentInterface.Name.CaseInsensitiveEquals("Interface"))
+                                node.ConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
+                            }
+                            parentClass = parentClass.Parent as Class;
+                        } while (parentClass is not null);
+                    }
+
+                    //from UDN: "Implementing multiple interface classes which have a common base is not supported and will result in incorrect vtable offsets"
+                    if (node.Interfaces.Count > 1)
+                    {
+                        var interfaceParents = new HashSet<string>();
+                        foreach (VariableType interfaceClass in node.Interfaces)
+                        {
+                            var parentInterface = (interfaceClass as Class)?.Parent as Class;
+                            while (parentInterface is not null && !parentInterface.Name.CaseInsensitiveEquals("Interface"))
+                            {
+                                if (interfaceParents.Contains(parentInterface.Name))
                                 {
-                                    if (interfaceParents.Contains(parentInterface.Name))
-                                    {
-                                        return Error("Cannot implement two interfaces that have a common base interface lower than the Interface class", node.StartPos);
-                                    }
-                                    parentInterface = parentInterface.Parent as Class;
+                                    return Error("Cannot implement two interfaces that have a common base interface lower than the Interface class", node.StartPos);
                                 }
+                                parentInterface = parentInterface.Parent as Class;
                             }
                         }
+                    }
 
                         //third pass over structs to check for circular inheritance chains
                         foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
@@ -298,31 +311,31 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             }
                         }
 
-                        //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
-                        foreach (VariableDeclaration decl in node.VariableDeclarations)
+                    //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
+                    foreach (VariableDeclaration decl in node.VariableDeclarations)
+                    {
+                        Success &= decl.AcceptVisitor(this);
+                        if (decl.Flags.Has(EPropertyFlags.Component))
                         {
-                            Success &= decl.AcceptVisitor(this);
-                            if (decl.Flags.Has(EPropertyFlags.Component))
-                            {
-                                node.Flags |= EClassFlags.HasComponents;
-                            }
-                            if (decl.Flags.Has(EPropertyFlags.CrossLevel))
-                            {
-                                node.Flags |= EClassFlags.HasCrossLevelRefs;
-                            }
-                            if (decl.Flags.Has(EPropertyFlags.Config))
-                            {
-                                node.Flags |= EClassFlags.Config;
-                            }
-                            if (decl.Flags.Has(EPropertyFlags.Localized))
-                            {
-                                node.Flags |= EClassFlags.Localized;
-                            }
-                            if (decl.IsOrHasInstancedObjectProperty())
-                            {
-                                node.Flags |= EClassFlags.HasInstancedProps;
-                            }
+                            node.Flags |= EClassFlags.HasComponents;
                         }
+                        if (decl.Flags.Has(EPropertyFlags.CrossLevel))
+                        {
+                            node.Flags |= EClassFlags.HasCrossLevelRefs;
+                        }
+                        if (decl.Flags.Has(EPropertyFlags.Config) && !node.Flags.Has(EClassFlags.Config))
+                        {
+                            Error("Cannot have a config var in a class with no specified config file.", decl.StartPos);
+                        }
+                        if (decl.Flags.Has(EPropertyFlags.Localized))
+                        {
+                            node.Flags |= EClassFlags.Localized;
+                        }
+                        if (decl.IsOrHasInstancedObjectProperty())
+                        {
+                            node.Flags |= EClassFlags.HasInstancedProps;
+                        }
+                    }
 
                         return Success;
                     }
@@ -330,7 +343,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Success;
             }
         }
-
 
         public bool VisitNode(VariableDeclaration node) => VisitVarDecl(node);
 
@@ -675,7 +687,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     }
                 }
 
-
                 node.Declaration = node;
             }
 
@@ -718,7 +729,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                 if (Success == false)
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
-
 
                 if (node.FriendlyName is not null //true in ME1, ME2, LE1, LE2, and UDK
                  && node.IsOperator)
@@ -830,7 +840,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
                 }
-
 
                 if (node.ReturnValueDeclaration != null)
                 {
@@ -1068,6 +1077,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             throw new NotImplementedException();
         }
         public bool VisitNode(DynArrayIterator node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(CommentStatement node)
         {
             throw new NotImplementedException();
         }

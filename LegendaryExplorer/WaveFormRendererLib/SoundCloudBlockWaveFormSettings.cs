@@ -48,19 +48,16 @@ namespace NAudio.WaveFormRenderer
             set { topSpacerPen = value; }
         }
 
-
         public override Pen BottomPeakPen
         {
             get { return bottomPen; }
             set { bottomPen = value; }
         }
 
-
         public override Pen BottomSpacerPen
         {
             get { return bottomSpacerPen; }
             set { bottomSpacerPen = value; }
         }
-
     }
 }

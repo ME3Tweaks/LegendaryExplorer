@@ -18,7 +18,6 @@ using Microsoft.Win32;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 {
-
     /// <summary>
     /// Experiments in Sequence Editor (Mgamerz' stuff)
     /// </summary>
@@ -101,7 +100,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             sequenceToImport.idxLink = 0;
             sequenceToImport.RemoveProperty("ParentSequence");
 
-
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sequenceToImport,
                 targetParentSequence.FileRef, targetParentSequence, true, new RelinkerOptionsPackage(),
                 out var newUiSeq);
@@ -148,7 +146,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                     //Debug.WriteLine("hi");
                     if (seqObj.Export.IsA("SeqAct_SetSequenceVariable"))
                     {
-                        var varLinks = SeqTools.GetVariableLinksOfNode(seqObj.Export);
+                        var varLinks = KismetHelper.GetVariableLinksOfNode(seqObj.Export);
                         foreach (var link in varLinks)
                         {
                             //link.
@@ -165,9 +163,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                                 {
                                     Debug.WriteLine($"SEQCHECK: {seqObj.Export.UIndex} {seqObj.Export.ObjectName.Instanced} writes a property named {link.PropertyName}, but it doesn't exist on class {linkedNode.ClassName}!");
                                 }
-
                             }
-
                         }
                     }
                 }
@@ -202,7 +198,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
         }
 
-
         private static bool LoadCustomClassesFromPackage(IMEPackage p)
         {
             var reload = false;
@@ -235,8 +230,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 // How this works is we just delete all existing var links and re-attach the originals.
                 // This is simpler than trying to figure out what needs to be done to add links and such
 
-                var existingVarLinks = SeqTools.GetVariableLinksOfNode(seqLog);
-                var existingOutLinks = SeqTools.GetOutboundLinksOfNode(seqLog);
+                var existingVarLinks = KismetHelper.GetVariableLinksOfNode(seqLog);
+                var existingOutLinks = KismetHelper.GetOutputLinksOfNode(seqLog);
 
                 // First we check if this has already been done so we don't add duplicates
                 var strVarLink = existingVarLinks.FirstOrDefault(x => x.LinkDesc == "String");
@@ -262,7 +257,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 newProps.AddOrReplaceProp(existingObjComment);
 
                 // Reattach existing var links, replacing ones of same name
-                var newVarLinks = SeqTools.GetVariableLinks(newProps, seqLog.FileRef);
+                var newVarLinks = KismetHelper.GetVariableLinks(newProps, seqLog.FileRef);
                 for (int i = 0; i < newVarLinks.Count; i++)
                 {
                     var existingLink = existingVarLinks.FirstOrDefault(x => x.LinkDesc == newVarLinks[i].LinkDesc);
@@ -272,8 +267,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                     }
                 }
 
-                SeqTools.WriteVariableLinksToProperties(newVarLinks, newProps);
-                SeqTools.WriteOutboundLinksToProperties(existingOutLinks, newProps);
+                KismetHelper.WriteVariableLinksToProperties(newVarLinks, newProps);
+                KismetHelper.WriteOutputLinksToProperties(existingOutLinks, newProps);
 
                 seqLog.WriteProperties(newProps); // Write it out as ObjectCreator doesn't use propcollection
 

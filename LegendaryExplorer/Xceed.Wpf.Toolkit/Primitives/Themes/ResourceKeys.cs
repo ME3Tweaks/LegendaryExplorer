@@ -56,6 +56,5 @@ namespace Xceed.Wpf.Toolkit.Themes
     public static readonly ComponentResourceKey SpinButtonCornerRadiusKey = new ComponentResourceKey( typeof( ResourceKeys ), "SpinButtonCornerRadiusKey" );
 
     public static readonly ComponentResourceKey SpinnerButtonStyleKey = new ComponentResourceKey( typeof( ResourceKeys ), "SpinnerButtonStyleKey" );
-
   }
 }

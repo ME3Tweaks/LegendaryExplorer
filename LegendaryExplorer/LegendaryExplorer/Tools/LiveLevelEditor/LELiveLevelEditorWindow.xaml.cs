@@ -584,7 +584,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-
         private readonly DispatcherTimer GameOpenTimer;
         private void CheckIfGameOpen(object sender, EventArgs e)
         {
@@ -994,7 +993,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             set => SetProperty(ref _rotIncrement, value);
         }
 
-
         private float _scale = 1;
         public float Scale
         {
@@ -1020,7 +1018,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 }
             }
         }
-
 
         private float _xScale = 1;
         public float XScale
@@ -1103,7 +1100,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             if (noUpdate) return;
             InteropHelper.SendMessageToGame($"LLE_SET_ACTOR_HIDDEN {Hidden.ToString().ToLower()}", Game);
-
         }
 
         #endregion

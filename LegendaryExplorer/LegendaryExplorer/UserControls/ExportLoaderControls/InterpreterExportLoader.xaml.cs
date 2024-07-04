@@ -39,14 +39,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class InterpreterExportLoader : ExportLoaderControl
     {
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; } = new();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; } = [];
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterExportLoader.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         //values are the class of object value being parsed
-        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence", "BioAnimNodeSequence" };
-        public static readonly string[] IntToStringConverters = { "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
-                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo", "CoverLink" };
+        public static readonly string[] ExportToStringConverters = ["LevelStreamingKismet", "StaticMeshComponent", "ParticleSystemComponent", "DecalComponent", "LensFlareComponent", "AnimNodeSequence", "BioAnimNodeSequence"];
+        public static readonly string[] IntToStringConverters = [ "WwiseEvent", "WwiseBank", "WwiseStream", "BioSeqAct_PMExecuteTransition", "BioSeqAct_PMExecuteConsequence", "BioSeqAct_PMCheckState", "BioSeqAct_PMCheckConditional", "BioSeqVar_StoryManagerInt",
+                                                                "BioSeqVar_StoryManagerFloat", "BioSeqVar_StoryManagerBool", "BioSeqVar_StoryManagerStateId", "SFXSceneShopNodePlotCheck", "BioWorldInfo", "CoverLink" ];
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         public bool SubstituteImageForHexBox
@@ -73,7 +73,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public static readonly DependencyProperty NavigateToEntryCallbackProperty = DependencyProperty.Register(
-            "NavigateToEntryCommand", typeof(RelayCommand), typeof(InterpreterExportLoader), new PropertyMetadata(null));
+            nameof(NavigateToEntryCommand), typeof(RelayCommand), typeof(InterpreterExportLoader), new PropertyMetadata(null));
 
         public bool HideHexBox
         {
@@ -129,20 +129,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
         //when the class matches.
 
-
         int RescanSelectionOffset;
-        private readonly List<FrameworkElement> EditorSetElements = new();
+        private readonly List<FrameworkElement> EditorSetElements = [];
 
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
         private int ForcedRescanOffset;
         private bool ArrayElementJustAdded;
 
-
         /// <summary>
         /// Reference to the package that the property we copied from is from
         /// </summary>
-        private WeakReference<IMEPackage> CopiedPropertyPackage { get; } = new WeakReference<IMEPackage>(null); // Default to null but ensure weak reference is generated.
+        private WeakReference<IMEPackage> CopiedPropertyPackage { get; } = new(null); // Default to null but ensure weak reference is generated.
 
         /// <summary>
         /// The currently copied property.
@@ -199,7 +197,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 i.HexboxColumn_GridSplitter_ColumnDefinition.Width = new GridLength(1);
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MinWidthProperty, i, nameof(HexBoxMinWidth));
                 i.HexboxColumnDefinition.bind(ColumnDefinition.MaxWidthProperty, i, nameof(HexBoxMaxWidth));
-
             }
             i.OnPropertyChanged(nameof(ShowPropOffsets));
         }
@@ -310,7 +307,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var overwrite = MessageBox.Show(Window.GetWindow(this), $"This export already has a property named {existingProp.Name}. Do you want to overwrite it?", "Ovewrite warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes;
                 if (!overwrite) return; // Abort
             }
-
 
             // Write the property.
             CurrentLoadedExport.WriteProperty(CopiedProperty);
@@ -431,7 +427,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanOpenInMeshplorer()
         {
-
             if (CurrentLoadedExport != null && SelectedItem?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.IsUExport(op.Value))
             {
                 var entry = CurrentLoadedExport.FileRef.GetUExport(op.Value);
@@ -593,7 +588,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
             }
             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-
         }
 
         internal void SetHexboxSelectedOffset(int v)
@@ -641,7 +635,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanExpandOrCollapseChildren() => SelectedItem is UPropertyTreeViewEntry tvi && tvi.ChildrenProperties.Count > 0;
         private bool CanSortChildren() => SelectedItem is UPropertyTreeViewEntry { HasTooManyChildrenToDisplay: false } tvi && tvi.ChildrenProperties.Count > 0;
-
 
         private void CollapseChildren()
         {
@@ -899,7 +892,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             else
             {
-
                 var topLevelTree = new UPropertyTreeViewEntry
                 {
                     DisplayName = $"Export {CurrentLoadedExport.UIndex}: {CurrentLoadedExport.InstancedFullPath} ({CurrentLoadedExport.ClassName})",
@@ -958,7 +950,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
         }
-
 
         #region Static tree generating code (shared with BinaryInterpreterExportLoader)
         public static void GenerateUPropertyTreeForProperty(Property prop, UPropertyTreeViewEntry parent, ExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
@@ -1080,7 +1071,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         else if (index == 0)
                         {
                             parsedValue = "Null";
-
                         }
                         else
                         {
@@ -1100,7 +1090,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         else if (index == 0)
                         {
                             parsedValue = dp.Value.FunctionName.Instanced;
-
                         }
                         else
                         {
@@ -1236,7 +1225,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             IntProperty intProperty = (IntProperty)sp.Properties[i];
                             int value = intProperty.Value;
-                            MemoryMarshal.Write(guidBytes.Slice(i * 4), ref value);
+                            MemoryMarshal.Write(guidBytes.Slice(i * 4), in value);
                         }
 
                         parsedValue = new Guid(guidBytes).ToString();
@@ -1302,7 +1291,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (inChunkName != null && inChunkName.Value.Name != "None")
                         {
                             editableValue += $" InChunkName: {inChunkName.Value.Name}";
-
                         }
                     }
                     else if (sp.StructType == "SeqVarLink")
@@ -1942,7 +1930,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-
             Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             //Hide the non-used controls
@@ -2045,8 +2032,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return allEntriesNew;
         }
 
-
-
         private void UpdateParsedEditorValue(UPropertyTreeViewEntry treeViewEntry = null)
         {
             UPropertyTreeViewEntry tvi = treeViewEntry ?? SelectedItem;
@@ -2100,7 +2085,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             if (int.TryParse(Value_TextBox.Text, out int index))
                             {
-
                                 string str = TLKManagerWPF.GlobalFindStrRefbyID(index, CurrentLoadedExport.FileRef.Game, CurrentLoadedExport.FileRef);
                                 str = str?.Replace("\n", "[\\n]");
                                 if (str?.Length > 82)
@@ -2376,7 +2360,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             Interpreter_Hexbox.SelectionStartChanged += hb1_SelectionChanged;
             Interpreter_Hexbox.SelectionLengthChanged += hb1_SelectionChanged;
-
 
             // ??
             this.bind(HexBoxMinWidthProperty, Interpreter_Hexbox, nameof(Interpreter_Hexbox.MinWidth));
@@ -2756,7 +2739,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             Settings.StaticPropertyChanged -= SettingChanged;
 
-
             if (Interpreter_Hexbox != null)
             {
                 if (Interpreter_Hexbox.ByteProvider != null)
@@ -2859,7 +2841,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         static int ToByteColor(float f) => ((int)(f * 255)).Clamp(0, 255);
 
                         return _colorStructCode = $"#{ToByteColor(a):X2}{ToByteColor(r):X2}{ToByteColor(g):X2}{ToByteColor(b):X2}";
-
                     }
                 }
 
@@ -2977,7 +2958,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// List of children properties that link to this node.
         /// Only Struct and ArrayProperties will have this populated.
         /// </summary>
-        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; } = new();
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; } = [];
         public UPropertyTreeViewEntry(Property property, string displayName = null)
         {
             Property = property;
@@ -3051,7 +3032,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             get => _parsedValue ?? "";
             set => SetProperty(ref _parsedValue, value);
         }
-
 
         /// <summary>
         /// For UI binding only (as it can return EnumProperty)
@@ -3233,5 +3213,4 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return "UPropertyTreeViewEntry " + DisplayName;
         }
     }
-
 }

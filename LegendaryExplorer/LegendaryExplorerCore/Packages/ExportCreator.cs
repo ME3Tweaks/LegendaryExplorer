@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.Packages
             return exp;
         }
 
-        public static ExportEntry CreateExport(IMEPackage pcc, string name, string className, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, bool indexed = true)
+        public static ExportEntry CreateExport(IMEPackage pcc, NameReference name, string className, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, bool indexed = true)
         {
             var rop = new RelinkerOptionsPackage() { ImportExportDependencies = true };
             var exp = new ExportEntry(pcc, parent, indexed ? pcc.GetNextIndexedName(name) : name)

@@ -419,7 +419,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-
         public static void Serialize(this SerializingContainer2 sc, ref SharpDX.Color color)
         {
             if (sc.IsLoading)

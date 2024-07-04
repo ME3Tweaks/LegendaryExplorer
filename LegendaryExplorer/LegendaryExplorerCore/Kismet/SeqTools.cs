@@ -11,8 +11,8 @@ namespace LegendaryExplorerCore.Kismet
     /// <remarks>
     /// All methods from this class have been merged with KismetHelper. You should not use this class for any future projects.
     /// </remarks>
-    [Obsolete("Class has been merged with KismetHelper. Use that instead!")]
-    public class SeqTools
+    [Obsolete("Class has been merged with KismetHelper. Use that instead!", true)] //TODO: delete class. Use was made an error on 5/25/24
+    public static class SeqTools
     {
         /// <summary>
         /// Changes a single output link to a new target and commits the properties.
@@ -99,7 +99,6 @@ namespace LegendaryExplorerCore.Kismet
             return KismetHelper.FindOutputConnectionsToNode(node, sequenceElements, linkIdxsToMatchOn,
                 filteredInputNames);
         }
-
 
         /// <summary>
         /// Finds sequence objects with variable connections that come to this node

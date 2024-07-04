@@ -62,7 +62,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             workbook.SaveAs(path);
         }
 
-
         public static Bio2DA ReadExcelTo2DA(ExportEntry export, string Filename)
         {
             var Workbook = new XLWorkbook(Filename);
@@ -126,13 +125,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-
             // Add the columns and names to the 2DA.
             foreach (var col in colNames)
                 bio2da.AddColumn(col);
             foreach (var row in rowNames)
                 bio2da.AddRow(row);
-
 
             //Step 3 Populate the table.
             //indices here are excel based. Subtract two to get Bio2DA based.

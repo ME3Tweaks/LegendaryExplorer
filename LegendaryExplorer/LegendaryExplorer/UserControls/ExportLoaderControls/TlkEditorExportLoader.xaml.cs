@@ -50,7 +50,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
         }
 
-
         public ICommand SaveCommand { get; set; }
         public ICommand CommitCommand { get; set; }
         public ICommand SetIDCommand { get; set; }
@@ -60,7 +59,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand DeleteStringCommand { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand AddStringCommand { get; set; }
-
 
         private void LoadCommands()
         {
@@ -72,11 +70,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SearchCommand = new GenericCommand(TextSearch, HasTLKLoaded);
             AddStringCommand = new GenericCommand(AddString, HasTLKLoaded);
 
-
             ExportXmlCommand = new GenericCommand(ExportToXml, HasTLKLoaded);
             ImportXmlCommand = new GenericCommand(ImportFromXml, HasTLKLoaded);
             ViewXmlCommand = new GenericCommand(ViewAsXml, HasTLKLoaded);
-
         }
 
         private void DeleteString(object obj)
@@ -263,7 +259,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     _currentMe2Me3Me2Me3TalkFile?.SaveToXML(saveFileDialog.FileName);
                 }
             }
-
         }
 
         private void ImportFromXml()
@@ -325,7 +320,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             await System.Threading.Tasks.Task.Delay(100);  //Catch double clicks of XML button 
             xmlUp = false;
             btnViewXML.ToolTip = "View as XML.";
-
         }
 
         private void SetNewID()
@@ -480,7 +474,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // CurrentME2ME3TalkFile.
                     ME2ME3HuffmanCompression.SaveToTlkFile(d.FileName, LoadedStrings);
                 }
-
             }
         }
 

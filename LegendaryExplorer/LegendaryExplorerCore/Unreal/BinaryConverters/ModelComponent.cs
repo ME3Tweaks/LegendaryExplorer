@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            ref TAction a = ref Unsafe.AsRef(action);
+            ref TAction a = ref Unsafe.AsRef(in action);
 
             a.Invoke(ref Model, nameof(Model));
             for (int i = 0; i < Elements.Length; i++)

@@ -57,7 +57,6 @@ namespace LegendaryExplorerCore.Save
         /// </summary>
         public object Data { get; set; }
 
-
         // Various convenient methods
         public int DataAsInt => (int)Data;
         public double DataAsDouble => (double)Data;
@@ -353,9 +352,6 @@ namespace LegendaryExplorerCore.Save
             uncompStream.Position = 0;
             return uncompStream;
         }
-
-
-
 
         // Enums
 

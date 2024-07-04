@@ -58,7 +58,6 @@ namespace LegendaryExplorerCore.Tests
             {
                 Assert.AreEqual(v.Value, v.Key.StripUnrealLocalization(), $@"StripUnrealLocalization() returned the wrong stripped string! Input: {v.Key}");
             }
-
         }
     }
 }

@@ -96,7 +96,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                               CommonStructs.GetVector2(prop.GetProp<StructProperty>("LeaveTangent")),
                                               GetCurveMode(prop));
 
-
             StructProperty ISpec<Vector2>.ToStructProperty(InterpCurvePoint<Vector2> icp, MEGame game)
             {
                 return new StructProperty("InterpCurvePointVector2D", new PropertyCollection
@@ -108,7 +107,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     icp.GetEnumProp(game)
                 });
             }
-
 
             #endregion
 
@@ -418,7 +416,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public static readonly Specializations Inst = new();
             private Specializations() { }
         }
-
 
         //generic specialization code is based on https://stackoverflow.com/a/29379250
         private static U Lerp<U>(U start, U end, float amount) => Specialization<U>.Inst.Lerp(start, end, amount);

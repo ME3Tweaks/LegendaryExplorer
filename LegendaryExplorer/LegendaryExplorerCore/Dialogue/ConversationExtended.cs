@@ -132,7 +132,6 @@ namespace LegendaryExplorerCore.Dialogue
         /// </summary>
         public void DetailedParse()
         {
-
             foreach (var spkr in Speakers)
             {
                 spkr.FaceFX_Male = GetFaceFX(spkr.SpeakerID, true);
@@ -315,7 +314,6 @@ namespace LegendaryExplorerCore.Dialogue
                                 {
                                     var datalink = linkedVars[0].Value;
                                     return Sequence.FileRef.GetUExport(datalink);
-
                                 }
                                 break;
                             }
@@ -648,7 +646,6 @@ namespace LegendaryExplorerCore.Dialogue
                     if (ffxo == null) //if no facefx then maybe soundobject conversation
                     {
                         wwevents = Export.GetProperty<ArrayProperty<ObjectProperty>>("m_aMaleSoundObjects");
-
                     }
                     else
                     {
@@ -785,7 +782,6 @@ namespace LegendaryExplorerCore.Dialogue
             }
         }
 
-
         /// <summary>
         /// Gets the FaceFXAnimset entry from the export for a given speaker ID
         /// </summary>
@@ -849,7 +845,6 @@ namespace LegendaryExplorerCore.Dialogue
                 newreplyList.Add(reply.NodeProp);
             }
 
-
             if (Export.Game.IsGame3())
             {
                 var newSpeakerList = new ArrayProperty<NameProperty>( "m_aSpeakerList");
@@ -883,7 +878,6 @@ namespace LegendaryExplorerCore.Dialogue
                     BioConvo.RemoveNamedProperty(newSpeakerList.Name); // This ensures this property is removed so it reserializes the same as vanilla
                 }
             }
-
 
             if (newstartlist.Count > 0)
             {
@@ -935,7 +929,6 @@ namespace LegendaryExplorerCore.Dialogue
                 {
                     var lprop = e.GetProp<IntProperty>("nIndex");
                     newNodes.Enqueue(ReplyList[lprop.Value]);
-
                 }
                 visitedNodes.Add(startNode);
                 while (newNodes.Any())
@@ -962,7 +955,6 @@ namespace LegendaryExplorerCore.Dialogue
                             {
                                 var eprop = e.GetProp<IntProperty>("nIndex");
                                 newNodes.Enqueue(ReplyList[eprop.Value]);
-
                             }
                         }
                         visitedNodes.Add(thisnode);

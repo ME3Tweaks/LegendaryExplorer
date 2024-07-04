@@ -122,6 +122,5 @@ namespace Be.Windows.Forms
 			this.CopyTo(data, 0);
 			return data;
 		}
-
 	}
 }

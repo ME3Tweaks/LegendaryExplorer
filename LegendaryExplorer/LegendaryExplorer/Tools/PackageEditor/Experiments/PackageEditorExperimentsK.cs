@@ -478,7 +478,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             public LevelConversionData()
             {
-
             }
         }
 
@@ -493,7 +492,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
             if (j.ShowDialog(pewpf) == CommonFileDialogResult.Ok)
             {
-
                 pewpf.BusyText = "Recook level files";
                 pewpf.IsBusy = true;
                 Task.Run(() =>
@@ -525,7 +523,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             j.Filters.Add(new CommonFileDialogFilter("JSON files", "*.json"));
             if (j.ShowDialog(pewpf) == CommonFileDialogResult.Ok)
             {
-
                 pewpf.BusyText = "Recook level files";
                 pewpf.IsBusy = true;
                 Task.Run(() =>
@@ -583,7 +580,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         p.Pcc.replaceName(i, newname);
                         break;
                     }
-
                 }
 
                 var pkgguid = Guid.NewGuid();
@@ -598,7 +594,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 MessageBox.Show("New File Created and Loaded.");
             }
         }
-
 
         public static async void TrashCompactor(PackageEditorWindow pewpf, IMEPackage pcc)
         {
@@ -717,7 +712,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
                 level.CoverLinkRefs = newCLArray;
 
-
                 if (pcc.Game.IsGame3())
                 {
                     //Clean up Pylon List
@@ -787,7 +781,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 EntryPruner.TrashEntries(pcc, itemsToTrash);
-
             }
             //pewpf.AllowRefresh = true;
             pewpf.EndBusy();
@@ -897,7 +890,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void ChangeClassesGlobally(PackageEditorWindow pewpf)
         {
-
             if (pewpf.SelectedItem.Entry.ClassName != "Class")
             {
                 MessageBox.Show("Class that is being replaced not selected.", "Error");
@@ -1006,7 +998,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             if (pewpf.SelectedItem.Entry is not ExportEntry gmObj)
                 return;
 
-
             if (!gmObj.IsA("SFXGalaxyMapObject"))
             {
                 MessageBox.Show("Not a Galaxy Map Object.", "Warning", MessageBoxButton.OK);
@@ -1059,7 +1050,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     if (predicate == null || predicate.Invoke(exp))
                     {
-
 
                         var interpTrackMove = exp;
                         var props = interpTrackMove.GetProperties();

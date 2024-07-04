@@ -404,7 +404,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 MessageBox.Show($"{e.FlattenException()}", "Error");
 #endif
             }
-
         }
 
         public override void UnloadExport()

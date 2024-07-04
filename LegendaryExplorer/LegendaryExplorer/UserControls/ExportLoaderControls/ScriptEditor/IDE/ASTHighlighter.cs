@@ -6,9 +6,8 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
-    public class ASTHighlighter : IHighlighter, ILineTracker
+    public sealed class ASTHighlighter : IHighlighter, ILineTracker
     {
-
         public IDocument Document { get; }
         public HighlightingColor DefaultTextColor { get; }
         private readonly WeakLineTracker weakLineTracker;
@@ -28,7 +27,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         {
             IDocumentLine line = Document.GetLineByNumber(lineNumber);
             var highlightedLine = new HighlightedLine(Document, line);
-            
+
             int lineLength = line.Length;
             if (lineLength == 0)
             {
@@ -56,7 +55,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             for (; i < endIndex; i++)
             {
                 SyntaxSpan syntaxSpan = syntaxSpans[i];
-                
+
                 //if a highlighted section is not entirely within the line,
                 //AvalonEdit will throw an uncatchable exception and LEX will instantly crash.
                 //let's avoid that
@@ -89,7 +88,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public void UpdateHighlightingState(int lineNumber)
         {
-            
         }
 
         public event HighlightingStateChangedEventHandler HighlightingStateChanged;

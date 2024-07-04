@@ -29,8 +29,9 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// MEM writes this to every single package file it modifies
         /// </summary>
-        private static ReadOnlySpan<byte> MEMPackageTag => "ThisIsMEMEndOfFileMarker"u8;
-        private const int MEMPackageTagLength = 24;
+        public static ReadOnlySpan<byte> MEMPackageTag => "ThisIsMEMEndOfFileMarker"u8;
+
+        public const int MEMPackageTagLength = 24;
 
         /// <summary>
         /// LEC-saved LE packages will always end in this, assuming MEM did not save later
@@ -39,7 +40,6 @@ namespace LegendaryExplorerCore.Packages
         private const int LECPackageTagLength = 4;
         private const int LECPackageTag_Version_EmptyData = 1;
         private const int LECPackageTag_Version_JSON = 2;
-
 
         /// <summary>
         /// Player.sav in ME1 save files starts with this and needs to be scrolled forward to find actual start of package
@@ -370,7 +370,6 @@ namespace LegendaryExplorerCore.Packages
             ImportCount = packageReader.ReadInt32();
             ImportOffset = packageReader.ReadInt32();
 
-
             if (Game.IsLEGame() || Game != MEGame.ME1 || Platform != GamePlatform.Xenon)
             {
                 // Seems this doesn't exist on ME1 Xbox
@@ -439,8 +438,6 @@ namespace LegendaryExplorerCore.Packages
             //read package source
             var savedPos = packageReader.Position;
             packageReader.Skip(NumCompressedChunksAtLoad * 16); //skip chunk table so we can find package tag
-
-
 
             packageSource = packageReader.ReadUInt32(); //this needs to be read in so it can be properly written back out.
 
@@ -646,7 +643,6 @@ namespace LegendaryExplorerCore.Packages
                 packageReader.Dispose();
             }
 
-
             if (filePath != null)
             {
                 Localization = filePath.GetUnrealLocalization();
@@ -661,8 +657,6 @@ namespace LegendaryExplorerCore.Packages
             }
 #endif
         }
-
-
 
         public static Action<MEPackage, string, bool, bool, bool, bool, object> RegisterSaver() => saveByReconstructing;
 
@@ -745,7 +739,6 @@ namespace LegendaryExplorerCore.Packages
                           + exportTableSize
                           + dependencyTableSize
                           + mePackage.exports.Sum(exp => exp.DataSize);
-
 
             var ms = MemoryManager.GetMemoryStream(totalSize);
 
@@ -886,7 +879,6 @@ namespace LegendaryExplorerCore.Packages
                     }
                 }
 
-
                 switch (package.Game)
                 {
                     case MEGame.ME1:
@@ -909,7 +901,6 @@ namespace LegendaryExplorerCore.Packages
                         nameTableSize += 4 * invalidNameCount; // 4 bytes for size and nothing else. Null and empty strings are just the length of 0
                         break;
                 }
-
 
                 int importTableSize = package.imports.Count * ImportEntry.HeaderLength;
                 int exportTableSize = package.exports.Sum(exp => exp.HeaderLength);
@@ -1050,8 +1041,6 @@ namespace LegendaryExplorerCore.Packages
                     Array.Clear(uncompressedData, (int)ms.Position, dependencyTableSize);
                     positionInChunkData = (int)ms.Position + dependencyTableSize;
                 }
-
-
 
                 var compressionOutputSize = compressionType switch
                 {
@@ -1369,7 +1358,6 @@ namespace LegendaryExplorerCore.Packages
                     break;
             }
 
-
             if (Game == MEGame.ME2 || Game == MEGame.ME1)
             {
                 ms.WriteInt32(0);
@@ -1420,7 +1408,6 @@ namespace LegendaryExplorerCore.Packages
             {
                 ms.WriteInt32(-1);
             }
-
 
             if (chunks == null || !chunks.Any() || compressionType == CompressionType.None)
             {

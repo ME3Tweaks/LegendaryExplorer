@@ -255,7 +255,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 value = value.Swap();
             }
-            MemoryMarshal.Write(buff, ref value);
+            MemoryMarshal.Write(buff, in value);
         }
 
         public static void WriteAsBytes(ulong value, Span<byte> buff, Endian endian)
@@ -264,7 +264,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 value = value.Swap();
             }
-            MemoryMarshal.Write(buff, ref value);
+            MemoryMarshal.Write(buff, in value);
         }
 
         public static void WriteAsBytes(int value, Span<byte> buff, Endian endian)
@@ -273,7 +273,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 value = value.Swap();
             }
-            MemoryMarshal.Write(buff, ref value);
+            MemoryMarshal.Write(buff, in value);
         }
 
         public static void WriteAsBytes(Guid value, Span<byte> buff, Endian endian)
@@ -283,12 +283,12 @@ namespace LegendaryExplorerCore.Unreal
                 int a = BinaryPrimitives.ReadInt32BigEndian(buff);
                 int b = BinaryPrimitives.ReadInt16BigEndian(buff.Slice(4));
                 int c = BinaryPrimitives.ReadInt16BigEndian(buff.Slice(8));
-                MemoryMarshal.Write(buff, ref a);
-                MemoryMarshal.Write(buff.Slice(4), ref b);
-                MemoryMarshal.Write(buff.Slice(8), ref c);
+                MemoryMarshal.Write(buff, in a);
+                MemoryMarshal.Write(buff.Slice(4), in b);
+                MemoryMarshal.Write(buff.Slice(8), in c);
                 return;
             }
-            MemoryMarshal.Write(buff, ref value);
+            MemoryMarshal.Write(buff, in value);
         }
         ///
         /// <summary>

@@ -98,17 +98,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             defaultsExport.WriteProperties(props);
         }
 
-        public static void CompilePropertiesForNormalObject(DefaultPropertiesBlock defaultsAST, ExportEntry export, UnrealScriptOptionsPackage usop)
+        public static void CompilePropertiesForNormalObject(List<Statement> propertyStatements, ExportEntry export, UnrealScriptOptionsPackage usop)
         {
             IMEPackage pcc = export.FileRef;
 
             var compiler = new ScriptPropertiesCompiler(pcc, usop)
             {
-                Default__Export = export
+                Default__Export = export,
+                ShouldStripTransients = true
             };
 
-            var props = compiler.ConvertStatementsToPropertyCollection(defaultsAST.Statements, export, null);
-
+            var props = compiler.ConvertStatementsToPropertyCollection(propertyStatements, export, null);
+            
             export.WriteProperties(props);
         }
 
@@ -126,10 +127,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         {
                             throw new Exception("Subobjects not permitted!");
                         }
-                        var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration.Name);
+                        var subObjName = NameReference.FromInstancedString(subObj.NameDeclaration);
                         existingSubObjects.TryRemove(exp => exp.ObjectName == subObjName, out ExportEntry existingSubObject);
                         int netIndex = existingSubObject?.NetIndex ?? 0;
-                        CreateSubObject(subObj, export, ref existingSubObject);
+                        CreateSubObject(subObj, export, ref existingSubObject, usop);
                         subObjectDict[subObjName] = existingSubObject;
                         subObjectsToFinish.Add(subObj, existingSubObject, netIndex);
                         break;
@@ -158,10 +159,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return props;
         }
 
-        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport)
+        private void CreateSubObject(Subobject subObject, ExportEntry parent, ref ExportEntry subExport, UnrealScriptOptionsPackage usop)
         {
-            var objName = NameReference.FromInstancedString(subObject.NameDeclaration.Name);
-            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), usop?.GamePathOverride);
+            var objName = NameReference.FromInstancedString(subObject.NameDeclaration);
+            IEntry classEntry = EntryImporter.EnsureClassIsInFile(Pcc, subObject.Class.Name, new RelinkerOptionsPackage(), usop.GamePathOverride);
             if (subExport is null)
             {
                 if (Pcc.TryGetTrash(out subExport))
@@ -241,7 +242,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         }
                     }
                 }
-
             }
             subExport.Archetype = null;
         }
@@ -284,7 +284,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             entry = null;
                             break;
                         case SymbolReference { Node: Subobject subobject }:
-                            entry = subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration.Name)];
+                            entry = subObjectDict?[NameReference.FromInstancedString(subobject.NameDeclaration)];
                             break;
                         case ObjectLiteral objectLiteral:
                             if (objectLiteral.Class is ClassType { ClassLimiter: Class @class })
@@ -293,7 +293,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             }
                             else
                             {
-                                entry = Pcc.FindEntry(objectLiteral.Name.Value) ?? usop?.MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
+                                entry = Pcc.FindEntry(objectLiteral.Name.Value, objectLiteral.Class.Name) ?? usop?.MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value);
                             }
                             break;
                         default:
@@ -316,7 +316,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     {
                         if (literal is CompositeSymbolRef csf)
                         {
-                            objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass((Class)((ClassType)((ObjectLiteral)csf.OuterSymbol).Class).ClassLimiter, Pcc, usop)).UIndex;
+                            if (csf.OuterSymbol is ObjectLiteral { Class: ClassType { ClassLimiter: Class containingclass } })
+                            {
+                                objUIndex = GetClassDefaultObject(CompilerUtils.ResolveClass(containingclass, Pcc, usop)).UIndex;
+                            }
+                            else
+                            {
+                                var objectLiteral = (ObjectLiteral)csf.OuterSymbol;
+                                objUIndex = Pcc.FindEntry(objectLiteral.Name.Value, objectLiteral.Class.Name)?.UIndex ?? usop.MissingObjectResolver?.Invoke(Pcc, objectLiteral.Name.Value)?.UIndex ?? 0;
+                            }
                             literal = csf.InnerSymbol;
                         }
 
@@ -326,6 +334,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     break;
                 case DynamicArrayType dynamicArrayType:
                     VariableType elementType = dynamicArrayType.ElementType;
+                    if (literal is StringLiteral stringLit)
+                    {
+                        prop = new ImmutableByteArrayProperty(Convert.FromBase64String(stringLit.Value), propName);
+                        break;
+                    }
                     var properties = ((DynamicArrayLiteral)literal).Values.Select(lit => MakeProperty(null, elementType, lit, subObjectDict));
                     switch (elementType)
                     {
@@ -453,7 +466,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
             }
-
 
             if (subExport.ClassName is "DominantDirectionalLightComponent" or "DominantSpotLightComponent")
             {

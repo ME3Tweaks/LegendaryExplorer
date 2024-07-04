@@ -21,7 +21,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             Tokens = new TokenStream(new List<ScriptToken>(), new LineLookup(new List<int> {0}));
         }
 
-
         private readonly struct DefinitionLinkSpan
         {
             public readonly ASTNode Node;

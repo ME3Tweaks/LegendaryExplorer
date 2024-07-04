@@ -137,7 +137,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             PNode node1 = edge.EndPoints[0];
             PNode node2 = edge.EndPoints[1];
 
-
             PointF start = node1.GlobalBounds.Location;
 
             edge.Reset();

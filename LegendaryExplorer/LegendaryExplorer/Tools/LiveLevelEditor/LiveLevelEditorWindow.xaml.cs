@@ -312,7 +312,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     }
                     pos = new Vector3(floats[0], floats[1], floats[2]);
 
-
                 }
                 noUpdate = true;
                 XPos = (int)pos.X;

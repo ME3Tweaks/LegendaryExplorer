@@ -8,7 +8,6 @@ namespace LegendaryExplorer.SharedUI.Converters
     [ValueConversion(typeof(bool), typeof(Visibility))]
     public class BoolToVisibilityConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter is string param && param == "Not")
@@ -27,7 +26,6 @@ namespace LegendaryExplorer.SharedUI.Converters
     [ValueConversion(typeof(bool), typeof(Visibility))]
     public class BoolToHiddenVisibleConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return ((bool)value) ? Visibility.Visible : Visibility.Hidden; 
@@ -38,5 +36,4 @@ namespace LegendaryExplorer.SharedUI.Converters
             return null;
         }
     }
-    
 }

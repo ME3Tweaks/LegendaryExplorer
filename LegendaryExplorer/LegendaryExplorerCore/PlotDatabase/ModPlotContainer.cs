@@ -124,7 +124,7 @@ namespace LegendaryExplorerCore.PlotDatabase
             if (!file.Exists || file.Extension != ".json") throw new Exception("Input path is not a JSON file");
             var newMod = new ModPlotDatabase() {Game = Game};
             newMod.LoadPlotsFromFile(file.FullName);
-            foreach (var oldMod in Mods.Where(m => m.ModRoot.Label == newMod.ModRoot.Label))
+            foreach (var oldMod in Mods.Where(m => m.ModRoot.Label == newMod.ModRoot.Label).ToList())
             {
                 RemoveMod(oldMod);
             }
@@ -135,12 +135,12 @@ namespace LegendaryExplorerCore.PlotDatabase
         /// Saves all loaded mods to the given appdata folder
         /// </summary>
         /// <param name="appDataFolder">Application AppData folder to save mods to</param>
-        public void SaveModsToDisk(string appDataFolder, bool forceSave = false)
+        public void SaveModsToDisk(string appDataFolder)
         {
             var saveFolder = Path.Combine(appDataFolder, LocalModFolderName);
             foreach (var mod in Mods)
             {
-                mod.SaveDatabaseToFile(saveFolder, forceSave);
+                mod.SaveDatabaseToFile(saveFolder, true);
             }
         }
     }

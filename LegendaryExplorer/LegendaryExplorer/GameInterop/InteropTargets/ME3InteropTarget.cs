@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.GameFilesystem;
@@ -31,6 +32,11 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         };
         public override string ProcessName => "MassEffect3";
         public override uint GameMessageSignature => 0x02AC00C2;
+        public override bool TryGetProcess(out Process process)
+        {
+            process = Process.GetProcessesByName(ProcessName).FirstOrDefault();
+            return process != null && process.MainModule?.FileVersionInfo.ProductMajorPart < 2;
+        }
         public override void SelectGamePath()
         {
             OpenFileDialog ofd = new()

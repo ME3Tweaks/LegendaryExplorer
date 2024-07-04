@@ -38,7 +38,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
     internal class IfNotJump : ConditionalJump
     {
-
         public IfNotJump(ushort jumpLoc, Expression condition, int sizeOfExpression) : base(jumpLoc, condition)
         {
             SizeOfExpression = sizeOfExpression;

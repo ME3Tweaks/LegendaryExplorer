@@ -58,7 +58,6 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             const uint VirtualMemoryWrite = 0x20;
 
             MEHandle = WindowsAPI.OpenProcess(VirtualMemoryOperation | VirtualMemoryRead | VirtualMemoryWrite, false, (uint)meProcess.Id);
-
         }
 
         public void Attach()

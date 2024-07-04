@@ -31,7 +31,6 @@ namespace LegendaryExplorerCore.Shaders
                 return null; // We cannot find the game!
             }
             return Path.Combine(cookedPath, GlobalShaderFileName(game));
-
         }
 
         private static Dictionary<Guid, int> ME3ShaderOffsets;

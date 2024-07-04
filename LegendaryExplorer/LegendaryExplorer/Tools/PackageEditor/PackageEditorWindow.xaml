@@ -169,11 +169,10 @@
 
                     <MenuItem Header="Pop out current tab into new standalone window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL+P"/>
                     <Separator/>
-                    <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
-                    <MenuItem Header="Create new Package export" ToolTip="Adds a new package export to the root of the current loaded package" Command="{Binding CreatePackageExportCommand}"/>
-                    <MenuItem Header="Create ObjectReferencer" ToolTip="Adds an ObjectReferencer to the root of the package if one does not exist" Command="{Binding CreateObjectReferencerCommand}"/>
-                    <Separator/>
-                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" InputGestureText="CTRL+Shift+A"/>
+                    <MenuItem Header="Bulk Property Editing">
+                        <MenuItem Header="Export properties to text file" Command="{Binding ExportAllPropsCommand}"/>
+                        <MenuItem Header="Apply property edits from text file" Command="{Binding ApplyBulkPropEditsCommand}"/>
+                    </MenuItem>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
                         <MenuItem Header="Bulk export...">
@@ -205,6 +204,12 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                </MenuItem>
+                <MenuItem Header="Create" Padding="4">
+                    <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
+                    <MenuItem Header="Create new Package export" ToolTip="Adds a new package export to the root of the current loaded package" Command="{Binding CreatePackageExportCommand}"/>
+                    <MenuItem Header="Create ObjectReferencer" ToolTip="Adds an ObjectReferencer to the root of the package if one does not exist" Command="{Binding CreateObjectReferencerCommand}"/>
+                    <MenuItem Header="Create blank texture" ToolTip="Creates a blank texture based on input parameters such as pixel format" Command="{Binding CreateTextureCommand}"/>
                 </MenuItem>
 
                 <MenuItem Header="Options" Padding="4">
@@ -516,7 +521,7 @@
                             <TextBlock Text="Mesh" ToolTip="View 3D mesh"/>
                         </TabItem.Header>
                         <exportLoaderControls:MeshRenderer x:Name="MeshRendererTab_MeshRenderer"/>
-                    </TabItem> 
+                    </TabItem>
                     <TabItem Name="Bytecode_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Bytecode" ToolTip="View and edit UnrealScript bytecode"/>

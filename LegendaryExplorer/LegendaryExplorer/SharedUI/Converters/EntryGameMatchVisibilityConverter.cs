@@ -10,7 +10,6 @@ namespace LegendaryExplorer.SharedUI.Converters
     [ValueConversion(typeof(bool), typeof(Visibility))]
     public class EntryGameMatchVisibilityConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter is string matchParaml && value is IEntry entry)
@@ -57,7 +56,6 @@ namespace LegendaryExplorer.SharedUI.Converters
                 {
                     return gameToMatch == entry.Game ? Visibility.Visible : Visibility.Collapsed;
                 }
-
             }
             return Visibility.Collapsed;
         }

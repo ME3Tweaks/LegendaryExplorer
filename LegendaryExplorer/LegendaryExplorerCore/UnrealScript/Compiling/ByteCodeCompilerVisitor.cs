@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -15,6 +16,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using Microsoft.Toolkit.HighPerformance;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Compiling
@@ -25,17 +27,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         private IContainsByteCode CompilationUnit;
         private readonly IEntry ContainingClass;
 
-        private readonly CaseInsensitiveDictionary<ExportEntry> parameters = new();
-        private readonly CaseInsensitiveDictionary<ExportEntry> locals = new();
+        private readonly CaseInsensitiveDictionary<ExportEntry> parameters = [];
+        private readonly CaseInsensitiveDictionary<ExportEntry> locals = [];
 
         private bool inAssignTarget;
         private bool inIteratorCall;
         private bool useInstanceDelegate;
         private SkipPlaceholder iteratorCallSkip;
 
-        private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = new();
+        private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = [];
 
         private readonly UnrealScriptOptionsPackage USOP;
+
+        private readonly Queue<ScriptToken> Comments = [];
 
         [Flags]
         private enum NestType
@@ -67,14 +71,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        private readonly Stack<Nest> Nests = new();
+        private readonly struct CommentComparer(int offSet) : IComparable<(int, ScriptToken)>
+        {
+            public int CompareTo((int, ScriptToken) other) => offSet.CompareTo(other.Item2.StartPos);
+        }
+
+        private readonly Stack<Nest> Nests = [];
 
         private class NestedContextFlag
         {
             public bool HasNestedContext;
         }
 
-        private readonly Stack<NestedContextFlag> InContext = new() { null };
+        private readonly Stack<NestedContextFlag> InContext = [null];
 
         private ByteCodeCompilerVisitor(UStruct target, UnrealScriptOptionsPackage usop) : base(target.Export.FileRef)
         {
@@ -99,13 +108,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             if (Target is UFunction uFunction)
             {
+                QueueComments(func.Tokens.Comments, func.StartPos);
+
                 CompilationUnit = func;
-                var nextItem = uFunction.Children;
+                int nextItem = uFunction.Children;
                 UProperty returnValue = null;
                 while (uFunction.Export.FileRef.TryGetUExport(nextItem, out ExportEntry nextChild))
                 {
-                    var objBin = ObjectBinary.From(nextChild);
-                    switch (objBin)
+                    switch (ObjectBinary.From(nextChild))
                     {
                         case UProperty uProperty:
                             if (uProperty.PropertyFlags.Has(EPropertyFlags.ReturnParm))
@@ -128,7 +138,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
 
-
                 foreach (FunctionParameter parameter in func.Parameters.Where(param => param.IsOptional))
                 {
                     if (parameter.DefaultParameter is Expression expr)
@@ -147,7 +156,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     }
                 }
 
-
                 if (func.IsNative)
                 {
                     foreach (FunctionParameter functionParameter in func.Parameters)
@@ -160,7 +168,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 else
                 {
                     Emit(func.Body);
-
+                    //one last comment emit for any that are past the last line of code
+                    EmitComments(func.EndPos);
                     WriteOpCode(OpCodes.Return);
                     if (returnValue != null)
                     {
@@ -203,6 +212,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             if (Target is UState uState)
             {
+                QueueComments(state.Tokens.Comments, state.Body.StartPos);
+
                 CompilationUnit = state;
                 uState.LabelTableOffset = ushort.MaxValue;
                 Emit(state.Body);
@@ -246,6 +257,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
+        private void QueueComments(List<(int, ScriptToken)> comments, int startPos)
+        {
+            int firstCommentIndex = ~comments.AsSpan().BinarySearch(new CommentComparer(startPos));
+            if (firstCommentIndex >= 0 && firstCommentIndex < comments.Count)
+            {
+                foreach ((_, ScriptToken commentToken) in comments.AsSpan()[firstCommentIndex..])
+                {
+                    Comments.Enqueue(commentToken);
+                }
+            }
+        }
+
         public static void Compile(Class cls, UClass target, UnrealScriptOptionsPackage usop)
         {
             var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
@@ -272,11 +295,31 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 Emit(statement);
             }
+            EmitComments(node.EndPos);
             return true;
+        }
+
+        private void EmitComments(int nodePos)
+        {
+            JumpPlaceholder jump = null;
+            while (Comments.TryPeek(out ScriptToken commentToken) && commentToken.StartPos < nodePos)
+            {
+                if (jump is null)
+                {
+                    WriteOpCode(OpCodes.Jump);
+                    jump = WriteJumpPlaceholder(JumpType.Conditional);
+                }
+                WriteOpCode(OpCodes.StringConst);
+                WriteBytes(Encoding.ASCII.GetBytes(commentToken.Value));
+                WriteByte(0);
+                Comments.Dequeue();
+            }
+            jump?.End();
         }
 
         public bool VisitNode(DoUntilLoop node)
         {
+            EmitComments(node.StartPos);
             var loopStartPos = Position;
             Nests.Push(new Nest(NestType.DoUntil));
             Emit(node.Body);
@@ -291,6 +334,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ForLoop node)
         {
+            EmitComments(node.StartPos);
             node.Init?.AcceptVisitor(this);
             var loopStartPos = Position;
             JumpPlaceholder endJump = EmitConditionalJump(node.Condition);
@@ -308,6 +352,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ForEachLoop node)
         {
+            EmitComments(node.StartPos);
             if (node.IteratorCall is DynArrayIterator or CompositeSymbolRef { InnerSymbol: DynArrayIterator })
             {
                 WriteOpCode(OpCodes.DynArrayIterator);
@@ -343,6 +388,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(WhileLoop node)
         {
+            EmitComments(node.StartPos);
             var loopStartPos = Position;
             JumpPlaceholder endJump = EmitConditionalJump(node.Condition);
             Nests.Push(new Nest(NestType.While));
@@ -358,6 +404,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(SwitchStatement node)
         {
+            EmitComments(node.StartPos);
             WriteOpCode(OpCodes.Switch);
             EmitVariableSize(node.Expression);
             Emit(node.Expression);
@@ -371,6 +418,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(CaseStatement node)
         {
+            EmitComments(node.StartPos);
             Nest nest = Nests.Peek();
             nest.CaseJumpPlaceholder?.End();
             WriteOpCode(OpCodes.Case);
@@ -381,6 +429,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(DefaultCaseStatement node)
         {
+            EmitComments(node.StartPos);
             Nest nest = Nests.Peek();
             nest.CaseJumpPlaceholder?.End();
             nest.CaseJumpPlaceholder = null;
@@ -391,6 +440,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(AssignStatement node)
         {
+            EmitComments(node.StartPos);
             VariableType targetType = node.Target.ResolveType();
             if (targetType == SymbolTable.BoolType)
             {
@@ -414,6 +464,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(AssertStatement node)
         {
+            EmitComments(node.StartPos);
             WriteOpCode(OpCodes.Assert);
             //why you would have a source file longer than 65,535 lines I truly do not know
             //better for it to emit an incorrect line number in the assert than to crash the compiler though
@@ -428,6 +479,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(BreakStatement node)
         {
+            EmitComments(node.StartPos);
             WriteOpCode(OpCodes.Jump);
             Nests.Peek().Add(WriteJumpPlaceholder(JumpType.Break));
             return true;
@@ -435,6 +487,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ContinueStatement node)
         {
+            EmitComments(node.StartPos);
             Nest nest = Nests.First(n => n.Type.Has(NestType.Loop));
             if (nest.Type == NestType.ForEach)
             {
@@ -453,6 +506,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(IfStatement node)
         {
+            EmitComments(node.StartPos);
             JumpPlaceholder jumpToElse = EmitConditionalJump(node.Condition);
             Emit(node.Then);
             JumpPlaceholder jumpPastElse = null;
@@ -512,6 +566,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ReturnStatement node)
         {
+            EmitComments(node.StartPos);
             foreach (Nest nest in Nests)
             {
                 if (nest.Type is NestType.ForEach)
@@ -534,12 +589,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(StopStatement node)
         {
+            EmitComments(node.StartPos);
             WriteOpCode(OpCodes.Stop);
             return true;
         }
 
         public bool VisitNode(StateGoto node)
         {
+            EmitComments(node.StartPos);
             WriteOpCode(OpCodes.GotoLabel);
             Emit(node.LabelExpression);
             return true;
@@ -547,6 +604,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(Goto node)
         {
+            EmitComments(node.StartPos);
             WriteOpCode(OpCodes.Jump);
             LabelJumps.AddToListAt(node.Label, WriteJumpPlaceholder());
             return true;
@@ -554,6 +612,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ExpressionOnlyStatement node)
         {
+            EmitComments(node.StartPos);
             if (NeedsToEatReturnValue(node.Value, out IEntry returnProp))
             {
                 WriteOpCode(OpCodes.EatReturnValue);
@@ -614,6 +673,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(ReplicationStatement node)
         {
+            //TODO: comments in replication block? Not sure that would be valid
             foreach (SymbolReference varRef in node.ReplicatedVariables)
             {
                 if (varRef.Node is not VariableDeclaration varDecl)
@@ -706,7 +766,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             WriteOpCode(OpCodes.EndFunctionParms);
             skip?.End();
             return true;
-
         }
 
         public bool VisitNode(PreOpReference node)
@@ -1146,7 +1205,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-
         public bool VisitNode(DynArrayLength node)
         {
             WriteOpCode(OpCodes.DynArrayLength);
@@ -1292,7 +1350,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
-
         public bool VisitNode(Label node)
         {
             node.StartOffset = Position;
@@ -1321,22 +1378,22 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteByte((byte)i);
             }
             else switch (i)
-                {
-                    case 0:
-                        WriteOpCode(OpCodes.IntZero);
-                        break;
-                    case 1:
-                        WriteOpCode(OpCodes.IntOne);
-                        break;
-                    case >= 0 and < 256:
-                        WriteOpCode(OpCodes.IntConstByte);
-                        WriteByte((byte)i);
-                        break;
-                    default:
-                        WriteOpCode(OpCodes.IntConst);
-                        WriteInt(i);
-                        break;
-                }
+            {
+                case 0:
+                    WriteOpCode(OpCodes.IntZero);
+                    break;
+                case 1:
+                    WriteOpCode(OpCodes.IntOne);
+                    break;
+                case >= 0 and < 256:
+                    WriteOpCode(OpCodes.IntConstByte);
+                    WriteByte((byte)i);
+                    break;
+                default:
+                    WriteOpCode(OpCodes.IntConst);
+                    WriteInt(i);
+                    break;
+            }
 
             return true;
         }
@@ -1351,7 +1408,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(StringLiteral node)
         {
             WriteOpCode(OpCodes.StringConst);
-            WriteBytes(node.Value.Select(c => (byte)c).ToArray());
+            WriteBytes(Encoding.ASCII.GetBytes(node.Value));
             WriteByte(0);
             return true;
         }
@@ -1372,7 +1429,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}") ?? ResolveObject(node.Name.Value) ?? USOP.MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
+                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}", node.Class.Name) ?? ResolveObject(node.Name.Value, node.Class.Name) ?? USOP.MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
                 if (entry is null)
                 {
                     throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
@@ -1431,7 +1488,6 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         //TODO: remove? alreaty done in parser. doing again should have no effect
         static Expression AddConversion(VariableType destType, Expression expr)
         {
-
             if (expr is NoneLiteral noneLit)
             {
                 if (destType.PropertyType == EPropertyType.Delegate)
@@ -1487,7 +1543,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return expr;
         }
 
-        private readonly Dictionary<ASTNode, IEntry> resolveSymbolCache = new();
+        private readonly Dictionary<ASTNode, IEntry> resolveSymbolCache = [];
 
         private IEntry ResolveSymbol(ASTNode node)
         {
@@ -1531,7 +1587,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry ResolveState(State s) => Pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer).InstancedFullPath}.{s.Name}", "State");
 
-        private IEntry ResolveObject(string instancedFullPath) => Pcc.FindEntry(instancedFullPath);
+        private IEntry ResolveObject(string instancedFullPath, string className) => Pcc.FindEntry(instancedFullPath, className);
 
         public static string PropertyTypeName(VariableType type) =>
             type switch
@@ -1724,6 +1780,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         }
 
         public bool VisitNode(DynamicArrayLiteral node)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public bool VisitNode(CommentStatement node)
         {
             throw new InvalidOperationException();
         }
