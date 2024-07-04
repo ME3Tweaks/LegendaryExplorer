@@ -119,7 +119,7 @@
 		<!--Do not upgrade SingleInstance-->
 		<PackageReference Include="HMBSbige.SingleInstance" Version="[5.0.0]" />
 		<PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
-		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.5.3" />
+		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.5.8" />
 		<PackageReference Include="LibVLCSharp.WPF" Version="3.8.5" />
 		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
 		<PackageReference Include="Microsoft.AppCenter" Version="5.0.3" />
