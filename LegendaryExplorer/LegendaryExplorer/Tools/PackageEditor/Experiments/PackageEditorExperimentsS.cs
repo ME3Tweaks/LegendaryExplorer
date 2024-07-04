@@ -1730,13 +1730,13 @@ import java.util.*;"
                 {
                     using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                     ExportEntry firstExport = pcc.Exports.FirstOrDefault();
-                    string src = UnrealScriptCompiler.DecompileBulkProps(pcc, out MessageLog log, packageCache);
+                    string src = UnrealScriptCompiler.DecompileBulkProps(pcc, out MessageLog log, new UnrealScriptOptionsPackage() { Cache = packageCache});
                     if (src is null || log.HasErrors)
                     {
                         interestingExports.Add(new EntryStringPair(firstExport, $"{pcc.FilePath} failed to decompile props!"));
                         return;
                     }
-                    log = UnrealScriptCompiler.CompileBulkPropertiesFile(src, pcc, packageCache);
+                    log = UnrealScriptCompiler.CompileBulkPropertiesFile(src, pcc, new UnrealScriptOptionsPackage() { Cache = packageCache });
                     if (log.HasErrors || log.HasLexErrors)
                     {
                         interestingExports.Add(new EntryStringPair(firstExport, $"{pcc.FilePath} failed to recompile props!"));

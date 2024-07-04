@@ -13,6 +13,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
+using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Audio;

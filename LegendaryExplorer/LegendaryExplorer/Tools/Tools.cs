@@ -188,7 +188,7 @@ namespace LegendaryExplorer
                 open = () =>
                 {
                     var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer 2 with.", "Live Level Editor 2 game selector",
-                        new[] { "LE1", "LE2", /*"LE3"*/ }, "LE2", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate(AnimationViewerWindow2.SupportedGames));
+                        new[] { "LE1", "LE2", /*"LE3"*/ }, "LE2", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate(LEAnimationViewerWindow.SupportedGames));
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {

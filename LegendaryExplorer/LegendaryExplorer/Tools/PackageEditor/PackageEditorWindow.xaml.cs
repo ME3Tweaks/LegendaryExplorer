@@ -358,7 +358,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Task.Run(() =>
             {
                 string src = File.ReadAllText(fileName);
-                return UnrealScriptCompiler.CompileBulkPropertiesFile(src, Pcc);
+                return UnrealScriptCompiler.CompileBulkPropertiesFile(src, Pcc, new UnrealScriptOptionsPackage());
 
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -387,7 +387,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             SetBusy("Decompiling all properties");
             Task.Run(() =>
             {
-                string src = UnrealScriptCompiler.DecompileBulkProps(Pcc, out MessageLog log);
+                string src = UnrealScriptCompiler.DecompileBulkProps(Pcc, out MessageLog log, new UnrealScriptOptionsPackage());
                 if (src is null || log.HasErrors)
                 {
                     return log;
