@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
@@ -524,6 +525,54 @@ namespace LegendaryExplorer.Tools.PackageDumper
         }
     }
 
+    class BlankWriter : StreamWriter
+    {
+        public BlankWriter(Stream stream) : base(stream)
+        {
+        }
+
+        public BlankWriter(Stream stream, Encoding encoding) : base(stream, encoding)
+        {
+        }
+
+        public BlankWriter(Stream stream, Encoding encoding, int bufferSize) : base(stream, encoding, bufferSize)
+        {
+        }
+
+        public BlankWriter(Stream stream, Encoding encoding = null, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, bufferSize, leaveOpen)
+        {
+        }
+
+        public BlankWriter(string path) : base(path)
+        {
+        }
+
+        public BlankWriter(string path, bool append) : base(path, append)
+        {
+        }
+
+        public BlankWriter(string path, bool append, Encoding encoding) : base(path, append, encoding)
+        {
+        }
+
+        public BlankWriter(string path, bool append, Encoding encoding, int bufferSize) : base(path, append, encoding, bufferSize)
+        {
+        }
+
+        public BlankWriter(string path, FileStreamOptions options) : base(path, options)
+        {
+        }
+
+        public BlankWriter(string path, Encoding encoding, FileStreamOptions options) : base(path, encoding, options)
+        {
+        }
+
+        public override void WriteLine(string str)
+        {
+            // DO NOTHING.
+        }
+    }
+
     public class PackageDumperSingleFileTask : NotifyPropertyChangedBase
     {
         private string _currentOverallOperationText;
@@ -590,7 +639,8 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
                 Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                using StreamWriter stringoutput = new(savepath);
+                //using StreamWriter stringoutput = new(savepath);
+                using StreamWriter stringoutput = new BlankWriter(new MemoryStream()); // Debug: Don't bother to disk
                 //if (imports)
                 //{
                 //writeVerboseLine("Getting Imports");
