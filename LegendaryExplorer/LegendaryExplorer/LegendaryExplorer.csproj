@@ -15,6 +15,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Version>6.4.0.0</Version>
 		<EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries> <!-- Hot reload is completely broken without this -->
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">

@@ -6,6 +6,7 @@
     <Authors>ME3Tweaks</Authors>
     <Version>6.4.0.0</Version>
     <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <PropertyGroup>
