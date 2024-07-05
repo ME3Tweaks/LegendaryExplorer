@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended =
 [
-    [ "DialogueNodeExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#ab682935833a80d777b84b13a1afe3200", null ],
+    [ "DialogueNodeExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#accd36362a366b29e01d9ec14e9707909", null ],
     [ "DialogueNodeExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#ada44460cd4a49d7dba1649d34c931998", null ],
     [ "IsReply", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a1d28126cdf10e50c74f0e2589cbf9eb7", null ],
     [ "NodeCount", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#aaccb1e231d0d0addb6dd96c378e0afb0", null ],

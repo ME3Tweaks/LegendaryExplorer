@@ -5,6 +5,7 @@ var class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended =
     [ "LoadConversation", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a8fedf48f2918638e961ae89f9dbbed35", null ],
     [ "DetailedParse", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#add747da7a93f4bb6844dde0d6e83a075", null ],
     [ "ParseSingleNodeInterpData", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216", null ],
+    [ "recursiveFindSeqActInterp", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3427c45bf7dd1dd634d97fd3d8cf2848", null ],
     [ "ParseEntryList", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaf3be1cd7933592a65dec403e2ccb047", null ],
     [ "ParseReplyList", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#ad9f3e1cb53f7c7ee135ce25fa3ae047d", null ],
     [ "ParseSingleLine", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af3e1330ca65535a3f67767243c32cec2", null ],

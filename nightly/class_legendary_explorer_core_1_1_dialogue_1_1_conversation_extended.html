@@ -128,6 +128,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a53ca9f556a62c78d3f549c9bbb74d216"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">ParseSingleNodeInterpData</a> (<a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html">DialogueNodeExtended</a> node, Dictionary&lt; int, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; convStarts=null)</td></tr>
 <tr class="memdesc:a53ca9f556a62c78d3f549c9bbb74d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the InterpData export for a given DialogueNode   <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a53ca9f556a62c78d3f549c9bbb74d216">More...</a><br /></td></tr>
 <tr class="separator:a53ca9f556a62c78d3f549c9bbb74d216"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3427c45bf7dd1dd634d97fd3d8cf2848"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3427c45bf7dd1dd634d97fd3d8cf2848">recursiveFindSeqActInterp</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; nodesToSearch, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; nodesSearched, int searchDepthRemaining)</td></tr>
+<tr class="memdesc:a3427c45bf7dd1dd634d97fd3d8cf2848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively searches a kismet sequence for an export of class SeqAct_Interp   <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a3427c45bf7dd1dd634d97fd3d8cf2848">More...</a><br /></td></tr>
+<tr class="separator:a3427c45bf7dd1dd634d97fd3d8cf2848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf3be1cd7933592a65dec403e2ccb047"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaf3be1cd7933592a65dec403e2ccb047">ParseEntryList</a> (Func&lt; int, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string &gt; tlkLookup=null)</td></tr>
 <tr class="memdesc:aaf3be1cd7933592a65dec403e2ccb047"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the <a class="el" href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aeb8f0387a052a6cc7f6f9f7852a7af99" title="The entry (non-player) dialogue nodes in this conversation, in correct order">EntryList</a> collection from the export's m_EntryList property   <a href="class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aaf3be1cd7933592a65dec403e2ccb047">More...</a><br /></td></tr>
 <tr class="separator:aaf3be1cd7933592a65dec403e2ccb047"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -415,6 +418,59 @@ Events</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>InterpData export for node, null if not found</dd></dl>
+
+</div>
+</div>
+<a id="a3427c45bf7dd1dd634d97fd3d8cf2848" name="a3427c45bf7dd1dd634d97fd3d8cf2848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3427c45bf7dd1dd634d97fd3d8cf2848">&#9670;&#160;</a></span>recursiveFindSeqActInterp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Dialogue.ConversationExtended.recursiveFindSeqActInterp </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>nodesToSearch</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>nodesSearched</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>searchDepthRemaining</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Recursively searches a kismet sequence for an export of class SeqAct_Interp  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nodesToSearch</td><td>List of nodes to search</td></tr>
+    <tr><td class="paramname">nodesSearched</td><td>List of nodes already visited</td></tr>
+    <tr><td class="paramname">searchDepthRemaining</td><td>How many layers deep should be searched</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Export of class SeqAct_Interp, or null if not found</dd></dl>
 
 </div>
 </div>

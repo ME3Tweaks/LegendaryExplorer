@@ -123,6 +123,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad7be79044f3f2ab7fd88afe3a34c1258"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ad7be79044f3f2ab7fd88afe3a34c1258">AddDefaultPropertiesToTrack</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> trackExport)</td></tr>
 <tr class="memdesc:ad7be79044f3f2ab7fd88afe3a34c1258"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds some pre-determined default properties to a given InterpTrack, based on class name   <a href="class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ad7be79044f3f2ab7fd88afe3a34c1258">More...</a><br /></td></tr>
 <tr class="separator:ad7be79044f3f2ab7fd88afe3a34c1258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3beb1eb8d093d499ded309bc23b3e1e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ad3beb1eb8d093d499ded309bc23b3e1e">TryGetInterpGroup</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> interpData, string groupName, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> interpGroup)</td></tr>
+<tr class="memdesc:ad3beb1eb8d093d499ded309bc23b3e1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try get an InterpGroup in an InterpData by groupName.   <a href="class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#ad3beb1eb8d093d499ded309bc23b3e1e">More...</a><br /></td></tr>
+<tr class="separator:ad3beb1eb8d093d499ded309bc23b3e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57d60b5209f04fa86faffea626802166"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a57d60b5209f04fa86faffea626802166">TryGetInterpTrack</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> interpGroup, string trackClass, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> interpTrack)</td></tr>
+<tr class="memdesc:a57d60b5209f04fa86faffea626802166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try get an InterpTrack in an InterpGroup by trackClass.   <a href="class_legendary_explorer_core_1_1_matinee_1_1_matinee_helper.html#a57d60b5209f04fa86faffea626802166">More...</a><br /></td></tr>
+<tr class="separator:a57d60b5209f04fa86faffea626802166"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to perform common <a class="el" href="namespace_legendary_explorer_core_1_1_matinee.html" title="Tools for creating and modifying Matinee objects">Matinee</a> editing operations  </p>
@@ -381,6 +387,112 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ad3beb1eb8d093d499ded309bc23b3e1e" name="ad3beb1eb8d093d499ded309bc23b3e1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3beb1eb8d093d499ded309bc23b3e1e">&#9670;&#160;</a></span>TryGetInterpGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool LegendaryExplorerCore.Matinee.MatineeHelper.TryGetInterpGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>interpData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>groupName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>interpGroup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Try get an InterpGroup in an InterpData by groupName.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">interpData</td><td>InterpData to search on.</td></tr>
+    <tr><td class="paramname">groupName</td><td>Group name to find.</td></tr>
+    <tr><td class="paramname">interpGroup</td><td>Target InterpGroup.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the InterpGroup was found or not.</dd></dl>
+
+</div>
+</div>
+<a id="a57d60b5209f04fa86faffea626802166" name="a57d60b5209f04fa86faffea626802166"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57d60b5209f04fa86faffea626802166">&#9670;&#160;</a></span>TryGetInterpTrack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool LegendaryExplorerCore.Matinee.MatineeHelper.TryGetInterpTrack </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>interpGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>trackClass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>interpTrack</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Try get an InterpTrack in an InterpGroup by trackClass.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">interpGroup</td><td>InterpGroup to search on.</td></tr>
+    <tr><td class="paramname">trackClass</td><td>Class of the track to find.</td></tr>
+    <tr><td class="paramname">interpTrack</td><td>Target InterpTrack.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the InterpTrack was found or not.</dd></dl>
 
 </div>
 </div>
