@@ -20,10 +20,18 @@
         <MenuItem Header="(FOVO) Open Line in Dialogue Editor" Click="OpenFovoLineDlg_Click" Tag="F" ToolTip="Opens the selected FOVO line in Dialogue Editor"/>
     </MenuItem>
     <MenuItem Header="Exkywor's buttons for lazy people">
+        <MenuItem Header="Insert TrackMove Key" Click="InsertTrackMoveKey_Click" ToolTip="Inserts a position, rotation, and time keys to the InterpTrackMove."/>
+        <MenuItem Header="Delete TrackMove Key" Click="DeleteTrackMoveKey_Click" ToolTip="Deletes the position, rotation, and time keys of the InterpTrackMove at the specific index."/>
+        <MenuItem Header="Insert DOF Key" Click="InsertDOFKey_Click" ToolTip="Inserts a DOF and time keys to the DOF track."/>
+        <MenuItem Header="Delete DOF Key" Click="DeleteDOFKey_Click" ToolTip="Deletes the DOF and time keys of the DOF track at specific index."/>
+        <MenuItem Header="Insert Gesture Key" Click="InsertGestureKey_Click" ToolTip="Inserts a Gesture and time keys to the Gesture track."/>
+        <MenuItem Header="Delete Gesture Key" Click="DeleteGestureKey_Click" ToolTip="Deletes the Gesture and time keys of the Gesture track at specific index."/>
         <MenuItem Header="Add Preset Director InterpGroup" Click="AddPresetDirectorGroup_Click" ToolTip="Add an InterpGroupDirector along with Director and DOF tracks."/>
         <MenuItem Header="Add Preset Camera InterpGroup" Click="AddPresetCameraGroup_Click" ToolTip="Add a Camera InterpGroup with its actor set along with Move and FOV tracks."/>
+        <MenuItem Header="Add Preset Camera InterpGroup with TrackMove Keys" Click="AddPresetCameraGroupWithKeys_Click" ToolTip="Add a Camera InterpGroup with its actor set along with Move and FOV tracks, and inserting a position, rotation, and time keys to its Move track."/>
         <MenuItem Header="Add Preset Actor InterpGroup" Click="AddPresetActorGroup_Click" ToolTip="Add an Actor InterpGroup with its actor set along with Move and Gesture tracks, as designed by Mentlegen."/>
         <MenuItem Header="Add Preset Gesture Track" Click="AddPresetGestureTrack_Click" ToolTip="Add a Gesture track with its actor set along with all the default properties."/>
         <MenuItem Header="Add Preset Gesture Track 2" Click="AddPresetGestureTrack2_Click" ToolTip="Alternate version of preset Gesture track, as designed by Lunk."/>
+        <MenuItem Header="Set Starting Pose" Click="SetStartingPose_Click" ToolTip="Provided a full animation name, set the starting pose set, animation, and offset for the selected gesture track."/>
     </MenuItem>
 </MenuItem>

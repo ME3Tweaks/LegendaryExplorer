@@ -1471,6 +1471,46 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.BatchUpdateAmbPerfClassExperiment(GetPEWindow());
         }
+
+        private void Replace1DLightMapColors_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.Replace1DLightMapColors(GetPEWindow());
+        } 
+
+        private void Replace1DLightMapColorsOfExports_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.Replace1DLightMapColorsOfExports(GetPEWindow());
+        } 
+
+        private void BatchReplace1DLightMapColors_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.BatchReplace1DLightMapColors(GetPEWindow());
+        }
+
+        private void MakeExportsForced_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.MakeExportsForced(GetPEWindow());
+        }
+
+        private void CollectSMCsintoSMCA_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CollectSMCsintoSMCA(GetPEWindow());
+        }
+
+        private void AddPrefabToLevel_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddPrefabToLevel(GetPEWindow());
+        }
+
+        private void AddStreamingKismet_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.AddStreamingKismetExperiment(GetPEWindow());
+        }
+
+        private void StreamFile_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.StreamFileExperiment(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------
