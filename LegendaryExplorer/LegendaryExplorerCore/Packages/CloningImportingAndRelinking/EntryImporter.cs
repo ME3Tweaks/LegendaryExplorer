@@ -399,7 +399,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.Cache.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
                             var seIFP = ifp;
-                            var testExp = donorPackage.FindExport(seIFP);
+                            var testExp = donorPackage.FindExport(seIFP, sourceExport.ClassName);
+
+                            if (testExp == null)
+                                testExp = donorPackage.FindExport(seIFP); // Try without specific class.
+
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
                                 sourceExport = testExp;
@@ -438,7 +442,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]);
                         if (rop.Cache.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
-                            var testExp = donorPackage.FindExport(ifp);
+                            var testExp = donorPackage.FindExport(ifp, sourceExport.ClassName);
+                            if (testExp == null)
+                                testExp = donorPackage.FindExport(ifp); // Try without specific class, perhaps it changed across games.
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant")) // Use GFxMovieInfo Donors for BioSWF export
                             {
                                 sourceExport = testExp;
