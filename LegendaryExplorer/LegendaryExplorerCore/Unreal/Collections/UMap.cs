@@ -8,7 +8,7 @@ using ThrowHelper = LegendaryExplorerCore.Gammtek.ThrowHelper;
 namespace LegendaryExplorerCore.Unreal.Collections;
 
 //C# version of Unreal's TMap
-public abstract class UMapBase<TKey, TValue, TKeyFuncs> : IDictionary<TKey, TValue> where TKeyFuncs : IKeyFuncs<KeyValuePair<TKey, TValue>, TKey>
+public abstract class UMapBase<TKey, TValue, TKeyFuncs> : IDictionary<TKey, TValue> where TKeyFuncs : struct, IKeyFuncs<KeyValuePair<TKey, TValue>, TKey>
 {
     protected readonly USet<KeyValuePair<TKey, TValue>, TKey, TKeyFuncs> Pairs;
 

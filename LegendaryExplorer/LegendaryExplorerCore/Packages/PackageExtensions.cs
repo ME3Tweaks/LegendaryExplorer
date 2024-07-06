@@ -119,7 +119,7 @@ namespace LegendaryExplorerCore.Packages
             return import;
         }
 
-        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors)
+        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors) //TODO NET 9: change to span params
         {
             bool added = false;
             if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
@@ -375,7 +375,7 @@ namespace LegendaryExplorerCore.Packages
                     entriesToEvaluate.Push(seqxp);
                     entriesReferenced.Add(seqxp);
                 }
-                var localpackage = pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && x.ObjectName.Instanced.ToString().ToLower() == Path.GetFileNameWithoutExtension(pcc.FilePath).ToLower());  // Make sure world, localpackage, shadercache are all marked as referenced.
+                var localpackage = pcc.Exports.FirstOrDefault(x => x.ClassName == "Package" && string.Equals(x.ObjectName.Instanced.ToString(), Path.GetFileNameWithoutExtension(pcc.FilePath), StringComparison.OrdinalIgnoreCase));  // Make sure world, localpackage, shadercache are all marked as referenced.
                 entriesToEvaluate.Push(localpackage);
                 entriesReferenced.Add(localpackage);
                 var world = levelExport.Parent;

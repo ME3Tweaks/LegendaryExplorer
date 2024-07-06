@@ -61,8 +61,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             Body = body;
             ReturnValueDeclaration = returnValueDeclaration;
             Flags = flags;
-            Parameters = parameters ?? new List<FunctionParameter>();
-            Locals = new List<VariableDeclaration>();
+            Parameters = parameters ?? [];
+            Locals = [];
             VarType = new DelegateType(this)
             {
                 IsFunction = true,
