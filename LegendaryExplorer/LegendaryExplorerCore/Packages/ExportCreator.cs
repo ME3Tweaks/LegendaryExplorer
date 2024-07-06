@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="parent"></param>
         /// <param name="relinkResultsAvailable"></param>
         /// <returns></returns>
-        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null)
+        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null, bool forcedExport = true)
         {
             var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, Cache = cache};
             var exp = new ExportEntry(pcc, parent, packageName)
@@ -25,7 +25,11 @@ namespace LegendaryExplorerCore.Packages
             };
             relinkResultsAvailable?.Invoke(rop.RelinkReport);
             exp.ObjectFlags |= UnrealFlags.EObjectFlags.Public;
-            exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+            if (forcedExport)
+            {
+                exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+            }
+
             pcc.AddExport(exp);
             return exp;
         }
