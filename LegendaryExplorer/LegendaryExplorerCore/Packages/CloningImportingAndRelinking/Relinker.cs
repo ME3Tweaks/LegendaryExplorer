@@ -102,6 +102,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public bool RelinkAllowDifferingClassesInRelink { get; set; }
 
         /// <summary>
+        /// If imports that resolve to be in localized files should be imported as exports when <see cref="PortImportsMemorySafe"/> is set to true. This often is undesirable, bringing INT lines into non-localized files.
+        /// </summary>
+        public bool PortLocalizationImportsMemorySafe { get; set; }
+
+        /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
         public Action<string> ErrorOccurredCallback;
@@ -651,10 +656,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (resolved == null)
                     {
                         // We failed to resolve the import in the destination. Does it resolve in the source?
-                        Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Attempting to port export instead");
                         var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache, fileResolver: rop.SourceCustomImportFileResolver);
-                        if (resolvedSource != null)
+                        // If port localizations memory safe is true, we don't bother checking the localization. Otherwise we port only if hte localization is None to prevent bringing in localized content.
+                        if (resolvedSource != null && (rop.PortLocalizationImportsMemorySafe || resolvedSource.FileRef.Localization == MELocalization.None))
                         {
+                            Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Porting as export instead");
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
                             ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
                             // Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
@@ -664,6 +670,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             uIndex = importedExport.UIndex;
                             // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
                             return null; // OK
+                        }
+                        else
+                        {
+                            Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Not porting as export, will port as import");
                         }
                     }
                 }

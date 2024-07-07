@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
-            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, cache);
+            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, cache, customROP);
             issues.AddRange(unresolvableImports);
 
             // Imports are resolvable. We should port in level imports then port in the rest
@@ -232,10 +232,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="resolutionMap"></param>
         /// <param name="cache">Cache for the local operation, such as the localization files, the upstream level files. This cache will be modified as packages are opened</param>
         /// <returns></returns>
-        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache cache)
+        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache cache, RelinkerOptionsPackage rop = null)
         {
             List<EntryStringPair> unresolvableImports = new List<EntryStringPair>();
             var references = EntryImporter.GetAllReferencesOfExport(sourceExport);
+            // I think orderby ensures shorter names go first. So an import parent of an import will resolve first.
             var importReferences = references.OfType<ImportEntry>().OrderBy(x => x.InstancedFullPath).ToList();
             foreach (var import in importReferences)
             {
@@ -254,12 +255,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     continue;
                 }
 
+                if (resolved.FileRef.Localization != MELocalization.None && rop != null && !rop.PortLocalizationImportsMemorySafe)
+                {
+                    unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} is for localized content - we will not be porting this as an export. This may require manual adjustment of the LOC file to work."));
+                    continue;
+                }
+
                 // see if this is level resolved item
                 var sourcePath = Path.GetFileNameWithoutExtension(resolved.FileRef.FilePath);
                 if (IsLevelFile(sourcePath) || IsGlobalNonStartupFile(sourcePath))
                 {
                     resolutionMap[import] = resolved;
-                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, cache);
+                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, cache, rop);
                 }
             }
 
