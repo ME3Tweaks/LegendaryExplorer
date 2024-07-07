@@ -320,7 +320,7 @@ namespace LegendaryExplorerCore.Packages
         /// <remarks>Falls back to a linear search if it finds a match on path but not class</remarks>
         IEntry FindEntry(string instancedPath, string className);
         /// <summary>
-        /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
+        /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called. When called often this has a very significant performance impact.
         /// </summary>
         void InvalidateLookupTable();
 
@@ -330,5 +330,7 @@ namespace LegendaryExplorerCore.Packages
         /// If this package was opened from a non-disk source and doesn't have a true filepath (e.g. from SFAR - won't have single file it resided in on disk)
         /// </summary>
         bool IsMemoryPackage { get; set; }
+
+        void AllowLookupTableInvalidation(bool allow);
     }
 }

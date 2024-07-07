@@ -99,7 +99,24 @@ namespace LegendaryExplorerCore.Packages
         protected CaseInsensitiveDictionary<IEntry> EntryLookupTable;
         private EntryTree _tree;
         private bool lookupTableNeedsToBeRegenerated = true;
-        public void InvalidateLookupTable() => lookupTableNeedsToBeRegenerated = true;
+
+        public void InvalidateLookupTable()
+        {
+            if (!SuppressLookupTableInvalidation)
+            {
+                lookupTableNeedsToBeRegenerated = true;
+            }
+        }
+
+        /// <summary>
+        /// If lookup table invalidations should be ignored. Only use in areas where code that has it as a side effect would be called, such as import/export construction
+        /// </summary>
+        private bool SuppressLookupTableInvalidation;
+
+        /// <summary>
+        /// Can be used to suppress lookup table invalidations. Only use in areas where code that has it as a side effect would be called, such as import/export construction, and be sure to set it back to true when done.
+        /// </summary>
+        public void AllowLookupTableInvalidation(bool allow) => SuppressLookupTableInvalidation = allow;
 
         public EntryTree Tree
         {
@@ -391,7 +408,15 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
-                return Imports.FirstOrDefault(x => x.InstancedFullPath.CaseInsensitiveEquals(instancedname));
+                var dotIndex = instancedname.LastIndexOf('.');
+                var objName = dotIndex > 0 ? instancedname.Substring(dotIndex + 1) : instancedname;
+                var objNameSpan = NameReference.FromInstancedString(objName).Name.AsSpan();
+                foreach (var imp in Imports)
+                {
+                    if (imp.ObjectName.Name.AsSpan().Equals(objNameSpan, StringComparison.InvariantCultureIgnoreCase)
+                        && imp.InstancedFullPath == instancedname) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
+                        return imp;
+                }
             }
 
             return matchingEntry as ImportEntry;
@@ -434,7 +459,15 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
-                return Exports.FirstOrDefault(x => x.InstancedFullPath.CaseInsensitiveEquals(instancedname));
+                var dotIndex = instancedname.LastIndexOf('.');
+                var objName = dotIndex > 0 ? instancedname.Substring(dotIndex + 1) : instancedname;
+                var objNameSpan = NameReference.FromInstancedString(objName).Name.AsSpan();
+                foreach (var exp in Exports)
+                {
+                    if (exp.ObjectName.Name.AsSpan().Equals(objNameSpan, StringComparison.InvariantCultureIgnoreCase)
+                        && exp.InstancedFullPath == instancedname) // This goes second because if hte object name does not match this will never be called. This reduces memory allocations
+                        return exp;
+                }
             }
 
             return matchingEntry as ExportEntry;
@@ -505,11 +538,11 @@ namespace LegendaryExplorerCore.Packages
 
             if (!lookupTableNeedsToBeRegenerated)
             {
-                if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
-                {
-                    // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
-                    //Debugger.Break(); // This already exists!
-                }
+                //if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
+                //{
+                // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
+                //Debugger.Break(); // This already exists!
+                //}
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
                 _tree.Add(importEntry);
             }

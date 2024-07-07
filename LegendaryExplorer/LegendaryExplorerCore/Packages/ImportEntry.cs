@@ -44,10 +44,12 @@ namespace LegendaryExplorerCore.Packages
         public ImportEntry(ExportEntry sourceExport, int parentIdx, IMEPackage fakeDestPackage)
         {
             FileRef = fakeDestPackage;
+            FileRef.AllowLookupTableInvalidation(false);
             idxLink = parentIdx;
             ClassName = sourceExport.ClassName;
             ObjectName = sourceExport.ObjectName;
             PackageFile = GetPackageFile(sourceExport); // may want to use sourceExport as this may not have yet been attached to package 
+            FileRef.AllowLookupTableInvalidation(true);
         }
 
         /// <summary>
@@ -67,6 +69,7 @@ namespace LegendaryExplorerCore.Packages
         public ImportEntry(IMEPackage pccFile, ImportEntry clone)
         {
             FileRef = pccFile;
+            FileRef.AllowLookupTableInvalidation(true);
             if (clone.idxLink != 0)
             {
                 var link = pccFile.FindEntry(clone.ParentInstancedFullPath);
@@ -83,6 +86,7 @@ namespace LegendaryExplorerCore.Packages
             ObjectName = clone.ObjectName;
             PackageFile = clone.PackageFile;
             ClassName = clone.ClassName;
+            FileRef.AllowLookupTableInvalidation(true);
         }
 
         public ImportEntry(IMEPackage pccFile, IEntry parent, NameReference name) : this(pccFile, parent?.UIndex ?? 0, name) { }
