@@ -409,12 +409,11 @@ namespace LegendaryExplorerCore.Packages
                 // for some reason
                 // Look manually for object
                 var dotIndex = instancedname.LastIndexOf('.');
-                var objName = dotIndex > 0 ? instancedname.Substring(dotIndex + 1) : instancedname;
-                var objNameSpan = NameReference.FromInstancedString(objName).Name.AsSpan();
+                var objName = dotIndex > 0 ? instancedname.AsSpan(dotIndex + 1) : instancedname.AsSpan();
                 foreach (var imp in Imports)
                 {
-                    if (imp.ObjectName.Name.AsSpan().Equals(objNameSpan, StringComparison.InvariantCultureIgnoreCase)
-                        && imp.InstancedFullPath == instancedname) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
+                    if (imp.ObjectName.EqualsInstancedString(objName)
+                        && imp.InstancedFullPath.CaseInsensitiveEquals(instancedname)) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
                         return imp;
                 }
             }
@@ -460,12 +459,11 @@ namespace LegendaryExplorerCore.Packages
                 // for some reason
                 // Look manually for object
                 var dotIndex = instancedname.LastIndexOf('.');
-                var objName = dotIndex > 0 ? instancedname.Substring(dotIndex + 1) : instancedname;
-                var objNameSpan = NameReference.FromInstancedString(objName).Name.AsSpan();
+                var objName = dotIndex > 0 ? instancedname.AsSpan(dotIndex + 1) : instancedname.AsSpan();
                 foreach (var exp in Exports)
                 {
-                    if (exp.ObjectName.Name.AsSpan().Equals(objNameSpan, StringComparison.InvariantCultureIgnoreCase)
-                        && exp.InstancedFullPath == instancedname) // This goes second because if hte object name does not match this will never be called. This reduces memory allocations
+                    if (exp.ObjectName.EqualsInstancedString(objName)
+                        && exp.InstancedFullPath.CaseInsensitiveEquals(instancedname)) // This goes second because if hte object name does not match this will never be called. This reduces memory allocations
                         return exp;
                 }
             }

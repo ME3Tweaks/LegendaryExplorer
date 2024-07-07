@@ -51,6 +51,34 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         /// <summary>
+        /// Compares this name reference to an instanced string.
+        /// </summary>
+        /// <param name="instancedString"></param>
+        /// <returns></returns>
+        public bool EqualsInstancedString(ReadOnlySpan<char> instancedString)
+        {
+            Span<char> numberPortion = stackalloc char[11];
+            if (_number > 0)
+            {
+                if (!instancedString.StartsWith(_name))
+                {
+                    return false;
+                }
+                int n = _number - 1;
+                int numPortionLength = 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                if (instancedString.Length != _name.Length + numPortionLength)
+                {
+                    return false;
+                }
+                numberPortion = numberPortion[..numPortionLength];
+                numberPortion[0] = '_';
+                ((uint)_number).ToStrInPlace(numberPortion[1..]);
+                return instancedString.EndsWith(numberPortion, StringComparison.Ordinal);
+            }
+            return instancedString.Equals(_name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
         /// Adds instanced name to end of <paramref name="parentPath"/>, after a '.'
         /// </summary>
         /// <param name="parentPath"></param>
