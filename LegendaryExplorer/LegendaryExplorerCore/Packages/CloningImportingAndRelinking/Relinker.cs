@@ -526,12 +526,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 //Get the original import
                 ImportEntry importFullName = importingPCC.GetImport(n);
                 
-                // 12/26/2023 - See if it's already an export in the file
-                var existingEntry = relinkingExport.FileRef.FindExport(importFullName.InstancedFullPath, importFullName.ClassName);
+                // 12/26/2023 - See if it's already in the file
+                var existingEntry = relinkingExport.FileRef.FindEntry(importFullName.InstancedFullPath, importFullName.ClassName);
                 if (existingEntry != null)
                 {
                     uIndex = existingEntry.UIndex;
-                    return null; // Relinked import to existing export in the file
+                    return null; // Relinked import to existing item in the file
                 }
                 
                 string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
