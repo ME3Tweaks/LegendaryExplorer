@@ -106,5 +106,15 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
             Process.Start(psi);
             return true;
         }
+
+        /// <summary>
+        /// Instructs Mod Manager to install the specified mod, based on the path of the moddesc.ini file.
+        /// </summary>
+        /// <param name="moddescPath">Full path to a valid moddesc.ini file. The mod will be loaded in Mod Manager and then installed.</param>
+        /// <returns>True if request was made, false otherwise</returns>
+        public static bool RequestModInstallation(string moddescPath)
+        {
+            return InternalRequestModManagerTask($"--installmod \"{moddescPath}\"");
+        }
     }
 }
