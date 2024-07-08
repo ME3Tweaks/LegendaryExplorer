@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.Packages
     public static class ExportCreator
     {
         /// <summary>
-        /// Creates a package export.
+        /// Creates a package export, if it doesn't already exist as an export.
         /// </summary>
         /// <param name="pcc"></param>
         /// <param name="packageName"></param>
@@ -18,6 +18,11 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null, bool forcedExport = true)
         {
+            var testName = parent != null ? NameReference.FromInstancedString($"{parent.ParentInstancedFullPath}.{packageName.Instanced}") : packageName;
+            var testEntry = pcc.FindExport(testName, "Package");
+            if (testEntry != null)
+                return testEntry;
+
             var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, Cache = cache};
             var exp = new ExportEntry(pcc, parent, packageName)
             {
