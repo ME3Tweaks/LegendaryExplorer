@@ -69,7 +69,7 @@ namespace LegendaryExplorerCore.Packages
         public ImportEntry(IMEPackage pccFile, ImportEntry clone)
         {
             FileRef = pccFile;
-            FileRef.AllowLookupTableInvalidation(true);
+            FileRef.AllowLookupTableInvalidation(false);
             if (clone.idxLink != 0)
             {
                 var link = pccFile.FindEntry(clone.ParentInstancedFullPath);
