@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Packages
             return localizationName;
         }
 
-        public static string SetUnrealLocalization(this string str, MEGame game, MELocalization loc)
+        public static string SetUnrealLocalization(this string str, MEGame game, MELocalization loc, bool includeLOC = false)
         {
             var ext = Path.GetExtension(str);
             var fileNoExtension = Path.GetFileNameWithoutExtension(str).StripUnrealLocalization();
@@ -109,6 +109,10 @@ namespace LegendaryExplorerCore.Packages
             if (loc == MELocalization.None)
                 return $"{preFilename}{fileNoExtension}{ext}";
 
+            if (includeLOC)
+            {
+                return $"{preFilename}{fileNoExtension}_LOC_{loc.ToLocaleString(game)}{ext}";
+            }
             return $"{preFilename}{fileNoExtension}_{loc.ToLocaleString(game)}{ext}";
         }
 
