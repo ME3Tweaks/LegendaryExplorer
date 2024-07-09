@@ -379,7 +379,7 @@ namespace LegendaryExplorerCore.Packages
         public IEntry FindEntry(string instancedPath, string className)
         {
             IEntry matchingEntry = FindEntry(instancedPath);
-            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            if (matchingEntry is null || className is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
             {
                 return matchingEntry;
             }
@@ -388,7 +388,7 @@ namespace LegendaryExplorerCore.Packages
             return null;
         }
 
-        public ImportEntry FindImport(string instancedname)
+        public ImportEntry FindImport(string instancedPath)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -398,7 +398,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
+                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
             }
             // END CRITICAL SECTION ------------------------------------
 
@@ -408,12 +408,12 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
-                var dotIndex = instancedname.LastIndexOf('.');
-                var objName = dotIndex > 0 ? instancedname.AsSpan(dotIndex + 1) : instancedname.AsSpan();
+                var dotIndex = instancedPath.LastIndexOf('.');
+                var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
                 foreach (var imp in Imports)
                 {
                     if (imp.ObjectName.EqualsInstancedString(objName)
-                        && imp.InstancedFullPath.CaseInsensitiveEquals(instancedname)) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
+                        && imp.InstancedFullPath.CaseInsensitiveEquals(instancedPath)) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
                         return imp;
                 }
             }
@@ -424,13 +424,18 @@ namespace LegendaryExplorerCore.Packages
         public ImportEntry FindImport(string instancedPath, string className)
         {
             ImportEntry matchingEntry = FindImport(instancedPath);
-            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            if (matchingEntry is null || className is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
             {
                 return matchingEntry;
             }
+
+            // We're going to loop over import table to try to manually find it, in case it is both export and import
+            // Find object name so we can reduce string allocations from InstancedFullPath.
+            var dotIndex = instancedPath.LastIndexOf('.');
+            var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
             foreach (ImportEntry entry in Imports)
             {
-                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                if (entry.ObjectName.EqualsInstancedString(objName) && entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
                 {
                     return entry;
                 }
@@ -438,7 +443,7 @@ namespace LegendaryExplorerCore.Packages
             return null;
         }
 
-        public ExportEntry FindExport(string instancedname)
+        public ExportEntry FindExport(string instancedPath)
         {
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
@@ -448,7 +453,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     RebuildLookupTable();
                 }
-                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
+                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
             }
             // END CRITICAL SECTION ------------------------------------
 
@@ -458,12 +463,12 @@ namespace LegendaryExplorerCore.Packages
                 // Some files like LE2 Engine.pcc have imports and exports for same named thing
                 // for some reason
                 // Look manually for object
-                var dotIndex = instancedname.LastIndexOf('.');
-                var objName = dotIndex > 0 ? instancedname.AsSpan(dotIndex + 1) : instancedname.AsSpan();
+                var dotIndex = instancedPath.LastIndexOf('.');
+                var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
                 foreach (var exp in Exports)
                 {
                     if (exp.ObjectName.EqualsInstancedString(objName)
-                        && exp.InstancedFullPath.CaseInsensitiveEquals(instancedname)) // This goes second because if hte object name does not match this will never be called. This reduces memory allocations
+                        && exp.InstancedFullPath.CaseInsensitiveEquals(instancedPath)) // This goes second because if the object name does not match this will never be called. This reduces memory allocations
                         return exp;
                 }
             }
@@ -474,7 +479,7 @@ namespace LegendaryExplorerCore.Packages
         public ExportEntry FindExport(string instancedPath, string className)
         {
             ExportEntry matchingEntry = FindExport(instancedPath);
-            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            if (matchingEntry is null || className is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
             {
                 return matchingEntry;
             }
