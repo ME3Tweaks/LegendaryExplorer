@@ -33,9 +33,7 @@ namespace LegendaryExplorerCore.Unreal
                 if (_number > 0)
                 {
                     int n = _number - 1;
-                    int numChars = _name.Length + 1 + 
-                                   //determines the number of digits in n, assuming n >= 0
-                                   (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                    int numChars = _name.Length + 1 + NumDigitsOfPositiveInt(n);
                     return string.Create(numChars, this, (span, nameRef) =>
                     {
                         ReadOnlySpan<char> nameSpan = nameRef._name.AsSpan();
@@ -48,6 +46,17 @@ namespace LegendaryExplorerCore.Unreal
 
                 return _name;
             }
+        }
+
+        public int GetInstancedLength()
+        {
+            if (_number > 0)
+            {
+                int n = _number - 1;
+                return _name.Length + 1 + NumDigitsOfPositiveInt(n);
+            }
+
+            return _name.Length;
         }
 
         /// <summary>
@@ -65,7 +74,7 @@ namespace LegendaryExplorerCore.Unreal
                     return false;
                 }
                 int n = _number - 1;
-                int numPortionLength = 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                int numPortionLength = 1 + NumDigitsOfPositiveInt(n);
                 if (instancedString.Length != _name.Length + numPortionLength)
                 {
                     return false;
@@ -78,6 +87,7 @@ namespace LegendaryExplorerCore.Unreal
             return instancedString.Equals(_name, StringComparison.OrdinalIgnoreCase);
         }
 
+
         /// <summary>
         /// Adds instanced name to end of <paramref name="parentPath"/>, after a '.'
         /// </summary>
@@ -89,7 +99,7 @@ namespace LegendaryExplorerCore.Unreal
             int length = parentPath.Length + _name.Length + 1;
             if (_number > 0)
             {
-                length += 1 + (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
+                length += 1 + NumDigitsOfPositiveInt(n);
             }
             return string.Create(length, (parentPath, _name, n), (span, tuple) =>
             {
@@ -107,6 +117,24 @@ namespace LegendaryExplorerCore.Unreal
                 }
             });
         }
+
+        /// <summary>
+        /// Formats the instanced string onto the provided span. SPAN MUST BE THE EXACT LENGTH NEEDED! Use <see cref="GetInstancedLength"/> to get the correct length.
+        /// </summary>
+        /// <param name="span"></param>
+        public void FormatInstanced(Span<char> span)
+        {
+            _name.CopyTo(span);
+            if (_number > 0)
+            {
+                int n = _number - 1;
+                int i = _name.Length;
+                span[i] = '_';
+                ((uint)n).ToStrInPlace(span.Slice(i + 1));
+            }
+        }
+
+        private static int NumDigitsOfPositiveInt(int n) => (n < 100000 ? n < 100 ? n < 10 ? 1 : 2 : n < 1000 ? 3 : n < 10000 ? 4 : 5 : n < 10000000 ? n < 1000000 ? 6 : 7 : n < 100000000 ? 8 : n < 1000000000 ? 9 : 10);
 
         public static implicit operator NameReference(string s)
         {

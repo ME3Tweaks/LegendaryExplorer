@@ -315,7 +315,46 @@ namespace LegendaryExplorerCore.Packages
         public string FullPath => FileRef.IsEntry(idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
-        public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+
+        public string InstancedFullPath
+        {
+            get
+            {
+                var parent = Parent;
+                if (parent is not null)
+                {
+                    int fullLength = ObjectName.GetInstancedLength();
+                    IEntry entry = parent;
+                    do
+                    {
+                        fullLength += 1 + entry.ObjectName.GetInstancedLength();
+                        entry = entry.Parent;
+                    } while (entry is not null);
+                    return string.Create(fullLength, (IEntry)this, static (span, entry) =>
+                    {
+                        int curNameStartIdx = span.Length;
+                        while (true)
+                        {
+                            NameReference curName = entry.ObjectName;
+                            int curNameLength = curName.GetInstancedLength();
+                            curNameStartIdx -= curNameLength;
+                            curName.FormatInstanced(span.Slice(curNameStartIdx, curNameLength));
+                            entry = entry.Parent;
+                            if (entry is not null)
+                            {
+                                curNameStartIdx -= 1;
+                                span[curNameStartIdx] = '.';
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    });
+                }
+                return ObjectName.Instanced;
+            }
+        }
         public string MemoryFullPath => InstancedFullPath; // Imports will always be nested under their root package file
 
         bool headerChanged;

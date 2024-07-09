@@ -680,7 +680,47 @@ namespace LegendaryExplorerCore.Packages
         public string FullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
         public string ParentInstancedFullPath => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.InstancedFullPath ?? "";
-        public string InstancedFullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+
+        public string InstancedFullPath
+        {
+            get
+            {
+                var parent = Parent;
+                if (parent is not null)
+                {
+                    int fullLength = ObjectName.GetInstancedLength();
+                    IEntry entry = parent;
+                    do
+                    {
+                        fullLength += 1 + entry.ObjectName.GetInstancedLength();
+                        entry = entry.Parent;
+                    } while (entry is not null);
+                    return string.Create(fullLength, (IEntry)this, static (span, entry) =>
+                    {
+                        int curNameStartIdx = span.Length;
+                        while (true)
+                        {
+                            NameReference curName = entry.ObjectName;
+                            int curNameLength = curName.GetInstancedLength();
+                            curNameStartIdx -= curNameLength;
+                            curName.FormatInstanced(span.Slice(curNameStartIdx, curNameLength));
+                            entry = entry.Parent;
+                            if (entry is not null)
+                            {
+                                curNameStartIdx -= 1;
+                                span[curNameStartIdx] = '.';
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    });
+                }
+                return ObjectName.Instanced;
+            }
+        }
+
         public string MemoryFullPath => IsForcedExport ? InstancedFullPath : $"{FileRef.FileNameNoExtension.StripUnrealLocalization()}.{InstancedFullPath}";
 
         public bool HasParent => _fileRef.IsEntry(_commonHeaderFields._idxLink);
