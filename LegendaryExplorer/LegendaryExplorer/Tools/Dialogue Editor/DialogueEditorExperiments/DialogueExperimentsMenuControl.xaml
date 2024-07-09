@@ -13,7 +13,22 @@
     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header="Exkywor's buttons for lazy people">
-        <MenuItem Header="Change Native Node StringRef" Click="UpdateNativeNodeStringRef_Click" ToolTip="Updates a native node's VOElements, FXA, and Wwisestream stringrefs."/>
+        <MenuItem Header="Change Audio Node StringRef" Click="UpdateAudioNodeStrRef_Click" ToolTip="Updates an audio node's VOElements, FXA, and Wwisestream StrRefs."/>
         <MenuItem Header="Clone Node and Sequence" Click="CloneNodeAndSequence_Click" ToolTip="Clones a dialogue node along with its linked sequence, and give it a unique ID."/>
+        <MenuItem Header="Link Nodes to Free ExportIDs" Click="LinkNodesFree_Click" ToolTip="Links all audio nodes in the conversation without an ExportID to the free ConvNodes in the sequence."/>
+        <MenuItem Header="Link Nodes to ExportIDs by String Reference" Click="LinkNodesStrRef_Click" ToolTip="Links all audio nodes in the conversation without an ExportID to the free ConvNodes that have a matching StringRef in the sequence."/>
+        <MenuItem Header="Batch Create Sequence Elements for Conversation" Click="BatchCreateNodesSequence_Click" ToolTip="Create the basic sequence elements for all nodes that don't have one."/>
+        <MenuItem Header="Create Sequence Elements for Selected Node" Click="CreateNodeSequence_Click" ToolTip="Create the basic sequence objects for the selected audio node, if it doesn't have an ExportID."/>
+        <MenuItem Header="Batch Update VOElements and Interp Comment of Conversation" Click="BatchUpdateVOsAndComments_Click" ToolTip="Update all the Interp comments and VOElements' StrRefIDs that are linked to the audio nodes of the conversation."/>
+        <MenuItem Header="Update VOElements and Interp Comment for Selected Node" Click="UpdateVOAndComment_Click" ToolTip="Update the Interp comment and VOElement' StrRefID that are linked to the selected audio node."/>
+        <MenuItem Header="Batch Add Conversation Defaults to Conversation" Click="BatchAddConversationDefaults_Click" ToolTip="Add a Conversation group, VOElements and SwitchCamera tracks to all audio nodes in the conversation."/>
+        <MenuItem Header="Add Conversation Defaults to Selected Node" Click="AddConversationDefaults_Click" ToolTip="Add a Conversation group, VOElements and SwitchCamera tracks to the selected node."/>
+        <MenuItem Header="Batch Update the InterpLengths of the Conversation" Click="BatchUpdateInterpLengths_Click" ToolTip="Update the InterpLength of all the audio nodes in the conversation, based either on the FXA or the audio length."/>
+        <MenuItem Header="Update the InterpLengths of Selected Node" Click="UpdateInterpLength_Click" ToolTip="Update the InterpLength of the selected audio node, based either on the FXA or the audio length."/>
+        <MenuItem Header="Batch Generate LE1 Audio Links for Conversation" Click="BatchGenerateLE1AudioLinks_Click" ToolTip="Create SoundCues and SoundNodeWaves, and link them to the FaceFX for all audio nodes that don't have one."/>
+        <MenuItem Header="Generate LE1 Audio Links for Selected Node" Click="GenerateLE1AudioLinks_Click" ToolTip="Create SoundCues and SoundNodeWaves, and link them to the FaceFX for the selected audio node."/>
+        <MenuItem Header="Fix Autocontinues" Click="FixAutocontinues_Click" ToolTip="Assign ExportIDs and TLK refs to Autocontinues."/>
+        <MenuItem Header="Batch unlist Track from Group" Click="BatchUnlistTrackFromGroup_Click" ToolTip="Remove the given InterpTrack from all matching InterpGroups in the conversation's InterpDatas."/>
+        <MenuItem Header="Unlist Track from Group" Click="UnlistTrackFromGroup_Click" ToolTip="Remove the given InterpTrack from the matching InterpGroup in the selected node's InterpDatas."/>
     </MenuItem>
 </MenuItem>

@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using static LegendaryExplorerCore.Kismet.KismetHelper;
+using static LegendaryExplorer.Misc.ExperimentsTools.SharedMethods;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 {
@@ -196,7 +198,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
         {
             if (sew.Pcc == null || sew.SelectedSequence == null) { return; }
 
-            string camActor = promptForActor($"Name of camera actor to {(wantDir ? "control" : "add")}:", "Not a valid camera actor name.");
+            string camActor = PromptForStr($"Name of camera actor to {(wantDir ? "control" : "add")}:", "Not a valid camera actor name.");
 
             PackageCache cache = new();
 
@@ -246,25 +248,6 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
 
             MessageBox.Show($"Added dialogue wheel {(wantDir ? "director" : "camera")} template", "Success", MessageBoxButton.OK);
-        }
-
-        private static void ShowError(string errMsg)
-        {
-            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
-        }
-
-        private static string promptForActor(string msg, string err)
-        {
-            if (PromptDialog.Prompt(null, msg) is string actor)
-            {
-                if (string.IsNullOrEmpty(actor))
-                {
-                    MessageBox.Show(err, "Warning", MessageBoxButton.OK);
-                    return null;
-                }
-                return actor;
-            }
-            return null;
         }
     }
 }

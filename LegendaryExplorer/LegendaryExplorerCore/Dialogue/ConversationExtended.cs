@@ -331,7 +331,7 @@ namespace LegendaryExplorerCore.Dialogue
         /// <param name="nodesSearched">List of nodes already visited</param>
         /// <param name="searchDepthRemaining">How many layers deep should be searched</param>
         /// <returns>Export of class SeqAct_Interp, or null if not found</returns>
-        private ExportEntry recursiveFindSeqActInterp(List<ExportEntry> nodesToSearch, List<ExportEntry> nodesSearched, int searchDepthRemaining)
+        public ExportEntry recursiveFindSeqActInterp(List<ExportEntry> nodesToSearch, List<ExportEntry> nodesSearched, int searchDepthRemaining)
         {
             if (searchDepthRemaining <= 0)
                 return null; // NOT FOUND, NO FURTHER SEARCH
@@ -480,6 +480,7 @@ namespace LegendaryExplorerCore.Dialogue
             int linestrref = 0;
             int spkridx = -2;
             int cond = -1;
+            int param = 0;
             string line = "Unknown Reference";
             int stevent = -1;
             bool bcond = false;
@@ -489,6 +490,7 @@ namespace LegendaryExplorerCore.Dialogue
                 linestrref = node.GetProp<StringRefProperty>("srText")?.Value ?? 0;
                 line = tlkLookupFunc?.Invoke(linestrref, Export.FileRef);
                 cond = node.GetProp<IntProperty>("nConditionalFunc")?.Value ?? -1;
+                param = node.GetProp<IntProperty>("nConditionalParam")?.Value ?? 0;
                 stevent = node.GetProp<IntProperty>("nStateTransition")?.Value ?? -1;
                 bcond = node.GetProp<BoolProperty>("bFireConditional");
                 if (isReply)
@@ -500,7 +502,7 @@ namespace LegendaryExplorerCore.Dialogue
                     spkridx = node.GetProp<IntProperty>("nSpeakerIndex");
                 }
 
-                return new DialogueNodeExtended(node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply);
+                return new DialogueNodeExtended(node, isReply, count, spkridx, linestrref, line, bcond, cond, stevent, eReply, param);
             }
             catch (Exception e)
             {

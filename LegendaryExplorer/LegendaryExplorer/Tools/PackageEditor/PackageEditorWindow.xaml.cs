@@ -468,25 +468,37 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 using var packageCache = new PackageCache();
                 if (fileLib.Initialize(usop))
                 {
-                    foreach (ExportEntry export in Pcc.Exports.Where(exp => exp.IsClass))
+                    foreach (ExportEntry export in Pcc.Exports)
                     {
+                        BusyText = $"{export.UIndex}/{Pcc.ExportCount}";
                         try
                         {
-                            (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, usop);
-                            var log = new MessageLog();
-
-                            var (ast, _) = UnrealScriptCompiler.CompileOutlineAST(source, "Class", log, Pcc.Game);
-                            if (!log.HasErrors)
+                            if (export.IsClass)
                             {
-                                UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged, usop);
-                                if (vfTableChanged)
+                                (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, usop);
+                                var log = new MessageLog();
+
+                                var (ast, _) = UnrealScriptCompiler.CompileOutlineAST(source, "Class", log, Pcc.Game);
+                                if (!log.HasErrors)
                                 {
-                                    log.LogError("Virtual function table needs to be updated!");
+                                    UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged, usop);
+                                    if (vfTableChanged)
+                                    {
+                                        log.LogError("Virtual function table needs to be updated!");
+                                    }
+                                }
+                                if (log.HasErrors)
+                                {
+                                    errors.Add(new EntryStringPair(export, $"#{export.UIndex,-9}\t{export.InstancedFullPath}:\n{string.Join('\n', log.AllErrors)}"));
                                 }
                             }
-                            if (log.HasErrors)
+                            else if (export.ClassName.CaseInsensitiveEquals("Function"))
                             {
-                                errors.Add(new EntryStringPair(export, $"#{export.UIndex,-9}\t{export.InstancedFullPath}:\n{string.Join('\n', log.AllErrors)}"));
+                                var funcBin = export.GetBinaryData<UFunction>();
+                                if (funcBin.SuperClass != 0 && (Pcc.GetEntry(funcBin.SuperClass) is not IEntry super || super.ObjectName != export.ObjectName))
+                                {
+                                    errors.Add(new EntryStringPair(export, $"#{export.UIndex,-9}\t{export.InstancedFullPath}:\n SuperClass field in binary refers to an invalid entry!"));
+                                }
                             }
                         }
                         catch (Exception e)

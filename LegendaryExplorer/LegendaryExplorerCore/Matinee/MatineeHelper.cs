@@ -424,5 +424,67 @@ namespace LegendaryExplorerCore.Matinee
             }
             return props;
         }
+
+        /// <summary>
+        /// Try get an InterpGroup in an InterpData by groupName.
+        /// </summary>
+        /// <param name="interpData">InterpData to search on.</param>
+        /// <param name="groupName">Group name to find.</param>
+        /// <param name="interpGroup">Target InterpGroup.</param>
+        /// <returns>Whether the InterpGroup was found or not.</returns>
+        public static bool TryGetInterpGroup(ExportEntry interpData, string groupName, out ExportEntry interpGroup)
+        {
+            interpGroup = null;
+            IMEPackage pcc = interpData.FileRef;
+
+            ArrayProperty<ObjectProperty> interpGroups = interpData.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
+            if (interpGroups == null) { return false; }
+
+            foreach (ObjectProperty groupRef in interpGroups)
+            {
+                if (!pcc.TryGetUExport(groupRef.Value, out ExportEntry group)) { continue; }
+
+                // Skip non Conversation groups
+                NameProperty GroupName = group.GetProperty<NameProperty>("GroupName");
+                if (GroupName != null && GroupName.Value == groupName)
+                {
+                    interpGroup = group;
+                    break;
+                }
+            }
+
+            return interpGroup != null;
+        }
+
+        /// <summary>
+        /// Try get an InterpTrack in an InterpGroup by trackClass.
+        /// </summary>
+        /// <param name="interpGroup">InterpGroup to search on.</param>
+        /// <param name="trackClass">Class of the track to find.</param>
+        /// <param name="interpTrack">Target InterpTrack.</param>
+        /// <returns>Whether the InterpTrack was found or not.</returns>
+        public static bool TryGetInterpTrack(ExportEntry interpGroup, string trackClass, out ExportEntry interpTrack)
+        {
+            interpTrack = null;
+            IMEPackage pcc = interpGroup.FileRef;
+
+            ArrayProperty<ObjectProperty> interpTracks = interpGroup.GetProperty<ArrayProperty<ObjectProperty>>("InterpTracks");
+            if (interpTracks == null) { return false; }
+
+            foreach (ObjectProperty trackRef in interpTracks)
+            {
+                if (!pcc.TryGetUExport(trackRef.Value, out ExportEntry track)) { continue; }
+
+                // Find the VO track
+                if (track.ClassName == trackClass)
+                {
+                    interpTrack = track;
+                    break;
+                }
+            }
+
+            return interpTrack != null;
+
+        }
     }
 }

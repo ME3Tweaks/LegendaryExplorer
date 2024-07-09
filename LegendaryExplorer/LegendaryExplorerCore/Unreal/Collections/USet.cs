@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.Unreal.Collections;
 
 //C# version of Unreal's TSet
 public class USet<T> : USet<T, T, DefaultKeyFuncs<T>> {}
-public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : IKeyFuncs<T, TKey>
+public class USet<T, TKey, TKeyFuncs> : IEnumerable<T> where TKeyFuncs : struct, IKeyFuncs<T, TKey>
 {
     [DebuggerDisplay("SetElementId | {Index}")]
     public readonly record struct SetElementId

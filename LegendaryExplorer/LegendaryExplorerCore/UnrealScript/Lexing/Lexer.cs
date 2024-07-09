@@ -483,7 +483,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         {
             int startPos = CurrentIndex;
             int commentStart = CurrentIndex += 2;
-            while (CurrentIndex < Text.Length && Text[CurrentIndex] is not '\n')
+            while (CurrentIndex < Text.Length && Text[CurrentIndex] is not ('\n' or '\r'))
             {
                 ++CurrentIndex;
             }

@@ -921,7 +921,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             UpdateAnimListBox();
         }
 
-        private struct LineSection
+        public struct LineSection
         {
             //don't alter capitalization of these fields, since that will break deserialization.
             public float span;
