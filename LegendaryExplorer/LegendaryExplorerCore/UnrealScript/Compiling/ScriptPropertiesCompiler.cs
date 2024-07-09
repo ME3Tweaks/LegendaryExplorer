@@ -85,6 +85,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             defaultsExport.ObjectFlags = defaultsExportObjectFlags;
             defaultsExport.Archetype = classExport.SuperClass is not null ? compiler.GetClassDefaultObject(classExport.SuperClass) : null;
+            if (classExport.ExportFlags.Has(EExportFlags.ForcedExport))
+            {
+                defaultsExport.ExportFlags |= EExportFlags.ForcedExport;
+            }
+            else
+            {
+                defaultsExport.ExportFlags &= ~EExportFlags.ForcedExport;
+            }
 
             compiler.Default__Archetype = defaultsExport.Archetype switch
             {
