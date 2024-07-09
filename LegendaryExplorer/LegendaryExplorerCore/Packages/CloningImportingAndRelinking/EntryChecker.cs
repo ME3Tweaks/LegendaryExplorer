@@ -217,11 +217,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             {
                                 item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningBinaryReferenceOutsideTables, prefix, uIndex), exp);
                             }
-                            else if (exp.FileRef.GetEntry(uIndex)?.ClassName == @"Package" && exp.FileRef.GetEntry(uIndex)?.ObjectName.ToString() == @"Trash")
+                            else if (exp.FileRef.GetEntry(uIndex)?.ClassName == @"Package" && exp.FileRef.GetEntry(uIndex).ObjectName.ToString().CaseInsensitiveEquals(@"Trash"))
                             {
                                 item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningBinaryReferenceTrashed, prefix, uIndex), exp);
                             }
-                            else if (exp.FileRef.GetEntry(uIndex)?.ObjectName.ToString() == UnrealPackageFile.TrashPackageName)
+                            else if (exp.FileRef.GetEntry(uIndex) != null && exp.FileRef.GetEntry(uIndex).ObjectName.ToString().CaseInsensitiveEquals(UnrealPackageFile.TrashPackageName))
                             {
                                 item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningBinaryReferenceTrashed, prefix, uIndex), exp);
                             }
@@ -312,13 +312,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         validRef = false;
                     }
                 }
-                else if (op.Value != 0 && entry.FileRef.GetEntry(op.Value).ClassName == "Package" &&
-                         (entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() == @"Trash" ||
-                          entry.FileRef.GetEntry(op.Value)?.ObjectName.ToString() ==
-                          UnrealPackageFile.TrashPackageName))
+                else if (op.Value != 0 && entry.FileRef.GetEntry(op.Value).ClassName == "Package")
                 {
-                    item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_nested_warningTrashedExportReference, prefix, op.Value), entry);
-                    validRef = false;
+                    // Nested if to make this a bit more readable
+                    if (entry.FileRef.GetEntry(op.Value) != null &&
+                        (entry.FileRef.GetEntry(op.Value).ObjectName.ToString().CaseInsensitiveEquals(@"Trash") 
+                         || entry.FileRef.GetEntry(op.Value).ObjectName.ToString().CaseInsensitiveEquals(UnrealPackageFile.TrashPackageName)))
+                    {
+                        item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_nested_warningTrashedExportReference,
+                                prefix, op.Value), entry);
+                        validRef = false;
+                    }
                 }
 
                 // Check object is of correct typing?
@@ -457,7 +461,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             foreach (ExportEntry exp in Pcc.Exports)
             {
                 string key = exp.InstancedFullPath;
-                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName, StringComparison.OrdinalIgnoreCase))
                     continue; //Do not report these as requiring re-indexing.
                 if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
                 {
@@ -477,7 +481,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             foreach (ImportEntry imp in Pcc.Imports)
             {
                 string key = imp.InstancedFullPath;
-                if (key.StartsWith(UnrealPackageFile.TrashPackageName))
+                if (key.StartsWith(UnrealPackageFile.TrashPackageName, StringComparison.OrdinalIgnoreCase))
                     continue; //Do not report these as requiring re-indexing.
                 if (!duplicatesPackagePathIndexMapping.TryGetValue(key, out List<int> indexList))
                 {
