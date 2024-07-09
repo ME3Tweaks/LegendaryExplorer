@@ -342,7 +342,7 @@ namespace LegendaryExplorerCore.Packages
             if (!lookupTableNeedsToBeRegenerated)
             {
                 // CROSSGEN-V: CHECK BEFORE ADDING TO MAKE SURE WE DON'T GOOF IT UP
-#if DEBUG
+#if FALSE && DEBUG
                 if (EntryLookupTable.TryGetValue(exportEntry.InstancedFullPath, out _))
                 {
                     // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
@@ -429,8 +429,8 @@ namespace LegendaryExplorerCore.Packages
                 return matchingEntry;
             }
 
-            // We're going to loop over import table to try to manually find it, in case it is both export and import
-            // Find object name so we can reduce string allocations from InstancedFullPath.
+            // We're going to loop over import table to try to manually find it, in case of duplicate objects names with 
+            // different classes. This reduces string allocations
             var dotIndex = instancedPath.LastIndexOf('.');
             var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
             foreach (ImportEntry entry in Imports)
@@ -483,9 +483,14 @@ namespace LegendaryExplorerCore.Packages
             {
                 return matchingEntry;
             }
+
+            // We're going to loop over import table to try to manually find it, in case of duplicate objects names with 
+            // different classes. This reduces string allocations
+            var dotIndex = instancedPath.LastIndexOf('.');
+            var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
             foreach (ExportEntry entry in Exports)
             {
-                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                if (entry.ObjectName.EqualsInstancedString(objName) && entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
                 {
                     return entry;
                 }
@@ -541,11 +546,13 @@ namespace LegendaryExplorerCore.Packages
 
             if (!lookupTableNeedsToBeRegenerated)
             {
-                //if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
-                //{
-                // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
-                //Debugger.Break(); // This already exists!
-                //}
+#if FALSE && DEBUG
+                if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
+                {
+                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
+                    Debugger.Break(); // This already exists!
+                }
+#endif
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
                 _tree.Add(importEntry);
             }
@@ -626,7 +633,7 @@ namespace LegendaryExplorerCore.Packages
             return false;
         }
 
-        #endregion
+#endregion
 
         #region IEntry
         /// <summary>
