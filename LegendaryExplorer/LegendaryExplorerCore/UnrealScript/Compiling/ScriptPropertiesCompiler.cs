@@ -187,6 +187,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             subExport.Class = classEntry;
             subExport.ObjectName = objName;
             subExport.Class = classEntry;
+            if (Default__Export.ExportFlags.Has(EExportFlags.ForcedExport))
+            {
+                subExport.ExportFlags |= EExportFlags.ForcedExport;
+            }
+            else
+            {
+                subExport.ExportFlags &= ~EExportFlags.ForcedExport;
+            }
 
             if (subObject.IsTemplate && Default__Archetype is not null)
             {
