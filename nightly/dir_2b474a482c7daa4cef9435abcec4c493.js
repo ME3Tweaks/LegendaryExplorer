@@ -8,6 +8,7 @@ var dir_2b474a482c7daa4cef9435abcec4c493 =
     [ "ME1UnrealObjectInfo.cs", "_m_e1_unreal_object_info_8cs.html", "_m_e1_unreal_object_info_8cs" ],
     [ "ME2UnrealObjectInfo.cs", "_m_e2_unreal_object_info_8cs.html", "_m_e2_unreal_object_info_8cs" ],
     [ "ME3UnrealObjectInfo.cs", "_m_e3_unreal_object_info_8cs.html", "_m_e3_unreal_object_info_8cs" ],
+    [ "ObjectInfo.cs", "_object_info_8cs.html", "_object_info_8cs" ],
     [ "ObjectInfoLoader.cs", "_object_info_loader_8cs.html", "_object_info_loader_8cs" ],
     [ "SequenceObjectInfo.cs", "_sequence_object_info_8cs.html", "_sequence_object_info_8cs" ]
 ];

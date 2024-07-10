@@ -117,13 +117,16 @@ var hierarchy =
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< ASTNode >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", [
       [ "LegendaryExplorerCore.UnrealScript.Analysis.Symbols.ASTNodeDict", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< ClassInfo >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< ExportEntry >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< int >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< Label >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< LegendaryExplorerCore.Coalesced.CoalesceAsset >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< LegendaryExplorerCore.Packages.CloningImportingAndRelinking.ObjectInstanceInfo >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< LegendaryExplorerCore.Packages.IEntry >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
+    [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< LegendaryExplorerCore.Unreal.ObjectInfo.SequenceObjectInfo >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< LegendaryExplorerCore.UnrealScript.Analysis.Symbols.ASTNodeDict >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
+    [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< List< LegendaryExplorerCore.Unreal.NameReference > >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< List< string > >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< VariableType >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Utilities.CastHelper", "class_legendary_explorer_core_1_1_unreal_script_1_1_utilities_1_1_cast_helper.html", null ],
@@ -241,6 +244,15 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parameter.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeParentLink", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parent_link.html", null ],
     [ "LegendaryExplorerCore.Helpers.GameFileFilters", "class_legendary_explorer_core_1_1_helpers_1_1_game_file_filters.html", null ],
+    [ "LegendaryExplorerCore.Unreal.ObjectInfo.GameObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_game_object_info.html", [
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE1ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e1_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE2ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e2_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.LE3ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_l_e3_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME1ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e1_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME2ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e2_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.ME3ObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_m_e3_object_info.html", null ],
+      [ "LegendaryExplorerCore.Unreal.ObjectInfo.UDKObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_u_d_k_object_info.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Gammtek.GammtekUtilities", "class_legendary_explorer_core_1_1_gammtek_1_1_gammtek_utilities.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", null ],
