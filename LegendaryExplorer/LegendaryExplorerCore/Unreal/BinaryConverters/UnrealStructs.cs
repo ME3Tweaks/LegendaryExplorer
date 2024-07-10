@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {

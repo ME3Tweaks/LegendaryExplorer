@@ -445,7 +445,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 foreach (var file in packageFiles)
                 {
                     Debug.WriteLine("Opening package " + file);
-                    var p = MEPackageHandler.OpenMEPackage(file);
+                    using var p = MEPackageHandler.OpenMEPackage(file);
                     //find sequence objects
                     var sequences = p.Exports.Where(x => !x.IsDefaultObject && x.ClassName == "Sequence");
                     foreach (var sequence in sequences)

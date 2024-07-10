@@ -14,6 +14,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
     /// </summary>
     public sealed class ME2ME3LazyTLK : ME2ME3TLKBase
     {
+        private object syncObj = new object();
         private TLKBitArray Bits;
         private HuffmanNode[] Nodes;
         private StringBuilder _builder;
@@ -58,12 +59,19 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
                 string retdata = null;
                 if (noQuotes)
                 {
-                    retdata = GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes);
+                    lock (syncObj)
+                    {
+                        retdata = GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes);
+                    }
                 }
                 else
                 {
-                    retdata = "\"" + GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes) + "\"";
+                    lock (syncObj)
+                    {
+                        retdata = "\"" + GetString(ref bitOffset, _builder ??= new StringBuilder(), Bits, Nodes) + "\"";
+                    }
                 }
+
                 if (withFileName)
                 {
                     retdata += " (" + FileName + ")";

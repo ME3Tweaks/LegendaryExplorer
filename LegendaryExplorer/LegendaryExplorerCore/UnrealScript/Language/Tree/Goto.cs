@@ -1,7 +1,5 @@
-﻿using System;
-using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
+﻿using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Decompiling;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {

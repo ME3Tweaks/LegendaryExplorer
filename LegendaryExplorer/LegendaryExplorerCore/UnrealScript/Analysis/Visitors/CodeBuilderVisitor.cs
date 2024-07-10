@@ -1955,9 +1955,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 specs.Add("rsxstorage");
             }
-            if (flags.Has(EPropertyFlags.UnkFlag1))
+            if (flags.Has(EPropertyFlags.BioDynamicLoad))
             {
-                specs.Add(nameof(EPropertyFlags.UnkFlag1).ToLowerInvariant());
+                specs.Add(nameof(EPropertyFlags.BioDynamicLoad).ToLowerInvariant());
             }
             if (flags.Has(EPropertyFlags.LoadForCooking))
             {

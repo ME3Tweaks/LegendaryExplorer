@@ -8,14 +8,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     //When using these classes, DON'T specify T where you use it, just put one or more of these in the file.
     //These are the only valid versions
-    using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
-    using InterpCurveVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector2>;
-    using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
-
-    using InterpCurvePointVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<System.Numerics.Vector3>;
-    using InterpCurvePointVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<System.Numerics.Vector2>;
-    using InterpCurvePointFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
-
     //ONLY WORKS WHEN T is float, System.Numerics.Vector3 or System.Numerics.Vector2
     public class InterpCurvePoint<T>
     {

@@ -21,6 +21,7 @@ using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Serilog;
 
 namespace LegendaryExplorer.Startup
 {
@@ -150,8 +151,11 @@ namespace LegendaryExplorer.Startup
                     MessageBox.Show(message);
                 });
             }
-
-            LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
+#if DEBUG
+            // This makes LECLog messages go to the debug console.
+            Log.Logger = CreateLogger();
+#endif
+            LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed, Log.Logger);
             CoreLibSettingsBridge.MapSettingsIntoBridge();
             PackageSaver.CheckME3Running = () =>
             {
@@ -160,6 +164,20 @@ namespace LegendaryExplorer.Startup
             };
             PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendME3TOCUpdateMessage;
         }
+
+#if DEBUG
+        /// <summary>
+        /// Creates an ILogger for ME3Tweaks Mod Manager. This does NOT assign it to the Log.Logger instance.
+        /// </summary>
+        /// <returns></returns>
+        public static ILogger CreateLogger()
+        {
+
+            var loggerConfig = new LoggerConfiguration();
+            loggerConfig = loggerConfig.WriteTo.Debug();
+            return loggerConfig.CreateLogger();
+        }
+#endif
 
         /// <summary>
         /// Invoked when a second instance of Legendary Explorer is opened

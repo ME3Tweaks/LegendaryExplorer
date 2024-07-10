@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using LegendaryExplorerCore.UnrealScript.Utilities;
+﻿using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {

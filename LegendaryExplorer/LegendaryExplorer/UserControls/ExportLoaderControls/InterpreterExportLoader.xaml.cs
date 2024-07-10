@@ -1586,7 +1586,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 if (level.CoverIndexPairs.Count >= covRefIdx)
                                 {
                                     var cover = level.CoverIndexPairs[covRefIdx];
-                                    return $"Cover Reference: {export.FileRef.GetUExport(level.CoverLinkRefs[(int)cover.CoverIndexIdx]).ObjectName.Instanced} slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                    var coverRef = level.CoverLinkRefs[(int)cover.CoverIndexIdx];
+                                    if (coverRef > 0)
+                                    {
+                                        return $"Cover Reference: {export.FileRef.GetUExport(coverRef).ObjectName.Instanced} slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                    }
+                                    else
+                                    {
+                                        return $"Cover Reference: <Null>, slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                    }
                                 }
 
                                 return $"INVALID COVREF {covRefIdx}";
@@ -1600,7 +1608,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 if (level.CoverIndexPairs.Count >= covRefIdx)
                                 {
                                     var cover = level.CoverIndexPairs[covRefIdx];
-                                    return $"Cover Reference: {export.FileRef.GetUExport(level.CoverLinkRefs[(int)cover.CoverIndexIdx]).ObjectName.Instanced} slot {cover.SlotIdx}, ExposureScale: {exposedScale}";
+                                    var coverLinkRef = level.CoverLinkRefs[(int)cover.CoverIndexIdx];
+                                    if (coverLinkRef > 0)
+                                    {
+                                        return $"Cover Reference: {export.FileRef.GetUExport(coverLinkRef).ObjectName.Instanced} slot {cover.SlotIdx}, ExposureScale: {exposedScale}";
+                                    }
+                                    else
+                                    {
+                                        // Not entirely sure what this means. Value is 0, this is not import or export.
+                                        return $"Cover Reference: <Null>, slot {cover.SlotIdx}, ExposureScale: {exposedScale}";
+                                    }
                                 }
 
                                 return $"INVALID COVREF {covRefIdx}, Exposure level: {exposedScale}";
@@ -1614,7 +1631,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 if (level.NavRefs.Count >= navRefIdx)
                                 {
                                     var navRef = level.NavRefs[navRefIdx];
-                                    return $"Nav Reference: {export.FileRef.GetUExport(navRef).ObjectName.Instanced}, Danger cost: {dangerCost}";
+                                    if (navRef > 0)
+                                    {
+                                        return $"Nav Reference: {export.FileRef.GetUExport(navRef).ObjectName.Instanced}, Danger cost: {dangerCost}";
+                                    }
+                                    else
+                                    {
+                                        return $"Nav Reference: <Null>, Danger cost: {dangerCost}";
+                                    }
                                 }
 
                                 return $"INVALID Nav {navRefIdx}, Danger cost: {dangerCost}";

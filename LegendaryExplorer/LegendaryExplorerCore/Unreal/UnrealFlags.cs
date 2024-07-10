@@ -205,7 +205,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // BioWare specific
             RsxStorage = 0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
-            UnkFlag1 = 0x0080000000000000U,
+            BioDynamicLoad = 0x0080000000000000U,   // Property will dynamic load object on demand
             LoadForCooking = 0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
             BioNonShip = 0x0200000000000000U,        // Property doesn't serialize to or from disk
             BioIgnorePropertyAdd = 0x0400000000000000U,        // ??????
@@ -272,7 +272,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // BIOWARE SPECIFIC
             [EPropertyFlags.RsxStorage] = "Property can be moved into RSX memory (PS3)",
-            [EPropertyFlags.UnkFlag1] = "",
+            [EPropertyFlags.BioDynamicLoad] = "Property references an object that will be loaded on demand",
             [EPropertyFlags.LoadForCooking] = "Property is editor only, but must be loaded during cooking",
             [EPropertyFlags.BioNonShip] = "Property does not serialize to or from disk",
             [EPropertyFlags.BioIgnorePropertyAdd] = "",
