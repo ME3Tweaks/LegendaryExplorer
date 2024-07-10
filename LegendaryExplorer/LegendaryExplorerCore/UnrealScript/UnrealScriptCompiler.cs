@@ -1128,6 +1128,11 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public record LooseClassPackage(string PackageName, List<LooseClass> Classes);
 
+        private record CompilationCompletion(UClass UClass, string SuperClassName, Action<UnrealScriptOptionsPackage> Action)
+        {
+            public bool Completed;
+        }
+
         public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, UnrealScriptOptionsPackage usop)
         {
             using var packageCache = new PackageCache();
@@ -1159,7 +1164,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 return fileLib.InitializationLog;
             }
 
-            var completions = new List<(UClass uClass, Action<UnrealScriptOptionsPackage> action)>();
+            var completions = new Dictionary<string, CompilationCompletion>();
             foreach (LooseClassPackage looseClassPackage in looseClasses)
             {
                 ExportEntry classPackage = targetPcc.FindExport(looseClassPackage.PackageName);
@@ -1187,9 +1192,10 @@ namespace LegendaryExplorerCore.UnrealScript
                             log.LogError($"'{looseClass.ClassName}' had parse errors");
                             return log;
                         }
+                        string superClassName = (cls.Parent as Class)?.Name;
                         UClass uClass = null;
                         Action<UnrealScriptOptionsPackage> completionAction = ScriptObjectCompiler.CreateClassStub(cls, targetPcc, classPackage, ref uClass, usop);
-                        completions.Add(uClass, completionAction);
+                        completions.Add(looseClass.ClassName, new CompilationCompletion(uClass, superClassName, completionAction));
                     }
                     catch (ParseException)
                     {
@@ -1204,17 +1210,32 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
             }
 
-            foreach ((UClass uClass, Action<UnrealScriptOptionsPackage> action) in completions)
+            foreach (CompilationCompletion completion in completions.Values)
             {
                 try
                 {
-                    action(usop);
-                    uClass.Export.WriteBinary(uClass);
+                    if (completion.Completed)
+                    {
+                        continue;
+                    }
+                    FinishCompilation(completion);
+                    void FinishCompilation(CompilationCompletion cc)
+                    {
+                        if (cc.SuperClassName is not null
+                            && completions.TryGetValue(cc.SuperClassName, out CompilationCompletion superCompletion)
+                            && !superCompletion.Completed)
+                        {
+                            FinishCompilation(superCompletion);
+                        }
+                        cc.Action(usop);
+                        cc.UClass.Export.WriteBinary(cc.UClass);
+                        cc.Completed = true;
+                    }
                 }
                 catch (Exception e)
                 {
                     var log = new MessageLog();
-                    log.LogError($"Exception while compiling '{uClass.Export.ObjectName}': {e}");
+                    log.LogError($"Exception while compiling '{completion.UClass.Export.ObjectName}': {e}");
                     return log;
                 }
             }

@@ -216,7 +216,7 @@ namespace LegendaryExplorerCore.Helpers
             return -1;
         }
 
-        public static bool IsEmpty<T>(this ICollection<T> list) => list.Count == 0;
+        public static bool IsEmpty<T>(this ICollection<T> collection) => collection.Count == 0;
 
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
         public static bool Any<T>(this ICollection<T> collection) => collection.Count > 0;

@@ -264,7 +264,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 var defaultsExportObjectName = new NameReference($"Default__{classExport.ObjectNameString}", classExport.indexValue);
                 //do not reuse trash for new defaults export. This is to ensure the defaults ends up right after the new class in the tree view
-                var defaultsExport = new ExportEntry(pcc, classExport.Parent, defaultsExportObjectName);
+                var defaultsExport = new ExportEntry(pcc, classExport.Parent, defaultsExportObjectName)
+                {
+                    Class = classExport
+                };
                 pcc.AddExport(defaultsExport);
                 classObj.Defaults = defaultsExport.UIndex;
             }
