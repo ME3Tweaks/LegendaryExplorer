@@ -1099,9 +1099,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     flags |= EPropertyFlags.RsxStorage;
                 }
-                else if (Matches(nameof(EPropertyFlags.UnkFlag1), EF.Specifier))
+                else if (Matches(nameof(EPropertyFlags.BioDynamicLoad), EF.Specifier))
                 {
-                    flags |= EPropertyFlags.UnkFlag1;
+                    flags |= EPropertyFlags.BioDynamicLoad;
                 }
                 else if (Matches("loadforcooking", EF.Specifier))
                 {

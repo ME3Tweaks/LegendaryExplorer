@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -17,10 +15,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class LE3UnrealObjectInfo
     {
-        public static Dictionary<string, ClassInfo> Classes = new();
-        public static Dictionary<string, ClassInfo> Structs = new();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
-        public static Dictionary<string, List<NameReference>> Enums = new();
+        public static readonly GameObjectInfo ObjectInfo = new LE3ObjectInfo();
+
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimComponent", "AimTransform", "AimOffsetProfile", "FontCharacter",
@@ -30,42 +26,6 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             return ImmutableStructs.Contains(structName);
         }
-
-        public static bool IsLoaded;
-        public static void loadfromJSON(string jsonTextOverride = null)
-        {
-            if (!IsLoaded)
-            {
-                LECLog.Information(@"Loading property db for LE3");
-                try
-                {
-                    var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.LE3);
-                    if (infoText != null)
-                    {
-                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
-                        SequenceObjects = blob.SequenceObjects;
-                        Classes = blob.Classes;
-                        Structs = blob.Structs;
-                        Enums = blob.Enums;
-                        AddCustomAndNativeClasses(Classes, SequenceObjects);
-                        foreach ((string className, ClassInfo classInfo) in Classes)
-                        {
-                            classInfo.ClassName = className;
-                        }
-                        foreach ((string className, ClassInfo classInfo) in Structs)
-                        {
-                            classInfo.ClassName = className;
-                        }
-                        IsLoaded = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LECLog.Error($@"Property database load failed for LE3: {ex.Message}");
-                    return;
-                }
-            }
-        }
         
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
@@ -73,7 +33,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             {
                 className = className.Substring(9);
             }
-            Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
+            Dictionary<string, ClassInfo> temp = inStruct ? ObjectInfo.Structs : ObjectInfo.Classes;
             bool infoExists = temp.TryGetValue(className, out ClassInfo info);
             if (!infoExists && nonVanillaClassInfo != null)
             {
@@ -90,7 +50,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (!infoExists && !inStruct && containingExport != null && containingExport.IsDefaultObject && containingExport.Class is ExportEntry classExp)
             {
                 info = generateClassInfo(classExp, false);
-                Classes[containingExport.ClassName] = info;
+                ObjectInfo.Classes[containingExport.ClassName] = info;
                 infoExists = true;
             }
 
@@ -152,6 +112,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             return null;
         }
 
+
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE3 = new();
 
         #region Generating
@@ -160,10 +121,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int, int> progressDelegate = null)
         {
             MemoryManager.SetUsePooledMemory(usePooledMemory);
-            Enums.Clear();
-            Structs.Clear();
-            Classes.Clear();
-            SequenceObjects.Clear();
+            ObjectInfo.Reset();
 
             var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE3).Where(x => Path.GetExtension(x) == ".pcc").ToList();
             int totalFiles = allFiles.Count * 2;
@@ -180,17 +138,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     string objectName = exportEntry.ObjectName.Instanced;
                     if (className == "Enum")
                     {
-                        generateEnumValues(exportEntry, Enums);
+                        generateEnumValues(exportEntry, ObjectInfo.Enums);
                     }
-                    else if (className == "Class" && !Classes.ContainsKey(objectName))
+                    else if (className == "Class" && !ObjectInfo.Classes.ContainsKey(objectName))
                     {
-                        Classes.Add(objectName, generateClassInfo(exportEntry));
+                        ObjectInfo.Classes.Add(objectName, generateClassInfo(exportEntry));
                     }
                     else if (className == "ScriptStruct")
                     {
-                        if (!Structs.ContainsKey(objectName))
+                        if (!ObjectInfo.Structs.ContainsKey(objectName))
                         {
-                            Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                            ObjectInfo.Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                         }
                     }
                 }
@@ -209,10 +167,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     if (exportEntry.IsA("SequenceObject"))
                     {
                         string className = exportEntry.ClassName;
-                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        if (!ObjectInfo.SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                         {
                             seqObjInfo = new SequenceObjectInfo();
-                            SequenceObjects.Add(className, seqObjInfo);
+                            ObjectInfo.SequenceObjects.Add(className, seqObjInfo);
                         }
 
                         int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
@@ -232,419 +190,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 progressDelegate?.Invoke(numDone, totalFiles);
             }
 
-            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented);
+            var jsonText = JsonConvert.SerializeObject(new { ObjectInfo.SequenceObjects, ObjectInfo.Classes, ObjectInfo.Structs, ObjectInfo.Enums }, Formatting.Indented);
             File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
-            Enums.Clear();
-            Structs.Clear();
-            Classes.Clear();
-            SequenceObjects.Clear();
-            loadfromJSON(jsonText);
+            ObjectInfo.Reset();
+            ObjectInfo.LoadData(jsonText);
         }
 
-        private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
-        {
-            //Custom additions
-            //Custom additions are tweaks and additional classes either not automatically able to be determined
-            //or new classes designed in the modding scene that must be present in order for parsing to work properly
-
-            // The following is left only as examples if you are building new ones
-            /*classes["BioSeqAct_ShowMedals"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 22, //in ME3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo"))
-                }
-            };
-            sequenceObjects["BioSeqAct_ShowMedals"] = new SequenceObjectInfo();
-            */
-
-            classes["SFXSeqAct_OverrideCasualAppearance"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 93, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("CasualAppearanceID", new PropertyInfo(PropertyType.IntProperty)),
-                }
-            };
-            sequenceObjects["SFXSeqAct_OverrideCasualAppearance"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1,
-                inputLinks = new List<string> { "Override", "Remove Override" }
-            };
-
-            classes["SFXSeqAct_SetPawnMeshes"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 66, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
-
-            classes["SFXSeqAct_SetStuntMeshes"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 42, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetStuntMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
-
-            classes["SFXSeqAct_CheckForNewGAWAssetsFixed"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 2, //in LE3Resources.pcc
-
-            };
-            sequenceObjects["SFXSeqAct_CheckForNewGAWAssetsFixed"] = new SequenceObjectInfo();
-
-            classes["SFXSeqAct_SetEquippedWeaponVisibility"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 8, //in LE3Resources.pcc
-            };
-            sequenceObjects["SFXSeqAct_SetEquippedWeaponVisibility"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1,
-                inputLinks = new List<string> { "Show", "Hide", "Toggle" }
-            };
-
-            classes["SFXSeqCond_IsCombatMode"] = new ClassInfo
-            {
-                baseClass = "SequenceCondition",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 17, //in LE3Resources.pcc
-            };
-            sequenceObjects["SFXSeqCond_IsCombatMode"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-
-            //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
-            classes["SFXSeqAct_SetFaceFX"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 22, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_pDefaultFaceFXAsset", new PropertyInfo(PropertyType.ObjectProperty, "FaceFXAsset"))
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetFaceFX"] = new SequenceObjectInfo();
-
-            //Kinkojiro - New Class - SFXSeqAct_SetAutoPlayerLookAt
-            classes["SFXSeqAct_SetAutoLookAtPlayer"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 32, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoTargets", new PropertyInfo(PropertyType.ArrayProperty, "Actor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bAutoLookAtPlayer", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NoticeEnableDistance", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDisableDistance", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMinTime", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ReNoticeMaxTime", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NoticeDuration", new PropertyInfo(PropertyType.FloatProperty))
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetAutoLookAtPlayer"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-
-            //Kinkojiro - New Class - this returns whether player is using Gamepad or KBM
-            classes["SFXSeqAct_GetControllerType"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 101, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("PlayerObject", new PropertyInfo(PropertyType.ObjectProperty, "Player"))
-                }
-            };
-            sequenceObjects["SFXSeqAct_GetControllerType"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-
-            //Kinkojiro - New Class - this sets the tlk strings for a GAW category in war assets gui
-            classes["SFXSeqAct_SetGAWCategoryTitles"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 108, //in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("CategoryId", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewTitleRef", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewDescriptionRef", new PropertyInfo(PropertyType.StringRefProperty))
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetGAWCategoryTitles"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-
-            //Kinkojiro - New Class - only used in EGM
-            classes["SFXSeqAct_TerminalGUI_EGM"] = new ClassInfo
-            {
-                baseClass = "BioSequenceLatentAction",
-                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                //exportIndex = 0, not in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("ExitRequestPin", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_TerminalGUIResouce", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo" )),
-                    new KeyValuePair<NameReference, PropertyInfo>("TerminalDataClass", new PropertyInfo(PropertyType.ObjectProperty, "Class" )),
-                    new KeyValuePair<NameReference, PropertyInfo>("TerminalName", new PropertyInfo(PropertyType.NameProperty))
-                }
-            };
-
-            //Kinkojiro - New Class - only used in EGM
-            classes["BioSeqAct_ShowMedals"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                //exportIndex = 0, not in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("bFromMainMenu", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_oGuiReferenced", new PropertyInfo(PropertyType.ObjectProperty, "GFxMovieInfo" ))
-                }
-            };
-
-            //Kinkojiro - New Class - only used in EGM
-            classes["SFXSeqAct_SetGalaxyMapOptions"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                //exportIndex = 0, not in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoGalaxyObjects", new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fFuelEfficiency", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fFuelTank", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterSpeed", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fSystemSpeed", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fAcceleration", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fDeceleration ", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterAcceleration", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fClusterDeceleration", new PropertyInfo(PropertyType.FloatProperty))
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetGalaxyMapOptions"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-
-            //Kinkojiro - New Class - only used in EGM
-            classes["SFXSeqAct_SetReaperAggression"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                //exportIndex = 0, not in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_aoGalaxyObjects", new PropertyInfo(PropertyType.ArrayProperty, "SFXGalaxyMapObject")),
-                    new KeyValuePair<NameReference, PropertyInfo>("ScanParticleSystemRadius", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("MaxSpeed", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("Acceleration", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_fScanDetectionRange", new PropertyInfo(PropertyType.FloatProperty))
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetReaperAggression"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-            classes["SFXSeqAct_AwardWeaponByName"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                //exportIndex = 0, not in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("WeaponClassName", new PropertyInfo(PropertyType.NameProperty))
-                }
-            };
-            sequenceObjects["SFXSeqAct_AwardWeaponByName"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 1
-            };
-
-            //Kinkojiro - New GM Classes - only used in EGM
-            classes["SFXClusterEGM"] = new ClassInfo
-            {
-                baseClass = "SFXCluster",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("DisplayGAWCondition", new PropertyInfo(PropertyType.IntProperty))
-                }
-            };
-            classes["SFXSystemEGM"] = new ClassInfo
-            {
-                baseClass = "SFXSystem",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bCerberusSystem", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseWwisePair", new PropertyInfo(PropertyType.StructProperty, "WwiseAudioPair")),
-                    new KeyValuePair<NameReference, PropertyInfo>("ShipChaseStopEvent", new PropertyInfo(PropertyType.ObjectProperty, "WwiseEvent"))
-                }
-            };
-            classes["SFXPlanet_Invaded"] = new ClassInfo
-            {
-                baseClass = "BioPlanet",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("InvasionCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("PlanetPreviewCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("PreInvasionDescription", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bDestroyedbyReapers", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bNoPlanetScan", new PropertyInfo(PropertyType.BoolProperty))
-                }
-            };
-            classes["SFXGalaxyMapShipAppearance"] = new ClassInfo
-            {
-                baseClass = "SFXGalaxyMapPlanetAppearance",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("AmbientColor", new PropertyInfo(PropertyType.StructProperty, "LinearColor")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bNeedsLightEnvironment", new PropertyInfo(PropertyType.BoolProperty))
-                }
-            };
-            classes["SFXGalaxyMapFuelDepotDestroyable"] = new ClassInfo
-            {
-                baseClass = "SFXGalaxyMapDestroyedFuelDepot",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("DestructionCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("HideFuelSettingCondition", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyAppearance", new PropertyInfo(PropertyType.ObjectProperty, "SFXGalaxyMapObjectAppearanceBase")),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDisplayName", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyDescription", new PropertyInfo(PropertyType.StringRefProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("EmptyTexture", new PropertyInfo(PropertyType.ObjectProperty, "Texture2D")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bEmptyDepot", new PropertyInfo(PropertyType.BoolProperty))
-                }
-            };
-            classes["SFXGalaxyMapReaperEGM"] = new ClassInfo
-            {
-                baseClass = "SFXGalaxyMapReaper",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("EGMSettingCondition", new PropertyInfo(PropertyType.IntProperty))
-                }
-            };
-            classes["SFXGalaxyMapCerberusShip"] = new ClassInfo
-            {
-                baseClass = "SFXGalaxyMapReaperEGM",
-                properties =
-                {
-                   new KeyValuePair<NameReference, PropertyInfo>("ArrowMaterialInstance", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInstanceConstant"))
-                }
-            };
-            //Kinkojiro - New Class - not in resources as has Mail gui. Let me know if anyone wants.
-            classes["SFXSeqAct_MailGUI_Sorted"] = new ClassInfo
-            {
-                baseClass = "BioSequenceLatentAction",
-                //pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                //exportIndex = 0, not in LE3Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("Honorifics", new PropertyInfo(PropertyType.ArrayProperty, "StrProperty")),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_bSortMail", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("m_MailGUIResource", new PropertyInfo(PropertyType.ObjectProperty, "GFXMovieInfo")),
-                    new KeyValuePair<NameReference, PropertyInfo>("MailDataClass", new PropertyInfo(PropertyType.ObjectProperty, "SFXGUIData_Mail")),
-                }
-            };
-            sequenceObjects["SFXSeqAct_MailGUI_Sorted"] = new SequenceObjectInfo
-            {
-                ObjInstanceVersion = 3,
-                inputLinks = new List<string> { "Send Mail", "Open UI" }    
-            };
-
-            ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE3);
-
-            classes["LightMapTexture2D"] = new ClassInfo
-            {
-                baseClass = "Texture2D",
-                pccPath = @"CookedPCConsole\Engine.pcc"
-            };
-
-            classes["StaticMesh"] = new ClassInfo
-            {
-                baseClass = "Object",
-                pccPath = @"CookedPCConsole\Engine.pcc",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseSimpleBoxCollision", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bUsedForInstancing", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ForceDoubleSidedShadowVolumes", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
-                    new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
-                }
-            };
-
-            classes["FracturedStaticMesh"] = new ClassInfo
-            {
-                baseClass = "StaticMesh",
-                pccPath = @"CookedPCConsole\Engine.pcc",
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("LoseChunkOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bSpawnPhysicsChunks", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bCompositeChunksExplodeOnImpact", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ExplosionVelScale", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMinHealth", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("FragmentDestroyEffects", new PropertyInfo(PropertyType.ArrayProperty, "ParticleSystem")),
-                    new KeyValuePair<NameReference, PropertyInfo>("FragmentMaxHealth", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("bAlwaysBreakOffIsolatedIslands", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("DynamicOutsideMaterial", new PropertyInfo(PropertyType.ObjectProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinVel", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ChunkAngVel", new PropertyInfo(PropertyType.FloatProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("ChunkLinHorizontalScale", new PropertyInfo(PropertyType.FloatProperty)),
-                }
-            };
-        }
 
         //call on the _Default object
         private static List<string> generateSequenceObjectInfo(ExportEntry export)
@@ -675,7 +227,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (export.IsClass)
             {
                 UClass classBinary = ObjectBinary.From<UClass>(export);
-                info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
+                info.isAbstract = LegendaryExplorerCore.Helpers.Enums.Has(classBinary.ClassFlags, UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -711,7 +263,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
-            var enumTable = NewEnums ?? Enums;
+            var enumTable = NewEnums ?? ObjectInfo.Enums;
             string enumName = export.ObjectName.Instanced;
             if (!enumTable.ContainsKey(enumName))
             {

@@ -8,7 +8,6 @@ using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -589,7 +588,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             _ = GetClasses(game).TryGetValue(typeName, out result) || GetStructs(game).TryGetValue(typeName, out result);
             if (result is null && game is MEGame.UDK)
             {
-                _ = ME3UnrealObjectInfo.Classes.TryGetValue(typeName, out result) || ME3UnrealObjectInfo.Structs.TryGetValue(typeName, out result);
+                _ = GetClasses(game).TryGetValue(typeName, out result) || GetStructs(game).TryGetValue(typeName, out result);
             }
 
             return result;
@@ -599,13 +598,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             return game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.Classes,
-                MEGame.ME2 => ME2UnrealObjectInfo.Classes,
-                MEGame.ME3 => ME3UnrealObjectInfo.Classes,
-                MEGame.LE1 => LE1UnrealObjectInfo.Classes,
-                MEGame.LE2 => LE2UnrealObjectInfo.Classes,
-                MEGame.LE3 => LE3UnrealObjectInfo.Classes,
-                MEGame.UDK => UDKUnrealObjectInfo.Classes,
+                MEGame.ME1 => ME1UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.ME2 => ME2UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.ME3 => ME3UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Classes,
                 _ => null
             };
         }
@@ -614,13 +613,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             return game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.Structs,
-                MEGame.ME2 => ME2UnrealObjectInfo.Structs,
-                MEGame.ME3 => ME3UnrealObjectInfo.Structs,
-                MEGame.LE1 => LE1UnrealObjectInfo.Structs,
-                MEGame.LE2 => LE2UnrealObjectInfo.Structs,
-                MEGame.LE3 => LE3UnrealObjectInfo.Structs,
-                MEGame.UDK => UDKUnrealObjectInfo.Structs,
+                MEGame.ME1 => ME1UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.ME2 => ME2UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.ME3 => ME3UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Structs,
                 _ => null
             };
         }
@@ -629,13 +628,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             return game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.Enums,
-                MEGame.ME2 => ME2UnrealObjectInfo.Enums,
-                MEGame.ME3 => ME3UnrealObjectInfo.Enums,
-                MEGame.LE1 => LE1UnrealObjectInfo.Enums,
-                MEGame.LE2 => LE2UnrealObjectInfo.Enums,
-                MEGame.LE3 => LE3UnrealObjectInfo.Enums,
-                MEGame.UDK => UDKUnrealObjectInfo.Enums,
+                MEGame.ME1 => ME1UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.ME2 => ME2UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.ME3 => ME3UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Enums,
                 _ => null
             };
         }
@@ -644,13 +643,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         {
             return game switch
             {
-                MEGame.ME1 => ME1UnrealObjectInfo.SequenceObjects,
-                MEGame.ME2 => ME2UnrealObjectInfo.SequenceObjects,
-                MEGame.ME3 => ME3UnrealObjectInfo.SequenceObjects,
-                MEGame.LE1 => LE1UnrealObjectInfo.SequenceObjects,
-                MEGame.LE2 => LE2UnrealObjectInfo.SequenceObjects,
-                MEGame.LE3 => LE3UnrealObjectInfo.SequenceObjects,
-                MEGame.UDK => UDKUnrealObjectInfo.SequenceObjects,
+                MEGame.ME1 => ME1UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.ME2 => ME2UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.ME3 => ME3UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.SequenceObjects,
                 _ => null
             };
         }
@@ -696,7 +695,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = export.SuperClassName,
                 exportIndex = export.UIndex,
                 ClassName = export.ObjectName.Instanced,
-                isAbstract = uClass.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract),
+                isAbstract = Enums.Has(uClass.ClassFlags, UnrealFlags.EClassFlags.Abstract),
                 pccPath = pcc.FilePath.Contains("BioGame", StringComparison.InvariantCultureIgnoreCase)
                     ? pcc.FilePath[(pcc.FilePath.LastIndexOf("BIOGame", StringComparison.InvariantCultureIgnoreCase) + 8)..]
                     : pcc.FilePath,
@@ -838,7 +837,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             }
                             if (type is not null)
                             {
-                                bool transient = uProperty.PropertyFlags.Has(UnrealFlags.EPropertyFlags.Transient);
+                                bool transient = Enums.Has(uProperty.PropertyFlags, UnrealFlags.EPropertyFlags.Transient);
                                 info.properties.Add(childExport.ObjectName.Instanced, new PropertyInfo((PropertyType)type, reference, transient, uProperty.ArraySize));
                             }
                             break;
@@ -1057,6 +1056,95 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             return null; // We don't know
             */
+        }
+
+        public static void AddIntrinsicClasses(Dictionary<string, ClassInfo> classes, MEGame game)
+        {
+            string corePath = game switch
+            {
+                MEGame.UDK => @"Script\Core.u",
+                MEGame.ME1 => @"CookedPC\Core.u",
+                MEGame.ME2 => @"CookedPC\Core.pcc",
+                _ => @"CookedPCConsole\Core.pcc"
+            };
+            string enginePath = game switch
+            {
+                MEGame.UDK => @"Script\Engine.u",
+                MEGame.ME1 => @"CookedPC\Engine.u",
+                MEGame.ME2 => @"CookedPC\Engine.pcc",
+                _ => @"CookedPCConsole\Engine.pcc"
+            };
+
+            if (game >= MEGame.ME3)
+            {
+                AddCore("Package", "Object");
+            }
+
+            AddCore("Field", "Object");
+            AddCore("Struct", "Field");
+            AddCore("ScriptStruct", "Struct");
+            AddCore("State", "Struct");
+            AddCore("Function", "Struct");
+            AddCore("Enum", "Field");
+            AddCore("Const", "Field");
+            //AddCore("Class", "State"); Causes infinite loop
+
+            AddCore("Property", "Field");
+            AddCore("ByteProperty", "Property");
+            AddCore("IntProperty", "Property");
+            AddCore("BoolProperty", "Property");
+            AddCore("FloatProperty", "Property");
+            AddCore("ObjectProperty", "Property");
+            AddCore("ComponentProperty", "Property");
+            AddCore("ClassProperty", "Property");
+            AddCore("InterfaceProperty", "Property");
+            AddCore("NameProperty", "Property");
+            AddCore("StrProperty", "Property");
+            AddCore("ArrayProperty", "Property");
+            AddCore("MapProperty", "Property");
+            AddCore("StructProperty", "Property");
+            AddCore("DelegateProperty", "Property");
+            AddCore("StringRefProperty", "Property");
+
+            classes["LevelBase"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+            classes["Level"] = new ClassInfo
+            {
+                baseClass = "LevelBase",
+                pccPath = enginePath
+            };
+            classes["PendingLevel"] = new ClassInfo
+            {
+                baseClass = "LevelBase",
+                pccPath = enginePath
+            };
+            classes["Model"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+            classes["World"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+            classes["Polys"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+
+            void AddCore(string className, string baseClass)
+            {
+                classes[className] = new ClassInfo
+                {
+                    baseClass = baseClass,
+                    pccPath = corePath
+                };
+            }
         }
     }
 }

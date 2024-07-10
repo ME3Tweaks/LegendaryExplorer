@@ -309,13 +309,13 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             var structsDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
             var classesDiff = new Dictionary<string, (ClassInfo, ClassInfo)>();
 
-            var immutableME1Structs = ME1UnrealObjectInfo.Structs
+            var immutableME1Structs = ME1UnrealObjectInfo.ObjectInfo.Structs
                 .Where(kvp => ME1UnrealObjectInfo.IsImmutableStruct(kvp.Key))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            var immutableME2Structs = ME2UnrealObjectInfo.Structs
+            var immutableME2Structs = ME2UnrealObjectInfo.ObjectInfo.Structs
                 .Where(kvp => ME2UnrealObjectInfo.IsImmutableStruct(kvp.Key))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            var immutableME3Structs = ME2UnrealObjectInfo.Structs
+            var immutableME3Structs = ME2UnrealObjectInfo.ObjectInfo.Structs
                 .Where(kvp => ME3UnrealObjectInfo.IsImmutableStruct(kvp.Key))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -351,12 +351,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                     Formatting.Indented));
             return;
 
-            var srcEnums = ME2UnrealObjectInfo.Enums;
-            var compareEnums = ME3UnrealObjectInfo.Enums;
-            var srcStructs = ME2UnrealObjectInfo.Structs;
-            var compareStructs = ME3UnrealObjectInfo.Structs;
-            var srcClasses = ME2UnrealObjectInfo.Classes;
-            var compareClasses = ME3UnrealObjectInfo.Classes;
+            var srcEnums = ME2UnrealObjectInfo.ObjectInfo.Enums;
+            var compareEnums = ME3UnrealObjectInfo.ObjectInfo.Enums;
+            var srcStructs = ME2UnrealObjectInfo.ObjectInfo.Structs;
+            var compareStructs = ME3UnrealObjectInfo.ObjectInfo.Structs;
+            var srcClasses = ME2UnrealObjectInfo.ObjectInfo.Classes;
+            var compareClasses = ME3UnrealObjectInfo.ObjectInfo.Classes;
 
             foreach ((string enumName, List<NameReference> values) in srcEnums)
             {

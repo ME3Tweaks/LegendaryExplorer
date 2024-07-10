@@ -8,7 +8,6 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Toolkit.HighPerformance;
-using static System.Net.WebRequestMethods;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {

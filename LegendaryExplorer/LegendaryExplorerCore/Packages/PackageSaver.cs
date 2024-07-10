@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
-using LegendaryExplorerCore.Unreal.Classes;
 using Newtonsoft.Json;
 
 namespace LegendaryExplorerCore.Packages
