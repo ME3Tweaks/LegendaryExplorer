@@ -225,10 +225,10 @@ namespace LegendaryExplorerCore.Packages
             }
         }
         //int PackageNameNumber
-        private int idxClassName
+        public int idxClassName
         {
             get => _header.ClassNameIndex;
-            set
+            private set
             {
                 if (_header.ClassNameIndex != value)
                 {

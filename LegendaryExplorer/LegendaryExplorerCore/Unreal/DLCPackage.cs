@@ -299,47 +299,48 @@ namespace LegendaryExplorerCore.Unreal
         public MemoryStream DecompressEntry(FileEntryStruct e)
         {
             //Debug.WriteLine("Decompressing " + e.FileName);
-            MemoryStream result = MemoryManager.GetMemoryStream();
+            MemoryStream result;
             uint count = 0;
-            byte[] inputBlock;
             long left = e.RealUncompressedSize;
-            FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+            var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read);
             fs.Seek(e.BlockOffsets[0], SeekOrigin.Begin);
-            byte[] buff;
+            
             if (e.BlockSizeTableIndex == 0xFFFFFFFF)
             {
-                buff = new byte[e.RealUncompressedSize];
+                byte[] buff = new byte[(int)e.RealUncompressedSize];
                 fs.Read(buff, 0, buff.Length);
-                result.Write(buff, 0, buff.Length);
+                result = MEPackageHandler.CreateOptimizedLoadingMemoryStream(buff);
             }
             else
             {
+                byte[] buffer = new byte[(int)e.RealUncompressedSize];
+                int maxCompressedBlockSize = e.BlockSizes.Max();
+                byte[] inputBlock = new byte[maxCompressedBlockSize];
+                int pos = 0;
                 while (left > 0)
                 {
-                    uint compressedBlockSize = e.BlockSizes[count];
+                    int compressedBlockSize = e.BlockSizes[count];
                     if (compressedBlockSize == 0)
-                        compressedBlockSize = Header.MaxBlockSize;
+                        compressedBlockSize = (int)Header.MaxBlockSize;
                     if (compressedBlockSize == Header.MaxBlockSize || compressedBlockSize == left)
                     {
                         //uncompressed?
-                        buff = new byte[compressedBlockSize];
-                        fs.Read(buff, 0, buff.Length);
-
-                        result.Write(buff, 0, buff.Length);
+                        fs.Read(buffer.AsSpan(pos, compressedBlockSize));
+                        pos += compressedBlockSize;
                         left -= compressedBlockSize;
                     }
                     else
                     {
-                        var uncompressedBlockSize = (uint)Math.Min(left, Header.MaxBlockSize);
+                        int uncompressedBlockSize = (int)Math.Min(left, Header.MaxBlockSize);
                         if (compressedBlockSize < 5)
                         {
                             throw new Exception("compressed block size smaller than 5");
                         }
 
-                        inputBlock = new byte[compressedBlockSize];
                         //Debug.WriteLine($"Decompressing at 0x{fs.Position:X8}");
-                        fs.Read(inputBlock, 0, (int)compressedBlockSize);
-                        uint actualUncompressedBlockSize = uncompressedBlockSize;
+                        Span<byte> inputSpan = inputBlock.AsSpan(0, compressedBlockSize);
+                        Span<byte> outputSpan = buffer.AsSpan(pos, uncompressedBlockSize);
+                        fs.Read(inputSpan);
                         if (Header.CompressionScheme == "amzl"  /* PC */|| Header.CompressionScheme == "lzma" /* PS3 (it doesn't appear to actually be LZMA!), WiiU */)
                         {
                             //if (Header.CompressionScheme == "lzma")
@@ -358,27 +359,23 @@ namespace LegendaryExplorerCore.Unreal
                             //Buffer.BlockCopy(inputBlock,0,attachedHeader,5, inputBlock.Length);
                             //inputBlock = attachedHeader;
                             //}
-
-                            var outputBlock = LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
-                            if (outputBlock.Length != actualUncompressedBlockSize)
+                            ;
+                            var decompResult = LZMA.Decompress(inputSpan, outputSpan);
+                            if (decompResult != 0)
                                 throw new Exception("SFAR LZMA Decompression Error");
-                            result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
-                            left -= uncompressedBlockSize;
-                            //continue;
                         }
-
-                        if (Header.CompressionScheme == "lzx") //Xbox
+                        else if (Header.CompressionScheme == "lzx") //Xbox
                         {
-                            var outputBlock = new byte[actualUncompressedBlockSize];
-                            var decompResult = LZX.Decompress(inputBlock, (uint)inputBlock.Length, outputBlock);
+                            var decompResult = LZX.Decompress(inputSpan, outputSpan);
                             if (decompResult != 0)
                                 throw new Exception("SFAR LZX Decompression Error");
-                            result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
-                            left -= uncompressedBlockSize;
                         }
+                        pos += uncompressedBlockSize;
+                        left -= uncompressedBlockSize;
                     }
                     count++;
                 }
+                result = MEPackageHandler.CreateOptimizedLoadingMemoryStream(buffer);
             }
             fs.Close();
             result.Position = 0;

@@ -496,7 +496,7 @@ namespace LegendaryExplorerCore.Packages
                             throw new Exception("LZMA decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.LZX:
-                        if (LZX.Decompress(datain, (uint)datain.Length, Segment, (uint)b.uncompressedsize) != 0)
+                        if (LZX.Decompress(datain, dataOut) != 0)
                             throw new Exception("LZX decompression failed!");
                         break;
                     case UnrealPackageFile.CompressionType.OodleLeviathan:
