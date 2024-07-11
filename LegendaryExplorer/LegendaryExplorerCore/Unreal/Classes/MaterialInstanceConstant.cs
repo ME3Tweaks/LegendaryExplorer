@@ -2,6 +2,7 @@
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
@@ -67,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     }
                 }
             }
-            else if (export.ClassName == "MaterialInstanceConstant")
+            else if (export.IsA("MaterialInstanceConstant"))
             {
                 //Read Local
                 if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
