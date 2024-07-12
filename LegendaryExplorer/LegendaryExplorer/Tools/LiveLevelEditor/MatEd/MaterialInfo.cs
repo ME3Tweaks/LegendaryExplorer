@@ -216,7 +216,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                         GetAllTextureParameters(GetMatParent(exp, cache), true, cache, parameterList);
                         return;
                     }
-                    var textures = TextureParameter.GetTextureParameters(exp, true, () => new TextureParameterMatEd());
+                    var textures = TextureParameter.GetTextureParameters(exp, true, () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef});
                     if (textures == null)
                     {
                         // Do it again with the parent. We are not locally overridding

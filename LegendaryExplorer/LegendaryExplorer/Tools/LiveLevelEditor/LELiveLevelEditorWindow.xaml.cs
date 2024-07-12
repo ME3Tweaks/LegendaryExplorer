@@ -91,6 +91,28 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public ObservableCollectionExtended<string> LoadedMaterials { get; } = new();
 
         /// <summary>
+        /// List of components on the current selected actor
+        /// </summary>
+        public ObservableCollectionExtended<string> Components { get; } = new();
+        private string _selectedComponent;
+
+        public string SelectedComponent
+        {
+            get => _selectedComponent;
+            set
+            {
+                if (SetProperty(ref _selectedComponent, value) && SelectedActor != null)
+                {
+                    // This doesn't work for null values.
+                    SelectedActor.ComponentIdx = Components.IndexOf(value);
+                    SetBusy($"Selecting component: {value}", () => { });
+                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(SelectedActor.FileName)} {SelectedActor.ActorName} {_selectedActor.ComponentIdx}";
+                    InteropHelper.SendMessageToGame(message, Game);
+                }
+            }
+        }
+
+        /// <summary>
         /// The IFPs of the current selected component.
         /// </summary>
         public ObservableCollectionExtended<string> CurrentComponentMaterials { get; } = new();
@@ -185,7 +207,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
             SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
-            SetMaterialCommand = new GenericCommand(SetMaterial);
+            SetMaterialCommand = new GenericCommand(SetMaterial, () => SelectedMaterial != null);
             SetCustomMaterialCommand = new GenericCommand(SetCustomMaterial);
         }
 
@@ -242,6 +264,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                         {
                             using var autocloseP = MEPackageHandler.OpenMEPackage(path);
                             preloadMaterial = autocloseP.FindExport(material);
+                            break;
+                        }
+
+                        // Try under PersistentLevel.
+                        if (package.FindExport($"TheWorld.PersistentLevel.{material}") != null)
+                        {
+                            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                            preloadMaterial = autocloseP.FindExport($"TheWorld.PersistentLevel.{material}");
                             break;
                         }
                     }
@@ -459,7 +489,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
             Debug.WriteLine($"LLE Command: {msg}");
             var verb = command[1]; // Message Info
-            // "READY" is done on first initialize and will automatically 
+                                   // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
             {
                 InteropHelper.SendMessageToGame("ACTIVATE_PLAYERGPS", Game);
@@ -490,6 +520,17 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                         throw;
                     }
                     RegenActorList();
+                }
+            }
+            else if (verb == "COMPONENTSLIST")
+            {
+                try
+                {
+                    UpdateComponents(string.Join(' ', command.Skip(2))); // Skip tool and verb
+                }
+                catch
+                {
+
                 }
             }
             else if (verb == "LOADEDMATERIAL")
@@ -584,6 +625,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
+        private void UpdateComponents(string json)
+        {
+            var components = JsonConvert.DeserializeObject<List<string>>(json);
+            Components.ReplaceAll(components);
+        }
+
         private readonly DispatcherTimer GameOpenTimer;
         private void CheckIfGameOpen(object sender, EventArgs e)
         {
@@ -623,7 +670,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             public JsonActorObj[] Actors { get; set; }
         }
 
-        private class JsonComponentObj
+        private class JsonStaticMeshCollectionComponentObj
         {
             /// <summary>
             /// Name of the SMCA
@@ -636,11 +683,42 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             public string SMCAMesh { get; set; }
         }
 
+        private class JsonStaticLightCollectionComponentObj
+        {
+            /// <summary>
+            /// Name of the SLCA
+            /// </summary>
+            public string SLCAName { get; set; }
+        }
+
+        private class JsonActorComponentObj
+        {
+            /// <summary>
+            /// Name of the component
+            /// </summary>
+            public string Name { get; set; }
+        }
+
         private class JsonActorObj
         {
             public string Name { get; set; }
             public string Tag { get; set; }
-            public JsonComponentObj[] Components { get; set; }
+
+            /// <summary>
+            /// Mesh collection components
+            /// </summary>
+            public JsonStaticMeshCollectionComponentObj[] StaticMeshCollectionComponents { get; set; } = [];
+
+            /// <summary>
+            /// Light collection components
+            /// </summary>
+            public JsonStaticLightCollectionComponentObj[] StaticLightCollectionComponents { get; set; } = [];
+
+            /// <summary>
+            /// Standard actor components that have a mesh.
+            /// </summary>
+            public List<string> ActorComponents { get; set; } = [];
+
         }
 
         /// <summary>
@@ -665,13 +743,16 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 maps.Add(mapName);
                 //there will never be changes in what actors are loaded in a specific map,
                 //so we can skip maps we've already loaded
+
+                // unless they dynamically spawn :) - Mgamerz
                 if (ActorDict.ContainsKey(mapName))
                 {
                     continue;
                 }
                 foreach (JsonActorObj jsonActorObj in jsonMapObj.Actors)
                 {
-                    if (jsonActorObj.Components is null)
+                    // STANDARD ACTOR
+                    if (jsonActorObj.StaticMeshCollectionComponents.Length == 0 && jsonActorObj.StaticLightCollectionComponents.Length == 0)
                     {
                         var actor = new ActorEntryLE
                         {
@@ -679,12 +760,22 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                             ActorName = jsonActorObj.Name,
                             Tag = jsonActorObj.Tag
                         };
+
+                        List<string> components = new List<string>();
+                        for (int i = 0; i < jsonActorObj.ActorComponents.Count; i++)
+                        {
+                            components.Add(jsonActorObj.ActorComponents[i] ?? "<null>");
+                        }
+
+                        actor.ActorComponents = components.ToArray();
                         ActorDict.AddToListAt(mapName, actor);
                         continue;
                     }
-                    for (int i = 0; i < jsonActorObj.Components.Length; i++)
+
+                    // Collection actors
+                    for (int i = 0; i < jsonActorObj.StaticMeshCollectionComponents.Length; i++)
                     {
-                        if (jsonActorObj.Components[i] is JsonComponentObj component)
+                        if (jsonActorObj.StaticMeshCollectionComponents[i] is JsonStaticMeshCollectionComponentObj component)
                         {
                             var actor = new ActorEntryLE
                             {
@@ -692,6 +783,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                                 ActorName = jsonActorObj.Name,
                                 ComponentName = component.SMCAName,
                                 Mesh = component.SMCAMesh,
+                                ComponentIdx = i
+                            };
+                            ActorDict.AddToListAt(mapName, actor);
+                        }
+                    }
+                    for (int i = 0; i < jsonActorObj.StaticLightCollectionComponents.Length; i++)
+                    {
+                        if (jsonActorObj.StaticLightCollectionComponents[i] is JsonStaticLightCollectionComponentObj component)
+                        {
+                            var actor = new ActorEntryLE
+                            {
+                                FileName = mapName,
+                                ActorName = jsonActorObj.Name,
+                                ComponentName = component.SLCAName,
                                 ComponentIdx = i
                             };
                             ActorDict.AddToListAt(mapName, actor);
@@ -719,6 +824,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     InteropHelper.SendMessageToGame(message, Game);
 
                     StaticMeshComponentSelected = _selectedActor?.ComponentName != null;
+                    Components.ReplaceAll(value.ActorComponents);
                 }
             }
         }
@@ -1306,6 +1412,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public string Tag;
         public string ActorName;
         public string ComponentName;
+        /// <summary>
+        /// Only on standard AActor, not collection.
+        /// </summary>
+        public string[] ActorComponents;
         public string Mesh;
         public int ComponentIdx = -1;
 

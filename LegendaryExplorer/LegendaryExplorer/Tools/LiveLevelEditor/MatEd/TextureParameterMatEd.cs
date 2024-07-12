@@ -75,7 +75,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             TextureParameterMatEd te = new TextureParameterMatEd();
             var props = expression.GetProperties();
             te.ParameterName = props.GetProp<NameProperty>("ParameterName").Value.Instanced;
-            te.ParameterValue = props.GetProp<ObjectProperty>("Texture").Value;
+            te.ParameterValue = props.GetProp<ObjectProperty>("Texture").Value; // This is the Object reference
             te.ExpressionGUID = props.GetProp<StructProperty>("ExpressionGUID");
             te.IsDefaultParameter = true;
             return te;
@@ -137,6 +137,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                         // Needs moved to editing package
                         EntryExporter.ExportExportToPackage(TextureExp, EditingPackage, out var newExp); // Maybe use cache here
                         TextureExp = newExp as ExportEntry; // Todo: Consider renaming to avoid memory collisions on saved package
+                        ParameterValue = TextureExp.UIndex; // Update the texture UIndex for loading
                     }
 
                     var texture = new Texture2D(TextureExp);
