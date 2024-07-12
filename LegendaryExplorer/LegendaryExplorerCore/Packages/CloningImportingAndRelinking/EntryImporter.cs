@@ -1782,9 +1782,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //check to see class is already in file
+
+            //This saves us retrieving and comparing the ClassName string for each import.
+            //Export can use IsClass because that's just a simple int comparison
+            int classNameIdx = pcc.findName("Class");
             foreach (ImportEntry import in pcc.Imports)
             {
-                if (import.IsClass && import.ObjectName == className)
+                if (import.idxClassName == classNameIdx && import.ObjectName == className)
                 {
                     return import;
                 }

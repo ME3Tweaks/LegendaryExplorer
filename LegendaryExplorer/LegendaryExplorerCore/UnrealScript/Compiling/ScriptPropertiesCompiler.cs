@@ -513,6 +513,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private IEntry GetClassDefaultObject(IEntry classEntry)
         {
+            if (classEntry.Parent == null)
+                return Pcc.GetEntryOrAddImport($"Default__{classEntry.ObjectName.Instanced}", classEntry.ObjectName.Instanced, classEntry.FileRef.FileNameNoExtension);
             string parentPath = classEntry.ParentInstancedFullPath;
             return Pcc.GetEntryOrAddImport($"{parentPath}.Default__{classEntry.ObjectName.Instanced}", classEntry.ObjectName.Instanced, classEntry.ParentName);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -93,9 +94,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             string key = inStream.ReadStringUtf8WithLength();
                             int filesCount = inStream.ReadInt32();
-                            int[] files = new int[filesCount];
+                            var files = new List<int>(filesCount);
+                            CollectionsMarshal.SetCount(files, filesCount);
                             inStream.ReadToSpan(files.AsSpan().AsBytes());
-                            exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files))); // V1 uses NetIndex 0 for everything.
+                            exportMap.Add(key, new ObjectInstanceInfo(files)); // V1 uses NetIndex 0 for everything.
                         }
                         return new ObjectInstanceDB(game, filePaths, exportMap) { Version = 1 };
                     }
@@ -117,9 +119,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             int generationNetObjsCount = inStream.ReadInt32();
 
                             int filesCount = inStream.ReadInt32();
-                            int[] files = new int[filesCount];
+                            var files = new List<int>(filesCount);
+                            CollectionsMarshal.SetCount(files, filesCount);
                             inStream.ReadToSpan(files.AsSpan().AsBytes());
-                            exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files))
+                            exportMap.Add(key, new ObjectInstanceInfo(files)
                             {
                                 NetIndex = netIndex,
                                 GenerationNetObjCount = generationNetObjsCount

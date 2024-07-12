@@ -254,11 +254,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public int findName(string nameToFind)
         {
-            if (nameLookupTable.TryGetValue(nameToFind, out var index))
-            {
-                return index;
-            }
-            return -1;
+            return nameLookupTable.GetValueOrDefault(nameToFind, -1);
         }
 
         public void restoreNames(List<string> list)

@@ -25,7 +25,6 @@
  */
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Packages;
 
@@ -34,25 +33,46 @@ namespace LegendaryExplorerCore.Compression
     public static class LZX
     {
         [DllImport(CompressionHelper.COMPRESSION_WRAPPER_NAME, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int LZXDecompress(in byte srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
+        private static extern unsafe int LZXDecompress(byte* srcBuf, uint srcLen, byte* dstBuf, uint* dstLen);
 
         /// <summary>
         /// Decompresses LZX data. The return value will be 0 if the data decompressed OK
         /// </summary>
         /// <param name="src"></param>
         /// <param name="srcLen"></param>
-        /// <param name="dst"></param>
+        /// <param name="dest"></param>
         /// <param name="dstLen"></param>
         /// <returns></returns>
-        public static int Decompress(ReadOnlySpan<byte> src, uint srcLen, byte[] dst, uint dstLen = 0)
+        public static int Decompress(ReadOnlySpan<byte> src, uint srcLen, Span<byte> dest, uint dstLen = 0)
         {
             if (dstLen == 0)
-                dstLen = (uint)dst.Length;
+                dstLen = (uint)dest.Length;
             unsafe
             {
-                fixed (byte* ptr = &MemoryMarshal.GetReference(src))
+                fixed (byte* srcPtr = &MemoryMarshal.GetReference(src))
+                fixed (byte* destPtr = &MemoryMarshal.GetReference(dest))
                 {
-                    return LZXDecompress(Unsafe.AsRef<byte>(ptr), srcLen, dst, ref dstLen);
+                    return LZXDecompress(srcPtr, srcLen, destPtr, &dstLen);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Decompresses LZX data. The return value will be 0 if the data decompressed OK
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        public static int Decompress(ReadOnlySpan<byte> src, Span<byte> dest)
+        {
+            uint srcLen = (uint)src.Length;
+            uint dstLen = (uint)dest.Length;
+            unsafe
+            {
+                fixed (byte* srcPtr = &MemoryMarshal.GetReference(src))
+                fixed (byte* destPtr = &MemoryMarshal.GetReference(dest))
+                {
+                    return LZXDecompress(srcPtr, srcLen, destPtr, &dstLen);
                 }
             }
         }
