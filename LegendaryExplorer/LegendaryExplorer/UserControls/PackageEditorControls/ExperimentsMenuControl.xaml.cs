@@ -425,6 +425,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.StartMatScreenshot(GetPEWindow());
         }
 
+        private void BuildPreviewLevel_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildPreviewLevel(GetPEWindow());
+        }
+
         private void OrganizeParticleSystemExports_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());

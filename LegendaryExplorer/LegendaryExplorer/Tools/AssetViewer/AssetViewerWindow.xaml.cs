@@ -4,34 +4,36 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Numerics;
 using FontAwesome5;
-using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Controls;
+using LegendaryExplorer.Tools.AnimationViewer;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Path = System.IO.Path;
 
-namespace LegendaryExplorer.Tools.AnimationViewer
+namespace LegendaryExplorer.Tools.AssetViewer
 {
     /// <summary>
-    /// ASI-based Animation Viewer - Mgamerz
+    /// ASI-based asset viewer - Particle Systems, Animations, and more - Mgamerz
     /// </summary>
-    public partial class LEAnimationViewerWindow : TrackingNotifyPropertyChangedWindowBase
+    public partial class AssetViewerWindow : TrackingNotifyPropertyChangedWindowBase
     {
         /// <summary>
         /// If game has told us it's ready for anim commands
@@ -41,11 +43,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         /// Game this instance is for
         /// </summary>
         public MEGame Game { get; set; }
-        private static readonly Dictionary<MEGame, LEAnimationViewerWindow> Instances = new();
-        public static LEAnimationViewerWindow Instance(MEGame game)
+        private static readonly Dictionary<MEGame, AssetViewerWindow> Instances = new();
+        public static AssetViewerWindow Instance(MEGame game)
         {
             if (!game.IsLEGame())
-                throw new ArgumentException(@"Animation Viewer 2 does not support this game!", nameof(game));
+                throw new ArgumentException(@"Asset Viewer does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;
         }
@@ -189,11 +191,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         public InteropTarget GameTarget { get; private set; }
 
-        public LEAnimationViewerWindow(MEGame game) : base("LE Animation Viewer", true)
+        public AssetViewerWindow(MEGame game) : base("Asset Viewer", true)
         {
             if (Instance(game) is not null)
             {
-                throw new Exception($"Can only have one instance of {game} Animation Viewer open!");
+                throw new Exception($"Can only have one instance of {game} Asset Viewer open!");
             }
             Instances[game] = this;
 
@@ -206,7 +208,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             GameOpenTimer.Tick += CheckIfGameOpen;
         }
 
-        public LEAnimationViewerWindow(MEGame game, AssetDB db, AnimationRecord AnimToFocus) : this(game)
+        public AssetViewerWindow(MEGame game, AssetDB db, AnimationRecord AnimToFocus) : this(game)
         {
             AnimQueuedForFocus = AnimToFocus;
             foreach ((string fileName, int dirIndex) in db.FileList)
@@ -254,12 +256,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             // Check message is for us
             Debug.WriteLine($"Message: {msg}");
 
-            if (!msg.StartsWith("ANIMVIEWER"))
+            if (!msg.StartsWith("ASSETVIEWER"))
                 return;
-            if (msg == "ANIMVIEWER LOADED")
+            if (msg == "ASSETVIEWER LOADED")
             {
                 Initialized = true;
-                InteropHelper.SendMessageToGame("ANIMV_DISALLOW_WINDOW_PAUSE", Game);
+                InteropHelper.SendMessageToGame("ASSETV_DISALLOW_WINDOW_PAUSE", Game);
 
                 // Load the initial pawn.
                 if (Game == MEGame.LE1)
@@ -267,9 +269,9 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     SelectedActor = ActorOptions.FirstOrDefault();
                 }
 
-                if (GameController.TryGetMEProcess(Game, out Process me3Process))
+                if (GameController.TryGetMEProcess(Game, out Process gameProcess))
                 {
-                    me3Process.MainWindowHandle.RestoreAndBringToFront();
+                    gameProcess.MainWindowHandle.RestoreAndBringToFront();
                 }
 
                 this.RestoreAndBringToFront();
@@ -291,12 +293,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     AnimQueuedForFocus = null;
                 }
             }
-            else if (msg == "ANIMVIEWER ANIMSTARTED")
+            else if (msg == "ASSETVIEWER ANIMSTARTED")
             {
                 LoadingAnimation = false;
                 IsBusy = false; // Not busy
             }
-            else if (msg.StartsWith("AnimViewer string AnimLoaded"))
+            else if (msg.StartsWith("AssetViewer string AssetLoaded"))
             {
                 Vector3 pos = defaultPosition;
                 if (msg.IndexOf("vector") is int idx && idx > 0 &&
@@ -459,7 +461,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
             InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => App.IsDebug || InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
-            
+
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
             LoadAnimViewerCommand = new GenericCommand(LoadAnimViewer, CanLoadAnimViewer);
         }
@@ -530,6 +532,37 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                         Application.Current.Dispatcher.Invoke(() => ActorOptions.ReplaceAll(foundActorTypes.Select(x => $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
                     }
                 }
+                else
+                {
+                    // Object Instance DB doesn't include class name, and AssetDB doesn't store name of usage
+                    // Object -> Package containing it
+                    var foundActorTypes = new Dictionary<string, string>();
+                    foreach (var cr in db.ClassRecords)
+                    {
+                        if (GlobalUnrealObjectInfo.IsA(cr.Class, "SFXPawn", MEGame.LE3))
+                        {
+                            // Types of actors that can be spawned
+                            foreach (var usage in cr.Usages) // Usages of the class (per file)
+                            {
+                                var file = db.FileList[usage.FileKey];
+                                if (MELoadedFiles.GetFilesLoadedInGame(Game)
+                                    .TryGetValue(file.FileName, out var fullPath))
+                                {
+                                    var p = MEPackageHandler.UnsafePartialLoad(fullPath,
+                                        _ => false); // Just load the tables
+                                    var exp = p.GetUExport(usage.UIndex);
+                                    if (!exp.IsDefaultObject && exp.IsArchetype && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
+                                    {
+                                        foundActorTypes[exp.InstancedFullPath] = file.FileName; // Set in dictionary
+                                    }
+                                }
+                            }
+                        }
+
+                        // Must be done on UI thread
+                        Application.Current.Dispatcher.Invoke(() => ActorOptions.ReplaceAll(foundActorTypes.Select(x => $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
+                    }
+                }
             }).ContinueWithOnUIThread(x =>
             {
                 // Todo: Other games.
@@ -542,17 +575,19 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void LoadAnimViewer()
         {
-            IsBusy = true;
-            BusyText = "Preparing animation viewer";
+            SetBusy("Preparing asset viewer", () =>
+            {
+                // Do nothing, just close.
+            });
+
             Task.Run(() =>
             {
-                var animLevelBaseName = $"{Game}LiveAnimViewerStage";
-                var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
-                using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
-
+                var mapPcc = PreviewLevelBuilder.BuildAnimationViewerLevel(Game);
                 InteropHelper.SendFileToGame(mapPcc);
-                GameTarget.ModernExecuteConsoleCommand($"at {animLevelBaseName}");
+                GameTarget.ModernExecuteConsoleCommand($"at {Path.GetFileNameWithoutExtension(PreviewLevelBuilder.GetMapName(Game))}");
             });
+            // Asset viewer will now wait for game to signal to LEX map is loaded
+            // Game will send: ASSETVIEWER LOADED
         }
 
         #endregion

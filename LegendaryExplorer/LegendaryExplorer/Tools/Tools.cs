@@ -31,6 +31,7 @@ using LegendaryExplorerCore.Packages;
 using System.Text;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Tools.AnimationViewer;
+using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.Tools.ClassViewer;
 using LegendaryExplorer.Tools.PlotDatabase;
 using LegendaryExplorer.Tools.ScriptDebugger;
@@ -183,22 +184,22 @@ namespace LegendaryExplorer
             set.Add(new Tool
             {
                 name = "Animation Viewer 2",
-                type = typeof(Tools.AnimationViewer.LEAnimationViewerWindow),
+                type = typeof(AssetViewerWindow),
                 icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
                 open = () =>
                 {
-                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer 2 with.", "Live Level Editor 2 game selector",
-                        new[] { "LE1", "LE2", /*"LE3"*/ }, "LE2", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate(LEAnimationViewerWindow.SupportedGames));
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer LE with.", "Animation Viewer LE game selector",
+                        new[] { "LE1", "LE2", "LE3" }, "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate(AssetViewerWindow.SupportedGames));
 
                     if (Enum.TryParse(gameStr, out MEGame game))
                     {
-                        if (Tools.AnimationViewer.LEAnimationViewerWindow.Instance(game) is { } instance)
+                        if (AssetViewerWindow.Instance(game) is { } instance)
                         {
                             instance.RestoreAndBringToFront();
                         }
                         else
                         {
-                            (new Tools.AnimationViewer.LEAnimationViewerWindow(game)).Show();
+                            (new AssetViewerWindow(game)).Show();
                         }
                     }
                 },
