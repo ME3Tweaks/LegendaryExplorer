@@ -979,5 +979,39 @@ namespace LegendaryExplorerCore.Kismet
 
             return referencingNodes.Distinct().ToList();
         }
+
+        /// <summary>
+        /// Inserts an object between another in a kismet graph. The object being inserted should not have any outlinks on the outlink name specified
+        /// </summary>
+        /// <param name="originalNode">The original starting node</param>
+        /// <param name="outlinkName">The output link we will insert a MITM on</param>
+        /// <param name="mitmNode">The node we will link original node to, and then replace the outlinks of with the ones from the original node</param>
+        /// <param name="mitmInputIdx">What input to hook up the MITM to</param>
+        /// <param name="mitmOutlinkName">What output to copy the originalNode's outlinks onto</param>
+        public static void InsertActionAfter(ExportEntry originalNode, string outlinkName, ExportEntry mitmNode, int mitmInputIdx, string mitmOutlinkName)
+        {
+            var outLinkIdxToRedirect = KismetHelper.GetOutputLinkNames(originalNode).IndexOf(outlinkName);
+            if (outLinkIdxToRedirect == -1)
+            {
+                // Outlink needs made
+                KismetHelper.CreateNewOutputLink(originalNode, outlinkName, null);
+                outLinkIdxToRedirect = KismetHelper.GetOutputLinkNames(originalNode).IndexOf(outlinkName);
+            }
+
+
+            var originalOutLinks = KismetHelper.GetOutputLinksOfNode(originalNode);
+            var newOutLinks = KismetHelper.GetOutputLinksOfNode(originalNode);
+
+            newOutLinks[outLinkIdxToRedirect].Clear();
+            newOutLinks[outLinkIdxToRedirect].Add(new OutputLink() { InputLinkIdx = mitmInputIdx, LinkedOp = mitmNode }); // Point only to our new node
+            KismetHelper.WriteOutputLinksToNode(originalNode, newOutLinks);
+
+            var mitmOutLinks = KismetHelper.GetOutputLinksOfNode(mitmNode);
+            var mitmOutlinkIdxToUse = KismetHelper.GetOutputLinkNames(mitmNode).IndexOf(mitmOutlinkName);
+
+            mitmOutLinks[mitmOutlinkIdxToUse] = originalOutLinks[outLinkIdxToRedirect]; // Use the original outlinks as the output from this outlink
+
+            KismetHelper.WriteOutputLinksToNode(mitmNode, mitmOutLinks);
+        }
     }
 }
