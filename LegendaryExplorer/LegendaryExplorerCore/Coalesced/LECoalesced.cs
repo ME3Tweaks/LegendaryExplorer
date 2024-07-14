@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 // Tools to unpack/repack LE1 and LE2 coalesced files. 
 // Originally by d00t (https://github.com/d00telemental/LECoal)
@@ -281,7 +282,7 @@ namespace LegendaryExplorerCore.Coalesced
         public void WriteToFile(string destinationPath)
         {
             var ms = new MemoryStream();
-            WriteToStream(ms);
+            WriteToStream(ms, destinationPath.GetUnrealLocalization());
             ms.WriteToFile(destinationPath);
         }
 
@@ -309,13 +310,13 @@ namespace LegendaryExplorerCore.Coalesced
             return splitVal;
         }
 
-        public void WriteToStream(Stream ms)
+        public void WriteToStream(Stream ms, MELocalization lang)
         {
             var writer = new BinaryWriter(ms);
             writer.Write(Files.Count);
             foreach (var file in Files)
             {
-                writer.WriteCoalescedString(GetIniFullPath(file.Key));
+                writer.WriteCoalescedString(GetIniFullPath(file.Key, lang));
                 writer.Write(file.Value.Sections.Count);
 
                 foreach (var section in file.Value.Sections)
@@ -337,9 +338,10 @@ namespace LegendaryExplorerCore.Coalesced
             }
         }
 
-        private string GetIniFullPath(string filename)
+        private string GetIniFullPath(string filename, MELocalization localization)
         {
             var extension = Path.GetExtension(filename).ToLower();
+            var fNameNoExt = Path.GetFileNameWithoutExtension(filename); // strip this off to ensure we don't double them up
             switch (extension)
             {
                 case ".int":
@@ -347,13 +349,13 @@ namespace LegendaryExplorerCore.Coalesced
                 case ".deu":
                 case ".pol":
                 case ".fra":
-                    return $@"..\..\Localization\{extension.Substring(1).ToUpper()}\{filename}";
+                case "" when CoalescedConverter.LocalizedFiles.Contains(fNameNoExt, StringComparer.OrdinalIgnoreCase): // No extension, may have been stripped
+                    return $@"..\..\Localization\{localization.ToString().ToUpper()}\{fNameNoExt}.{localization.ToString().ToLower()}";
                 case ".ini":
                     return $@"..\..\BIOGame\Config\{filename}";
-                case "" when CoalescedConverter.ProperNames.Contains(filename, StringComparer.InvariantCultureIgnoreCase): // No extension, may have been stripped
-                    return $@"..\..\BIOGame\Config\{filename}.ini";
-                case "":
-                    return $@"..\..\BIOGame\Config\{filename}.int"; // It's one of those localization files. Just set it to int. These are never used anyways.
+                case "" when CoalescedConverter.ProperNames.Contains(fNameNoExt, StringComparer.OrdinalIgnoreCase): // No extension, may have been stripped
+                    return $@"..\..\BIOGame\Config\{fNameNoExt}.ini";
+
             }
             throw new Exception($"Filename '{filename}' has invalid file extension for LE1/LE2 Coalesced filename");
         }
