@@ -416,7 +416,7 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             PropertyInfo p = GlobalUnrealObjectInfo.GetPropertyInfo(game, parentName, containingType);
             string typeName = p.Reference;
-            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(game, typeName, true);
+            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(game, typeName, true, null);// This will not relink object properties!
             return new StructProperty(typeName, props, isImmutable: GlobalUnrealObjectInfo.IsImmutable(typeName, game));
         }
 

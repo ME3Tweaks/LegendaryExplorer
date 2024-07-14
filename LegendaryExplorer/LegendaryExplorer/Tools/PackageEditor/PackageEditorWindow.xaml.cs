@@ -4224,8 +4224,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             switch (myValue)
             {
                 case "SequenceEditor":
-                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
-                    seqEditor.LoadFile(Pcc.FilePath);
+                    var seqEditor = new Sequence_Editor.SequenceEditorWPF(Pcc);
                     seqEditor.Show();
                     break;
                 case "FaceFXEditor":

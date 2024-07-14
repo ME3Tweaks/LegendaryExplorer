@@ -106,7 +106,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 }
                 else
                 {
-                    PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true);
+                    PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true, sew.Pcc);
                     props.AddOrReplaceProp(new StrProperty(name, "LinkDesc"));
                     int index = sew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
                     props.AddOrReplaceProp(new ObjectProperty(index, "ExpectedType"));
@@ -208,7 +208,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 
             ArrayProperty<StructProperty> variableLinks = interp.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
             // Add camera varLink
-            PropertyCollection camProps = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true);
+            PropertyCollection camProps = GlobalUnrealObjectInfo.getDefaultStructValue(sew.Pcc.Game, "SeqVarLink", true, sew.Pcc);
             camProps.AddOrReplaceProp(new StrProperty(camActor, "LinkDesc"));
             int objIdx = sew.Pcc.FindImport("Engine.SeqVar_Object").UIndex;
             camProps.AddOrReplaceProp(new ObjectProperty(objIdx, "ExpectedType"));

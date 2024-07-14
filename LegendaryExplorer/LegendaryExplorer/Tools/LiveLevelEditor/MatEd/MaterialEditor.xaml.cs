@@ -95,7 +95,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         public void LoadMaterialIntoEditor(ExportEntry otherMat)
         {
-            var newPackage = MEPackageHandler.CreateEmptyPackage(@"LLEMaterialEditor.pcc", Game);
+            var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(@"LLEMaterialEditor.pcc", Game);
             var cache = new PackageCache();
             var rop = new RelinkerOptionsPackage()
             {

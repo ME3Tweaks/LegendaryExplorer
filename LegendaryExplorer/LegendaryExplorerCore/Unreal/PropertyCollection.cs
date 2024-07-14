@@ -340,10 +340,10 @@ namespace LegendaryExplorerCore.Unreal
             {
                 IMEPackage pcc = export.FileRef;
                 //strip transients unless this is a class definition
-                bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
+                bool stripTransients = parsingEntry is not { ClassName: "Class" or "ScriptStruct" };
 
                 MEGame structValueLookupGame = pcc.Game;
-                
+
                 // This should be done already...
                 //GlobalUnrealObjectInfo.EnsureLoaded(pcc.Game);
                 switch (pcc.Game)
@@ -366,7 +366,7 @@ namespace LegendaryExplorerCore.Unreal
                         return props;
                 }
 
-                defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache, false);
+                defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, parsingEntry?.FileRef, packageCache, false);
                 if (defaultProps == null)
                 {
                     int startPos = (int)stream.Position;
@@ -658,7 +658,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns>A deep copy of the <see cref="PropertyCollection"/></returns>
         public PropertyCollection DeepClone()
         {
-            var clone = new PropertyCollection {EndOffset = EndOffset, IsImmutable = IsImmutable};
+            var clone = new PropertyCollection { EndOffset = EndOffset, IsImmutable = IsImmutable };
             for (int i = 0; i < Count; i++)
             {
                 clone.Add(this[i].DeepClone());
@@ -704,7 +704,7 @@ namespace LegendaryExplorerCore.Unreal
                 }
                 else if (!thisProp.Equivalent(otherProp))
                 {
-                    if (structDiff && thisProp is StructProperty {IsImmutable: false} thisStruct && otherProp is StructProperty otherStruct)
+                    if (structDiff && thisProp is StructProperty { IsImmutable: false } thisStruct && otherProp is StructProperty otherStruct)
                     {
                         diff.Add(new StructProperty(thisStruct.StructType, thisStruct.Properties.Diff(otherStruct.Properties), thisStruct.Name, thisStruct.IsImmutable));
                     }
@@ -1000,7 +1000,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         ///<inheritdoc/>
-        public override IntProperty DeepClone() => (IntProperty) MemberwiseClone();
+        public override IntProperty DeepClone() => (IntProperty)MemberwiseClone();
         ///<inheritdoc/>
         public override bool Equivalent(Property other) => other is IntProperty intProperty && base.Equivalent(intProperty) && intProperty.Value == Value;
 
@@ -1089,7 +1089,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         ///<inheritdoc/>
-        public override FloatProperty DeepClone() => (FloatProperty) MemberwiseClone();
+        public override FloatProperty DeepClone() => (FloatProperty)MemberwiseClone();
         ///<inheritdoc/>
         public override bool Equivalent(Property other) => other is FloatProperty floatProperty && base.Equivalent(floatProperty) && floatProperty.Value == Value;
 

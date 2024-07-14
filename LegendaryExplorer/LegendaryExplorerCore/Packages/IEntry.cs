@@ -20,7 +20,15 @@ namespace LegendaryExplorerCore.Packages
         int idxLink { get; set; }
         string ClassName { get; }
         string FullPath { get; }
+
+        /// <summary>
+        /// InstancedFullPath - Dot separated object hierarchy, within the local package file. Does not take exports lacking ForcedExport into account.
+        /// </summary>
         string InstancedFullPath { get; }
+
+        /// <summary>
+        /// MemoryFullPath - The path as the object will appear in game-memory, taking ForceExport into account.
+        /// </summary>
         string MemoryFullPath { get; }
         string ObjectNameString { get; set; }
         NameReference ObjectName { get; set; }

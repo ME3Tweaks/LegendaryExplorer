@@ -264,7 +264,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (p != null)
             {
                 string typeName = p.Reference;
-                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true, Pcc);
                 props.AddOrReplaceProp(new NameProperty(finished.ObjectName, "LinkAction"));
                 props.AddOrReplaceProp(new StrProperty(outputLabel, "LinkDesc"));
                 props.AddOrReplaceProp(new ObjectProperty(finished, "LinkedOp"));

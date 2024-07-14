@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
             // We will want to cache files in memory to greatly speed this up
-            var newCache = cache == null; 
+            var newCache = cache == null;
             cache ??= new PackageCache();
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // port it in
                     //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
                     var parent = PortParents(mapping.Value, targetPackage);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, 
+                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true,
                         customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache }, out _);
                     issues.AddRange(relinkResults1);
                 }
@@ -111,13 +111,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Ports in the parents of the source entry into the target package. They should be Package exports. Items that are found in the target already are not ported. The direct parent of the source IEntry is returned, in the target package.
+        /// Ports in the parents of the source entry into the target package. Items that are found in the target already are not ported. The direct parent of the source IEntry is returned, in the target package.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <param name="importAsImport">If the parents should be imported as an import instead of an export if they don't exist. This should only be used if you're porting in an import and creating its parents.</param>
         /// <returns></returns>
-        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false)
+        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
             if (packagename != null && IsGlobalNonStartupFile(packagename))
@@ -131,6 +131,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 parentStack.Push(entry.Parent);
                 entry = entry.Parent;
+            }
+
+            // If the paths don't match then one of them is forced export, the other is not. We have to make a new parent package.
+            if (entry.InstancedFullPath != entry.MemoryFullPath)
+            {
+                var parentPackage = target.FindEntry(entry.FileRef.FileNameNoExtension, "Package"); // Sure hope nothing indexing
+                if (parentPackage == null)
+                {
+                    // Create parent package
+                    parentPackage = ExportCreator.CreatePackageExport(target, entry.FileRef.FileNameNoExtension);
+                }
+                parentStack.Push(parentPackage);
             }
 
             var parentCount = parentStack.Count;
@@ -158,13 +170,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                         else
                         {
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, new RelinkerOptionsPackage() { ImportExportDependencies = false }, out parent);
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, new RelinkerOptionsPackage() { ImportExportDependencies = false, Cache = cache }, out parent);
                         }
                     }
                     else
                     {
                         // Port in with relink... this could get really ugly performance wise
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out parent);
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, PortImportsMemorySafe = true, Cache = cache }, out parent);
                     }
                     var entriesAC = target.ExportCount;
                     if (entriesAC - entriesBC > parentCount)
