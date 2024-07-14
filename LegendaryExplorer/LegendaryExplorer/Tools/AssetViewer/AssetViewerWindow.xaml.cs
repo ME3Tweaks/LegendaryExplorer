@@ -261,7 +261,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             if (!msg.StartsWith("ASSETVIEWER"))
                 return;
-            if (msg == "ASSETVIEWER LOADED")
+            if (msg == "ASSETVIEWER LOADED") // STAGE LOADED
             {
                 Initialized = true;
                 InteropHelper.SendMessageToGame("ASSETV_DISALLOW_WINDOW_PAUSE", Game);
@@ -296,7 +296,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                     AnimQueuedForFocus = null;
                 }
             }
-            else if (msg == "ASSETVIEWER ANIMSTARTED")
+            else if (msg == "ASSETVIEWER ANIMATIONLOADED") // Animation has loaded and has begun playing.
             {
                 LoadingAnimation = false;
                 IsBusy = false; // Not busy
@@ -520,9 +520,11 @@ namespace LegendaryExplorer.Tools.AssetViewer
                             foreach (var usage in cr.Usages) // Usages of the class (per file)
                             {
                                 var file = db.FileList[usage.FileKey];
-                                if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(file.FileName, out var fullPath))
+                                if (MELoadedFiles.GetFilesLoadedInGame(Game)
+                                    .TryGetValue(file.FileName, out var fullPath))
                                 {
-                                    var p = MEPackageHandler.UnsafePartialLoad(fullPath, _ => false); // Just load the tables
+                                    var p = MEPackageHandler.UnsafePartialLoad(fullPath,
+                                        _ => false); // Just load the tables
                                     var exp = p.GetUExport(usage.UIndex);
                                     if (!exp.IsDefaultObject && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
                                     {
@@ -531,47 +533,63 @@ namespace LegendaryExplorer.Tools.AssetViewer
                                 }
                             }
                         }
+
                         // Must be done on UI thread
-                        Application.Current.Dispatcher.Invoke(() => ActorOptions.ReplaceAll(foundActorTypes.Select(x => $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
+                        Application.Current.Dispatcher.Invoke(() =>
+                            ActorOptions.ReplaceAll(foundActorTypes.Select(x =>
+                                $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
                     }
                 }
                 else
                 {
                     // Object Instance DB doesn't include class name, and AssetDB doesn't store name of usage
                     // Object -> Package containing it
-                    var foundActorTypes = new Dictionary<string, string>();
+                    var foundActorTypes = new CaseInsensitiveConcurrentDictionary<string>();
+                    object syncObj = new object();
                     foreach (var cr in db.ClassRecords)
                     {
                         if (GlobalUnrealObjectInfo.IsA(cr.Class, "SFXPawn", MEGame.LE3))
                         {
                             // Types of actors that can be spawned
-                            foreach (var usage in cr.Usages) // Usages of the class (per file)
+                            // Usages of the class (per file)
+                            Parallel.ForEach(cr.Usages, usage =>
                             {
+                                //    foreach (var usage in cr.Usages) 
+                                //  {
                                 var file = db.FileList[usage.FileKey];
                                 if (MELoadedFiles.GetFilesLoadedInGame(Game)
                                     .TryGetValue(file.FileName, out var fullPath))
                                 {
-                                    var p = MEPackageHandler.UnsafePartialLoad(fullPath,
-                                        _ => false); // Just load the tables
+                                    IMEPackage p = null;
+                                    lock (syncObj)
+                                    {
+                                        p = MEPackageHandler.UnsafePartialLoad(fullPath,
+                                            _ => false); // Just load the tables
+                                    }
+
                                     var exp = p.GetUExport(usage.UIndex);
-                                    if (!exp.IsDefaultObject && exp.IsArchetype && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
+                                    if (!exp.IsDefaultObject && exp.IsArchetype &&
+                                        !foundActorTypes.ContainsKey(exp.InstancedFullPath))
                                     {
                                         foundActorTypes[exp.InstancedFullPath] = file.FileName; // Set in dictionary
                                     }
                                 }
-                            }
-                        }
+                                //}
+                            });
 
-                        // Must be done on UI thread
-                        Application.Current.Dispatcher.Invoke(() => ActorOptions.ReplaceAll(foundActorTypes.Select(x => $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
+                            // Must be done on UI thread
+                            Application.Current.Dispatcher.Invoke(() =>
+                                ActorOptions.ReplaceAll(foundActorTypes.Select(x =>
+                                    $"{Path.GetFileNameWithoutExtension(x.Value)}.{x.Key}")));
+                        }
                     }
                 }
             }).ContinueWithOnUIThread(x =>
-            {
-                // Todo: Other games.
-                CommandManager.InvalidateRequerySuggested();
-                EndBusy();
-            });
+                    {
+                        // Todo: Other games.
+                        CommandManager.InvalidateRequerySuggested();
+                        EndBusy();
+                    });
         }
 
         private bool CanLoadAnimViewer() => gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled && GameController.IsGameOpen(Game);
@@ -586,7 +604,6 @@ namespace LegendaryExplorer.Tools.AssetViewer
             Task.Run(() =>
             {
                 var mapPcc = PreviewLevelBuilder.BuildAnimationViewerLevel(Game);
-                // This crashes game on second load
                 InteropHelper.SendFileToGame(mapPcc);
                 GameTarget.ModernExecuteConsoleCommand($"at {Path.GetFileNameWithoutExtension(PreviewLevelBuilder.GetMapName(Game))}");
             });
@@ -618,11 +635,12 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 {
                     Task.Run(() =>
                     {
-                        var streamAnimFile = $"{Game}AssetViewer_StreamAsset";
-                        InteropHelper.SendMessageToGame($"STREAMLEVELOUT {streamAnimFile}", Game);
-                        AnimViewer.SetUpAnimStreamFile(Game, filePath, animUIndex, streamAnimFile);
+                        using var sourcePackage = MEPackageHandler.OpenMEPackage(filePath);
+                        var package = AnimStreamPackageBuilder.BuildAnimationPackage(sourcePackage.GetUExport(animUIndex));
+                        InteropHelper.SendMessageToGame($"STREAMLEVELOUT {Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(Game))}", Game);
+                        InteropHelper.SendFileToGame(package);
                         Thread.Sleep(50); // Give it just a tiny bit of time to stream out - this can probably be fixed with states and handshake from game - I'm kinda lazy
-                        InteropHelper.SendMessageToGame($"STREAMLEVELIN {streamAnimFile}", Game);
+                        InteropHelper.SendMessageToGame($"STREAMLEVELIN {Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(Game))}", Game);
                     });
                 }
             }
@@ -988,6 +1006,11 @@ namespace LegendaryExplorer.Tools.AssetViewer
         }
 
         public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
-        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2];
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2, MEGame.LE3];
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            ReadyToView = false;
+        }
     }
 }

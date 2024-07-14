@@ -52,7 +52,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
         public static IMEPackage BuildAnimationViewerLevel(MEGame game)
         {
             var name = GetMapName(game);
-            var packageStream = MEPackageHandler.CreateEmptyLevelStream(name, game);
+            var packageStream = MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(name), game);
             var package = MEPackageHandler.OpenMEPackageFromStream(packageStream, name);
 
             // Skybox
@@ -63,14 +63,23 @@ namespace LegendaryExplorer.Tools.AssetViewer
             AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(0, 0, 100000), "PlayerFloor");
             AddPlayerStart(package, new Point3D(-415, -420, 100100)); // middle of the mesh.
 
+            // Static mesh lighting
+            AddDominantLight(package);
+
+            // Dynamic mesh lighting
+            AddSkyLight(package);
+
             // Animation area
             var animationFloor = AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(0, 0, 0), "AnimationFloor");
             PathEdUtils.SetDrawScale3D(animationFloor, 20, 20, 1);
 
             BuildKismet(package);
 
+            // Until we have a way to stream in/out what's not in the level list we have to do this
+            PackageAutomations.AddStreamingKismet(package, Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(game)), true);
+
             // For debugging.
-            // package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewer.pcc");
+            package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewerDebug.pcc");
             return package;
         }
 
@@ -85,6 +94,51 @@ namespace LegendaryExplorer.Tools.AssetViewer
             {
                 new ObjectProperty(portedMat)
             });
+        }
+
+        private static void AddDominantLight(IMEPackage package)
+        {
+            // Dominant Lights only affect static
+            var level = package.GetLevel();
+            var dominantLight = ExportCreator.CreateExport(package, "DominantLight", "DominantDirectionalLight", level, createWithStack: true);
+            var dominantLightC = ExportCreator.CreateExport(package, "DominantDirectionalLightComponent", "DominantDirectionalLightComponent", dominantLight, prePropBinary: new byte[12]);
+            dominantLightC.WriteBinary(LightComponent.Create());
+
+            // Setup actor
+            dominantLight.WriteProperty(new ObjectProperty(dominantLightC, "LightComponent"));
+            PathEdUtils.SetLocation(dominantLight, 0, 0, 150000);
+
+            // Setup component
+            dominantLightC.WriteProperty(new FloatProperty(2, "Brightness"));
+
+            PropertyCollection channels = new PropertyCollection();
+            channels.Add(new BoolProperty(true, "Static"));
+            dominantLightC.WriteProperty(new StructProperty("LightingChannelContainer", channels, "LightingChannels"));
+
+            AddActorToLevel(dominantLight);
+        }
+
+        private static void AddSkyLight(IMEPackage package)
+        {
+            var level = package.GetLevel();
+            var skyLight = ExportCreator.CreateExport(package, "SkyLight", "SkyLight", level, createWithStack: true);
+            var skyLightC = ExportCreator.CreateExport(package, "SkyLightComponent", "SkyLightComponent", skyLight, prePropBinary: new byte[8]);
+            skyLightC.WriteBinary(LightComponent.Create());
+            skyLightC.Archetype = GetImportArchetype(package, "Engine", "Default__SkyLight.SkyLightComponent0");
+
+            // Setup actor
+            skyLight.WriteProperty(new ObjectProperty(skyLightC, "LightComponent"));
+            PathEdUtils.SetLocation(skyLight, 0, 0, 100000);
+
+            // Setup component
+            skyLightC.WriteProperty(new FloatProperty(1.1f, "Brightness"));
+
+            PropertyCollection channels = new PropertyCollection();
+            channels.Add(new BoolProperty(true, "Dynamic"));
+            channels.Add(new BoolProperty(true, "CompositeDynamic"));
+            skyLightC.WriteProperty(new StructProperty("LightingChannelContainer", channels, "LightingChannels"));
+
+            AddActorToLevel(skyLight);
         }
 
         private static LEXOpenable GetSkyboxAsset(MEGame game) => game switch
@@ -130,6 +184,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             var cylinderComp = SharedMethods.CreateExport(package, "CylinderComponent", "CylinderComponent", startLoc, prePropBinary: new byte[8]); // NetIndex & TemplatedOwnerClass
             cylinderComp.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+            cylinderComp.Archetype = GetImportArchetype(package, "SFXGame", "Default__BioStartLocation.CollisionCylinder");
 
             cylinderComp.WriteProperty(new ObjectProperty(0, "ReplacementPrimitive"));
             startLoc.WriteProperty(new ObjectProperty(cylinderComp, "CollisionComponent"));
@@ -291,16 +346,38 @@ namespace LegendaryExplorer.Tools.AssetViewer
             SequenceEditorExperimentsM.LoadCustomClassesFromPackage(package);
             #endregion
 
+            PackageCache cache = new PackageCache();
+            
             var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
-            var loaded = SequenceObjectCreator.CreateSequenceObject(package, "SeqEvent_LevelLoaded");
-            var sendLoaded = SequenceObjectCreator.CreateSequenceObject(package, "SeqAct_SendMessageToLEX");
-            var sendLoadedString = SequenceObjectCreator.CreateSequenceObject(package, "SeqVar_String");
+            var animationTarget = SequenceObjectCreator.CreateObject(mainSeq, null, cache);
 
-            KismetHelper.AddObjectsToSequence(mainSeq, false, loaded, sendLoaded, sendLoadedString);
+            // Initial load
+            {
+                var loaded = SequenceObjectCreator.CreateLevelLoaded(mainSeq, cache);
+                var player = SequenceObjectCreator.CreatePlayerObject(mainSeq, false, cache);
+                var setObject = SequenceObjectCreator.CreateSetObject(mainSeq, animationTarget, player, cache);
+                var sendLoaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqAct_SendMessageToLEX", cache);
+                var sendLoadedString = SequenceObjectCreator.CreateString(mainSeq, "ASSETVIEWER LOADED", cache);
 
-            KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", sendLoaded);
-            KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
-            sendLoadedString.WriteProperty(new StrProperty("ASSETVIEWER LOADED", "StrValue"));
+                // Initial load - Logic
+                KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", setObject);
+                KismetHelper.CreateOutputLink(setObject, "Out", sendLoaded);
+                KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
+            }
+
+            // Animation loaded
+            {
+                var REAnimLoaded = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, "re_StreamAnimLoaded");
+                var aREStartAnimation = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, "re_StartAnimation");
+                var sendLoaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqAct_SendMessageToLEX", cache);
+                var sendLoadedString = SequenceObjectCreator.CreateString(mainSeq, "ASSETVIEWER ANIMATIONLOADED", cache);
+
+                // Animation loaded - Logic
+                KismetHelper.CreateOutputLink(REAnimLoaded, "Out", aREStartAnimation);
+                KismetHelper.CreateVariableLink(aREStartAnimation, "Instigator", animationTarget); // Tell streaming file which thing to animate via RE
+                KismetHelper.CreateOutputLink(aREStartAnimation, "Out", sendLoaded);
+                KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
+            }
         }
     }
 }

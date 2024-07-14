@@ -194,6 +194,11 @@
                         </Border>
                     </StackPanel>
                 </TabItem>
+                <TabItem Name="debugTab" Header="Debug">
+                    <StackPanel>
+                        <Button Content="Restart AV" Click="ButtonBase_OnClick"/>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
         </Grid>
         <xctk:BusyIndicator.BusyContentTemplate>
