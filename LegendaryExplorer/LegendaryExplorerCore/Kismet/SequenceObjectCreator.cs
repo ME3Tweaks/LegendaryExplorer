@@ -976,7 +976,40 @@ namespace LegendaryExplorerCore.Kismet
             }
 
             return setObj;
+        }
 
+
+        /// <summary>
+        /// Creates a SeqEvent_LevelLoaded object in the given sequence
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateLevelLoaded(ExportEntry seq, PackageCache cache = null)
+        {
+            var player = SequenceObjectCreator.CreateSequenceObject(seq.FileRef, "SeqEvent_LevelLoaded", cache);
+            KismetHelper.AddObjectToSequence(player, seq);
+            return player;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_string with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="value">The value to set the string of the object to. If null, it will not write the StrValue property.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateString(ExportEntry sequence, string value, PackageCache cache = null)
+        {
+            var strObj = CreateSequenceObject(sequence.FileRef, "SeqVar_String", cache);
+            KismetHelper.AddObjectToSequence(strObj, sequence);
+
+            if (value != null) // We allow empty values
+            {
+                strObj.WriteProperty(new StrProperty(value, "StrValue"));
+            }
+
+            return strObj;
         }
     }
 }
