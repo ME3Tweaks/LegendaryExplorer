@@ -413,6 +413,21 @@ namespace LegendaryExplorerCore.Kismet
         }
 
 
+        /// <summary>
+        /// Creates a new sequence object in a package file and adds it to a given sequence
+        /// </summary>
+        /// <param name="sequence">The sequence to add the object to</param>
+        /// <param name="className">Class of new sequence object</param>
+        /// <param name="cache">PackageCache for relinker</param>
+        /// <returns>The newly created object</returns>
+        public static ExportEntry CreateSequenceObject(ExportEntry sequence, string className, PackageCache cache = null)
+        {
+            var seqObj = CreateSequenceObject(sequence.FileRef, className, cache);
+            KismetHelper.AddObjectToSequence(seqObj, sequence);
+            return seqObj;
+        }
+
+
         // The following is mostly from Mass Effect / Mass Effect 2 Randomizer (LE versions)
         // MERSeqTools.cs
 
@@ -514,7 +529,7 @@ namespace LegendaryExplorerCore.Kismet
         /// Creates a new SeqVar_Object with the given value in the given sequence
         /// </summary>
         /// <param name="sequence">Sequence this object will be placed into</param>
-        /// <param name="value">The value to set on the object</param>
+        /// <param name="value">The value to set on the object. If null, 0 will be written instead.</param>
         /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
         /// <returns>The created kismet object</returns>
         public static ExportEntry CreateObject(ExportEntry sequence, ExportEntry value, PackageCache cache = null)
@@ -824,7 +839,7 @@ namespace LegendaryExplorerCore.Kismet
 
             return postEvent;
         }
-        
+
         /// <summary>
         /// Creates a SFXSeqCond_GetDifficulty object and returns it - automatically adds player variable link
         /// </summary>
@@ -874,7 +889,7 @@ namespace LegendaryExplorerCore.Kismet
         /// <summary>
         /// Creates a SeqCond_CompareObject action in the given sequence with the given objects, if any
         /// </summary>
-        /// <param name="seq"></param>
+        /// <param name="seq">Sequence to add the new object to</param>
         /// <param name="seqObjA"></param>
         /// <param name="seqObjB"></param>
         /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
@@ -896,6 +911,47 @@ namespace LegendaryExplorerCore.Kismet
             return seqCond;
         }
 
+
+        /// <summary>
+        /// Adds a SeqAct_Interp in the given sequence. This does not create the InterpData object nor does it create the variable links that the interp object uses.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateInterp(ExportEntry seq, PackageCache cache = null)
+        {
+            var interp = CreateSequenceObject(seq.FileRef, "SeqAct_Interp", cache);
+            KismetHelper.AddObjectToSequence(interp, seq);
+            return interp;
+        }
+
+        /// <summary>
+        /// Adds an InterpData object in the given sequence.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="length">Optional: The length of the interp</param>
+        /// <param name="interpGroups">Not really optional: List of interp groups this interp has</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateInterpData(ExportEntry seq, float length = float.NaN, List<ExportEntry> interpGroups = null, PackageCache cache = null)
+        {
+            var interpData = CreateSequenceObject(seq.FileRef, "InterpData", cache);
+            KismetHelper.AddObjectToSequence(interpData, seq);
+
+            if (!float.IsNaN(length))
+            {
+                interpData.WriteProperty(new FloatProperty(length, "InterpLength"));
+            }
+
+            if (interpGroups != null)
+            {
+                interpData.WriteProperty(new ArrayProperty<ObjectProperty>(interpGroups.Select(x => new ObjectProperty(x)), "InterpGroups"));
+            }
+
+            return interpData;
+        }
+
         #endregion
+
     }
 }
