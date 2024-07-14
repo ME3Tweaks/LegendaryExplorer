@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="package">Package file to reconstruct</param>
         public static IMEPackage ResynthesizePackage(IMEPackage package, PackageCache cache)
         {
-            var newPackage = MEPackageHandler.CreateEmptyPackage(package.FilePath, package.Game);
+            var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(package.FilePath, package.Game);
             (newPackage as MEPackage).setFlags((package as MEPackage).Flags);
             (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
             newPackage.LECLTagData.Copy(package.LECLTagData);

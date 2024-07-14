@@ -423,7 +423,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="game">The game the package is for</param>
         /// <returns>Blank IMEPackage object</returns>
         /// <exception cref="ArgumentException">Invalid game package</exception>
-        public static IMEPackage CreateEmptyPackage(string path, MEGame game)
+        public static IMEPackage CreateMemoryEmptyPackage(string path, MEGame game)
         {
             switch (game)
             {
@@ -457,6 +457,34 @@ namespace LegendaryExplorerCore.Packages
         {
             var pcc = CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(outpath), game);
             pcc.WriteToFile(outpath); // You must pass the path here as this file was loaded from memory
+        }
+
+        /// <summary>
+        /// Generates a new empty level package file, not saving it to disk.
+        /// </summary>
+        /// <param name="fileName">Associated filepath for the package, but not where it saves</param>
+        /// <param name="game">What game the package is for</param>
+        public static IMEPackage CreateMemoryEmptyLevel(string fileName, MEGame game)
+        {
+            var memStream = CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(fileName), game);
+            switch (game)
+            {
+                case MEGame.UDK:
+                {
+                    memStream.Position = 0;
+                    return OpenMEPackageFromStream(memStream, fileName);
+                }
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
+                default:
+                {
+
+                    memStream.Position = 0;
+                    return OpenMEPackageFromStream(memStream, fileName);
+                }
+            }
         }
 
         /// <summary>
