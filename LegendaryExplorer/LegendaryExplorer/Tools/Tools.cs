@@ -183,12 +183,12 @@ namespace LegendaryExplorer
 #if DEBUG
             set.Add(new Tool
             {
-                name = "Animation Viewer 2",
+                name = "Asset Viewer",
                 type = typeof(AssetViewerWindow),
-                icon = Application.Current.FindResource("iconAnimViewer") as ImageSource,
+                icon = Application.Current.FindResource("iconAssetViewer") as ImageSource,
                 open = () =>
                 {
-                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Animation Viewer LE with.", "Animation Viewer LE game selector",
+                    var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Asset Viewer with.", "Asset Viewer game selector",
                         new[] { "LE1", "LE2", "LE3" }, "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate(AssetViewerWindow.SupportedGames));
 
                     if (Enum.TryParse(gameStr, out MEGame game))
@@ -206,7 +206,7 @@ namespace LegendaryExplorer
                 tags = new List<string> { "utility", "animation", "gesture" },
                 category = "Cinematic Tools",
                 category2 = "Utilities",
-                description = "IN DEVELOPMENT: (LE ONLY) Animation Viewer 2 allows you to preview any animation in the Legendary Edition versions of the games."
+                description = "IN DEVELOPMENT: (LE ONLY) Asset Viewer allows you to preview game assets within the game. Asset types include meshes, animations, and particle systems."
             });
 
             set.Add(new Tool
