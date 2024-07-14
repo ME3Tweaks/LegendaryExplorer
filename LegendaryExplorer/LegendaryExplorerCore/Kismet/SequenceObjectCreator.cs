@@ -952,6 +952,31 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         #endregion
+        /// <summary>
+        /// Adds a SeqAct_SetObject object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="target">Optional: The object to link to the target terminal</param>
+        /// <param name="objValue">Optional: The object to link to the Value terminal</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSetObject(ExportEntry seq, ExportEntry target = null, ExportEntry objValue = null, PackageCache cache = null)
+        {
+            var setObj = CreateSequenceObject(seq.FileRef, "SeqAct_SetObject", cache);
+            KismetHelper.AddObjectToSequence(setObj, seq);
 
+            if (target != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Target", target);
+            }
+
+            if (objValue != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Value", objValue);
+            }
+
+            return setObj;
+
+        }
     }
 }

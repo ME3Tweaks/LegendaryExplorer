@@ -6,6 +6,7 @@ using System.Linq;
 using System.Diagnostics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -1022,13 +1023,19 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="expectedTypeClass">The expected object class type</param>
         /// <param name="writable">If the link writes to connected objects</param>
         /// <param name="propertyName">The name of the property to map linked items to in the node</param>
-        public static void AddVariableLink(ExportEntry node, string linkDesc, string expectedTypeClass, bool writable = false, string propertyName = null)
+        public static void AddVariableLink(ExportEntry node, string linkDesc, string expectedTypeClass, bool writable = false, string propertyName = null, PackageCache cache = null)
         {
             var links = node.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
             links ??= new ArrayProperty<StructProperty>("VariableLinks"); // Create if not found.
 
+            var structDefaults = GlobalUnrealObjectInfo.getDefaultStructValue(node.Game, "SeqVarLink", true, node.FileRef, cache);
+            structDefaults.AddOrReplaceProp(new StrProperty(linkDesc, "LinkDesc"));
+            var objType = EntryImporter.EnsureClassIsInFile(node.FileRef, expectedTypeClass, new RelinkerOptionsPackage(cache));
+            structDefaults.AddOrReplaceProp(new ObjectProperty(objType, "ExpectedType"));
+            StructProperty sp = new StructProperty("SeqVarLink", structDefaults);
 
-
+            links.Add(sp);
+            node.WriteProperty(links);
         }
     }
 }
