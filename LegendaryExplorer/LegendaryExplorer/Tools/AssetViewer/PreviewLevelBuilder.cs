@@ -70,7 +70,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             BuildKismet(package);
 
             // For debugging.
-            package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewer_Debug.pcc");
+            // package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewer.pcc");
             return package;
         }
 
@@ -299,7 +299,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             KismetHelper.AddObjectsToSequence(mainSeq, false, loaded, sendLoaded, sendLoadedString);
 
             KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", sendLoaded);
-            KismetHelper.CreateEventLink(sendLoadedString, "MessageName", sendLoadedString);
+            KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
             sendLoadedString.WriteProperty(new StrProperty("ASSETVIEWER LOADED", "StrValue"));
         }
     }

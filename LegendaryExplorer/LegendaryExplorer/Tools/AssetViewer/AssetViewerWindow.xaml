@@ -14,7 +14,7 @@
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="pack://application:,,,/Tools/Icons/16x16/AnimationViewer_Icon_16.ico"
-        Title="Animation Viewer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
+        Title="Asset Viewer" SizeToContent="Width" Loaded="AnimationExplorerWPF_Loaded" Closing="AnimationExplorerWPF_OnClosing">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
@@ -26,7 +26,7 @@
                     <Grid Width="523">
                         <Border BorderBrush="LightSlateGray" BorderThickness="0.65">
                             <StackPanel MinWidth="200" Margin="8">
-                                <TextBlock Text="Welcome to Animation Explorer!" Margin="0,5,0,0" />
+                                <TextBlock Text="Welcome to Asset Viewer!" Margin="0,5,0,0" />
                                 <TextBlock Text="Requirements:" Margin="0,5,0,0" />
                                 <StackPanel>
                                     <controls:Requirement x:Name="gameInstalledReq"
@@ -54,7 +54,7 @@
                                     <TextBlock Text="Once the above requirements are fulfilled, start the game and press the button below."
                                                Margin="15,5,15,5" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <Button Name="loadAnimViewer" Content="Load Animation Viewer Level"
+                                <Button Name="loadAnimViewer" Content="Load Asset Viewer Level"
                                         Margin="20,10,20,0"
                                         Command="{Binding LoadAnimViewerCommand, RelativeSource={RelativeSource AncestorType={x:Type assetViewer:AssetViewerWindow}}}" />
                             </StackPanel>

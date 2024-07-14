@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -583,6 +586,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             Task.Run(() =>
             {
                 var mapPcc = PreviewLevelBuilder.BuildAnimationViewerLevel(Game);
+                // This crashes game on second load
                 InteropHelper.SendFileToGame(mapPcc);
                 GameTarget.ModernExecuteConsoleCommand($"at {Path.GetFileNameWithoutExtension(PreviewLevelBuilder.GetMapName(Game))}");
             });
@@ -614,7 +618,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 {
                     Task.Run(() =>
                     {
-                        var streamAnimFile = $"{Game}AnimViewer_StreamAnim";
+                        var streamAnimFile = $"{Game}AssetViewer_StreamAsset";
                         InteropHelper.SendMessageToGame($"STREAMLEVELOUT {streamAnimFile}", Game);
                         AnimViewer.SetUpAnimStreamFile(Game, filePath, animUIndex, streamAnimFile);
                         Thread.Sleep(50); // Give it just a tiny bit of time to stream out - this can probably be fixed with states and handshake from game - I'm kinda lazy
