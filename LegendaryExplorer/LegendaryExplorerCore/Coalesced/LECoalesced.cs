@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -133,7 +134,7 @@ namespace LegendaryExplorerCore.Coalesced
             return bundle;
         }
 
-        private static DuplicatingIni ReadCoalescedIni(BinaryReader reader, int sectionCount)
+        internal static DuplicatingIni ReadCoalescedIni(BinaryReader reader, int sectionCount)
         {
             DuplicatingIni ini = new DuplicatingIni();
             DuplicatingIni.Section s = null;
@@ -350,7 +351,7 @@ namespace LegendaryExplorerCore.Coalesced
                 case ".pol":
                 case ".fra":
                 case "" when CoalescedConverter.LocalizedFiles.Contains(fNameNoExt, StringComparer.OrdinalIgnoreCase): // No extension, may have been stripped
-                    return $@"..\..\Localization\{localization.ToString().ToUpper()}\{fNameNoExt}.{localization.ToString().ToLower()}";
+                    return $@"..\..\Engine\Localization\{localization.ToString().ToUpper()}\{fNameNoExt}.{localization.ToString().ToLower()}";
                 case ".ini":
                     return $@"..\..\BIOGame\Config\{filename}";
                 case "" when CoalescedConverter.ProperNames.Contains(fNameNoExt, StringComparer.OrdinalIgnoreCase): // No extension, may have been stripped
@@ -386,6 +387,24 @@ namespace LegendaryExplorerCore.Coalesced
         public static LECoalescedBundle UnpackToMemory(Stream stream, string name)
         {
             return LECoalescedBundle.ReadFromStream(stream, name);
+        }
+
+        // This is for test cases
+        public static List<string> GetInternalFilePaths(Stream stream)
+        {
+            List<string> names = new List<string>();
+
+            BinaryReader reader = new BinaryReader(stream);
+            var fileCount = reader.ReadInt32();
+
+            for (int i = 0; i < fileCount; i++)
+            {
+                names.Add(reader.ReadCoalescedString());
+                var sectionCount = reader.ReadInt32();
+                LECoalescedBundle.ReadCoalescedIni(reader, sectionCount);
+            }
+
+            return names;
         }
 
         /// <summary>
