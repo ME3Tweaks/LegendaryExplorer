@@ -140,9 +140,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0ee821ad03fab5a103b1bfef1ad1b5a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ad0ee821ad03fab5a103b1bfef1ad1b5a">DecompileLE1LE2ToMemory</a> (Stream inputStream, string name)</td></tr>
 <tr class="memdesc:ad0ee821ad03fab5a103b1bfef1ad1b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file to a memory map.   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ad0ee821ad03fab5a103b1bfef1ad1b5a">More...</a><br /></td></tr>
 <tr class="separator:ad0ee821ad03fab5a103b1bfef1ad1b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adef9f4ddfaa2b809e6bddff3b7151e01"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#adef9f4ddfaa2b809e6bddff3b7151e01">CompileLE1LE2FromMemory</a> (Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt; iniFileMap)</td></tr>
-<tr class="memdesc:adef9f4ddfaa2b809e6bddff3b7151e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a memory map.   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#adef9f4ddfaa2b809e6bddff3b7151e01">More...</a><br /></td></tr>
-<tr class="separator:adef9f4ddfaa2b809e6bddff3b7151e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a2b2940116cdfb3917083049129bd0f"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9a2b2940116cdfb3917083049129bd0f">CompileLE1LE2FromMemory</a> (Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt; iniFileMap, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> loc)</td></tr>
+<tr class="memdesc:a9a2b2940116cdfb3917083049129bd0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a LE1/LE2 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a memory map.   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a9a2b2940116cdfb3917083049129bd0f">More...</a><br /></td></tr>
+<tr class="separator:a9a2b2940116cdfb3917083049129bd0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7343c74a787bb7723d70ebf4bee81269"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; <a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesce_asset.html">CoalesceAsset</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a7343c74a787bb7723d70ebf4bee81269">DecompileLE1LE2ToAssets</a> (Stream coalescedData, string name, bool stripExtensions=false)</td></tr>
 <tr class="memdesc:a7343c74a787bb7723d70ebf4bee81269"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompiles the coalesced file (specified by the stream) to CoalescedAsset objects   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a7343c74a787bb7723d70ebf4bee81269">More...</a><br /></td></tr>
 <tr class="separator:a7343c74a787bb7723d70ebf4bee81269"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,8 +159,11 @@ Static Public Attributes</h2></td></tr>
 <tr class="memdesc:a2666e01a187841c834544f6d40dbfdc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The magic number header for Game 3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> files   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2666e01a187841c834544f6d40dbfdc1">More...</a><br /></td></tr>
 <tr class="separator:a2666e01a187841c834544f6d40dbfdc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a8c146b4be2b27198df86e4ce438934"><td class="memItemLeft" align="right" valign="top">static readonly SortedSet&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2a8c146b4be2b27198df86e4ce438934">ProperNames</a></td></tr>
-<tr class="memdesc:a2a8c146b4be2b27198df86e4ce438934"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of filenames supported by this compiler   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2a8c146b4be2b27198df86e4ce438934">More...</a><br /></td></tr>
+<tr class="memdesc:a2a8c146b4be2b27198df86e4ce438934"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of ini filenames supported by this compiler   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a2a8c146b4be2b27198df86e4ce438934">More...</a><br /></td></tr>
 <tr class="separator:a2a8c146b4be2b27198df86e4ce438934"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a324cd294b99447c6a4f7221ef57333e6"><td class="memItemLeft" align="right" valign="top">static readonly SortedSet&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a324cd294b99447c6a4f7221ef57333e6">LocalizedFiles</a></td></tr>
+<tr class="memdesc:a324cd294b99447c6a4f7221ef57333e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">These files go in the Localizations folder and have a localized suffix. They aren't used except for some error handling messages   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a324cd294b99447c6a4f7221ef57333e6">More...</a><br /></td></tr>
+<tr class="separator:a324cd294b99447c6a4f7221ef57333e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae13049de13de54370fde607f3b52d004"><td class="memItemLeft" align="right" valign="top">static readonly Dictionary&lt; string, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#ae13049de13de54370fde607f3b52d004">SpecialCharacters</a></td></tr>
 <tr class="separator:ae13049de13de54370fde607f3b52d004"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -491,8 +494,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="adef9f4ddfaa2b809e6bddff3b7151e01" name="adef9f4ddfaa2b809e6bddff3b7151e01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adef9f4ddfaa2b809e6bddff3b7151e01">&#9670;&#160;</a></span>CompileLE1LE2FromMemory()</h2>
+<a id="a9a2b2940116cdfb3917083049129bd0f" name="a9a2b2940116cdfb3917083049129bd0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a2b2940116cdfb3917083049129bd0f">&#9670;&#160;</a></span>CompileLE1LE2FromMemory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -504,8 +507,18 @@ Static Public Attributes</h2></td></tr>
           <td class="memname">static MemoryStream LegendaryExplorerCore.Coalesced.CoalescedConverter.CompileLE1LE2FromMemory </td>
           <td>(</td>
           <td class="paramtype">Dictionary&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html">DuplicatingIni</a> &gt;&#160;</td>
-          <td class="paramname"><em>iniFileMap</em></td><td>)</td>
+          <td class="paramname"><em>iniFileMap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a>&#160;</td>
+          <td class="paramname"><em>loc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -519,6 +532,7 @@ Static Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iniFileMap</td><td>Mapping of filenames to the ini object that represents the file contents.</td></tr>
+    <tr><td class="paramname">loc</td><td><a class="el" href="namespace_legendary_explorer_core_1_1_localization.html">Localization</a> of this config file. This is important as it enables debug logger appErrorF messages.</td></tr>
   </table>
   </dd>
 </dl>
@@ -736,22 +750,49 @@ Static Public Attributes</h2></td></tr>
 <div class="line">                <span class="stringliteral">&quot;BioUI&quot;</span>,</div>
 <div class="line">                <span class="stringliteral">&quot;BioQA&quot;</span>,</div>
 <div class="line">                <span class="stringliteral">&quot;BioWeapon&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;Core&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;Descriptions&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;EditorTips&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;Engine&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;GFxUI&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;IpDrv&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;Launch&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;OnlineSubsystemGamespy&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;Startup&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;Subtitles&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;UnrealEd&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;WinDrv&quot;</span>,</div>
-<div class="line">                <span class="stringliteral">&quot;XWindow&quot;</span></div>
 <div class="line">            }</div>
 </div><!-- fragment -->
-<p>The list of filenames supported by this compiler  </p>
+<p>The list of ini filenames supported by this compiler  </p>
+
+</div>
+</div>
+<a id="a324cd294b99447c6a4f7221ef57333e6" name="a324cd294b99447c6a4f7221ef57333e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a324cd294b99447c6a4f7221ef57333e6">&#9670;&#160;</a></span>LocalizedFiles</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">readonly SortedSet&lt;string&gt; LegendaryExplorerCore.Coalesced.CoalescedConverter.LocalizedFiles</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= <span class="keyword">new</span> SortedSet&lt;string&gt;</div>
+<div class="line">        {</div>
+<div class="line">            <span class="stringliteral">&quot;Core&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;Descriptions&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;EditorTips&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;Engine&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;GFxUI&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;IpDrv&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;Launch&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;OnlineSubsystemGamespy&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;Startup&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;Subtitles&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;UnrealEd&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;WinDrv&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;XWindow&quot;</span></div>
+<div class="line">        }</div>
+</div><!-- fragment -->
+<p>These files go in the Localizations folder and have a localized suffix. They aren't used except for some error handling messages  </p>
 
 </div>
 </div>
