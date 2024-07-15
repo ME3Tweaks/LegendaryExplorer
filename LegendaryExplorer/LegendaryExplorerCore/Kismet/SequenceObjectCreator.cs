@@ -1011,5 +1011,34 @@ namespace LegendaryExplorerCore.Kismet
 
             return strObj;
         }
+
+        /// <summary>
+        /// LEX ONLY: Creates a SeqAct_SendMessageToLEX, which when combined with the InteropASI, can signal LEX. Requires the class be compiled already or available in the local package.
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="message">Optional: Message to attach to the object.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSendMessageToLEX(ExportEntry sequence, string message = null, PackageCache cache = null)
+        {
+            var sendMessage = CreateSequenceObject(sequence, "SeqAct_SendMessageToLEX", cache);
+            if (message != null)
+            {
+                var sendLoadedString = CreateString(sequence, message, cache);
+                KismetHelper.CreateVariableLink(sendMessage, "MessageName", sendLoadedString);
+            }
+
+            return sendMessage;
+        }
+
+        public static ExportEntry CreateConsoleEvent(ExportEntry sequence, string eventName, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "SeqEvent_Console", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new NameProperty(eventName, "ConsoleEventName"));
+
+            return fObj;
+        }
     }
 }
