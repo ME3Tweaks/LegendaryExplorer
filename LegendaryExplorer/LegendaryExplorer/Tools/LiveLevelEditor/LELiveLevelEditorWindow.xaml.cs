@@ -738,7 +738,9 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 string mapName = $"{jsonMapObj.Name}.pcc";
                 if (!filesLoadedInGame.ContainsKey(mapName))
                 {
-                    continue;
+                    // For memory loaded files, we shouldn't filter them out.
+                    // Unsure how to track memory loaded files.
+                    // continue;
                 }
                 maps.Add(mapName);
                 //there will never be changes in what actors are loaded in a specific map,
