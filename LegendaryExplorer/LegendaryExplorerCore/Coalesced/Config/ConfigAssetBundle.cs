@@ -156,8 +156,8 @@ namespace LegendaryExplorerCore.Coalesced.Config
                 foreach (var ini in iniFiles)
                 {
                     var fname = Path.GetFileNameWithoutExtension(ini);
-                    if (!CoalescedConverter.ProperNames.Contains(fname, StringComparer.InvariantCultureIgnoreCase))
-                        continue; // Not supported.
+                    if (!CoalescedConverter.ProperNames.Contains(fname, StringComparer.OrdinalIgnoreCase))
+                        continue; // Not supported. localization files are only supported in the main single file.
                     Assets[fname] = ConfigFileProxy.LoadIni(ini);
                 }
             }
@@ -201,7 +201,7 @@ namespace LegendaryExplorerCore.Coalesced.Config
         /// <summary>
         /// Commits this bundle to the specified single config file
         /// </summary>
-        public void CommitAssets(string outPath)
+        public void CommitAssets(string outPath, MELocalization loc)
         {
             if (Game is MEGame.LE1 or MEGame.LE2)
             {
@@ -212,7 +212,7 @@ namespace LegendaryExplorerCore.Coalesced.Config
                     inis[asset.Key] = CoalesceAsset.ToIni(asset.Value);
                 }
 
-                var compiledStream = CoalescedConverter.CompileLE1LE2FromMemory(inis);
+                var compiledStream = CoalescedConverter.CompileLE1LE2FromMemory(inis, loc);
                 compiledStream.WriteToFile(outPath);
                 HasChanges = false;
             }
@@ -245,8 +245,8 @@ namespace LegendaryExplorerCore.Coalesced.Config
             }
             else if (Game.IsGame3())
             {
-                var coalFile = Path.Combine(outPath ?? CookedDir, $@"Default_{(dlcName ?? DLCFolderName)}.bin");
-                CommitAssets(coalFile);
+                var coalFile = Path.Combine(outPath ?? CookedDir, $@"Default_{dlcName ?? DLCFolderName}.bin");
+                CommitAssets(coalFile, MELocalization.INT); // DLC does not support localization files as part of config.
                 HasChanges = false;
             }
         }
