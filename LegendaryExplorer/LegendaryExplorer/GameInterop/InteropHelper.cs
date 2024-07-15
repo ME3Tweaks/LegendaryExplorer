@@ -30,6 +30,17 @@ namespace LegendaryExplorer.GameInterop
         {
             SendMessageToGame($"CAUSEEVENT {eventName}", game);
         }
+
+        /// <summary>
+        /// Triggers a remote event in kismet
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="game"></param>
+        public static void RemoteEvent(string eventName, MEGame game)
+        {
+            // This doesn't work! We don't know how to trigger these in native right now. Would be good to figure out though.
+            SendMessageToGame($"REMOTEEVENT {eventName}", game);
+        }
         #endregion
 
         //Currently will not work, as ASIs are not included in LEX due to anti-virus software freaking out about them :(

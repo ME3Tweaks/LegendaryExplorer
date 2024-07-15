@@ -12,6 +12,7 @@ using LegendaryExplorer.Tools.PathfindingEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -29,17 +30,26 @@ namespace LegendaryExplorer.Tools.AssetViewer
     /// </summary>
     public static class PreviewLevelBuilder
     {
-
+        #region Game Specific Assets
         /// <summary>
         /// Gets asset used for the floor of the level.
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         private static LEXOpenable GetFloorAsset(MEGame game) => game switch
         {
-            MEGame.LE1 => throw new NotImplementedException(),
-            MEGame.LE2 => throw new NotImplementedException(),
+            MEGame.LE1 => new LEXOpenable()
+            {
+                EntryClass = "StaticMesh",
+                EntryPath= "BIOA_ICE50_S.ice70_bigfloor01",
+                FilePath="BIOA_ICE50_13_LAY.pcc"
+            },
+            MEGame.LE2 => new LEXOpenable()
+            {
+                EntryClass = "StaticMesh",
+                EntryPath = "BioS_AncientRuins_Ext.Floor_8x8_Bend",
+                FilePath = "BioA_KroHub_130_MainHubArea.pcc"
+            },
             MEGame.LE3 => new LEXOpenable()
             {
                 EntryClass = "StaticMesh",
@@ -49,7 +59,50 @@ namespace LegendaryExplorer.Tools.AssetViewer
             _ => throw new NotImplementedException(),
         };
 
-        public static IMEPackage BuildAnimationViewerLevel(MEGame game)
+        private static LEXOpenable GetSkyboxAsset(MEGame game) => game switch
+        {
+            MEGame.LE1 => new LEXOpenable()
+            {
+                EntryClass = "StaticMesh",
+                EntryPath = "BIOG__SKIES__.PRO10.PRO00_skybox",
+                FilePath="BIOA_PRO00.pcc"
+            },
+            MEGame.LE2 => new LEXOpenable()
+            {
+                EntryClass = "StaticMesh",
+                EntryPath = "BIOA_GalaxyMap_T.Meshes.Space_Skybox",
+                FilePath = "BioA_QuaTlL_100.pcc"
+            },
+            MEGame.LE3 => new LEXOpenable()
+            {
+                EntryClass = "StaticMesh",
+                EntryPath = "BioS_Matrix.SkyBox_01",
+                FilePath = "BioA_GthLeg_510.pcc"
+            },
+            _ => throw new NotImplementedException()
+        };
+
+        private static LEXOpenable GetSkyboxMat(MEGame game) => game switch
+        {
+            MEGame.LE1 => null, // Use mat on mesh.
+            MEGame.LE2 => null, // Use mat on mesh.
+            //MEGame.LE2 => new LEXOpenable()
+            //{
+            //    EntryClass = "Material",
+            //    EntryPath = "biot_council_int.STA70_SKYB",
+            //    FilePath = "BioA_CitHub_400Tower.pcc"
+            //},
+            MEGame.LE3 => new LEXOpenable()
+            {
+                EntryClass = "Material",
+                EntryPath = "BioT_Matrix.Leg_Void_04",
+                FilePath = "BioA_GthLeg_510.pcc"
+            },
+            _ => throw new NotImplementedException()
+        };
+        #endregion
+
+        public static IMEPackage BuildAssetViewerLevel(MEGame game)
         {
             var name = GetMapName(game);
             var packageStream = MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(name), game);
@@ -61,7 +114,21 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             // Player Start
             AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(0, 0, 100000), "PlayerFloor");
-            AddPlayerStart(package, new Point3D(-415, -420, 100100)); // middle of the mesh.
+            if (game == MEGame.LE1)
+            {
+                AddPlayerStart(package, new Point3D(2078, -1878, 92)); // middle of the high mesh.
+                //AddPlayerStart(package, new Point3D(-883, -5256, 1200)); // Next to 0 0 0
+            }
+            if (game == MEGame.LE2)
+            {
+                AddPlayerStart(package, new Point3D(2078, -1878, 92)); // middle of the high mesh.
+                //AddPlayerStart(package, new Point3D(-883, -5256, 1200)); // Next to 0 0 0
+            }
+            else if (game == MEGame.LE3)
+            {
+                //AddPlayerStart(package, new Point3D(-415, -420, 100100)); // middle of the high mesh.
+                AddPlayerStart(package, new Point3D(-404, -151, 91)); // Next to 0 0 0
+            }
 
             // Static mesh lighting
             AddDominantLight(package);
@@ -70,6 +137,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             AddSkyLight(package);
 
             // Animation area
+            // This should be adjusted for each game as each asset will have different origin.
             var animationFloor = AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(0, 0, 0), "AnimationFloor");
             PathEdUtils.SetDrawScale3D(animationFloor, 20, 20, 1);
 
@@ -77,9 +145,21 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             // Until we have a way to stream in/out what's not in the level list we have to do this
             PackageAutomations.AddStreamingKismet(package, Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(game)), true);
+            PackageAutomations.AddStreamingKismet(package, Path.GetFileNameWithoutExtension(ActorStreamPackageBuilder.GetStreamingPackageName(game)), true);
+
+            PackageAutomations.AddStreamingKismet(package, Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(game, true)), true);
+            PackageAutomations.AddStreamingKismet(package, Path.GetFileNameWithoutExtension(ActorStreamPackageBuilder.GetStreamingPackageName(game, true)), true);
+
 
             // For debugging.
-            package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewerDebug.pcc");
+            if (game == MEGame.LE1)
+            {
+                package.Save(MEDirectories.GetCookedPath(game) + @"\BIOA_AssetViewerDebug.pcc");
+            }
+            else
+            {
+                package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewerDebug.pcc");
+            }
             return package;
         }
 
@@ -118,6 +198,18 @@ namespace LegendaryExplorer.Tools.AssetViewer
             AddActorToLevel(dominantLight);
         }
 
+        /// <summary>
+        /// Generates a lighting channels struct with the given channels set to true. They are all bool property names.
+        /// </summary>
+        /// <param name="export"></param>
+        /// <param name="channels"></param>
+        internal static void SetLightingChannels(ExportEntry export, params string[] channels)
+        {
+            PropertyCollection channelsP = new PropertyCollection();
+            channelsP.ReplaceAll(channels.Select(x => new BoolProperty(true, x)));
+            export.WriteProperty(new StructProperty("LightingChannelContainer", channelsP, "LightingChannels"));
+        }
+
         private static void AddSkyLight(IMEPackage package)
         {
             var level = package.GetLevel();
@@ -141,50 +233,33 @@ namespace LegendaryExplorer.Tools.AssetViewer
             AddActorToLevel(skyLight);
         }
 
-        private static LEXOpenable GetSkyboxAsset(MEGame game) => game switch
-        {
-            MEGame.LE1 => throw new NotImplementedException(),
-            MEGame.LE2 => throw new NotImplementedException(),
-            MEGame.LE3 => new LEXOpenable()
-            {
-                EntryClass = "StaticMesh",
-                EntryPath = "BioS_Matrix.SkyBox_01",
-                FilePath = "BioA_GthLeg_510.pcc"
-            },
-            _ => throw new NotImplementedException()
-        };
-
-        private static LEXOpenable GetSkyboxMat(MEGame game) => game switch
-        {
-            MEGame.LE1 => throw new NotImplementedException(),
-            MEGame.LE2 => throw new NotImplementedException(),
-            MEGame.LE3 => new LEXOpenable()
-            {
-                EntryClass = "StaticMesh",
-                EntryPath = "BioT_Matrix.Leg_Void_04",
-                FilePath = "BioA_GthLeg_510.pcc"
-            },
-            _ => throw new NotImplementedException()
-        };
-
         /// <summary>
         /// Required for level to load
         /// </summary>
         /// <param name="package"></param>
-        /// <param name="loc"></param>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="loc">Where to place the start position</param>
         private static void AddPlayerStart(IMEPackage package, Point3D loc)
         {
             var level = package.GetLevel();
             ExportEntry startLoc = null;
-            if (package.Game == MEGame.LE3)
+            if (package.Game is MEGame.LE1 or MEGame.LE2)
+            {
+                startLoc = ExportCreator.CreateExport(package, "PlayerStart", "PlayerStart", level, createWithStack: true);
+
+                // Start locations are done via looking at navigation. BioStartLocation exists, but it doesn't work for map load.
+                var levelBin = package.GetLevelBinary();
+                levelBin.NavListStart = startLoc.UIndex;
+                levelBin.NavListEnd = startLoc.UIndex;
+                level.WriteBinary(levelBin);
+            }
+            else if (package.Game is MEGame.LE3)
             {
                 startLoc = ExportCreator.CreateExport(package, "BioStartLocation", "BioStartLocation", level, createWithStack: true);
             }
 
             var cylinderComp = SharedMethods.CreateExport(package, "CylinderComponent", "CylinderComponent", startLoc, prePropBinary: new byte[8]); // NetIndex & TemplatedOwnerClass
             cylinderComp.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-            cylinderComp.Archetype = GetImportArchetype(package, "SFXGame", "Default__BioStartLocation.CollisionCylinder");
+            cylinderComp.Archetype = GetImportArchetype(package, (startLoc.Class as ImportEntry).GetRootName(), $"Default__{startLoc.ClassName}.CollisionCylinder");
 
             cylinderComp.WriteProperty(new ObjectProperty(0, "ReplacementPrimitive"));
             startLoc.WriteProperty(new ObjectProperty(cylinderComp, "CollisionComponent"));
@@ -234,7 +309,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             return meshSMA;
         }
 
-        private static IEntry GetImportArchetype(IMEPackage package, string packageFile, string ifp)
+        internal static IEntry GetImportArchetype(IMEPackage package, string packageFile, string ifp)
         {
             IEntry result = package.FindExport($"{packageFile}.{ifp}");
             if (result != null)
@@ -294,7 +369,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, name));
         }
 
-        private static void AddActorToLevel(ExportEntry actor)
+        internal static void AddActorToLevel(ExportEntry actor)
         {
             // This would be nice as an extension
             var levelBin = actor.FileRef.GetLevelBinary();
@@ -347,7 +422,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             #endregion
 
             PackageCache cache = new PackageCache();
-            
+
             var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
             var animationTarget = SequenceObjectCreator.CreateObject(mainSeq, null, cache);
 
@@ -356,28 +431,86 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 var loaded = SequenceObjectCreator.CreateLevelLoaded(mainSeq, cache);
                 var player = SequenceObjectCreator.CreatePlayerObject(mainSeq, false, cache);
                 var setObject = SequenceObjectCreator.CreateSetObject(mainSeq, animationTarget, player, cache);
-                var sendLoaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqAct_SendMessageToLEX", cache);
-                var sendLoadedString = SequenceObjectCreator.CreateString(mainSeq, "ASSETVIEWER LOADED", cache);
+                var sendLoaded = SequenceObjectCreator.CreateSendMessageToLEX(mainSeq, "ASSETVIEWER LOADED", cache);
 
                 // Initial load - Logic
                 KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", setObject);
                 KismetHelper.CreateOutputLink(setObject, "Out", sendLoaded);
-                KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
             }
 
-            // Animation loaded
+            // LEX polling
             {
-                var REAnimLoaded = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, "re_StreamAnimLoaded");
-                var aREStartAnimation = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, "re_StartAnimation");
-                var sendLoaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqAct_SendMessageToLEX", cache);
-                var sendLoadedString = SequenceObjectCreator.CreateString(mainSeq, "ASSETVIEWER ANIMATIONLOADED", cache);
-
-                // Animation loaded - Logic
-                KismetHelper.CreateOutputLink(REAnimLoaded, "Out", aREStartAnimation);
-                KismetHelper.CreateVariableLink(aREStartAnimation, "Instigator", animationTarget); // Tell streaming file which thing to animate via RE
-                KismetHelper.CreateOutputLink(aREStartAnimation, "Out", sendLoaded);
-                KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
+                // When we poll if asset is loaded we send READY, not LOADED.
+                var pollEvent = SequenceObjectCreator.CreateConsoleEvent(mainSeq, "re_IsOnAssetViewerMap", cache);
+                var sendLoaded = SequenceObjectCreator.CreateSendMessageToLEX(mainSeq, "ASSETVIEWER READY", cache);
+                KismetHelper.CreateOutputLink(pollEvent, "Out", sendLoaded);
             }
+
+            // Asset stream listeners
+            CreateLoadingListener(package, "re_StreamAnimLoaded", "re_StartAnimation", instigatorOnEventToFire: animationTarget, lexMessage: "ASSETVIEWER ANIMATIONLOADED", cache: cache);
+            CreateLoadingListener(package, "re_StreamActorLoaded", lexMessage: "ASSETVIEWER ACTORLOADED", cache: cache);
+        }
+
+        /// <summary>
+        /// Creates a loading handshake that notifies via remote event that the package has loaded. LevelLoaded -> Remote Event with the given name.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="eventName"></param>
+        /// <param name="cache"></param>
+        public static void CreateLoadingHandshake(IMEPackage package, string eventName, PackageCache cache = null)
+        {
+            var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
+            var loaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqEvent_LevelLoaded", cache);
+            var fileLoadedRE = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, eventName, cache);
+            KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", fileLoadedRE);
+        }
+
+        /// <summary>
+        /// Creates a listener for a loading handshake - RemoteEventListener -> Remote Event with the given name.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="eventName"></param>
+        /// <param name="cache"></param>
+        public static void CreateLoadingListener(IMEPackage package, string eventName, string eventToFire = null, ExportEntry instigatorOnEventToFire = null, string lexMessage = null, PackageCache cache = null)
+        {
+            var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
+            var loaded = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, eventName, cache); // fires when package has loaded
+            if (eventToFire != null)
+            {
+                var fileLoadedRE = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, eventToFire, cache);
+                KismetHelper.CreateOutputLink(loaded, "Out", fileLoadedRE);
+                if (instigatorOnEventToFire != null)
+                {
+                    KismetHelper.CreateVariableLink(fileLoadedRE, "Instigator", instigatorOnEventToFire);
+                }
+
+                loaded = fileLoadedRE;
+            }
+
+            if (lexMessage != null)
+            {
+                var sendLoaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqAct_SendMessageToLEX", cache);
+                var sendLoadedString = SequenceObjectCreator.CreateString(mainSeq, lexMessage, cache);
+
+                // Initial load - Logic
+                KismetHelper.CreateOutputLink(loaded, "Out", sendLoaded);
+                KismetHelper.CreateVariableLink(sendLoaded, "MessageName", sendLoadedString);
+                loaded = sendLoaded;
+            }
+        }
+
+        /// <summary>
+        /// Sets up a Remote Event -> Send Message To LEX, so LEX can invoke a RemoteEvent to determine if file is loaded or not.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="eventName"></param>
+        /// <param name="cache"></param>
+        public static void CreateLEXLoadedPoll(IMEPackage package, string eventName, PackageCache cache = null)
+        {
+            var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
+            var loaded = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, "re_PreviewLevelPoll", cache);
+            var fileLoadedRE = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, eventName, cache);
+            KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", fileLoadedRE);
         }
     }
 }

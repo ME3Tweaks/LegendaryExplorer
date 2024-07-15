@@ -161,7 +161,7 @@
                                 <CompositeCollection>
                                     <CollectionContainer Collection="{Binding Source={StaticResource TextureFilters}}"/>
                                     <MenuItem Header="LOD Groups" Style="{x:Null}" ItemsSource="{Binding AssetFilters.TextureFilter.LODGroups}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}" />
-                                 
+
                                 </CompositeCollection>
                             </MenuItem.ItemsSource>
                         </MenuItem>
@@ -709,14 +709,22 @@
                             <controls:ListBoxScroll x:Name="lstbx_Anims" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding AnimSequence}"/>
-                                            <TextBlock FontSize="10" Text=" (Ambient Performance)" VerticalAlignment="Center" Visibility="{Binding IsAmbPerf, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                        </StackPanel>
+                                        <DockPanel>
+                                            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Play in Asset Viewer" Click="Animation_PlayInAssetViewer">
+                                                <Button.Content>
+                                                    <fa:ImageAwesome Icon="Regular_PlayCircle" Height="16" Width="16" ToolTip="Double click to goto this export" Cursor="Hand"/>
+                                                </Button.Content>
+                                            </Button>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding AnimSequence}"/>
+                                                <TextBlock FontSize="10" Text=" (Ambient Performance)" VerticalAlignment="Center" Visibility="{Binding IsAmbPerf, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </StackPanel>
+                                        </DockPanel>
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
                                                 <Setter Property="Foreground" Value="IndianRed"/>
@@ -815,16 +823,19 @@
                             <controls:ListBoxScroll x:Name="lstbx_Particles" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Particles}" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding PSName}" />
-                                            <TextBlock Text=" (" FontSize="10" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding VFXType}" FontSize="10" VerticalAlignment="Center"/>
-                                            <TextBlock Text=")" FontSize="10" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <DockPanel>
+                                            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Play in Asset Viewer" Click="VFX_PlayInAssetViewer">
+                                                <Button.Content>
+                                                    <fa:ImageAwesome Icon="Regular_PlayCircle" Height="16" Width="16" ToolTip="Double click to goto this export" Cursor="Hand"/>
+                                                </Button.Content>
+                                            </Button>
+                                            <TextBlock Text="{Binding DisplayString}" HorizontalAlignment="Stretch"/>
+                                        </DockPanel>
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
                                                 <Setter Property="Background" Value="LightGray"/>

@@ -21,6 +21,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Application = System.Windows.Application;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace LegendaryExplorer.Tools.AssetViewer
 {
@@ -53,7 +54,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 if (gesturesFile == null)
                     loadedFiles.TryGetValue("GesturesConfig.pcc", out gesturesFile);
             }
-            using var gesturesPackage = MEPackageHandler.UnsafePartialLoad(gesturesFile, x => x.ClassName == "BioGestureRuntimeData");
+            using var gesturesPackage = MEPackageHandler.UnsafePartialLoad(gesturesFile, x => !x.IsDefaultObject && x.ClassName == "BioGestureRuntimeData");
 
             // packageName can change if it's dlc so we just do this
             var gestureRuntimeData = gesturesPackage.Exports.FirstOrDefault(x => x.IsDataLoaded());
@@ -79,12 +80,18 @@ namespace LegendaryExplorer.Tools.AssetViewer
             //    pe.LoadPackage(package);
             //    pe.Show();
             //});
-
+            
+            // Save package for debugging
+            package.Save($@"{MEDirectories.GetCookedPath(sourceAnimation.Game)}\{GetStreamingPackageName(sourceAnimation.Game, true)}");
             return package;
         }
 
-        public static string GetStreamingPackageName(MEGame game)
+        public static string GetStreamingPackageName(MEGame game, bool isDebug = false)
         {
+            if (isDebug)
+            {
+                return $"{game}AssetViewer_StreamAnimDebug.pcc";
+            }
             return $"{game}AssetViewer_StreamAnim.pcc";
         }
 
@@ -156,11 +163,8 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 mainSeq.WriteProperty(new ArrayProperty<ObjectProperty>([dynAnimSet], "m_aSFXSharedAnimSets"));
             }
 
-
             // Create loading handshake
-            var loaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqEvent_LevelLoaded", cache);
-            var fileLoadedRE = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, "re_StreamAnimLoaded", cache);
-            KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", fileLoadedRE);
+            PreviewLevelBuilder.CreateLoadingHandshake(package, "re_StreamAnimLoaded");
 
             // Create control remote events
             var startAnim = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, "re_StartAnimation", cache);
@@ -171,6 +175,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             var animationTarget = SequenceObjectCreator.CreateObject(mainSeq, null, cache);
 
             var interpAct = SequenceObjectCreator.CreateInterp(mainSeq, cache);
+            interpAct.WriteProperty(new BoolProperty(true, "bLooping"));
             KismetHelper.AddVariableLink(interpAct, "Animation", "SeqVar_Object");
 
             var interpData = SequenceObjectCreator.CreateInterpData(mainSeq, 1, cache: cache);

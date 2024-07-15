@@ -59,7 +59,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
         public static void BuildPreviewLevel(PackageEditorWindow pe)
         {
-            var package = PreviewLevelBuilder.BuildAnimationViewerLevel(MEGame.LE3);
+            var package = PreviewLevelBuilder.BuildAssetViewerLevel(MEGame.LE3);
             pe.LoadPackage(package);
         }
 

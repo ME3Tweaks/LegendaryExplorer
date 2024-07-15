@@ -23,6 +23,7 @@ using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Tools.AnimationViewer;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Paths;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -33,11 +34,15 @@ using Path = System.IO.Path;
 
 namespace LegendaryExplorer.Tools.AssetViewer
 {
+
     /// <summary>
     /// ASI-based asset viewer - Particle Systems, Animations, and more - Mgamerz
     /// </summary>
     public partial class AssetViewerWindow : TrackingNotifyPropertyChangedWindowBase
     {
+        public ExportEntry AssetToView { get; set; }
+
+
         /// <summary>
         /// If game has told us it's ready for anim commands
         /// </summary>
@@ -106,6 +111,29 @@ namespace LegendaryExplorer.Tools.AssetViewer
             }
         }
 
+
+        /// <summary>
+        /// Result of polling. Do not poll too often or this could break.
+        /// </summary>
+        private bool MapPollResult = false;
+        private void TestIfOnAssetViewerMap(Action isOnPreviewMap, Action isNoOnPreviewMap)
+        {
+            Task.Run(() =>
+            {
+                MapPollResult = false; // Will be set by incoming message
+                InteropHelper.RemoteEvent("re_IsOnAssetViewerMap", Game);
+                Thread.Sleep(1000); // Give it one second
+            }).ContinueWithOnUIThread(x =>
+            {
+                var result = MapPollResult;
+                MapPollResult = false; // We reset here to make sure we don't wait for the following methods
+                if (result)
+                    isOnPreviewMap?.Invoke();
+                else
+                    isNoOnPreviewMap?.Invoke();
+            });
+        }
+
         #region LE1 SPECIFIC
         private void PrepChangeLE1Actor(string actorFullPath)
         {
@@ -157,8 +185,6 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
         #endregion
 
-        public AnimationRecord AnimQueuedForFocus;
-
         /// <summary>
         /// Plot-indexes in kismet that can be changed to change stuff in-game. The value is the plot index for the specified type
         /// </summary>
@@ -194,12 +220,15 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
         public InteropTarget GameTarget { get; private set; }
 
-        public AssetViewerWindow(MEGame game) : base("Asset Viewer", true)
+
+        public AssetViewerWindow(MEGame game, bool loadDb) : base("Asset Viewer", true)
         {
             if (Instance(game) is not null)
             {
                 throw new Exception($"Can only have one instance of {game} Asset Viewer open!");
             }
+
+            LoadDB = loadDb;
             Instances[game] = this;
 
             Game = game;
@@ -211,29 +240,26 @@ namespace LegendaryExplorer.Tools.AssetViewer
             GameOpenTimer.Tick += CheckIfGameOpen;
         }
 
-        public AssetViewerWindow(MEGame game, AssetDB db, AnimationRecord AnimToFocus) : this(game)
-        {
-            AnimQueuedForFocus = AnimToFocus;
-            foreach ((string fileName, int dirIndex) in db.FileList)
-            {
-                FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
-            }
-            Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-        }
-
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Animations.IsEmpty())
+            if (!LoadDB)
             {
-                string dbPath = AssetDatabaseWindow.GetDBPath(Game);
-                if (File.Exists(dbPath))
-                {
-                    LoadDatabase(dbPath);
-                }
+                LoadAssetViewerMap();
             }
             else
             {
-                listBoxAnims.ItemsSource = Animations;
+                if (Animations.IsEmpty())
+                {
+                    string dbPath = AssetDatabaseWindow.GetDBPath(Game);
+                    if (File.Exists(dbPath))
+                    {
+                        LoadDatabase(dbPath);
+                    }
+                }
+                else
+                {
+                    listBoxAnims.ItemsSource = Animations;
+                }
             }
         }
 
@@ -261,16 +287,18 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             if (!msg.StartsWith("ASSETVIEWER"))
                 return;
-            if (msg == "ASSETVIEWER LOADED") // STAGE LOADED
+            if (msg == "ASSETVIEWER READY") // POLL OK
+            {
+                MapPollResult = true;
+                return;
+            }
+            else if (msg == "ASSETVIEWER LOADED") // STAGE LOADED
             {
                 Initialized = true;
                 InteropHelper.SendMessageToGame("ASSETV_DISALLOW_WINDOW_PAUSE", Game);
 
                 // Load the initial pawn.
-                if (Game == MEGame.LE1)
-                {
-                    SelectedActor = ActorOptions.FirstOrDefault();
-                }
+                // TODO: Implement this.
 
                 if (GameController.TryGetMEProcess(Game, out Process gameProcess))
                 {
@@ -280,25 +308,21 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 this.RestoreAndBringToFront();
                 GameOpenTimer.Start();
                 GameStartingUp = false;
-                LoadingAnimation = false;
+                LoadingAsset = false;
                 ReadyToView = true;
                 animTab.IsSelected = true;
 
                 noUpdate = true;
                 ShouldFollowActor = false;
-                SelectedSquadMember = ESquadMember.Liara;
                 noUpdate = false;
 
+                LoadPendingAsset();
+
                 EndBusy();
-                if (AnimQueuedForFocus != null)
-                {
-                    SelectedAnimation = Animations.FirstOrDefault(a => a.AnimSequence == AnimQueuedForFocus.AnimSequence);
-                    AnimQueuedForFocus = null;
-                }
             }
-            else if (msg == "ASSETVIEWER ANIMATIONLOADED") // Animation has loaded and has begun playing.
+            else if (msg is "ASSETVIEWER ANIMATIONLOADED" or "ASSETVIEWER ACTORLOADED") // Streamed asset package has completed loading into the game
             {
-                LoadingAnimation = false;
+                LoadingAsset = false;
                 IsBusy = false; // Not busy
             }
             else if (msg.StartsWith("AssetViewer string AssetLoaded"))
@@ -337,7 +361,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                     me3Process.MainWindowHandle.RestoreAndBringToFront();
                 }
                 this.RestoreAndBringToFront();
-                LoadingAnimation = false;
+                LoadingAsset = false;
                 EndBusy();
             }
             else if (msg == "AnimViewer string HenchLoaded")
@@ -346,13 +370,53 @@ namespace LegendaryExplorer.Tools.AssetViewer
             }
         }
 
+        private void LoadPendingAsset()
+        {
+            if (AssetToView != null)
+            {
+                LoadAsset(AssetToView);
+                AssetToView = null; // Unset
+            }
+        }
+
+        private void LoadAsset(ExportEntry assetToView)
+        {
+            if (assetToView.IsA("ParticleSystem"))
+            {
+                LoadActor(assetToView);
+            }
+
+            if (assetToView.IsA("AnimSequence"))
+            {
+                LoadAnimation(assetToView);
+            }
+        }
+
+        private void LoadAnimation(ExportEntry animationToView)
+        {
+            var package = AnimStreamPackageBuilder.BuildAnimationPackage(animationToView);
+            InteropHelper.SendMessageToGame($"STREAMLEVELOUT {Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(Game))}", Game);
+            InteropHelper.SendFileToGame(package);
+            Thread.Sleep(50); // Give it just a tiny bit of time to stream out - this can probably be fixed with states and handshake from game - I'm kinda lazy
+            InteropHelper.SendMessageToGame($"STREAMLEVELIN {Path.GetFileNameWithoutExtension(AnimStreamPackageBuilder.GetStreamingPackageName(Game))}", Game);
+        }
+
+        private void LoadActor(ExportEntry assetToView)
+        {
+            var package = ActorStreamPackageBuilder.BuildActorPackage(assetToView);
+            InteropHelper.SendMessageToGame($"STREAMLEVELOUT {Path.GetFileNameWithoutExtension(ActorStreamPackageBuilder.GetStreamingPackageName(Game))}", Game);
+            InteropHelper.SendFileToGame(package);
+            Thread.Sleep(50); // Give it just a tiny bit of time to stream out - this can probably be fixed with states and handshake from game - I'm kinda lazy
+            InteropHelper.SendMessageToGame($"STREAMLEVELIN {Path.GetFileNameWithoutExtension(ActorStreamPackageBuilder.GetStreamingPackageName(Game))}", Game);
+        }
+
         private readonly DispatcherTimer GameOpenTimer;
         private void CheckIfGameOpen(object sender, EventArgs e)
         {
             if (!GameController.TryGetMEProcess(Game, out _))
             {
                 GameStartingUp = false;
-                LoadingAnimation = false;
+                LoadingAsset = false;
                 EndBusy();
                 ReadyToView = false;
                 SelectedAnimation = null;
@@ -392,12 +456,12 @@ namespace LegendaryExplorer.Tools.AssetViewer
             set => SetProperty(ref _mE3StartingUp, value);
         }
 
-        private bool _loadingAnimation;
+        private bool _loadingAsset;
 
-        public bool LoadingAnimation
+        public bool LoadingAsset
         {
-            get => _loadingAnimation;
-            set => SetProperty(ref _loadingAnimation, value);
+            get => _loadingAsset;
+            set => SetProperty(ref _loadingAsset, value);
         }
 
         #region BusyHost
@@ -466,13 +530,16 @@ namespace LegendaryExplorer.Tools.AssetViewer
             InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => App.IsDebug || InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
 
             DatabaseLoadedRequirementCommand = new Requirement.RequirementCommand(IsDatabaseLoaded, TryLoadDatabase);
-            LoadAnimViewerCommand = new GenericCommand(LoadAnimViewer, CanLoadAnimViewer);
+            LoadAnimViewerCommand = new GenericCommand(LoadAssetViewerMap, CanLoadAssetViewerMap);
         }
 
-        private bool IsDatabaseLoaded() => Enumerable.Any(Animations);
+        private bool IsDatabaseLoaded() => !LoadDB || Enumerable.Any(Animations);
 
         private void TryLoadDatabase()
         {
+            if (!LoadDB)
+                return; // Do not load the database.
+
             string dbPath = AssetDatabaseWindow.GetDBPath(Game);
             if (File.Exists(dbPath))
             {
@@ -592,33 +659,46 @@ namespace LegendaryExplorer.Tools.AssetViewer
                     });
         }
 
-        private bool CanLoadAnimViewer() => gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled && GameController.IsGameOpen(Game);
+        private bool CanLoadAssetViewerMap() => gameInstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && interopASIInstalledReq.IsFullfilled && GameController.IsGameOpen(Game);
 
-        private void LoadAnimViewer()
+        public void LoadAssetViewerMap()
         {
             SetBusy("Preparing asset viewer", () =>
             {
                 // Do nothing, just close.
             });
 
-            Task.Run(() =>
+            void mapIsReady()
             {
-                var mapPcc = PreviewLevelBuilder.BuildAnimationViewerLevel(Game);
-                InteropHelper.SendFileToGame(mapPcc);
-                GameTarget.ModernExecuteConsoleCommand($"at {Path.GetFileNameWithoutExtension(PreviewLevelBuilder.GetMapName(Game))}");
-            });
-            // Asset viewer will now wait for game to signal to LEX map is loaded
-            // Game will send: ASSETVIEWER LOADED
+                // If there's anything to load, do it now
+                IsBusy = false;
+                LoadPendingAsset();
+            }
+
+            void mapIsntReady()
+            {
+                // We need to load the map
+                Task.Run(() =>
+                {
+                    var mapPcc = PreviewLevelBuilder.BuildAssetViewerLevel(Game);
+                    InteropHelper.SendFileToGame(mapPcc);
+                    GameTarget.ModernExecuteConsoleCommand($"at {Path.GetFileNameWithoutExtension(PreviewLevelBuilder.GetMapName(Game))}");
+                    // Asset viewer will now wait for game to signal to LEX map is loaded
+                    // Game will send: ASSETVIEWER LOADED
+                });
+            }
+
+            TestIfOnAssetViewerMap(mapIsReady, mapIsntReady);
         }
 
         #endregion
 
         public void LoadAnimation(AnimationRecord anim)
         {
-            if (!LoadingAnimation && GameController.TryGetMEProcess(Game, out Process _))
+            if (!LoadingAsset && GameController.TryGetMEProcess(Game, out Process _))
             {
-                LoadingAnimation = true;
-                SetBusy("Loading Animation", () => LoadingAnimation = false);
+                LoadingAsset = true;
+                SetBusy("Loading Animation", () => LoadingAsset = false);
                 int animUIndex = 0;
                 string filePath = null;
                 if (anim != null && Enumerable.Any(anim.Usages))
@@ -879,13 +959,13 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 case PlaybackState.Playing:
                     playbackState = PlaybackState.Paused;
                     PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-                    InteropHelper.CauseEvent("re_PauseAnimation", Game);
+                    InteropHelper.RemoteEvent("re_PauseAnimation", Game);
                     break;
                 case PlaybackState.Stopped:
                 case PlaybackState.Paused:
                     playbackState = PlaybackState.Playing;
                     PlayPauseIcon = EFontAwesomeIcon.Solid_Pause;
-                    InteropHelper.CauseEvent("re_StartAnimation", Game);
+                    InteropHelper.RemoteEvent("re_StartAnimation", Game);
                     break;
             }
         }
@@ -895,7 +975,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
-            InteropHelper.CauseEvent("re_StopAnimation", Game);
+            InteropHelper.RemoteEvent("re_StopAnimation", Game);
         }
 
         private float _playRate = 1.0f;
@@ -992,25 +1072,54 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
         private ESquadMember _selectedSquadMember = ESquadMember.Liara;
 
-        public ESquadMember SelectedSquadMember
+        /// <summary>
+        /// If databases should be loaded.
+        /// </summary>
+        private readonly bool LoadDB;
+
+        public AssetViewerWindow(ExportEntry currentExport) : this(currentExport.Game, false)
         {
-            get => _selectedSquadMember;
-            set
-            {
-                if (SetProperty(ref _selectedSquadMember, value) && !noUpdate)
-                {
-                    GameTarget.ModernExecuteConsoleCommand(VarCmd((int)value, IntVarIndexes.SquadMember));
-                    GameTarget.ModernExecuteConsoleCommand("ce LoadNewHench");
-                }
-            }
+            AssetToView = currentExport;
         }
 
-        public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
         public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2, MEGame.LE3];
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             ReadyToView = false;
+        }
+
+        /// <summary>
+        /// If AssetPreview supports this asset
+        /// </summary>
+        /// <param name="asset"></param>
+        /// <returns></returns>
+        public static bool SupportsAsset(ExportEntry asset)
+        {
+            if (asset.IsA("ParticleSystem"))
+                return true;
+            if (asset.IsA("AnimSequence"))
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Set up AssetViewerWindow for previewing.
+        /// </summary>
+        /// <param name="export"></param>
+        public static void PreviewAsset(ExportEntry export)
+        {
+            if (Instance(export.Game) != null)
+            {
+                Instance(export.Game).AssetToView = export;
+                Instance(export.Game).LoadAssetViewerMap();
+            }
+            else
+            {
+                AssetViewerWindow avw = new AssetViewerWindow(export);
+                avw.Show();
+            }
         }
     }
 }

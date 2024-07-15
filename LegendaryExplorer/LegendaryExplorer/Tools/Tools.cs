@@ -199,7 +199,7 @@ namespace LegendaryExplorer
                         }
                         else
                         {
-                            (new AssetViewerWindow(game)).Show();
+                            (new AssetViewerWindow(game, true)).Show();
                         }
                     }
                 },

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -29,8 +30,10 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.TLK;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BinaryPack;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
+using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.Tools.PlotDatabase;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
@@ -42,7 +45,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     /// </summary>
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
-      #region Declarations
+        #region Declarations
 
         public const string dbCurrentBuild = "8.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
@@ -293,9 +296,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private bool IsPlotElementSelected() => GetSelectedPlotRecord() != null;
 
-      #endregion
+        #endregion
 
-      #region Startup/Exit
+        #region Startup/Exit
 
         public AssetDatabaseWindow() : base("Asset Database", true)
         {
@@ -387,9 +390,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             ClearDataBase();
         }
 
-      #endregion
+        #endregion
 
-      #region Database I/O
+        #region Database I/O
 
         /// <summary>
         /// Load the database or a particular database table.
@@ -614,9 +617,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
-      #endregion
+        #endregion
 
-      #region UserCommands
+        #region UserCommands
 
         public void GenerateDatabase()
         {
@@ -1399,7 +1402,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     continue;
                 }
                 //textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x=>x.UIndex); // maybe use unsafe load?
-                textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x=>x.UIndex == selecteditem.Usages[0].UIndex); // maybe use unsafe load?
+                textPcc = MEPackageHandler.UnsafePartialLoad(filePath, x => x.UIndex == selecteditem.Usages[0].UIndex); // maybe use unsafe load?
                 var uexpIdx = selecteditem.Usages[0].UIndex;
                 if (uexpIdx <= textPcc.ExportCount)
                 {
@@ -1629,9 +1632,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             Clipboard.SetText(copytext);
         }
 
-      #endregion
+        #endregion
 
-      #region Filters
+        #region Filters
 
         bool LineFilter(object d)
         {
@@ -2070,9 +2073,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
-      #endregion
+        #endregion
 
-      #region Scan
+        #region Scan
 
         private async void ScanGame()
         {
@@ -2298,6 +2301,51 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
+
+        private void Animation_PlayInAssetViewer(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement elem && elem.DataContext is AnimationRecord ar)
+            {
+                var usage = ar.AssetUsages.First();
+                var fpath = GetFilePath(usage.FileKey);
+                if (GameController.IsGameOpen(CurrentGame) && File.Exists(fpath))
+                {
+                    Debug.WriteLine($"File exists: {fpath}");
+                    using var package = MEPackageHandler.OpenMEPackage(fpath);
+                    if (package.TryGetUExport(usage.UIndex, out var export) && AssetViewerWindow.SupportsAsset(export))
+                    {
+                        AssetViewerWindow.PreviewAsset(export);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"File doesn't exist: {fpath}");
+                }
+            }
+        }
+
+        private void VFX_PlayInAssetViewer(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement elem && elem.DataContext is ParticleSysRecord psr)
+            {
+                var usage = psr.AssetUsages.First();
+                var fpath = GetFilePath(usage.FileKey);
+                if (GameController.IsGameOpen(CurrentGame) && File.Exists(fpath))
+                {
+                    Debug.WriteLine($"File exists: {fpath}");
+                    using var package = MEPackageHandler.OpenMEPackage(fpath);
+                    if (package.TryGetUExport(usage.UIndex, out var export) && AssetViewerWindow.SupportsAsset(export))
+                    {
+                        AssetViewerWindow.PreviewAsset(export);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"File doesn't exist: {fpath}");
+                }
+            }
+        }
+
         private DirectoryInfo GetContentPath(DirectoryInfo directory)
         {
             if (directory == null)
@@ -2315,7 +2363,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
-      #endregion
+        #endregion
     }
 
     public class FileIndexToNameConverter : IMultiValueConverter
