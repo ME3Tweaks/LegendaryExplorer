@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 
@@ -1131,6 +1132,40 @@ namespace LegendaryExplorerCore.Unreal
         /// <param name="package">The package to look up the UIndex in</param>
         /// <returns>An IEntry, or null if <see cref="Value"/> is 0 or outside the range of valid UIndexes</returns>
         public IEntry ResolveToEntry(IMEPackage package) => package.GetEntry(Value);
+
+        /// <summary>
+        /// Resolves this property to an export. If the object is an import, it will attempt to resolve it from another package.
+        /// </summary>
+        /// <param name="package">Package this property resides in</param>
+        /// <param name="cache">Cache to use if resolving an import</param>
+        /// <returns></returns>
+        public ExportEntry ResolveToExport(IMEPackage package, PackageCache cache)
+        {
+            var entry = ResolveToEntry(package);
+            if (entry is ExportEntry exp)
+            {
+                return exp;
+            }
+            if (entry is ImportEntry imp)
+            {
+                return EntryImporter.ResolveImport(imp, cache);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Attempts to resolve this object property to an export, returning true if success, false otherwise. This resolves imports to exports.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="cache"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public bool TryResolveExport(IMEPackage package, PackageCache cache, out ExportEntry exp)
+        {
+            exp = ResolveToExport(package, cache);
+            return exp != null;
+        }
 
         ///<inheritdoc/>
         public override PropertyType PropType => PropertyType.ObjectProperty;
