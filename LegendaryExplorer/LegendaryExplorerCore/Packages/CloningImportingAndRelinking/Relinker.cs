@@ -556,7 +556,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (prop is ObjectProperty objectProperty)
                 {
-                    hasObjectProperties = true;
+                    if (objectProperty.Value != 0)
+                    {
+                        // For purposes of object properties if the value is 0 we don't need a relink.
+                        hasObjectProperties = true;
+                    }
+
                     int uIndex = objectProperty.Value;
                     var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
                     objectProperty.Value = uIndex;
@@ -565,7 +570,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (prop is DelegateProperty delegateProp)
                 {
-                    hasObjectProperties = true;
+                    if (delegateProp.Value.ContainingObjectUIndex!= 0)
+                    {
+                        // For purposes of delegate properties if the value is 0 we don't need a relink.
+                        hasObjectProperties = true;
+                    }
                     int uIndex = delegateProp.Value.ContainingObjectUIndex;
                     var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
                     delegateProp.Value = new ScriptDelegate(uIndex, delegateProp.Value.FunctionName);
@@ -618,7 +627,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //Get the original import
                 ImportEntry importFullName = importingPCC.GetImport(n);
-                
+
                 // 12/26/2023 - See if it's already in the file
                 var existingEntry = relinkingExport.FileRef.FindEntry(importFullName.InstancedFullPath, importFullName.ClassName);
                 if (existingEntry != null)
@@ -626,7 +635,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     uIndex = existingEntry.UIndex;
                     return null; // Relinked import to existing item in the file
                 }
-                
+
                 string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
                                                                                      //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
