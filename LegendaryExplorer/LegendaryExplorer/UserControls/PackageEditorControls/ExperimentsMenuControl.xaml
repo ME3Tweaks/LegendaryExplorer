@@ -42,7 +42,8 @@
         <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
         <MenuItem Header="LLE Material Editor UI test" Click="MaterialEditorTest_Click"/>
         <MenuItem Header="Resynthesize package" Click="ResynthesizePackage_Click"/>
-
+        <MenuItem Header="Build Preview Level" Click="BuildPreviewLevel_Click"/>
+        
         <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>

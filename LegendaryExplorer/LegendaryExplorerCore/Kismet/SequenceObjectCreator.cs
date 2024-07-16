@@ -239,16 +239,21 @@ namespace LegendaryExplorerCore.Kismet
                                 loadPath = filepath;
                             }
                         }
-                        if (loadStream != null || loadPath != null)
+                        if (loadStream != null || loadPath != null || pcc.FilePath == classInfo.pccPath)
                         {
                             IMEPackage importPCC;
-                            if (loadStream is null)
+                            if (loadStream != null)
+                            {
+                                importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                            }
+                            else if (loadPath != null)
                             {
                                 pc.TryGetCachedPackage(loadPath, true, out importPCC);
                             }
                             else
                             {
-                                importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
+                                // Memory-package, it won't have a stream or disk, but it's the one we passed in.
+                                importPCC = pcc;
                             }
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
                             var classBin = ObjectBinary.From<UClass>(classExport);
@@ -384,6 +389,8 @@ namespace LegendaryExplorerCore.Kismet
             return defaults;
         }
 
+        #region OBJECT CREATION
+
         /// <summary>
         /// Creates a new sequence object in a package file
         /// </summary>
@@ -403,6 +410,635 @@ namespace LegendaryExplorerCore.Kismet
             pcc.AddExport(seqObj);
             handleRelinkResults?.Invoke(rop);
             return seqObj;
+        }
+
+
+        /// <summary>
+        /// Creates a new sequence object in a package file and adds it to a given sequence
+        /// </summary>
+        /// <param name="sequence">The sequence to add the object to</param>
+        /// <param name="className">Class of new sequence object</param>
+        /// <param name="cache">PackageCache for relinker</param>
+        /// <returns>The newly created object</returns>
+        public static ExportEntry CreateSequenceObject(ExportEntry sequence, string className, PackageCache cache = null)
+        {
+            var seqObj = CreateSequenceObject(sequence.FileRef, className, cache);
+            KismetHelper.AddObjectToSequence(seqObj, sequence);
+            return seqObj;
+        }
+
+
+        // The following is mostly from Mass Effect / Mass Effect 2 Randomizer (LE versions)
+        // MERSeqTools.cs
+
+        /// <summary>
+        /// Installs a random switch with the given number of links.
+        /// </summary>
+        /// <param name="sequence">The sequence to install the random switch into</param>
+        /// <param name="numLinks">The number of links to put on the switch</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateRandSwitch(ExportEntry sequence, int numLinks, PackageCache cache = null)
+        {
+            var nSwitch = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqAct_RandomSwitch", cache);
+            KismetHelper.AddObjectToSequence(nSwitch, sequence);
+            // var properties = nSwitch.GetProperties();
+            //    var packageBin = MEREmbedded.GetEmbeddedPackage(target.Game, "PremadeSeqObjs.pcc");
+            //    var premadeObjsP = MEPackageHandler.OpenMEPackageFromStream(packageBin);
+
+            //    // 1. Add the switch object and link it to the sequence
+            //    var nSwitch = PackageTools.PortExportIntoPackage(target, sequence.FileRef, premadeObjsP.FindExport("SeqAct_RandomSwitch_0"), sequence.UIndex, false, true);
+            //    KismetHelper.AddObjectToSequence(nSwitch, sequence);
+
+            // 2. Generate the output links array. We will refresh the properties
+            // with new structs so we don't have to make a copy constructor
+            var olinks = nSwitch.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            while (olinks.Count < numLinks)
+            {
+                olinks.Add(olinks[0]); // Just add a bunch of the first link
+            }
+
+            nSwitch.WriteProperty(olinks);
+
+            // Reload the olinks with unique structs now
+            olinks = nSwitch.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
+            for (int i = 0; i < numLinks; i++)
+            {
+                olinks[i].GetProp<StrProperty>("LinkDesc").Value = $"Link {i + 1}";
+            }
+
+            nSwitch.WriteProperty(olinks);
+            nSwitch.WriteProperty(new IntProperty(numLinks, "LinkCount"));
+
+            return nSwitch;
+        }
+
+        /// <summary>
+        /// Adds a new delay object to a sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="delay">Amount of time to delay, in seconds</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateDelay(ExportEntry sequence, float delay, PackageCache cache = null)
+        {
+            var newDelay = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqAct_Delay", cache);
+            KismetHelper.AddObjectToSequence(newDelay, sequence);
+            newDelay.WriteProperty(new FloatProperty(delay, "Duration"));
+            return newDelay;
+        }
+
+
+        /// <summary>
+        /// Creates a new SeqVar_RandomFloat with the given value range in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="minValue">Min value for the float</param>
+        /// <param name="maxValue">Max value for the float</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateRandFloat(ExportEntry sequence, float minValue, float maxValue, PackageCache cache = null)
+        {
+            var fFloat = CreateSequenceObject(sequence.FileRef, "SeqVar_RandomFloat", cache);
+            KismetHelper.AddObjectToSequence(fFloat, sequence);
+
+            fFloat.WriteProperty(new FloatProperty(minValue, "Min"));
+            fFloat.WriteProperty(new FloatProperty(maxValue, "Max"));
+
+            return fFloat;
+        }
+
+        /// <summary>
+        /// Creates a new delay with a SeqVar_RandomFloat in the specified range
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="min">Minimum delay time</param>
+        /// <param name="max">Maximum delay time</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateRandomDelay(ExportEntry sequence, float min, float max, PackageCache cache = null)
+        {
+            var newDelay = CreateSequenceObject(sequence.FileRef, "SeqAct_Delay", cache);
+            var newRandFloat = CreateRandFloat(sequence, min, max);
+            KismetHelper.AddObjectsToSequence(sequence, false, newDelay, newRandFloat);
+            KismetHelper.CreateVariableLink(newDelay, "Duration", newRandFloat);
+            return newDelay;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_Object with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="value">The value to set on the object. If null, 0 will be written instead.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateObject(ExportEntry sequence, ExportEntry value, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "SeqVar_Object", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new ObjectProperty(value?.UIndex ?? 0, "ObjValue"));
+
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_Int with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="value">The value to set the integer to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>        
+        public static ExportEntry CreateInt(ExportEntry sequence, int value, PackageCache cache = null)
+        {
+            var iObj = CreateSequenceObject(sequence.FileRef, "SeqVar_Int", cache);
+            KismetHelper.AddObjectToSequence(iObj, sequence);
+
+            iObj.WriteProperty(new IntProperty(value, "IntValue"));
+
+            return iObj;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_Float with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="value">The value to set the float to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>    
+        public static ExportEntry CreateFloat(ExportEntry sequence, float value, PackageCache cache = null)
+        {
+            var fObj = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqVar_Float", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new FloatProperty(value, "FloatValue"));
+
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a player object in the given sequence
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="returnsPawns"></param>
+        /// <returns></returns>
+        public static ExportEntry CreatePlayerObject(ExportEntry sequence, bool returnsPawns, PackageCache cache = null)
+        {
+            var player = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqVar_Player", cache);
+            if (returnsPawns)
+            {
+                player.WriteProperty(new BoolProperty(true, "bReturnPawns"));
+            }
+            KismetHelper.AddObjectToSequence(player, sequence);
+            return player;
+        }
+
+        /// <summary>
+        /// Creates a SeqAct_ConsoleCommand that executes the command on a player object
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="consoleCommand"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateConsoleCommandObject(ExportEntry sequence, string consoleCommand, PackageCache cache = null)
+        {
+            var player = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqVar_Player", cache);
+            var consoleCommandObj = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqAct_ConsoleCommand", cache);
+            var ap = new ArrayProperty<StrProperty>("Commands");
+            ap.Add(consoleCommand);
+            consoleCommandObj.WriteProperty(ap);
+            KismetHelper.CreateVariableLink(consoleCommandObj, "Target", player);
+            KismetHelper.AddObjectsToSequence(sequence, false, player, consoleCommandObj);
+            return consoleCommandObj;
+        }
+
+        /// <summary>
+        /// Creates a new SeqAct_ActivateRemoteEvent with the specified event name
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="eventName"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateActivateRemoteEvent(ExportEntry sequence, string eventName, PackageCache cache = null)
+        {
+            var rmEvt = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqAct_ActivateRemoteEvent", cache);
+            rmEvt.WriteProperty(new NameProperty(eventName, "EventName"));
+            KismetHelper.AddObjectsToSequence(sequence, false, rmEvt);
+            return rmEvt;
+        }
+
+        /// <summary>
+        /// Creates a new SeqEvent_RemoteEvent with the given EventName
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="eventName"></param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSeqEventRemoteActivated(ExportEntry sequence, string eventName, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "SeqEvent_RemoteEvent", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new NameProperty(eventName, "EventName"));
+
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a new SeqEvent_Death with the given Originator
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="originator">The kismet object that will be linked as the Originator.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSeqEventDeath(ExportEntry sequence, ExportEntry originator, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "SeqEvent_Death", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new ObjectProperty(originator, "Originator"));
+
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a new BioSeqVar_ObjectFindByTag with the given tag name and optionally searching unique tags
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="tagToFind"></param>
+        /// <param name="searchUniqueTags"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateFindObject(ExportEntry sequence, string tagToFind, bool searchUniqueTags = false, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "BioSeqVar_ObjectFindByTag", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new StrProperty(tagToFind, "m_sObjectTagToFind"));
+            if (searchUniqueTags)
+            {
+                fObj.WriteProperty(new BoolProperty(true, "m_bSearchUniqueTag"));
+            }
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_AddInt with the specified parameters (if any)
+        /// </summary>
+        /// <param name="sequence">Sequence the created object will be placed into</param>
+        /// <param name="A">Kismet object for A. If null, A won't be linked.</param>
+        /// <param name="B">Kismet object for B. If null, B won't be linked.</param>
+        /// <param name="IntResult">Kismet object for the integer result. If null, it won't be linked.</param>
+        /// <param name="FloatResult">Kismet object for the float result. If null, it won't be linked.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateAddInt(ExportEntry sequence, ExportEntry A = null, ExportEntry B = null, ExportEntry IntResult = null, ExportEntry FloatResult = null, PackageCache cache = null)
+        {
+            var addInt = CreateSequenceObject(sequence.FileRef, "SeqAct_AddInt", cache);
+            KismetHelper.AddObjectToSequence(addInt, sequence);
+
+            if (A != null)
+            {
+                KismetHelper.CreateVariableLink(addInt, "A", A);
+            }
+            if (B != null)
+            {
+                KismetHelper.CreateVariableLink(addInt, "B", B);
+            }
+            if (IntResult != null)
+            {
+                KismetHelper.CreateVariableLink(addInt, "IntResult", IntResult);
+            }
+            if (FloatResult != null)
+            {
+                KismetHelper.CreateVariableLink(addInt, "FloatResult", FloatResult);
+            }
+
+            return addInt;
+        }
+
+        /// <summary>
+        /// Creates a SeqAct_SetInt with the specified parameters (if any)
+        /// </summary>
+        /// <param name="sequence">The sequence to place the object into</param>
+        /// <param name="target">The SeqVar_Int or subclass that will have its value set. If null, it won't be linked.</param>
+        /// <param name="value">The object that defines the value to set. If null, it won't be linked.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSetInt(ExportEntry sequence, ExportEntry target = null, ExportEntry value = null, PackageCache cache = null)
+        {
+            var setInt = CreateSequenceObject(sequence.FileRef, "SeqAct_SetInt", cache);
+            KismetHelper.AddObjectToSequence(setInt, sequence);
+
+            if (value != null)
+            {
+                KismetHelper.CreateVariableLink(setInt, "Value", value);
+            }
+
+            if (target != null)
+            {
+                KismetHelper.CreateVariableLink(setInt, "Target", target);
+            }
+
+            return setInt;
+        }
+
+        /// <summary>
+        /// Creates a basic Gate object in the given sequence
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateGate(ExportEntry sequence, PackageCache cache = null)
+        {
+            var gate = CreateSequenceObject(sequence.FileRef, "SeqAct_Gate", cache);
+            KismetHelper.AddObjectToSequence(gate, sequence);
+            return gate;
+        }
+
+        /// <summary>
+        /// Creates an object of the specified class and adds it to the listed sequence
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateAndAddToSequence(ExportEntry sequence, string className, PackageCache cache = null)
+        {
+            var obj = CreateSequenceObject(sequence.FileRef, className, cache);
+            KismetHelper.AddObjectToSequence(obj, sequence);
+            return obj;
+        }
+
+        /// <summary>
+        /// Creates a SeqAct_Log object
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <param name="comment"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateLog(ExportEntry seq, string comment, PackageCache cache = null)
+        {
+            // This is often used for hackjobbing things
+            var obj = CreateAndAddToSequence(seq, "SeqAct_Log", cache);
+            KismetHelper.SetComment(obj, comment);
+            return obj;
+        }
+
+
+        /// <summary>
+        /// Creates a PMCheckState with the given index to check for
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static ExportEntry CreatePMCheckState(ExportEntry seq, int index, PackageCache cache = null)
+        {
+            var checkState = CreateSequenceObject(seq.FileRef, "BioSeqAct_PMCheckState", cache);
+            KismetHelper.AddObjectToSequence(checkState, seq);
+
+            checkState.WriteProperty(new IntProperty(index, "m_nIndex"));
+
+            return checkState;
+        }
+
+        /// <summary>
+        /// Creates a ModifyObjectList in the given sequence
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateModifyObjectList(ExportEntry seq, PackageCache cache = null)
+        {
+            var objListModifier = CreateSequenceObject(seq.FileRef, "SeqAct_ModifyObjectList", cache);
+            KismetHelper.AddObjectToSequence(objListModifier, seq);
+            return objListModifier;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_Named to find the name/class type combo in, in the given sequence
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <param name="varName"></param>
+        /// <param name="expectedType"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateSeqVarNamed(ExportEntry seq, string varName, string expectedType, PackageCache cache = null)
+        {
+            var varNamed = CreateSequenceObject(seq.FileRef, "SeqVar_Named", cache);
+            KismetHelper.AddObjectToSequence(varNamed, seq);
+            var expectedTypeClass = EntryImporter.EnsureClassIsInFile(seq.FileRef, expectedType, new RelinkerOptionsPackage(cache));
+            varNamed.WriteProperty(new NameProperty(varName, "FindVarName"));
+            varNamed.WriteProperty(new ObjectProperty(expectedTypeClass, "ExpectedType"));
+            return varNamed;
+        }
+
+        /// <summary>
+        /// Creates a WwisePostEvent action in the given sequence with the given event
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateWwisePostEvent(ExportEntry seq, IEntry wwiseEvent, PackageCache cache = null)
+        {
+            var postEvent = CreateSequenceObject(seq.FileRef, "SeqAct_WwisePostEvent", cache);
+            KismetHelper.AddObjectToSequence(postEvent, seq);
+
+            postEvent.WriteProperty(new ObjectProperty(wwiseEvent, "WwiseObject"));
+
+            return postEvent;
+        }
+
+        /// <summary>
+        /// Creates a SFXSeqCond_GetDifficulty object and returns it - automatically adds player variable link
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateCondGetDifficulty(ExportEntry seq, PackageCache cache = null)
+        {
+            var diff = CreateSequenceObject(seq.FileRef, "SFXSeqCond_GetDifficulty", cache);
+            KismetHelper.AddObjectToSequence(diff, seq);
+            var player = CreatePlayerObject(seq, true);
+            KismetHelper.CreateVariableLink(diff, "Player", player);
+            return diff;
+        }
+
+        public static ExportEntry CreatePlotInt(ExportEntry seq, int idx, PackageCache cache = null)
+        {
+            var plotInt = CreateSequenceObject(seq.FileRef, "BioSeqVar_StoryManagerInt", cache);
+            KismetHelper.AddObjectToSequence(plotInt, seq);
+            plotInt.WriteProperty(new IntProperty(idx, "m_nIndex"));
+            // Technically there's other props but I don't think they are used.
+            return plotInt;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="seq"></param>
+        /// <param name="int1"></param>
+        /// <param name="int2"></param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateCompareInt(ExportEntry seq, ExportEntry int1 = null, ExportEntry int2 = null, PackageCache cache = null)
+        {
+            var comp = CreateSequenceObject(seq.FileRef, "SeqCond_CompareInt", cache);
+            KismetHelper.AddObjectToSequence(comp, seq);
+            if (int1 != null)
+            {
+                KismetHelper.CreateVariableLink(comp, "A", int1);
+            }
+            if (int1 != null)
+            {
+                KismetHelper.CreateVariableLink(comp, "B", int2);
+            }
+            return comp;
+        }
+
+        /// <summary>
+        /// Creates a SeqCond_CompareObject action in the given sequence with the given objects, if any
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="seqObjA"></param>
+        /// <param name="seqObjB"></param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateCompareObject(ExportEntry seq, ExportEntry seqObjA = null, ExportEntry seqObjB = null, PackageCache cache = null)
+        {
+            var seqCond = CreateSequenceObject(seq.FileRef, "SeqCond_CompareObject", cache);
+            KismetHelper.AddObjectToSequence(seqCond, seq);
+
+            if (seqObjA != null)
+            {
+                KismetHelper.CreateVariableLink(seqCond, "A", seqObjA);
+            }
+            if (seqObjB != null)
+            {
+                KismetHelper.CreateVariableLink(seqCond, "B", seqObjB);
+            }
+
+            return seqCond;
+        }
+
+
+        /// <summary>
+        /// Adds a SeqAct_Interp in the given sequence. This does not create the InterpData object nor does it create the variable links that the interp object uses.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateInterp(ExportEntry seq, PackageCache cache = null)
+        {
+            var interp = CreateSequenceObject(seq.FileRef, "SeqAct_Interp", cache);
+            KismetHelper.AddObjectToSequence(interp, seq);
+            return interp;
+        }
+
+        /// <summary>
+        /// Adds an InterpData object in the given sequence.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="length">Optional: The length of the interp</param>
+        /// <param name="interpGroups">Not really optional: List of interp groups this interp has</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateInterpData(ExportEntry seq, float length = float.NaN, List<ExportEntry> interpGroups = null, PackageCache cache = null)
+        {
+            var interpData = CreateSequenceObject(seq.FileRef, "InterpData", cache);
+            KismetHelper.AddObjectToSequence(interpData, seq);
+
+            if (!float.IsNaN(length))
+            {
+                interpData.WriteProperty(new FloatProperty(length, "InterpLength"));
+            }
+
+            if (interpGroups != null)
+            {
+                interpData.WriteProperty(new ArrayProperty<ObjectProperty>(interpGroups.Select(x => new ObjectProperty(x)), "InterpGroups"));
+            }
+
+            return interpData;
+        }
+
+        #endregion
+        /// <summary>
+        /// Adds a SeqAct_SetObject object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="target">Optional: The object to link to the target terminal</param>
+        /// <param name="objValue">Optional: The object to link to the Value terminal</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSetObject(ExportEntry seq, ExportEntry target = null, ExportEntry objValue = null, PackageCache cache = null)
+        {
+            var setObj = CreateSequenceObject(seq.FileRef, "SeqAct_SetObject", cache);
+            KismetHelper.AddObjectToSequence(setObj, seq);
+
+            if (target != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Target", target);
+            }
+
+            if (objValue != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Value", objValue);
+            }
+
+            return setObj;
+        }
+
+
+        /// <summary>
+        /// Creates a SeqEvent_LevelLoaded object in the given sequence
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateLevelLoaded(ExportEntry seq, PackageCache cache = null)
+        {
+            var player = SequenceObjectCreator.CreateSequenceObject(seq.FileRef, "SeqEvent_LevelLoaded", cache);
+            KismetHelper.AddObjectToSequence(player, seq);
+            return player;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_string with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="value">The value to set the string of the object to. If null, it will not write the StrValue property.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateString(ExportEntry sequence, string value, PackageCache cache = null)
+        {
+            var strObj = CreateSequenceObject(sequence.FileRef, "SeqVar_String", cache);
+            KismetHelper.AddObjectToSequence(strObj, sequence);
+
+            if (value != null) // We allow empty values
+            {
+                strObj.WriteProperty(new StrProperty(value, "StrValue"));
+            }
+
+            return strObj;
+        }
+
+        /// <summary>
+        /// LEX ONLY: Creates a SeqAct_SendMessageToLEX, which when combined with the InteropASI, can signal LEX. Requires the class be compiled already or available in the local package.
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="message">Optional: Message to attach to the object.</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSendMessageToLEX(ExportEntry sequence, string message = null, PackageCache cache = null)
+        {
+            var sendMessage = CreateSequenceObject(sequence, "SeqAct_SendMessageToLEX", cache);
+            if (message != null)
+            {
+                var sendLoadedString = CreateString(sequence, message, cache);
+                KismetHelper.CreateVariableLink(sendMessage, "MessageName", sendLoadedString);
+            }
+
+            return sendMessage;
+        }
+
+        public static ExportEntry CreateConsoleEvent(ExportEntry sequence, string eventName, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "SeqEvent_Console", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new NameProperty(eventName, "ConsoleEventName"));
+
+            return fObj;
         }
     }
 }

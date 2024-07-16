@@ -95,14 +95,18 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         public void LoadMaterialIntoEditor(ExportEntry otherMat)
         {
-            var newPackage = MEPackageHandler.CreateEmptyPackage(@"LLEMaterialEditor.pcc", Game);
+            var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(@"LLEMaterialEditor.pcc", Game);
             var cache = new PackageCache();
             var rop = new RelinkerOptionsPackage()
             {
                 Cache = cache,
                 PortImportsMemorySafe = true,
             };
+            var idxLink = otherMat.idxLink;
+            var package = ExportCreator.CreatePackageExport(otherMat.FileRef, "LLEMatEd");
+            otherMat.idxLink = package.UIndex;
             EntryExporter.ExportExportToPackage(otherMat, newPackage, out var newentry, cache, rop);
+            otherMat.idxLink = idxLink; // Restore the export
             MatInfo = new MaterialInfo() { MaterialExport = newentry as ExportEntry };
         }
 
@@ -112,6 +116,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             var package = MatInfo.MaterialExport.FileRef.SaveToStream(false); // Don't waste time compressing
             package.Position = 0;
             var newP = MEPackageHandler.OpenMEPackageFromStream(package, "LLEMaterialPackage.pcc");
+
+            //PackageEditorWindow pe = new PackageEditorWindow();
+            //pe.LoadPackage(newP);
+            //pe.Show();
+            //return;
+
             var matExp = newP.FindExport(MatInfo.MaterialExport.InstancedFullPath);
             // Rename for Memory Uniqueness when loaded into the game
             foreach (var exp in newP.Exports.Where(x => x.idxLink == 0))

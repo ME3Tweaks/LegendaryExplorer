@@ -47,6 +47,8 @@ using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using GongSolutions.Wpf.DragDrop;
+using LegendaryExplorer.Tools.AssetViewer;
+using LegendaryExplorer.GameInterop;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -203,6 +205,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
         public ICommand FindNameUsagesCommand { get; set; }
+        public ICommand ViewInAssetViewerCommand { get; set; }
         public ICommand RebuildStreamingLevelsCommand { get; set; }
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
@@ -270,6 +273,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
             FindNameUsagesCommand = new GenericCommand(FindNameUsages, NameIsSelected);
+            ViewInAssetViewerCommand = new GenericCommand(ViewInAssetViewer, CanViewInAssetViewer);
             RebuildStreamingLevelsCommand = new GenericCommand(RebuildStreamingLevels, PackageIsLoaded);
             ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFilePrompt, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
@@ -328,6 +332,24 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             ExportAllPropsCommand = new GenericCommand(ExportAllProps, PackageIsLoaded);
             ApplyBulkPropEditsCommand = new GenericCommand(ApplyBulkPropEdits, PackageIsLoaded);
+        }
+
+        private void ViewInAssetViewer()
+        {
+            if (TryGetSelectedExport(out var currentExport) && AssetViewerWindow.SupportsAsset(currentExport))
+            {
+                AssetViewerWindow.PreviewAsset(currentExport);
+            }
+        }
+
+        private bool CanViewInAssetViewer()
+        {
+            if (Pcc != null && Pcc.Game.IsLEGame() && TryGetSelectedExport(out var currentExport) && GameController.TryGetMEProcess(currentExport.Game, out _) && AssetViewerWindow.SupportsAsset(currentExport))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void CreateTexture()
@@ -4224,8 +4246,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             switch (myValue)
             {
                 case "SequenceEditor":
-                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
-                    seqEditor.LoadFile(Pcc.FilePath);
+                    var seqEditor = new Sequence_Editor.SequenceEditorWPF(Pcc);
                     seqEditor.Show();
                     break;
                 case "FaceFXEditor":

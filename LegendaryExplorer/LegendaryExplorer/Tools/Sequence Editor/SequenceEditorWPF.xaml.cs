@@ -159,7 +159,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
 
         public SequenceEditorWPF(ExportEntry export) : this()
         {
-            FileQueuedForLoad = export.FileRef.FilePath;
+            PackageQueuedForLoad = export.FileRef;
             ExportQueuedForFocusing = export;
         }
 
@@ -264,7 +264,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (p != null)
             {
                 string typeName = p.Reference;
-                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true, Pcc);
                 props.AddOrReplaceProp(new NameProperty(finished.ObjectName, "LinkAction"));
                 props.AddOrReplaceProp(new StrProperty(outputLabel, "LinkDesc"));
                 props.AddOrReplaceProp(new ObjectProperty(finished, "LinkedOp"));
@@ -311,7 +311,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (p != null)
             {
                 string typeName = p.Reference;
-                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true, Pcc);
                 props.AddOrReplaceProp(new NameProperty(activation.ObjectName, "LinkAction"));
                 props.AddOrReplaceProp(new StrProperty(inputLabel, "LinkDesc"));
                 props.AddOrReplaceProp(new ObjectProperty(activation, "LinkedOp"));
@@ -374,7 +374,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             if (p != null)
             {
                 string typeName = p.Reference;
-                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true, Pcc);
                 props.AddOrReplaceProp(new NameProperty(externalVar.ObjectName, "LinkVar"));
                 props.AddOrReplaceProp(new StrProperty(externName, "LinkDesc"));
                 props.AddOrReplaceProp(new ObjectProperty(expectedDataTypeClass, "ExpectedType"));

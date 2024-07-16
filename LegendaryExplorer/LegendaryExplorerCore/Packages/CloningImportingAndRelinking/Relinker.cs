@@ -454,6 +454,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        /// <summary>
+        /// Relinks a property collection, from the importingPCC to the relinkingExport.
+        /// </summary>
+        /// <param name="importingPCC"></param>
+        /// <param name="relinkingExport"></param>
+        /// <param name="transplantProps"></param>
+        /// <param name="prefix"></param>
+        /// <param name="rop"></param>
         private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps, string prefix, RelinkerOptionsPackage rop)
         {
             foreach (Property prop in transplantProps)
@@ -508,6 +516,100 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Relinks a property collection, from the sourcePcc to the destinationPcc. This should only be used standalone, not as part of a full relink operation!
+        /// </summary>
+        /// <param name="sourcePcc">Package file we are relinking from</param>
+        /// <param name="destinationPcc">Destination to relink into. If null, we will not relink - but we will still report if we have object properties.</param>
+        /// <param name="props">The collection to relink</param>
+        /// <param name="rop">Relinker options package to configure relink behavior</param>
+        public static void RelinkPropertyCollection(IMEPackage sourcePcc, IMEPackage destinationPcc, PropertyCollection props, RelinkerOptionsPackage rop, out bool hasObjectProperties)
+        {
+            hasObjectProperties = false;
+            foreach (Property prop in props)
+            {
+                //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
+                if (prop is StructProperty structProperty)
+                {
+                    RelinkPropertyCollection(sourcePcc, destinationPcc, structProperty.Properties, rop, out var hasObjectProperties2);
+                    hasObjectProperties |= hasObjectProperties2;
+                }
+                else if (prop is ArrayProperty<StructProperty> structArrayProp)
+                {
+                    for (int i = 0; i < structArrayProp.Count; i++)
+                    {
+                        StructProperty arrayStructProperty = structArrayProp[i];
+                        RelinkPropertyCollection(sourcePcc, destinationPcc, arrayStructProperty.Properties, rop, out var hasObjectProperties2);
+                        hasObjectProperties |= hasObjectProperties2;
+                    }
+                }
+                else if (prop is ArrayProperty<ObjectProperty> objArrayProp)
+                {
+                    hasObjectProperties = true;
+                    foreach (ObjectProperty objProperty in objArrayProp)
+                    {
+                        int uIndex = objProperty.Value;
+                        var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
+                        objProperty.Value = uIndex;
+                        if (!result)
+                            Debugger.Break();
+                    }
+                }
+                else if (prop is ObjectProperty objectProperty)
+                {
+                    if (objectProperty.Value != 0)
+                    {
+                        // For purposes of object properties if the value is 0 we don't need a relink.
+                        hasObjectProperties = true;
+                    }
+
+                    int uIndex = objectProperty.Value;
+                    var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
+                    objectProperty.Value = uIndex;
+                    if (!result)
+                        Debugger.Break();
+                }
+                else if (prop is DelegateProperty delegateProp)
+                {
+                    if (delegateProp.Value.ContainingObjectUIndex!= 0)
+                    {
+                        // For purposes of delegate properties if the value is 0 we don't need a relink.
+                        hasObjectProperties = true;
+                    }
+                    int uIndex = delegateProp.Value.ContainingObjectUIndex;
+                    var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
+                    delegateProp.Value = new ScriptDelegate(uIndex, delegateProp.Value.FunctionName);
+                    if (!result)
+                        Debugger.Break();
+                }
+            }
+        }
+
+        private static bool RelinkSingle(IMEPackage sourcePackage, IMEPackage destPackage, ref int uIndex, RelinkerOptionsPackage rop)
+        {
+            if (destPackage == null)
+                return true; // We are only testing if we have object properties. We do not perform a relink.
+            if (uIndex == 0)
+                return true; // We're fine.
+
+
+            var sourceEntry = sourcePackage.GetEntry(uIndex);
+            // See if it's in the target.
+            var targetEntry = destPackage.FindEntry(sourceEntry.InstancedFullPath, sourceEntry.ClassName);
+            if (targetEntry != null)
+            {
+                uIndex = targetEntry.UIndex;
+                return true;
+            }
+
+            // Must be ported over.
+            var parent = EntryExporter.PortParents(sourceEntry, destPackage, cache: rop.Cache);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceEntry,
+                destPackage, parent, true, rop, out var newItem);
+            uIndex = newItem.UIndex; // Relinked
+            return true;
+        }
+
+        /// <summary>
         /// Relinks a uIndex that represents an import in the original package - that is, the UIndex is less than zero.
         /// </summary>
         /// <param name="importingPCC"></param>
@@ -525,7 +627,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //Get the original import
                 ImportEntry importFullName = importingPCC.GetImport(n);
-                
+
                 // 12/26/2023 - See if it's already in the file
                 var existingEntry = relinkingExport.FileRef.FindEntry(importFullName.InstancedFullPath, importFullName.ClassName);
                 if (existingEntry != null)
@@ -533,7 +635,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     uIndex = existingEntry.UIndex;
                     return null; // Relinked import to existing item in the file
                 }
-                
+
                 string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
                                                                                      //Debug.WriteLine("We should import " + origImport.GetFullPath);
 

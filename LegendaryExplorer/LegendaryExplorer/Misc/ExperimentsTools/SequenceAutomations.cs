@@ -188,7 +188,7 @@ namespace LegendaryExplorer.Misc.ExperimentsTools
         /// <returns>The varLink StructProperty.</returns>
         public static StructProperty CreateVarLink(IMEPackage pcc, string name)
         {
-            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(pcc.Game, "SeqVarLink", true);
+            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(pcc.Game, "SeqVarLink", true, pcc);
 
             int minVars = name == "Anchor" ? 1 : 0;
             int maxVars = name == "Anchor" ? 1 : 255;

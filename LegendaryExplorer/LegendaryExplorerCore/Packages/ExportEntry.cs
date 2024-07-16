@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -97,7 +98,7 @@ namespace LegendaryExplorerCore.Packages
             _data = ms.ToArray();
             _commonHeaderFields._dataSize = _data.Length;
         }
-        
+
         /// <summary>
         /// Constructor for generating a new export entry
         /// </summary>
@@ -170,7 +171,7 @@ namespace LegendaryExplorerCore.Packages
             return _data.Slice(0, GetPropertyStart());
         }
 
-        public void SetPrePropBinary(byte[] bytes)
+        public void SetPrePropBinary(byte[] bytes, bool isChangingSize = false)
         {
             if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
@@ -194,17 +195,36 @@ namespace LegendaryExplorerCore.Packages
             }
             else
             {
-                if (bytes.Length != GetPropertyStart())
+                // If its going to change size, do not conduct this check
+                byte[] data;
+
+                if (isChangingSize)
                 {
-                    throw new ArgumentException($"Expected pre-property binary to be {GetPropertyStart()} bytes, not {bytes.Length}!", nameof(bytes));
+                    var dataStream = new MemoryStream();
+                    dataStream.Write(bytes);
+                    var propStart = GetPropertyStart();
+                    dataStream.Write(_data.Slice(propStart, _data.Length - propStart));
+                    data = dataStream.ToArray();
                 }
-                byte[] data = Data;
-                Buffer.BlockCopy(bytes, 0, data, 0, bytes.Length);
+                else
+                {
+                    // Modify in place
+                    if (bytes.Length != GetPropertyStart())
+                    {
+                        throw new ArgumentException(
+                            $"Expected pre-property binary to be {GetPropertyStart()} bytes, not {bytes.Length}!",
+                            nameof(bytes));
+                    }
+
+                    data = Data;
+                    Buffer.BlockCopy(bytes, 0, data, 0, bytes.Length);
+                }
                 Data = data;
             }
         }
-        
+
         public bool IsDefaultObject => _commonHeaderFields._objectFlags.Has(EObjectFlags.ClassDefaultObject);
+        public bool IsArchetype => _commonHeaderFields._objectFlags.Has(EObjectFlags.ArchetypeObject);
 
         /// <summary>
         /// Get generates the header, Set deserializes all the header values from the provided byte array
@@ -277,7 +297,7 @@ namespace LegendaryExplorerCore.Packages
         {
             return GenerateHeader(_fileRef);
         }
-        
+
         public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
         {
             if (pcc.Endian.IsNative && pcc.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
@@ -333,7 +353,7 @@ namespace LegendaryExplorerCore.Packages
             if (stream.Endian.IsNative && _fileRef.Game > MEGame.ME2)
             {
                 stream.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref _commonHeaderFields, 1)));
-                
+
                 //rarely true. Only for ForcedExport packages I think?
                 if (_commonHeaderFields._generationNetObjectCountsLength > 0)
                 {
@@ -746,7 +766,7 @@ namespace LegendaryExplorerCore.Packages
             get => _fileRef.GetEntry(_commonHeaderFields._idxSuperClass);
             set => idxSuperClass = value?.UIndex ?? 0;
         }
-        
+
         public bool IsClass => _commonHeaderFields._idxClass == 0;
 
         public IEntry Class
@@ -868,7 +888,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 parsingClass = Class; //class we are defaults of
             }
-            
+
             if (propStartPos == 0)
                 propStartPos = GetPropertyStart();
             var stream = new MemoryStream(_data, false);
@@ -912,7 +932,7 @@ namespace LegendaryExplorerCore.Packages
 
             int start = 0;
 
-            
+
             if (!IsDefaultObject && this.IsA("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
             {
                 if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
@@ -925,7 +945,7 @@ namespace LegendaryExplorerCore.Packages
                 IEntry parent = Parent;
                 while (parent is not null)
                 {
-                    if (parent is ExportEntry {IsDefaultObject: true})
+                    if (parent is ExportEntry { IsDefaultObject: true })
                     {
                         start += 8; //TemplateName
                         break;
@@ -973,8 +993,8 @@ namespace LegendaryExplorerCore.Packages
                 MEGame.UDK => 26,
                 MEGame.ME3 => 30,
                 MEGame.LE1 => 30,
-                MEGame.LE2 => 30, 
-                MEGame.LE3 => 30, 
+                MEGame.LE2 => 30,
+                MEGame.LE3 => 30,
                 MEGame.ME1 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 MEGame.ME2 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32
@@ -1071,7 +1091,7 @@ namespace LegendaryExplorerCore.Packages
                     propsEndOffset = pos;
                 }
             }
-            
+
             if (propsEndOffset.Value < 4) throw new Exception("Props end is less than 4!");
             return propsEndOffset.Value;
         }

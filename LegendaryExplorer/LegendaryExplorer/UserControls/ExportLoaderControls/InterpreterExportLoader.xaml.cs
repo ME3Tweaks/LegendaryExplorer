@@ -716,7 +716,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         newProperty = new DelegateProperty("None", 0, propName);
                         break;
                     case PropertyType.StructProperty:
-                        PropertyCollection structProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true);
+                        PropertyCollection structProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, propInfo.Reference, true, CurrentLoadedExport.FileRef);
                         newProperty = new StructProperty(propInfo.Reference, structProps, propName, isImmutable: GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, Pcc.Game));
                         break;
                 }
@@ -765,7 +765,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry { Property: StructProperty sp })
             {
-                PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true);
+                PropertyCollection defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, sp.StructType, true, CurrentLoadedExport.FileRef);
                 foreach (Property prop in sp.Properties)
                 {
                     defaultProps.AddOrReplaceProp(prop);
@@ -2705,7 +2705,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             if (p != null)
                             {
                                 string typeName = p.Reference;
-                                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true);
+                                PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(Pcc.Game, typeName, true, Pcc);
                                 var isInImmutable = IsInImmutable(tvi);
                                 astructp.Insert(insertIndex, new StructProperty(typeName, props, isImmutable: isInImmutable || GlobalUnrealObjectInfo.IsImmutable(typeName, Pcc.Game)));
                             }

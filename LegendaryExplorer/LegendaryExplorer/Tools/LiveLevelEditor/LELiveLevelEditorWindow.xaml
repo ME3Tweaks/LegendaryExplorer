@@ -115,7 +115,7 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-                <TabItem Name="materialtab" Header="Material" Visibility="{Binding StaticMeshComponentSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TabItem Name="materialtab" Header="Material" IsEnabled="{Binding SelectedActor, Converter={StaticResource NullEnabledConverter}}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -137,6 +137,7 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="5"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -151,10 +152,19 @@
                                         sharedUi:Filter.By="{Binding MaterialFilter}" />
                                 </DockPanel>
                             </Border>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="2" >
+                                <DockPanel>
+                                    <controls:ListBoxScroll
+                                        MinHeight="200"
+                                        ItemsSource="{Binding Components}"
+                                        SelectedItem="{Binding SelectedComponent}"
+                                        ContextMenu="{StaticResource actorsContextMenu}" />
+                                </DockPanel>
+                            </Border>
                             <!--<editorPanels:LLEActorEditorPanel x:Name="ActorEditorPanel" Grid.Row="2" Grid.Column="2"/>-->
 
                             <!--<editorPanels:LLELightEditorPanel x:Name="LightEditorPanel" Grid.Row="3" Grid.Column="2"/>-->
-                            <DockPanel Grid.Column="2" Grid.Row="2">
+                            <DockPanel Grid.Column="2" Grid.Row="3">
                                 <xctk:IntegerUpDown Value="{Binding MaterialIndex}" Padding="10,0"/>
                                 <Button Content="Set custom material" Padding="4,2"  Command="{Binding SetCustomMaterialCommand}"/>
                                 <Button Content="Set material" Command="{Binding SetMaterialCommand}"/>

@@ -380,6 +380,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             BioVFXTemplate
         }
 
+        public string DisplayString => $"{PSName} ({VFXType})";
+
         public string PSName { get; set; }
 
         public string ParentPackage { get; set; }

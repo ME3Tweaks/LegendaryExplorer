@@ -213,6 +213,7 @@
     <BitmapImage x:Key="iconLiveLevelEditor" UriSource="Tools/Icons/liveleveleditor_256x256.ico"/>
     <BitmapImage x:Key="iconAnimationImporter" UriSource="Tools/Icons/animationimporter_256x256.ico"/>
     <BitmapImage x:Key="iconAnimViewer" UriSource="Tools/Icons/animviewer_256x256.ico"/>
+    <BitmapImage x:Key="iconAssetViewer" UriSource="Tools/Icons/assetviewer_256x256.ico"/>
     <BitmapImage x:Key="iconAudioLocalizer" UriSource="Tools/Icons/audiolocalizer_256x256.ico"/>
     <BitmapImage x:Key="iconAFCCompactor" UriSource="Tools/Icons/afccompactor_256x256.ico"/>
     <BitmapImage x:Key="iconCoalescedCompiler" UriSource="Tools/Icons/coalescedcompiler_256x256.ico"/>
@@ -257,6 +258,7 @@
     <BitmapImage x:Key="iconAudioLocalizer16" UriSource="Tools/Icons/16x16/AudioLocalizer_Icon_16.ico"/>
     <BitmapImage x:Key="iconAFCCompactor16" UriSource="Tools/Icons/16x16/AFCCompactor_Icon_16.ico"/>
     <BitmapImage x:Key="iconCoalescedCompiler16" UriSource="Tools/Icons/16x16/CoalescedCompiler_Icon_16.ico"/>
+    <BitmapImage x:Key="iconAssetViewer16" UriSource="Tools/Icons/16x16/AssetViewer_Icon_16.ico"/>
 
 
     <BitmapImage x:Key="iconLoadingSpinner" UriSource="Resources/Images/loadingspinner.png"/>

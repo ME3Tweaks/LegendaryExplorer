@@ -39,6 +39,7 @@ using Function = LegendaryExplorerCore.Unreal.Classes.Function;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorer.Tools.AssetViewer;
 
 //using ImageMagick;
 
@@ -54,6 +55,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             msLE1 = new MaterialScreenshotLE1();
             msLE1.StartWorkflow(pe);
+        }
+
+        public static void BuildPreviewLevel(PackageEditorWindow pe)
+        {
+            var package = PreviewLevelBuilder.BuildAssetViewerLevel(MEGame.LE3);
+            pe.LoadPackage(package);
         }
 
         public static void DumpUScriptFromPackage(PackageEditorWindow pe)
@@ -78,7 +85,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     string outputText = PEEM_DecompileUScript(exp, fileLib);
                     var outPath = Path.Combine(dlg.FileName, exp.InstancedFullPath + ".uc");
-                    File.WriteAllText(outPath,outputText);
+                    File.WriteAllText(outPath, outputText);
                 }
             }
 
@@ -432,7 +439,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 TFCTools.FindExternalizableTextures(dlg.FileName);
             }
         }
-        
+
 
         /// <summary>
         /// Rebuilds all netindexes based on the AdditionalPackageToCook list in the listed file's header
@@ -563,7 +570,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-       
+
 
         /// <summary>
         /// Extracts all NormalizedAverageColors, tints them, and then reinstalls them to the export they came from
@@ -2239,7 +2246,7 @@ defaultproperties
 
             return;
 
-// This is to just let me re-use variables. Sometimes I use this old code
+            // This is to just let me re-use variables. Sometimes I use this old code
 #if FALSE
             //if (pe.TryGetSelectedExport(out var exp2))
             //{

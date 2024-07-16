@@ -452,7 +452,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// <param name="packageCache"></param>
         /// <param name="shouldReturnClone">Return a deep copy of the struct</param>
         /// <returns></returns>
-        public static PropertyCollection getDefaultStructValue(MEGame game, string structName, bool stripTransients, PackageCache packageCache = null, bool shouldReturnClone = true)
+        public static PropertyCollection getDefaultStructValue(MEGame game, string structName, bool stripTransients, IMEPackage package, PackageCache packageCache = null, bool shouldReturnClone = true)
         {
             var defaultStructValues = game switch
             {
@@ -473,6 +473,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             bool isImmutable = IsImmutable(structName, game);
             if (structs.TryGetValue(structName, out ClassInfo info))
             {
+                IMEPackage importPcc = null;
+
                 try
                 {
                     PropertyCollection props = new();
@@ -486,20 +488,23 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                 continue;
                             }
 
-                            if (GetDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable) is Property prop)
+                            if (GetDefaultProperty(game, propName, propInfo, packageCache, package, stripTransients,
+                                    isImmutable) is Property prop)
                             {
                                 props.Add(prop);
                                 if (propInfo.IsStaticArray())
                                 {
                                     for (int i = 1; i < propInfo.StaticArrayLength; i++)
                                     {
-                                        prop = GetDefaultProperty(game, propName, propInfo, packageCache, stripTransients, isImmutable);
+                                        prop = GetDefaultProperty(game, propName, propInfo, packageCache, package,
+                                            stripTransients, isImmutable);
                                         prop.StaticArrayIndex = i;
                                         props.Add(prop);
                                     }
                                 }
                             }
                         }
+
                         string filepath = null;
                         if (MEDirectories.GetBioGamePath(game) is string bioGamePath)
                         {
@@ -507,22 +512,22 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         }
 
                         Stream loadStream = null;
-                        IMEPackage cachedPackage = null;
                         if (packageCache != null)
                         {
-                            packageCache.TryGetCachedPackage(filepath, true, out cachedPackage);
-                            if (cachedPackage == null)
-                                packageCache.TryGetCachedPackage(info.pccPath, true, out cachedPackage); // some cache types may have different behavior (such as relative package cache)
+                            packageCache.TryGetCachedPackage(filepath, true, out importPcc);
+                            if (importPcc == null)
+                                packageCache.TryGetCachedPackage(info.pccPath, true,
+                                    out importPcc); // some cache types may have different behavior (such as relative package cache)
 
-                            if (cachedPackage != null)
+                            if (importPcc != null)
                             {
                                 // Use this one
-                                readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                                readDefaultProps(importPcc, props, packageCache: packageCache);
                             }
                         }
-                        else if (filepath != null && MEPackageHandler.TryGetPackageFromCache(filepath, out cachedPackage))
+                        else if (filepath != null && MEPackageHandler.TryGetPackageFromCache(filepath, out importPcc))
                         {
-                            readDefaultProps(cachedPackage, props, packageCache: packageCache);
+                            readDefaultProps(importPcc, props, packageCache: packageCache);
                         }
                         else if (File.Exists(info.pccPath))
                         {
@@ -541,29 +546,73 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                 MEGame.LE3 => "GAMERESOURCES_LE3",
                                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
                             };
-                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource("GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(game));
+                            loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource(
+                                "GameResources.zip", LegendaryExplorerCoreLib.CustomResourceFileName(game));
                         }
                         else if (filepath != null && File.Exists(filepath))
                         {
                             loadStream = MEPackageHandler.ReadAllFileBytesIntoMemoryStream(filepath);
                         }
 
-                        if (cachedPackage == null && loadStream != null)
+                        if (importPcc == null && loadStream != null)
                         {
-                            using IMEPackage importPcc = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath, useSharedPackageCache: true);
+                            // Seeing if this is faster...
+                            // We would somehow need to know the dependencies of the object, which isn't something we can
+                            // really do without loading it to begin wiht
+                            //importPcc = MEPackageHandler.UnsafePartialLoadFromStream(loadStream, filepath,
+                            //    x => x.ClassName.CaseInsensitiveEquals("ScriptStruct") ||
+                            //         x.ClassName.EndsWith("Property", StringComparison.OrdinalIgnoreCase));
+
+                            importPcc = MEPackageHandler.OpenMEPackageFromStream(loadStream, filepath,
+                                useSharedPackageCache: true);
                             readDefaultProps(importPcc, props, packageCache);
                         }
+
                         structs.TryGetValue(info.baseClass, out info);
                     }
+
                     props.Add(new NoneProperty());
 
-                    defaultStructValues.TryAdd(structName, props);
-                    return shouldReturnClone ? props.DeepClone() : props;
+
+                    // Do not cache anything with object properties; they will need relinked.
+                    bool canCache = true;
+                    var propsToReturn = props;
+                    if (shouldReturnClone)
+                    {
+                        propsToReturn = props.DeepClone();
+
+                        if (package != null)
+                        {
+                            // We should make sure object references are correct for the package the defaults are being returned to
+                            // I don't think for this call the export being relinked matters. Normally it is passed through relinker,
+                            // but we are not relinking an export, but it is used for filerefs.
+                            Relinker.RelinkPropertyCollection(importPcc, package, propsToReturn, new RelinkerOptionsPackage() { PortExportsAsImportsWhenPossible = true }, out var hasObjectProperties);
+                            if (hasObjectProperties)
+                                canCache = false;
+                        }
+                    }
+                    else
+                    {
+                        // This does not relink - it just tells us if it has object properties or not.
+                        Relinker.RelinkPropertyCollection(importPcc, null, propsToReturn, new RelinkerOptionsPackage(), out var hasObjectProperties);
+                        canCache = !hasObjectProperties;
+                    }
+
+                    if (canCache)
+                    {
+                        defaultStructValues.TryAdd(structName, props);
+                    }
+
+                    return propsToReturn;
                 }
                 catch (Exception e)
                 {
                     LECLog.Warning($@"Exception getting default {game} struct property for {structName}: {e.Message}");
                     return null;
+                }
+                finally
+                {
+                    importPcc?.Dispose();
                 }
             }
             return null;
@@ -873,7 +922,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             }
         }
 
-        public static Property GetDefaultProperty(MEGame game, NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
+        public static Property GetDefaultProperty(MEGame game, NameReference propName, PropertyInfo propInfo, PackageCache packageCache, IMEPackage package, bool stripTransients = true, bool isImmutable = false)
         {
             return propInfo.Type switch
             {
@@ -903,7 +952,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     ArrayType.Byte => new ImmutableByteArrayProperty(propName),
                     _ => null
                 },
-                PropertyType.StructProperty => new StructProperty(propInfo.Reference, getDefaultStructValue(game, propInfo.Reference, stripTransients, packageCache), propName,
+                PropertyType.StructProperty => new StructProperty(propInfo.Reference, getDefaultStructValue(game, propInfo.Reference, stripTransients, package, packageCache), propName,
                     isImmutable || IsImmutable(propInfo.Reference, game)),
                 PropertyType.None => null,
                 PropertyType.Unknown => null,
@@ -1166,7 +1215,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "Object",
                 pccPath = enginePath
             };
-            
+
             void AddCore(string className, string baseClass)
             {
                 classes[className] = new ClassInfo

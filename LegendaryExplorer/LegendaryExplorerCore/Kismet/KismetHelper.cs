@@ -6,6 +6,7 @@ using System.Linq;
 using System.Diagnostics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -47,7 +48,7 @@ namespace LegendaryExplorerCore.Kismet
 
             return outputLinksMapping;
         }
-        
+
         /// <summary>
         /// Gets a list of Outlink LinkDesc names, in order.
         /// </summary>
@@ -66,7 +67,7 @@ namespace LegendaryExplorerCore.Kismet
             }
             return outlinkNames;
         }
-        
+
         /// <summary>
         /// Adds an output link from one sequence object to another.
         /// Will not create a new output link, will only add to an existing output
@@ -146,7 +147,7 @@ namespace LegendaryExplorerCore.Kismet
 
             source.WriteProperty(outLinksProp);
         }
-        
+
         /// <summary>
         /// Changes a single output link to a new target and commits the properties.
         /// </summary>
@@ -172,7 +173,7 @@ namespace LegendaryExplorerCore.Kismet
         {
             props.GetProp<ArrayProperty<StructProperty>>("OutputLinks")[outputLinkIndex].GetProp<ArrayProperty<StructProperty>>("Links")[linksIndex].GetProp<ObjectProperty>("LinkedOp").Value = newTarget;
         }
-        
+
         /// <summary>
         /// Writes a list of outbound links to a sequence node. Note that this cannot add output link points (like an additional output param), but only existing connections.
         /// </summary>
@@ -184,7 +185,7 @@ namespace LegendaryExplorerCore.Kismet
             WriteOutputLinksToProperties(linkSet, properties);
             node.WriteProperties(properties);
         }
-        
+
         /// <summary>
         /// Writes a set of output links to a property collection. This cannot be used to add output link points, only to overwrite the links of existing outputs.
         /// </summary>
@@ -207,7 +208,7 @@ namespace LegendaryExplorerCore.Kismet
                 oldL.ReplaceAll(newL.Select(x => x.GenerateStruct()));
             }
         }
-        
+
         /// <summary>
         /// Gets the list of VarLinks that can be attached to by the specified sequence object export.
         /// </summary>
@@ -240,7 +241,7 @@ namespace LegendaryExplorerCore.Kismet
 
             return varLinks;
         }
-        
+
         /// <summary>
         /// Adds a variable link from a source sequence object to a variable.
         /// This will not create a new variable link, only adding a new variable to an existing link.
@@ -262,7 +263,7 @@ namespace LegendaryExplorerCore.Kismet
                 }
             }
         }
-        
+
         /// <summary>
         /// Writes the list of variable links to the node. Only the linked objects are written.
         /// The list MUST be in the same order and be the same length as the current variable links on the export.
@@ -296,7 +297,7 @@ namespace LegendaryExplorerCore.Kismet
                 }
             }
         }
-        
+
         /// <summary>
         /// Removes variable links that have no defined values. Can be dangerous if the class is not designed to lookup by name (will break Idx based classes)
         /// </summary>
@@ -425,7 +426,7 @@ namespace LegendaryExplorerCore.Kismet
 
             export.WriteProperties(props);
         }
-        
+
 
         #endregion
 
@@ -444,7 +445,7 @@ namespace LegendaryExplorerCore.Kismet
 
             return objects.Where(x => x.Value != 0).Select(x => x.ResolveToEntry(sequence.FileRef)).ToList();
         }
-        
+
         /// <summary>
         /// Gets a list of all sequence elements that are referenced by this sequence's SequenceObjects property
         /// If the passed in object is not a Sequence, the parent sequence is used. Returns null if there is no parent sequence.
@@ -545,7 +546,7 @@ namespace LegendaryExplorerCore.Kismet
                 export.Parent = sequenceExport;
             }
         }
-        
+
         /// <summary>
         /// Removes a sequence element from the graph, by repointing incoming references to the ones referenced by outgoing items on this export.
         /// This is a very basic utility, only use it for items with one input and potentially multiple outputs.
@@ -630,7 +631,7 @@ namespace LegendaryExplorerCore.Kismet
         {
             SetComment(export, new List<string>() { comment });
         }
-        
+
         /// <summary>
         /// Gets the containing sequence of the specified export.
         /// Performed by looking for ParentSequence object property.
@@ -978,6 +979,63 @@ namespace LegendaryExplorerCore.Kismet
             }
 
             return referencingNodes.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Inserts an object between another in a kismet graph. The object being inserted should not have any outlinks on the outlink name specified
+        /// </summary>
+        /// <param name="originalNode">The original starting node</param>
+        /// <param name="outlinkName">The output link we will insert a MITM on</param>
+        /// <param name="mitmNode">The node we will link original node to, and then replace the outlinks of with the ones from the original node</param>
+        /// <param name="mitmInputIdx">What input to hook up the MITM to</param>
+        /// <param name="mitmOutlinkName">What output to copy the originalNode's outlinks onto</param>
+        public static void InsertActionAfter(ExportEntry originalNode, string outlinkName, ExportEntry mitmNode, int mitmInputIdx, string mitmOutlinkName)
+        {
+            var outLinkIdxToRedirect = KismetHelper.GetOutputLinkNames(originalNode).IndexOf(outlinkName);
+            if (outLinkIdxToRedirect == -1)
+            {
+                // Outlink needs made
+                KismetHelper.CreateNewOutputLink(originalNode, outlinkName, null);
+                outLinkIdxToRedirect = KismetHelper.GetOutputLinkNames(originalNode).IndexOf(outlinkName);
+            }
+
+
+            var originalOutLinks = KismetHelper.GetOutputLinksOfNode(originalNode);
+            var newOutLinks = KismetHelper.GetOutputLinksOfNode(originalNode);
+
+            newOutLinks[outLinkIdxToRedirect].Clear();
+            newOutLinks[outLinkIdxToRedirect].Add(new OutputLink() { InputLinkIdx = mitmInputIdx, LinkedOp = mitmNode }); // Point only to our new node
+            KismetHelper.WriteOutputLinksToNode(originalNode, newOutLinks);
+
+            var mitmOutLinks = KismetHelper.GetOutputLinksOfNode(mitmNode);
+            var mitmOutlinkIdxToUse = KismetHelper.GetOutputLinkNames(mitmNode).IndexOf(mitmOutlinkName);
+
+            mitmOutLinks[mitmOutlinkIdxToUse] = originalOutLinks[outLinkIdxToRedirect]; // Use the original outlinks as the output from this outlink
+
+            KismetHelper.WriteOutputLinksToNode(mitmNode, mitmOutLinks);
+        }
+
+        /// <summary>
+        /// Adds a new variable link terminal to a kismet node. Does not check it exists already.
+        /// </summary>
+        /// <param name="node">Node to modify</param>
+        /// <param name="linkDesc">The link description</param>
+        /// <param name="expectedTypeClass">The expected object class type</param>
+        /// <param name="writable">If the link writes to connected objects</param>
+        /// <param name="propertyName">The name of the property to map linked items to in the node</param>
+        public static void AddVariableLink(ExportEntry node, string linkDesc, string expectedTypeClass, bool writable = false, string propertyName = null, PackageCache cache = null)
+        {
+            var links = node.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
+            links ??= new ArrayProperty<StructProperty>("VariableLinks"); // Create if not found.
+
+            var structDefaults = GlobalUnrealObjectInfo.getDefaultStructValue(node.Game, "SeqVarLink", true, node.FileRef, cache);
+            structDefaults.AddOrReplaceProp(new StrProperty(linkDesc, "LinkDesc"));
+            var objType = EntryImporter.EnsureClassIsInFile(node.FileRef, expectedTypeClass, new RelinkerOptionsPackage(cache));
+            structDefaults.AddOrReplaceProp(new ObjectProperty(objType, "ExpectedType"));
+            StructProperty sp = new StructProperty("SeqVarLink", structDefaults);
+
+            links.Add(sp);
+            node.WriteProperty(links);
         }
     }
 }
