@@ -206,7 +206,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     usop.Cache = new PackageCache { AlwaysOpenFromDisk = false };
                     packageCacheIsLocal = true;
                 }
-                LECLog.Information($@"Game Root Path for FileLib Init: {usop.GamePathOverride ?? "null"}. Has package cache: {!packageCacheIsLocal}");
+                LECLog.Information($@"Game Root Path for FileLib Init: {usop.GamePathOverride ?? "null"}. Has package cache: {!packageCacheIsLocal}, File: {Pcc.FileNameNoExtension}, Game: {Pcc.Game}");
                 GameRootPath = usop.GamePathOverride; // This is cached because it's a pain to lookup later and requires tons of variable passing
 
                 InitializationLog = new MessageLog();
