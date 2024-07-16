@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -182,6 +184,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return rb_BodySetup.GetProperty<StructProperty>("AggGeom");
             }
             return null;
+        }
+
+        /// <summary>
+        /// Returns the list of material uindexes on the top LOD of the mesh. For convenience only.
+        /// </summary>
+        /// <returns></returns>
+        public UIndex[] GetMaterials()
+        {
+            if (LODModels.Length == 0)
+                return [];
+
+            return LODModels[0].Elements.Select(x => x.Material).ToArray();
         }
     }
 
