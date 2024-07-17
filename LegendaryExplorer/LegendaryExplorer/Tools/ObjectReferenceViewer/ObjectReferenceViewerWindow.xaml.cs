@@ -20,7 +20,7 @@ namespace LegendaryExplorer.Tools.ObjectReferenceViewer
         /// <summary>
         /// Object we are viewing references of
         /// </summary>
-        private IEntry Entry;
+        private readonly IEntry Entry;
 
         private bool _isBusy = true;
 
@@ -30,7 +30,7 @@ namespace LegendaryExplorer.Tools.ObjectReferenceViewer
             set => SetProperty(ref _isBusy, value);
         }
 
-        public ObservableCollectionExtended<ReferenceTreeWPF> TreeRoot { get; } = new();
+        public ObservableCollectionExtended<ReferenceTreeWPF> TreeRoot { get; } = [];
 
         private ReferenceTreeWPF _selectedItem;
 
@@ -66,11 +66,11 @@ namespace LegendaryExplorer.Tools.ObjectReferenceViewer
 
         private void ObjectReferenceViewerWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => ReferenceTree.CalculateReferenceTree(Entry, () => new ReferenceTreeWPF()))
+            Task.Run(() => ReferenceTreeWPF.CalculateReferenceTree(Entry))
                 .ContinueWithOnUIThread(tree =>
                 {
                     IsBusy = false;
-                    var root = tree.Result as ReferenceTreeWPF;
+                    var root = tree.Result;
                     TreeRoot.Add(root);
                     root.IsExpanded = true;
                 });
@@ -78,8 +78,7 @@ namespace LegendaryExplorer.Tools.ObjectReferenceViewer
 
         private void NavigateToHigherBranch_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is FrameworkElement fe && fe.DataContext is ReferenceTreeWPF rtwpf &&
-                rtwpf.HigherLevelRef is ReferenceTreeWPF higherLevelRef)
+            if (sender is FrameworkElement { DataContext: ReferenceTreeWPF { HigherLevelRef: ReferenceTreeWPF higherLevelRef } })
             {
                 e.Handled = true;
                 SelectedItem = higherLevelRef;

@@ -5,17 +5,17 @@ using LegendaryExplorerCore.Unreal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.Packages
 {
+    /// <inheritdoc/>
+    public class ReferenceTree : ReferenceTreeBase<ReferenceTree>;
+
     /// <summary>
     /// Tree of references
     /// </summary>
     [DebuggerDisplay("{Entry.InstancedFullPath}")]
-    public class ReferenceTree
+    public class ReferenceTreeBase<TSelf> where TSelf : ReferenceTreeBase<TSelf>, new()
     {
         /// <summary>
         /// The export this tree node represents.
@@ -25,59 +25,65 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Items that reference this export. Reference trees do not change after creation and don't need to be ObservableCollections.
         /// </summary>
-        public List<ReferenceTree> Children { get; } = new List<ReferenceTree>();
+        public List<TSelf> Children { get; } = [];
 
         /// <summary>
         /// The next link the in the reference chain to the root item we are calculating the references for. If null, we are the root node.
         /// </summary>
-        public ReferenceTree Parent { get; set; }
+        public TSelf Parent { get; set; }
 
-        public static ReferenceTree CalculateReferenceTree(IEntry entry, Func<ReferenceTree> referenceTreeGenerator = null)
+        public static TSelf CalculateReferenceTree(IEntry entry)
         {
-            referenceTreeGenerator ??= () => new ReferenceTree();
-
             var pcc = entry.FileRef;
 
-            ReferenceTree rt = referenceTreeGenerator();
-            rt.Entry = entry;
+            var rt = new TSelf
+            {
+                Entry = entry
+            };
 
-            var referenceMap = new Dictionary<IEntry, int[]>(pcc.ImportCount + pcc.ExportCount);
+            var referenceMap = new Dictionary<int, List<IEntry>>(pcc.ImportCount + pcc.ExportCount);
 
 
 
             // 1. Calculate all outbound references
-            foreach (var imp in entry.FileRef.Imports)
+            foreach (ImportEntry imp in entry.FileRef.Imports)
             {
                 if (imp == entry)
                     continue;
-                referenceMap[imp] = GetObjectReferences(imp);
+                foreach (int reference in GetObjectReferences(imp))
+                {
+                    referenceMap.AddToListAt(reference, imp);
+                }
             }
 
-            foreach (var exp in entry.FileRef.Exports)
+            foreach (ExportEntry exp in entry.FileRef.Exports)
             {
                 if (exp == entry)
                     continue;
-                referenceMap[exp] = GetObjectReferences(exp);
+                foreach (int reference in GetObjectReferences(exp))
+                {
+                    referenceMap.AddToListAt(reference, exp);
+                }
             }
 
             // Draw the rest of the owl
 
             // Don't go too deep. There will be circular dependencies, even across levels.
-            int maxDepth = 6;
+            int maxDepth = 100;
             int currentDepth = 0;
             // First level
-            List<ReferenceTree> levelNodes = new List<ReferenceTree>([rt]);
+            List<TSelf> levelNodes = [rt];
 
             // Used to link up to a higher branch and prune duplicates
-            var levels = new List<Dictionary<int, ReferenceTree>>();
+            var levels = new List<Dictionary<int, TSelf>>();
 
-            while (currentDepth < maxDepth || levelNodes.IsEmpty())
+            while (currentDepth < maxDepth && !levelNodes.IsEmpty())
             {
                 Debug.WriteLine($"Current depth: {currentDepth}");
-                levelNodes = AddReferenceLeaves(currentDepth, levelNodes, referenceMap, levels, referenceTreeGenerator);
+                levelNodes = AddReferenceLeaves(currentDepth, levelNodes, referenceMap, levels);
 
-                var levelDict = new Dictionary<int, ReferenceTree>();
-                foreach (var node in levelNodes)
+                var levelDict = new Dictionary<int, TSelf>();
+                foreach (TSelf node in levelNodes)
                 {
                     // Only add the first one. This makes it so it favors the first ones and not the last ones
                     levelDict.TryAdd(node.Entry.UIndex, node);
@@ -90,39 +96,40 @@ namespace LegendaryExplorerCore.Packages
             return rt;
         }
 
-        private static List<ReferenceTree> AddReferenceLeaves(int level, List<ReferenceTree> levelNodes,
-            Dictionary<IEntry, int[]> referenceMap, List<Dictionary<int, ReferenceTree>> higherLevels, Func<ReferenceTree> referenceTreeGenerator)
+        private static List<TSelf> AddReferenceLeaves(int level, List<TSelf> levelNodes,
+            Dictionary<int, List<IEntry>> referenceMap, List<Dictionary<int, TSelf>> higherLevels)
         {
-            List<ReferenceTree> subLevelNodes = new List<ReferenceTree>();
+            List<TSelf> subLevelNodes = [];
 
-            foreach (var node in levelNodes)
+            foreach (TSelf node in levelNodes)
             {
                 if (node.HigherLevelRef != null)
                     continue; // This is a reference to another branch
-
-                foreach (var reference in referenceMap)
+                if (referenceMap.TryGetValue(node.Entry.UIndex, out List<IEntry> entries))
                 {
-                    if (reference.Value.Contains(node.Entry.UIndex))
+                    foreach (IEntry entry in entries)
                     {
                         // Check for direct circular dependency
-                        if (node.Parent != null && node.Parent.Entry == reference.Key)
+                        if (node.Parent != null && node.Parent.Entry == entry)
                             continue; // This is a direct back and forth circular dependency
 
-                        ReferenceTree higherLevelRef = null;
+                        TSelf higherLevelRef = null;
                         foreach (var higherLevel in higherLevels)
                         {
-                            if (higherLevel.TryGetValue(reference.Key.UIndex, out higherLevelRef))
+                            if (higherLevel.TryGetValue(entry.UIndex, out higherLevelRef))
                             {
                                 break;
                             }
                         }
 
-                        //if (reference.Key.UIndex == 603 && level == 2)
+                        //if (entry.UIndex == 603 && level == 2)
                         //    Debug.WriteLine("hi");
-                        var newNode = referenceTreeGenerator();
-                        newNode.Entry = reference.Key;
-                        newNode.Parent = node;
-                        newNode.HigherLevelRef = higherLevelRef;
+                        var newNode = new TSelf
+                        {
+                            Entry = entry,
+                            Parent = node,
+                            HigherLevelRef = higherLevelRef
+                        };
                         subLevelNodes.Add(newNode);
                         node.Children.Add(newNode);
                     }
@@ -135,11 +142,11 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Reference to another branch that's at a higher level. If set, this node will not have children
         /// </summary>
-        public ReferenceTree HigherLevelRef { get; set; }
+        public TSelf HigherLevelRef { get; set; }
 
         private bool HasObjectInChain(IEntry entry)
         {
-            ReferenceTree rt = this;
+            var rt = this;
             while (rt != null)
             {
                 if (rt.Entry == entry)
@@ -156,7 +163,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="entry">Entry to compute references for.</param>
         /// <returns></returns>
-        private static int[] GetObjectReferences(IEntry entry)
+        private static HashSet<int> GetObjectReferences(IEntry entry)
         {
             IMEPackage pcc = entry.FileRef;
             MEGame pccGame = pcc.Game;
@@ -173,7 +180,7 @@ namespace LegendaryExplorerCore.Packages
             if (entry is ImportEntry)
             {
                 addReference(entry.idxLink);
-                return references.ToArray();
+                return references;
             }
 
             if (entry is ExportEntry exp)
@@ -189,9 +196,9 @@ namespace LegendaryExplorerCore.Packages
 
                     if (exp.HasComponentMap)
                     {
-                        foreach (var comp in exp.ComponentMap)
+                        foreach ((_, int value) in exp.ComponentMap)
                         {
-                            addReference(comp.Value);
+                            addReference(value);
                         }
                     }
 
@@ -215,22 +222,7 @@ namespace LegendaryExplorerCore.Packages
                         && exp.ClassName != "AnimSequence" //has no UIndexes, and is expensive to deserialize
                         && ObjectBinary.From(exp) is ObjectBinary objBin)
                     {
-                        var indices = new List<int>();
-                        if (objBin is Level levelBin)
-                        {
-                            //trashing a level object will automatically remove it from the Actor list
-                            //so we don't care if it's referenced there
-                            levelBin.ForEachUIndexExceptActorList(pccGame, new UIndexCollector(indices));
-                        }
-                        else
-                        {
-                            objBin.ForEachUIndex(pccGame, new UIndexCollector(indices));
-                        }
-
-                        foreach (int uIndex in indices)
-                        {
-                            addReference(uIndex);
-                        }
+                        objBin.ForEachUIndex(pccGame, new UIndexRefAdder(entry, references));
                     }
                 }
                 catch (Exception e) //when (!App.IsDebug)
@@ -239,7 +231,18 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            return references.ToArray();
+            return references;
+        }
+
+        private readonly struct UIndexRefAdder(IEntry entry, HashSet<int> references) : IUIndexAction
+        {
+            public void Invoke(ref int uIndex, string propName)
+            {
+                if (uIndex != 0 && uIndex != entry.UIndex && entry.FileRef.IsEntry(uIndex))
+                {
+                    references.Add(uIndex);
+                }
+            }
         }
 
 

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Tools.ObjectReferenceViewer
 {
-    public class ReferenceTreeWPF : ReferenceTree, INotifyPropertyChanged
+    public class ReferenceTreeWPF : ReferenceTreeBase<ReferenceTreeWPF>, INotifyPropertyChanged
     {
         // This is a hack. For poor WPF TreeView stuff.
         public static bool AllowSelection = true;
@@ -33,10 +32,10 @@ namespace LegendaryExplorer.Tools.ObjectReferenceViewer
 
         public void ExpandParents()
         {
-            if (Parent is ReferenceTreeWPF parent)
+            if (Parent is not null)
             {
-                parent.ExpandParents();
-                parent.IsExpanded = true;
+                Parent.ExpandParents();
+                Parent.IsExpanded = true;
             }
         }
 
@@ -48,12 +47,9 @@ namespace LegendaryExplorer.Tools.ObjectReferenceViewer
         public List<ReferenceTreeWPF> FlattenTree()
         {
             var nodes = new List<ReferenceTreeWPF> { this };
-            foreach (ReferenceTree tve in Children)
+            foreach (ReferenceTreeWPF tve in Children)
             {
-                if (tve is ReferenceTreeWPF rtwpf)
-                {
-                    nodes.AddRange(rtwpf.FlattenTree());
-                }
+                nodes.AddRange(tve.FlattenTree());
             }
 
             return nodes;

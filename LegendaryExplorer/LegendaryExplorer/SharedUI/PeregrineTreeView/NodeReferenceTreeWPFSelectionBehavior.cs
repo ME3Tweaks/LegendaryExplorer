@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using LegendaryExplorer.Tools.ObjectReferenceViewer;
@@ -20,7 +20,7 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(ReferenceTreeWPF), typeof(NodeReferenceTreeWPFSelectionBehavior),
+            DependencyProperty.Register(nameof(SelectedItem), typeof(ReferenceTreeWPF), typeof(NodeReferenceTreeWPFSelectionBehavior),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemChanged));
 
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -30,28 +30,25 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
                 oldNode.IsSelected = false;
             }
 
-            var newNode = e.NewValue as ReferenceTreeWPF;
-            if (newNode == null) return;
+            if (e.NewValue is not ReferenceTreeWPF newNode) return;
 
 
             var behavior = (NodeReferenceTreeWPFSelectionBehavior)d;
             var tree = behavior.AssociatedObject;
 
             var nodeDynasty = new List<ReferenceTreeWPF> { newNode };
-            var parent = newNode.Parent as ReferenceTreeWPF;
+            var parent = newNode.Parent;
             while (parent != null)
             {
                 nodeDynasty.Insert(0, parent);
-                parent = parent.Parent as ReferenceTreeWPF;
+                parent = parent.Parent;
             }
 
-            var currentParent = tree as ItemsControl;
+            var currentParent = (ItemsControl)tree;
             foreach (var node in nodeDynasty)
             {
                 // first try the easy way
                 var newParent = currentParent.ItemContainerGenerator.ContainerFromItem(node) as TreeViewItem;
-                var index = 0;
-                VirtualizingPanel virtualizingPanel = null;
                 if (newParent == null)
                 {
                     // if this failed, it's probably because of virtualization, and we will have to do it the hard way.
@@ -68,9 +65,9 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
                         currentParent.UpdateLayout();
                     }
 
-                    virtualizingPanel = GetItemsHost(currentParent) as VirtualizingPanel;
+                    var virtualizingPanel = GetItemsHost(currentParent) as VirtualizingPanel;
                     CallEnsureGenerator(virtualizingPanel);
-                    index = currentParent.Items.IndexOf(node);
+                    int index = currentParent.Items.IndexOf(node);
                     if (index < 0)
                     {
                         throw new InvalidOperationException("Node '" + node + "' cannot be fount in container");
@@ -162,39 +159,30 @@ namespace LegendaryExplorer.SharedUI.PeregrineTreeView
 
         #region ItemsControl.ItemsHost
 
-        static readonly PropertyInfo ItemsHostPropertyInfo = typeof(ItemsControl).GetProperty("ItemsHost", BindingFlags.Instance | BindingFlags.NonPublic);
-
         private static Panel GetItemsHost(ItemsControl itemsControl)
         {
             Debug.Assert(itemsControl != null);
-            return ItemsHostPropertyInfo.GetValue(itemsControl, null) as Panel;
+            return ItemsHost(itemsControl);
+
+            [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "get_ItemsHost")]
+            static extern Panel ItemsHost(ItemsControl itemsControlp);
         }
 
         #endregion ItemsControl.ItemsHost
 
         #region Panel.EnsureGenerator
 
-        private static readonly MethodInfo EnsureGeneratorMethodInfo = typeof(Panel).GetMethod("EnsureGenerator", BindingFlags.Instance | BindingFlags.NonPublic);
-
         private static void CallEnsureGenerator(Panel panel)
         {
             Debug.Assert(panel != null);
-            EnsureGeneratorMethodInfo.Invoke(panel, null);
+            EnsureGenerator(panel);
+            return;
+
+            [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "EnsureGenerator")]
+            static extern void EnsureGenerator(Panel panel);
         }
 
         #endregion Panel.EnsureGenerator
-
-        #region VirtualizingPanel.BringIndexIntoView
-
-        private static readonly MethodInfo BringIndexIntoViewMethodInfo = typeof(VirtualizingPanel).GetMethod("BringIndexIntoView", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private static void CallBringIndexIntoView(VirtualizingPanel virtualizingPanel, int index)
-        {
-            Debug.Assert(virtualizingPanel != null);
-            BringIndexIntoViewMethodInfo.Invoke(virtualizingPanel, new object[] { index });
-        }
-
-        #endregion VirtualizingPanel.BringIndexIntoView
 
         #endregion Functions to get internal members using reflection
     }
