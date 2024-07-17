@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
 namespace LegendaryExplorerCore.Packages;
@@ -13,6 +16,13 @@ namespace LegendaryExplorerCore.Packages;
 /// </summary>
 public class TieredPackageCache : PackageCache
 {
+#if DEBUG
+    /// <summary>
+    /// Use to profile how often all tiered caches load files by name. You can find hot files using this to promote them to a higher tier for performance.
+    /// </summary>
+    public static Dictionary<MEGame, CaseInsensitiveDictionary<int>> StaticTieredHeatMap { get; } = new();
+#endif
+
     /// <summary>
     /// If this package cache should use filenames (rather than file paths) for cache lookups.
     /// </summary>
@@ -160,6 +170,26 @@ public class TieredPackageCache : PackageCache
                             Debug.WriteLine($"TieredPackageCache WARNING: LOADING PACKAGE FOR A DIFFERENT GAME INTO THIS CACHE! File: {packagePath}");
                         }
                     }
+
+#if DEBUG
+                    // Increment the heatmap
+                    if (package != null)
+                    {
+                        lock (StaticTieredHeatMap)
+                        {
+                            if (!StaticTieredHeatMap.TryGetValue(package.Game, out var gameMap))
+                            {
+                                gameMap = new CaseInsensitiveDictionary<int>();
+                                StaticTieredHeatMap[package.Game] = gameMap;
+                            }
+
+                            var fname = Path.GetFileNameWithoutExtension(packagePath);
+                            gameMap.TryGetValue(fname, out var currentNum);
+                            currentNum++;
+                            gameMap[fname] = currentNum;
+                        }
+                    }
+#endif
 
                     InsertIntoCache(package);
                     return package;
