@@ -628,6 +628,17 @@ namespace LegendaryExplorerCore.Packages
 
     public static class IEntryExtensions
     {
+
+        /// <summary>
+        /// Gets the tree of references to this node, with this node at the top. This is performance intensive!
+        /// </summary>
+        /// <param name="entry">The entry to build the tree for.</param>
+        /// <returns>The reference tree in this package.</returns>
+        public static ReferenceTree GetReferenceTree(this IEntry entry)
+        {
+            return ReferenceTree.CalculateReferenceTree(entry);
+        }
+
         public static bool IsTrash(this IEntry entry)
         {
             return entry.ObjectName == UnrealPackageFile.TrashPackageName || entry.Parent?.ObjectName.Name == UnrealPackageFile.TrashPackageName;

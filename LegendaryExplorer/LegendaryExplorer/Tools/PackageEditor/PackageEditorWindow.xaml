@@ -46,6 +46,7 @@
         <ContextMenu x:Key="EntryContextMenu">
             <MenuItem Header="Find usages" ToolTip="Finds places where this name is used" Command="{Binding FindNameUsagesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="View in-game with Asset Viewer (EXPERIMENTAL)" ToolTip="Loads the asset into Asset Viewer" Command="{Binding ViewInAssetViewerCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="View reference graph (EXPERIMENTAL)" ToolTip="Shows incoming references to this object all the way to root objects in the package" Command="{Binding ViewReferenceGraphCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Attempt to find definition of import" ToolTip="Attempts to find the likely source of this import. Note that due to how unreal engine handles memory this may not be the one used." Command="{Binding ResolveImportCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Copy name text" ToolTip="Copies the name text to the clipboard" Command="{Binding CopyNameCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromContextMenu" SharedUI:Bindings.VisibilityToEnabled="True"/>
@@ -63,7 +64,7 @@
             <MenuItem Header="{Binding Path=(packageEditor:PackageEditorWindow.FindReferencesMenuText), Mode=OneTime}"
                       ToolTip="Finds objects that reference this one" Command="{Binding FindReferencesCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
-            <MenuItem Header="Extract to file (EXPERIMENTAL)" ToolTip="Extracts this export and all references to a new package file. Attempts to convert imports into exports that are located in the level-specific files" Command="{Binding ExtractToPackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Extract to file" ToolTip="Extracts this export and all references to a new package file. Attempts to convert imports into exports that are located in the level-specific files" Command="{Binding ExtractToPackageCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
             <MenuItem Header="Clone" ToolTip="Clone only this entry"  Command="{Binding CloneCommand}"/>
             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}"/>
             <MenuItem Header="Multi-cloning">

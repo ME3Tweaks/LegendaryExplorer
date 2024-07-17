@@ -49,6 +49,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Tools.ObjectReferenceViewer;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -250,6 +251,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand DeleteEntryCommand { get; set; }
         public ICommand ExportAllPropsCommand { get; set; }
         public ICommand ApplyBulkPropEditsCommand { get; set; }
+        public ICommand ViewReferenceGraphCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -332,6 +334,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             ExportAllPropsCommand = new GenericCommand(ExportAllProps, PackageIsLoaded);
             ApplyBulkPropEditsCommand = new GenericCommand(ApplyBulkPropEdits, PackageIsLoaded);
+            ViewReferenceGraphCommand = new GenericCommand(ViewReferenceGraph, EntryIsSelected);
+        }
+
+        private void ViewReferenceGraph()
+        {
+            if (TryGetSelectedEntry(out var entry))
+            {
+                var orv = new ObjectReferenceViewerWindow(entry, GetEntryDoubleClickAction());
+                orv.Show();
+            }
         }
 
         private void ViewInAssetViewer()
