@@ -83,20 +83,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         private void LoadCommands()
         {
             SaveChangesCommand = new GenericCommand(SaveChanges);
+
+            ScalarValueChanged += ValueChanged;
+            VectorValueChanged += ValueChanged;
         }
+
+        private void ValueChanged(object sender, EventArgs e)
+        {
+            if (UpdatesTakeEffectInstantly)
+            {
+                WillReloadDueToAutomaticCommit = true;
+                SaveChanges();
+            }
+        }
+
+        private void Commit(ExportEntry export)
+        {
+            if (export.ClassName.CaseInsensitiveEquals("Material"))
+                CommitSettingsToMaterial(export);
+            if (export.IsA("MaterialInstance"))
+                CommitSettingsToMIC(export);
+        }
+
+        /// <summary>
+        /// When true, suppresses reload of the export.
+        /// </summary>
+        private bool WillReloadDueToAutomaticCommit { get; set; }
 
         private void SaveChanges()
         {
             if (CurrentLoadedExport != null)
             {
-                if (CurrentLoadedExport.ClassName.CaseInsensitiveEquals("Material"))
-                {
-                    CommitSettingsToMaterial(CurrentLoadedExport);
-                }
-                else
-                {
-                    CommitSettingsToMIC(CurrentLoadedExport);
-                }
+                Commit(CurrentLoadedExport);
             }
         }
 
@@ -131,6 +149,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            if (WillReloadDueToAutomaticCommit)
+            {
+                // Do not reload.
+                WillReloadDueToAutomaticCommit = false;
+                return;
+            }
             UnloadExport();
             CurrentLoadedExport = exportEntry;
             // If control is loaded and visible
