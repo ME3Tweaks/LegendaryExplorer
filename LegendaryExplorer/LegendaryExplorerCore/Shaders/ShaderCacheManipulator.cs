@@ -244,8 +244,8 @@ namespace LegendaryExplorerCore.Shaders
 
             if (staticParamSets.Count is 0)
             {
-                // Count not find it?
-                return true;
+                // All shaders found
+                return false;
             }
 
             if (export.FileRef.FindExport("SeekFreeShaderCache") is ExportEntry localCacheExport)
