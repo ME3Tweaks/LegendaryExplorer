@@ -71,19 +71,28 @@
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
-    <DockPanel>
-        <GroupBox DockPanel.Dock="Top" Header="{Binding MatInfo.BaseMaterial.InstancedFullPath, StringFormat='Base Material Uniform Textures ({0})'}" Margin="2,0">
-            <ItemsControl ItemsSource="{Binding MatInfo.UniformTextures}"/>
-        </GroupBox>
-        <GroupBox Header="Instance Material Expressions" Margin="2,0">
-            <DockPanel>
-                <TextBlock Text="Material exports don't support expression values. To change these, you must generate a Material Instance Constant from this material." DockPanel.Dock="Top" 
+    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+        <DockPanel>
+            <GroupBox DockPanel.Dock="Top" Margin="2,0">
+                <GroupBox.Header>
+                    <TextBlock Text="{Binding MatInfo.BaseMaterial.InstancedFullPath, StringFormat='Base Material Uniform Textures ({0})'}"/>
+                </GroupBox.Header>
+                <ItemsControl ItemsSource="{Binding MatInfo.UniformTextures}"/>
+            </GroupBox>
+            <GroupBox Header="Instance Material Expressions" Margin="2,0">
+
+                <DockPanel>
+                    <TextBlock 
+                    TextWrapping="Wrap"
+                    Text="Material exports don't support expression values. To change these, you must generate a Material Instance Constant from this material." DockPanel.Dock="Top" 
                            Visibility="{Binding SupportsExpressionEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                <Button Content="Generate Material Instance Constant" DockPanel.Dock="Top" HorizontalAlignment="Left" Padding="4,2"
+                    <Button Content="Generate Material Instance Constant" DockPanel.Dock="Top" HorizontalAlignment="Left" Padding="4,2"
                         Visibility="{Binding SupportsExpressionEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                         Click="GenerateMaterialInstanceConstant_Click"/>
-                <ItemsControl ItemsSource="{Binding MatInfo.Expressions}" IsEnabled="{Binding SupportsExpressionEditing}"/>
-            </DockPanel>
-        </GroupBox>
-    </DockPanel>
+                    <ItemsControl ItemsSource="{Binding MatInfo.Expressions}" IsEnabled="{Binding SupportsExpressionEditing}"/>
+                </DockPanel>
+            </GroupBox>
+        </DockPanel>
+    </ScrollViewer>
+
 </local:ExportLoaderControl>
