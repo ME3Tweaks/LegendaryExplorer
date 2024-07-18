@@ -24,6 +24,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
     /// </summary>
     class TextureParameterMatEd : TextureParameter, IMatEdTexture, INotifyPropertyChanged
     {
+
         private string _displayString;
         /// <summary>
         /// String to show for this texture
@@ -50,10 +51,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         /// </summary>
         public IMEPackage EditingPackage { get; set; }
 
+        private bool _isDefaultParameter;
         /// <summary>
         ///  If this parameter is from the BaseMaterial expressions list.
         /// </summary>
-        public bool IsDefaultParameter { get; set; }
+        public bool IsDefaultParameter { get => _isDefaultParameter; set => SetProperty(ref _isDefaultParameter, value); }
 
         public void LoadData(IMEPackage package, PackageCache cache)
         {

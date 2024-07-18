@@ -6,12 +6,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     internal class ScalarParameterMatEd : ScalarParameter
     {
+
+        private bool _isDefaultParameter;
         /// <summary>
         ///  If this parameter is from the BaseMaterial expressions list.
         /// </summary>
-        public bool IsDefaultParameter { get; set; }
+        public bool IsDefaultParameter { get => _isDefaultParameter; set => SetProperty(ref _isDefaultParameter, value); }
 
-                /// <summary>
+        /// <summary>
         /// Generates a <see cref="ScalarParameterMatEd"/> object from the given material expression export 
         /// </summary>
         /// <param name="expression"></param>
