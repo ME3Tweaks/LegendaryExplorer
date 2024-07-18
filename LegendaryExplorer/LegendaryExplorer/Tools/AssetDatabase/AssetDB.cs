@@ -354,6 +354,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
         public List<MeshUsage> Usages { get; set; } = new();
 
+        public string DisplayString
+        {
+            get
+            {
+                if (IsSkeleton)
+                {
+                    return $"{MeshName} (Skeletal Mesh, Bone Count: {BoneCount})";
+                }
+
+                return MeshName;
+            }
+        }
+
         public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount)
         {
             this.MeshName = MeshName;

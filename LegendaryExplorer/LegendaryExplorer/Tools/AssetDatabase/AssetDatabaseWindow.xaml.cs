@@ -2346,6 +2346,28 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
         }
 
+        private void Mesh_PlayInAssetViewer(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement elem && elem.DataContext is MeshRecord psr)
+            {
+                var usage = psr.AssetUsages.First();
+                var fpath = GetFilePath(usage.FileKey);
+                if (GameController.IsGameOpen(CurrentGame) && File.Exists(fpath))
+                {
+                    Debug.WriteLine($"File exists: {fpath}");
+                    using var package = MEPackageHandler.OpenMEPackage(fpath);
+                    if (package.TryGetUExport(usage.UIndex, out var export) && AssetViewerWindow.SupportsAsset(export))
+                    {
+                        AssetViewerWindow.PreviewAsset(export);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"File doesn't exist: {fpath}");
+                }
+            }
+        }
+
         private DirectoryInfo GetContentPath(DirectoryInfo directory)
         {
             if (directory == null)

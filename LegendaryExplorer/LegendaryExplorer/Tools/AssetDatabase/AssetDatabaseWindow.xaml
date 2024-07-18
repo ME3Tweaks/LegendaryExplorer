@@ -522,19 +522,29 @@
                             <controls:ListBoxScroll x:Name="lstbx_Meshes" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" SelectionChanged="lstbx_Meshes_SelectionChanged" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding MeshName}" />
+                                            <!--<TextBlock Text="{Binding MeshName}" />
                                             <StackPanel Orientation="Horizontal" Name="details_skelmesh" Visibility="{Binding IsSkeleton, Converter={StaticResource BoolToVisibilityConverter}}">
                                                 <TextBlock FontSize="10" Text=" (Skeletal Mesh " VerticalAlignment="Center"/>
                                                 <TextBlock FontSize="10" Text=", Bone Count: " VerticalAlignment="Center" />
                                                 <TextBlock FontSize="10" Text="{Binding BoneCount}" VerticalAlignment="Center" />
                                                 <TextBlock FontSize="10" Text=")  " VerticalAlignment="Center" />
-                                            </StackPanel>
-                                        </StackPanel>
+                                            </StackPanel>-->
+
+
+                                            <DockPanel>
+                                                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" ToolTip="Play in Asset Viewer" Click="Mesh_PlayInAssetViewer">
+                                                    <Button.Content>
+                                                        <fa:ImageAwesome Icon="Regular_PlayCircle" Height="16" Width="16" ToolTip="Double click to goto this export" Cursor="Hand"/>
+                                                    </Button.Content>
+                                                </Button>
+                                                <TextBlock Text="{Binding DisplayString}"/>
+                                            </DockPanel>
+
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
                                                 <Setter Property="Foreground" Value="IndianRed"/>
