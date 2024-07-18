@@ -82,8 +82,8 @@ namespace LegendaryExplorerCore.Shaders
 
             var tempCache = new ShaderCache
             {
-                Shaders = new (),
-                MaterialShaderMaps = new (),
+                Shaders = new(),
+                MaterialShaderMaps = new(),
                 ShaderTypeCRCMap = localCache.ShaderTypeCRCMap,
                 VertexFactoryTypeCRCMap = localCache.VertexFactoryTypeCRCMap
             };
@@ -161,6 +161,11 @@ namespace LegendaryExplorerCore.Shaders
             destCacheExport.WriteBinary(destCache);
         }
 
+        /// <summary>
+        /// For locking shader cache file
+        /// </summary>
+        private static object shaderCacheReaderObj = new object();
+
         public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc, string gamePathOverride = null)
         {
             var brokenMaterials = new List<ExportEntry>();
@@ -186,7 +191,11 @@ namespace LegendaryExplorerCore.Shaders
                 return brokenMaterials;
             }
             HashSet<StaticParameterSet> staticParamSets = staticParamSetsToMaterialsDict.Keys.ToHashSet();
-            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
+            lock (shaderCacheReaderObj)
+            {
+                RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
+            }
+
             if (staticParamSets.Count is 0)
             {
                 return brokenMaterials;
@@ -206,6 +215,49 @@ namespace LegendaryExplorerCore.Shaders
                 brokenMaterials.AddRange(staticParamSetsToMaterialsDict[staticParamSet]);
             }
             return brokenMaterials;
+        }
+
+        public static bool IsMaterialBroken(ExportEntry export, string gamePathOverride = null)
+        {
+            if (!export.Game.IsMEGame())
+                return false; // We can't detect
+
+            var staticParamSetsToMaterialsDict = new Dictionary<StaticParameterSet, List<ExportEntry>>();
+
+            if (export.ClassName == "Material")
+            {
+                staticParamSetsToMaterialsDict.AddToListAt((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID, export);
+            }
+            else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
+            {
+                staticParamSetsToMaterialsDict.AddToListAt(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet, export);
+            }
+            if (staticParamSetsToMaterialsDict.Count is 0)
+            {
+                return false;
+            }
+            HashSet<StaticParameterSet> staticParamSets = staticParamSetsToMaterialsDict.Keys.ToHashSet();
+            lock (shaderCacheReaderObj)
+            {
+                RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, export.Game, gamePathOverride);
+            }
+
+            if (staticParamSets.Count is 0)
+            {
+                // Count not find it?
+                return true;
+            }
+
+            if (export.FileRef.FindExport("SeekFreeShaderCache") is ExportEntry localCacheExport)
+            {
+                var localCache = localCacheExport.GetBinaryData<ShaderCache>();
+                foreach ((StaticParameterSet key, _) in localCache.MaterialShaderMaps)
+                {
+                    staticParamSets.Remove(key);
+                }
+            }
+
+            return staticParamSets.Any();
         }
     }
 }

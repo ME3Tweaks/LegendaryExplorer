@@ -32,9 +32,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             if (texIdx < 0)
             {
                 mt.TextureImp = pcc.GetImport(texIdx);
-                if (mt.TextureImp.IsTexture())
+                if (mt.TextureImp.IsTexture() || mt.TextureImp.ClassName == "TextureCube")
                 {
-                    var resolved = EntryImporter.ResolveImport(mt.TextureImp, cache);
+                    var resolved = EntryImporter.ResolveImport(mt.TextureImp, cache, unsafeLoad: true, unsafeLoadDelegate: MaterialInfo.MaterialEdLoadOnlyUsefulExports);
                     if (resolved != null)
                     {
                         mt.DisplayString = $"{resolved.InstancedFullPath} ({resolved.FileRef.FileNameNoExtension}.pcc)";
@@ -49,7 +49,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             else
             {
                 var texE = pcc.GetUExport(texIdx);
-                if (texE.IsTexture() || texE.ClassName == "TextureCube")
+                if (texE.IsTexture() || texE.ClassName.CaseInsensitiveEquals("TextureCube"))
                 {
                     mt.TextureExp = texE;
                     mt.DisplayString = $"{mt.TextureExp.InstancedFullPath}";
@@ -69,7 +69,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                     lock (singleThreadSyncLock)
                     {
                         var texExport = mt.TextureExp;
-                        if (texExport.ClassName == "TextureCube")
+                        if (texExport.ClassName.CaseInsensitiveEquals("TextureCube"))
                         {
                             // Correct to the first cube face so we have a preview to show
                             texExport = texExport.GetProperty<ObjectProperty>("FacePosX")

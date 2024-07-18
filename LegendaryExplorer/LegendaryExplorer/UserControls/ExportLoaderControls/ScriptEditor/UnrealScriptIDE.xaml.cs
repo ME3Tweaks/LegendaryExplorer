@@ -152,13 +152,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         {
             if (CurrentLoadedExport != null)
             {
-                var elhw = new ExportLoaderHostedWindow(new UnrealScriptIDE(), CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new UnrealScriptIDE() { PreloadedText = ScriptText }, CurrentLoadedExport)
                 {
                     Title = $"Script Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
+                // Todo: Transfer current content to the popped out window
                 elhw.Show();
             }
         }
+
+        /// <summary>
+        /// Text to set once everything has loaded, used during popout
+        /// </summary>
+        public string PreloadedText { get; set; }
 
         public override void Dispose()
         {
@@ -298,7 +304,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                             "Functionality will be limited to script decompilation.\n\n\n" +
                                             "Do you want to see the compilation error log?", "Script Error", MessageBoxButton.YesNo))
                         {
-                            Dispatcher.Invoke(() => new ListDialog(CurrentFileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()), 
+                            Dispatcher.Invoke(() => new ListDialog(CurrentFileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()),
                                                                    "Initialization Log", "", Window.GetWindow(this)).Show());
                         }
                     }
@@ -452,8 +458,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     {
                         var codeBuilder = new CodeBuilderVisitor<PlainTextCodeFormatter>();
                         ast.AcceptVisitor(codeBuilder);
-                        string source = codeBuilder.GetOutput();
+                        string source = PreloadedText ?? codeBuilder.GetOutput();
                         ScriptText = source;
+                        PreloadedText = null; // Do not use after first decompile
                         Parse(source);
                     }
                     else
@@ -571,7 +578,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 int nextLine = lineLookup[i + 1];
 
                 lineToIndex.Add(j);
-                for (;j < tokensSpan.Length && tokensSpan[j].StartPos < nextLine; ++j)
+                for (; j < tokensSpan.Length && tokensSpan[j].StartPos < nextLine; ++j)
                 {
                     ScriptToken token = tokensSpan[j];
                     syntaxSpans.Add(new SyntaxSpan(token.SyntaxType, token.EndPos - token.StartPos, token.StartPos));
@@ -612,17 +619,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             switch (currentToken.Type)
             {
                 case TokenType.Dot when currentTokenIdx > 0:
-                {
-                    DisplayCompletions(tokensSpan, currentTokenIdx);
-                    break;
-                }
-                //case TokenType.Word when currentToken.Value.Length == 1 && completionWindow is null:
-                //{
-                    
-                //    break;
-                //}
+                    {
+                        DisplayCompletions(tokensSpan, currentTokenIdx);
+                        break;
+                    }
+                    //case TokenType.Word when currentToken.Value.Length == 1 && completionWindow is null:
+                    //{
+
+                    //    break;
+                    //}
             }
-            
+
         }
 
         private void DisplayCompletions(ReadOnlySpan<ScriptToken> tokens, int currentTokenIdx)
@@ -639,44 +646,44 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             switch (definitionOfPrevSymbol)
             {
                 case ObjectType objType:
-                {
-                    if (prevToken.Type is TokenType.NameLiteral)
                     {
-                        //this is a class literal
-                        completionData.Add(new KeywordCompletion("static"));
-                        completionData.Add(new KeywordCompletion("const"));
-                        completionData.Add(new KeywordCompletion("default"));
+                        if (prevToken.Type is TokenType.NameLiteral)
+                        {
+                            //this is a class literal
+                            completionData.Add(new KeywordCompletion("static"));
+                            completionData.Add(new KeywordCompletion("const"));
+                            completionData.Add(new KeywordCompletion("default"));
+                            break;
+                        }
+                        bool varsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.SUPER) && !prevToken.Value.CaseInsensitiveEquals(Keywords.GLOBAL);
+                        bool functionsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.DEFAULT);
+                        do
+                        {
+                            if (varsAccesible)
+                            {
+                                completionData.AddRange(VariableCompletion.GenerateCompletions(objType.VariableDeclarations));
+                            }
+                            if (objType is Class classType && functionsAccesible)
+                            {
+                                bool allowIterators = false;
+                                for (int i = currentTokenIdx - 1; i >= 0; i--)
+                                {
+                                    if (tokens[i].Type is TokenType.SemiColon or TokenType.LeftBracket or TokenType.RightBracket)
+                                    {
+                                        break;
+                                    }
+                                    if (tokens[i].Value.CaseInsensitiveEquals("foreach"))
+                                    {
+                                        allowIterators = true;
+                                        break;
+                                    }
+                                }
+                                completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass, iterators: allowIterators));
+                            }
+                            objType = objType.Parent as ObjectType;
+                        } while (objType is not null);
                         break;
                     }
-                    bool varsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.SUPER) && !prevToken.Value.CaseInsensitiveEquals(Keywords.GLOBAL);
-                    bool functionsAccesible = !prevToken.Value.CaseInsensitiveEquals(Keywords.DEFAULT);
-                    do
-                    {
-                        if (varsAccesible)
-                        {
-                            completionData.AddRange(VariableCompletion.GenerateCompletions(objType.VariableDeclarations));
-                        }
-                        if (objType is Class classType && functionsAccesible)
-                        {
-                            bool allowIterators = false;
-                            for (int i = currentTokenIdx - 1; i >= 0; i--)
-                            {
-                                if (tokens[i].Type is TokenType.SemiColon or TokenType.LeftBracket or TokenType.RightBracket)
-                                {
-                                    break;
-                                }
-                                if (tokens[i].Value.CaseInsensitiveEquals("foreach"))
-                                {
-                                    allowIterators = true;
-                                    break;
-                                }
-                            }
-                            completionData.AddRange(FunctionCompletion.GenerateCompletions(classType.Functions, currentClass, iterators: allowIterators));
-                        }
-                        objType = objType.Parent as ObjectType;
-                    } while (objType is not null);
-                    break;
-                }
                 case Enumeration enumType:
                     completionData.AddRange(enumType.Values.Select(v => new CompletionData(v.Name, $"{v.IntVal}")));
                     break;
@@ -684,39 +691,39 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     completionData.AddRange(ArrayFunctionCompletion.GenerateCompletions(Pcc.Game, dynArrType));
                     break;
                 case null:
-                {
-                    if (prevToken.Value.CaseInsensitiveEquals(Keywords.CONST))
                     {
-                        if (currentTokenIdx > 3)
+                        if (prevToken.Value.CaseInsensitiveEquals(Keywords.CONST))
                         {
-                            ScriptToken classNameToken = tokens[currentTokenIdx - 3];
-                            if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
+                            if (currentTokenIdx > 3)
                             {
-                                do
+                                ScriptToken classNameToken = tokens[currentTokenIdx - 3];
+                                if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
                                 {
-                                    completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Literal?.ResolveType().DisplayName()} {c.Value}")));
-                                    cls = cls.Parent as Class;
-                                } while (cls is not null);
+                                    do
+                                    {
+                                        completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Literal?.ResolveType().DisplayName()} {c.Value}")));
+                                        cls = cls.Parent as Class;
+                                    } while (cls is not null);
+                                }
                             }
                         }
-                    }
-                    else if (prevToken.Value.CaseInsensitiveEquals(Keywords.STATIC))
-                    {
-                        if (currentTokenIdx > 3)
+                        else if (prevToken.Value.CaseInsensitiveEquals(Keywords.STATIC))
                         {
-                            ScriptToken classNameToken = tokens[currentTokenIdx - 3];
-                            if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
+                            if (currentTokenIdx > 3)
                             {
-                                do
+                                ScriptToken classNameToken = tokens[currentTokenIdx - 3];
+                                if (classNameToken.Type is TokenType.NameLiteral && GetDefinitionFromToken(classNameToken) is Class cls)
                                 {
-                                    completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, staticsOnly: true));
-                                    cls = cls.Parent as Class;
-                                } while (cls is not null);
+                                    do
+                                    {
+                                        completionData.AddRange(FunctionCompletion.GenerateCompletions(cls.Functions, currentClass, staticsOnly: true));
+                                        cls = cls.Parent as Class;
+                                    } while (cls is not null);
+                                }
                             }
                         }
+                        break;
                     }
-                    break;
-                }
             }
             if (completionData.Count > 0)
             {
@@ -829,7 +836,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         }
         private void TextEditor_OnContextMenuClosing(object sender, ContextMenuEventArgs e) => contextMenuDefinitionNode = null;
 
-        private bool CanFindReferences() => contextMenuDefinitionNode is Function or VariableDeclaration {Outer: ObjectType} or VariableType && CurrentFileLib.IsInitialized;
+        private bool CanFindReferences() => contextMenuDefinitionNode is Function or VariableDeclaration { Outer: ObjectType } or VariableType && CurrentFileLib.IsInitialized;
 
         private void FindUsagesInFile()
         {
@@ -962,7 +969,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     for (int i = 0; i < lines.Length; i++)
                     {
                         string lineText = lines[i];
-                        if (lineText.IndexOf("//", StringComparison.Ordinal) is var commentStart and > 0 )
+                        if (lineText.IndexOf("//", StringComparison.Ordinal) is var commentStart and > 0)
                         {
                             lines[i] = $"{lineText.AsSpan(0, commentStart)}{lineText.AsSpan(commentStart + 2)}";
                         }
@@ -1064,7 +1071,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             TokenStream tokens = _definitionLinkGenerator.Tokens;
             int currentTokenIdx = tokens.GetIndexOfTokenAtOffset(caretOffset);
             ScriptToken currentToken = currentTokenIdx >= 0 ? tokens.TokensSpan[currentTokenIdx] : null;
-            
+
             switch (e.Text)
             {
                 case "\"":
@@ -1128,7 +1135,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 case "\n":
                     if (currentToken?.Type is TokenType.RightBracket)
                     {
-                        if (currentTokenIdx > 0 && tokens.TokensSpan[currentTokenIdx - 1] is {Type: TokenType.LeftBracket} prevToken)
+                        if (currentTokenIdx > 0 && tokens.TokensSpan[currentTokenIdx - 1] is { Type: TokenType.LeftBracket } prevToken)
                         {
                             string inBetweenText = Document.GetText(prevToken.EndPos, currentToken.StartPos - prevToken.EndPos);
                             if (!inBetweenText.Contains('\n'))

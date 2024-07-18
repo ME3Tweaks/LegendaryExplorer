@@ -1428,7 +1428,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="localDirFiles">Files in the local directory. These will be checked last</param>
         /// <param name="gameRootOverride">The root path of the game. If null, the default path will be used</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", bool unsafeLoad = false,
+            IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, PackageCache, IMEPackage> fileResolver = null,
+            Func<ExportEntry, bool> unsafeLoadDelegate = null)
         {
             var entryFullPath = entry.InstancedFullPath;
             cache ??= new PackageCache();
@@ -1458,7 +1460,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         return export;
                     }
 
-                    // Custom resolver didn't find it in it's package. Do not use the default.
+                    // Custom resolver didn't find it in its package. Do not use the default.
                     continue;
                 }
 
@@ -1494,8 +1496,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (unsafeLoad)
                 {
-                    // Load no export data - we only care about the table data
-                    return MEPackageHandler.UnsafePartialLoad(packagePath, x => false);
+                    if (unsafeLoadDelegate != null)
+                    {
+                        return MEPackageHandler.UnsafePartialLoad(packagePath, unsafeLoadDelegate);
+                    }
+                    else
+                    {
+                        // Load no export data - we only care about the table data
+                        return MEPackageHandler.UnsafePartialLoad(packagePath, x => false);
+                    }
                 }
                 else
                 {

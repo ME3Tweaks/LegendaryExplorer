@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Xceed.Wpf.Toolkit;
 
@@ -15,6 +22,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
     /// </summary>
     public partial class MaterialEditorExportLoader : ExportLoaderControl
     {
+        /// <summary>
+        /// Used for initial loading of data
+        /// </summary>
+        private PackageCache initialPackageCache;
 
         private bool IsLoadingData;
         private MaterialInfo _matInfo;
@@ -26,17 +37,91 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                 if (SetProperty(ref _matInfo, value) && value != null)
                 {
                     IsLoadingData = true;
-                    value.InitMaterialInfo(new PackageCache());
+                    value.InitMaterialInfo(initialPackageCache);
                     IsLoadingData = false; // Texture loading can occur on background but it won't have any editor effects
                 }
             }
         }
 
+        private bool _updatesTakeEffectInstantly;
+        public bool UpdatesTakeEffectInstantly
+        {
+            get => _updatesTakeEffectInstantly;
+            set => SetProperty(ref _updatesTakeEffectInstantly, value);
+        }
+
+        private bool _hasUnsavedChanges;
+        public bool HasUnsavedChanges
+        {
+            get => _hasUnsavedChanges;
+            set => SetProperty(ref _hasUnsavedChanges, value);
+        }
+
+        private bool _materialHasNoShader;
+        public bool MaterialHasNoShader
+        {
+            get => _materialHasNoShader;
+            set => SetProperty(ref _materialHasNoShader, value);
+        }
+
+        /// <summary>
+        /// Value is true after _Loaded is called. False after _Unloaded (which if in tab control, is called when different tab is selected)
+        /// </summary>
+        private bool ControlIsLoaded;
+
         public bool SupportsExpressionEditing => CurrentLoadedExport != null && CurrentLoadedExport.IsA("MaterialInstanceConstant");
 
-        public MaterialEditorExportLoader() : base("MaterialEditorLLE")
+        public GenericCommand SaveChangesCommand { get; set; }
+
+
+        public MaterialEditorExportLoader() : base("MaterialEditor")
         {
+            LoadCommands();
             InitializeComponent();
+        }
+
+        private void LoadCommands()
+        {
+            SaveChangesCommand = new GenericCommand(SaveChanges);
+        }
+
+        private void SaveChanges()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                if (CurrentLoadedExport.ClassName.CaseInsensitiveEquals("Material"))
+                {
+                    CommitSettingsToMaterial(CurrentLoadedExport);
+                }
+                else
+                {
+                    CommitSettingsToMIC(CurrentLoadedExport);
+                }
+            }
+        }
+
+        private void CommitSettingsToMaterial(ExportEntry export)
+        {
+            var mat = ObjectBinary.From<Material>(export);
+            for (int i = 0; i < MatInfo.UniformTextures.Count; i++)
+            {
+                if (MatInfo.UniformTextures[i].TextureExp.FileRef != export.FileRef)
+                {
+                    // We must convert this to an import
+                    if (export.FileRef.FindEntry(MatInfo.UniformTextures[i].TextureExp.MemoryFullPath, MatInfo.UniformTextures[i].TextureExp.ClassName) != null)
+                    {
+                        mat.SM3MaterialResource.UniformExpressionTextures[i] = export.FileRef.FindEntry(MatInfo.UniformTextures[i].TextureExp.MemoryFullPath, MatInfo.UniformTextures[i].TextureExp.ClassName).UIndex;
+                        continue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("CONVERT PACKAGE REFERENCE!!");
+                    }
+                }
+
+                mat.SM3MaterialResource.UniformExpressionTextures[i] = MatInfo.UniformTextures[i].TextureExp.UIndex;
+            }
+            export.WriteBinary(mat);
         }
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -46,14 +131,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            UnloadExport();
             CurrentLoadedExport = exportEntry;
-            MatInfo = new MaterialInfo() { MaterialExport = exportEntry };
-            MatInfo.InitMaterialInfo(new PackageCache()); // Todo: Move this to when it becomes visible via OnLoaded to improve performance.
-            RefreshBindings();
+            // If control is loaded and visible
+            if (IsLoaded)
+            {
+                LoadData();
+            }
         }
 
         public override void UnloadExport()
         {
+            initialPackageCache = new PackageCache();
+            MaterialHasNoShader = false;
             CurrentLoadedExport = null;
             RefreshBindings();
         }
@@ -62,12 +152,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             if (CurrentLoadedExport != null)
             {
-                var elhw = new ExportLoaderHostedWindow(new MaterialEditorExportLoader(), CurrentLoadedExport)
-                {
-                    Title = $"Material Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
-                };
+                var elhw = new ExportLoaderHostedWindow(new MaterialEditorExportLoader(), CurrentLoadedExport);
+                elhw.Title = GetPoppedOutTitle();
                 elhw.Show();
             }
+        }
+
+        private string GetPoppedOutTitle()
+        {
+            return $"Material Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}";
         }
 
         public override void Dispose()
@@ -237,15 +330,54 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         private void MaterialEditor_Loaded(object sender, RoutedEventArgs e)
         {
+            // We only check if an export was loaded so initial boot doesn't set this
+            if (CurrentLoadedExport != null)
+            {
+                ControlIsLoaded = true;
+                LoadData();
+            }
+        }
 
+        private void MaterialEditor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ControlIsLoaded = false;
+        }
+
+        private void LoadData()
+        {
+            if (ControlIsLoaded && initialPackageCache != null)
+            {
+                MatInfo = new MaterialInfo() { MaterialExport = CurrentLoadedExport };
+                MatInfo.InitMaterialInfo(initialPackageCache);
+                RefreshBindings();
+                Task.Run(() =>
+                {
+                    // Since this may take a slight bit of time we background thread it
+                    // We also cache the CLE because if it changes while we are fetching result we don't want to apply it
+                    // to a different export
+                    var mat = CurrentLoadedExport;
+                    var isBroken = ShaderCacheManipulator.IsMaterialBroken(mat);
+                    if (mat == CurrentLoadedExport)
+                    {
+                        MaterialHasNoShader = isBroken;
+                    }
+                });
+                initialPackageCache = null; // No longer needed
+            }
         }
 
         private void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
         {
             var newExport = ConvertMaterialToInstance(CurrentLoadedExport);
-            if (Window.GetWindow(this) is PackageEditorWindow pew)
+            var hostingWindow = Window.GetWindow(this);
+            if (hostingWindow is PackageEditorWindow pew)
             {
                 pew.GoToNumber(newExport.UIndex);
+            }
+            else if (hostingWindow is ExportLoaderHostedWindow elhw)
+            {
+                elhw.HostedControl.LoadExport(newExport);
+                elhw.Title = GetPoppedOutTitle();
             }
         }
     }
