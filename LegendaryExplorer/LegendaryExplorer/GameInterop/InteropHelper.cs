@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -11,6 +12,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.GameInterop
@@ -309,6 +311,11 @@ namespace LegendaryExplorer.GameInterop
         }
 
         /// <summary>
+        /// Used to track memory-packages. We will want to identify when we can dump this - such as when all tools the interact with game directly are closed
+        /// </summary>
+        private static Dictionary<MEGame, CaseInsensitiveDictionary<IMEPackage>> FilesSentToGame = new();
+
+        /// <summary>
         /// Sends a file to a game via a pipe. This file will be loaded instead of an on-disk version (one time!)
         /// The game must have the LEX Interop ASI installed that handles the command for it to do anything.
         /// </summary>
@@ -331,7 +338,7 @@ namespace LegendaryExplorer.GameInterop
             client.Connect(3000);
 
             var pipeWriter = new StreamWriter(client);
-            
+
             pipeWriter.Write($"PRECACHE_FILE {fileNameOverride} {savedFile.Length}");
             pipeWriter.Write('\0');
             pipeWriter.Flush();
@@ -341,6 +348,25 @@ namespace LegendaryExplorer.GameInterop
             ReadOnlySpan<byte> buffer = savedFile.GetBuffer().AsSpan()[..(int)savedFile.Length];
             client.Write(buffer);
             client.Flush();
+            if (!FilesSentToGame.TryGetValue(pcc.Game, out var map))
+            {
+                map = new CaseInsensitiveDictionary<IMEPackage>();
+                FilesSentToGame[pcc.Game] = map;
+            }
+            map[pcc.FilePath] = pcc;
+        }
+
+        public static CaseInsensitiveDictionary<IMEPackage> GetFilesSentToGame(MEGame game)
+        {
+            if (FilesSentToGame.TryGetValue(game, out var map))
+            {
+                // Don't return null
+                map = new CaseInsensitiveDictionary<IMEPackage>();
+                FilesSentToGame[game] = map;
+            }
+
+            return map;
         }
     }
+
 }

@@ -36,9 +36,19 @@ namespace LegendaryExplorer.Tools.AssetViewer
         /// <param packageName="game">Game this animation is for</param>
         /// <param packageName="packageName">Name of the package export containing the animation</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static NameReference GetOriginalSetName(MEGame game, NameReference packageName)
+        public static NameReference GetOriginalSetName(ExportEntry animSequence)
         {
+            var prop = animSequence.GetProperty<ObjectProperty>("m_pBioAnimSetData");
+            if (prop != null)
+            {
+                var basd = prop.ResolveToEntry(animSequence.FileRef);
+                if (basd.ObjectName.Name.EndsWith("_BioAnimSetData"))
+                {
+                    return basd.ObjectName.Name[..^15];
+                }
+            }
+
+            /*
             var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(game);
 
             string gesturesFile = null;
@@ -54,18 +64,23 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 if (gesturesFile == null)
                     loadedFiles.TryGetValue("GesturesConfig.pcc", out gesturesFile);
             }
-            using var gesturesPackage = MEPackageHandler.UnsafePartialLoad(gesturesFile, x => !x.IsDefaultObject && x.ClassName == "BioGestureRuntimeData");
+            */
 
-            // packageName can change if it's dlc so we just do this
-            var gestureRuntimeData = gesturesPackage.Exports.FirstOrDefault(x => x.IsDataLoaded());
-            var gestMap = ObjectBinary.From<BioGestureRuntimeData>(gestureRuntimeData);
-            foreach (var map in gestMap.m_mapAnimSetOwners)
-            {
-                if (map.Value == packageName)
-                {
-                    return map.Key;
-                }
-            }
+
+
+            // This is not reliable as multiple animsetdatas are under one package export
+            //using var gesturesPackage = MEPackageHandler.UnsafePartialLoad(gesturesFile, x => !x.IsDefaultObject && x.ClassName == "BioGestureRuntimeData");
+
+            //// packageName can change if it's dlc so we just do this
+            //var gestureRuntimeData = gesturesPackage.Exports.FirstOrDefault(x => x.IsDataLoaded());
+            //var gestMap = ObjectBinary.From<BioGestureRuntimeData>(gestureRuntimeData);
+            //foreach (var map in gestMap.m_mapAnimSetOwners)
+            //{
+            //    if (map.Value == packageName)
+            //    {
+            //        return map.Key;
+            //    }
+            //}
             return NameReference.None;
         }
 
@@ -80,7 +95,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             //    pe.LoadPackage(package);
             //    pe.Show();
             //});
-            
+
             // Save package for debugging
             package.Save($@"{MEDirectories.GetCookedPath(sourceAnimation.Game)}\{GetStreamingPackageName(sourceAnimation.Game, true)}");
             return package;
@@ -149,8 +164,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                     ])
             });
             // We can probably guess this, but we should probably just ensure it via the gesture map.
-            var animPackageName = animSequence.Parent.ObjectName;
-            dynAnimSet.WriteProperty(new NameProperty(GetOriginalSetName(package.Game, animPackageName), "m_nmOrigSetName"));
+            dynAnimSet.WriteProperty(new NameProperty(GetOriginalSetName(animSequence), "m_nmOrigSetName"));
             dynAnimSet.WriteProperty(animSequence.GetProperty<ObjectProperty>("m_pBioAnimSetData")); // copy from anim
 
             if (package.Game is MEGame.LE1)

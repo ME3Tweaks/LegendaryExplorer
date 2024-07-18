@@ -381,7 +381,10 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
         private void LoadAsset(ExportEntry assetToView)
         {
-            if (assetToView.IsA("ParticleSystem"))
+            // Todo: Unify SupportsAsset and this.
+            if (assetToView.IsA("ParticleSystem") ||
+                assetToView.IsA("SkeletalMesh") ||
+                assetToView.IsA("StaticMesh"))
             {
                 LoadActor(assetToView);
             }
@@ -1099,6 +1102,10 @@ namespace LegendaryExplorer.Tools.AssetViewer
             if (asset.IsA("ParticleSystem"))
                 return true;
             if (asset.IsA("AnimSequence"))
+                return true;
+            if (asset.IsA("SkeletalMesh"))
+                return true;
+            if (asset.IsA("StaticMesh"))
                 return true;
 
             return false;

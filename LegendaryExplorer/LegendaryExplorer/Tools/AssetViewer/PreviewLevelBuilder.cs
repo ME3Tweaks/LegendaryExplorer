@@ -41,8 +41,8 @@ namespace LegendaryExplorer.Tools.AssetViewer
             MEGame.LE1 => new LEXOpenable()
             {
                 EntryClass = "StaticMesh",
-                EntryPath= "BIOA_ICE50_S.ice70_bigfloor01",
-                FilePath="BIOA_ICE50_13_LAY.pcc"
+                EntryPath = "BIOA_ICE50_S.ice70_bigfloor01",
+                FilePath = "BIOA_ICE50_13_LAY.pcc"
             },
             MEGame.LE2 => new LEXOpenable()
             {
@@ -65,7 +65,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             {
                 EntryClass = "StaticMesh",
                 EntryPath = "BIOG__SKIES__.PRO10.PRO00_skybox",
-                FilePath="BIOA_PRO00.pcc"
+                FilePath = "BIOA_PRO00.pcc"
             },
             MEGame.LE2 => new LEXOpenable()
             {
@@ -138,7 +138,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             // Animation area
             // This should be adjusted for each game as each asset will have different origin.
-            var animationFloor = AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(0, 0, 0), "AnimationFloor");
+            var animationFloor = AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(8000, 8000, 0), "AnimationFloor");
             PathEdUtils.SetDrawScale3D(animationFloor, 20, 20, 1);
 
             BuildKismet(package);
@@ -431,37 +431,45 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 var loaded = SequenceObjectCreator.CreateLevelLoaded(mainSeq, cache);
                 var player = SequenceObjectCreator.CreatePlayerObject(mainSeq, false, cache);
                 var setObject = SequenceObjectCreator.CreateSetObject(mainSeq, animationTarget, player, cache);
+                var toggleHud = SequenceObjectCreator.CreateToggleHUD(mainSeq, player, cache);
                 var sendLoaded = SequenceObjectCreator.CreateSendMessageToLEX(mainSeq, "ASSETVIEWER LOADED", cache);
 
                 // Initial load - Logic
                 KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", setObject);
-                KismetHelper.CreateOutputLink(setObject, "Out", sendLoaded);
+                KismetHelper.CreateOutputLink(setObject, "Out", toggleHud, 1); // -> Hide
+                KismetHelper.CreateOutputLink(toggleHud, "Out", sendLoaded);
             }
 
             // LEX polling
             {
                 // When we poll if asset is loaded we send READY, not LOADED.
-                var pollEvent = SequenceObjectCreator.CreateConsoleEvent(mainSeq, "re_IsOnAssetViewerMap", cache);
+                var pollEvent = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, "re_IsOnAssetViewerMap", cache);
                 var sendLoaded = SequenceObjectCreator.CreateSendMessageToLEX(mainSeq, "ASSETVIEWER READY", cache);
                 KismetHelper.CreateOutputLink(pollEvent, "Out", sendLoaded);
             }
 
             // Asset stream listeners
             CreateLoadingListener(package, "re_StreamAnimLoaded", "re_StartAnimation", instigatorOnEventToFire: animationTarget, lexMessage: "ASSETVIEWER ANIMATIONLOADED", cache: cache);
-            CreateLoadingListener(package, "re_StreamActorLoaded", lexMessage: "ASSETVIEWER ACTORLOADED", cache: cache);
+            CreateLoadingListener(package, "re_StreamActorLoaded", instigatorOnSignal: animationTarget, lexMessage: "ASSETVIEWER ACTORLOADED", cache: cache);
         }
 
         /// <summary>
         /// Creates a loading handshake that notifies via remote event that the package has loaded. LevelLoaded -> Remote Event with the given name.
         /// </summary>
-        /// <param name="package"></param>
-        /// <param name="eventName"></param>
-        /// <param name="cache"></param>
-        public static void CreateLoadingHandshake(IMEPackage package, string eventName, PackageCache cache = null)
+        /// <param name="package">Package to make handshake in</param>
+        /// <param name="eventName">The name of the event to invoke that another file is listening for</param>
+        /// <param name="instigator">Optional: The object to connect to the instigator terminal</param>
+        /// <param name="cache">Cache to improve performance</param>
+        public static void CreateLoadingHandshake(IMEPackage package, string eventName, ExportEntry instigator = null, PackageCache cache = null)
         {
             var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
             var loaded = SequenceObjectCreator.CreateSequenceObject(mainSeq, "SeqEvent_LevelLoaded", cache);
             var fileLoadedRE = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, eventName, cache);
+            if (instigator != null)
+            {
+                KismetHelper.CreateVariableLink(fileLoadedRE, "Instigator", instigator);
+            }
+
             KismetHelper.CreateOutputLink(loaded, "Loaded and Visible", fileLoadedRE);
         }
 
@@ -471,10 +479,19 @@ namespace LegendaryExplorer.Tools.AssetViewer
         /// <param name="package"></param>
         /// <param name="eventName"></param>
         /// <param name="cache"></param>
-        public static void CreateLoadingListener(IMEPackage package, string eventName, string eventToFire = null, ExportEntry instigatorOnEventToFire = null, string lexMessage = null, PackageCache cache = null)
+        public static void CreateLoadingListener(IMEPackage package, string eventName, string eventToFire = null, 
+            ExportEntry instigatorOnSignal = null,
+            ExportEntry instigatorOnEventToFire = null,
+            string lexMessage = null, 
+            PackageCache cache = null)
         {
             var mainSeq = package.FindExport("TheWorld.PersistentLevel.Main_Sequence");
             var loaded = SequenceObjectCreator.CreateSeqEventRemoteActivated(mainSeq, eventName, cache); // fires when package has loaded
+            if (instigatorOnSignal != null)
+            {
+                KismetHelper.CreateVariableLink(loaded, "Instigator", instigatorOnSignal);
+            }
+
             if (eventToFire != null)
             {
                 var fileLoadedRE = SequenceObjectCreator.CreateActivateRemoteEvent(mainSeq, eventToFire, cache);

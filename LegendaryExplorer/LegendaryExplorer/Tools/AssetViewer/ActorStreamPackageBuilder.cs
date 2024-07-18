@@ -14,6 +14,9 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Windows.Media.Media3D;
+using LegendaryExplorerCore.GameFilesystem;
 
 namespace LegendaryExplorer.Tools.AssetViewer
 {
@@ -41,7 +44,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             //    pe.LoadPackage(package);
             //    pe.Show();
             //});
-            // package.Save($@"{MEDirectories.GetCookedPath(sourceAnimation.Game)}\{GetStreamingPackageName(sourceAnimation.Game, true)}");
+            package.Save($@"{MEDirectories.GetCookedPath(sourceAsset.Game)}\{GetStreamingPackageName(sourceAsset.Game, false)}");
 
             return package;
         }
@@ -50,7 +53,10 @@ namespace LegendaryExplorer.Tools.AssetViewer
         {
             if (sourceAsset.IsA("ParticleSystem"))
                 return SetupParticleSystem(package, sourceAsset);
-
+            if (sourceAsset.IsA("SkeletalMesh"))
+                return SetupSkeletalMesh(package, sourceAsset);
+            if (sourceAsset.IsA("StaticMesh"))
+                return SetupStaticMesh(package, sourceAsset);
             return null;
         }
 
@@ -72,6 +78,70 @@ namespace LegendaryExplorer.Tools.AssetViewer
             PreviewLevelBuilder.SetLightingChannels(emitterPSC, "Static", "Dynamic", "CompositeDynamic");
 
             return emitter;
+        }
+
+        // Actor: Mesh
+        private static ExportEntry SetupStaticMesh(IMEPackage package, IEntry mesh)
+        {
+            var level = package.GetLevel();
+            var sma = ExportCreator.CreateExport(package, "StaticMeshActor", "StaticMeshActor", level, createWithStack: true);
+            PreviewLevelBuilder.AddActorToLevel(sma);
+
+            var smc = ExportCreator.CreateExport(package, "StaticMeshComponent", "StaticMeshComponent", sma, prePropBinary: new byte[8]);
+            smc.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+
+            smc.Archetype = PreviewLevelBuilder.GetImportArchetype(package, "Engine", "Default__StaticMeshActor.StaticMeshComponent0");
+
+            PropertyCollection props = new PropertyCollection();
+            props.AddOrReplaceProp(new ObjectProperty(smc, "StaticMeshComponent"));
+            props.AddOrReplaceProp(new ObjectProperty(smc, "CollisionComponent"));
+            props.AddOrReplaceProp(new BoolProperty(true, "bCollideActors"));
+            sma.WriteProperties(props);
+
+            props = new PropertyCollection();
+            props.AddOrReplaceProp(new ObjectProperty(0, "ReplacementPrimitive"));
+            props.AddOrReplaceProp(new ObjectProperty(mesh, "StaticMesh"));
+            smc.WriteProperties(props);
+
+            PreviewLevelBuilder.SetLightingChannels(smc, "Static");
+
+            return sma;
+        }
+
+        private static ExportEntry SetupSkeletalMesh(IMEPackage package, IEntry mesh)
+        {
+            var level = package.GetLevel();
+            var sma = ExportCreator.CreateExport(package, "SkeletalMeshActor", "SkeletalMeshActor", level, createWithStack: true);
+            PreviewLevelBuilder.AddActorToLevel(sma);
+
+            var smc = ExportCreator.CreateExport(package, "SkeletalMeshComponent", "SkeletalMeshComponent", sma, prePropBinary: new byte[8]);
+            smc.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+
+            smc.Archetype = PreviewLevelBuilder.GetImportArchetype(package, "Engine", "Default__SkeletalMeshActor.SkeletalMeshComponent0");
+
+            PropertyCollection props = new PropertyCollection();
+            props.AddOrReplaceProp(new ObjectProperty(smc, "SkeletalMeshComponent"));
+            props.AddOrReplaceProp(new ObjectProperty(smc, "CollisionComponent"));
+            props.AddOrReplaceProp(new BoolProperty(true, "bCollideActors"));
+            sma.WriteProperties(props);
+
+            props = new PropertyCollection();
+            props.AddOrReplaceProp(new ObjectProperty(0, "ReplacementPrimitive"));
+            props.AddOrReplaceProp(new ObjectProperty(mesh, "SkeletalMesh"));
+            smc.WriteProperties(props);
+
+            PreviewLevelBuilder.SetLightingChannels(smc, "Dynamic");
+            
+            return sma;
+        }
+
+        /// <summary>
+        /// Sets up a blank BioPawn
+        /// </summary>
+        /// <param name="bp">The newly created BioPawn</param>
+        private static void SetupBioPawnLE3(ExportEntry bp)
+        {
+            throw new NotImplementedException();
         }
 
         private static void SetupPawn(IMEPackage package, IEntry archetype)
@@ -111,7 +181,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             var actorTarget = SequenceObjectCreator.CreateObject(mainSeq, actor, cache); // Create object for actor.
 
             // Create loading handshake
-            PreviewLevelBuilder.CreateLoadingHandshake(package, "re_StreamActorLoaded");
+            PreviewLevelBuilder.CreateLoadingHandshake(package, "re_StreamActorLoaded", actorTarget, cache);
 
             // Create control remote events
             // Particle system
