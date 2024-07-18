@@ -35,6 +35,7 @@ using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using Newtonsoft.Json;
 using SharpDX.Direct2D1.Effects;
 using System.Threading.Tasks;
+using LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor;
 
 namespace LegendaryExplorer.Tools.LiveLevelEditor
 {
@@ -115,7 +116,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         /// <summary>
         /// The IFPs of the current selected component.
         /// </summary>
-        public ObservableCollectionExtended<string> CurrentComponentMaterials { get; } = new();
+        public ObservableCollectionExtended<JsonMaterialSource> CurrentComponentMaterials { get; } = new();
 
         private int _materialIndex;
         public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
@@ -250,34 +251,79 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         private void CallbackSetCustomMaterial()
         {
             ExportEntry preloadMaterial = null;
+
+
             if (CurrentComponentMaterials.Count > MaterialIndex)
             {
                 var material = CurrentComponentMaterials[MaterialIndex];
-                // Now, we have to find this object somehow...
-                foreach (var f in ActorDict.Keys)
+                if (material.LinkerPath != null)
                 {
-                    // Search the loaded level list. That's probably the closest/fastest.
-                    if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(f, out var path))
+                    void tryFindMaterial(IMEPackage packageToInspect)
                     {
-                        var package = MEPackageHandler.UnsafePartialLoad(path, x => false);
-                        if (package.FindExport(material) != null)
+
+                        if (packageToInspect.FindExport(material.MaterialMemoryPath) != null)
                         {
-                            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
-                            preloadMaterial = autocloseP.FindExport(material);
-                            break;
+                            preloadMaterial = packageToInspect.FindExport(material.MaterialMemoryPath);
                         }
 
                         // Try under PersistentLevel.
-                        if (package.FindExport($"TheWorld.PersistentLevel.{material}") != null)
+                        if (preloadMaterial == null &&
+                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}") !=
+                            null)
                         {
-                            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
-                            preloadMaterial = autocloseP.FindExport($"TheWorld.PersistentLevel.{material}");
-                            break;
+                            preloadMaterial =
+                                packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}");
+                        }
+                    }
+
+                    if (InteropHelper.GetFilesSentToGame(Game).TryGetValue(material.LinkerPath, out var map) && map.FilePath.CaseInsensitiveEquals(material.LinkerPath))
+                    {
+                        tryFindMaterial(map);
+                    }
+
+                    if (preloadMaterial == null)
+                    {
+                        var destPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), material.LinkerPath);
+                        if (File.Exists(destPath))
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(destPath);
+                            tryFindMaterial(package);
                         }
                     }
                 }
+
+                // Now, we have to find this object somehow...
+                //foreach (var f in ActorDict.Keys)
+                //{
+                //    // Search the loaded level list. That's probably the closest/fastest.
+                //    if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(f, out var path))
+                //    {
+                //        var package = MEPackageHandler.UnsafePartialLoad(path, x => false);
+                //        if (package.FindExport(material) != null)
+                //        {
+                //            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                //            preloadMaterial = autocloseP.FindExport(material);
+                //            break;
+                //        }
+
+                //        // Try under PersistentLevel.
+                //        if (package.FindExport($"TheWorld.PersistentLevel.{material}") != null)
+                //        {
+                //            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                //            preloadMaterial = autocloseP.FindExport($"TheWorld.PersistentLevel.{material}");
+                //            break;
+                //        }
+                //    }
+                //}
+
+                if (preloadMaterial == null)
+                {
+                    // Guess we keep looking
+                    // Is there a way to know what files have loaded in game besides linkerprinter?
+
+                }
             }
-            MaterialEditor me = new MaterialEditor(Game, LoadCustomMaterial, UpdateScalarParameter, UpdateVectorParameter);
+            MaterialEditorLLE me = new MaterialEditorLLE(Game, LoadCustomMaterial, UpdateScalarParameter, UpdateVectorParameter);
             me.PreloadMaterial = preloadMaterial;
             me.Show();
         }
@@ -614,7 +660,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 try
                 {
                     var json = string.Join(' ', command.Skip(2));
-                    var materials = JsonConvert.DeserializeObject<List<string>>(json);
+                    var materials = JsonConvert.DeserializeObject<List<JsonMaterialSource>>(json);
                     CurrentComponentMaterials.ReplaceAll(materials);
                     CallbackSetCustomMaterial();
                 }
@@ -691,12 +737,20 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             public string SLCAName { get; set; }
         }
 
-        private class JsonActorComponentObj
+        public class JsonMaterialSource
         {
             /// <summary>
-            /// Name of the component
+            /// Memory path of the material that was loaded
             /// </summary>
-            public string Name { get; set; }
+            [JsonProperty("material")]
+            public string MaterialMemoryPath { get; set; }
+
+            /// <summary>
+            /// File the asset was loaded from (in-game pathing)
+            /// </summary>
+            [JsonProperty("source")]
+            public string LinkerPath { get; set; }
+
         }
 
         private class JsonActorObj
@@ -718,7 +772,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             /// Standard actor components that have a mesh.
             /// </summary>
             public List<string> ActorComponents { get; set; } = [];
-
         }
 
         /// <summary>
