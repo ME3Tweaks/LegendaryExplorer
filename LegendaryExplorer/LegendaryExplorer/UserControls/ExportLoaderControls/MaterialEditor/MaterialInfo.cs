@@ -4,6 +4,7 @@ using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -214,7 +215,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         GetAllTextureParameters(GetMatParent(exp, cache), true, cache, parameterList);
                         return;
                     }
-                    var textures = TextureParameter.GetTextureParameters(exp, true, () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef});
+                    var textures = TextureParameter.GetTextureParameters(exp, true, () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef });
                     if (textures == null)
                     {
                         // Do it again with the parent. We are not locally overridding
@@ -333,7 +334,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             var entry = exp.FileRef.GetEntry(parentIdx);
             if (entry is ImportEntry imp)
             {
-                var resolved = EntryImporter.ResolveImport(imp, cache);
+                var resolved = EntryImporter.ResolveImport(imp, cache, unsafeLoad: true, unsafeLoadDelegate: MaterialEdLoadOnlyUsefulExports);
                 if (resolved != null)
                     return resolved;
                 return null; // Could not resolve
@@ -342,6 +343,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             if (entry is ExportEntry expP)
                 return expP;
             return null;
+        }
+
+        public static bool MaterialEdLoadOnlyUsefulExports(ExportEntry arg)
+        {
+            if (arg.IsA("RvrEffectsMaterialUser") || arg.IsA("Material") || arg.IsA("Texture2D") || arg.ClassName.CaseInsensitiveEquals("TextureCube"))
+                return true;
+
+            return false;
         }
     }
 }

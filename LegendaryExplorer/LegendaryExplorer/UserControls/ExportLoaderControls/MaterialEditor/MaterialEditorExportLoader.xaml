@@ -11,6 +11,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="MaterialEditor_Loaded"
+             Unloaded="MaterialEditor_Unloaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -72,6 +73,12 @@
         </DataTemplate>
     </UserControl.Resources>
     <DockPanel>
+        <StatusBar DockPanel.Dock="Top" HorizontalContentAlignment="Stretch">
+            <Button Content="Save changes" Padding="8,4" HorizontalAlignment="Right" Command="{Binding SaveChangesCommand}" VerticalAlignment="Center"/>
+            <TextBlock Text="Has unsaved changes" Foreground="Red" Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center"/>
+            <CheckBox Content="Auto save changes" VerticalAlignment="Center" IsChecked="{Binding UpdatesTakeEffectInstantly}"/>
+        </StatusBar>
+        <TextBlock Text="SHADER WAS NOT FOUND - THIS MATERIAL WILL NOT WORK IN GAME" Foreground="Red" FontWeight="Bold" DockPanel.Dock="Top"/>
         <GroupBox DockPanel.Dock="Top" Header="{Binding MatInfo.BaseMaterial.InstancedFullPath, StringFormat='Base Material Uniform Textures ({0})'}" Margin="2,0">
             <ItemsControl ItemsSource="{Binding MatInfo.UniformTextures}"/>
         </GroupBox>
