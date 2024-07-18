@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -10,9 +11,9 @@ using LegendaryExplorerCore.Unreal;
 // I don't want to have to reinvent the wheel parsing this out
 // Also I don't like structs
 // Mgamerz
-namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
-    public abstract class ExpressionParameter
+    public abstract class ExpressionParameter : NotifyPropertyChangedBase
     {
         /// <summary>
         /// Whole property that was read in

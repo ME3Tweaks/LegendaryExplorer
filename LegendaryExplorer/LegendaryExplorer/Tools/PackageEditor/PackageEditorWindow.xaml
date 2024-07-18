@@ -20,6 +20,7 @@
         xmlns:scriptEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
         xmlns:packageEditor="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
         mc:Ignorable="d"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
@@ -565,6 +566,12 @@
                             <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
                         </TabItem.Header>
                         <exportLoaderControls:TLKEditorExportLoader x:Name="TlkEditorTab_TlkEditor"/>
+                    </TabItem>
+                    <TabItem Name="MaterialEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Material Editor" ToolTip="View and edit material inputs"/>
+                        </TabItem.Header>
+                        <materialEditor:MaterialEditorExportLoader x:Name="MaterialEditorTab_MaterialEditorExportLoader"/>
                     </TabItem>
                     <TabItem Name="MaterialViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

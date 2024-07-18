@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 
-namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     /// <summary>
     /// Material Editor Vector Parameter subclass

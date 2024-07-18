@@ -1165,7 +1165,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public Texture2DMipInfo GetMipWithDimension(int width, int height)
         {
             // This should probably find the closest match instead
-            return Mips.FirstOrDefault(x => x.width == width && x.height == height);
+            var matchingMip = Mips.FirstOrDefault(x => x.width == width && x.height == height);
+            if (matchingMip == null)
+                matchingMip = Mips.FirstOrDefault(x => x.width <= width && x.height <= height); // Just get the next closest possible
+
+            return matchingMip;
         }
     }
 

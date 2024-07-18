@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Spreadsheet;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
-using TerraFX.Interop.Windows;
 
-namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     /// <summary>
     /// Contains a bunch of useful information about a specific instance of a material.
@@ -291,6 +289,13 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                     UniformTextures.Add(tex);
                 }
             }
+
+            // Read-only: Expressions.
+            List<ExpressionParameter> parameters = new List<ExpressionParameter>();
+            GetAllScalarParameters(MaterialExport, false, cache, parameters);
+            GetAllVectorParameters(MaterialExport, false, cache, parameters);
+            GetAllTextureParameters(MaterialExport, false, cache, parameters);
+            Expressions.ReplaceAll(parameters);
         }
         #endregion
 

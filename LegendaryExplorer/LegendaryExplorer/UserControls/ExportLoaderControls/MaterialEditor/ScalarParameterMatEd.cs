@@ -1,12 +1,8 @@
-﻿using LegendaryExplorerCore.Packages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 
-namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     internal class ScalarParameterMatEd : ScalarParameter
     {
@@ -25,7 +21,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             ScalarParameterMatEd te = new ScalarParameterMatEd();
             var props = expression.GetProperties();
             te.ParameterName = props.GetProp<NameProperty>("ParameterName").Value.Instanced;
-            te.ParameterValue = props.GetProp<FloatProperty>("DefaultValue").Value;
+            te.ParameterValue = props.GetProp<FloatProperty>("DefaultValue")?.Value ?? 0f;
             te.ExpressionGUID = props.GetProp<StructProperty>("ExpressionGUID");
             te.IsDefaultParameter = true;
             return te;

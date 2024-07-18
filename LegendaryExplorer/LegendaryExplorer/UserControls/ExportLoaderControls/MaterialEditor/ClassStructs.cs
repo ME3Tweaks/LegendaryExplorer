@@ -1,11 +1,12 @@
 ﻿using System.Numerics;
+using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Unreal;
 
 // Taken entirely from ME2R
 // I don't like structs, makes code very ugly.
 // And where these are used is not performance critical.
 // Mgamerz
-namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     /// <summary>
     /// Class version of Vector4. Easier to manipulate than a struct.
@@ -119,12 +120,17 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
     /// <summary>
     /// Class version of a Float Vector4. Easier to manipulate than a struct.
     /// </summary>
-    public class CFVector4
+    public class CFVector4 : NotifyPropertyChangedBase
     {
-        public float W { get; set; }
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
+        private float _w;
+        private float _x;
+        private float _y;
+        private float _z;
+        public float W { get => _w; set => SetProperty(ref _w, value); }
+        public float X { get => _x; set => SetProperty(ref _x, value); }
+        public float Y { get => _y; set => SetProperty(ref _y, value); }
+        public float Z { get => _z; set => SetProperty(ref _z, value); }
+
         public static CFVector4 FromStructProperty(StructProperty sp, string wKey, string xKey, string yKey, string zKey)
         {
             return new CFVector4()
@@ -172,6 +178,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             return ToStructProperty("R", "G", "B", "A", propName, true);
         }
     }
+
 
     /// <summary>
     /// Class version of a Float Vector3. Easier to manipulate than a struct.

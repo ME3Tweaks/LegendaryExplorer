@@ -1,0 +1,40 @@
+﻿<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.LiveLevelEditor.MatEd.MaterialEditorLLE"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:matEd="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.MatEd"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+        xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
+        mc:Ignorable="d"
+        Loaded="MaterialEditor_OnLoaded"
+        AllowDrop="True"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Material Editor" Height="450" Width="800"
+        dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
+    <xctk:BusyIndicator BusyContent="{Binding BusyText}" IsBusy="{Binding IsBusy}">
+        <DockPanel Margin="3">
+            <GroupBox DockPanel.Dock="Top" Header="Info">
+                <DockPanel>
+                    <TextBlock Text="{Binding MatInfo.MaterialExport.InstancedFullPath, StringFormat='Current loaded material: {0}'}">
+
+                    </TextBlock>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Header="Operations" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <CheckBox DockPanel.Dock ="Left" IsChecked="{Binding AutoUpdate}" Content="Auto preview on changes" VerticalAlignment="Center" Margin="5,0"/>
+                    <Button DockPanel.Dock="Right" Content="Preview on Mesh" HorizontalAlignment="Right" Padding="20,5" Command="{Binding PreviewOnMeshCommand}"/>
+                    <Button Content="Save material package" HorizontalAlignment="Right" Padding="10,5" Margin="5,0"  Command="{Binding SaveMaterialPackageCommand}"/>
+                </DockPanel>
+            </GroupBox>
+            <ScrollViewer>
+                <materialEditor:MaterialEditorExportLoader x:Name="MEELC"/>
+            </ScrollViewer>
+        </DockPanel>
+    </xctk:BusyIndicator>
+</bases:TrackingNotifyPropertyChangedWindowBase>

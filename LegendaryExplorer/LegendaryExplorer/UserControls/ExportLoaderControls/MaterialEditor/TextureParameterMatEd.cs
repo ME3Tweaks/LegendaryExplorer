@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
@@ -18,7 +17,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
 using Microsoft.Win32;
 
-namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     /// <summary>
     /// Material Editor Texture Parameter subclass
