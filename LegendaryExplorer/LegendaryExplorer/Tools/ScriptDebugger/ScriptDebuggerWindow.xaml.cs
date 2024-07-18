@@ -37,7 +37,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             MEGame.LE1 => "LE1ScriptDebugger-v3.asi", // In M3
             MEGame.LE2 => "LE2ScriptDebugger-v3.asi", // In M3
-            MEGame.LE3 => "LE3ScriptDebugger-v3.asi",  // In M3
+            MEGame.LE3 => "LE3ScriptDebugger-v4.asi",  // In M3
             _ => throw new ArgumentOutOfRangeException(nameof(Game))
         };
         private void GetDebuggerASI()
@@ -51,7 +51,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                     ModManagerIntegration.RequestASIInstallation(MEGame.LE2, ASIModIDs.LE2_SCRIPT_DEBUGGER, 3);
                     break;
                 case MEGame.LE3:
-                    ModManagerIntegration.RequestASIInstallation(MEGame.LE3, ASIModIDs.LE3_SCRIPT_DEBUGGER, 3);
+                    ModManagerIntegration.RequestASIInstallation(MEGame.LE3, ASIModIDs.LE3_SCRIPT_DEBUGGER, 4);
                     break;
             }
         }
