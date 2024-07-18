@@ -1031,6 +1031,13 @@ namespace LegendaryExplorerCore.Kismet
             return sendMessage;
         }
 
+        /// <summary>
+        /// Creates a SeqEvent_Console object with the given console event name.
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="eventName">Name of console event that triggers this</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
         public static ExportEntry CreateConsoleEvent(ExportEntry sequence, string eventName, PackageCache cache = null)
         {
             var fObj = CreateSequenceObject(sequence.FileRef, "SeqEvent_Console", cache);
@@ -1038,6 +1045,24 @@ namespace LegendaryExplorerCore.Kismet
 
             fObj.WriteProperty(new NameProperty(eventName, "ConsoleEventName"));
 
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a SeqAct_ToggleHUD, with an optional object to link as the target.
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="target">Optional: Target to connect to the Target terminal</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateToggleHUD(ExportEntry sequence, ExportEntry target = null, PackageCache cache = null)
+        {
+            var fObj = CreateSequenceObject(sequence.FileRef, "SeqAct_ToggleHUD", cache);
+            if (target != null)
+            {
+                KismetHelper.CreateVariableLink(fObj, "Target", target);
+            }
+            KismetHelper.AddObjectToSequence(fObj, sequence);
             return fObj;
         }
     }
