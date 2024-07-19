@@ -40,7 +40,6 @@
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
-        <MenuItem Header="LLE Material Editor UI test" Click="MaterialEditorTest_Click"/>
         <MenuItem Header="Resynthesize package" Click="ResynthesizePackage_Click"/>
         <MenuItem Header="Build Preview Level" Click="BuildPreviewLevel_Click"/>
         

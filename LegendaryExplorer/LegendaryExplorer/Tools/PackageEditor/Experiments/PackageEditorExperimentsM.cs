@@ -3764,14 +3764,5 @@ defaultproperties
                 p.Save();
             }
         }
-
-        public static void ShowMaterialEditor()
-        {
-            void test(IMEPackage ms, string ifp)
-            {
-
-            }
-            new MaterialEditorLLE(MEGame.LE3, test).Show();
-        }
     }
 }

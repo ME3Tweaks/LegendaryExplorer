@@ -401,11 +401,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
-        private void MaterialEditorTest_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.ShowMaterialEditor();
-        }
-
         private void ResynthesizePackage_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResynthesizePackage(GetPEWindow());
