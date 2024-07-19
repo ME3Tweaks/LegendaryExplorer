@@ -21,6 +21,9 @@ namespace LegendaryExplorerCore.Packages
     public sealed class ExportEntry :  IEntry
     {
         private readonly IMEPackage _fileRef;
+        /// <summary>
+        /// The package file this export resides in
+        /// </summary>
         public IMEPackage FileRef => _fileRef;
 
         public MEGame Game => _fileRef.Game;
