@@ -364,7 +364,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         public static bool MaterialEdLoadOnlyUsefulExports(ExportEntry arg)
         {
-            if (arg.IsA("RvrEffectsMaterialUser") || arg.IsA("Material") || arg.IsA("Texture2D") || arg.ClassName.CaseInsensitiveEquals("TextureCube") || arg.IsA("MaterialExpressio"))
+            if (arg.IsA("RvrEffectsMaterialUser") || arg.IsA("Material") || arg.IsA("Texture2D") || arg.ClassName.CaseInsensitiveEquals("TextureCube") || arg.IsA("MaterialExpression"))
                 return true;
 
             return false;

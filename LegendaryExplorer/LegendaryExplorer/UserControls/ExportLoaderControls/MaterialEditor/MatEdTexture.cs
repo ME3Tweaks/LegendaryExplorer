@@ -2,6 +2,7 @@
 using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorerCore.Packages;
 using System.Windows.Media.Imaging;
+using LegendaryExplorer.SharedUI;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
@@ -16,6 +17,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         private BitmapSource _loadedBitMap;
         public BitmapSource LoadedBitMap { get => _loadedBitMap; set => SetProperty(ref _loadedBitMap, value); }
+        public GenericCommand ReplaceTextureCommand { get; }
 
         public MatEdTexture(IMEPackage pcc, int texIdx, PackageCache cache)
         {

@@ -22,6 +22,7 @@
                 <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}"/>
                 <StackPanel>
                     <TextBlock Text="{Binding DisplayString}" Margin="5,0"/>
+                    <Button Content="Change" HorizontalAlignment="Left" Margin="5,0" Padding="4,3" Command="{Binding ReplaceTextureCommand}"/>
                 </StackPanel>
             </DockPanel>
         </DataTemplate>
