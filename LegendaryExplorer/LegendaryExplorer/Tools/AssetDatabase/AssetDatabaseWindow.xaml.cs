@@ -35,6 +35,8 @@ using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.Tools.PlotDatabase;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
 
@@ -375,6 +377,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             SoundpanelWPF_ADB?.Dispose();
             BIKExternalExportLoaderTab_BIKExternalExportLoader?.Dispose();
             EmbeddedTextureViewerTab_EmbeddedTextureViewer?.Dispose();
+            MaterialEditorExportLoader_Control?.Dispose();
 
             audioPcc?.Dispose();
             meshPcc?.Dispose();
@@ -649,6 +652,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             textPcc?.Dispose();
             btn_TextRenderToggle.IsChecked = false;
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+            MaterialEditorExportLoader_Control?.UnloadExport();
             SoundpanelWPF_ADB.UnloadExport();
             audioPcc?.Dispose();
             SoundpanelWPF_ADB.FreeAudioResources();
@@ -2364,6 +2368,33 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 else
                 {
                     Debug.WriteLine($"File doesn't exist: {fpath}");
+                }
+            }
+        }
+
+        private void SelectedMaterial_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            MaterialEditorExportLoader_Control?.UnloadExport();
+            if (sender is ListBoxScroll lbs && lbs.SelectedItem is MaterialRecord mr)
+            {
+                var usage = mr.Usages.FirstOrDefault();
+                if (usage != null)
+                {
+                    var (fileListIndex, expUIndex, _) = usage;
+                    string filePath = GetFilePath(fileListIndex);
+                    if (File.Exists(filePath))
+                    {
+                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                        if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp &&
+                            MaterialEditorExportLoader_Control.CanParse(exp))
+                        {
+                            MaterialEditorExportLoader_Control.LoadExport(exp);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"File not found: {filePath}");
+                    }
                 }
             }
         }

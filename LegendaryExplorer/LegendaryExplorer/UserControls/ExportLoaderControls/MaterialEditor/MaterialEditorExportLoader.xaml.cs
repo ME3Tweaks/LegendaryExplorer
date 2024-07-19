@@ -69,6 +69,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         /// </summary>
         private bool ControlIsLoaded;
 
+
+        public bool ShowGenerateMIC => !IsReadOnly && SupportsExpressionEditing;
         public bool SupportsExpressionEditing => CurrentLoadedExport != null && CurrentLoadedExport.IsA("MaterialInstanceConstant");
 
         public GenericCommand SaveChangesCommand { get; set; }
@@ -86,6 +88,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
             ScalarValueChanged += ValueChanged;
             VectorValueChanged += ValueChanged;
+            //TextureValueChanged += ValueChanged;
         }
 
         private void ValueChanged(object sender, EventArgs e)
@@ -109,6 +112,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         /// When true, suppresses reload of the export.
         /// </summary>
         private bool WillReloadDueToAutomaticCommit { get; set; }
+
+        
+        public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(MaterialEditorExportLoader), new PropertyMetadata(default(bool)));
+        /// <summary>
+        /// If this export loader control cannot make changes - only view
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get => (bool)GetValue(IsReadOnlyProperty);
+            set => SetValue(IsReadOnlyProperty, value);
+        }
 
         private void SaveChanges()
         {
@@ -372,7 +386,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             if (ControlIsLoaded && initialPackageCache != null)
             {
                 MatInfo = new MaterialInfo() { MaterialExport = CurrentLoadedExport };
-                MatInfo.InitMaterialInfo(initialPackageCache);
                 RefreshBindings();
                 Task.Run(() =>
                 {

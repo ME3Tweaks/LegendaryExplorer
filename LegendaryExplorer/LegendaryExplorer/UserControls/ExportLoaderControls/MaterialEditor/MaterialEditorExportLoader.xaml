@@ -8,6 +8,7 @@
                            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                            xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
                            xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+                           xmlns:system="clr-namespace:System;assembly=System.Runtime"
                            mc:Ignorable="d" 
                            d:DesignHeight="450" d:DesignWidth="800"
                            Loaded="MaterialEditor_Loaded"
@@ -31,10 +32,11 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding ParameterName}" 
-                               FontWeight="Bold"
-                               Margin="5,0,0,0"/>
+                                   FontWeight="Bold"
+                                   Margin="5,0,0,0"/>
                         <TextBlock Text="Default expression value" Margin="5,0" 
                                FontStyle="Italic"
+                               VerticalAlignment="Center"
                                Visibility="{Binding IsDefaultParameter, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </StackPanel>
                     <TextBlock Text="{Binding DisplayString}" Margin="5,0"/>
@@ -44,7 +46,7 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type materialEditor:ScalarParameter}">
             <StackPanel Orientation="Horizontal" Margin="0,2">
-                <TextBlock Text="{Binding ParameterName}" FontWeight="Bold"  MinWidth="218"/>
+                <TextBlock Text="{Binding ParameterName}" FontWeight="Bold"  MinWidth="218" VerticalAlignment="Center"/>
                 <xctk:SingleUpDown Value="{Binding ParameterValue}" ValueChanged="Scalar_Changed" Width="100"/>
                 <TextBlock Text="Default expression value" Margin="5,0" 
                        FontStyle="Italic"
@@ -54,7 +56,7 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type materialEditor:VectorParameter}">
             <StackPanel Orientation="Horizontal" Margin="0,2">
-                <TextBlock Text="{Binding ParameterName}" MinWidth="200" FontWeight="Bold"/>
+                <TextBlock Text="{Binding ParameterName}" MinWidth="200" FontWeight="Bold" VerticalAlignment="Center"/>
                 <TextBlock Text="R:" Margin="5,0,2,0" VerticalAlignment="Center" FontWeight="Bold"/>
                 <xctk:SingleUpDown Value="{Binding ParameterValue.W, Mode=TwoWay}" ValueChanged="VectorR_Changed" Width="100"/>
                 <TextBlock Text="G:" Margin="5,0,2,0" VerticalAlignment="Center" FontWeight="Bold"/>
@@ -73,13 +75,28 @@
         </DataTemplate>
     </UserControl.Resources>
     <DockPanel>
-        <StatusBar DockPanel.Dock="Top" HorizontalContentAlignment="Stretch">
+        <StatusBar DockPanel.Dock="Top" HorizontalContentAlignment="Stretch" Visibility="{Binding IsReadOnly, Converter={StaticResource InverseBoolToVisibilityConverter}}">
             <Button Content="Save changes" Padding="8,4" HorizontalAlignment="Right" Command="{Binding SaveChangesCommand}" VerticalAlignment="Center"/>
             <TextBlock Text="Has unsaved changes" Foreground="Red" Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center"/>
             <CheckBox Content="Auto save changes" VerticalAlignment="Center" IsChecked="{Binding UpdatesTakeEffectInstantly}"/>
         </StatusBar>
         <TextBlock Text="SHADER WAS NOT FOUND - THIS MATERIAL WILL NOT WORK IN GAME" Foreground="Red" FontWeight="Bold" DockPanel.Dock="Top" Visibility="{Binding MaterialHasNoShader, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+        <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <TextBlock Text="This material can be used on:" FontWeight="Bold" DockPanel.Dock="Top" Margin="5,0"/>
+            <ItemsControl ItemsSource="{Binding MatInfo.WorksOn}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type system:String}">
+                        <TextBlock Text="{Binding}" Margin="4,0"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </WrapPanel>
+        <ScrollViewer>
             <DockPanel>
                 <GroupBox DockPanel.Dock="Top" Margin="2,0">
                     <GroupBox.Header>
@@ -90,10 +107,11 @@
                 <GroupBox Header="Instance Material Expressions" Margin="2,0">
                     <DockPanel>
                         <TextBlock TextWrapping="Wrap"
-                                       Text="Material exports don't support expression values. To change these, you must generate a Material Instance Constant from this material." DockPanel.Dock="Top" 
-                                       Visibility="{Binding SupportsExpressionEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                       Text="Material exports don't support expression values. To change these, you must generate a Material Instance Constant from this material." 
+                                       DockPanel.Dock="Top" 
+                                       Visibility="{Binding ShowGenerateMIC, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         <Button Content="Generate Material Instance Constant" DockPanel.Dock="Top" HorizontalAlignment="Left" Padding="4,2"
-                                    Visibility="{Binding SupportsExpressionEditing, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                    Visibility="{Binding ShowGenerateMIC, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Click="GenerateMaterialInstanceConstant_Click"/>
                         <ItemsControl ItemsSource="{Binding MatInfo.Expressions}" IsEnabled="{Binding SupportsExpressionEditing}"/>
                     </DockPanel>

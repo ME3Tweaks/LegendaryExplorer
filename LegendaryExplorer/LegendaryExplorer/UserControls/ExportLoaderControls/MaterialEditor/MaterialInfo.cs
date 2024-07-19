@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -40,6 +41,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         public ObservableCollectionExtended<MatEdTexture> UniformTextures { get; } = new();
         public ObservableCollectionExtended<ExpressionParameter> Expressions { get; } = new();
 
+        /// <summary>
+        /// Types of objects this material works on
+        /// </summary>
+        public ObservableCollectionExtended<string> WorksOn { get; } = new();
+
         #region Constructor and initialization
 
         public void InitMaterialInfo(PackageCache cache)
@@ -76,7 +82,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         var parmName = expr.GetProperty<NameProperty>("ParameterName");
                         if (parmName == null)
                         {
-                            continue; // If this sample has no parameter name we will not be able to configure it so just skip it.
+                            parmName = new NameProperty("None", "ParameterName"); // Yes, apparently it can be none, and bioware has a lot of these.
                         }
 
                         // Technically this may allow duplicates by type. But I don't think that's the case.
@@ -131,7 +137,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         var parmName = expr.GetProperty<NameProperty>("ParameterName");
                         if (parmName == null)
                         {
-                            continue; // If this sample has no parameter name we will not be able to configure it so just skip it.
+                            parmName = new NameProperty("None", "ParameterName"); // Yes, apparently it can be none, and bioware has a lot of these.
                         }
 
                         // Technically this may allow duplicates by type. But I don't think that's the case.
@@ -187,7 +193,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         var parmName = expr.GetProperty<NameProperty>("ParameterName");
                         if (parmName == null)
                         {
-                            continue; // If this sample has no parameter name we will not be able to configure it so just skip it.
+                            parmName = new NameProperty("None", "ParameterName"); // Yes, apparently it can be none, and bioware has a lot of these.
                         }
 
                         // Technically this may allow duplicates by type. But I don't think that's the case.
@@ -250,6 +256,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             else if (material.ClassName == "RvrEffectsMaterialUser")
             {
                 // Skip to parent
+                LoadMaterialData(GetMatParent(material, cache), cache);
             }
             else if (MaterialExport.IsA("MaterialInstanceConstant"))
             {
@@ -296,6 +303,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             GetAllScalarParameters(MaterialExport, false, cache, parameters);
             GetAllVectorParameters(MaterialExport, false, cache, parameters);
             GetAllTextureParameters(MaterialExport, false, cache, parameters);
+
+            var props = material.GetProperties();
+            foreach (var prop in props.OfType<BoolProperty>())
+            {
+                if (prop.Name.Name.StartsWith("bUsedWith", StringComparison.OrdinalIgnoreCase) && prop.Value)
+                {
+                    WorksOn.Add(prop.Name.Name.Substring(9));
+                }
+            }
+
             Expressions.ReplaceAll(parameters);
         }
         #endregion
@@ -347,7 +364,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         public static bool MaterialEdLoadOnlyUsefulExports(ExportEntry arg)
         {
-            if (arg.IsA("RvrEffectsMaterialUser") || arg.IsA("Material") || arg.IsA("Texture2D") || arg.ClassName.CaseInsensitiveEquals("TextureCube"))
+            if (arg.IsA("RvrEffectsMaterialUser") || arg.IsA("Material") || arg.IsA("Texture2D") || arg.ClassName.CaseInsensitiveEquals("TextureCube") || arg.IsA("MaterialExpressio"))
                 return true;
 
             return false;

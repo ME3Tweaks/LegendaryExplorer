@@ -19,7 +19,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             var te = new VectorParameterMatEd();
             var props = expression.GetProperties();
-            te.ParameterName = props.GetProp<NameProperty>("ParameterName").Value.Instanced;
+            te.ParameterName = props.GetProp<NameProperty>("ParameterName")?.Value.Instanced ?? "None";
             var defaultValue = props.GetProp<StructProperty>("DefaultValue");
             if (defaultValue != null)
             {

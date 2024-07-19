@@ -22,7 +22,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             ScalarParameterMatEd te = new ScalarParameterMatEd();
             var props = expression.GetProperties();
-            te.ParameterName = props.GetProp<NameProperty>("ParameterName").Value.Instanced;
+            te.ParameterName = props.GetProp<NameProperty>("ParameterName")?.Value.Instanced ?? "None";
             te.ParameterValue = props.GetProp<FloatProperty>("DefaultValue")?.Value ?? 0f;
             te.ExpressionGUID = props.GetProp<StructProperty>("ExpressionGUID");
             te.IsDefaultParameter = true;

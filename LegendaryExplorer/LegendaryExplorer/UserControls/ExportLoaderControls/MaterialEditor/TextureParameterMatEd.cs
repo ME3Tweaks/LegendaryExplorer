@@ -84,15 +84,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         private void ReplaceTexture()
         {
+            // Todo: Dialog for destination export
+            // Todo: If new texture, need to clone existing export first
+            //MessageBox.Show(null, "Replace the existing texture export a new texture or replace the existing one?", "Texture destination", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+
             OpenFileDialog selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
-#if WINDOWS
-                Filter =
-                    "All supported types|*.png;*.dds;*.tga|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga",
-#else
-                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
-#endif
+                Filter = "All supported types|*.png;*.dds;*.tga|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga",
                 CustomPlaces = AppDirectories.GameCustomPlaces
             };
             var result = selectDDS.ShowDialog();
