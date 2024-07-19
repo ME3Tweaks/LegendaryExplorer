@@ -3771,7 +3771,7 @@ defaultproperties
             {
 
             }
-            new MaterialEditorLLE(MEGame.LE3, test, parameter => { }, parameter => { }).Show();
+            new MaterialEditorLLE(MEGame.LE3, test).Show();
         }
     }
 }

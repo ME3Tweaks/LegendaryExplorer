@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition.Primitives;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -13,6 +14,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GongSolutions.Wpf.DragDrop;
+using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.GameInterop.InteropTargets;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
@@ -20,7 +23,9 @@ using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -28,6 +33,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Xceed.Wpf.Toolkit;
+using static LegendaryExplorer.Tools.LiveLevelEditor.LELiveLevelEditorWindow;
 using Image = LegendaryExplorerCore.Textures.Image;
 using MessageBox = System.Windows.MessageBox;
 using PixelFormat = LegendaryExplorerCore.Textures.PixelFormat;
@@ -72,36 +78,193 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         /// </summary>
         private readonly Action<IMEPackage, string> LoadMaterialInGameDelegate;
 
-        /// <summary>
-        /// Invoked to update a scalar parameter
-        /// </summary>
-        private readonly Action<ScalarParameter> SendScalarUpdate;
-
-        /// <summary>
-        /// Invoked to update a vector parameter
-        /// </summary>
-        private readonly Action<VectorParameter> SendVectorUpdate;
-
         // If data is being loaded into the editor
         private bool IsLoadingData;
-        
+
+        public InteropTarget GameTarget { get; }
+
+
         public ICommand PreviewOnMeshCommand { get; set; }
         public ICommand SaveMaterialPackageCommand { get; set; }
+        public ICommand SetMaterialCommand { get; set; }
+        public ICommand SetCustomMaterialCommand { get; set; }
 
-        public MaterialEditorLLE(MEGame game, Action<IMEPackage, string> loadMaterialDelegate, Action<ScalarParameter> updateScalarDelegate, Action<VectorParameter> updateVectorDelegate) : base("Material Editor LLE", true)
+        public MaterialEditorLLE(MEGame game, Action<IMEPackage, string> loadMaterialDelegate) : base("Material Editor LLE", true)
         {
             Game = game;
             LoadMaterialInGameDelegate = loadMaterialDelegate;
-            SendScalarUpdate = updateScalarDelegate;
-            SendVectorUpdate = updateVectorDelegate;
             LoadCommands();
             InitializeComponent();
+            MEELC.ScalarValueChanged += UpdateVectorParameter;
+            MEELC.VectorValueChanged += UpdateScalarParameter;
+
+            Game = game;
+            GameTarget = GameController.GetInteropTargetForGame(game);
+            if (GameTarget is null || !GameTarget.CanUseLLE)
+            {
+                throw new Exception($"{game} does not support LE Live Level Editor!");
+            }
+
+            if (Instance(game) is not null)
+            {
+                throw new Exception($"Can only have one instance of {game} Live Level Editor open!");
+            }
+            Instances[game] = this;
+
+            GameTarget.GameReceiveMessage += GameControllerOnReceiveMessage;
+        }
+
+        private void GameControllerOnReceiveMessage(string obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void LoadCustomMaterial(IMEPackage incomingPackage, string materialIFP)
+        {
+            InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWithOnUIThread(x =>
+            {
+                InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}.pcc", Game);
+            }).ContinueWith(x =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWithOnUIThread(x =>
+            {
+                InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
+            });
+        }
+
+        private void UpdateScalarParameter(object sender, EventArgs args)
+        {
+            if (sender is ScalarParameter obj)
+            {
+                // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
+                InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue}", Game);
+            }
+        }
+
+        private void UpdateVectorParameter(object sender, EventArgs args)
+        {
+            if (sender is VectorParameter obj)
+            {
+                // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
+                InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
+            }
+        }
+
+        private void SetCustomMaterial()
+        {
+            InteropHelper.SendMessageToGame("LLE_GET_COMPONENT_MATERIALS", Game);
+            // Will callback to CallbackSetCustomMaterial();
+        }
+
+        /// <summary>
+        /// The IFPs of the current selected component.
+        /// </summary>
+        public ObservableCollectionExtended<JsonMaterialSource> CurrentComponentMaterials { get; } = new();
+
+        private int _materialIndex;
+        public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
+
+        private string _selectedMaterial;
+        public string SelectedMaterial { get => _selectedMaterial; set => SetProperty(ref _selectedMaterial, value); }
+
+
+        private void CallbackSetCustomMaterial()
+        {
+            ExportEntry preloadMaterial = null;
+
+
+            if (CurrentComponentMaterials.Count > MaterialIndex)
+            {
+                var material = CurrentComponentMaterials[MaterialIndex];
+                if (material.LinkerPath != null)
+                {
+                    void tryFindMaterial(IMEPackage packageToInspect)
+                    {
+
+                        if (packageToInspect.FindExport(material.MaterialMemoryPath) != null)
+                        {
+                            preloadMaterial = packageToInspect.FindExport(material.MaterialMemoryPath);
+                        }
+
+                        // Try under PersistentLevel.
+                        if (preloadMaterial == null &&
+                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}") !=
+                            null)
+                        {
+                            preloadMaterial =
+                                packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}");
+                        }
+                    }
+
+                    if (InteropHelper.GetFilesSentToGame(Game).TryGetValue(material.LinkerPath, out var map) && map.FilePath.CaseInsensitiveEquals(material.LinkerPath))
+                    {
+                        tryFindMaterial(map);
+                    }
+
+                    if (preloadMaterial == null)
+                    {
+                        var destPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), material.LinkerPath);
+                        if (File.Exists(destPath))
+                        {
+                            using var package = MEPackageHandler.OpenMEPackage(destPath);
+                            tryFindMaterial(package);
+                        }
+                    }
+                }
+
+                // Now, we have to find this object somehow...
+                //foreach (var f in ActorDict.Keys)
+                //{
+                //    // Search the loaded level list. That's probably the closest/fastest.
+                //    if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(f, out var path))
+                //    {
+                //        var package = MEPackageHandler.UnsafePartialLoad(path, x => false);
+                //        if (package.FindExport(material) != null)
+                //        {
+                //            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                //            preloadMaterial = autocloseP.FindExport(material);
+                //            break;
+                //        }
+
+                //        // Try under PersistentLevel.
+                //        if (package.FindExport($"TheWorld.PersistentLevel.{material}") != null)
+                //        {
+                //            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
+                //            preloadMaterial = autocloseP.FindExport($"TheWorld.PersistentLevel.{material}");
+                //            break;
+                //        }
+                //    }
+                //}
+
+                if (preloadMaterial == null)
+                {
+                    // Guess we keep looking
+                    // Is there a way to know what files have loaded in game besides linkerprinter?
+
+                }
+            }
+            //MaterialEditorLLE me = new MaterialEditorLLE(Game, LoadCustomMaterial, UpdateScalarParameter, UpdateVectorParameter);
+            //me.PreloadMaterial = preloadMaterial;
+            //me.Show();
+        }
+
+        private void SetMaterial()
+        {
+            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {SelectedMaterial}", Game);
         }
 
         private void LoadCommands()
         {
             PreviewOnMeshCommand = new GenericCommand(SendToGame);
             SaveMaterialPackageCommand = new GenericCommand(SaveMaterialPackage, () => MEELC.MatInfo != null);
+            SetMaterialCommand = new GenericCommand(SetMaterial, () => SelectedMaterial != null);
+            SetCustomMaterialCommand = new GenericCommand(SetCustomMaterial);
+
         }
 
         public void LoadMaterialIntoEditor(ExportEntry otherMat)
@@ -268,8 +431,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         /// </summary>
         public ExportEntry PreloadMaterial { get; set; }
 
-
-
         private void MaterialEditor_OnLoaded(object sender, RoutedEventArgs e)
         {
             if (PreloadMaterial != null)
@@ -277,6 +438,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 LoadMaterialIntoEditor(PreloadMaterial);
                 PreloadMaterial = null;
             }
+        }
+
+        private void MaterialEditorLLE_OnClosed(object sender, CancelEventArgs e)
+        {
+            DataContext = null;
+            GameTarget.GameReceiveMessage -= GameControllerOnReceiveMessage;
         }
     }
 }

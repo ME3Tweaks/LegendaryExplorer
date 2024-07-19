@@ -113,17 +113,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             }
         }
 
-        /// <summary>
-        /// The IFPs of the current selected component.
-        /// </summary>
-        public ObservableCollectionExtended<JsonMaterialSource> CurrentComponentMaterials { get; } = new();
-
-        private int _materialIndex;
-        public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
-
-        private string _selectedMaterial;
-        public string SelectedMaterial { get => _selectedMaterial; set => SetProperty(ref _selectedMaterial, value); }
-
         public LELiveLevelEditorWindow(MEGame game) : base("LE Live Level Editor", true)
         {
             Game = game;
@@ -192,8 +181,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         public Requirement.RequirementCommand PackEdWindowOpenCommand { get; set; }
         public ICommand WriteActorValuesCommand { get; set; }
         public ICommand SnapToPlayerPositionCommand { get; set; }
-        public ICommand SetMaterialCommand { get; set; }
-        public ICommand SetCustomMaterialCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -208,130 +195,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             PackEdWindowOpenCommand = new Requirement.RequirementCommand(IsSelectedPackageOpenInPackEd, OpenPackage);
             WriteActorValuesCommand = new GenericCommand(WriteActorValues, IsSelectedPackageOpenInPackEd);
             SnapToPlayerPositionCommand = new GenericCommand(SetSelectedActorToPlayerPosition);
-            SetMaterialCommand = new GenericCommand(SetMaterial, () => SelectedMaterial != null);
-            SetCustomMaterialCommand = new GenericCommand(SetCustomMaterial);
-        }
-
-        private void LoadCustomMaterial(IMEPackage incomingPackage, string materialIFP)
-        {
-            InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
-            Task.Run(() =>
-            {
-                Thread.Sleep(1000);
-            }).ContinueWithOnUIThread(x =>
-            {
-                InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}.pcc", Game);
-            }).ContinueWith(x =>
-            {
-                Thread.Sleep(1000);
-            }).ContinueWithOnUIThread(x =>
-            {
-                InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIFP}", Game);
-            });
-        }
-
-        private void UpdateScalarParameter(ScalarParameter obj)
-        {
-            // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue}", Game);
-        }
-
-        private void UpdateVectorParameter(VectorParameter obj)
-        {
-            // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-            InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
-        }
-
-        private void SetCustomMaterial()
-        {
-            InteropHelper.SendMessageToGame("LLE_GET_COMPONENT_MATERIALS", Game);
-            // Will callback to CallbackSetCustomMaterial();
-        }
-
-        private void CallbackSetCustomMaterial()
-        {
-            ExportEntry preloadMaterial = null;
-
-
-            if (CurrentComponentMaterials.Count > MaterialIndex)
-            {
-                var material = CurrentComponentMaterials[MaterialIndex];
-                if (material.LinkerPath != null)
-                {
-                    void tryFindMaterial(IMEPackage packageToInspect)
-                    {
-
-                        if (packageToInspect.FindExport(material.MaterialMemoryPath) != null)
-                        {
-                            preloadMaterial = packageToInspect.FindExport(material.MaterialMemoryPath);
-                        }
-
-                        // Try under PersistentLevel.
-                        if (preloadMaterial == null &&
-                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}") !=
-                            null)
-                        {
-                            preloadMaterial =
-                                packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}");
-                        }
-                    }
-
-                    if (InteropHelper.GetFilesSentToGame(Game).TryGetValue(material.LinkerPath, out var map) && map.FilePath.CaseInsensitiveEquals(material.LinkerPath))
-                    {
-                        tryFindMaterial(map);
-                    }
-
-                    if (preloadMaterial == null)
-                    {
-                        var destPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), material.LinkerPath);
-                        if (File.Exists(destPath))
-                        {
-                            using var package = MEPackageHandler.OpenMEPackage(destPath);
-                            tryFindMaterial(package);
-                        }
-                    }
-                }
-
-                // Now, we have to find this object somehow...
-                //foreach (var f in ActorDict.Keys)
-                //{
-                //    // Search the loaded level list. That's probably the closest/fastest.
-                //    if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(f, out var path))
-                //    {
-                //        var package = MEPackageHandler.UnsafePartialLoad(path, x => false);
-                //        if (package.FindExport(material) != null)
-                //        {
-                //            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
-                //            preloadMaterial = autocloseP.FindExport(material);
-                //            break;
-                //        }
-
-                //        // Try under PersistentLevel.
-                //        if (package.FindExport($"TheWorld.PersistentLevel.{material}") != null)
-                //        {
-                //            using var autocloseP = MEPackageHandler.OpenMEPackage(path);
-                //            preloadMaterial = autocloseP.FindExport($"TheWorld.PersistentLevel.{material}");
-                //            break;
-                //        }
-                //    }
-                //}
-
-                if (preloadMaterial == null)
-                {
-                    // Guess we keep looking
-                    // Is there a way to know what files have loaded in game besides linkerprinter?
-
-                }
-            }
-            MaterialEditorLLE me = new MaterialEditorLLE(Game, LoadCustomMaterial, UpdateScalarParameter, UpdateVectorParameter);
-            me.PreloadMaterial = preloadMaterial;
-            me.Show();
-        }
-
-        private void SetMaterial()
-        {
-            if (noUpdate) return;
-            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {SelectedMaterial}", Game);
         }
 
         private void SetSelectedActorToPlayerPosition()

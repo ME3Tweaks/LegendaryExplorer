@@ -15,14 +15,13 @@
         AllowDrop="True"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Material Editor" Height="450" Width="800"
-        dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
+        dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}"
+        Closing="MaterialEditorLLE_OnClosed">
     <xctk:BusyIndicator BusyContent="{Binding BusyText}" IsBusy="{Binding IsBusy}">
         <DockPanel Margin="3">
             <GroupBox DockPanel.Dock="Top" Header="Info">
                 <DockPanel>
-                    <TextBlock Text="{Binding MatInfo.MaterialExport.InstancedFullPath, StringFormat='Current loaded material: {0}'}">
-
-                    </TextBlock>
+                    <TextBlock Text="{Binding MatInfo.MaterialExport.InstancedFullPath, ElementName=MEELC, StringFormat='Current loaded material: {0}'}"/>
                 </DockPanel>
             </GroupBox>
             <GroupBox Header="Operations" DockPanel.Dock="Bottom">
@@ -32,9 +31,7 @@
                     <Button Content="Save material package" HorizontalAlignment="Right" Padding="10,5" Margin="5,0"  Command="{Binding SaveMaterialPackageCommand}"/>
                 </DockPanel>
             </GroupBox>
-            <ScrollViewer>
-                <materialEditor:MaterialEditorExportLoader x:Name="MEELC"/>
-            </ScrollViewer>
+            <materialEditor:MaterialEditorExportLoader x:Name="MEELC"/>
         </DockPanel>
     </xctk:BusyIndicator>
 </bases:TrackingNotifyPropertyChangedWindowBase>
