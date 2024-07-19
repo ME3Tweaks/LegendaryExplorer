@@ -273,6 +273,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public List<MatSetting> MatSettings { get; set; } = new();
 
+        public string DisplayString => $"{MaterialName} ({ParentPackage})";
+
         public MaterialRecord(string MaterialName, string ParentPackage, bool IsDLCOnly, IEnumerable<MatSetting> MatSettings)
         {
             this.MaterialName = MaterialName;

@@ -34,6 +34,7 @@ using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorer.Tools.AssetViewer;
+using LegendaryExplorer.Tools.LiveLevelEditor;
 using LegendaryExplorer.Tools.PlotDatabase;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor;
@@ -2395,6 +2396,27 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     {
                         MessageBox.Show($"File not found: {filePath}");
                     }
+                }
+            }
+        }
+
+        private void Material_LoadInLiveMaterialEditor(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement elem && elem.DataContext is MaterialRecord mr && LELiveLevelEditorWindow.Instance(CurrentGame) != null)
+            {
+                var usage = mr.AssetUsages.First();
+                var fpath = GetFilePath(usage.FileKey);
+                if (GameController.IsGameOpen(CurrentGame) && File.Exists(fpath))
+                {
+                    using var package = MEPackageHandler.OpenMEPackage(fpath);
+                    if (package.TryGetUExport(usage.UIndex, out var export))
+                    {
+                        LELiveLevelEditorWindow.Instance(CurrentGame).SetCustomMaterial(export);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"File doesn't exist: {fpath}");
                 }
             }
         }
