@@ -358,7 +358,7 @@ namespace LegendaryExplorer.GameInterop
 
         public static CaseInsensitiveDictionary<IMEPackage> GetFilesSentToGame(MEGame game)
         {
-            if (FilesSentToGame.TryGetValue(game, out var map))
+            if (!FilesSentToGame.TryGetValue(game, out var map))
             {
                 // Don't return null
                 map = new CaseInsensitiveDictionary<IMEPackage>();
