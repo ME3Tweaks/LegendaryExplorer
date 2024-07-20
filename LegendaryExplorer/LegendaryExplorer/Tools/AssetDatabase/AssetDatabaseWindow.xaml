@@ -474,7 +474,7 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                             </controls:ListBoxScroll>-->
-                            <materialEditor:MaterialEditorExportLoader x:Name="MaterialEditorExportLoader_Control" Grid.Row="1" Grid.Column="1" IsReadOnly="True"/>
+                            <materialEditor:MaterialEditorExportLoader x:Name="MaterialEditorExportLoader_Control" Grid.Row="1" Grid.Column="1" IsReadOnly="True" AlwaysLoadData="True"/>
                             <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC with shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
                             <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMaterials_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
                                 <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
