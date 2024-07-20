@@ -72,8 +72,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         if (texExport.ClassName.CaseInsensitiveEquals("TextureCube"))
                         {
                             // Correct to the first cube face so we have a preview to show
-                            texExport = texExport.GetProperty<ObjectProperty>("FacePosX")
-                                .ResolveToEntry(texExport.FileRef) as ExportEntry;
+                            var facePosX = texExport.GetProperty<ObjectProperty>("FacePosX");
+                            texExport = facePosX.ResolveToEntry(texExport.FileRef) as ExportEntry;
                         }
 
                         var t2d = new Texture2D(texExport);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
     {
 
         private string _displayString;
+        public Guid HostingControlGuid { get; set; }
+
         /// <summary>
         /// String to show for this texture
         /// </summary>
@@ -150,6 +153,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                     MatEditorTextureLoader.InitTexture(this, TextureExp.FileRef, ParameterValue, cache);
                 });
             }
+        }
+        public void ReplaceTexture(IMatEdTexture other)
+        {
+            PackageCache cache = new PackageCache();
+            if (TextureExp.ClassName.CaseInsensitiveEquals("TextureCube"))
+            {
+                var otherprops = other.TextureExp.GetProperties();
+                var myprops = TextureExp.GetProperties();
+
+                // Replace the faces, but don't replace the cube, as the textures must be nested under it (I think?)
+                // Not sure how to handle this - would require porting in new object and linking to it. Might be what we have to do.
+                foreach (var oProp in otherprops.OfType<ObjectProperty>())
+                {
+                    var myProp = myprops.OfType<ObjectProperty>().FirstOrDefault(x => x.Name == oProp.Name);
+                    var otherFace = oProp.ResolveToExport(other.TextureExp.FileRef, cache);
+                    var myFaceFace = myProp.ResolveToExport(TextureExp.FileRef, cache);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, otherFace, TextureExp.FileRef, myFaceFace, true, new RelinkerOptionsPackage(), out _);
+                }
+                // EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, other.TextureExp, TextureExp.FileRef, TextureExp, true, new RelinkerOptionsPackage(), out _);
+            }
+            else
+            {
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, other.TextureExp, TextureExp.FileRef, TextureExp, true, new RelinkerOptionsPackage(), out _);
+            }
+            MatEditorTextureLoader.InitTexture(this, TextureExp.FileRef, TextureExp.UIndex, cache); // Reload the texture
+            IsDefaultParameter = false;
         }
 
         #region PropertyChanged

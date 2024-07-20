@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -16,6 +17,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Controls;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -74,8 +76,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             Game = lle.Game;
             LoadCommands();
             InitializeComponent();
-            MEELC.ScalarValueChanged += UpdateVectorParameter;
-            MEELC.VectorValueChanged += UpdateScalarParameter;
+            MEELC.ScalarValueChanged += UpdateScalarParameter;
+            MEELC.VectorValueChanged += UpdateVectorParameter;
 
             GameTarget = GameController.GetInteropTargetForGame(Game);
             if (GameTarget is null)
@@ -105,8 +107,13 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                     // This doesn't work for null values.
                     LLE.SelectedActor.ComponentIdx = Components.IndexOf(value);
                     LLE.SetBusy($"Selecting component: {value}", () => { });
-                    string message = $"LLE_SELECT_ACTOR {Path.GetFileNameWithoutExtension(LLE.SelectedActor.FileName)} {LLE.SelectedActor.ActorName} {LLE.SelectedActor.ComponentIdx}";
+                    string message = $"{InteropCommands.LLE_SELECT_ACTOR} {Path.GetFileNameWithoutExtension(LLE.SelectedActor.FileName)} {LLE.SelectedActor.ActorName} {LLE.SelectedActor.ComponentIdx}";
                     InteropHelper.SendMessageToGame(message, Game);
+                }
+
+                if (value == null)
+                {
+                    CurrentComponentMaterials.ClearEx(); // No component selected
                 }
             }
         }
@@ -115,7 +122,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         private void RegenMaterialsList()
         {
             LoadedMaterials.ClearEx();
-            InteropHelper.SendMessageToGame("LLE_GET_LOADED_MATERIALS", Game);
+            InteropHelper.SendMessageToGame(InteropCommands.LME_GET_LOADED_MATERIALS, Game);
         }
 
         private void UpdateComponents(string json)
@@ -132,6 +139,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
             if (command[0] != "MATERIALEDITOR")
                 return; // Not for us
+            Debug.WriteLine($"MaterialEditorLLE Command: {msg}");
 
             var verb = command[1]; // Message Info
             if (verb == "COMPONENTMATERIALS")
@@ -175,39 +183,39 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         private void LoadCustomMaterialInGame(IMEPackage incomingPackage, string materialIMP)
         {
-            InteropHelper.SendMessageToGame($"SHOWLOADINGINDICATOR", Game);
+            InteropHelper.SendMessageToGame($"{InteropCommands.INTEROP_SHOWLOADINGINDICATOR}", Game);
             InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
             Task.Run(() =>
             {
                 Thread.Sleep(1000);
             }).ContinueWithOnUIThread(x =>
             {
-                InteropHelper.SendMessageToGame($"LOADPACKAGE {incomingPackage.FileNameNoExtension}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.INTEROP_LOADPACKAGE} {incomingPackage.FileNameNoExtension}", Game);
             }).ContinueWith(x =>
             {
                 Thread.Sleep(1000);
             }).ContinueWithOnUIThread(x =>
             {
-                InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {materialIMP}", Game);
-                InteropHelper.SendMessageToGame($"HIDELOADINGINDICATOR", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {materialIMP}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.INTEROP_HIDELOADINGINDICATOR}", Game);
             });
         }
 
         private void UpdateScalarParameter(object sender, EventArgs args)
         {
-            if (sender is ScalarParameter obj)
+            if (AutoUpdateOnChanges && sender is ScalarParameter obj)
             {
                 // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-                InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_SCALAR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_SCALAR_EXPRESSION} {SelectedComponentSlot.SlotIdx} {obj.ParameterName} {obj.ParameterValue}", Game);
             }
         }
 
         private void UpdateVectorParameter(object sender, EventArgs args)
         {
-            if (sender is VectorParameter obj)
+            if (AutoUpdateOnChanges && sender is VectorParameter obj)
             {
                 // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-                InteropHelper.SendMessageToGame($"LLE_SET_MATEXPR_VECTOR {MaterialIndex} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_VECTOR_EXPRESSION} {SelectedComponentSlot.SlotIdx} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
             }
         }
 
@@ -221,8 +229,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         /// </summary>
         public ObservableCollectionExtended<JsonMaterialSource> CurrentComponentMaterials { get; } = new();
 
-        private int _materialIndex;
-        public int MaterialIndex { get => _materialIndex; set => SetProperty(ref _materialIndex, value); }
 
         private string _selectedMaterial;
         public string SelectedMaterial
@@ -246,47 +252,46 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         }
 
 
-        private void CallbackSetCustomMaterial()
+        private void LoadMaterialFromSource()
         {
+            if (SelectedComponentSlot == null)
+                return;
+
             ExportEntry preloadMaterial = null;
-            
-            if (CurrentComponentMaterials.Count > MaterialIndex)
+            if (SelectedComponentSlot.LinkerPath != null)
             {
-                var material = CurrentComponentMaterials[MaterialIndex];
-                if (material.LinkerPath != null)
+                void tryFindMaterial(IMEPackage packageToInspect)
                 {
-                    void tryFindMaterial(IMEPackage packageToInspect)
+
+                    if (packageToInspect.FindExport(SelectedComponentSlot.MaterialMemoryPath) != null)
                     {
-
-                        if (packageToInspect.FindExport(material.MaterialMemoryPath) != null)
-                        {
-                            preloadMaterial = packageToInspect.FindExport(material.MaterialMemoryPath);
-                        }
-
-                        // Try under PersistentLevel.
-                        if (preloadMaterial == null &&
-                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}") !=
-                            null)
-                        {
-                            preloadMaterial =
-                                packageToInspect.FindExport($"TheWorld.PersistentLevel.{material.MaterialMemoryPath}");
-                        }
+                        preloadMaterial = packageToInspect.FindExport(SelectedComponentSlot.MaterialMemoryPath);
                     }
 
-                    if (InteropHelper.GetFilesSentToGame(Game).TryGetValue(material.LinkerPath, out var map) && map.FilePath.CaseInsensitiveEquals(material.LinkerPath))
+                    // Try under PersistentLevel.
+                    if (preloadMaterial == null &&
+                        packageToInspect.FindExport($"TheWorld.PersistentLevel.{SelectedComponentSlot.MaterialMemoryPath}") !=
+                        null)
                     {
-                        tryFindMaterial(map);
+                        preloadMaterial =
+                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{SelectedComponentSlot.MaterialMemoryPath}");
+                    }
+                }
+
+                if (InteropHelper.GetFilesSentToGame(Game).TryGetValue(SelectedComponentSlot.LinkerPath, out var map) && map.FilePath.CaseInsensitiveEquals(SelectedComponentSlot.LinkerPath))
+                {
+                    tryFindMaterial(map);
+                }
+
+                if (preloadMaterial == null)
+                {
+                    var destPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), SelectedComponentSlot.LinkerPath);
+                    if (File.Exists(destPath))
+                    {
+                        using var package = MEPackageHandler.OpenMEPackage(destPath);
+                        tryFindMaterial(package);
                     }
 
-                    if (preloadMaterial == null)
-                    {
-                        var destPath = Path.Combine(MEDirectories.GetExecutableFolderPath(Game), material.LinkerPath);
-                        if (File.Exists(destPath))
-                        {
-                            using var package = MEPackageHandler.OpenMEPackage(destPath);
-                            tryFindMaterial(package);
-                        }
-                    }
                 }
 
                 // Now, we have to find this object somehow...
@@ -320,14 +325,16 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
                 }
             }
-            //MaterialEditorLLE me = new MaterialEditorLLE(Game, LoadCustomMaterialInGame, UpdateScalarParameter, UpdateVectorParameter);
-            //me.PreloadMaterial = preloadMaterial;
-            //me.Show();
+
+            if (preloadMaterial != null)
+            {
+                MEELC.LoadExport(preloadMaterial);
+            }
         }
 
         private void SetMaterial()
         {
-            InteropHelper.SendMessageToGame($"LLE_SET_MATERIAL {MaterialIndex} {SelectedMaterial}", Game);
+            InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {SelectedMaterial}", Game);
         }
 
         private void LoadCommands()
@@ -355,6 +362,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             otherMat.idxLink = idxLink; // Restore the export
             if (newentry is ExportEntry exp)
             {
+                if (exp.ClassName.CaseInsensitiveEquals("Material"))
+                {
+                    // Convert it for editor? // this is for MLE
+                    exp = MEELC.ConvertMaterialToInstance(exp);
+                }
                 MEELC.LoadExport(exp);
             }
         }
@@ -366,10 +378,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             package.Position = 0;
             var newP = MEPackageHandler.OpenMEPackageFromStream(package, "LLEMaterialPackage.pcc");
 
-            //PackageEditorWindow pe = new PackageEditorWindow();
-            //pe.LoadPackage(newP);
-            //pe.Show();
-            //return;
 
             var matExp = newP.FindExport(MatInfo.MaterialExport.InstancedFullPath);
             // Rename for Memory Uniqueness when loaded into the game
@@ -378,7 +386,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 exp.ObjectName = new NameReference(exp.ObjectName.Name + $"_LLEMATED_{GetRandomString(8)}", exp.ObjectName.Number);
             }
 
-            SetSpecificMaterial(matExp);
+            //PackageEditorWindow pe = new PackageEditorWindow();
+            //pe.LoadPackage(newP);
+            //pe.Show();
+            // return;
+            LoadCustomMaterialInGame(newP, matExp.MemoryFullPath);
         }
 
         public async void SaveMaterialPackage()
@@ -545,10 +557,30 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             set => SetProperty(ref _autoChangeToLoadedMaterial, value);
         }
 
-        /// <summary>
-        /// Available slots to put a material into
-        /// </summary>
-        public ObservableCollectionExtended<string> MaterialSlots { get; } = new();
+        private JsonMaterialSource _selectedComponentSlot;
+        public JsonMaterialSource SelectedComponentSlot
+        {
+            get => _selectedComponentSlot;
+            set
+            {
+                MEELC?.UnloadExport();
+
+                if (SetProperty(ref _selectedComponentSlot, value))
+                {
+                    if (value != null)
+                    {
+                        LoadMaterialFromSource();
+                    }
+                }
+            }
+        }
+
+        private bool _autoUpdateOnChanges;
+        public bool AutoUpdateOnChanges
+        {
+            get => _autoUpdateOnChanges;
+            set => SetProperty(ref _autoUpdateOnChanges, value);
+        }
 
         private bool IsMaterialMatch(object obj)
         {
@@ -568,10 +600,13 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         /// <param name="export"></param>
         public void SetSpecificMaterial(ExportEntry export)
         {
-            LoadMaterialIntoEditor(export);
-            if (MEELC.CurrentLoadedExport != null)
+            if (SelectedComponentSlot != null)
             {
-                LoadCustomMaterialInGame(MEELC.CurrentLoadedExport.FileRef, MEELC.CurrentLoadedExport.MemoryFullPath);
+                LoadMaterialIntoEditor(export);
+                if (MEELC.CurrentLoadedExport != null)
+                {
+                    SendToGame();
+                }
             }
         }
 

@@ -369,7 +369,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
             Debug.WriteLine($"LLE Command: {msg}");
             var verb = command[1]; // Message Info
-                                   // "READY" is done on first initialize and will automatically 
+            // "READY" is done on first initialize and will automatically 
             if (verb == "READY") // We polled game, and found LLE is available
             {
                 InteropHelper.SendMessageToGame("ACTIVATE_PLAYERGPS", Game);
@@ -546,6 +546,15 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             /// </summary>
             [JsonProperty("source")]
             public string LinkerPath { get; set; }
+
+            /// <summary>
+            /// Index of the material in the materials list
+            /// </summary>
+            [JsonProperty("materialindex")]
+            public int SlotIdx { get; set; }
+
+            [JsonIgnore]
+            public string DisplayString => $"Slot {SlotIdx}: {MaterialMemoryPath}";
 
         }
 

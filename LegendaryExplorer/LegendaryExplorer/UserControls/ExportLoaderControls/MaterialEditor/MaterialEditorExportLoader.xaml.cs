@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
@@ -14,6 +15,7 @@ using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Xceed.Wpf.Toolkit;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
@@ -22,6 +24,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
     /// </summary>
     public partial class MaterialEditorExportLoader : ExportLoaderControl
     {
+
+        /// <summary>
+        /// Used to identify a unique instance of a control without a reference
+        /// </summary>
+        private Guid ControlGuid = Guid.NewGuid();
+
         /// <summary>
         /// Used for initial loading of data
         /// </summary>
@@ -113,8 +121,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         /// </summary>
         private bool WillReloadDueToAutomaticCommit { get; set; }
 
-        
+
         public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(MaterialEditorExportLoader), new PropertyMetadata(default(bool)));
+        public static readonly DependencyProperty AllowEditingUniformTexturesProperty = DependencyProperty.Register(nameof(AllowEditingUniformTextures), typeof(bool), typeof(MaterialEditorExportLoader), new PropertyMetadata(default(bool)));
+        public static readonly DependencyProperty AlwaysLoadDataProperty = DependencyProperty.Register(nameof(AlwaysLoadData), typeof(bool), typeof(MaterialEditorExportLoader), new PropertyMetadata(default(bool)));
+
         /// <summary>
         /// If this export loader control cannot make changes - only view
         /// </summary>
@@ -122,6 +133,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             get => (bool)GetValue(IsReadOnlyProperty);
             set => SetValue(IsReadOnlyProperty, value);
+        }
+
+        /// <summary>
+        /// If textures should be able to be changed on uniform textures. This defaults to false; one can break many downstream material constants by doing this.
+        /// </summary>
+        public bool AllowEditingUniformTextures
+        {
+            get => (bool)GetValue(AllowEditingUniformTexturesProperty);
+            set => SetValue(AllowEditingUniformTexturesProperty, value);
+        }
+
+        /// <summary>
+        /// If data should always load. Otherwise, it only loads if the control is loaded.
+        /// </summary>
+        public bool AlwaysLoadData
+        {
+            get => (bool)GetValue(AlwaysLoadDataProperty);
+            set => SetValue(AlwaysLoadDataProperty, value);
         }
 
         private void SaveChanges()
@@ -172,10 +201,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             UnloadExport();
             CurrentLoadedExport = exportEntry;
             // If control is loaded and visible
-            if (IsLoaded)
-            {
-                LoadData();
-            }
+            LoadData();
         }
 
         public override void UnloadExport()
@@ -183,6 +209,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             initialPackageCache = new PackageCache();
             MaterialHasNoShader = false;
             CurrentLoadedExport = null;
+            MatInfo = null;
             RefreshBindings();
         }
 
@@ -298,27 +325,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             ArrayProperty<StructProperty> textureParameters = new ArrayProperty<StructProperty>("TextureParameterValues");
 
             // Write Scalars
-            foreach (var expr in MatInfo.Expressions.OfType<ScalarParameter>())
+            var hasModifiedParam = MatInfo.Expressions.OfType<ScalarParameterMatEd>().Any(x => !x.IsDefaultParameter);
+            if (hasModifiedParam)
             {
-                if (expr is ScalarParameterMatEd spme && spme.IsDefaultParameter)
-                    continue; // Do not write out non-edited default parameters
-                scalarParameters.Add(expr.ToStruct());
+                foreach (var expr in MatInfo.Expressions.OfType<ScalarParameter>())
+                {
+                    scalarParameters.Add(expr.ToStruct());
+                }
             }
 
             // Write Vectors
-            foreach (var expr in MatInfo.Expressions.OfType<VectorParameter>())
+            hasModifiedParam = MatInfo.Expressions.OfType<VectorParameterMatEd>().Any(x => !x.IsDefaultParameter);
+            if (hasModifiedParam)
             {
-                if (expr is VectorParameterMatEd spme && spme.IsDefaultParameter)
-                    continue; // Do not write out non-edited default parameters
-                vectorParameters.Add(expr.ToStruct());
+                foreach (var expr in MatInfo.Expressions.OfType<VectorParameter>())
+                {
+                    vectorParameters.Add(expr.ToStruct());
+                }
             }
 
             // Write Textures
-            foreach (var expr in MatInfo.Expressions.OfType<TextureParameterMatEd>())
+            hasModifiedParam = MatInfo.Expressions.OfType<TextureParameterMatEd>().Any(x => !x.IsDefaultParameter);
+            if (hasModifiedParam)
             {
-                if (expr is TextureParameterMatEd spme && spme.IsDefaultParameter)
-                    continue; // Do not write out non-edited default parameters
-                textureParameters.Add(expr.ToStruct());
+                foreach (var expr in MatInfo.Expressions.OfType<TextureParameterMatEd>())
+                {
+                    textureParameters.Add(expr.ToStruct());
+                }
             }
 
             if (scalarParameters.Any())
@@ -383,9 +416,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         private void LoadData()
         {
-            if (ControlIsLoaded && initialPackageCache != null)
+            if ((ControlIsLoaded || AlwaysLoadData) && initialPackageCache != null)
             {
-                MatInfo = new MaterialInfo() { MaterialExport = CurrentLoadedExport };
+                MatInfo = new MaterialInfo() { MaterialExport = CurrentLoadedExport, HostingControlGuid = ControlGuid };
                 RefreshBindings();
                 Task.Run(() =>
                 {
@@ -415,6 +448,76 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             {
                 elhw.HostedControl.LoadExport(newExport);
                 elhw.Title = GetPoppedOutTitle();
+            }
+        }
+
+
+
+
+        private void TextureParam_DragOver(object sender, DragEventArgs e)
+        {
+            if (sender is Image dropTarget && e.Data.GetDataPresent(typeof(Image)))
+            {
+                Debug.WriteLine("------------");
+                Image source = (Image)e.Data.GetData(typeof(Image));
+                if (source.DataContext is IMatEdTexture met)
+                {
+                    if (dropTarget.DataContext is IMatEdTexture dmet)
+                    {
+                        if (met.HostingControlGuid != dmet.HostingControlGuid)
+                            if (met.TextureExp.ClassName.CaseInsensitiveEquals(dmet.TextureExp.ClassName))
+                            {
+                                e.Effects = DragDropEffects.Copy;
+                                e.Handled = true;
+                                return;
+                            }
+
+                        Debug.WriteLine($"MET: {met.HostingControlGuid}, DMET: {dmet.HostingControlGuid}");
+                    }
+
+                    Debug.WriteLine($"SourceDataContext: {met.DisplayString}");
+                }
+
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
+        }
+
+        private void TextureParam_DragDrop(object sender, DragEventArgs e)
+        {
+            if (sender is Image dropTarget && e.Data.GetDataPresent(typeof(Image)))
+            {
+                Image source = (Image)e.Data.GetData(typeof(Image));
+                if (source.DataContext is IMatEdTexture met && dropTarget.DataContext is IMatEdTexture dmet
+                                                            && met.HostingControlGuid != dmet.HostingControlGuid
+                                                            && met.TextureExp.ClassName.CaseInsensitiveEquals(dmet.TextureExp.ClassName))
+                {
+                    dmet.ReplaceTexture(met);
+                }
+            }
+        }
+
+        private void TextureParam_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            base.OnGiveFeedback(e);
+            // These Effects values are set in the drop target's
+            // DragOver event handler.
+            if (e.Effects.HasFlag(DragDropEffects.Copy))
+            {
+                Mouse.SetCursor(Cursors.Cross);
+            }
+            else
+            {
+                Mouse.SetCursor(Cursors.No);
+            }
+            e.Handled = true;
+        }
+
+        private void TextureParam_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (sender is Image im && im.DataContext is IMatEdTexture && e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(im, new DataObject(im), DragDropEffects.Copy);
             }
         }
     }

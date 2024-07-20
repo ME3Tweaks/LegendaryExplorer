@@ -19,17 +19,26 @@
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <DataTemplate DataType="{x:Type materialEditor:MatEdTexture}" >
             <DockPanel>
-                <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}"/>
+                <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}"
+                       MouseMove="TextureParam_MouseMove"
+                       GiveFeedback="TextureParam_GiveFeedback"/>
                 <StackPanel>
                     <TextBlock Text="{Binding DisplayString}" Margin="5,0"/>
-                    <Button Content="Change" HorizontalAlignment="Left" Margin="5,0" Padding="4,3" Command="{Binding ReplaceTextureCommand}"/>
+                    <Button Content="Change" HorizontalAlignment="Left" Margin="5,0" Padding="4,3" Command="{Binding ReplaceTextureCommand}"
+                            Visibility="{Binding AllowEditingUniformTextures, Converter={StaticResource BooleanToVisibilityConverter},
+                                        RelativeSource={RelativeSource FindAncestor, AncestorType=materialEditor:MaterialEditorExportLoader}}"/>
                 </StackPanel>
             </DockPanel>
         </DataTemplate>
         <!-- Parameters -->
         <DataTemplate DataType="{x:Type materialEditor:TextureParameterMatEd}">
             <DockPanel>
-                <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}"/>
+                <Image DockPanel.Dock="Left" Width="64" Height="64" Source="{Binding LoadedBitMap}" 
+                       AllowDrop="True"
+                       MouseMove="TextureParam_MouseMove"
+                       GiveFeedback="TextureParam_GiveFeedback"
+                       DragOver="TextureParam_DragOver"
+                       Drop="TextureParam_DragDrop"/>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding ParameterName}" 

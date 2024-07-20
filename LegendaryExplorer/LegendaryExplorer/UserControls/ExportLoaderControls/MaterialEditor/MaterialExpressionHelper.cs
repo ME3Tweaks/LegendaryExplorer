@@ -64,7 +64,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             PropertyCollection props = new PropertyCollection();
             props.Add(new NameProperty(ParameterName, "ParameterName"));
 
-            if (Property.StructType == "SMAScalarParameter")
+            if (Property is { StructType: "SMAScalarParameter" })
             {
                 props.Add(new FloatProperty(ParameterValue, "Parameter"));
                 props.Add(Group);

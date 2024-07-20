@@ -46,6 +46,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         /// </summary>
         public ObservableCollectionExtended<string> WorksOn { get; } = new();
 
+        public Guid HostingControlGuid { get; set; }
+
         #region Constructor and initialization
 
         public void InitMaterialInfo(PackageCache cache)
@@ -202,6 +204,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         {
                             // If this expression is not being overridden
                             var param = TextureParameterMatEd.FromExpression(expr);
+                            param.HostingControlGuid = HostingControlGuid;
                             param.EditingPackage = MaterialExport.FileRef;
                             param.LoadData(expr.FileRef, cache); // Initialize texture data
                             parameterList.Add(param);
@@ -221,7 +224,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         GetAllTextureParameters(GetMatParent(exp, cache), true, cache, parameterList);
                         return;
                     }
-                    var textures = TextureParameter.GetTextureParameters(exp, true, () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef });
+                    var textures = TextureParameter.GetTextureParameters(exp, true, 
+                        () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef, HostingControlGuid = HostingControlGuid});
                     if (textures == null)
                     {
                         // Do it again with the parent. We are not locally overridding
@@ -294,6 +298,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                 foreach (var texIdx in matBin.SM3MaterialResource.UniformExpressionTextures)
                 {
                     var tex = new MatEdTexture(material.FileRef, texIdx, cache);
+                    tex.EditingPackage = MaterialExport.FileRef;
+                    tex.HostingControlGuid = HostingControlGuid;
                     UniformTextures.Add(tex);
                 }
             }
