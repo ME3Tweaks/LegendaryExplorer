@@ -77,9 +77,20 @@ HRESULT ConvertTexture(const TextureBuffer* inputBuffer, TextureBuffer* outputBu
 	if (DirectX::IsCompressed(inputBuffer->Format)) {
 		if (DirectX::IsCompressed(outputBuffer->Format)) {
 			// Compressed -> Compressed Conversion
-			// 
-			// I won't implement this unless we really need it. It would decompress to an intermediate uncompressed image, and then recompress.
-			return E_NOTIMPL;
+
+			TextureBuffer decompressedBuffer;
+			decompressedBuffer.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+			// Decompress to intermediate buffer
+			hr = ConvertTexture(inputBuffer, &decompressedBuffer);
+			if (FAILED(hr)) {
+				//outputBuffer->_ScratchImage->Release();
+				//delete outputBuffer->_ScratchImage;
+				return hr;
+			}
+
+			// Recompress to output buffer
+			hr = ConvertTexture(&decompressedBuffer, outputBuffer);
 		}
 		else {
 			// Decompression

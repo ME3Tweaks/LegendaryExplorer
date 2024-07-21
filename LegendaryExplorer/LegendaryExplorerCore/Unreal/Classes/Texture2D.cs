@@ -1068,6 +1068,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             // There's probably more properties to set, but right now this seems OK, I suppose...
             var exp = ExportCreator.CreateExport(package, textureName, @"Texture2D", parent: parent, indexed: false);
+            if (parent is { IsForcedExport: true })
+            {
+                exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+            }
+
             var props = exp.GetProperties();
             props.AddOrReplaceProp(new EnumProperty(Image.getEngineFormatType(pixelFormat), @"EPixelFormat", package.Game, @"Format"));
             props.AddOrReplaceProp(new IntProperty(sizeX, @"SizeX"));
