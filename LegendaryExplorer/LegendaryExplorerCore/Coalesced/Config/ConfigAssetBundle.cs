@@ -201,6 +201,8 @@ namespace LegendaryExplorerCore.Coalesced.Config
         /// <summary>
         /// Commits this bundle to the specified single config file
         /// </summary>
+        /// <param name="outPath">Where to write the single output file to</param>
+        /// <param name="loc">LE1/LE2 only: What localization this is for. This is important for error messages being written out via debug logger from within native code. For other games, this is not used, and can be set to None.</param>
         public void CommitAssets(string outPath, MELocalization loc)
         {
             if (Game is MEGame.LE1 or MEGame.LE2)
