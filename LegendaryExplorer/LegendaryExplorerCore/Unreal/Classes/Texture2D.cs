@@ -1063,7 +1063,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="mipped"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public static ExportEntry CreateTexture(IMEPackage package, NameReference textureName, int sizeX, int sizeY, PixelFormat pixelFormat, bool mipped, ExportEntry parent = null)
+        public static ExportEntry CreateTexture(IMEPackage package, NameReference textureName, int sizeX, int sizeY, PixelFormat pixelFormat, bool mipped, IEntry parent = null)
         {
 
             // There's probably more properties to set, but right now this seems OK, I suppose...
