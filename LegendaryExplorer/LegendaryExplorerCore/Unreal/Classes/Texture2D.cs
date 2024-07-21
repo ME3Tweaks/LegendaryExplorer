@@ -1068,8 +1068,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             // There's probably more properties to set, but right now this seems OK, I suppose...
             var exp = ExportCreator.CreateExport(package, textureName, @"Texture2D", parent: parent, indexed: false);
-            if (parent is { IsForcedExport: true })
+            if (parent is ImportEntry or ExportEntry { IsForcedExport: true })
             {
+                // Import parents will always yield forced export since we are in a different package.
                 exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
             }
 
