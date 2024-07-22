@@ -1,6 +1,7 @@
 ﻿using LegendaryExplorerCore.Packages;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.DebugTools;
@@ -8,7 +9,6 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Serilog;
-using Serilog.Core;
 
 namespace LegendaryExplorerCore
 {
@@ -70,7 +70,6 @@ namespace LegendaryExplorerCore
             SYNCHRONIZATION_CONTEXT = scheduler;
         }
 
-
         /// <summary>
         /// Initializes the LegendaryExplorerCore library for use. Call this before using anything in this library. It registers things such as package loaders, initializes the object databases, and other startup tasks
         /// </summary>
@@ -79,7 +78,8 @@ namespace LegendaryExplorerCore
         /// </param>
         /// <param name="packageSavingFailed">Delegate that invoked when a package fails to save</param>
         /// <param name="logger">Serilog logger to use for logging operations. If null, no logging is performed.</param>
-        public static void InitLib(TaskScheduler uiSyncContext, Action<string> packageSavingFailed = null, ILogger logger = null)
+        /// <param name="objectDBsToLoad">Only load object info for specified games. If null, all are loaded.</param>
+        public static void InitLib(TaskScheduler uiSyncContext, Action<string> packageSavingFailed = null, ILogger logger = null, MEGame[] objectDBsToLoad = null, bool usePropertyDBLazyLoad = false)
         {
             if (initialized) return;
             LECLog.logger = logger;
@@ -88,25 +88,45 @@ namespace LegendaryExplorerCore
             MEPackageHandler.Initialize();
             PackageSaver.Initialize();
             PackageSaver.PackageSaveFailedCallback = packageSavingFailed;
-            Action<string>[] jsonLoaders =
+            if (!usePropertyDBLazyLoad)
             {
-                ME1UnrealObjectInfo.loadfromJSON,
-                ME2UnrealObjectInfo.loadfromJSON,
-                ME3UnrealObjectInfo.loadfromJSON,
-                // Todo: LE Load
-                // Todo: Maybe not load all of these as they use a lot of memory, like 40MB each
-                // For 6 games that will be pretty heavy
-                // Maybe require 
-                // Here for now
-                LE1UnrealObjectInfo.loadfromJSON,
-                LE2UnrealObjectInfo.loadfromJSON,
-                LE3UnrealObjectInfo.loadfromJSON,
-            };
-            Parallel.ForEach(jsonLoaders, action => action(null));
-            if (!OodleHelper.EnsureOodleDll())
-            {
-                Debug.WriteLine("Oodle decompression library not available. Make sure game is installed!");
+                (MEGame, Action<string>)[] gameToLoaderMap =
+                [
+                    (MEGame.ME1, ME1UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.ME2, ME2UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.ME3, ME3UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LE1, LE1UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LE2, LE2UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.LE3, LE3UnrealObjectInfo.ObjectInfo.LoadData),
+                    (MEGame.UDK, UDKUnrealObjectInfo.ObjectInfo.LoadData)
+                ];
+                var jsonLoaders = new List<Action<string>>(gameToLoaderMap.Length);
+                foreach ((MEGame game, Action<string> loader) in gameToLoaderMap)
+                {
+                    if (objectDBsToLoad is null || objectDBsToLoad.Contains(game))
+                    {
+                        jsonLoaders.Add(loader);
+                    }
+                }
+
+                Parallel.ForEach(jsonLoaders, action => action(null));
+                LECLog.Information(@"Loaded property databases");
             }
+
+            try
+            {
+                if (!OodleHelper.EnsureOodleDll())
+                {
+                    LECLog.Warning(
+                        "Oodle decompression library not available. Make sure a Legendary Edition game is installed if you need to operate on oodle-compressed data");
+                }
+            }
+            catch (Exception e)
+            {
+                LECLog.Error($@"Error ensuring oodle dll: {e.Message}. {e.FlattenException()}");
+            }
+
+            LECLog.Information(@"LegendaryExplorerCore has initialized");
             initialized = true;
         }
 #if DEBUG

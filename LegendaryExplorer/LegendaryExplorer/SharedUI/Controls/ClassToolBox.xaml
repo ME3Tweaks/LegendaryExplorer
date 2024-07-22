@@ -1,0 +1,28 @@
+﻿<misc:NotifyPropertyChangedControlBase x:Class="LegendaryExplorer.SharedUI.Controls.ClassToolBox"
+                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                                  xmlns:dd="urn:gong-wpf-dragdrop"
+                                  xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
+                                  xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+                                  xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+                                  mc:Ignorable="d"
+                                  d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                                  d:DesignHeight="450" d:DesignWidth="300">
+    <DockPanel>
+        <controls:SearchBox x:Name="searchBox" DockPanel.Dock="Top" TextChanged="SearchBox_OnTextChanged" WatermarkText="Search Toolbox"/>
+        <ListView Name="listView" ItemsSource="{Binding Classes}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="packages:ClassInfo">
+                    <TextBlock HorizontalAlignment="Stretch" Text="{Binding ClassName}" MouseDown="classInfo_MouseDown"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListView>
+    </DockPanel>
+</misc:NotifyPropertyChangedControlBase>

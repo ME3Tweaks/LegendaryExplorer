@@ -93,22 +93,6 @@ namespace Piccolo.Nodes {
 		/// <param name="fileName">The filename of the image to load.</param>
 		public PImage(string fileName) : this(new Bitmap(fileName)) {
 		}
-
-		/// <summary>
-		/// Constructs a new PImage by loading the given URI and wrapping the
-		/// resulting <see cref="System.Drawing.Image">System.Drawing.Image</see>.
-		/// If the URI is <c>null</c>, create an empty PImage; this behavior is
-		/// useful when fetching resources that may be missing.
-		/// </summary>
-		/// <param name="requestURI">The URI of the image to load.</param>
-		public PImage(Uri requestURI) {
-			if (requestURI != null) {
-				WebClient myWebClient = new WebClient();
-				Stream myStream = myWebClient.OpenRead(requestURI.AbsoluteUri);
-				Image = new Bitmap(myStream);
-				myStream.Close();
-			}
-		}
 		#endregion
 
 		#region Basic
@@ -189,7 +173,7 @@ namespace Piccolo.Nodes {
 		/// </remarks>
 		protected override string ParamString {
 			get {
-				StringBuilder result = new StringBuilder();
+				var result = new StringBuilder();
 
 				result.Append("image=" + (image == null ? "null" : image.ToString()));
 				result.Append(',');

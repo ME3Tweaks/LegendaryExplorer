@@ -39,6 +39,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         if (objType is Class cls)
                         {
                             FindInFuncs(cls.Functions, cls.Name);
+                            FindInBytecode(searchFunc, cls, cls.Name, lib, symbols, results);
 
                             foreach (State state in cls.States)
                             {
@@ -105,6 +106,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     if (type is Class cls)
                     {
                         FindInFuncs(cls.Functions, cls.Name);
+                        FindInBytecode(searchDecl, cls, cls.Name, lib, symbols, results);
 
                         foreach (State state in cls.States)
                         {
@@ -184,6 +186,7 @@ namespace LegendaryExplorerCore.UnrealScript
                                 }
                             }
 
+                            FindInBytecode(searchType, cls, cls.Name, lib, symbols, results);
                             FindInFuncs(cls.Functions, cls.Name);
 
                             foreach (State state in cls.States)
@@ -269,9 +272,9 @@ namespace LegendaryExplorerCore.UnrealScript
                 case State state:
                     symbols.GoDirectlyToStack(((Class)state.Outer).GetScope());
                     break;
-                //case Class cls:
-                //    symbols.GoDirectlyToStack(cls.GetScope());
-                //    break;
+                case Class cls:
+                    symbols.GoDirectlyToStack(cls.GetScope());
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(containsBytecode));
             }
@@ -284,6 +287,9 @@ namespace LegendaryExplorerCore.UnrealScript
                         break;
                     case State state:
                         CodeBodyParser.ParseState(state, pcc.Game, symbols, log, false);
+                        break;
+                    case Class cls:
+                        CodeBodyParser.ParseReplicationBlock(cls, pcc.Game, symbols, log);
                         break;
                 }
             }

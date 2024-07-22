@@ -117,7 +117,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       updatePropertyItemsCallback.Invoke( propertyItems );
     }
 
-
     private PropertyItem CreatePropertyItem( PropertyDescriptor property, PropertyDefinition propertyDef )
     {
       DescriptorPropertyDefinition definition = new DescriptorPropertyDefinition( property, SelectedObject, this.PropertyContainer );                                                                                 

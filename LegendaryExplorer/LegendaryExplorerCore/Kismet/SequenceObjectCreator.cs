@@ -251,10 +251,10 @@ namespace LegendaryExplorerCore.Kismet
                                 importPCC = MEPackageHandler.OpenMEPackageFromStream(loadStream);
                             }
                             ExportEntry classExport = importPCC.GetUExport(classInfo.exportIndex);
-                            UClass classBin = ObjectBinary.From<UClass>(classExport);
+                            var classBin = ObjectBinary.From<UClass>(classExport);
                             ExportEntry classDefaults = importPCC.GetUExport(classBin.Defaults);
 
-                            RelinkerOptionsPackage rop = new RelinkerOptionsPackage() { Cache = pc ?? new PackageCache() };
+                            var rop = new RelinkerOptionsPackage { Cache = pc ?? new PackageCache() };
 
                             foreach (var prop in classDefaults.GetProperties())
                             {
@@ -265,7 +265,6 @@ namespace LegendaryExplorerCore.Kismet
 
                                     foreach (StructProperty varLink in varLinksProp)
                                     {
-
                                         if (varLink.GetProp<ObjectProperty>("ExpectedType") is ObjectProperty expectedTypeProp &&
                                             importPCC.TryGetEntry(expectedTypeProp.Value, out IEntry expectedVar) &&
                                             EntryImporter.EnsureClassIsInFile(pcc, expectedVar.ObjectName, rop) is IEntry portedExpectedVar)
@@ -360,7 +359,6 @@ namespace LegendaryExplorerCore.Kismet
                     defaults.Remove(inputLinks);
                 }
 
-#if DEBUG
                 // 08/30/2022 Add useful defaults for editor - Mgamerz
                 // edited default to None as that is in every package and should be default if there is no named event to reference. - KK
                 switch (info.ClassName)
@@ -372,11 +370,15 @@ namespace LegendaryExplorerCore.Kismet
                     case "SeqAct_ActivateRemoteEvent":
                         defaults.Add(new NameProperty("None", "EventName"));
                         break;
+                    case "BioSeqAct_PMExecuteTransition":
+                    case "BioSeqAct_PMCheckState":
+                    case "BioSeqAct_PMCheckConditional":
+                        defaults.Add(new IntProperty(0, "m_nIndex"));
+                        break;
                 }
-#endif
             }
 
-            int objInstanceVersion = GlobalUnrealObjectInfo.getSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
+            int objInstanceVersion = GlobalUnrealObjectInfo.GetSequenceObjectInfo(game, info.ClassName)?.ObjInstanceVersion ?? 1;
             defaults.Add(new IntProperty(objInstanceVersion, "ObjInstanceVersion"));
 
             return defaults;
@@ -390,7 +392,6 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="cache">PackageCache for relinker</param>
         /// <param name="handleRelinkResults">Invoked when relinking is complete and the export has been added. You can inspect the object for failed relink operations, for example.</param>
         /// <returns></returns>
-
         public static ExportEntry CreateSequenceObject(IMEPackage pcc, string className, PackageCache cache = null, Action<RelinkerOptionsPackage> handleRelinkResults = null)
         {
             var rop = new RelinkerOptionsPackage() { Cache = cache ?? new PackageCache() };

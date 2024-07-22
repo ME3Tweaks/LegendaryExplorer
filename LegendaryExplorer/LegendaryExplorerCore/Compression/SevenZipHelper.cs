@@ -91,6 +91,27 @@ namespace LegendaryExplorerCore.Compression
 
         public static byte[] Decompress(byte[] src, uint dstLen)
         {
+            /*
+             Return codes are as follows:
+            This library (CompressionWrappers) is built from aquadran's MassEffectModder repo in the libs folder.
+             *#define SZ_OK 0
+               
+               #define SZ_ERROR_DATA 1
+               #define SZ_ERROR_MEM 2
+               #define SZ_ERROR_CRC 3
+               #define SZ_ERROR_UNSUPPORTED 4
+               #define SZ_ERROR_PARAM 5
+               #define SZ_ERROR_INPUT_EOF 6
+               #define SZ_ERROR_OUTPUT_EOF 7
+               #define SZ_ERROR_READ 8
+               #define SZ_ERROR_WRITE 9
+               #define SZ_ERROR_PROGRESS 10
+               #define SZ_ERROR_FAIL 11
+               #define SZ_ERROR_THREAD 12
+               
+               #define SZ_ERROR_ARCHIVE 16
+               #define SZ_ERROR_NO_ARCHIVE 17
+             */
             uint len = dstLen;
             byte[] dst = new byte[dstLen];
 

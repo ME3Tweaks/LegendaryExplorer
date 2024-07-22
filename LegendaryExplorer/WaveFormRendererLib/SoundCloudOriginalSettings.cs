@@ -30,7 +30,6 @@ namespace NAudio.WaveFormRenderer
             set { base.TopPeakPen = value; }
         }
 
-
         public override Pen BottomPeakPen 
         {
             get
@@ -45,7 +44,6 @@ namespace NAudio.WaveFormRenderer
             }
             set { base.BottomPeakPen = value; }
         }
-
 
         public override Pen BottomSpacerPen
         {

@@ -30,7 +30,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class BIKExternalExportLoader : ExportLoaderControl
     {
-
         #region Declarations
         private static readonly string[] parsableClasses = { "TextureMovie", "BioLoadingMovie", "BioSeqAct_MovieBink", "SFXInterpTrackMovieBink", "SFXSeqAct_PlatformMovieBink" };
         private bool _radIsInstalled;
@@ -197,7 +196,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 PlayExportInVLC();
             }
-
         }
         private void GetRADInstallationStatus()
         {
@@ -575,7 +573,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Warning_text.Visibility = Visibility.Visible;
                 video_Panel.IsEnabled = false;
-
             }
 
             return null;
@@ -634,7 +631,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 //FileName = "Select a bik file",
                 Title = "Import Bik movie file",
-                Filter = "Bik Movie Files (*.bik)|*.bik"
+                Filter = "Bik Movie Files (*.bik)|*.bik",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (dlg.ShowDialog() == true && File.Exists(dlg.FileName))
@@ -666,7 +664,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             bikMovie.Seek(0, SeekOrigin.Begin);
             if (bikMovie.ReadStringASCII(3) is "KB2" && Pcc.Game.IsOTGame())
             {
-
                 MessageBox.Show($"{Path.GetFileName(bikfile)} is a Bink2 file! {Pcc.Game} only supports Bink 1. Aborting.", "Warning", MessageBoxButton.OK);
                 bikcontrols_Panel.IsEnabled = true;
                 return false;
@@ -895,7 +892,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         FileName = "Select a TFC file",
                         Title = "Import TFC cache for movie files",
-                        Filter = "TextureFileCache (*.tfc)|*.tfc"
+                        Filter = "TextureFileCache (*.tfc)|*.tfc",
+                        CustomPlaces = AppDirectories.GameCustomPlaces
                     };
 
                     if (adddlg.ShowDialog() ?? false)
@@ -1001,7 +999,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             string outputTFC = Path.Combine(m.FileName, $"{nprompt}.tfc");
             bool createTFC = true;
 
-
             //if (!Directory.GetDirectories(MEDirectories.GamePath(Pcc.Game), "*", SearchOption.AllDirectories).ToList().Contains(Path.GetDirectoryName(outputTFC)))
             //{
             //    MessageBox.Show("This location does not reside within the game directories.", "Aborting", MessageBoxButton.OK);
@@ -1035,7 +1032,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         private void SwitchLocalToExternal(string tfcPath = null)
         {
-
             var tempfilepath = Path.Combine(Path.GetTempPath(), "Temp.bik");
             ExportBikToFile(tempfilepath);
 
@@ -1085,7 +1081,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 return;
             HyperlinkExtensions.OpenURL("https://www.videolan.org/vlc/");
         }
-
 
         #endregion
 

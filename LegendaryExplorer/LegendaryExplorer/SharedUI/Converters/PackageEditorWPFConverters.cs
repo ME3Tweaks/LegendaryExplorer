@@ -197,5 +197,4 @@ namespace LegendaryExplorer.SharedUI.Converters
         }
     }
 
-
 }

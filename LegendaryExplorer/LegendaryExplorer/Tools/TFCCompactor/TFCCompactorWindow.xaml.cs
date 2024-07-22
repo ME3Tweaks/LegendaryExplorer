@@ -119,9 +119,9 @@ namespace LegendaryExplorer.Tools.TFCCompactor
 
         private string BaseFolder;
 
-        public ObservableCollectionExtended<GameWrapper> GameList { get; } = new ObservableCollectionExtended<GameWrapper>();
-        public ObservableCollectionExtended<string> CustomDLCFolderList { get; } = new ObservableCollectionExtended<string>();
-        public ObservableCollectionExtended<TFCSelector> TextureCachesToPullFromList { get; } = new ObservableCollectionExtended<TFCSelector>();
+        public ObservableCollectionExtended<GameWrapper> GameList { get; } = new();
+        public ObservableCollectionExtended<string> CustomDLCFolderList { get; } = new();
+        public ObservableCollectionExtended<TFCSelector> TextureCachesToPullFromList { get; } = new();
 
         public ICommand CompactTFCCommand { get; set; }
         public ICommand ScanCommand { get; set; }
@@ -186,7 +186,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
         //    {
         //        string staticExecutablesDirectory = Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, "staticexecutables")).FullName;
 
-
         //        string memCS = Path.Combine(staticExecutablesDirectory, "MassEffectModderNoGuiCS.exe");
         //        if (!File.Exists(memCS))
         //        {
@@ -198,7 +197,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
         //                return;
         //            }
         //        }
-
 
         //        string memQT = Path.Combine(staticExecutablesDirectory, "MassEffectModderNoGuiQT.exe");
         //        if (!File.Exists(memQT))
@@ -289,8 +287,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             var rootNodes = new List<TextureMapMemoryEntry>();
             void addRootNode(TextureMapMemoryEntry x) => rootNodes.Add(x);
             TextureMapMemoryEntry generateNode(IEntry x) => new(x);
-
-
 
             LoadedTextureMap = TextureMapGenerator.GenerateMapForFolder(BaseFolder, generateNode, addRootNode, scanProgress);
 
@@ -422,8 +418,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 CurrentOperationText = "Compacting...";
                 LegendaryExplorerCore.Textures.TFCCompactor.CompactTFC(pack, errorCallback, scanProgress, LoadedTextureMap);
             };
-
-
 
             //if (movieScan)
             //{
@@ -795,7 +789,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             //            Thread.Sleep(100); //this is kind of hacky but it works
             //        }
 
-
             //        //Restore old path in MEM ini
             //        if (!string.IsNullOrEmpty(oldValue))
             //        {
@@ -932,7 +925,6 @@ namespace LegendaryExplorer.Tools.TFCCompactor
             }
         }
 
-
         /// <summary>
         /// Depth-first recursive delete, with handling for descendant 
         /// directories open in Windows Explorer.
@@ -1022,7 +1014,7 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                 Enabled = selected; //if not selected by deafult then then is disabled.
             }
 
-            public string TFCName { get; set; }
+            public string TFCName { get; }
             public bool Selected { get; set; }
             public bool Enabled { get; set; }
 
@@ -1042,6 +1034,11 @@ namespace LegendaryExplorer.Tools.TFCCompactor
                     return t.TFCName == TFCName;
                 }
                 return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return TFCName.GetHashCode();
             }
         }
 

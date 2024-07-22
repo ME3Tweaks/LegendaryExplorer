@@ -47,7 +47,6 @@ namespace LegendaryExplorer.MainWindow
         
         private void Button_GotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         protected override void Button_MouseEnter(object sender, MouseEventArgs e)

@@ -1,0 +1,70 @@
+﻿<bases:WPFBase  xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases" x:Class="LegendaryExplorer.Tools.PackageEditor.LECLDataEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.PackageEditor"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        mc:Ignorable="d"
+        SizeToContent="WidthAndHeight"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="LECL Metadata Editor"
+        WindowStartupLocation="CenterOwner"
+        MaxWidth="700">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+    <StackPanel>
+        <TextBlock  Background="LightGray" Padding="5" Text="LECL Metadata is information stored in package files that is used only by modding tools to improve the developer experience. LECL features are only available for Legendary Edition package files." TextWrapping="Wrap"/>
+        <StackPanel Margin="5">
+            <GroupBox Header="Import resolution">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" Text="Imports are exports that are expected to be loaded into memory by another file before the current package file loads. Imports are resolved on package load. Due to the complex nature of Unreal Engine 3 memory management, mod tools may need additional info to reliably resolve imports."/>
+                    <TextBlock TextWrapping="Wrap" Foreground="Red" FontWeight="Bold" Text="WARNING: If you don't know what these options actually do, DO NOT CHANGE THEM. IT WILL RESULT IN FILES ADDING BAD IMPORTS."/>
+                    <TextBlock Text="Importable file hints" FontWeight="Bold"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0"
+                               Text="The following list of files will be used for import resolution in modding tools in addition to the standard set of files. This can be useful for when this package depends on a file that will always be loaded in advance, such as a startup file. This package must be in either the same directory as this package, or installed into the game."/>
+                    <Button Content="Add file" Click="AddFile_Click" HorizontalAlignment="Left" Padding="7,4" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding ImportableFileHints.BindableCount, StringFormat='{}{0} files'}" HorizontalAlignment="Left" Padding="7,4" Margin="10,0,0,0"/>
+                    <ItemsControl ItemsSource="{Binding ImportableFileHints}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type system:String}">
+                                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                                    <Button Content="Remove" Click="RemoveFile_Click"/>
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" Margin="5,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+
+                    <!-- LECL data might not exist so there is a 3 way possibility here-->
+                    <!-- No LECL data, but is post load -->
+                    <!-- LECL data but is not marked post load -->
+                    <!-- LECL data but is marked as post load -->
+                    <!-- If we heuristically determine this is post load we should not actually show option to set it, but force it true. We cannot bind directly to LECL data this way -->
+                    <CheckBox Content="Postload file: Package loads after save file loads" FontWeight="Bold" 
+                      IsChecked="{Binding Pcc.LECLTagData.IsPostLoadFile}"
+                      Visibility="{Binding IsNotHeuristicPostLoad, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    <CheckBox Content="Postload file: Package loads after save file loads" FontWeight="Bold" IsEnabled="False"
+                      IsChecked="True" Visibility="{Binding IsNotHeuristicPostLoad, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0"
+                       Text="Files marked as post load will check for imports against additional files that are persistently loaded after the save game loads, such as BIOG_GestureConfigDLC and BIO_Common. All BioX files except BioG are automatically marked as PostLoad, as well as a few others."/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Package info">
+                <StackPanel>
+                    <TextBlock Text="This information is populated when a package loads."/>
+                    <CheckBox Content="Package was saved with Legendary Explorer Core" FontWeight="Bold" IsChecked="{Binding Pcc.LECLTagData.WasSavedWithLEC}" IsEnabled="False"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0"
+                       Text="Tools based on C# code that interact with package files will almost always use the Legendary Explorer Core library."/>
+                    <CheckBox Content="Package was saved with Mass Effect Modder" FontWeight="Bold" IsChecked="{Binding Pcc.LECLTagData.WasSavedWithMEM}" IsEnabled="False"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0" Text="Packages saved with Mass Effect Modder should not be edited with tools other than Mass Effect Modder, and should never be distributed to other users. Legendary Explorer will not save the marker that denotes this file belongs to a texture installation, which can cause game stability issues if used with another texture install."/>
+                </StackPanel>
+
+            </GroupBox>
+
+        </StackPanel>
+    </StackPanel>
+</bases:WPFBase>

@@ -9,16 +9,16 @@ namespace LegendaryExplorerCore.Packages
     public static class ExportCreator
     {
         /// <summary>
-        /// Creates a package export. The default implementation does not use zero index (it will start at 1). Usages should be investigate to see if this is ever useful, I don't think it is
+        /// Creates a package export.
         /// </summary>
         /// <param name="pcc"></param>
         /// <param name="packageName"></param>
         /// <param name="parent"></param>
         /// <param name="relinkResultsAvailable"></param>
         /// <returns></returns>
-        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
+        public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null)
         {
-            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true };
+            var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, Cache = cache};
             var exp = new ExportEntry(pcc, parent, packageName)
             {
                 Class = EntryImporter.EnsureClassIsInFile(pcc, "Package", rop)
@@ -30,10 +30,10 @@ namespace LegendaryExplorerCore.Packages
             return exp;
         }
 
-        public static ExportEntry CreateExport(IMEPackage pcc, string name, string className, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null)
+        public static ExportEntry CreateExport(IMEPackage pcc, NameReference name, string className, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, bool indexed = true)
         {
             var rop = new RelinkerOptionsPackage() { ImportExportDependencies = true };
-            var exp = new ExportEntry(pcc, parent, pcc.GetNextIndexedName(name))
+            var exp = new ExportEntry(pcc, parent, indexed ? pcc.GetNextIndexedName(name) : name)
             {
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };

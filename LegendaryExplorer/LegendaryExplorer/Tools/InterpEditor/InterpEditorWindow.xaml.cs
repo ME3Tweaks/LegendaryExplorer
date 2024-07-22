@@ -25,7 +25,6 @@ namespace LegendaryExplorer.Tools.InterpEditor
     /// </summary>
     public partial class InterpEditorWindow : WPFBase, IRecents
     {
-
         public InterpEditorWindow() : base("Interp Editor")
         {
             LoadCommands();
@@ -124,7 +123,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try

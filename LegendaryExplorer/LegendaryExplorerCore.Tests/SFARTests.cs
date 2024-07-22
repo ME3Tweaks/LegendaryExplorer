@@ -34,8 +34,6 @@ namespace LegendaryExplorerCore.Tests
                     var de = dlc.DecompressEntry(lookup);
                     Assert.AreEqual(f.RealUncompressedSize, de.Length);
                 }
-
-
             }
         }
     }

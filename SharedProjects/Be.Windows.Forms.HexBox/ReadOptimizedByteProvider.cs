@@ -37,7 +37,7 @@ namespace Be.Windows.Forms
 
         public ReadOptimizedByteProvider()
         {
-            Bytes = Array.Empty<byte>();
+            Bytes = [];
         }
 
         public ReadOnlySpan<byte> Span => Bytes.AsSpan(0, realLength);

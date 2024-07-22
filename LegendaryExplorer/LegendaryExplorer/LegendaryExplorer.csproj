@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows</TargetFramework>
-		<LangVersion>10.0</LangVersion>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<LangVersion>latest</LangVersion>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Platforms>x64</Platforms>
@@ -12,7 +12,10 @@
 		<RunPostBuildEvent>Always</RunPostBuildEvent>
 		<PreserveCompilationContext>false</PreserveCompilationContext>
 		<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
-		<Version>6.2.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Version>6.4.0.0</Version>
+		<EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries> <!-- Hot reload is completely broken without this -->
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='WinDebug'">
@@ -31,31 +34,36 @@
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureRelease'">
 		<DebugType>embedded</DebugType>
 		<Optimize>true</Optimize>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>WINDOWS;NIGHTLY</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Azure flags allow special code to make tests work on azure since game won't exist there. It should never be used locally -->
 	<PropertyGroup Condition="'$(Configuration)'=='WinAzureTest'">
 		<DebugType>embedded</DebugType>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>WINDOWS;AZURE</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinDebug|x64'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WinRelease|x64'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Remove="Resources\Images\bink.jpg" />
 		<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
 		<Compile Remove="Resources\exec\**" />
+		<Compile Remove="Resources\FileAssocIcons\**" />
+		<Compile Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<Compile Remove="UserControls\SharedToolControls\DirectX\**" />
 		<EmbeddedResource Remove="Resources\exec\**" />
+		<EmbeddedResource Remove="Resources\FileAssocIcons\**" />
+		<EmbeddedResource Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<EmbeddedResource Remove="UserControls\SharedToolControls\DirectX\**" />
 		<None Remove="Resources\exec\**" />
+		<None Remove="Resources\FileAssocIcons\**" />
 		<None Remove="Tools\Icons\**\*.ico" />
+		<None Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<None Remove="UserControls\SharedToolControls\DirectX\**" />
 		<Page Remove="Resources\exec\**" />
+		<Page Remove="Resources\FileAssocIcons\**" />
+		<Page Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
+		<Page Remove="UserControls\SharedToolControls\DirectX\**" />
+		<None Remove="Resources\Images\LEX_Splash_Nightly.png" />
 		<None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
@@ -94,6 +102,7 @@
 		<ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
 		<ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
 		<ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
+		<ProjectReference Include="..\submodules\WwiseParser\WwiseParserLib\WwiseParserLib.csproj" />
 		<ProjectReference Include="..\submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj" />
 		<ProjectReference Include="..\WaveFormRendererLib\WaveFormRendererLib.csproj" />
 		<ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
@@ -101,36 +110,47 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AvalonEdit" Version="6.1.3.50" />
+		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
 		<PackageReference Include="BinaryPack" Version="1.0.3" />
-		<PackageReference Include="CliWrap" Version="3.4.4" />
-		<PackageReference Include="ClosedXML" Version="0.96.0" />
-		<PackageReference Include="ConsoleAppLauncher" Version="2.0.0" />
+		<PackageReference Include="CliWrap" Version="3.6.6" />
+		<PackageReference Include="ClosedXML" Version="0.97.0" />
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
+		<PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
 		<PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
 		<!--Do not upgrade SingleInstance-->
 		<PackageReference Include="HMBSbige.SingleInstance" Version="[5.0.0]" />
-		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.3.0" />
-		<PackageReference Include="LibVLCSharp.WPF" Version="3.6.6" />
-		<PackageReference Include="Microsoft.AppCenter" Version="4.5.3" />
-		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.3" />
-		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.3" />
-		<PackageReference Include="Microsoft.Wpf.Interop.DirectX-x64" Version="0.9.0-beta-22856" />
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
-		<PackageReference Include="NAudio" Version="2.1.0" />
+		<PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
+		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.5.8" />
+		<PackageReference Include="LibVLCSharp.WPF" Version="3.8.5" />
+		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+		<PackageReference Include="Microsoft.AppCenter" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+		<PackageReference Include="Microsoft.Wpf.Interop.DirectX-x64" Version="0.9.0-beta-22856">
+			<NoWarn>NU1701</NoWarn> <!-- Package targets .NETFramework,Version=v4.8.1, but works fine on net6.0-windows -->
+		</PackageReference>
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.4.0" />
+		<PackageReference Include="NAudio" Version="2.2.1" />
 		<PackageReference Include="SharpDX" Version="4.2.0" />
 		<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
-		<PackageReference Include="SharpDX.Desktop" Version="4.2.0" />
+		<PackageReference Include="SharpDX.Desktop" Version="4.2.0">
+			<NoWarn>NU1701</NoWarn> <!-- Package targets .NETFramework,Version=v4.8.1, but works fine on net6.0-windows -->
+		</PackageReference>
 		<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
 		<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.17.4" />
-		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
+		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.6" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
+		<PackageReference Include="NuGet.CommandLine" Version="6.10.0"> <!-- This is needed for trimming during build -->
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='WinDebug'">
+		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -163,11 +183,15 @@
 	<!--The following reduces executable size by not including the other build's images.-->
 	<ItemGroup Condition="'$(Configuration)'=='WinAzureRelease' Or '$(Configuration)'=='WinAzureTest'">
 		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2.png" />
-		<Resource Remove="Resources\Images\LEX_Splash.png" />
+		<EmbeddedResource Include="Resources\Images\LEX_Splash_Nightly.png" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)'!='WinAzureRelease' And '$(Configuration)'!='WinAzureTest'">
 		<Resource Remove="Resources\Images\Legendary_Explorer_Graphic2_Nightly.png" />
-		<Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
+		<EmbeddedResource Include="Resources\Images\LEX_Splash.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Remove="Resources\Images\LEX_Splash.png" />
+	  <Resource Remove="Resources\Images\LEX_Splash_Nightly.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -213,14 +237,11 @@
 		<Compile Update="SharedUI\Controls\SearchBox.xaml.cs">
 			<DependentUpon>SearchBox.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="SharedUI\Controls\ToolBox.xaml.cs">
-			<DependentUpon>ToolBox.xaml</DependentUpon>
+		<Compile Update="SharedUI\Controls\ToolBox - Copy - Copy.xaml.cs">
+		  <DependentUpon>GenericToolBox.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="ToolsetDev\FileHexViewerWPF.xaml.cs">
-			<DependentUpon>FileHexViewerWPF.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="Tools\AnimationImporterExporter\AnimationImporter.xaml.cs">
-			<DependentUpon>AnimationImporter.xaml</DependentUpon>
+		<Compile Update="SharedUI\Controls\ClassToolBox.xaml.cs">
+			<DependentUpon>ClassToolBox.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="Tools\AssetDatabase\AssetDatabaseWindow.xaml.cs">
 			<DependentUpon>AssetDatabaseWindow.xaml</DependentUpon>
@@ -337,7 +358,7 @@
 		<Page Update="SharedUI\Controls\SearchBox.xaml">
 			<SubType>Designer</SubType>
 		</Page>
-		<Page Update="SharedUI\Controls\ToolBox.xaml">
+		<Page Update="SharedUI\Controls\ClassToolBox.xaml">
 			<SubType>Designer</SubType>
 		</Page>
 		<Page Update="ToolsetDev\FileHexViewer.xaml">
@@ -501,13 +522,6 @@
 		</Page>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Resources\FileAssocIcons\" />
-		<Folder Include="Tools\PlotEditor\SFXGame\biodefine\" />
-		<Folder Include="UserControls\ExportLoaderControls\ScriptEditor\" />
-		<Folder Include="UserControls\SharedToolControls\DirectX\" />
-	</ItemGroup>
-
 	<Target Name="Date" BeforeTargets="BeforeBuild">
 		<WriteLinesToFile File="$(ProjectDir)BuildInfo.cs" Lines="/*generated by csproj on build. Do not edit*/namespace LegendaryExplorer{public partial class App{const long CompileTime=$([System.DateTime]::UtcNow.Ticks)%3B}}" Overwrite="true" />
 		<ItemGroup>
@@ -515,34 +529,56 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;BuildTools\UpdateTextTransforms.ps1&quot;" />
-	</Target>
-
 	<ItemGroup>
 		<!--These are for encoding ogg - used by ISACTHelper.dll -->
-		<ContentWithTargetPath Include="Libraries\ogg.dll" Condition="$(Configuration.StartsWith('Win'))">
+		<ContentWithTargetPath Include="Libraries\ogg.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>ogg.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\vorbis.dll" Condition="$(Configuration.StartsWith('Win'))">
+		<ContentWithTargetPath Include="Libraries\vorbis.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>vorbis.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\vorbisenc.dll" Condition="$(Configuration.StartsWith('Win'))">
+		<ContentWithTargetPath Include="Libraries\vorbisenc.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>vorbisenc.dll</TargetPath>
 		</ContentWithTargetPath>
 	</ItemGroup>
 
+	<PropertyGroup>
+		<!-- Trimming variables -->
+		<CurrentRuntime>$(TargetFramework.Replace('-windows', ''))</CurrentRuntime>
+		<CurrentRuntimeVersion>$(BundledNETCoreAppPackageVersion)</CurrentRuntimeVersion>
+		<CurrentRID>$(NETCoreSdkRuntimeIdentifier)</CurrentRID>
+		<SDKRoot>$(NetCoreRoot)sdk\$(NETCoreSdkVersion)</SDKRoot>
+		<illink>$(SDKRoot)\Sdks\Microsoft.NET.ILLink.Tasks\tools\$(CurrentRuntime)\illink.dll</illink>
+		<NugetSourceRoot>$(UserProfile)\.nuget\packages</NugetSourceRoot>
+		<NETCoreAppPackageName>Microsoft.NETCore.App.Runtime.$(CurrentRID)</NETCoreAppPackageName>
+		<NETCoreAppDir>$(NugetSourceRoot)\$(NETCoreAppPackageName)\$(CurrentRuntimeVersion)\runtimes\$(CurrentRID)\lib\$(CurrentRuntime)</NETCoreAppDir>
+		<WindowsDesktopPackageName>Microsoft.WindowsDesktop.App.Runtime.$(CurrentRID)</WindowsDesktopPackageName>
+		<WindowsDesktopAppDir>$(NugetSourceRoot)\$(WindowsDesktopPackageName)\$(CurrentRuntimeVersion)\runtimes\$(CurrentRID)\lib\$(CurrentRuntime)</WindowsDesktopAppDir>
+		<ILLinkFolderName>trimmed</ILLinkFolderName>
+	</PropertyGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Message Importance="high" Text="PublishDir=$(PublishDir)" />
 		<Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(OutDir)exec\&quot;" />
-		<Exec Command="&quot;$(ProjectDir)BuildTools\InsertIcons.exe&quot; &quot;$(TargetDir)LegendaryExplorer.exe&quot; &quot;$(ProjectDir)BuildTools\iconlist.txt&quot;" />
 		<!--Space required or it tries to escape the quote-->
 		<!-- Not 100% working. Seems like sqlite has same post build in parallel somehow? -->
 		<!-- Used for stable deployments script -->
 		<!--<Exec Command="powershell -ExecutionPolicy Bypass -File &quot;Build\PostBuildCleanup.ps1&quot; &quot;$(TargetDir) &quot;" />-->
+
+		<!-- TRIMMING. Currently only trims TerraFX.Interop.Windows. (17mb -> 33kb) Could be expanded in future-->
+		<!-- All errors are ignored because NuGet reports that it doesn't support the package type after installing it. Also, if the trim step fails, the program will still work... No need to make it a blocker.  -->
+		<!-- 1st Step: Install the .NET packages that are required for trimming -->
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease' And !Exists('$(NETCoreAppDir)')" Command="$(PkgNuGet_CommandLine)\tools\NuGet.exe install $(NETCoreAppPackageName) -Version $(CurrentRuntimeVersion) -OutputDirectory $(NugetSourceRoot)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease' And !Exists('$(WindowsDesktopAppDir)')" Command="$(PkgNuGet_CommandLine)\tools\NuGet.exe install $(WindowsDesktopPackageName) -Version $(CurrentRuntimeVersion) -OutputDirectory $(NugetSourceRoot)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<!-- 2nd Step: Trimming with ILLink -->
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease'" Command="dotnet exec &quot;$(illink)&quot; -a &quot;$(TargetPath)&quot; all --trim-mode copy --action copy --action link &quot;TerraFX.Interop.Windows&quot;  -d $(TargetDir) -d $(NETCoreAppDir) -d $(WindowsDesktopAppDir) --skip-unresolved -out &quot;$(TargetDir)$(ILLinkFolderName)&quot;" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<!-- 3rd Step: Copy trimmed dll to the output directory -->
+		<Exec Condition="'$(Configuration)' == 'WinAzureRelease'" Command="xcopy /f /e /y &quot;$(TargetDir)$(ILLinkFolderName)\TerraFX.Interop.Windows.dll&quot; &quot;$(OutDir)\&quot;" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" />
+		<!-- 4th Step: Delete the ILLink output directory -->
+		<RemoveDir Condition="'$(Configuration)' == 'WinAzureRelease'" Directories="$(TargetDir)$(ILLinkFolderName)\" />
 	</Target>
 	<Target Name="PostPublish" AfterTargets="Publish">
 		<Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec" />

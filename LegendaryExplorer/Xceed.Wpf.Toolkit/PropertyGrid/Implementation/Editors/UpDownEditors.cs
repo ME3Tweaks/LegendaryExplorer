@@ -276,8 +276,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Editors
     }
   }
 
-
-
   public class PropertyGridEditorByteUpDown : ByteUpDown
   {
     static PropertyGridEditorByteUpDown()
@@ -385,5 +383,4 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid.Editors
       DefaultStyleKeyProperty.OverrideMetadata( typeof( PropertyGridEditorUShortUpDown ), new FrameworkPropertyMetadata( typeof( PropertyGridEditorUShortUpDown ) ) );
     }
   }
-
 }

@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.TLK.ME1
     /// <summary>
     /// Represents the tlk embedded in a BioTalkFile export, which is used in ME1/LE1. For ME2/ME3/LE2/LE3TLK, use <see cref="ME2ME3TalkFile"/>.
     /// </summary>
+    [DebuggerDisplay("ME1TalkFile - StringRefs: {StringRefs.Count} - Modified: {IsModified} - Package: {FilePath}")]
     public class ME1TalkFile : IEquatable<ME1TalkFile>, ITalkFile
     {
         /// <summary>
@@ -79,7 +80,6 @@ namespace LegendaryExplorerCore.TLK.ME1
         /// </summary>
         public readonly string BioTlkSetName;
 
-
         #region Constructors
         /// <summary>
         /// Creates a new <see cref="ME1TalkFile"/> from the export at <paramref name="uIndex"/> in <paramref name="pcc"/>
@@ -112,7 +112,6 @@ namespace LegendaryExplorerCore.TLK.ME1
 
             // ME1 localizations for TLK are... fun
             Localization = getTlkLocalization(export);
-
         }
 
         private MELocalization getTlkLocalization(ExportEntry exportEntry)
@@ -134,7 +133,6 @@ namespace LegendaryExplorerCore.TLK.ME1
         }
 
         #endregion
-
 
         /// <summary>
         /// Replaces a string in the list of StringRefs.
@@ -210,7 +208,6 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
             return returnNullIfNotFound ? null : "No Data";
         }
-
 
         /// <summary>
         /// Find the matching string id for the specified string. Returns -1 if not found. The male parameter is not used.

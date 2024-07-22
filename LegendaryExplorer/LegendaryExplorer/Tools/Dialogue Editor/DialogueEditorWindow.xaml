@@ -1102,7 +1102,6 @@
                                         </Button>
                                     </Grid>
                                     <ListBox Name="Start_ListBox" DockPanel.Dock="Bottom"
-                                             ItemsSource="{Binding SelectedStarts, Mode=TwoWay}"
                                              VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                              ScrollViewer.VerticalScrollBarVisibility="Visible"
                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"

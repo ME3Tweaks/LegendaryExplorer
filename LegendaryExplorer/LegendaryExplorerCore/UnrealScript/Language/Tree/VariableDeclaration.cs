@@ -16,6 +16,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public int ArrayLength;
 
+        public ushort ReplicationOffset = 0;
+
         public bool IsStaticArray => ArrayLength > 1;
 
         public bool IsTransient => Flags.Has(UnrealFlags.EPropertyFlags.Transient);
@@ -66,9 +68,16 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                         varType = staticArrayType.ElementType;
                         continue;
                     case DynamicArrayType dynamicArrayType:
-                        varType = dynamicArrayType.ElementType;
-                        continue;
-                    case Struct:
+                        return dynamicArrayType.ElementPropertyFlags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
+                    case Struct strct:
+                        foreach (VariableDeclaration structVarDecl in strct.VariableDeclarations)
+                        {
+                            if (structVarDecl.IsOrHasInstancedObjectProperty())
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
                     case ObjectType:
                         return Flags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
                     default:

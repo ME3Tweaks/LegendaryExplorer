@@ -289,9 +289,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
-
     #endregion
 
     #region Constructors

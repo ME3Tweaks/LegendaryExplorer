@@ -14,6 +14,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.Tools.SFARExplorer
 {
@@ -43,7 +44,6 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             LoadCommands();
             InitializeComponent();
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, fileName => LoadFile(fileName));
-
         }
 
         public GenericCommand LoadDLCCommand { get; set; }
@@ -156,8 +156,6 @@ namespace LegendaryExplorer.Tools.SFARExplorer
             }
         }
 
-
-
         private bool CanLoadDLC()
         {
             return true;
@@ -167,7 +165,9 @@ namespace LegendaryExplorer.Tools.SFARExplorer
         {
             var ofd = new OpenFileDialog()
             {
-                Filter = "SFAR files|*.sfar"
+                Title = "Select DLC SFAR",
+                Filter = "SFAR files|*.sfar",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             var result = ofd.ShowDialog();

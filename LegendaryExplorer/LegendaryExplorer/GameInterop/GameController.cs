@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using LegendaryExplorer.GameInterop.InteropTargets;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Packages;
 using Keys = System.Windows.Forms.Keys;
@@ -31,7 +32,10 @@ namespace LegendaryExplorer.GameInterop
 
         public static InteropTarget GetInteropTargetForGame(MEGame game)
         {
-            if (Targets.ContainsKey(game)) return Targets[game];
+            if (Targets.TryGetValue(game, out InteropTarget target))
+            {
+                return target;
+            }
             return null;
         }
 
@@ -43,7 +47,37 @@ namespace LegendaryExplorer.GameInterop
             return GetInteropTargetForGame(game)?.TryGetProcess(out meProcess) ?? false;
         }
 
-        private static bool hasRegisteredForMessages; 
+
+
+        #region For delegates for things like tools to determine which game is running
+        /// <summary>
+        /// Returns the running game
+        /// </summary>
+        /// <returns></returns>
+        public static MEGame? GetRunningMEGame(MEGame[] games = null)
+        {
+            foreach (var game in games ?? Enum.GetValues<MEGame>())
+            {
+                if (IsGameOpen(game))
+                {
+                    return game;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the running game as a string
+        /// </summary>
+        /// <returns></returns>
+        public static Func<string> GetRunningMEGameStrDelegate(MEGame[] games = null)
+        {
+            return () => GetRunningMEGame(games)?.ToString();
+        }
+        #endregion
+
+        private static bool hasRegisteredForMessages;
         public static void InitializeMessageHook(Window window)
         {
             if (hasRegisteredForMessages) return;
@@ -94,14 +128,10 @@ namespace LegendaryExplorer.GameInterop
             return IntPtr.Zero;
         }
 
-        [DllImport("user32.dll")]
-        static extern bool SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         const int WM_SYSKEYDOWN = 0x0104;
 
         private static void SendKey(IntPtr hWnd, Keys key) => SendKey(hWnd, (int)key);
-        private static void SendKey(IntPtr hWnd, int key) => PostMessage(hWnd, WM_SYSKEYDOWN, key, 0);
+        private static void SendKey(IntPtr hWnd, int key) => WindowsAPI.PostMessage(hWnd, WM_SYSKEYDOWN, key, 0);
 
         /// <summary>
         /// Executes a console command on the game whose window handle is passed.
@@ -128,7 +158,7 @@ namespace LegendaryExplorer.GameInterop
 
         internal static bool SendTOCMessage(IntPtr hWnd, uint Msg)
         {
-            return SendMessage(hWnd, Msg, 0, 0);
+            return WindowsAPI.SendMessage(hWnd, Msg, 0, 0) != 0;
         }
 
         static readonly Dictionary<char, Keys> characterMapping = new()

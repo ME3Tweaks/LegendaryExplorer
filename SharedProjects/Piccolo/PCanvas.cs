@@ -29,7 +29,6 @@
  * www.cs.umd.edu/hcil/piccolo.
  */
 
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -449,7 +448,6 @@ namespace Piccolo {
 			// PCanvas
 			// 
 			this.Text = "8";
-
 		}
 		#endregion
 
@@ -649,7 +647,6 @@ namespace Piccolo {
 		/// <param name="drgevent">A DragEventArgs that contains the event data.</param>
 		protected override void OnDragEnter(DragEventArgs drgevent) {
 			base.OnDragEnter (drgevent);
-
 		}
 
 		/// <summary>

@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
     internal enum ValidationPass
     {
+        ClassRegistration,
         TypesAndFunctionNamesAndStateNames,
         ClassAndStructMembersAndFunctionParams,
         BodyPass
@@ -22,7 +23,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
     internal class ClassValidationVisitor : IASTVisitor
     {
-
         private readonly SymbolTable Symbols;
         private readonly MessageLog Log;
         private bool Success;
@@ -31,7 +31,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols)
         {
-            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.TypesAndFunctionNamesAndStateNames);
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
+            node.AcceptVisitor(validator);
+            validator.Pass = ValidationPass.TypesAndFunctionNamesAndStateNames;
             node.AcceptVisitor(validator);
             validator.Pass = ValidationPass.ClassAndStructMembersAndFunctionParams;
             node.AcceptVisitor(validator);
@@ -58,7 +60,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             switch (Pass)
             {
-                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                case ValidationPass.ClassRegistration:
                 {
                     // TODO: allow duplicate names as long as its in different packages!
                     if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
@@ -71,7 +73,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
                         if (Symbols.TryGetType(node.Parent.Name, out Class parentClass))
                         {
-                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.Length);
+                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.TextLength);
                             node.Parent = parentClass;
 
                             if (parentClass == node)
@@ -84,12 +86,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             return Error($"No class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
                         }
 
-
                         if (node._outerClass != null)
                         {
                             if (Symbols.TryGetType(node._outerClass.Name, out Class outerClass))
                             {
-                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.Length);
+                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.TextLength);
                                 node._outerClass = outerClass;
                             }
                             else
@@ -103,7 +104,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             VariableType interfaceStub = node.Interfaces[i];
                             if (Symbols.TryGetType(interfaceStub.Name, out Class @interface))
                             {
-                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.Length);
+                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.TextLength);
 
                                 if (!node.IsNative && @interface.IsNative)
                                 {
@@ -127,11 +128,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
                         }
-                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
+                    }
+                    return Success;
+                }
+                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                {
+                    if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
+                    {
+                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString(), createScopesIfNeccesary: true);
                         Symbols.PushScope(node.Name);
                     }
-
-
 
                     //register all the types this class declares
                     foreach (VariableType type in node.TypeDeclarations)
@@ -237,6 +243,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
                 case ValidationPass.BodyPass:
                 {
+                    if (node.Parent is Class parentClass)
+                    {
+                        //loop in case we are compiling multiple classes at once and our direct parent has not inherited flags yet
+                        do
+                        {
+                            node.Flags |= parentClass.Flags & (EClassFlags.Inherit | EClassFlags.Config);
+                            if (node.Flags.Has(EClassFlags.Config) && node.ConfigName.CaseInsensitiveEquals("None"))
+                            {
+                                node.ConfigName = NameReference.FromInstancedString(parentClass.ConfigName);
+                            }
+                            parentClass = parentClass.Parent as Class;
+                        } while (parentClass is not null);
+                    }
+
                     //from UDN: "Implementing multiple interface classes which have a common base is not supported and will result in incorrect vtable offsets"
                     if (node.Interfaces.Count > 1)
                     {
@@ -299,9 +319,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             node.Flags |= EClassFlags.HasCrossLevelRefs;
                         }
-                        if (decl.Flags.Has(EPropertyFlags.Config))
+                        if (decl.Flags.Has(EPropertyFlags.Config) && !node.Flags.Has(EClassFlags.Config))
                         {
-                            node.Flags |= EClassFlags.Config;
+                            Error("Cannot have a config var in a class with no specified config file.", decl.StartPos);
                         }
                         if (decl.Flags.Has(EPropertyFlags.Localized))
                         {
@@ -320,7 +340,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
         }
 
-
         public bool VisitNode(VariableDeclaration node) => VisitVarDecl(node);
 
         public bool VisitNode(FunctionParameter node) => VisitVarDecl(node);
@@ -337,9 +356,52 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         var typeStub = node.VarType;
                         if (!Symbols.TryResolveType(ref node.VarType))
                         {
-                            return Error($"No type named '{node.VarType.FullTypeName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
+                            return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
-                        Log.Tokens?.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.Length);
+
+                        //Tokens will only be set when parsing source code, not when linking up a decompiled AST
+                        if (Log.Tokens is not null)
+                        {
+                            Log.Tokens.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
+                            //disgusting hack...
+                            switch (node.VarType)
+                            {
+                                case Struct or Enumeration:
+                                {
+                                    int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos);
+                                    if (idx >= 0)
+                                    {
+                                        ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
+                                        if (node.VarType is Struct)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Struct;
+                                        }
+                                        else if (node.VarType is Enumeration)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Enum;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case DynamicArrayType { ElementType: Struct or Enumeration} dynArrType:
+                                {
+                                    int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos) + 2;
+                                    if (idx >= 0)
+                                    {
+                                        ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
+                                        if (dynArrType.ElementType is Struct)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Struct;
+                                        }
+                                        else if (dynArrType.ElementType is Enumeration)
+                                        {
+                                            typeNameToken.SyntaxType = EF.Enum;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                     if (Symbols.SymbolExistsInCurrentScope(node.Name))
@@ -350,39 +412,44 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
 
                 VariableType nodeVarType = (node.VarType as StaticArrayType)?.ElementType ?? node.VarType;
-                if (nodeVarType is DelegateType ||
-                    !node.Flags.Has(EPropertyFlags.Native) && nodeVarType is DynamicArrayType or { PropertyType: EPropertyType.String })
+                //if (node.Outer is not Function)
                 {
-                    node.Flags |= EPropertyFlags.NeedCtorLink;
+                    if (nodeVarType is DelegateType ||
+                        !node.Flags.Has(EPropertyFlags.Native) && nodeVarType is DynamicArrayType or { PropertyType: EPropertyType.String })
+                    {
+                        node.Flags |= EPropertyFlags.NeedCtorLink;
+                    }
                 }
             }
             else if (Pass is ValidationPass.BodyPass)
             {
-                //should component flag be set when this is a function parameter?
-                switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
+                //if (node.Outer is not Function) Not sure why I added this in the first place? But it's definitely wrong
                 {
-                    case DynamicArrayType {ElementType: VariableType elType} dynArrType:
-                        if (elType is Class {NeedsComponentFlag: true})
-                        {
-                            dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
-                            node.Flags |= EPropertyFlags.Component;
-                        }
-                        else if (elType is DelegateType ||
-                                 !node.Flags.Has(EPropertyFlags.Native) && (elType.PropertyType is EPropertyType.String ||
+                    switch ((node.VarType as StaticArrayType)?.ElementType ?? node.VarType)
+                    {
+                        case DynamicArrayType { ElementType: VariableType elType } dynArrType:
+                            if (elType is Class { NeedsComponentFlag: true })
+                            {
+                                dynArrType.ElementPropertyFlags |= EPropertyFlags.Component;
+                                node.Flags |= EPropertyFlags.Component;
+                            }
+                            else if (elType is DelegateType ||
+                                     !node.Flags.Has(EPropertyFlags.Native) && (elType.PropertyType is EPropertyType.String ||
                                                                                 elType is Struct elStruct && StructNeedsCtorLink(elStruct, new Stack<Struct> { elStruct })))
-                        {
-                            dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
-                        }
-                        break;
-                    case Class {NeedsComponentFlag: true}:
-                        node.Flags |= EPropertyFlags.Component;
-                        break;
-                    case Struct strct:
-                        if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
-                        {
-                            node.Flags |= EPropertyFlags.NeedCtorLink;
-                        }
-                        break;
+                            {
+                                dynArrType.ElementPropertyFlags |= EPropertyFlags.NeedCtorLink;
+                            }
+                            break;
+                        case Class { NeedsComponentFlag: true }:
+                            node.Flags |= EPropertyFlags.Component;
+                            break;
+                        case Struct strct:
+                            if (!node.Flags.Has(EPropertyFlags.Native) && StructNeedsCtorLink(strct, new Stack<Struct> { strct }))
+                            {
+                                node.Flags |= EPropertyFlags.NeedCtorLink;
+                            }
+                            break;
+                    }
                 }
 
                 bool StructNeedsCtorLink(Struct s1, Stack<Struct> stack)
@@ -483,7 +550,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     if (node.Outer is ObjectType containingObject && containingObject.LookupStruct(node.Parent.Name) is Struct parentStruct
                         || Symbols.TryGetType(node.Parent.Name, out parentStruct))
                     {
-                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.Length);
+                        Log.Tokens?.AddDefinitionLink(parentStruct, node.Parent.StartPos, node.Parent.TextLength);
                         node.Parent = parentStruct;
                         parentScope = $"{NodeUtils.GetContainingClass(node.Parent).GetInheritanceString()}.{node.Parent.Name}";
                     }
@@ -612,10 +679,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     //Consts do not have to be globally unique, but they do have to be unique within a scope
                     if (((ObjectType)node.Outer).TypeDeclarations.Any(decl => decl != node && decl.Name.CaseInsensitiveEquals(node.Name)))
                     {
-                        return Error($"A type named '{node.FullTypeName()}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
+                        return Error($"A type named '{node.DisplayName()}' already exists in this {node.Outer.GetType().Name.ToLower()}!", node.StartPos, node.EndPos);
                     }
                 }
-
 
                 node.Declaration = node;
             }
@@ -648,20 +714,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     param.Outer = node;
                     Success &= param.AcceptVisitor(this);
-                }
 
-                //foreach (VariableDeclaration local in node.Locals)
-                //{
-                //    local.Outer = node;
-                //    Success &= local.AcceptVisitor(this);
-                //}
+                    if (Symbols.SymbolExistsInParentScopes(param.Name))
+                    {
+                        Log.LogWarning($"A symbol named '{param.Name}' exists in a parent scope. Are you sure you want to shadow it?", param.StartPos, param.EndPos);
+                    }
+                }
+                
                 Symbols.PopScope();
 
                 if (Success == false)
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
-
-                if (node.FriendlyName is not null //true in ME1, ME2, LE1, and LE2
+                if (node.FriendlyName is not null //true in ME1, ME2, LE1, LE2, and UDK
                  && node.IsOperator)
                 {
                     TokenType operatorType = OperatorHelper.FriendlyNameToTokenType(node.FriendlyName);
@@ -772,7 +837,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
                 }
 
-
                 if (node.ReturnValueDeclaration != null)
                 {
                     Success &= node.ReturnValueDeclaration.AcceptVisitor(this);
@@ -788,6 +852,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     //if the return type is > 64 bytes, it can't be allocated on the stack.
                     node.RetValNeedsDestruction = node.ReturnValueDeclaration.Flags.Has(EPropertyFlags.NeedCtorLink) || node.ReturnType.Size(Symbols.Game) > 64;
+                }
+
+                if (node.Flags.Has(EFunctionFlags.Delegate))
+                {
+                    if (containingClass.VariableDeclarations.Find(varDecl => varDecl.VarType is DelegateType delType && varDecl.Name == $"__{node.Name}__Delegate" && delType.DefaultFunction.Name == node.Name) is null)
+                    {
+                        return Error($"Delegate functions must have a corresponding property! Expected this declaration: 'var delegate<{node.Name}> __{node.Name}__Delegate;' (2 _ on each side)", node.StartPos, node.EndPos);
+                    }
                 }
             }
             return Success;
@@ -1001,6 +1073,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             throw new NotImplementedException();
         }
         public bool VisitNode(DynArrayIterator node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool VisitNode(CommentStatement node)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -141,7 +140,6 @@ namespace LegendaryExplorerCore.Unreal
                     file.WriteLine($"\t\tFilename\t\t\t{hte.name}");
                 }
             }
-
         }
 
 #if DEBUG
@@ -163,7 +161,6 @@ namespace LegendaryExplorerCore.Unreal
                     Debug.WriteLine($"\t\tFilename\t\t\t{hte.name}");
                 }
             }
-
         }
 #endif
 
@@ -203,7 +200,6 @@ public void ReadFile(MemoryStream ms)
         reader.Position = newEntry.offset + pos;
         for (int j = 0; j < newEntry.entrycount; j++)
         {
-
             Entry e = new()
             {
                 offset = (int)reader.Position,
@@ -224,7 +220,6 @@ public void ReadFile(MemoryStream ms)
         reader.Position = resumePosition;
     }
 }
-
 
         public void UpdateEntry(int Index, int size)
         {
@@ -264,8 +259,6 @@ public void ReadFile(MemoryStream ms)
                     var dontWriteEntrySize = hb == lastBucketWithEntries && j == (hb.TOCEntries.Count - 1);
                     entry.WriteOut(fs, dontWriteEntrySize); // byte aligns automatically
                 }
-
-
 
                 var nextEntryPos = fs.Position;
 

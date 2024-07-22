@@ -24,7 +24,6 @@ namespace LegendaryExplorer.SharedUI.Controls
 
         public ListBoxTask()
         {
-
         }
 
         public ListBoxTask(string header)

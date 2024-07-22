@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,6 +12,8 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Image = LegendaryExplorerCore.Textures.Image;
+using PixelFormat = LegendaryExplorerCore.Textures.PixelFormat;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
@@ -18,7 +22,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public List<Texture2DMipInfo> Mips { get; }
         public readonly bool NeverStream;
         public readonly ExportEntry Export;
-        public readonly string TextureFormat;
+        public string TextureFormat { get; init; }
         public Guid TextureGuid;
 
         // Callback for when there's an exception. Used by M3 to localize the error. Defaults to an int version since ME3Explorer is INT only
@@ -62,9 +66,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             if (format != null)
             {
                 var cache = properties.GetProp<NameProperty>("TextureFileCacheName");
-                List<Texture2DMipInfo> mips = Texture2D.GetTexture2DMipInfos(export, cache?.Value);
+                List<Texture2DMipInfo> mips = GetTexture2DMipInfos(export, cache?.Value);
                 var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
-                return Texture2D.GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
+                return GetMipCRC(topmip, format.Value, additionalTFCs: additionalTFCs);
             }
 
             return 0; // BIOA_GLO_00_B_Sovereign_T.upk in ME1 has a Texture2D export in it that is completely blank, no props, no binary. no idea how this compiled
@@ -75,7 +79,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
         }
 
-
         public Texture2DMipInfo GetTopMip()
         {
             return Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
@@ -83,12 +86,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public static List<Texture2DMipInfo> GetTexture2DMipInfos(ExportEntry exportEntry, string cacheName)
         {
-            UTexture2D texBin = exportEntry.GetBinaryData<UTexture2D>();
+            var texBin = exportEntry.GetBinaryData<UTexture2D>();
             var mips = new List<Texture2DMipInfo>();
             for (int i = 0; i < texBin.Mips.Count; i++)
             {
                 UTexture2D.Texture2DMipMap binMip = texBin.Mips[i];
-                Texture2DMipInfo mip = new Texture2DMipInfo
+                var mip = new Texture2DMipInfo
                 {
                     Export = exportEntry,
                     index = texBin.Mips.Count - i,
@@ -138,7 +141,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
                 else
                 {
-                    throw e; //rethrow
+                    throw; //rethrow
                 }
             }
             if (imageBytes == null)
@@ -201,44 +204,74 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips.AddRange(mipmaps);
         }
 
-
+        /// <summary>
+        /// Gets texture data for the given mip.
+        /// </summary>
+        /// <param name="mipToLoad"></param>
+        /// <param name="game"></param>
+        /// <param name="gamePathToUse"></param>
+        /// <param name="decompress"></param>
+        /// <param name="additionalTFCs"></param>
+        /// <returns></returns>
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, MEGame game, string gamePathToUse = null, bool decompress = true, List<string> additionalTFCs = null)
         {
+            return GetTextureData(game, mipToLoad.Mip, mipToLoad.storageType, decompress, mipToLoad.uncompressedSize, mipToLoad.compressedSize, mipToLoad.externalOffset, mipToLoad.TextureCacheName, gamePathToUse, additionalTFCs, mipToLoad.Export?.FileRef.FilePath);
+        }
+
+        /// <summary>
+        /// Gets texture data from the given data.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="mipData"></param>
+        /// <param name="storageType"></param>
+        /// <param name="decompress"></param>
+        /// <param name="uncompressedSize"></param>
+        /// <param name="compressedSize"></param>
+        /// <param name="externalOffset"></param>
+        /// <param name="textureCacheName"></param>
+        /// <param name="gamePathToUse"></param>
+        /// <param name="additionalTFCs"></param>
+        /// <param name="packagePathForLocalLookup"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        public static byte[] GetTextureData(MEGame game, byte[] mipData, StorageTypes storageType, bool decompress, int uncompressedSize, int compressedSize, int externalOffset, string textureCacheName, string gamePathToUse = null, List<string> additionalTFCs = null, string packagePathForLocalLookup = null)
+        {
             bool dataLoaded = false;
-            var imagebytes = new byte[decompress ? mipToLoad.uncompressedSize : mipToLoad.compressedSize];
-            //Debug.WriteLine("getting texture data for " + mipToLoad.Export.FullPath);
-            if (mipToLoad.storageType == StorageTypes.pccUnc)
+            var imagebytes = new byte[decompress ? uncompressedSize : compressedSize];
+            //Debug.WriteLine("getting texture data for " + Export.FullPath);
+            if (storageType == StorageTypes.pccUnc)
             {
-                Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.uncompressedSize);
+                Buffer.BlockCopy(mipData, 0, imagebytes, 0, uncompressedSize);
             }
-            else if (mipToLoad.storageType is StorageTypes.pccLZO or StorageTypes.pccZlib or StorageTypes.pccOodle)
+            else if (storageType is StorageTypes.pccLZO or StorageTypes.pccZlib or StorageTypes.pccOodle)
             {
                 if (decompress)
                 {
                     try
                     {
                         TextureCompression.DecompressTexture(imagebytes,
-                                                             new MemoryStream(mipToLoad.Mip),
-                                                             mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                                                             new MemoryStream(mipData),
+                                                             storageType, uncompressedSize, compressedSize);
                     }
                     catch (Exception e)
                     {
-                        throw new Exception(GetLocalizedTextureExceptionInternalMessage(e.Message, mipToLoad.storageType.ToString()));
+                        throw new Exception(GetLocalizedTextureExceptionInternalMessage(e.Message, storageType.ToString()));
                     }
                 }
                 else
                 {
-                    Buffer.BlockCopy(mipToLoad.Mip, 0, imagebytes, 0, mipToLoad.compressedSize);
+                    Buffer.BlockCopy(mipData, 0, imagebytes, 0, compressedSize);
                 }
             }
-            else if (mipToLoad.storageType != StorageTypes.empty && ((int)mipToLoad.storageType & (int)StorageFlags.externalFile) != 0)
+            else if (storageType != StorageTypes.empty && ((int)storageType & (int)StorageFlags.externalFile) != 0)
             {
                 // external 
                 string filename = null;
                 List<string> loadedFiles = MELoadedFiles.GetAllGameFiles(gamePathToUse, game, false, true);
-                if (mipToLoad.Export.Game == MEGame.ME1)
+                if (game == MEGame.ME1)
                 {
-                    var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                    var fullPath = loadedFiles.FirstOrDefault(x => Path.GetFileName(x).Equals(textureCacheName, StringComparison.InvariantCultureIgnoreCase));
 
                     if (fullPath != null)
                     {
@@ -246,15 +279,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     }
                     else
                     {
-                        fullPath = AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileName(x).Equals(mipToLoad.TextureCacheName, StringComparison.InvariantCultureIgnoreCase));
-                        filename = fullPath ?? throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(mipToLoad.TextureCacheName));
+                        fullPath = AdditionalME1MasterTexturePackages.FirstOrDefault(x => Path.GetFileName(x).Equals(textureCacheName, StringComparison.InvariantCultureIgnoreCase));
+                        filename = fullPath ?? throw new FileNotFoundException(GetLocalizedCouldNotFindME1TexturePackageMessage(textureCacheName));
                     }
                 }
                 else
                 {
-                    string archive = mipToLoad.TextureCacheName + @".tfc";
+                    string archive = textureCacheName + @".tfc";
 
-                    var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(mipToLoad.Export.FileRef.FilePath), archive);
+                    var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(packagePathForLocalLookup), archive);
                     if (File.Exists(localDirectoryTFCPath))
                     {
                         filename = localDirectoryTFCPath;
@@ -272,40 +305,31 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         {
                             filename = fullPath;
                         }
-                        else if (game == MEGame.ME3 && mipToLoad.TextureCacheName.StartsWith(@"Textures_DLC"))
+                        else if (game == MEGame.ME3 && textureCacheName.StartsWith(@"Textures_DLC"))
                         {
                             // Check SFAR
-                            var dlcName = mipToLoad.TextureCacheName.Substring(9);
-                            if (MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) && ME3Directory.DLCPath != null)
-                            {
-                                var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
-                                if (File.Exists(sfarPath))
-                                {
-                                    var dpackage = new DLCPackage(sfarPath);
-                                    var entryId = dpackage.FindFileEntry(archive);
-                                    if (entryId >= 0)
-                                    {
-                                        // TFC is in this SFAR
-                                        imagebytes = dpackage.ReadFromEntry(entryId, mipToLoad.externalOffset, mipToLoad.uncompressedSize);
-                                        dataLoaded = true;
-                                    }
-                                    else
-                                    {
-                                        // File not in archive
-                                        throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                                    }
-                                }
-                                else
-                                {
-                                    // SFAR not in folder
-                                    throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
-                                }
-                            }
-                            else
+                            var dlcName = textureCacheName.Substring(9);
+                            if (!MEDirectories.OfficialDLC(MEGame.ME3).Contains(dlcName) || ME3Directory.DLCPath is null)
                             {
                                 // Not an official DLC
                                 throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
                             }
+                            var sfarPath = Path.Combine(ME3Directory.DLCPath, dlcName, game.CookedDirName(), "Default.sfar");
+                            if (!File.Exists(sfarPath))
+                            {
+                                // SFAR not in folder
+                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                            }
+                            var dpackage = new DLCPackage(sfarPath);
+                            var entryId = dpackage.FindFileEntry(archive);
+                            if (entryId < 0)
+                            {
+                                // File not in archive
+                                throw new FileNotFoundException(GetLocalizedCouldNotFindME2ME3TextureCacheMessage(archive));
+                            }
+                            // TFC is in this SFAR
+                            imagebytes = dpackage.ReadFromEntry(entryId, externalOffset, uncompressedSize);
+                            dataLoaded = true;
                         }
                         else
                         {
@@ -320,42 +344,27 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     try
                     {
-                        try
+                        using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                        fs.Seek(externalOffset, SeekOrigin.Begin);
+                        if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle)
                         {
-                            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                            fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
-                            if (mipToLoad.storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle)
+                            if (decompress)
                             {
-                                if (decompress)
-                                {
-                                    try
-                                    {
-                                        using MemoryStream tmpStream = fs.ReadToMemoryStream(mipToLoad.compressedSize);
-                                        TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
-                                    }
-                                }
-                                else
-                                {
-                                    fs.Read(imagebytes, 0, mipToLoad.compressedSize);
-                                }
+                                TextureCompression.DecompressTexture(imagebytes, fs, storageType, uncompressedSize, compressedSize);
                             }
                             else
                             {
-                                fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
+                                fs.Read(imagebytes, 0, compressedSize);
                             }
                         }
-                        catch (Exception e)
+                        else
                         {
-                            throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                            fs.Read(imagebytes, 0, uncompressedSize);
                         }
                     }
                     catch (Exception e)
                     {
-                        throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, mipToLoad.storageType.ToString(), mipToLoad.externalOffset.ToString()));
+                        throw new Exception(GetLocalizedTextureExceptionExternalMessage(e.Message, filename, storageType.ToString(), externalOffset.ToString()));
                     }
                 }
             }
@@ -375,6 +384,59 @@ namespace LegendaryExplorerCore.Unreal.Classes
         }
 
         /// <summary>
+        /// Generates the data for a single blank (black) mip of the given size.
+        /// </summary>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static byte[] CreateBlankTextureMip(int sizeX, int sizeY, PixelFormat format)
+        {
+            // Generates blank texture data in the given format
+            Bitmap bmp = new Bitmap(sizeX, sizeY);
+            var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Bmp);
+            var blank = new Image(ms.ToArray(), Image.ImageFormat.BMP);
+            blank.correctMips(format); // Generate the mip data
+            return blank.mipMaps[0].data;
+        }
+
+        /// <summary>
+        /// Generates the data for a mipped blank (black) texture of the given size.
+        /// </summary>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static List<MipMap> CreateBlankTextureMips(int sizeX, int sizeY, PixelFormat format)
+        {
+            // Generates blank texture data in the given format
+            Bitmap bmp = new Bitmap(sizeX, sizeY);
+            var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Bmp);
+            var blank = new Image(ms.ToArray(), Image.ImageFormat.BMP);
+            blank.correctMips(format); // Generate the mip data
+            return blank.mipMaps;
+        }
+
+        /// <summary>
+        /// Generates the data for a single mip from the given data and type.
+        /// </summary>
+        /// <param name="inputData"></param>
+        /// <param name="dataFormat"></param>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="destFormat"></param>
+        /// <returns></returns>
+        public static byte[] CreateSingleMip(byte[] inputData, Image.ImageFormat dataFormat, PixelFormat destFormat)
+        {
+            // Generates blank texture data in the given format
+            var blank = new Image(inputData, dataFormat);
+            blank.correctMips(destFormat); // Generate the mip data
+            return blank.mipMaps[0].data;
+        }
+
+        /// <summary>
         /// Replaces the texture data for this Texture2D based on the incoming data from image.
         /// </summary>
         /// <param name="image"></param>
@@ -384,7 +446,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedFormat = PixelFormat.Unknown)
         {
             var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
@@ -393,7 +455,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             PixelFormat pixelFormat = Image.getPixelFormatType(fmt);
             RemoveEmptyMipsFromMipList();
 
-            PixelFormat newPixelFormat = pixelFormat;
+            PixelFormat newPixelFormat = forcedFormat != PixelFormat.Unknown ? forcedFormat : pixelFormat;
 
             // Generate mips if necessary
             if (!image.checkDDSHaveAllMipmaps() || Mips.Count > 1 && image.mipMaps.Count <= 1 || image.pixelFormat != newPixelFormat)
@@ -464,13 +526,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     continue;
                 }
 
-                if (Export.Game.IsOTGame() && Export.Game < MEGame.ME3)
-                {
-                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccLZO : StorageTypes.extLZO)); //LZO 
-                }
-                else if (Export.Game == MEGame.ME3)
+                if (Export.Game == MEGame.ME3)
                 {
                     compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccZlib : StorageTypes.extZlib)); //ZLib
+                }
+                else if (Export.Game.IsOTGame() || Export.Game is MEGame.UDK)
+                {
+                    compressedMips.Add(TextureCompression.CompressTexture(image.mipMaps[m].data, isPackageStored ? StorageTypes.pccLZO : StorageTypes.extLZO)); //LZO 
                 }
                 else if (Export.Game.IsLEGame())
                 {
@@ -481,7 +543,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             var mipmaps = new List<Texture2DMipInfo>();
             for (int m = 0; m < image.mipMaps.Count; m++)
             {
-
                 var mipmap = new Texture2DMipInfo
                 {
                     Export = Export,
@@ -490,7 +551,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     TextureCacheName = textureCache
                 };
                 bool mipShouldBePackageStored = isPackageStored || m >= image.mipMaps.Count - 6 || textureCache == null;
-                
+
                 if (Mips.Exists(x => x.width == mipmap.width && x.height == mipmap.height))
                 {
                     var oldMip = Mips.First(x => x.width == mipmap.width && x.height == mipmap.height);
@@ -501,7 +562,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     // New mipmaps
                     mipmap.storageType = CalculateStorageType(Mips[0].storageType, Export.Game, mipShouldBePackageStored);
                 }
-
 
                 //Investigate. this has something to do with archive storage types
                 //if (mod.arcTexture != null)
@@ -533,7 +593,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
 
             //todo: check to make sure TFC will not be larger than 2GiB
-
 
             Guid tfcGuid = Guid.NewGuid(); //make new guid as storage
             bool locallyStored = mipmaps[0].storageType is StorageTypes.pccUnc or StorageTypes.pccZlib or StorageTypes.pccLZO or StorageTypes.pccOodle;
@@ -569,7 +628,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         mipmap.compressedSize = mipmap.Mip.Length;
                     }
 
-
                     if (mipmap.storageType is StorageTypes.pccUnc or StorageTypes.extUnc)
                     {
                         mipmap.compressedSize = mipmap.uncompressedSize;
@@ -581,7 +639,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                         mipmap.Mip = compressedMips[m];
                         mipmap.compressedSize = mipmap.Mip.Length;
                     }
-
 
                     if (mipmap.storageType is StorageTypes.extZlib or StorageTypes.extLZO or StorageTypes.extUnc or StorageTypes.extOodle)
                     {
@@ -626,7 +683,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                                 continue;
                             }
 
-
                             //Cache not found. Make new TFC
                             try
                             {
@@ -651,7 +707,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             ReplaceMips(mipmaps);
 
             //Set properties
-
 
             // The bottom 6 mips are apparently always pcc stored. If there is less than 6 mips, set neverstream to true, which tells game
             // and toolset to never look into archives for mips.
@@ -716,7 +771,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 // Adjust the internal lod bias.
                 var maxLodInfo = TextureLODInfo.LEMaxLodSizes(Export.Game);
                 var texGroup = props.GetProp<EnumProperty>(@"LODGroup");
-                if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out var maxDimension))
+                if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
                 {
                     // cubemaps will have null texture group. we don't want to update these
                     int lodBias = 0;
@@ -733,10 +788,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 }
             }
 
-            var mem = new EndianReader(new MemoryStream()) { Endian = Export.FileRef.Endian };
+            // Texture conversion
+            if (pixelFormat != newPixelFormat)
+            {
+                props.AddOrReplaceProp(new EnumProperty(Image.getEngineFormatType(newPixelFormat), "EPixelFormat", Export.Game, "Format"));
+            }
+
+            var mem = new EndianReader(new MemoryStream(0x400 + Mips.Sum(mip => mip.IsPackageStored ? 24 + mip.Mip.Length : 24))) { Endian = Export.FileRef.Endian };
             mem.Writer.WriteFromBuffer(Export.GetPrePropBinary());
             props.WriteTo(mem.Writer, Export.FileRef);
-            SerializeNewData(mem.BaseStream); //quite slow when writing a pcc-stored texture. Pre-calc memeorystream size might help 
+            SerializeNewData(mem.BaseStream);
             Export.Data = mem.ToArray();
 
             //using (MemoryStream newData = new MemoryStream())
@@ -770,10 +831,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
             //    }
             //}
 
-
             return messages;
         }
-        
+
         /// <summary>
         /// Returns the appropriate storage type for a mip based on the previous storage type of that mip and other parameters
         /// </summary>
@@ -823,6 +883,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     type = StorageTypes.extOodle; // Compress external unc to Oodle
                 if (type is StorageTypes.pccUnc && !isPackageStored) //Moving texture to store externally. make sure bottom 6 are pcc stored
                     type = StorageTypes.extOodle;
+                if (type is StorageTypes.pccOodle && isPackageStored)
+                    type = StorageTypes.pccUnc; // We always store LE packages as compressed. So do not compress the textures stored locally
             }
 
             // Force storage type to either ext or pcc. Does not handle LZMA or empty
@@ -830,7 +892,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 type = type switch
                 {
-                    StorageTypes.extOodle => StorageTypes.pccOodle,
+                    StorageTypes.extOodle => StorageTypes.pccUnc, // We do not compress package stored in LE as all packages are compressed
                     StorageTypes.extLZO => StorageTypes.pccLZO,
                     StorageTypes.extUnc => StorageTypes.pccUnc,
                     StorageTypes.extZlib => StorageTypes.pccZlib,
@@ -885,7 +947,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
             return true;
         }
-
 
         /// <summary>
         /// Exports the top mip to raw ARGB bytes
@@ -981,6 +1042,125 @@ namespace LegendaryExplorerCore.Unreal.Classes
             return Image.convertToPng(GetTextureData(info, Export.Game), info.width, info.height, format)
                 .ToArray();
         }
+
+        public Image ToImage(PixelFormat dstFormat)
+        {
+            PixelFormat format = Image.getPixelFormatType(TextureFormat);
+            Texture2DMipInfo topMip = GetTopMip();
+            var image = new Image(new List<MipMap> { new(GetTextureData(topMip, Export.Game), topMip.width, topMip.height, format) }, format);
+            image.correctMips(dstFormat);
+            return image;
+        }
+
+        /// <summary>
+        /// Creates a new Texture2D export with the given parameters.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="textureName"></param>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <param name="pixelFormat"></param>
+        /// <param name="mipped"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateTexture(IMEPackage package, NameReference textureName, int sizeX, int sizeY, PixelFormat pixelFormat, bool mipped, ExportEntry parent = null)
+        {
+
+            // There's probably more properties to set, but right now this seems OK, I suppose...
+            var exp = ExportCreator.CreateExport(package, textureName, @"Texture2D", parent: parent, indexed: false);
+            var props = exp.GetProperties();
+            props.AddOrReplaceProp(new EnumProperty(Image.getEngineFormatType(pixelFormat), @"EPixelFormat", package.Game, @"Format"));
+            props.AddOrReplaceProp(new IntProperty(sizeX, @"SizeX"));
+            props.AddOrReplaceProp(new IntProperty(sizeY, @"SizeY"));
+            props.AddOrReplaceProp(new BoolProperty(true, @"NeverStream"));
+
+            if (!mipped)
+            {
+                props.AddOrReplaceProp(new BoolProperty(true, @"CompressionNoMipmaps"));
+            }
+
+            // In LE this does not matter but we will set one anyways.
+            props.AddOrReplaceProp(new EnumProperty(@"TEXTUREGROUP_UI", @"TextureGroup", package.Game, @"LODGroup"));
+            exp.WriteProperties(props);
+
+
+            UTexture2D texTemp = UTexture2D.Create();
+            if (!mipped)
+            {
+                // Generate a single mip
+                var mipData = Texture2D.CreateBlankTextureMip(sizeX, sizeY, pixelFormat);
+                texTemp.Mips.Add(new UTexture2D.Texture2DMipMap(mipData, sizeX, sizeY));
+            }
+            else
+            {
+                var mipDatas = Texture2D.CreateBlankTextureMips(sizeX, sizeY, pixelFormat);
+                foreach (var mip in mipDatas)
+                {
+                    texTemp.Mips.Add(new UTexture2D.Texture2DMipMap(mip.data, mip.width, mip.height));
+                }
+            }
+
+            exp.WriteBinary(texTemp);
+
+            return exp;
+        }
+
+        public static ExportEntry CreateSWFForTexture(ExportEntry texture)
+        {
+            // Will require naming validation prior to calling. Must have _ on the end. Or does it?
+            var textureName = texture.ObjectName.Name;
+            var swfName = texture.ObjectName.Name[..textureName.LastIndexOf('_')]; // I am pretty sure they don't use unreal indexing for these
+            var newExp = ExportCreator.CreateExport(texture.FileRef, swfName, "GFxMovieInfo", texture.Parent, indexed: false);
+
+            var references = new ArrayProperty<ObjectProperty>("References");
+            references.Add(texture);
+            newExp.WriteProperty(references);
+
+            var blankStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile("blankswfimage.gfx");
+
+            // From LE1R
+            // Set up the SWF
+            blankStream.Seek(0, SeekOrigin.Begin);
+            MemoryStream dataStream = new MemoryStream();
+            blankStream.CopyToEx(dataStream, 0x20); // SWFName Offset
+            blankStream.ReadByte(); // Skip length 0 in the original file
+
+            dataStream.WriteByte((byte)swfName.Length); // Write SWF Name Len (1 byte)
+            dataStream.WriteStringASCII(swfName); // Write SWF Name
+
+            blankStream.CopyToEx(dataStream, 0x18); // Copy bytes 0x21 - 0x39
+            blankStream.ReadByte();
+
+            dataStream.WriteByte((byte)(textureName.Length + 4)); // Write SWF Texture Name Len (1 byte, +4 for .tga)
+            dataStream.WriteStringASCII(textureName + ".tga"); // Write SWF Texture Name
+
+            blankStream.CopyTo(dataStream); // Copy the rest of the stream.
+
+            // Update data lengths.
+            var offset = (short)(swfName.Length - 9); // This is how much the length changed
+
+            // SWF Size
+            dataStream.Seek(4, SeekOrigin.Begin);
+            dataStream.WriteInt32((int)dataStream.Length);
+
+            // Exporter Info Tag - this is a fixed value
+            dataStream.Seek(0x15, SeekOrigin.Begin);
+            var len = dataStream.ReadInt16();
+            len += offset;
+            dataStream.Seek(-2, SeekOrigin.Current);
+            dataStream.WriteInt16(len);
+
+            // DefineExternalImage2 Tag
+            dataStream.Seek(0x35 + offset, SeekOrigin.Begin);
+            len = dataStream.ReadInt16();
+            len += offset; // galMap001 is 9 chars long, so adjust it
+            dataStream.Seek(-2, SeekOrigin.Current);
+            dataStream.WriteInt16(len);
+
+            newExp.WriteProperty(new ImmutableByteArrayProperty(dataStream.ToArray(), "RawData"));
+
+            return newExp;
+        }
     }
 
     [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
@@ -998,6 +1178,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
         private string _textureCacheName;
         public byte[] Mip;
 
+        public bool IsPackageStored => !((StorageFlags)storageType).Has(StorageFlags.externalFile);
+
         public string TextureCacheName
         {
             get
@@ -1007,7 +1189,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 //ME1 externally references the UPKs. I think. It doesn't load external textures from SFMs
                 string baseName = Export.FileRef.FollowLink(Export.idxLink).Split('.')[0].ToUpper() + ".upk"; //get top package name
 
-                if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
+                if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extUnc)
                 {
                     return baseName;
                 }
@@ -1027,11 +1209,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
             set => _textureCacheName = value; //This isn't INotifyProperty enabled so we don't need to SetProperty this
         }
 
+
         public string MipDisplayString
         {
             get
             {
-                string mipinfostring = $"Mip {index} - {storageType}";
+                string mipinfostring = $"mipData {index} - {storageType}";
                 if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
                 {
                     mipinfostring += "\nLocated in: ";

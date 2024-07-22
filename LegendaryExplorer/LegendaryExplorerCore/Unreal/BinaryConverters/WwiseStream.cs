@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -12,7 +10,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid UnkGuid;//ME2
         public uint Unk3;//ME2
         public uint Unk4;//ME2
-        public uint Unk5;
+        public uint BulkDataFlags;
         public int DataSize;
         public int DataOffset;
         public byte[] EmbeddedData;
@@ -48,7 +46,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     sc.Serialize(ref Unk4);
                 }
             }
-            sc.Serialize(ref Unk5);
+            sc.Serialize(ref BulkDataFlags);
             if (sc.IsSaving && EmbeddedData != null)
             {
                 DataOffset = sc.FileOffset + 12;
@@ -59,7 +57,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref DataOffset);
             if (IsPCCStored)
             {
-                sc.Serialize(ref EmbeddedData, DataSize);
+                if (DataSize > 0)
+                {
+                    sc.Serialize(ref EmbeddedData, DataSize);
+                }
+                else
+                {
+                    // Some unused audio (such as female shepard tali romance in LE2) has blank external audio with no filename
+                    // There is nothing to write back here - it is loading only
+                    if (sc.IsLoading)
+                    {
+                        EmbeddedData = Array.Empty<byte>();
+                    }
+                }
             }
         }
 

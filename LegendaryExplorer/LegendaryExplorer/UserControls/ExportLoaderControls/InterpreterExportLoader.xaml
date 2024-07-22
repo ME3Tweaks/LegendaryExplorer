@@ -18,6 +18,7 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
              xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+             xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignWidth="800"
              d:DesignHeight="500">
@@ -28,64 +29,95 @@
         <Converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
         <Converters:ColorCodeConverter x:Key="ColorCodeConverter"/>
         <Converters:UnsavedChangesForegroundConverter x:Key="UnsavedChangesForegroundConverter"/>
+
+        <!-- Should these be shared at a higher level? (also used by metadata editor) -->
+        <DataTemplate DataType="{x:Type packages:ImportEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=InstancedFullPath, Mode=OneTime}" Margin="5,0,0,0" Foreground="Gray"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type packages:ExportEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=UIndex, Mode=OneTime}" Foreground="Gray"/>
+                <TextBlock Margin="5,0,0,0" Text="{Binding InstancedFullPath}"/>
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <DockPanel Name="InterpreterWPF_DockPanel">
-        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
-            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"
+        <WrapPanel DockPanel.Dock="Top">
+            <ToolBar ToolBarTray.IsLocked="True" OverflowMode="Never">
+                <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Command="{Binding SaveHexChangesCommand}"
                     Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}"/>
-            <Button Name="ToggleHexbox_Button" ToolTip="Toggle Hexbox" Command="{Binding ToggleHexBoxCommand}">
-                <fa:ImageAwesome Icon="Solid_Microchip" Height="16" Width="16" Foreground="CornflowerBlue"/>
-            </Button>
-            <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Content="Add Property" ToolTip="Add a property from this class or a superclass to this object" Command="{Binding AddPropertyCommand}"/>
+                <Button Name="ToggleHexbox_Button" ToolTip="Toggle Hexbox" Command="{Binding ToggleHexBoxCommand}">
+                    <fa:ImageAwesome Icon="Solid_Microchip" Height="16" Width="16" Foreground="CornflowerBlue"/>
+                </Button>
+                <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Button Content="Add Property" ToolTip="Add a property from this class or a superclass to this object" Command="{Binding AddPropertyCommand}"/>
 
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Label IsEnabled="False">Array:</Label>
-            <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array"
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Label IsEnabled="False">Array:</Label>
+                <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array"
                     Command="{Binding AddArrayElementCommand}"
                     VerticalAlignment="Center">
-                <fa:FontAwesome Icon="Solid_Plus"/>
-            </Button>
-            <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array"
+                    <fa:FontAwesome Icon="Solid_Plus"/>
+                </Button>
+                <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array"
                     Command="{Binding RemoveArrayElementCommand}"
                     VerticalAlignment="Center">
-                <fa:FontAwesome Icon="Solid_Minus"/>
-            </Button>
-            <Button Name="ArrayElement_MoveUp_Button" ToolTip="Move the selected array element up in the list" VerticalAlignment="Center" Width="22"
+                    <fa:FontAwesome Icon="Solid_Minus"/>
+                </Button>
+                <Button Name="ArrayElement_MoveUp_Button" ToolTip="Move the selected array element up in the list" VerticalAlignment="Center" Width="22"
                     Command="{Binding MoveArrayElementUpCommand}">
-                <fa:FontAwesome Icon="Solid_ArrowUp" />
-            </Button>
-            <Button Name="ArrayElement_MoveDown_Button" ToolTip="Move the selected array element down in the list" VerticalAlignment="Center"  Width="22"
+                    <fa:FontAwesome Icon="Solid_ArrowUp" />
+                </Button>
+                <Button Name="ArrayElement_MoveDown_Button" ToolTip="Move the selected array element down in the list" VerticalAlignment="Center"  Width="22"
                     Command="{Binding MoveArrayElementDownCommand}" >
-                <fa:FontAwesome Icon="Solid_ArrowDown" />
-            </Button>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
-            <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}"/>
-            <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
-                <ComboBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel />
-                    </ItemsPanelTemplate>
-                </ComboBox.ItemsPanel>
-                <ComboBox.Resources>
-                    <DataTemplate DataType="{x:Type SharedUI:IndexedName}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
-                            <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type unreal:NameReference}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Instanced}" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.Resources>
-            </ComboBox>
-            <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center" Margin="5,0,2,0"/>
-            <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
-            <Button Name="Set_Button" Content="Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}"/>
-            <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
-        </ToolBar>
+                    <fa:FontAwesome Icon="Solid_ArrowDown" />
+                </Button>
+            </ToolBar>
+            <ToolBar ToolBarTray.IsLocked="True" OverflowMode="Never" Band="2">
+                <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" 
+                     IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}" ToolBar.OverflowMode="Never"/>
+                <ComboBox Name="Value_ObjectComboBox"
+                      MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" 
+                      Style="{StaticResource {x:Type ComboBox}}" 
+                      IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
+                      KeyDown="ValueTextBox_KeyDown" ToolBar.OverflowMode="Never">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" ToolBar.OverflowMode="Never">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                    <ComboBox.Resources>
+                        <DataTemplate DataType="{x:Type SharedUI:IndexedName}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Index, Mode=OneTime}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=Name, Mode=OneTime}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type unreal:NameReference}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Instanced}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+
+                    </ComboBox.Resources>
+                </ComboBox>
+                <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center" Margin="5,0,2,0" ToolBar.OverflowMode="Never"/>
+                <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" 
+                     IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}" ToolBar.OverflowMode="Never"/>
+                <Button Name="Set_Button" Content="Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}" ToolBar.OverflowMode="Never"/>
+                <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
+            </ToolBar>
+        </WrapPanel>
         <StatusBar Height="23" DockPanel.Dock="Bottom" Name="HexInfoStatusBar">
             <StatusBarItem>
                 <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
@@ -274,6 +306,8 @@
                 </controls:StretchingTreeView.ItemContainerStyle>
                 <controls:StretchingTreeView.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Header="Copy property" ToolTip="Copies the property, which can then be pasted (using the paste button) into another export in the same package" Command="{Binding CopyPropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
+                        <MenuItem Header="Paste property" ToolTip="Pastes the currently copied property" Command="{Binding PastePropertyCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
                         <MenuItem Header="Copy parsed value" ToolTip="Copies the parsed value to the clipboard" Command="{Binding CopyValueCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>
 
                         <MenuItem Header="Sort children properties alphabetically" ToolTip="Sorts properties alphabetically. This is a cosmetic only change." Command="{Binding SortChildrenCommand}" SharedUI:Bindings.VisibilityToEnabled="True"/>

@@ -61,8 +61,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             Body = body;
             ReturnValueDeclaration = returnValueDeclaration;
             Flags = flags;
-            Parameters = parameters ?? new List<FunctionParameter>();
-            Locals = new List<VariableDeclaration>();
+            Parameters = parameters ?? [];
+            Locals = [];
             VarType = new DelegateType(this)
             {
                 IsFunction = true,
@@ -115,7 +115,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 State state => state.GetScope(),
                 _ => throw new ArgumentOutOfRangeException(nameof(Outer))
             };
-
 
         public string FilePath { get; init; }
         public int UIndex { get; init; }

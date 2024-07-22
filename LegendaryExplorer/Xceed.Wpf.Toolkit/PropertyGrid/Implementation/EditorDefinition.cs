@@ -43,7 +43,6 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
       set;
     }
 
-
     private PropertyDefinitionCollection _properties = new PropertyDefinitionCollection();
     /// <summary>
     /// List the PropertyDefinitions that identify the properties targeted by the EditorTemplate.
@@ -95,6 +94,5 @@ namespace Xceed.Wpf.Toolkit.PropertyGrid
 
       base.Lock();
     }
-
   }
 }

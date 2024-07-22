@@ -157,8 +157,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
         private bool ScanCanceled;
         #endregion
 
-
-
         public TextureStudioWindow()
         {
             LoadCommands();
@@ -211,7 +209,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         private void LoadTextureMap()
         {
-
         }
 
         private void CloseWorkspace()
@@ -235,7 +232,8 @@ namespace LegendaryExplorer.Tools.TextureStudio
             var selectDDS = new OpenFileDialog
             {
                 Title = "Select texture file",
-                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga"
+                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             var result = selectDDS.ShowDialog();
             if (result.HasValue && result.Value)
@@ -391,7 +389,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 }
             }
             return null;
-
         }
 
         /// <summary>
@@ -432,12 +429,10 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
             }
 
-
             // Todo: Support subpackage folders
 
             sExp.idxLink = masterPackageExport.UIndex;
             sExp.ObjectName = masterTextureExport.ObjectName;
-
 
         }
 
@@ -530,7 +525,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                 ME1MasterTexturePackages.Add(sfd.FileName); // Todo: Make sure this is unique and within the mod folder
                 Texture2D.AdditionalME1MasterTexturePackages.Add(sfd.FileName); // TODO: THIS NEEDS CLEANED UP AND MANAGED IN TEXTURE2D.CS
             }
-
         }
 
         private void RemoveAllEmptyMips()
@@ -644,7 +638,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
             CancellationSource.Cancel();
         }
 
-
         private bool CanScanFolder() => !IsBusy;
 
         #endregion
@@ -710,7 +703,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                             SelectEntry(twpf);
                         }
                     }
-
                 }
             };
             IsBusy = true;
@@ -743,7 +735,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
         {
             return new TextureMapMemoryEntryWPF(entry);
         }
-
 
         private void ScanFolderThread(object sender, DoWorkEventArgs e)
         {
@@ -792,9 +783,13 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         if (packageInstance.RelativePackagePath.Contains(@"DLC_MOD_"))
                         {
                             var dlcFolderName = packageInstance.RelativePackagePath.Substring(packageInstance.RelativePackagePath.IndexOf(@"DLC_MOD_"));
-                            dlcFolderName = dlcFolderName.Substring(0, dlcFolderName.IndexOf(@"\"));
-                            TFCSuffix = dlcFolderName;
-                            break;
+                            var dlcIndex = dlcFolderName.IndexOf(@"\");
+                            if (dlcIndex > 0)
+                            {
+                                dlcFolderName = dlcFolderName.Substring(0, dlcIndex);
+                                TFCSuffix = dlcFolderName;
+                                break;
+                            }
                         }
                     }
 
@@ -808,7 +803,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                     break;
                 }
             }
-
 
             Thread.Sleep(200); //UI will take a few moments to update so we will stall this busy overlay
             BusyProgressIndeterminate = true;
@@ -846,8 +840,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
 
         #endregion
 
-
-
         #region Test Methods
 
         /// <summary>
@@ -864,6 +856,7 @@ namespace LegendaryExplorer.Tools.TextureStudio
             {
                 var decompressed = dpackage.DecompressEntry(tf);
                 var package = MEPackageHandler.OpenMEPackageFromStream(decompressed, tf.FileName);
+                package.IsMemoryPackage = true;
                 foreach (var f in package.Exports.Where(x => x.IsTexture()))
                 {
                     var t2d = ObjectBinary.From<UTexture2D>(f);
@@ -874,7 +867,6 @@ namespace LegendaryExplorer.Tools.TextureStudio
                         foreach (var extTex in t2d.Mips.Where(x => !x.IsLocallyStored))
                         {
                             var textureData = dpackage.ReadFromEntry(cacheEntry, extTex.DataOffset, extTex.UncompressedSize);
-
                         }
                     }
                 }

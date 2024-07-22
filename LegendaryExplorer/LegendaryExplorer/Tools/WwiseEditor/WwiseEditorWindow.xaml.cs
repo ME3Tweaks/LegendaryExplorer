@@ -169,7 +169,11 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         private void OpenFile()
         {
-            OpenFileDialog d = new (){ Filter = GameFileFilters.ME3ME2SaveFileFilter };
+            OpenFileDialog d = new ()
+            {
+                Filter = GameFileFilters.ME3ME2SaveFileFilter,
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -207,7 +211,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 graphEditor.edgeLayer.RemoveAllChildren();
 
                 WwiseBankExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"));
-
 
                 if (WwiseBankExports.IsEmpty())
                 {
@@ -464,7 +467,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             foreach (WwiseEdEdge edge in graphEditor.edgeLayer)
                 WwiseGraphEditor.UpdateEdge(edge);
 
-
             void LayoutTree(WwiseHircObjNode WGeneric, float verticalSpacing)
             {
                 if (firstNode == null) firstNode = WGeneric;
@@ -586,7 +588,6 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 bool showContextMenu = false;
                 if (contextMenu.GetChild("openInPackEdMenuItem") is MenuItem openInPackEdMenuItem)
                 {
-
                     if (obj is WExport)
                     {
                         openInPackEdMenuItem.Visibility = Visibility.Visible;

@@ -7,6 +7,7 @@ using System.Windows;
 using LegendaryExplorer.Tools.AssetDatabase.Scanners;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -16,7 +17,7 @@ using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
-    public sealed record AssetDBScanOptions (bool ScanCRC, bool ScanLines, bool ScanPlotUsages, MELocalization Localization = MELocalization.INT);
+    public sealed record AssetDBScanOptions (bool ScanCRC, MELocalization Localization = MELocalization.INT);
 
     /// <summary>
     /// Caches info about the export being scanned, containing expensive calls such as GetProperties, IsDefault, etc
@@ -124,17 +125,20 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     return;
                 }
 
-                bool IsDLC = pcc.IsInOfficialDLC();
-                bool IsMod = !pcc.IsInBasegame() && !IsDLC;
+                bool isDlc = pcc.IsInOfficialDLC();
+                bool isMod = !pcc.IsInBasegame() && !isDlc;
                 ExportScanInfo esi = null;
-                foreach (ExportEntry entry in pcc.Exports)
+                foreach (ExportEntry export in pcc.Exports)
                 {
-                    if (esi == null)
+                    if (esi is null)
                     {
-                        esi = new ExportScanInfo(entry, _file, _fileKey, IsMod, IsDLC);
+                        esi = new ExportScanInfo(export, _file, _fileKey, isMod, isDlc);
                     }
-                    else esi.Export = entry;
-                    
+                    else
+                    {
+                        esi.Export = export;
+                    }
+
                     if (DumpCanceled)
                     {
                         return;
@@ -142,21 +146,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
                     try
                     {
-                        if (entry is not null)
+                        foreach (AssetScanner scanner in Scanners)
                         {
-                            foreach (var scanner in Scanners)
-                            {
-                                scanner.ScanExport(esi, dbScanner, _options);
-                            }
+                            scanner.ScanExport(esi, dbScanner, _options);
                         }
                     }
-                    catch (Exception) when (!App.IsDebug)
+                    catch (Exception e) //when (!App.IsDebug)
                     {
-                        MessageBox.Show($"Exception Bug detected in single file: {entry.FileRef.FilePath} Export:{entry.UIndex}");
+                        Application.Current.Dispatcher.Invoke(() => 
+                            MessageBox.Show($"Error while scanning {export.FileRef.FilePath} #{export.UIndex} {export.InstancedFullPath}\n\n{e.FlattenException()}"));
                     }
                 }
             }
-            catch (Exception e) when (!App.IsDebug)
+            catch (Exception e) //when (!App.IsDebug)
             {
                 throw new Exception($"Error dumping package file {_file}. See the inner exception for details.", e);
             }

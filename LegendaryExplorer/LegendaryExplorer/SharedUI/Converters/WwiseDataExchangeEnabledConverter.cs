@@ -8,7 +8,6 @@ namespace LegendaryExplorer.SharedUI.Converters
     [ValueConversion(typeof(ExportEntry), typeof(bool))]
     public class WwiseDataExchangeEnabledConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is ExportEntry))

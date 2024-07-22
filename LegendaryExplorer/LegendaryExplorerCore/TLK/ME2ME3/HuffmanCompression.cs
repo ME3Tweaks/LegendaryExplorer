@@ -22,7 +22,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         private readonly List<HuffmanNode> _huffmanTree = new();
         private readonly Dictionary<char, BitArray> _huffmanCodes = new();
 
-
         private class HuffmanNode
         {
             public char Data;
@@ -480,7 +479,6 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
             int dataLength = offset / 8;
             if (offset % 8 > 0)
                 ++dataLength;
-
 
             /* writing TLK Header */
             memStream.WriteInt32(magic);

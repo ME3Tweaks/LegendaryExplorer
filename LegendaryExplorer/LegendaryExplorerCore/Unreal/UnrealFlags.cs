@@ -6,7 +6,6 @@ namespace LegendaryExplorerCore.Unreal
 {
     public static class UnrealFlags
     {
-
         /// <summary>
         /// Flags describing an class instance. This code is from UEExplorer.
         ///
@@ -124,7 +123,6 @@ namespace LegendaryExplorerCore.Unreal
             /// </summary>
             Script = 0x00200000U,
 
-
             /// <summary>
             /// The package was build with -Debug
             /// </summary>
@@ -207,7 +205,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // BioWare specific
             RsxStorage = 0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
-            UnkFlag1 = 0x0080000000000000U,
+            BioDynamicLoad = 0x0080000000000000U,   // Property will dynamic load object on demand
             LoadForCooking = 0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
             BioNonShip = 0x0200000000000000U,        // Property doesn't serialize to or from disk
             BioIgnorePropertyAdd = 0x0400000000000000U,        // ??????
@@ -274,7 +272,7 @@ namespace LegendaryExplorerCore.Unreal
 
             // BIOWARE SPECIFIC
             [EPropertyFlags.RsxStorage] = "Property can be moved into RSX memory (PS3)",
-            [EPropertyFlags.UnkFlag1] = "",
+            [EPropertyFlags.BioDynamicLoad] = "Property references an object that will be loaded on demand",
             [EPropertyFlags.LoadForCooking] = "Property is editor only, but must be loaded during cooking",
             [EPropertyFlags.BioNonShip] = "Property does not serialize to or from disk",
             [EPropertyFlags.BioIgnorePropertyAdd] = "",
@@ -345,16 +343,12 @@ namespace LegendaryExplorerCore.Unreal
                                              // Not used
                                              // Not used
 
-
             // The following are not used with updated info
             //HighlightedName = 0x0000040000000000,	// A hardcoded name which should be syntax-highlighted.
             //EliminateObject = 0x0000040000000000,   // NULL out references to this during garbage collecion.
             //RemappedName = 0x0000080000000000,   // Name is remapped.
             //Preloading = 0x0000800000000000,   // Data is being preloaded from file.
             //Destroyed = 0x0080000000000000,	// Object Destroy has already been called.
-
-
-
 
             // ORIGINAL BELOW
             //InSingularFunc = 0x0000000000000002, // In a singular function.

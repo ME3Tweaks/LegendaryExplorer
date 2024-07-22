@@ -1,6 +1,4 @@
-﻿using LegendaryExplorerCore.UnrealScript.Utilities;
-
-namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
+﻿namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 {
     public class PositionedMessage : LogMessage
     {

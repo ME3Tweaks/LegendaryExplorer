@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -7,9 +6,9 @@ using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
@@ -61,10 +60,10 @@ namespace LegendaryExplorerCore.Packages
             _commonHeaderFields._idxLink = parent_uIndex;
             _commonHeaderFields._idxObjectName = _fileRef.FindNameOrAdd(name.Name);
             _commonHeaderFields._indexValue = name.Number;
-            _generationNetObjectCounts = Array.Empty<int>();
+            _generationNetObjectCounts = [];
             if (HasComponentMap)
             {
-                _componentMap = Array.Empty<byte>();
+                _componentMap = [];
             }
 
             _commonHeaderFields._dataOffset = 0;
@@ -207,8 +206,6 @@ namespace LegendaryExplorerCore.Packages
         
         public bool IsDefaultObject => _commonHeaderFields._objectFlags.Has(EObjectFlags.ClassDefaultObject);
 
-
-
         /// <summary>
         /// Get generates the header, Set deserializes all the header values from the provided byte array
         /// </summary>
@@ -272,8 +269,6 @@ namespace LegendaryExplorerCore.Packages
         public const int OFFSET_DataSize = 32;
         public const int OFFSET_DataOffset = 36;
 
-
-
         /// <summary>
         /// Generates the header byte array
         /// </summary>
@@ -290,7 +285,7 @@ namespace LegendaryExplorerCore.Packages
                 unsafe
                 {
                     byte[] bytes = new byte[sizeof(CommonHeaderFields)];
-                    MemoryMarshal.Write(bytes.AsSpan(), ref _commonHeaderFields);
+                    MemoryMarshal.Write(bytes.AsSpan(), in _commonHeaderFields);
                     return bytes;
                 }
             }
@@ -312,7 +307,7 @@ namespace LegendaryExplorerCore.Packages
                 }
                 else
                 {
-                    byte[] componentMap = _componentMap ?? Array.Empty<byte>();
+                    byte[] componentMap = _componentMap ?? [];
                     bin.WriteInt32(componentMap.Length / 12);
                     bin.Write(componentMap);
                 }
@@ -346,7 +341,7 @@ namespace LegendaryExplorerCore.Packages
                     stream.Seek(-SIZE_OF_PACKAGEGUID_AND_PACKAGEFLAGS, SeekOrigin.Current);
                     goto GenNetObjsNotEmpty;
                 }
-                _generationNetObjectCounts = Array.Empty<int>();
+                _generationNetObjectCounts = [];
                 return;
             }
             //slower fallback :(
@@ -489,6 +484,7 @@ namespace LegendaryExplorerCore.Packages
                     }
                     _commonHeaderFields._idxLink = value;
                     HeaderChanged = true;
+                    _fileRef.IsModified = true;
                     _fileRef.InvalidateLookupTable();
                 }
             }
@@ -560,11 +556,11 @@ namespace LegendaryExplorerCore.Packages
 
         //me1 and me2 only
         private byte[] _componentMap;
-        public OrderedMultiValueDictionary<NameReference, int> ComponentMap
+        public UMultiMap<NameReference, int> ComponentMap
         {
             get
             {
-                var componentMap = new OrderedMultiValueDictionary<NameReference, int>();
+                var componentMap = new UMultiMap<NameReference, int>();
                 if (!HasComponentMap) return componentMap;
                 for (int i = 0; i < _componentMap.Length; i += 12)
                 {
@@ -583,16 +579,16 @@ namespace LegendaryExplorerCore.Packages
                     {
                         return;
                     }
-                    _componentMap = Array.Empty<byte>();
+                    _componentMap = [];
                     HeaderChanged = true;
                     return;
                 }
                 var bin = new MemoryStream(value.Count * 12);
-                foreach ((NameReference name, int _uIndex) in value)
+                foreach ((NameReference name, int uIndex) in value)
                 {
                     bin.WriteInt32(_fileRef.FindNameOrAdd(name.Name));
                     bin.WriteInt32(name.Number);
-                    bin.WriteInt32(_uIndex); // 0-based index
+                    bin.WriteInt32(uIndex); // 0-based index
                 }
                 var newMap = bin.ToArray();
                 if (!newMap.AsSpan().SequenceEqual(_componentMap))
@@ -685,6 +681,7 @@ namespace LegendaryExplorerCore.Packages
 
         public string ParentInstancedFullPath => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string MemoryFullPath => IsForcedExport ? InstancedFullPath : $"{FileRef.FileNameNoExtension.StripUnrealLocalization()}.{InstancedFullPath}";
 
         public bool HasParent => _fileRef.IsEntry(_commonHeaderFields._idxLink);
 
@@ -805,7 +802,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     _entryHasPendingChanges = value;
                     PropertyChanged?.Invoke(this, EmptyPropertyChangedEventArgs);
-
+                    _fileRef.IsModified |= value; // This is kind of a safeguard in the event other code missed stuff
                     EntryModifiedChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -836,7 +833,9 @@ namespace LegendaryExplorerCore.Packages
                 propStartPos = GetPropertyStart();
             var stream = new MemoryStream(_data, false);
             stream.Seek(propStartPos, SeekOrigin.Current);
-            return PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache);
+            var props = PropertyCollection.ReadProps(this, stream, ClassName, includeNoneProperties, true, parsingClass, packageCache);
+            propsEndOffset = props.EndOffset;
+            return props;
         }
 
         public void WriteProperties(PropertyCollection props)
@@ -889,6 +888,15 @@ namespace LegendaryExplorerCore.Packages
                     if (parent is ExportEntry {IsDefaultObject: true})
                     {
                         start += 8; //TemplateName
+                        break;
+                    }
+
+                    // 11/21/2023 - if parent is import also check if it is a default object
+                    // This is technically a hack. The right way to do this would be to resolve
+                    // the import but that would be slow.
+                    if (parent is ImportEntry && parent.ObjectName.Name.StartsWith("Default__"))
+                    {
+                        start += 8; // TemplateName
                         break;
                     }
                     parent = parent.Parent;
@@ -954,7 +962,76 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public int propsEnd()
         {
-            propsEndOffset ??= GetProperties(true, true).EndOffset;
+            if (propsEndOffset is null)
+            {
+                if (IsClass)
+                {
+                    propsEndOffset = 4;
+                }
+                else if (!FileRef.Endian.IsNative)
+                {
+                    propsEndOffset = GetProperties(true, true).EndOffset;
+                }
+                else
+                {
+                    //This is much faster than actually reading the properties and allocating a full PropertyCollection
+                    bool modernEngineVersion = Game >= MEGame.ME3 || FileRef.Platform == MEPackage.GamePlatform.PS3;
+                    int pos = GetPropertyStart();
+                    var data = DataReadOnly;
+                    while (pos + 8 <= data.Length)
+                    {
+                        string propName = FileRef.GetNameEntry(MemoryMarshal.Read<int>(data[pos..]));
+                        pos += 8;
+                        if (propName == "")
+                        {
+#if DEBUG
+                            if (Debugger.IsAttached)
+                            {
+                                Debugger.Break();
+                            }
+#endif
+                            //broken properties
+                            break;
+                        }
+                        if (propName == "None")
+                        {
+                            break;
+                        }
+                        if (pos + 12 >= data.Length)
+                        {
+#if DEBUG
+                            if (Debugger.IsAttached)
+                            {
+                                Debugger.Break();
+                            }
+#endif
+                            //broken properties
+                            break;
+                        }
+                        string propType = FileRef.GetNameEntry(MemoryMarshal.Read<int>(data[pos..]));
+                        pos += 8;
+                        int size = MemoryMarshal.Read<int>(data[pos..]);
+                        pos += 8 + size;
+                        switch (propType)
+                        {
+                            case "StructProperty":
+                                pos += 8;
+                                break;
+                            case "BoolProperty":
+                                pos += modernEngineVersion ? 1 : 4;
+                                break;
+                            case "ByteProperty":
+                                if (modernEngineVersion)
+                                {
+                                    pos += 8;
+                                }
+                                break;
+                        }
+                    }
+                    propsEndOffset = pos;
+                }
+            }
+            
             if (propsEndOffset.Value < 4) throw new Exception("Props end is less than 4!");
             return propsEndOffset.Value;
         }
@@ -990,7 +1067,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// 
+        /// Writes the existing pre-prop binary (if it exists), then appends props and binary
         /// </summary>
         /// <param name="props"></param>
         /// <param name="binary"></param>
@@ -1005,7 +1082,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
-        /// 
+        /// Writes the entire export data
         /// </summary>
         /// <param name="preProps"></param>
         /// <param name="props"></param>
@@ -1019,12 +1096,17 @@ namespace LegendaryExplorerCore.Packages
             Data = m.ToArray();
         }
 
+        /// <summary>
+        /// Clones this export. If you don't supply a new index, it will remain the same - ENSURE YOU CHANGE IT OR YOU'LL WASTE TIME DEBUGGING THE GAME!!
+        /// </summary>
+        /// <param name="newIndex"></param>
+        /// <returns></returns>
         public ExportEntry Clone(int newIndex = -1)
         {
             var clone = (ExportEntry)MemberwiseClone();
 
             //set to empty array to avoid the sequenceequal optimization when setting Data
-            clone._data = Array.Empty<byte>();
+            clone._data = [];
             clone.Data = _data.ArrayClone();
 
             clone._generationNetObjectCounts = _generationNetObjectCounts.ArrayClone();
@@ -1039,6 +1121,20 @@ namespace LegendaryExplorerCore.Packages
                 clone._commonHeaderFields._indexValue = newIndex;
             }
             return clone;
+        }
+
+        /// <summary>
+        /// If this object (or any parent) is marked ForcedExport
+        /// </summary>
+        public bool IsForcedExport
+        {
+            get
+            {
+                if ((ExportFlags & EExportFlags.ForcedExport) != 0) return true;
+                if (Parent is ExportEntry exp) return exp.IsForcedExport;
+                // Need to handle ImportEntry parents, I think? Are all downlevel children marked in vanilla?
+                return false;
+            }
         }
 
         IEntry IEntry.Clone(bool incrementIndex)

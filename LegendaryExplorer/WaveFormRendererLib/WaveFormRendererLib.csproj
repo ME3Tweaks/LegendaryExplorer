@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<Version>2.0.0</Version>
 		<Authors>Mark Heath</Authors>
 		<Description>WaveForm rendering component</Description>
@@ -13,13 +13,13 @@
 		<AssemblyName>NAudio.WaveFormRenderer</AssemblyName>
 		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<LangVersion>10.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<Optimize>true</Optimize>
 		<Platforms>x64</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NAudio.Core" Version="2.1.0" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="NAudio.Core" Version="2.2.1" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
 	</ItemGroup>
 </Project>

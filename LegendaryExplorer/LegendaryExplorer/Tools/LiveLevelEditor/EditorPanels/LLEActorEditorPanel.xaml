@@ -61,7 +61,9 @@
                 <StackPanel Margin="0, 5, 0, 0" Orientation="Horizontal">
                     <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
                     <xctk:SingleUpDown Value="{Binding PosIncrement}" Minimum="0" ButtonSpinnerLocation="Left" FormatString="F3"/>
+                    <Button Margin="10, 0, 0, 0" Command="{Binding SnapToPlayerPositionCommand}">Snap To Player</Button>
                 </StackPanel>
+                
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Actor Rotation" Margin="5,0,5,5" BorderThickness="2">
@@ -80,6 +82,16 @@
                 <StackPanel Margin="0, 5, 0, 0" Orientation="Horizontal">
                     <TextBlock Text=" Increment:  " VerticalAlignment="Center" />
                     <xctk:IntegerUpDown Value="{Binding RotIncrement}" Minimum="0" ButtonSpinnerLocation="Left"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Actor Visibility" Margin="5,0,5,5" BorderThickness="2" >
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" Hidden:  " VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding Hidden}"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

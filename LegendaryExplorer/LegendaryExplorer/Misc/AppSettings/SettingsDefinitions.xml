@@ -92,9 +92,9 @@
 
   <!-- Wwise settings -->
   <setting name="Wwise_3773Path" type="string" defaultvalue="" category="Audio"
-           friendlyName="WwiseCLI.exe v3773 Path" fileSelectExtension=".exe"/>
+           friendlyName="WwiseCLI.exe v3773 Path" fileSelectExtension="*.exe"/>
   <setting name="Wwise_7110Path" type="string" defaultvalue="" category="Audio"
-           friendlyName="WwiseCLI.exe v7110 Path" fileSelectExtension=".exe"/>
+           friendlyName="WwiseCLI.exe v7110 Path" fileSelectExtension="*.exe"/>
 	
   <!-- TFC Compactor -->
   <setting name="TFCCompactor_LastStagingPath" type="string" defaultvalue=""/>
@@ -104,13 +104,15 @@
   <setting name="Global_Analytics_Enabled" type="bool" defaultvalue="true" category="General"
            friendlyName="Enable Analytics"/>
   <setting name="Global_ME1Directory" type="string" defaultvalue="" settingsbridgename="ME1Directory" category="General" isDirectorySelect="true"
-           friendlyName="Mass Effect 1 Directory"/>
+           friendlyName="Mass Effect 1 (Original Trilogy) Directory"/>
   <setting name="Global_ME2Directory" type="string" defaultvalue="" settingsbridgename="ME2Directory" category="General" isDirectorySelect="true"
-           friendlyName="Mass Effect 2 Directory"/>
+           friendlyName="Mass Effect 2 (Original Trilogy) Directory"/>
   <setting name="Global_ME3Directory" type="string" defaultvalue="" settingsbridgename="ME3Directory" category="General" isDirectorySelect="true"
-           friendlyName="Mass Effect 3 Directory"/>
+           friendlyName="Mass Effect 3 (Original Trilogy) Directory"/>
   <setting name="Global_LEDirectory" type="string" defaultvalue="" settingsbridgename="LEDirectory" category="General" isDirectorySelect="true"
            friendlyName="Mass Effect Legendary Edition Directory"/>
+  <setting name="Global_UDKCustomDirectory" type="string" defaultvalue="" settingsbridgename="UDKCustomDirectory" category="General" isDirectorySelect="true"
+           friendlyName="UDKGame (2015) Directory"/>
   <setting name="Global_TLK_Language" type="string" defaultvalue="INT" settingsbridgename="TLKDefaultLanguage" category="General"
            friendlyName="TLK Language"/>
   <setting name="Global_TLK_IsMale" type="bool" defaultvalue="true" settingsbridgename="TLKGenderIsMale" category="General"
@@ -118,8 +120,8 @@
 
   <setting name="CustomStartupFiles" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
            friendlyName="Custom Startup Files"/>
-  <setting name="CustomClassDirectories" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
-           friendlyName="Custom Class Directories"/>
+  <setting name="CustomAssetDirectories" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
+           friendlyName="Custom Asset Directories"/>
 
 
 </appsettings>

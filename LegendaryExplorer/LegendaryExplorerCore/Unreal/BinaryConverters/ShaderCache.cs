@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class ShaderCache : ObjectBinary
     {
-        public OrderedMultiValueDictionary<NameReference, uint> ShaderTypeCRCMap;
-        public OrderedMultiValueDictionary<Guid, Shader> Shaders;
-        public OrderedMultiValueDictionary<NameReference, uint> VertexFactoryTypeCRCMap;
-        public OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps;
+        public UMultiMap<NameReference, uint> ShaderTypeCRCMap; //TODO: Make this a UMap
+        public UMultiMap<Guid, Shader> Shaders; //TODO: Make this a UMap
+        public UMultiMap<NameReference, uint> VertexFactoryTypeCRCMap; //TODO: Make this a UMap
+        public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -42,7 +39,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.IsLoading)
             {
                 int shaderCount = sc.ms.ReadInt32();
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(shaderCount);
+                Shaders = new(shaderCount);
                 for (int i = 0; i < shaderCount; i++)
                 {
                     Shader shader = null;
@@ -76,10 +73,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                ShaderTypeCRCMap = new OrderedMultiValueDictionary<NameReference, uint>(),
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
-                VertexFactoryTypeCRCMap = new OrderedMultiValueDictionary<NameReference, uint>(),
-                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>()
+                ShaderTypeCRCMap = new (),
+                Shaders = new (),
+                VertexFactoryTypeCRCMap = new (),
+                MaterialShaderMaps = new ()
             };
         }
 
@@ -88,14 +85,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var names = base.GetNames(game);
 
             names.AddRange(ShaderTypeCRCMap.Select((kvp, i) => (kvp.Key, $"ShaderTypeCRCMap[{i}]")));
-            for (int i = 0; i < Shaders.Count; i++)
+            int i = 0;
+            foreach ((_, Shader shader) in Shaders)
             {
-                (_, Shader shader) = Shaders[i];
                 names.Add(shader.ShaderType, $"Shaders[{i}].ShaderType");
                 if (shader.VertexFactoryType.HasValue)
                 {
                     names.Add(shader.VertexFactoryType.Value, $"Shaders[{i}].VertexFactoryType");
                 }
+                i++;
             }
             names.AddRange(VertexFactoryTypeCRCMap.Select((kvp, i) => (kvp.Key, $"VertexFactoryTypeCRCMap[{i}]")));
 
@@ -103,6 +101,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             foreach ((StaticParameterSet key, MaterialShaderMap msm) in MaterialShaderMaps)
             {
                 names.AddRange(msm.GetNames(game).Select(tuple => (tuple.Item1, $"MaterialShaderMaps[{j}].{tuple.Item2}")));
+                names.AddRange(key.GetNames(game, $"MaterialShaderMaps[{j}]."));
                 ++j;
             }
 
@@ -128,7 +127,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
         public byte[] unkBytes;
 
-
         private string dissassembly;
         private ShaderInfo info;
 
@@ -149,12 +147,29 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return info = ShaderReader.DisassembleShader(ShaderByteCode, out dissassembly);
         }
+
+        public Shader Clone()
+        {
+            var newShader = new Shader
+            {
+                ShaderType = ShaderType,
+                Guid = Guid,
+                Frequency = Frequency,
+                ShaderByteCode = ShaderByteCode.ArrayClone(),
+                ParameterMapCRC = ParameterMapCRC,
+                InstructionCount = InstructionCount,
+                unkBytesPreName = unkBytesPreName?.ArrayClone(),
+                VertexFactoryType = VertexFactoryType,
+                unkBytes = unkBytes.ArrayClone()
+            };
+            return newShader;
+        }
     }
 
     public class MaterialShaderMap
     {
         //usually empty! Shaders are in MeshShaderMaps
-        public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
+        public UMultiMap<NameReference, ShaderReference> Shaders; //TODO: Make this a UMap
         public MeshShaderMap[] MeshShaderMaps;
         public Guid ID;
         public string FriendlyName;
@@ -218,6 +233,65 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             return names;
         }
+
+        /// <summary>
+        /// Copies into ShaderCache, with new GUIDs for self and all shaders
+        /// </summary>
+        /// <param name="shaderCache"></param>
+        /// <param name="newMsmGuid"></param>
+        /// <returns>Map of shader guids belonging to the original MSM, to the new guids they correspond to</returns>
+        public Dictionary<Guid, Guid> DeepCopyWithNewGuidsInto(ShaderCache shaderCache, out Guid newMsmGuid)
+        {
+            var newMSM = new MaterialShaderMap();
+
+            newMsmGuid = Guid.NewGuid();
+            newMSM.ID = newMsmGuid;
+            newMSM.FriendlyName = FriendlyName;
+
+            //no deep copying needed for these
+            newMSM.UniformPixelVectorExpressions = UniformPixelVectorExpressions;
+            newMSM.UniformPixelScalarExpressions = UniformPixelScalarExpressions;
+            newMSM.Uniform2DTextureExpressions = Uniform2DTextureExpressions;
+            newMSM.UniformCubeTextureExpressions = UniformCubeTextureExpressions;
+            newMSM.UniformVertexVectorExpressions = UniformVertexVectorExpressions;
+            newMSM.UniformVertexScalarExpressions = UniformVertexScalarExpressions;
+
+            newMSM.StaticParameters = StaticParameters;
+            newMSM.StaticParameters.BaseMaterialId = newMsmGuid;
+
+            var guidMap = new Dictionary<Guid, Guid>();
+
+            //Shaders
+            newMSM.Shaders = new UMultiMap<NameReference, ShaderReference>(Shaders.Count);
+            CopyShaderRefs(Shaders, newMSM.Shaders);
+
+            newMSM.MeshShaderMaps = new MeshShaderMap[MeshShaderMaps.Length];
+            for (int i = 0; i < MeshShaderMaps.Length; i++)
+            {
+                var meshShaderMap = newMSM.MeshShaderMaps[i] = new MeshShaderMap();
+                meshShaderMap.VertexFactoryType = MeshShaderMaps[i].VertexFactoryType;
+                meshShaderMap.unk = MeshShaderMaps[i].unk;
+                meshShaderMap.Shaders = new UMultiMap<NameReference, ShaderReference>(MeshShaderMaps[i].Shaders.Count);
+                CopyShaderRefs(MeshShaderMaps[i].Shaders, meshShaderMap.Shaders);
+            }
+            
+            shaderCache.MaterialShaderMaps.Add(newMSM.StaticParameters, newMSM);
+
+            return guidMap;
+
+            void CopyShaderRefs(UMultiMap<NameReference, ShaderReference> source, UMultiMap<NameReference, ShaderReference> dest)
+            {
+                foreach ((NameReference type, ShaderReference shaderReference) in source)
+                {
+                    var newShaderGuid = Guid.NewGuid();
+                    if (!guidMap.TryAdd(shaderReference.Id, newShaderGuid))
+                    {
+                        newShaderGuid = shaderReference.Id;
+                    }
+                    dest.Add(type, new ShaderReference{Id = newShaderGuid, ShaderType = shaderReference.ShaderType});
+                }
+            }
+        }
     }
 
     public class ShaderReference
@@ -228,7 +302,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class MeshShaderMap
     {
-        public OrderedMultiValueDictionary<NameReference, ShaderReference> Shaders;
+        public UMultiMap<NameReference, ShaderReference> Shaders; //TODO: Make this a UMap
         public NameReference VertexFactoryType;
         public uint unk;//ME1
     }

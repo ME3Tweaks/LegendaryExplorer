@@ -36,7 +36,6 @@ namespace Xceed.Wpf.Toolkit
 
     #region Base Class Override
 
-
     #endregion
   }
 }

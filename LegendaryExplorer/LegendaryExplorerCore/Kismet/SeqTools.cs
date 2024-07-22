@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 
@@ -12,11 +9,10 @@ namespace LegendaryExplorerCore.Kismet
     /// Static methods to obtain information on sequence objects, and perform common sequence editing operations
     /// </summary>
     /// <remarks>
-    /// Ported from ME2Randomizer, and may have significant overlap with <see cref="KismetHelper"/>.
-    /// This should be merged with KismetHelper and integrated with the toolset in the future, but doing so would break M3 and ME2R
+    /// All methods from this class have been merged with KismetHelper. You should not use this class for any future projects.
     /// </remarks>
-    // TODO: INTEGRATE BETTER WITH LEX
-    public class SeqTools
+    [Obsolete("Class has been merged with KismetHelper. Use that instead!", true)] //TODO: delete class. Use was made an error on 5/25/24
+    public static class SeqTools
     {
         /// <summary>
         /// Changes a single output link to a new target and commits the properties.
@@ -25,11 +21,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="outputLinkIndex">The index of the item in 'OutputLinks'</param>
         /// <param name="linksIndex">The index of the item in the Links array</param>
         /// <param name="newTarget">The UIndex of the new target</param>
+        [Obsolete("Duplication: Use KismetHelper.ChangeOutputLink instead")]
         public static void ChangeOutlink(ExportEntry export, int outputLinkIndex, int linksIndex, int newTarget)
         {
-            var props = export.GetProperties();
-            ChangeOutlink(props, outputLinkIndex, linksIndex, newTarget);
-            export.WriteProperties(props);
+            KismetHelper.ChangeOutputLink(export, outputLinkIndex, linksIndex, newTarget);
         }
 
         /// <summary>
@@ -39,9 +34,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="outputLinkIndex">The index of the item in 'OutputLinks'</param>
         /// <param name="linksIndex">The index of the item in the Links array</param>
         /// <param name="newTarget">The UIndex of the new target</param>
+        [Obsolete("Duplication: Use KismetHelper.ChangeOutputLink instead")]
         public static void ChangeOutlink(PropertyCollection props, int outputLinkIndex, int linksIndex, int newTarget)
         {
-            props.GetProp<ArrayProperty<StructProperty>>("OutputLinks")[outputLinkIndex].GetProp<ArrayProperty<StructProperty>>("Links")[linksIndex].GetProp<ObjectProperty>("LinkedOp").Value = newTarget;
+            KismetHelper.ChangeOutputLink(props, outputLinkIndex, linksIndex, newTarget);
         }
 
         /// <summary>
@@ -51,43 +47,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="elementToSkip">The sequence object to skip</param>
         /// <param name="outboundLinkName">The name of the outbound link that should be attached to the preceding entry element, must have either this or the next argument</param>
         /// <param name="outboundLinkIdx">The 0-indexed outbound link that should be attached the preceding entry element, as if this one had fired that link.</param>
+        [Obsolete("Duplication: Use KismetHelper.SkipSequenceElement instead")]
         public static void SkipSequenceElement(ExportEntry elementToSkip, string outboundLinkName = null, int outboundLinkIdx = -1)
         {
-            if (outboundLinkIdx == -1 && outboundLinkName == null)
-                throw new Exception(@"SkipSequenceElement() must have an outboundLinkName or an outboundLinkIdx!");
-
-            if (outboundLinkIdx == -1)
-            {
-                var outboundLinkNames = KismetHelper.GetOutboundLinkNames(elementToSkip);
-                outboundLinkIdx = outboundLinkNames.IndexOf(outboundLinkName);
-            }
-
-
-            // List of outbound link elements on the specified item we want to skip. These will be placed into the inbound item
-            Debug.WriteLine($@"Attempting to skip {elementToSkip.UIndex} in {elementToSkip.FileRef.FilePath}");
-            var outboundLinkLists = SeqTools.GetOutboundLinksOfNode(elementToSkip);
-            var inboundToSkippedNode = SeqTools.FindOutboundConnectionsToNode(elementToSkip, SeqTools.GetAllSequenceElements(elementToSkip).OfType<ExportEntry>());
-
-            var newTargetNodes = outboundLinkLists[outboundLinkIdx];
-
-            foreach (var preNode in inboundToSkippedNode)
-            {
-                // For every node that links to the one we want to skip...
-                var preNodeLinks = GetOutboundLinksOfNode(preNode);
-
-                foreach (var ol in preNodeLinks)
-                {
-                    var numRemoved = ol.RemoveAll(x => x.LinkedOp == elementToSkip);
-
-                    if (numRemoved > 0)
-                    {
-                        // At least one was removed. Repoint it
-                        ol.AddRange(newTargetNodes);
-                    }
-                }
-
-                WriteOutboundLinksToNode(preNode, preNodeLinks);
-            }
+            KismetHelper.SkipSequenceElement(elementToSkip, outboundLinkName, outboundLinkIdx);
         }
 
         /// <summary>
@@ -95,32 +58,10 @@ namespace LegendaryExplorerCore.Kismet
         /// </summary>
         /// <param name="node">Sequence object to get outbound links from</param>
         /// <returns>Outer list represents OutputLinks, inner lists represent the different sequence objects that link goes to</returns>
-        public static List<List<OutboundLink>> GetOutboundLinksOfNode(ExportEntry node)
+        [Obsolete("Duplication: Use KismetHelper.GetOutputLinksOfNode instead")]
+        public static List<List<OutputLink>> GetOutboundLinksOfNode(ExportEntry node)
         {
-            var outputLinksMapping = new List<List<OutboundLink>>();
-            var outlinksProp = node.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
-            if (outlinksProp != null)
-            {
-                int i = 0;
-                foreach (var ol in outlinksProp)
-                {
-                    List<OutboundLink> oLinks = new List<OutboundLink>();
-                    outputLinksMapping.Add(oLinks);
-
-                    var links = ol.GetProp<ArrayProperty<StructProperty>>("Links");
-                    if (links != null)
-                    {
-                        foreach (var l in links)
-                        {
-                            oLinks.Add(OutboundLink.FromStruct(l, node.FileRef));
-                        }
-                    }
-
-                    i++;
-                }
-            }
-
-            return outputLinksMapping;
+            return KismetHelper.GetOutputLinksOfNode(node);
         }
 
         /// <summary>
@@ -128,11 +69,10 @@ namespace LegendaryExplorerCore.Kismet
         /// </summary>
         /// <param name="node">Sequence object node to write outbound links to</param>
         /// <param name="linkSet">Link set to write to the export</param>
-        public static void WriteOutboundLinksToNode(ExportEntry node, List<List<OutboundLink>> linkSet)
+        [Obsolete("Duplication: Use KismetHelper.GetOutputLinksToNode instead")]
+        public static void WriteOutboundLinksToNode(ExportEntry node, List<List<OutputLink>> linkSet)
         {
-            var properties = node.GetProperties();
-            WriteOutboundLinksToProperties(linkSet, properties);
-            node.WriteProperties(properties);
+            KismetHelper.WriteOutputLinksToNode(node, linkSet);
         }
 
         /// <summary>
@@ -141,75 +81,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <remarks>Returns early if <see cref="linkSet"/> is not of correct length. 'Links' ArrayProperty must already exist in collection.</remarks>
         /// <param name="linkSet">Link set to write to properties</param>
         /// <param name="props">Properties to write links to</param>
-        public static void WriteOutboundLinksToProperties(List<List<OutboundLink>> linkSet, PropertyCollection props)
+        [Obsolete("Duplication: Use KismetHelper.GetOutputLinksToProperties instead")]
+        public static void WriteOutboundLinksToProperties(List<List<OutputLink>> linkSet, PropertyCollection props)
         {
-            var outlinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
-            if (linkSet.Count != outlinksProp.Count)
-            {
-                Debug.WriteLine("Sets are out of sync for WriteOutboundLinksToProperties()! You can't add a new outbound named link using this method.");
-                return; // Sets are not compatible with this code
-            }
-
-            for (int i = 0; i < linkSet.Count; i++)
-            {
-                var oldL = outlinksProp[i].GetProp<ArrayProperty<StructProperty>>("Links");
-                var newL = linkSet[i];
-                oldL.ReplaceAll(newL.Select(x => x.GenerateStruct()));
-            }
-        }
-
-        /// <summary>
-        /// Represents an outbound link from a sequence object
-        /// </summary>
-        public class OutboundLink
-        {
-            /// <summary>The sequence object that this links to</summary>
-            public IEntry LinkedOp { get; set; }
-            /// <summary>The InputLinkIdx property of this link</summary>
-            public int InputLinkIdx { get; set; }
-
-            /// <summary>
-            /// Generates a SeqOpInputOutputLink StructProperty from this OutboundLink
-            /// </summary>
-            /// <returns>Created StructProperty</returns>
-            public StructProperty GenerateStruct()
-            {
-                return new StructProperty("SeqOpOutputInputLink", false,
-                    new ObjectProperty(LinkedOp.UIndex, "LinkedOp"),
-                    new IntProperty(InputLinkIdx, "InputLInkIdx"),
-                    new NoneProperty());
-            }
-
-            /// <summary>
-            /// Factory method to create an <see cref="OutboundLink"/> from a SeqOpOutputInputLink StructProperty
-            /// </summary>
-            /// <param name="sp">SeqOpOutputInputLink StructProperty</param>
-            /// <param name="package">Package file that contains this sequence</param>
-            /// <returns>New OutboundLink</returns>
-            public static OutboundLink FromStruct(StructProperty sp, IMEPackage package)
-            {
-                return new OutboundLink()
-                {
-                    LinkedOp = sp.GetProp<ObjectProperty>("LinkedOp")?.ResolveToEntry(package),
-                    InputLinkIdx = sp.GetProp<IntProperty>("InputLinkIdx")
-                };
-            }
-
-            /// <summary>
-            /// Factory method to create an OutboundLink
-            /// </summary>
-            /// <param name="exportEntry">Sequence object to create link to</param>
-            /// <param name="inputLinkIdx">Link index</param>
-            /// <returns>New OutboundLink</returns>
-            public static OutboundLink FromTargetExport(ExportEntry exportEntry, int inputLinkIdx)
-            {
-                //HB 12/14/21: Why is this not just a constructor?
-                return new OutboundLink()
-                {
-                    LinkedOp = exportEntry,
-                    InputLinkIdx = inputLinkIdx
-                };
-            }
+            KismetHelper.WriteOutputLinksToProperties(linkSet, props);
         }
 
         /// <summary>
@@ -218,23 +93,12 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="node">Node to find outbound connections to</param>
         /// <param name="sequenceElements">Sequence objects to search for connections</param>
         /// <returns>List of any sequence objects that link to this node</returns>
-        public static List<ExportEntry> FindOutboundConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements)
+        [Obsolete("Use KismetHelper.FindOutputConnectionsToNode instead")]
+        public static List<ExportEntry> FindOutboundConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements, List<int> linkIdxsToMatchOn = null, List<string> filteredInputNames = null)
         {
-            List<ExportEntry> referencingNodes = new List<ExportEntry>();
-
-            foreach (var seqObj in sequenceElements)
-            {
-                if (seqObj == node) continue; // Skip node pointing to itself
-                var linkSet = GetOutboundLinksOfNode(seqObj);
-                if (linkSet.Any(x => x.Any(y => y.LinkedOp != null && y.LinkedOp.UIndex == node.UIndex)))
-                {
-                    referencingNodes.Add(seqObj);
-                }
-            }
-
-            return referencingNodes.Distinct().ToList();
+            return KismetHelper.FindOutputConnectionsToNode(node, sequenceElements, linkIdxsToMatchOn,
+                filteredInputNames);
         }
-
 
         /// <summary>
         /// Finds sequence objects with variable connections that come to this node
@@ -242,21 +106,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="node">Sequence variable to find connections to</param>
         /// <param name="sequenceElements">Sequence objects to search for connections</param>
         /// <returns>List of any sequence objects that link to this node</returns>
+        [Obsolete("Use KismetHelper.FindVariableConnectionsToNode instead")]
         public static List<ExportEntry> FindVariableConnectionsToNode(ExportEntry node, List<ExportEntry> sequenceElements)
         {
-            List<ExportEntry> referencingNodes = new List<ExportEntry>();
-
-            foreach (var seqObj in sequenceElements)
-            {
-                if (seqObj == node) continue; // Skip node pointing to itself
-                var linkSet = GetVariableLinksOfNode(seqObj);
-                if (linkSet.Any(x => x.LinkedNodes.Any(y => y == node)))
-                {
-                    referencingNodes.Add(seqObj);
-                }
-            }
-
-            return referencingNodes.Distinct().ToList();
+            return KismetHelper.FindVariableConnectionsToNode(node, sequenceElements);
         }
 
         /// <summary>
@@ -265,62 +118,10 @@ namespace LegendaryExplorerCore.Kismet
         /// </summary>
         /// <param name="export">Export to get referenced elements for</param>
         /// <returns>List of referenced sequence elements</returns>
+        [Obsolete("Use KismetHelper.GetAllSequenceElements instead")]
         public static List<IEntry> GetAllSequenceElements(ExportEntry export)
         {
-            if (export.ClassName == "Sequence")
-            {
-                var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null)
-                {
-                    return seqObjs.Where(x => export.FileRef.IsEntry(x.Value)).Select(x => x.ResolveToEntry(export.FileRef)).ToList();
-                }
-            }
-            else
-            {
-                // Pull from parent sequence.
-                var pSeqObj = export.GetProperty<ObjectProperty>("ParentSequence");
-                if (pSeqObj != null && pSeqObj.ResolveToEntry(export.FileRef) is ExportEntry pSeq && pSeq.ClassName == "Sequence")
-                {
-                    return GetAllSequenceElements(pSeq);
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Basic description of a single VarLink (bottom of kismet action - this includes all links)
-        /// </summary>
-        [DebuggerDisplay("VarLink {LinkDesc}, ExpectedType: {ExpectedTypeName}")]
-        public class VarLinkInfo
-        {
-            /// <summary>LinkDesc property value</summary>
-            public string LinkDesc { get; set; }
-            /// <summary>PropertyName property value</summary>
-            public string PropertyName { get; set; }
-            /// <summary>Expected type of variable</summary>
-            public IEntry ExpectedType { get; set; }
-            /// <summary>Expected type name of variable</summary>
-            public string ExpectedTypeName => ExpectedType.ObjectName;
-            /// <summary>Sequence objects that are linked to this var link</summary>
-            public List<IEntry> LinkedNodes { get; set; }
-
-            /// <summary>
-            /// Factory method to create a <see cref="VarLinkInfo"/> from a SeqVarLink struct
-            /// </summary>
-            /// <param name="sp">SeqVarLink struct property</param>
-            /// <param name="package">Package containing sequence object</param>
-            /// <returns>New VarLinkInfo</returns>
-            public static VarLinkInfo FromStruct(StructProperty sp, IMEPackage package)
-            {
-                return new VarLinkInfo()
-                {
-                    LinkDesc = sp.GetProp<StrProperty>("LinkDesc"),
-                    PropertyName = sp.GetProp<NameProperty>("PropertyName")?.Value,
-                    ExpectedType = sp.GetProp<ObjectProperty>("ExpectedType").ResolveToEntry(package),
-                    LinkedNodes = sp.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables")?.Select(x => x.ResolveToEntry(package)).ToList() ?? new List<IEntry>()
-                };
-            }
+            return KismetHelper.GetAllSequenceElements(export);
         }
 
         /// <summary>
@@ -329,10 +130,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <remarks>You cannot ADD new varlinks this way as the serialization does not include all types.</remarks>
         /// <param name="export">Export to get variable links for</param>
         /// <returns>List of variable link infos</returns>
+        [Obsolete("Use KismetHelper.GetVariableLinksOfNode instead")]
         public static List<VarLinkInfo> GetVariableLinksOfNode(ExportEntry export)
         {
-            var props = export.GetProperties();
-            return GetVariableLinks(props, export.FileRef);
+            return KismetHelper.GetVariableLinksOfNode(export);
         }
 
         /// <summary>
@@ -341,19 +142,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="props">Properties to get variable links from</param>
         /// <param name="pcc">Package containing the property collection</param>
         /// <returns>List of any variable links</returns>
+        [Obsolete("Use KismetHelper.GetVariableLinks instead")]
         public static List<VarLinkInfo> GetVariableLinks(PropertyCollection props, IMEPackage pcc)
         {
-            var varLinks = new List<VarLinkInfo>();
-            var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            if (variableLinks != null)
-            {
-                foreach (var vl in variableLinks)
-                {
-                    varLinks.Add(VarLinkInfo.FromStruct(vl, pcc));
-                }
-            }
-
-            return varLinks;
+            return KismetHelper.GetVariableLinks(props, pcc);
         }
 
         /// <summary>
@@ -363,11 +155,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <remarks>This can't be used to add any new variable link points.</remarks>
         /// <param name="export">Export to write links to</param>
         /// <param name="varLinks">Variable links to write</param>
+        [Obsolete("Use KismetHelper.WriteVariableLinksToNode instead")]
         public static void WriteVariableLinksToNode(ExportEntry export, List<VarLinkInfo> varLinks)
         {
-            var properties = export.GetProperties();
-            WriteVariableLinksToProperties(varLinks, properties);
-            export.WriteProperties(properties);
+            KismetHelper.WriteVariableLinksToNode(export, varLinks);
         }
 
         /// <summary>
@@ -377,17 +168,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <remarks>This can't be used to add any new variable link points. LinkedVariables property must already exist.</remarks>
         /// <param name="varLinks">Variable links to write</param>
         /// <param name="props">Properties to write links to</param>
+        [Obsolete("Use KismetHelper.WriteVariableLinksToProperties instead")]
         public static void WriteVariableLinksToProperties(List<VarLinkInfo> varLinks, PropertyCollection props)
         {
-            var variableLinks = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            if (variableLinks != null && varLinks.Count == variableLinks.Count)
-            {
-                for (int i = 0; i < variableLinks.Count; i++)
-                {
-                    var linkedVarList = variableLinks[i].GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
-                    linkedVarList?.ReplaceAll(varLinks[i].LinkedNodes.Select(x => new ObjectProperty(x)));
-                }
-            }
+            KismetHelper.WriteVariableLinksToProperties(varLinks, props);
         }
 
         /// <summary>
@@ -398,15 +182,10 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="export">Export to get containing sequence of</param>
         /// <param name="recurseUp">If true, will continue getting parent sequences until it reaches the top of the chain.</param>
         /// <returns>Parent sequence export</returns>
+        [Obsolete("Use KismetHelper.GetParentSequence instead")]
         public static ExportEntry GetParentSequence(ExportEntry export, bool recurseUp = false)
         {
-            var result = export?.GetProperty<ObjectProperty>("ParentSequence")?.ResolveToEntry(export.FileRef) as ExportEntry;
-            while (recurseUp && result != null && result.ClassName != "Sequence")
-            {
-                result = result.GetProperty<ObjectProperty>("ParentSequence")?.ResolveToEntry(export.FileRef) as ExportEntry;
-            }
-
-            return result;
+            return KismetHelper.GetParentSequence(export, recurseUp);
         }
 
         /// <summary>
@@ -414,9 +193,10 @@ namespace LegendaryExplorerCore.Kismet
         /// </summary>
         /// <param name="export">Sequence object to write property on</param>
         /// <param name="originator">Originator entry to write</param>
+        [Obsolete("Use KismetHelper.WriteOriginator instead")]
         public static void WriteOriginator(ExportEntry export, IEntry originator)
         {
-            export.WriteProperty(new ObjectProperty(originator.UIndex, "Originator"));
+            KismetHelper.WriteOriginator(export, originator);
         }
 
         /// <summary>
@@ -424,9 +204,10 @@ namespace LegendaryExplorerCore.Kismet
         /// </summary>
         /// <param name="export">Sequence object to write property on</param>
         /// <param name="objValue">ObjValue entry to write</param>
+        [Obsolete("Use KismetHelper.ObjValue instead")]
         public static void WriteObjValue(ExportEntry export, IEntry objValue)
         {
-            export.WriteProperty(new ObjectProperty(objValue.UIndex, "ObjValue"));
+            KismetHelper.WriteObjValue(export, objValue);
         }
 
 #if DEBUG
@@ -434,19 +215,21 @@ namespace LegendaryExplorerCore.Kismet
         /// DEBUG: Writes info about a series of <see cref="VarLinkInfo"/>s to the debug console
         /// </summary>
         /// <param name="seqLinks">Variable links to write</param>
+        [Obsolete("Use KismetHelper.PrintVarLinkInfo instead")]
         public static void PrintVarLinkInfo(List<VarLinkInfo> seqLinks)
         {
-            foreach (var link in seqLinks)
-            {
-                Debug.WriteLine($"VarLink {link.LinkDesc}, expected type: {link.ExpectedTypeName}");
-                foreach (var linkedNode in link.LinkedNodes.OfType<ExportEntry>())
-                {
-                    var findTag = linkedNode.GetProperty<StrProperty>("m_sObjectTagToFind");
-                    var objValue = linkedNode.GetProperty<ObjectProperty>("ObjValue");
-                    Debug.WriteLine($"   {linkedNode.UIndex} {linkedNode.ObjectName.Instanced} {findTag?.Value} {objValue?.ResolveToEntry(linkedNode.FileRef).ObjectName.Instanced}");
-                }
-            }
+            KismetHelper.PrintVarLinkInfo(seqLinks);
         }
 #endif
+        /// <summary>
+        /// Gets a list of Outlink LinkDesc names, in order.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        [Obsolete("Use KismetHelper.GetOutputLinkNames instead")]
+        public static List<string> GetOutlinkNames(ExportEntry node)
+        {
+            return KismetHelper.GetOutputLinkNames(node);
+        }
     }
 }

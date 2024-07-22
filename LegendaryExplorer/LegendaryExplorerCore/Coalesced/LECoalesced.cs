@@ -5,15 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 // Tools to unpack/repack LE1 and LE2 coalesced files. 
 // Originally by d00t (https://github.com/d00telemental/LECoal)
 
 namespace LegendaryExplorerCore.Coalesced
 {
-
 
     public static class BinaryExtensions
     {
@@ -92,7 +93,6 @@ namespace LegendaryExplorerCore.Coalesced
     //    {
     //        Name = reader.ReadCoalescedString();
 
-
     //    }
     //}
 
@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Coalesced
     public class LECoalescedBundle
     {
         public string Name { get; private set; }
-        public Dictionary<string, DuplicatingIni> Files { get; } = new();
+        public CaseInsensitiveDictionary<DuplicatingIni> Files { get; } = new();
 
         public LECoalescedBundle(string name)
         {
@@ -134,7 +134,7 @@ namespace LegendaryExplorerCore.Coalesced
             return bundle;
         }
 
-        private static DuplicatingIni ReadCoalescedIni(BinaryReader reader, int sectionCount)
+        internal static DuplicatingIni ReadCoalescedIni(BinaryReader reader, int sectionCount)
         {
             DuplicatingIni ini = new DuplicatingIni();
             DuplicatingIni.Section s = null;
@@ -229,7 +229,6 @@ namespace LegendaryExplorerCore.Coalesced
                     {
                         currentSection.Entries.Add(new DuplicatingIni.IniEntry(chunks[0], chunks[1]));
                     }
-
                 }
 
                 if (currentSection is not null)
@@ -284,7 +283,7 @@ namespace LegendaryExplorerCore.Coalesced
         public void WriteToFile(string destinationPath)
         {
             var ms = new MemoryStream();
-            WriteToStream(ms);
+            WriteToStream(ms, destinationPath.GetUnrealLocalization());
             ms.WriteToFile(destinationPath);
         }
 
@@ -312,14 +311,13 @@ namespace LegendaryExplorerCore.Coalesced
             return splitVal;
         }
 
-        public void WriteToStream(Stream ms)
+        public void WriteToStream(Stream ms, MELocalization lang)
         {
             var writer = new BinaryWriter(ms);
-
             writer.Write(Files.Count);
             foreach (var file in Files)
             {
-                writer.WriteCoalescedString(GetIniFullPath(file.Key));
+                writer.WriteCoalescedString(GetIniFullPath(file.Key, lang));
                 writer.Write(file.Value.Sections.Count);
 
                 foreach (var section in file.Value.Sections)
@@ -341,19 +339,24 @@ namespace LegendaryExplorerCore.Coalesced
             }
         }
 
-        private string GetIniFullPath(string filename)
+        private string GetIniFullPath(string filename, MELocalization localization)
         {
             var extension = Path.GetExtension(filename).ToLower();
+            var fNameNoExt = Path.GetFileNameWithoutExtension(filename); // strip this off to ensure we don't double them up
             switch (extension)
             {
-                case ".ini":
-                    return $@"..\..\BIOGame\Config\{filename}";
                 case ".int":
                 case ".ita":
                 case ".deu":
                 case ".pol":
                 case ".fra":
-                    return $@"..\..\Localization\{extension.Substring(1).ToUpper()}\{filename}";
+                case "" when CoalescedConverter.LocalizedFiles.Contains(fNameNoExt, StringComparer.OrdinalIgnoreCase): // No extension, may have been stripped
+                    return $@"..\..\Engine\Localization\{localization.ToString().ToUpper()}\{fNameNoExt}.{localization.ToString().ToLower()}";
+                case ".ini":
+                    return $@"..\..\BIOGame\Config\{filename}";
+                case "" when CoalescedConverter.ProperNames.Contains(fNameNoExt, StringComparer.OrdinalIgnoreCase): // No extension, may have been stripped
+                    return $@"..\..\BIOGame\Config\{fNameNoExt}.ini";
+
             }
             throw new Exception($"Filename '{filename}' has invalid file extension for LE1/LE2 Coalesced filename");
         }
@@ -384,6 +387,24 @@ namespace LegendaryExplorerCore.Coalesced
         public static LECoalescedBundle UnpackToMemory(Stream stream, string name)
         {
             return LECoalescedBundle.ReadFromStream(stream, name);
+        }
+
+        // This is for test cases
+        public static List<string> GetInternalFilePaths(Stream stream)
+        {
+            List<string> names = new List<string>();
+
+            BinaryReader reader = new BinaryReader(stream);
+            var fileCount = reader.ReadInt32();
+
+            for (int i = 0; i < fileCount; i++)
+            {
+                names.Add(reader.ReadCoalescedString());
+                var sectionCount = reader.ReadInt32();
+                LECoalescedBundle.ReadCoalescedIni(reader, sectionCount);
+            }
+
+            return names;
         }
 
         /// <summary>

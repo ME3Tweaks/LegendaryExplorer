@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -17,108 +15,24 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class LE2UnrealObjectInfo
     {
-        public static Dictionary<string, ClassInfo> Classes = new();
-        public static Dictionary<string, ClassInfo> Structs = new();
-        public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new();
-        public static Dictionary<string, List<NameReference>> Enums = new();
+        public static readonly GameObjectInfo ObjectInfo = new LE2ObjectInfo();
 
         private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimComponent", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "CovPosInfo", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "RwPlane", "RwQuat", "BioRwBox44" };
 
         public static bool IsImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
         }
-
-        public static bool IsLoaded;
-        public static void loadfromJSON(string jsonTextOverride = null)
-        {
-            if (!IsLoaded)
-            {
-                LECLog.Information(@"Loading property db for LE2");
-                try
-                {
-                    var infoText = jsonTextOverride ?? ObjectInfoLoader.LoadEmbeddedJSONText(MEGame.LE2);
-                    if (infoText != null)
-                    {
-                        var blob = JsonConvert.DeserializeAnonymousType(infoText, new { SequenceObjects, Classes, Structs, Enums });
-                        SequenceObjects = blob.SequenceObjects;
-                        Classes = blob.Classes;
-                        Structs = blob.Structs;
-                        Enums = blob.Enums;
-                        AddCustomAndNativeClasses(Classes, SequenceObjects);
-                        foreach ((string className, ClassInfo classInfo) in Classes)
-                        {
-                            classInfo.ClassName = className;
-                        }
-                        foreach ((string className, ClassInfo classInfo) in Structs)
-                        {
-                            classInfo.ClassName = className;
-                        }
-                        IsLoaded = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LECLog.Error($@"Property database load failed for LE2: {ex.Message}");
-                    return;
-                }
-            }
-        }
-
-        public static SequenceObjectInfo getSequenceObjectInfo(string className)
-        {
-            return SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo) ? seqInfo : null;
-        }
-
-        public static List<string> getSequenceObjectInfoInputLinks(string className)
-        {
-            if (SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqInfo))
-            {
-                if (seqInfo.inputLinks != null)
-                {
-                    return SequenceObjects[className].inputLinks;
-                }
-                if (Classes.TryGetValue(className, out ClassInfo info) && info.baseClass != "Object" && info.baseClass != "Class")
-                {
-                    return getSequenceObjectInfoInputLinks(info.baseClass);
-                }
-            }
-            return null;
-        }
-
-        public static string getEnumTypefromProp(string className, NameReference propName, ClassInfo nonVanillaClassInfo = null)
-        {
-            PropertyInfo p = getPropertyInfo(className, propName, nonVanillaClassInfo: nonVanillaClassInfo);
-            if (p == null)
-            {
-                p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
-            }
-            return p?.Reference;
-        }
-
-        public static List<NameReference> getEnumValues(string enumName, bool includeNone = false)
-        {
-            if (Enums.ContainsKey(enumName))
-            {
-                var values = new List<NameReference>(Enums[enumName]);
-                if (includeNone)
-                {
-                    values.Insert(0, "None");
-                }
-                return values;
-            }
-            return null;
-        }
-
+        
         public static PropertyInfo getPropertyInfo(string className, NameReference propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, ExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__", StringComparison.OrdinalIgnoreCase))
             {
                 className = className.Substring(9);
             }
-            Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
+            Dictionary<string, ClassInfo> temp = inStruct ? ObjectInfo.Structs : ObjectInfo.Classes;
             bool infoExists = temp.TryGetValue(className, out ClassInfo info);
             if (!infoExists && nonVanillaClassInfo != null)
             {
@@ -129,11 +43,13 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             // 07/18/2022 - If during property lookup we are passed a class 
             // that we don't know about, generate and use it, since it will also have superclass info
             // For example looking at a custom subclass in Interpreter, this code will resolve the ???'s
+            // //09/23/2022 - Fixed Classes[] = assignment using the class name rather than the containing name. This would make future
+            // lookups wrong.
             // - Mgamerz
             if (!infoExists && !inStruct && containingExport != null && containingExport.IsDefaultObject && containingExport.Class is ExportEntry classExp)
             {
                 info = generateClassInfo(classExp, false);
-                Classes[className] = info;
+                ObjectInfo.Classes[containingExport.ClassName] = info;
                 infoExists = true;
             }
 
@@ -196,77 +112,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
 
         internal static readonly ConcurrentDictionary<string, PropertyCollection> defaultStructValuesLE2 = new();
-
-        public static Property getDefaultProperty(NameReference propName, PropertyInfo propInfo, PackageCache packageCache, bool stripTransients = true, bool isImmutable = false)
-        {
-            switch (propInfo.Type)
-            {
-                case PropertyType.IntProperty:
-                    return new IntProperty(0, propName);
-                case PropertyType.FloatProperty:
-                    return new FloatProperty(0f, propName);
-                case PropertyType.DelegateProperty:
-                    return new DelegateProperty("None", 0);
-                case PropertyType.ObjectProperty:
-                    return new ObjectProperty(0, propName);
-                case PropertyType.NameProperty:
-                    return new NameProperty("None", propName);
-                case PropertyType.BoolProperty:
-                    return new BoolProperty(false, propName);
-                case PropertyType.ByteProperty when propInfo.IsEnumProp():
-                    return new EnumProperty(propInfo.Reference, MEGame.LE2, propName);
-                case PropertyType.ByteProperty:
-                    return new ByteProperty(0, propName);
-                case PropertyType.StrProperty:
-                    return new StrProperty("", propName);
-                case PropertyType.StringRefProperty:
-                    return new StringRefProperty(propName);
-                case PropertyType.BioMask4Property:
-                    return new BioMask4Property(0, propName);
-                case PropertyType.ArrayProperty:
-                    switch (GlobalUnrealObjectInfo.GetArrayType(MEGame.LE2, propInfo))
-                    {
-                        case ArrayType.Object:
-                            return new ArrayProperty<ObjectProperty>(propName);
-                        case ArrayType.Name:
-                            return new ArrayProperty<NameProperty>(propName);
-                        case ArrayType.Enum:
-                            return new ArrayProperty<EnumProperty>(propName);
-                        case ArrayType.Struct:
-                            return new ArrayProperty<StructProperty>(propName);
-                        case ArrayType.Bool:
-                            return new ArrayProperty<BoolProperty>(propName);
-                        case ArrayType.String:
-                            return new ArrayProperty<StrProperty>(propName);
-                        case ArrayType.Float:
-                            return new ArrayProperty<FloatProperty>(propName);
-                        case ArrayType.Int:
-                            return new ArrayProperty<IntProperty>(propName);
-                        case ArrayType.Byte:
-                            return new ImmutableByteArrayProperty(propName);
-                        default:
-                            return null;
-                    }
-                case PropertyType.StructProperty:
-                    isImmutable = isImmutable || GlobalUnrealObjectInfo.IsImmutable(propInfo.Reference, MEGame.LE2);
-                    return new StructProperty(propInfo.Reference, GlobalUnrealObjectInfo.getDefaultStructValue(MEGame.LE2, propInfo.Reference, stripTransients, packageCache), propName, isImmutable);
-                case PropertyType.None:
-                case PropertyType.Unknown:
-                default:
-                    return null;
-            }
-        }
-
+        
         #region Generating
         //call this method to regenerate LE2ObjectInfo.json
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo(string outpath, bool usePooledMemory = true, Action<int, int> progressDelegate = null)
         {
             MemoryManager.SetUsePooledMemory(usePooledMemory);
-            Enums.Clear();
-            Structs.Clear();
-            Classes.Clear();
-            SequenceObjects.Clear();
+            ObjectInfo.Reset();
 
             var allFiles = MELoadedFiles.GetOfficialFiles(MEGame.LE2).Where(x => Path.GetExtension(x) == ".pcc").ToList();
             int totalFiles = allFiles.Count * 2;
@@ -283,17 +136,17 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     string objectName = exportEntry.ObjectName.Instanced;
                     if (className == "Enum")
                     {
-                        generateEnumValues(exportEntry, Enums);
+                        generateEnumValues(exportEntry, ObjectInfo.Enums);
                     }
-                    else if (className == "Class" && !Classes.ContainsKey(objectName))
+                    else if (className == "Class" && !ObjectInfo.Classes.ContainsKey(objectName))
                     {
-                        Classes.Add(objectName, generateClassInfo(exportEntry));
+                        ObjectInfo.Classes.Add(objectName, generateClassInfo(exportEntry));
                     }
                     else if (className == "ScriptStruct")
                     {
-                        if (!Structs.ContainsKey(objectName))
+                        if (!ObjectInfo.Structs.ContainsKey(objectName))
                         {
-                            Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
+                            ObjectInfo.Structs.Add(objectName, generateClassInfo(exportEntry, isStruct: true));
                         }
                     }
                 }
@@ -312,10 +165,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     if (exportEntry.IsA("SequenceObject"))
                     {
                         string className = exportEntry.ClassName;
-                        if (!SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
+                        if (!ObjectInfo.SequenceObjects.TryGetValue(className, out SequenceObjectInfo seqObjInfo))
                         {
                             seqObjInfo = new SequenceObjectInfo();
-                            SequenceObjects.Add(className, seqObjInfo);
+                            ObjectInfo.SequenceObjects.Add(className, seqObjInfo);
                         }
 
                         int objInstanceVersion = exportEntry.GetProperty<IntProperty>("ObjInstanceVersion");
@@ -335,49 +188,16 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 progressDelegate?.Invoke(numDone, totalFiles);
             }
 
-            var jsonText = JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented);
+            var jsonText = JsonConvert.SerializeObject(new { ObjectInfo.SequenceObjects, ObjectInfo.Classes, ObjectInfo.Structs, ObjectInfo.Enums }, Formatting.Indented);
             File.WriteAllText(outpath, jsonText);
             MemoryManager.SetUsePooledMemory(false);
-            Enums.Clear();
-            Structs.Clear();
-            Classes.Clear();
-            SequenceObjects.Clear();
-            loadfromJSON(jsonText);
+            ObjectInfo.Reset();
+            ObjectInfo.LoadData(jsonText);
         }
 
         private static void AddCustomAndNativeClasses(Dictionary<string, ClassInfo> classes, Dictionary<string, SequenceObjectInfo> sequenceObjects)
         {
-            //Custom additions
-            //Custom additions are tweaks and additional classes either not automatically able to be determined
-            //or new classes designed in the modding scene that must be present in order for parsing to work properly
-
-            classes["SFXSeqAct_SetPawnMeshes"] = new ClassInfo
-            {
-                baseClass = "SequenceAction",
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName,
-                exportIndex = 2, //in LE2Resources.pcc
-                properties =
-                {
-                    new KeyValuePair<NameReference, PropertyInfo>("NewBodyMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHeadMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewHairMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("NewGearMesh", new PropertyInfo(PropertyType.ObjectProperty, "SkeletalMesh")),
-                    new KeyValuePair<NameReference, PropertyInfo>("bPreserveAnimation", new PropertyInfo(PropertyType.BoolProperty)),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewBodyMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHeadMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewHairMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                    new KeyValuePair<NameReference, PropertyInfo>("aNewGearMaterials", new PropertyInfo(PropertyType.ArrayProperty, "MaterialInterface")),
-                }
-            };
-            sequenceObjects["SFXSeqAct_SetPawnMeshes"] = new SequenceObjectInfo { ObjInstanceVersion = 1 };
-
-            ME3UnrealObjectInfo.AddIntrinsicClasses(classes, MEGame.LE2);
-            Classes["LightMapTexture2D"] = new ClassInfo
-            {
-                baseClass = "Texture2D",
-                exportIndex = 0,
-                pccPath = GlobalUnrealObjectInfo.Me3ExplorerCustomNativeAdditionsName
-            };
+            
         }
 
         //call on the _Default object
@@ -409,7 +229,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             if (export.IsClass)
             {
                 UClass classBinary = ObjectBinary.From<UClass>(export);
-                info.isAbstract = classBinary.ClassFlags.Has(UnrealFlags.EClassFlags.Abstract);
+                info.isAbstract = LegendaryExplorerCore.Helpers.Enums.Has(classBinary.ClassFlags, UnrealFlags.EClassFlags.Abstract);
             }
             if (pcc.FilePath.Contains("BioGame", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -445,7 +265,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
         private static void generateEnumValues(ExportEntry export, Dictionary<string, List<NameReference>> NewEnums = null)
         {
-            var enumTable = NewEnums ?? Enums;
+            var enumTable = NewEnums ?? ObjectInfo.Enums;
             string enumName = export.ObjectName.Instanced;
             if (!enumTable.ContainsKey(enumName))
             {

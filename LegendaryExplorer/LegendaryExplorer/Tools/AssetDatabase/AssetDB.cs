@@ -101,7 +101,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             Lines.AddRange(from.Lines);
             PlotUsages.AddRecords(from.PlotUsages);
         }
-
     }
 
     public interface IAssetRecord
@@ -126,7 +125,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public List<PlotRecord> Transitions { get; set; } = new();
         public PlotUsageDB()
         {
-
         }
 
         public void ClearRecords()
@@ -167,58 +165,103 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public int DefinitionFile { get; set; }
 
-        public int Definition_UID { get; set; }
+        public int DefinitionUIndex { get; set; }
 
         public string SuperClass { get; set; }
 
         public bool IsModOnly { get; set; }
 
-        public Dictionary<string, PropertyRecord> PropertyRecords { get; set; } = new();
+        public PropertyRecord[] PropertyRecords { get; set; }
 
-        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
-        public List<ClassUsage> Usages { get; set; } = new();
+        [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages.Cast<IAssetUsage>(); // Boxes ClassUsages to IAssetRecord
+        public ClassUsage[] Usages { get; set; }
 
-        public ClassRecord(string Class, int definitionFile, int Definition_UID, string SuperClass)
+        public ClassRecord(string @class, int definitionFile, int definitionUIndex, string superClass, PropertyRecord[] propertyRecords, ClassUsage[] usages)
         {
-            this.Class = Class;
+            this.Class = @class;
             this.DefinitionFile = definitionFile;
-            this.Definition_UID = Definition_UID;
-            this.SuperClass = SuperClass;
+            this.DefinitionUIndex = definitionUIndex;
+            this.SuperClass = superClass;
+            this.PropertyRecords = propertyRecords;
+            this.Usages = usages;
         }
 
         public ClassRecord()
         {
             DefinitionFile = -1;
+            PropertyRecords = Array.Empty<PropertyRecord>();
+            Usages = Array.Empty<ClassUsage>();
         }
     }
-    public sealed record PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
+    public readonly record struct PropertyRecord(string Property, string Type) { public PropertyRecord() : this(default, default) { } }
 
-
-    public class ClassUsage : IAssetUsage
+    public struct ClassUsage : IAssetUsage
     {
-
         public int FileKey { get; init; }
 
-        public int UIndex { get; init;  }
+        //There are millions of ClassUsage instances in a typical db, so bitpacking here can result in major memory savings (>100mb on a lightly modded LE3).
+        //UIndex is stored as a 30 bit integer which is still way more bits than are neccesary for any possible file.
+        [IgnoredMember]
+        private uint _data;
+        private const uint ISDEFAULT_MASK = (uint)1 << 31;
+        private const uint ISMOD_MASK = (uint)1 << 30;
+        private const uint UINDEX_MASK = ~(ISDEFAULT_MASK | ISMOD_MASK);
+        public int UIndex
+        {
+            get => (int)(_data << 2) >> 2;
+            init => _data |= (uint)value & UINDEX_MASK;
+        }
 
-        public bool IsDefault { get; set; }
+        public bool IsDefault
+        {
+            get => (_data & ISDEFAULT_MASK) != 0;
+            set
+            {
+                if (value)
+                {
+                    _data |= ISDEFAULT_MASK;
+                }
+                else
+                {
+                    _data &= ~ISDEFAULT_MASK;
+                }
+            }
+        }
 
-        public bool IsMod { get; set; }
+        public bool IsMod
+        {
+            get => (_data & ISMOD_MASK) != 0;
+            set
+            {
+                if (value)
+                {
+                    _data |= ISMOD_MASK;
+                }
+                else
+                {
+                    _data &= ~ISMOD_MASK;
+                }
+            }
+        }
 
         public ClassUsage(int fileKey, int uIndex, bool isDefault, bool isMod)
         {
             FileKey = fileKey;
+            _data = default;
             UIndex = uIndex;
             IsDefault = isDefault;
             IsMod = isMod;
         }
+
         public ClassUsage()
-        { }
+        {
+            FileKey = default;
+            _data = default;
+        }
     }
 
     public class MaterialRecord : IAssetRecord
     {
-
         public string MaterialName { get; set; }
 
         public string ParentPackage { get; set; }
@@ -252,10 +295,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public MatSetting() : this(default, default, default) { }
     }
 
-
     public class AnimationRecord : IAssetRecord
     {
-
         public string AnimSequence { get; set; }
 
         public string SeqName { get; set; }
@@ -300,10 +341,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public AnimUsage() : this(default, default, default) { }
     }
 
-
     public class MeshRecord : IAssetRecord
     {
-
         public string MeshName { get; set; }
 
         public bool IsSkeleton { get; set; }
@@ -332,7 +371,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public MeshUsage() : this(default, default, default) { }
     }
 
-
     public class ParticleSysRecord : IAssetRecord
     {
         public enum VFXClass
@@ -341,7 +379,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             RvrClientEffect,
             BioVFXTemplate
         }
-
 
         public string PSName { get; set; }
 
@@ -377,10 +414,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public ParticleSysUsage() : this(default, default, default, default) { }
     }
 
-
     public class TextureRecord : IAssetRecord
     {
-
         public string TextureName { get; set; }
 
         public string ParentPackage { get; set; }
@@ -425,10 +460,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public TextureUsage() : this(default, default, default, default) { }
     }
 
-
     public class GUIElement : IAssetRecord
     {
-
         public string GUIName { get; set; }
 
         public int DataSize { get; set; }
@@ -455,10 +488,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public GUIUsage() : this(default, default, default) { }
     }
 
-
     public class Conversation
     {
-
         public string ConvName { get; set; }
 
         public bool IsAmbient { get; set; }
@@ -482,7 +513,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
     public class ConvoLine
     {
-
         public int StrRef { get; set; }
 
         public string Speaker { get; set; }
@@ -549,7 +579,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             _ => puc.ToString()
         };
 
-
         public static PlotElementType ToPlotElementType(this PlotRecordType prt) => prt switch
         {
             PlotRecordType.Bool => PlotElementType.State,
@@ -612,8 +641,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         }
         public PlotUsage()
         {
-
         }
     }
-
 }

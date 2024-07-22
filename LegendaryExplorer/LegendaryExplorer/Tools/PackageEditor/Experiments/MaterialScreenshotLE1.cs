@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PathfindingEditor;
@@ -29,23 +30,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     class MaterialScreenshotLE1
     {
-        [DllImport("user32.dll")]
-        private static extern IntPtr FindWindow(string className, string windowName);
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowRect(IntPtr hwnd, out Rectangle rect);
-
         private Rectangle GetWindowCoordinates()
         {
             string className = "MassEffect1";
             string windowName = "Mass Effect";
 
             Rectangle rect;
-            IntPtr hwnd = FindWindow(className, windowName);
-            GetWindowRect(hwnd, out rect);
+            IntPtr hwnd = WindowsAPI.FindWindow(className, windowName);
+            WindowsAPI.GetWindowRect(hwnd, out rect);
             return rect;
         }
-
 
         private int currentActorIndex = 0; // The Actor (0 based) to prep
         private List<string> completedMaterials = new List<string>();
@@ -108,7 +102,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             materialName = sourceMat.InstancedFullPath;
             Debug.WriteLine($"Preparing {materialName}, index {currentMaterialIndex}");
-
 
             // Port in the donor material.
             EntryExporter.ExportExportToPackage(sourceMat, templatePackage, out var newMatEntry, globalCache);
@@ -180,11 +173,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         {
             Debug.WriteLine("Beginning capture!");
 
-            var gameWindowPosition = GetWindowCoordinates();
-            var ffmpegPath = @"X:\Downloads\ffmpeg-4.4-full_build\bin\ffmpeg.exe";
-            var arguments = $"-f gdigrab -y -framerate 30 -i desktop -codec:v libx264 -pix_fmt yuv420p -t 8 B:\\MaterialVideosLE1\\{materialName}-{currentActorIndex}.mp4";
-
             // Todo: Someday finish this and change to CLIWrap
+            //var gameWindowPosition = GetWindowCoordinates();
+            //var ffmpegPath = @"X:\Downloads\ffmpeg-4.4-full_build\bin\ffmpeg.exe";
+            //var arguments = $"-f gdigrab -y -framerate 30 -i desktop -codec:v libx264 -pix_fmt yuv420p -t 8 B:\\MaterialVideosLE1\\{materialName}-{currentActorIndex}.mp4";
+
             //ConsoleApp ca = new ConsoleApp(ffmpegPath, arguments);
             //ca.Run();
             //ca.ConsoleOutput += (sender, args) =>

@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
@@ -95,7 +96,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 pcc.WeakUsers.Add(this);
             }
-            if (!pcc.Game.IsLEGame() && !pcc.Game.IsOTGame())
+            if (!pcc.Game.IsLEGame() && !pcc.Game.IsOTGame() && pcc.Game is not MEGame.UDK)
             {
                 throw new ArgumentOutOfRangeException(nameof(pcc), $"Cannot compile scripts for this game version: {pcc.Game}");
             }
@@ -123,8 +124,11 @@ namespace LegendaryExplorerCore.UnrealScript
         /// <param name="gameRootPath">Optional: Use a custom path to look up core files.</param>
         /// <param name="canUseBinaryCache">Optional: Cache <see cref="ObjectBinary"/>s during initialization. Defaults to <c>true</c>.
         /// Caching speeds up initialization and any decompilation operations using this <see cref="FileLib"/>, at the cost of greater memory usage.</param>
-        /// <returns>A <see cref="bool"/> indicating whether initialization was succesful. This value will also be in <see cref="IsInitialized"/>.</returns>
-        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true)
+        /// <returns>A <see cref="bool"/> indicating whether initialization was successful. This value will also be in <see cref="IsInitialized"/>.</returns>
+        public bool Initialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true) => InternalInitialize(packageCache, gameRootPath, canUseBinaryCache, null);
+
+        //if additionalClasses is passed to this method, the FileLib cannot be used normally! It should only be used for compiling those classes 
+        internal bool InternalInitialize(PackageCache packageCache = null, string gameRootPath = null, bool canUseBinaryCache = true, IEnumerable<Class> additionalClasses = null)
         {
             if (IsInitialized) return true;
 
@@ -136,7 +140,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     return true;
                 }
 
-                if (InternalInitialize(packageCache, gameRootPath, canUseBinaryCache))
+                if (PrivateInitialize(packageCache, gameRootPath, canUseBinaryCache, additionalClasses))
                 {
                     HadInitializationError = false;
                     _isInitialized = true;
@@ -174,7 +178,8 @@ namespace LegendaryExplorerCore.UnrealScript
             MEGame.ME1 => new[] { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" },
             MEGame.LE3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
             MEGame.LE2 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc" },
+            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc", "SFXGameContent_Powers.pcc" },
+            MEGame.UDK => new[] { "Core.u", "Engine.u", "GFxUI.u", "GameFramework.u", "UnrealEd.u", "OnlineSubsystemPC.u", "UDKBase.u" },
             _ => throw new ArgumentOutOfRangeException(nameof(game))
         };
 
@@ -188,32 +193,45 @@ namespace LegendaryExplorerCore.UnrealScript
             return basefiles;
         }
 
-        [Obsolete("Filelib architecture has changed, and this no longer does anything.")]
+        [Obsolete("Filelib architecture has changed, and this no longer does anything.", true)]
         public static void FreeLibs() { }
 
         //only use from within _initializationLock!
-        private bool InternalInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true)
+        private bool PrivateInitialize(PackageCache packageCache, string gameRootPath = null, bool canUseCache = true, IEnumerable<Class> additionalClasses = null)
         {
             bool packageCacheIsLocal = false;
             try
             {
                 if (packageCache == null)
                 {
-                    packageCache = new PackageCache{AlwaysOpenFromDisk = false};
+                    packageCache = new PackageCache { AlwaysOpenFromDisk = false };
                     packageCacheIsLocal = true;
                 }
                 LECLog.Information($@"Game Root Path for FileLib Init: {gameRootPath ?? "null"}. Has package cache: {!packageCacheIsLocal}");
+                GameRootPath = gameRootPath; // This is cached because it's a pain to lookup later and requires tons of variable passing
+
                 InitializationLog = new MessageLog();
                 _cacheEnabled = false; // defaults to false, can be enabled if init works.
                 _baseSymbols = null;
                 var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game, gameRootOverride: gameRootPath);
                 string[] baseFileNames = BaseFileNames(Pcc.Game);
                 bool isBaseFile = false;
+
+                bool supportsPostLoad = true;
+                // Do not load files that appear after ours if we are part of the base file set (e.g. engine should not resolve startup)
                 if (baseFileNames.IndexOf(Path.GetFileName(Pcc.FilePath)) is var fileNameIdx and >= 0)
                 {
                     isBaseFile = true;
                     baseFileNames = baseFileNames.Slice(0, fileNameIdx);
+                    supportsPostLoad = false;
                 }
+
+                // Add LECLData for custom classes
+                if (supportsPostLoad && Pcc.LECLTagData != null)
+                {
+                    baseFileNames = baseFileNames.Concat(Pcc.LECLTagData.ImportHintFiles).ToArray();
+                }
+
                 foreach (string fileName in baseFileNames)
                 {
                     if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
@@ -227,6 +245,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     else
                     {
                         InitializationLog.LogError($"Could not find required base file: {fileName}");
+                        return false;
                     }
                 }
                 if (!isBaseFile)
@@ -237,23 +256,23 @@ namespace LegendaryExplorerCore.UnrealScript
                         case MEGame.ME3:
                         {
                             associatedFiles.Remove("BIOP_MP_COMMON.pcc");
-                            if (Pcc.FindEntry("SFXGameMPContent") is { ClassName: "Package" } mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
+                            if (Pcc.FindEntry("SFXGameMPContent", "Package") is IEntry mpContentPackage && mpContentPackage.GetChildren<ImportEntry>().Any())
                             {
                                 associatedFiles.Add("BIOP_MP_COMMON.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP2", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP2_INT.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP3", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP3_INT.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP4", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP4_INT.pcc");
                             }
-                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5") is { ClassName: "Package" })
+                            if (Pcc.FindEntry("SFXGameContentDLC_CON_MP5", "Package") is not null)
                             {
                                 associatedFiles.Add("Startup_DLC_CON_MP5_INT.pcc");
                             }
@@ -277,22 +296,27 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 _symbols = _baseSymbols?.Clone();
                 _cacheEnabled = canUseCache;
-                bool hadError = ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache);
-                if (packageCacheIsLocal)
-                {
-                    packageCache.Dispose();
-                }
-                return hadError;
+                return ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, packageCache, additionalClasses: additionalClasses);
             }
             catch when (!LegendaryExplorerCoreLib.IsDebug)
+            {
+                return false;
+            }
+            finally
             {
                 if (packageCacheIsLocal)
                 {
                     packageCache.Dispose();
                 }
-                return false;
             }
         }
+
+#if DEBUG
+        /// <summary>
+        /// This is used in the debugger to see if this object is the same as another filelib
+        /// </summary>
+        public Guid ObjectGuid = Guid.NewGuid();
+#endif
 
         /// <summary>
         /// Re-Initializes the <see cref="FileLib"/> to reflect changes made to the <see cref="IMEPackage"/> since Initialization.
@@ -331,38 +355,6 @@ namespace LegendaryExplorerCore.UnrealScript
             return symbols;
         }
 
-        private static bool IsScriptExport(ExportEntry exp)
-        {
-            switch (exp.ClassName)
-            {
-                case "Class":
-                case "State":
-                case "Enum":
-                case "Const":
-                case "Function":
-                case "ScriptStruct":
-                case "IntProperty":
-                case "BoolProperty":
-                case "FloatProperty":
-                case "NameProperty":
-                case "StrProperty":
-                case "StringRefProperty":
-                case "ByteProperty":
-                case "ObjectProperty":
-                case "ComponentProperty":
-                case "InterfaceProperty":
-                case "ArrayProperty":
-                case "StructProperty":
-                case "BioMask4Property":
-                case "MapProperty":
-                case "ClassProperty":
-                case "DelegateProperty":
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         void IWeakPackageUser.HandleUpdate(List<PackageUpdate> updates)
         {
             if (_symbols is null)
@@ -371,7 +363,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             foreach (PackageUpdate update in updates.Where(u => u.Change.Has(PackageChange.Export)))
             {
-                if (Pcc.GetEntry(update.Index) is ExportEntry exp && IsScriptExport(exp))
+                if (Pcc.GetEntry(update.Index) is ExportEntry exp && exp.IsScriptExport())
                 {
                     ReInitializeFile();
                     InitializationStatusChange?.Invoke(true);
@@ -380,7 +372,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        private bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null)
+        private bool ResolveAllClassesInPackage(IMEPackage pcc, ref SymbolTable symbols, MessageLog log, PackageCache packageCache = null, Class classOverride = null, IEnumerable<Class> additionalClasses = null)
         {
             objBinCache.Clear();
             var realPcc = Pcc;
@@ -409,7 +401,14 @@ namespace LegendaryExplorerCore.UnrealScript
                         }
                         else
                         {
-                            cls = ScriptObjectToASTConverter.ConvertClass(GetCachedObjectBinary<UClass>(export, packageCache), false, this, packageCache);
+                            var uClass = GetCachedObjectBinary<UClass>(export, packageCache);
+                            cls = ScriptObjectToASTConverter.ConvertClass(uClass, false, this, packageCache);
+
+                            //don't do this if we're just adding a new class to the db
+                            if (classOverride is null)
+                            {
+                                GlobalUnrealObjectInfo.AddOrReplaceClassInDB(uClass, packageCache);
+                            }
                         }
                         log.CurrentClass = cls;
                         if (!cls.IsFullyDefined)
@@ -469,8 +468,20 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     classes.Add(classOverride, "");
                 }
+                if (additionalClasses is not null)
+                {
+                    foreach (Class additionalClass in additionalClasses)
+                    {
+                        //should loose classes override?
+                        if (!symbols.AddType(additionalClass))
+                        {
+                            continue; //class already defined
+                        }
+                        classes.Add(additionalClass, "");
+                    }
+                }
                 LECLog.Debug($"{fileName}: Finished parse.");
-                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams);
+                var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
                 foreach (ValidationPass validationPass in Enums.GetValues<ValidationPass>())
                 {
                     foreach ((Class cls, string scriptText) in classes)
@@ -540,6 +551,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         private bool _cacheEnabled;
         private readonly Dictionary<int, ObjectBinary> objBinCache = new();
+        public string GameRootPath { get; private set; } // Root path that was used to initialize this FileLib. If this is null the default game path was used.
 
         internal ObjectBinary GetCachedObjectBinary(ExportEntry export, PackageCache packageCache = null)
         {
@@ -578,7 +590,6 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             return ObjectBinary.From<T>(export, packageCache);
         }
-
 
         [Conditional("DEBUGSCRIPT")]
         private static void DisplayError(string scriptText, string logText)

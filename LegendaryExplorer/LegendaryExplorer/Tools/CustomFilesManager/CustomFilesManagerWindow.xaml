@@ -42,8 +42,8 @@
         </DockPanel>
 
         <!-- COLUMN 1: STARTUP INVENTORY DIRECTORY -->
-        <TextBlock Grid.Row="0" Grid.Column="2" Text="Custom class file directories" FontWeight="Bold"/>
-        <TextBlock Grid.Row="1" Grid.Column="2" Text="Files in these directories will be scanned on toolset boot, and any classes in them will be automatically added to the LEX database for this session. This will allow you to use them more effectively in tools such as Package Editor (better property handling) and Sequence Editor (add custom kismet objects to toolbox)." TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="Custom asset file directories" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="Files in these directories will be scanned on toolset boot, and any classes or sequences in them will be automatically added to the LEX database for this session. This will allow you to use them more effectively in tools such as Package Editor (better property handling) and Sequence Editor (add custom kismet objects to toolbox)." TextWrapping="Wrap"/>
         <ListBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding CustomClassDirectories}" SelectedItem="{Binding SelectedCustomClassDirectory}"/>
         <DockPanel Grid.Row="5" Grid.Column="2" Margin="0,3,0,0">
             <Button Padding="5" Content="Remove directory" DockPanel.Dock="Right" Command="{Binding RemoveCustomDirectoryCommand}"/>

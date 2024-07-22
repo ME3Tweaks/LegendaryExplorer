@@ -23,7 +23,7 @@ using BioMorphFace = LegendaryExplorerCore.Unreal.Classes.BioMorphFace;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
-    static internal class PackageEditorExperimentsH
+    internal static partial class PackageEditorExperimentsH
     {
         /// <summary>
         /// Collects all TLK exports from the entire ME1 game and exports them into a single GlobalTLK file
@@ -109,7 +109,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                     {
                                         stringMapping[sref.StringID] = sref.Data;
                                     }
-
                                 }
                             }
                         }
@@ -143,18 +142,15 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         }
                     }
                     o.Save();
-
                 }
 
                 return total;
-
             }).ContinueWithOnUIThread(async (total) =>
             {
                 var actualTotal = await total;
                 pew.IsBusy = false;
                 pew.StatusBar_LeftMostText.Text = $"Wrote {actualTotal} lines to {outputFilePath}";
             });
-
         }
 
         public static void AssociateAllExtensions()
@@ -169,7 +165,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pew.IsBusy = true;
             pew.BusyText = $"Creating audio size info for {game}";
 
-            CaseInsensitiveDictionary<long> audioSizes = new();
+            CaseInsensitiveDictionary<long> audioSizes = [];
 
             Task.Run(() =>
             {
@@ -185,12 +181,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 var outFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     $"{game}-vanillaaudiosizes.json");
                 File.WriteAllText(outFile, JsonConvert.SerializeObject(audioSizes));
-
             });
         }
 
-        [DllImport(@"C:\Program Files (x86)\Audiokinetic\Wwise 2019.1.6.7110\SDK\x64_vc140\Release\bin\AkSoundEngineDLL.dll")]
-        public static extern uint GetIDFromString(string str);
+        [LibraryImport(@"C:\Program Files (x86)\Audiokinetic\Wwise 2019.1.6.7110\SDK\x64_vc140\Release\bin\AkSoundEngineDLL.dll", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial uint GetIDFromString(string str);
 
         public static void GenerateWwiseId(PackageEditorWindow pew)
         {
@@ -260,11 +255,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             toc.DumpTOCToTxtFile(outputFile);
         }
 
-        public static void ExportMorphFace(PackageEditorWindow pew)
+        public static async void ExportMorphFace(PackageEditorWindow pew)
         {
             if (pew.TryGetSelectedExport(out var export) && export.ClassName == "BioMorphFace")
             {
-                if (UModelHelper.GetLocalUModelVersionAsync().Result < UModelHelper.SupportedUModelBuildNum)
+                if (await UModelHelper.GetLocalUModelVersionAsync() < UModelHelper.SupportedUModelBuildNum)
                 {
                     MessageBox.Show("UModel not installed or incorrect version!");
                     return;
@@ -309,7 +304,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }).ContinueWithOnUIThread(x =>
                 {
                     // Export the cloned headmesh
-                    if (x != null)
+                    if (x.Result != null)
                     {
                         MessageBox.Show($"Couldn't export via umodel: {x.Result}");
                     }
@@ -321,7 +316,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     pew.IsBusy = false;
                 });
-                
             }
             else
             {

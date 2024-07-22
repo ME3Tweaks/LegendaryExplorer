@@ -327,7 +327,7 @@
     <Setter Property="VerticalContentAlignment"
             Value="Center" />
     <Setter Property="MaxDropDownWidth"
-            Value="250" />
+            Value="350" />
     <Setter Property="HeaderBackground"
             Value="AliceBlue" />
     <Setter Property="DropDownBackground">

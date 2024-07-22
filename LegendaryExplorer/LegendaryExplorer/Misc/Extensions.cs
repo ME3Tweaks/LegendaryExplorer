@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Numerics;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Libraries;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Image = LegendaryExplorerCore.Textures.Image;
@@ -135,17 +136,6 @@ namespace LegendaryExplorer.Misc
 
     public static class ExternalExtensions
     {
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll")]
-        static extern bool IsIconic(IntPtr hwnd);
-        [DllImport("user32.dll")]
-        static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
-        [DllImport("user32.dll")]
-        static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, int lParam);
-
         public static void RestoreAndBringToFront(this Window window)
         {
             WindowInteropHelper helper = new WindowInteropHelper(window);
@@ -157,29 +147,29 @@ namespace LegendaryExplorer.Misc
         public static void RestoreAndBringToFront(this IntPtr windowHandle)
         {
             //if window is minimized
-            if (IsIconic(windowHandle))
+            if (WindowsAPI.IsIconic(windowHandle))
             {
                 const int SW_RESTORE = 9;
-                ShowWindowAsync(windowHandle, SW_RESTORE);
+                WindowsAPI.ShowWindowAsync(windowHandle, SW_RESTORE);
             }
 
-            SetForegroundWindow(windowHandle);
+            WindowsAPI.SetForegroundWindow(windowHandle);
         }
 
         public static void SetForegroundWindow(this Window window)
         {
-            SetForegroundWindow(new WindowInteropHelper(window).Handle);
+            WindowsAPI.SetForegroundWindow(new WindowInteropHelper(window).Handle);
         }
 
         public static bool IsForegroundWindow(this System.Windows.Forms.Form form)
         {
-            return GetForegroundWindow() == form.Handle;
+            return WindowsAPI.GetForegroundWindow() == form.Handle;
         }
 
         public static bool IsForegroundWindow(this Window window)
         {
             WindowInteropHelper helper = new WindowInteropHelper(window);
-            return GetForegroundWindow() == helper.Handle;
+            return WindowsAPI.GetForegroundWindow() == helper.Handle;
         }
 
         //modified from https://social.msdn.microsoft.com/Forums/vstudio/en-US/df4db537-a201-4ab4-bb7e-db38a5c2b6e0/wpf-equivalent-of-winforms-controldrawtobitmap
@@ -213,7 +203,7 @@ namespace LegendaryExplorer.Misc
             // paint control onto graphics
             IntPtr hWnd = control.Handle;
             IntPtr hDC = graphics.GetHdc();
-            SendMessage(hWnd, WM_PRINT, hDC, COMBINED_PRINTFLAGS);
+            WindowsAPI.SendMessage(hWnd, WM_PRINT, hDC, COMBINED_PRINTFLAGS);
             graphics.ReleaseHdc(hDC);
 
             return bitmap.ToBitmapImage();

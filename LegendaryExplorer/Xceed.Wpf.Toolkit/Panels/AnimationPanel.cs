@@ -1363,7 +1363,6 @@ namespace Xceed.Wpf.Toolkit.Panels
       }
     }
 
-
     protected new void RemoveVisualChild( Visual child )
     {
       if( _switchParent == null )

@@ -1,5 +1,5 @@
 ﻿// This is direct copy of the file from the ME3TweaksCore repo
-// Date: 06/06/2022
+// Origin Date: 06/06/2022
 // Only change is the namespace to prevent issues of same namespace in M3C
 namespace LegendaryExplorerCore.Misc.ME3Tweaks
 {
@@ -24,13 +24,20 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         public static readonly int LE1_AUTOTOC = 29;
         public static readonly int LE1_AUTOLOAD_ENABLER = 32;
         public static readonly int LE1_DEBUGLOGGER_DEV = 70;
+        public static readonly int LE1_LEX_INTEROP = 42;
+        public static readonly int LE1_SCRIPT_DEBUGGER = 82;
 
         // LE2 ============================================
         public static readonly int LE2_AUTOTOC = 30;
         public static readonly int LE2_DEBUGLOGGER_DEV = 71;
+        public static readonly int LE2_HOT_RELOAD = 78;
+        public static readonly int LE2_LEX_INTEROP = 79;
+        public static readonly int LE2_SCRIPT_DEBUGGER = 81;
 
         // LE3 ============================================
         public static readonly int LE3_AUTOTOC = 31;
         public static readonly int LE3_DEBUGLOGGER_DEV = 72;
+        public static readonly int LE3_LEX_INTEROP = 80;
+        public static readonly int LE3_SCRIPT_DEBUGGER = 86;
     }
 }

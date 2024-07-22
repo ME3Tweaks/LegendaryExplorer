@@ -27,7 +27,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Indicates the status of this export loader
         /// </summary>
-        public bool IsLoaded;
+        public new bool IsLoaded;
         /// <summary>
         /// Indicates if the export loader was ever in the loaded state while the current export was active. If it wasn't, we should not write out changes.
         /// </summary>
@@ -301,7 +301,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var oDlg = new OpenFileDialog //Load Excel
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx",
-                Title = "Import Excel table"
+                Title = "Import Excel table",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (oDlg.ShowDialog() != true)
@@ -403,7 +404,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 MessageBox.Show($"{e.FlattenException()}", "Error");
 #endif
             }
-
         }
 
         public override void UnloadExport()

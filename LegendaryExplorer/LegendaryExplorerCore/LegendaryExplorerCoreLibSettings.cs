@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using LegendaryExplorerCore.DebugTools;
 
 namespace LegendaryExplorerCore
 {
@@ -18,9 +19,18 @@ namespace LegendaryExplorerCore
         {
             Instance = new LegendaryExplorerCoreLibSettings();
             GameFilesystem.ME1Directory.ReloadDefaultGamePath();
+            LECLog.Information($"ME1 Default Path set to {GameFilesystem.LE1Directory.DefaultGamePath}");
             GameFilesystem.ME2Directory.ReloadDefaultGamePath();
+            LECLog.Information($"ME2 Default Path set to {GameFilesystem.ME2Directory.DefaultGamePath}");
             GameFilesystem.ME3Directory.ReloadDefaultGamePath();
+            LECLog.Information($"ME3 Default Path set to {GameFilesystem.ME3Directory.DefaultGamePath}");
             GameFilesystem.LEDirectory.LookupDefaultPath(); // LE Directory is root of 3 games plus the launcher 
+            LECLog.Information($"LE1 Default Path set to {GameFilesystem.LE1Directory.DefaultGamePath}");
+            LECLog.Information($"LE2 Default Path set to {GameFilesystem.LE2Directory.DefaultGamePath}");
+            LECLog.Information($"LE3 Default Path set to {GameFilesystem.LE3Directory.DefaultGamePath}");
+
+            GameFilesystem.UDKDirectory.ReloadDefaultGamePath();
+            // Don't care about logging UDK path
         }
 
         /// <summary>
@@ -39,21 +49,25 @@ namespace LegendaryExplorerCore
         public bool ParseUnknownArrayTypesAsObject { get; set; }
 
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string ME1Directory { get; set; }
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string ME2Directory { get; set; }
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string ME3Directory { get; set; }
         /// <summary>
-        /// Value that can be binded to to bridge location settings from an enclosing wrapper application
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
         /// </summary>
         public string LEDirectory { get; set; }
+        /// <summary>
+        /// Value that can be bound to to bridge location settings from an enclosing wrapper application
+        /// </summary>
+        public string UDKCustomDirectory { get; set; }
 
 #pragma warning disable
         /// <summary>

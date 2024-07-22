@@ -44,7 +44,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
         }
 
-
         private string[] _sections = new string[] { "State Events", "Quest Goals", "Plot Items", "Task Evals" };
         public string[] Sections
         {
@@ -242,7 +241,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
                     break;
                 default: break;
             }
-
         }
 
         private void ObjectSectionCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -250,5 +248,4 @@ namespace LegendaryExplorer.Tools.PlotEditor
             UpdateSearch();
         }
     }
-
 }

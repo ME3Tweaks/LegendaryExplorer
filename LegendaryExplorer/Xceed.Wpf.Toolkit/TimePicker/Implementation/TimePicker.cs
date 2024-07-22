@@ -169,7 +169,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
     #endregion //StartTime
 
     #region TimeInterval
@@ -213,7 +212,6 @@ namespace Xceed.Wpf.Toolkit
       return value;
     }
 
-
     protected virtual void OnTimeIntervalChanged( TimeSpan oldValue, TimeSpan newValue )
     {
       InvalidateListBoxItems();
@@ -250,7 +248,6 @@ namespace Xceed.Wpf.Toolkit
       base.OnMaximumChanged( oldValue, newValue );
       this.InvalidateListBoxItems();
     }
-
 
     protected override void OnMinimumChanged( DateTime? oldValue, DateTime? newValue )
     {
@@ -439,11 +436,10 @@ namespace Xceed.Wpf.Toolkit
         }
       }
 
-
       TimeSpan timeInterval = TimeInterval;
       List<TimeItem> timeItemList = new List<TimeItem>();
 
-      if( time != null && endTime != null && timeInterval != null && timeInterval.Ticks > 0 )
+      if( timeInterval.Ticks > 0 )
       {
         while( time <= endTime )
         {

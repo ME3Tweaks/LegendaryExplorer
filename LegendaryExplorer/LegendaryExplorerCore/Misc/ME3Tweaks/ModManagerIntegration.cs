@@ -27,13 +27,28 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         }
 
         /// <summary>
-        /// Fetches the ME3Tweaks Mod Manager executable location, if it is exists. The value returned is the last instance run by the user.
+        /// Fetches the ME3Tweaks Mod Manager executable location, if it exists. The value returned is the last instance run by the user.
         /// </summary>
         /// <returns>Path to last run session executable if found; null otherwise</returns>
         public static string GetModManagerExecutableLocation()
         {
             var m3ExecutableLocation = Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\ME3Tweaks", "ExecutableLocation", null);
             if (m3ExecutableLocation is string str && File.Exists(str))
+            {
+                return str;
+            }
+
+            return null; // not found
+        }
+
+        /// <summary>
+        /// Fetches the donor output path from the last run ME3Tweaks tool that supports it.
+        /// </summary>
+        /// <returns>Path to last run session executable if found; null otherwise</returns>
+        public static string GetDonorOutputPath()
+        {
+            var donorOutputPath = Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\ME3Tweaks", "DonorOutputPath", null);
+            if (donorOutputPath is string str && Directory.Exists(str))
             {
                 return str;
             }
@@ -60,7 +75,13 @@ namespace LegendaryExplorerCore.Misc.ME3Tweaks
         /// <returns>True if request was made, false otherwise</returns>
         public static bool RequestASIInstallation(MEGame game, int ASIid, int version = 0)
         {
-            throw new Exception(@"NOT FULLY IMPLEMENTED YET");
+            if (GetModManagerBuildNumber() >= 134)
+            {
+                // Mod Manager 9+
+                return InternalRequestModManagerTask($"--installasi {ASIid} --game {game} --asiversion {version}");
+            }
+
+            // Mod Manager 8
             return InternalRequestModManagerTask($"--installasi {ASIid} --game {game}");
         }
 

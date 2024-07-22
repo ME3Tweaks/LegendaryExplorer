@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -6,18 +7,19 @@ using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorerCore.Audio
 {
-    public class ISBank
+    [Obsolete("Use ISACTBankPair instead")]
+    public class ISBank_DEPRECATED
     {
         private int TestISBOffset;
         private string Filepath;
-        public List<ISBankEntry> BankEntries = new List<ISBankEntry>();
-        public ISBank(string isbPath)
+        public List<ISBank_DEPRECATED> BankEntries = new List<ISBank_DEPRECATED>();
+        public ISBank_DEPRECATED(string isbPath)
         {
             Filepath = isbPath;
             ParseBank(new EndianReader(new MemoryStream(File.ReadAllBytes(isbPath))), false);
         }
 
-        public ISBank(byte[] binData)
+        public ISBank_DEPRECATED(byte[] binData)
         {
             MemoryStream ms = new MemoryStream(binData);
             TestISBOffset = ms.ReadInt32();
@@ -26,6 +28,7 @@ namespace LegendaryExplorerCore.Audio
 
         private void ParseBank(EndianReader ms, bool isEmbedded)
         {
+            /*
             int numEntriesWithData = 1;
             //long dataStartPosition = ms.Position;
             //string shouldBeRiff = ms.ReadString(4, false);
@@ -62,7 +65,7 @@ namespace LegendaryExplorerCore.Audio
             ////todo change to this
             ////  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
             uint chunksize = 0;
-            ISBankEntry isbEntry = null;
+            ISBank_DEPRECATED isbEntry = null;
             while (ms.BaseStream.Position < ms.BaseStream.Length)
             {
                 chunksize = 0; //reset
@@ -99,7 +102,7 @@ namespace LegendaryExplorerCore.Audio
                                     BankEntries.Add(isbEntry);
                                 }
 
-                                isbEntry = new ISBankEntry();
+                                isbEntry = new ISBank_DEPRECATED();
                             }
                         }
                         else
@@ -237,7 +240,7 @@ namespace LegendaryExplorerCore.Audio
             if (isbEntry?.DataAsStored != null)
             {
                 BankEntries.Add(isbEntry);
-            }
+            }*/
         }
     }
 }

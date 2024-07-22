@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.Win32;
 using System.Media;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -49,7 +50,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InitializeComponent();
         }
 
-
         public ICommand SaveCommand { get; set; }
         public ICommand CommitCommand { get; set; }
         public ICommand SetIDCommand { get; set; }
@@ -59,7 +59,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand DeleteStringCommand { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand AddStringCommand { get; set; }
-
 
         private void LoadCommands()
         {
@@ -71,11 +70,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SearchCommand = new GenericCommand(TextSearch, HasTLKLoaded);
             AddStringCommand = new GenericCommand(AddString, HasTLKLoaded);
 
-
             ExportXmlCommand = new GenericCommand(ExportToXml, HasTLKLoaded);
             ImportXmlCommand = new GenericCommand(ImportFromXml, HasTLKLoaded);
             ViewXmlCommand = new GenericCommand(ViewAsXml, HasTLKLoaded);
-
         }
 
         private void DeleteString(object obj)
@@ -262,7 +259,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     _currentMe2Me3Me2Me3TalkFile?.SaveToXML(saveFileDialog.FileName);
                 }
             }
-
         }
 
         private void ImportFromXml()
@@ -270,7 +266,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var openFileDialog = new OpenFileDialog
             {
                 Multiselect = false,
-                Filter = "XML Files (*.xml)|*.xml"
+                Filter = "XML Files (*.xml)|*.xml",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (openFileDialog.ShowDialog() == true)
             {
@@ -323,7 +320,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             await System.Threading.Tasks.Task.Delay(100);  //Catch double clicks of XML button 
             xmlUp = false;
             btnViewXML.ToolTip = "View as XML.";
-
         }
 
         private void SetNewID()
@@ -415,7 +411,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         internal override void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = /*All TLK Editor supported files|*.sfm;*.u;*.upk;*.pcc;*.tlk|ME1 Package Files|*.sfm;*.u;*.upk|LE1 Package Files|*.pcc|*/"ME2/ME3/LE2/LE3 Talk Files|*.tlk" };
+            var d = new OpenFileDialog
+            {
+                Title = "Open TLK file",
+                Filter = "ME2/ME3/LE2/LE3 Talk Files|*.tlk",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
 #if !DEBUG
@@ -473,7 +474,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // CurrentME2ME3TalkFile.
                     ME2ME3HuffmanCompression.SaveToTlkFile(d.FileName, LoadedStrings);
                 }
-
             }
         }
 

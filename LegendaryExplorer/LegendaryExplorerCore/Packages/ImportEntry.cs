@@ -3,10 +3,12 @@ using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 
 namespace LegendaryExplorerCore.Packages
@@ -17,6 +19,11 @@ namespace LegendaryExplorerCore.Packages
     {
         public MEGame Game => FileRef.Game;
 
+        /// <summary>
+        /// Generates an import by serializing it from the specified package file and data stream.
+        /// </summary>
+        /// <param name="pccFile"></param>
+        /// <param name="importData"></param>
         public ImportEntry(IMEPackage pccFile, EndianReader importData)
         {
             HeaderOffset = importData.Position;
@@ -28,9 +35,53 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Creates an import that would represent the specified export if it was to be placed in the specified fakeDestPackage.
+        /// </summary>
+        /// <param name="sourceExport">Export to convert. The link in the dest package must exist or be the root.</param>
+        /// <param name="fakeDestPackage">Package to associate this object with. The import is not installed to the import table.</param>
+        public ImportEntry(ExportEntry sourceExport, int parentIdx, IMEPackage fakeDestPackage)
+        {
+            FileRef = fakeDestPackage;
+            idxLink = parentIdx;
+            ClassName = sourceExport.ClassName;
+            ObjectName = sourceExport.ObjectName;
+            PackageFile = GetPackageFile(sourceExport); // may want to use sourceExport as this may not have yet been attached to package 
+        }
+
+        /// <summary>
+        /// Creates an empty import associated with the specified package file.
+        /// </summary>
+        /// <param name="pccFile"></param>
         public ImportEntry(IMEPackage pccFile)
         {
             FileRef = pccFile;
+        }
+
+        /// <summary>
+        /// Generates a new ImportEntry based on the provided import entry, but associated with the listed package. This is useful for testing imports in other packages.
+        /// </summary>
+        /// <param name="pccFile">Package to associate with</param>
+        /// <param name="clone">Import to read data out of</param>
+        public ImportEntry(IMEPackage pccFile, ImportEntry clone)
+        {
+            FileRef = pccFile;
+            if (clone.idxLink != 0)
+            {
+                var link = pccFile.FindEntry(clone.ParentInstancedFullPath);
+                //if (link == null)
+                //    Debugger.Break(); // We are generating an import that is not the same as the original!!
+
+                idxLink = link?.UIndex ?? 0;
+            }
+            else
+            {
+                idxLink = 0; // root level like SFXGame
+            }
+
+            ObjectName = clone.ObjectName;
+            PackageFile = clone.PackageFile;
+            ClassName = clone.ClassName;
         }
 
         public ImportEntry(IMEPackage pccFile, IEntry parent, NameReference name) : this(pccFile, parent?.UIndex ?? 0, name) { }
@@ -84,7 +135,7 @@ namespace LegendaryExplorerCore.Packages
             get => GenerateHeader();
             set => SetHeaderValuesFromByteArray(value);
         }
-        
+
         public void SetHeaderValuesFromByteArray(byte[] value)
         {
             if (value is null)
@@ -93,7 +144,7 @@ namespace LegendaryExplorerCore.Packages
             }
             if (value.Length != HeaderLength)
             {
-                throw new ArgumentException(nameof(value), $"Import header must be exactly {HeaderLength} bytes");
+                throw new ArgumentException($"Import header must be exactly {HeaderLength} bytes", nameof(value));
             }
             var existingHeader = GenerateHeader();
             if (existingHeader.AsSpan().SequenceEqual(value))
@@ -128,13 +179,13 @@ namespace LegendaryExplorerCore.Packages
             var buff = new byte[HeaderLength];
             if (FileRef.Endian.IsNative)
             {
-                MemoryMarshal.Write(buff, ref _header);
+                MemoryMarshal.Write(buff, in _header);
             }
             else
             {
                 var reversedHeader = _header;
                 reversedHeader.ReverseEndianness();
-                MemoryMarshal.Write(buff, ref _header);
+                MemoryMarshal.Write(buff, in _header);
             }
             return buff;
         }
@@ -159,6 +210,11 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (_header.PackageFileNameIndex != value)
                 {
+                    if (HeaderOffset != 0 && value == FileRef.findName("None"))
+                    {
+                        throw new Exception("Cannot set PackageFile to none");
+                    }
+
                     _header.PackageFileNameIndex = value;
                     HeaderChanged = true;
                 }
@@ -223,7 +279,6 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-
         public string ClassName
         {
             get => FileRef.Names[idxClassName];
@@ -256,6 +311,7 @@ namespace LegendaryExplorerCore.Packages
 
         public string ParentInstancedFullPath => FileRef.GetEntry(idxLink)?.InstancedFullPath ?? "";
         public string InstancedFullPath => FileRef.IsEntry(idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+        public string MemoryFullPath => InstancedFullPath; // Imports will always be nested under their root package file
 
         bool headerChanged;
         public bool HeaderChanged
@@ -269,7 +325,6 @@ namespace LegendaryExplorerCore.Packages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HeaderChanged)));
             }
         }
-
 
         private bool _entryHasPendingChanges;
         public bool EntryHasPendingChanges
@@ -321,5 +376,43 @@ namespace LegendaryExplorerCore.Packages
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Looks up the class info for the given class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(MEGame game, string className)
+        {
+            var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
+            if (classInfo != null)
+            {
+                return Path.GetFileNameWithoutExtension(classInfo.pccPath).UpperFirst();
+            }
+            else
+            {
+                return @"Core"; // ?? This could be engine, sfxgame...
+            }
+        }
+
+        /// <summary>
+        /// Looks up the class info for the given Export's class and returns which package file should contain it. Use this for the PackageFile attribute on ImportEntries.
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static string GetPackageFile(ExportEntry entry)
+        {
+            var entryClass = entry.Class;
+            if (entryClass == null)
+                return @"Core"; // Class is defined in Core
+            if (entryClass.HasParent)
+            {
+                // ForcedExport parent? Take the first forced export?
+                return entryClass.InstancedFullPath.Split(".").First();
+            }
+
+            return GetPackageFile(entry.Game, entry.ClassName);
+        }
     }
 }

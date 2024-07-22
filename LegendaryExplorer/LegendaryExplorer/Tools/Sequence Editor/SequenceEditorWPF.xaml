@@ -33,6 +33,10 @@
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Goto sequence" Name="sequenceRefGotoMenuItem" Click="GotoSequenceReference_Clicked" />
+            <MenuItem Header="Extract sequence (EXPERIMENTAL)" Name="extractSequenceMenuItem" Click="ExtractSequence_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
+            <MenuItem Header="Trim unused variable links (EXPERIMENTAL)" Name="trimUnusedVariableLinksMenuItem" Click="TrimVariableLinks_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
+            <MenuItem Header="Add switch outlink(s)" Name="addSwitchOutlinksMenuItem" Click="AddSwitchOutlinksMenuItem_Clicked"/>
+            <MenuItem Header="Copy InstancedFullPath" Name="copyInstancedFullPathMenuItem" Click="CopyInstancedFullPath_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
 
             <!-- SeqAct_Log Right Click -->
             <MenuItem Header="Add to log..." Name="seqLogAddItemMenuItem">
@@ -47,7 +51,7 @@
 
 
             <MenuItem Header="Open in Package Editor" Click="OpenInPackageEditor_Clicked" />
-            <MenuItem Header="Open class definition in Package Editor" Click="OpenClassDefinitionInPackageEditor_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}" />
+            <MenuItem Header="Open class definition in Package Editor" Click="OpenClassDefinitionInPackageEditor_Clicked"/>
             <MenuItem Header="Open Referenced Object in Package Editor" Click="OpenReferencedObjectInPackageEditor_Clicked" Name="openRefInPackEdMenuItem"/>
             <MenuItem Header="Open in Interp Editor" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
             <MenuItem Header="Open in Dialogue Editor" Click="OpenInDialogueEditor_Clicked" Name="dialogueEditorMenuItem"/>
@@ -99,6 +103,11 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Open version of file with highest mount priority" ToolTip="Opens the version of this file that will actually be loaded by the game." Command="{Binding OpenHighestMountedCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
+                    <MenuItem Header="Compare with unmodded" ToolTip="Compare with the (hopefully) unmodded version of this package to see what exports and imports have changed" Command="{Binding CompareToUnmoddedCommand}"/>
+                    <Separator/>
                     <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G" />
                     <MenuItem Header="Add Object" Click="AddObject_Clicked"
                                 ToolTip="Add existing Sequence Object to this Sequence"
@@ -158,6 +167,16 @@
                     <MenuItem Header="Use saved views" Command="{Binding UseSavedViewsCommand}"
                               ToolTip="Use saved user layouts for sequences as it was viewed in Sequence Editor. Turning this off will use the BioWare layout. Only works on ME1 and Legendary Edition games." />
                 </MenuItem>
+                <MenuItem Header="Designer" Padding="4">
+                    <MenuItem Header="Create new activation input" Command="{Binding DesignerCreateInputCommand}"
+                              ToolTip="Adds a new SequenceActivated event and adds the logic to use it to the sequence" />
+                    <MenuItem Header="Create new finished output" Command="{Binding DesignerCreateOutputCommand}"
+                              ToolTip="Adds a new FinishedSequence event and adds the logic to use it to the sequence" />
+
+                    <Separator/>
+                    <MenuItem Header="Create new external variable" Command="{Binding DesignerCreateExternCommand}"
+                              ToolTip="Adds a new SequenceActivated event and adds the logic to use it to the sequence" />
+                </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                     <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
                     <MenuItem Header="Scan folder for sequence object loops" Command="{Binding ScanFolderForLoopsCommand}"
@@ -168,13 +187,18 @@
                               ToolTip="Converts the m_aObjComment's on SeqAct_Log's into a String var that is attached to it, so it can be logged by the SeqAct logger ASI" />
                     <MenuItem Header="Load custom sequence objects from package" Click="LoadCustomClasses_Clicked"
                               ToolTip="Reads an input package and parses the information required for them to be viewed correctly in Sequence Editor. Only works for this session" />
+                    <MenuItem Header="Load custom sequence objects from current package" Click="LoadCustomClassesFromCurentPackage_Clicked"
+                              ToolTip="Reads classes in the current package and adds any custom sequence objects to the toolbox" />
                     <MenuItem Header="Commit object positions to objects" Click="CommitObjectPositions_Clicked"
                               ToolTip="Writes the node positions of all nodes to the properties for ObjPosX and ObjPosY" />
-					<MenuItem Header="Exkywor's buttons for lazy people">
+                    <MenuItem Header="Import sequence from another package" Click="ImportSequenceFromAnotherPackage_Clicked"
+                              ToolTip="Opens a dialog that lets you choose a package file with premade sequences that you can add to the current sequence" />
+                    <MenuItem Header="Exkywor's buttons for lazy people">
                         <MenuItem Header="Update Selected Interps' Variable Links" Click="UpdateSelVarLinks_Clicked" ToolTip="Updated the variable links of the selected interps in the sequence."/>
                         <MenuItem Header="Update Sequence Interps' Variable Links" Click="UpdateSequenceVarLinks_Clicked" ToolTip="Updated the variable links of all interps in the selected sequence."/>
                         <MenuItem Header="Add Dialogue Wheel Camera" Click="AddDialogueWheelCam_Clicked" ToolTip="Adds an Interp and an InterpData template to control a dialogue wheel camera"/>
                         <MenuItem Header="Add Dialogue Wheel Director" Click="AddDialogueWheelDir_Clicked" ToolTip="Adds an Interp and an InterpData template to control the camera during a dialogue wheel"/>
+                        <MenuItem Header="Anchor All Interps to Selection" Click="AddAnchorToInterps_Clicked" ToolTip="Adds a link from all Interps without an anchor to the selected SeqVar_Object."/>
                     </MenuItem>
                 </MenuItem>
             </Menu>
@@ -286,7 +310,7 @@
                             </Hyperlink>
                         </TextBlock>
                     </StackPanel>
-                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
+                    <sharedToolControls:RecentsControl x:Name="RecentsController" Grid.Column="3" Visibility="{Binding Pcc, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type bases:WPFBase}},Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"/>
                     <TreeView x:Name="Sequences_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
                                 ItemsSource="{Binding TreeViewRootNodes}" 
@@ -377,19 +401,22 @@
                                 <TabItem.Header>
                                     <TextBlock Text="Favorites" ToolTip="Shift-click on a sequence class to add or remove from favorites."/>
                                 </TabItem.Header>
-                                <controls:ToolBox x:Name="favoritesToolBox" />
+                                <controls:ClassToolBox x:Name="favoritesToolBox" />
                             </TabItem>
                             <TabItem Header="Events">
-                                <controls:ToolBox x:Name="eventsToolBox" />
+                                <controls:ClassToolBox x:Name="eventsToolBox" />
                             </TabItem>
                             <TabItem Header="Actions">
-                                <controls:ToolBox x:Name="actionsToolBox" />
+                                <controls:ClassToolBox x:Name="actionsToolBox" />
                             </TabItem>
                             <TabItem Header="Conditions">
-                                <controls:ToolBox x:Name="conditionsToolBox" />
+                                <controls:ClassToolBox x:Name="conditionsToolBox" />
                             </TabItem>
                             <TabItem Header="Variables">
-                                <controls:ToolBox x:Name="variablesToolBox" />
+                                <controls:ClassToolBox x:Name="variablesToolBox" />
+                            </TabItem>
+                            <TabItem Header="Custom sequences" Visibility="{x:Static global:App.IsDebugVisibility}">
+                                <controls:GenericToolBox x:Name="customSequencesToolBox" />
                             </TabItem>
                         </TabControl>
                     </Expander>

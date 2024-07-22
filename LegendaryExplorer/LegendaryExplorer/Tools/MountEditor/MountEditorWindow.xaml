@@ -13,8 +13,7 @@
         Icon="pack://application:,,,/Tools/Icons/16x16/MountEditor_Icon_16.ico"
         Title="Mount Editor" Height="358" Width="500">
     <StackPanel>
-        <TextBlock Text="Use this tool to create new or modify existing mount.dlc files." Background="LightGray" Padding="5,5,5,0"/>
-        <TextBlock Text="Loading a file will load its values into the editor." Background="LightGray" Padding="5,0,5,5"/>
+        <TextBlock Text="Use this tool to create new or modify existing mount.dlc files.&#10;Loading a file will load its values into the editor." Background="LightGray" Padding="5,5,5,5"/>
         <StackPanel Margin="5">
             <TextBlock Text="Mount priority"/>
             <xctk:WatermarkTextBox Watermark="DLC loading priority" PreviewTextInput="PreviewShortInput"  Name="MountPriority_TextBox" ToolTip="Mount priority changes the load order of DLC loading.&#10;Higher value DLC with same-named files will override lower priority ones.&#10;Take great care when setting this, as you will break other mods if yours is higher and is not compatible with the other mod's changes."/>

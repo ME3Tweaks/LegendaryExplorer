@@ -18,7 +18,7 @@
         xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="Legendary Explorer Settings" Height="450" Width="450">
+        Title="Legendary Explorer Settings" Height="450" Width="550">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="LightGray" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
 
@@ -70,7 +70,7 @@
                             if(setting.isDirectorySelect == "true" || !string.IsNullOrEmpty(setting.fileSelectExtension)){ // File/folder browse
                             #><TextBlock Margin="5,5,0,0"><#=setting.friendlyName ?? setting.name #>:</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Tag="<#=setting.name#>">
-                            <TextBox Width="250" x:Name="<#=setting.name #>" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
+                            <TextBox Width="450" x:Name="<#=setting.name #>" Margin="5,0,0,0" TextChanged="Setting_OnTextChanged"
                                        Text="{Binding Path=(settings:Settings.<#=setting.name #>)}"/>
                             <Button Click="<#=(setting.isDirectorySelect == "true" ? "DirectoryBrowse_Click" : "FileBrowse_Click")#>" 
                             Margin="5,0" Tag="<#=setting.fileSelectExtension ?? "" #>">Browse</Button>

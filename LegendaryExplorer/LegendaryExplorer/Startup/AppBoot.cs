@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Forms.Integration;
 using FontAwesome5;
 using FontAwesome5.Extensions;
-using LegendaryExplorer.Dialogs.Splash;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
@@ -22,6 +21,7 @@ using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using Serilog;
 
 namespace LegendaryExplorer.Startup
 {
@@ -30,18 +30,16 @@ namespace LegendaryExplorer.Startup
     /// </summary>
     public static class AppBoot
     {
-        public static DPIAwareSplashScreen LEXSplashScreen;
-
-        public static bool IsLoaded = false;
-        public static Queue<string[]> Arguments;
+        private static bool IsLoaded;
+        private static Queue<string[]> Arguments;
 
         /// <summary>
         /// Invoked during the splash screen sequence for the application
         /// </summary>
         public static void Startup(App app)
         {
-            LEXSplashScreen = new DPIAwareSplashScreen();
-            LEXSplashScreen.Show();
+            app.Resources = (ResourceDictionary)Application.LoadComponent(new Uri("/LegendaryExplorer;component/AppResources.xaml", UriKind.Relative));
+
             Arguments = new Queue<string[]>();
             Arguments.Enqueue(Environment.GetCommandLineArgs());
 
@@ -91,7 +89,7 @@ namespace LegendaryExplorer.Startup
 
             ToolSet.Initialize();
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            app.Dispatcher.UnhandledException += app.OnDispatcherUnhandledException; //only start handling them after bootup
+            app.Dispatcher.UnhandledException += App.OnDispatcherUnhandledException; //only start handling them after bootup
 
             RootCommand cliHandler = CommandLineArgs.CreateCLIHandler();
             Task.Run(() =>
@@ -111,20 +109,20 @@ namespace LegendaryExplorer.Startup
                 }
 
                 // 08/13/2022 - Custom Class Inventory
-                CustomFilesManagerWindow.InventoryCustomClassDirectories();
+                CustomFilesManagerWindow.InventoryCustomAssetDirectories();
 
                 // 08/13/2022 - Custom Startup Files
                 CustomFilesManagerWindow.InstallCustomStartupFiles();
             }).ContinueWithOnUIThread(x =>
             {
-                IsLoaded = true;
-
                 var mainWindow = new LEXMainWindow();
                 app.MainWindow = mainWindow;
                 app.ShutdownMode = ShutdownMode.OnMainWindowClose;
-                mainWindow.TransitionFromSplashToMainWindow(LEXSplashScreen);
+                mainWindow.TransitionFromSplashToMainWindow();
 
                 GameController.InitializeMessageHook(mainWindow);
+
+                IsLoaded = true;
 
                 while (Arguments.Any())
                 {
@@ -153,8 +151,11 @@ namespace LegendaryExplorer.Startup
                     MessageBox.Show(message);
                 });
             }
-
-            LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed);
+#if DEBUG
+            // This makes LECLog messages go to the debug console.
+            Log.Logger = CreateLogger();
+#endif
+            LegendaryExplorerCoreLib.InitLib(TaskScheduler.FromCurrentSynchronizationContext(), packageSaveFailed, Log.Logger);
             CoreLibSettingsBridge.MapSettingsIntoBridge();
             PackageSaver.CheckME3Running = () =>
             {
@@ -164,6 +165,20 @@ namespace LegendaryExplorer.Startup
             PackageSaver.NotifyRunningTOCUpdateRequired = GameController.SendME3TOCUpdateMessage;
         }
 
+#if DEBUG
+        /// <summary>
+        /// Creates an ILogger for ME3Tweaks Mod Manager. This does NOT assign it to the Log.Logger instance.
+        /// </summary>
+        /// <returns></returns>
+        public static ILogger CreateLogger()
+        {
+
+            var loggerConfig = new LoggerConfiguration();
+            loggerConfig = loggerConfig.WriteTo.Debug();
+            return loggerConfig.CreateLogger();
+        }
+#endif
+
         /// <summary>
         /// Invoked when a second instance of Legendary Explorer is opened
         /// </summary>
@@ -172,10 +187,17 @@ namespace LegendaryExplorer.Startup
         {
             if (IsLoaded)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (args.Length is 0)
                 {
-                    CommandLineArgs.CreateCLIHandler().InvokeAsync(args);
-                });
+                    App.Instance.MainWindow.SetForegroundWindow();
+                }
+                else
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        CommandLineArgs.CreateCLIHandler().InvokeAsync(args);
+                    });
+                }
             }
             else
             {

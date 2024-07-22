@@ -32,15 +32,24 @@
         <MenuItem Header="Build LE3 Object Info" Click="BuildLE3ObjectInfo_Clicked"/>
         <MenuItem Header="Build All 3 LE Object Infos" Click="BuildAllObjectInfoLE_Clicked"/>
         <Separator/>
+        <MenuItem Header="Build UDK Object Info" Click="BuildUDKObjectInfo_Clicked"/>
         <!--<MenuItem Header="Generate ME3 Code" Click="GenerateME3Code_Click"/>-->
         <MenuItem Header="Generate ME2/ME3 object info diff" Click="GenerateObjectInfoDiff_Click"/>
         <Separator/>
         <MenuItem Header="Re-Inventory game resources file" ToolTip="Generates the code for custom classes in the resources zip. Check the code for which game" Click="ReInventoryCustomClasses_Click"/>
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
+        <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
+
+        <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
+        <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
+        <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
+
         <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
+        <MenuItem Header="Dump all export uscript to folder" Click="DumpUScriptFromPackage_Click"/>
+        <MenuItem Header="Compile all export uscript from folder" Click="FromPackageUScriptFromFolder_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
         <MenuItem Header="Run MaterialInstanceScreenshot" Click="RunMaterialInstanceScreenshot_Click"/>
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
@@ -64,16 +73,11 @@
             <MenuItem Header="UnCompressed" Click="SavePackageUnCompressed_Click"/>
         </MenuItem>
         <MenuItem Header="Resolve all imports in game of opened package (see debug console)" Click="ResolveAllGameImports_Click"/>
-        <MenuItem Header="Bytecode scan all functions in package" Click="StartPackageBytecodeScan_Click"/>
-        <MenuItem Header="Test LODBias stuff" Click="LODBiasTest_Clicked"/>
         <MenuItem Header="Find Empty Mips" Click="FindEmptyMips_Clicked"/>
-        <MenuItem Header="Shader Cache Research" Click="ShaderCacheResearch_Click"/>
         <MenuItem Header="Reset textures in package" Click="ResetPackageTextures_Click"/>
         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
-        <MenuItem Header="Compact current file via external file" Click="CompactInFile_Click"/>
         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
-        <MenuItem Header="Create Testpatch functions delta to vanilla" Click="CreateTestPatchDelta_Click"/>
         <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
         <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
 
@@ -81,10 +85,7 @@
         <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
         <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
 
-        <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
-        <MenuItem Header="Print native function indices from current file" Click="PrintNatives"/>
         <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
-        <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
         <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
         <MenuItem Header="Find ME2 Powers" Click="FindAllME2PowerCustomAction_Click"/>
         <MenuItem Header="List NetIndexes" Click="ListNetIndexes_Click"/>
@@ -93,12 +94,14 @@
         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
         <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
-        <MenuItem Header="Dump all exec function signatures" Click="DumpAllExecFunctionSignatures_Clicked"/>
         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
         <MenuItem Header="Shift all InterpTrackMove in package" Click="ShiftInterpTrackMovePackageWide"/>
+        <MenuItem Header="Shift all InterpTrackMove in package (Ignore MoveFrame=IMF_AnchorObject)" Click="ShiftInterpTrackMovePackageWideNoAnchor"/>
         <MenuItem Header="LEX Custom Files Manager" Click="LEXCustomFilesManager_Click"/>
+        <MenuItem Header="LE2/LE3: Test importing generated soundbank (Wwise)" Click="ImportWwiseBankTest_Click"/>
+        <MenuItem Header="Strip lightmap from selected object" Click="StripLightmap_Click"/>
     </MenuItem>
     <MenuItem Header="SirCxyrtyx's Garden of Modding Delights">
         <MenuItem Header="Re-Serialize All Properties in game(check code to see which game)" Click="ReSerializeAllProperties_Click"/>
@@ -125,6 +128,10 @@
         <MenuItem Header="Scan Headers" Click="ScanHeaders_OnCLick" />
         <MenuItem Header="Calculate Probe Functions" Click="CalculateProbeFuncs_OnClick"/>
         <MenuItem Header="Port ShadowMaps for BioA_CitSam_800Finalroom.pcc" Click="PortShadowMaps_Click"/>
+        <MenuItem Header="Generate Ghidra Struct insertion script" Click="GenerateGhidraStructInsertionScript"/>
+        <MenuItem Header="Compile loose class folder" Click="CompileLooseClassFolder_Click"/>
+        <MenuItem Header="Dump Class source code" Click="DumpClassSource_Click"/>
+        <MenuItem Header="Regenerate BrushComponent's CachedPhysBrush Data from AggGeom" Click="RegenCachedPhysBrushData_Click"/>
     </MenuItem>
     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
@@ -142,6 +149,8 @@
         <MenuItem Header="Parse Map Names" Click="ParseMapNamesToObjects"/>
         <MenuItem Header="Destroyer" Click="BlowMeUp"/>
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
+        <MenuItem Header="Move Scene" Click="ShiftInterpTrackMovePackageWideScene"/>
+        <MenuItem Header="Anchor Moves" Click="MakeInterpTrackMovesIntoAnchors"/>
     </MenuItem>
     <MenuItem Header="HenBagle's stuff that saved five minutes once">
         <MenuItem Header="Build ME1/LE1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
@@ -163,9 +172,25 @@
         <MenuItem Header="Batch Add/Modify Materials' Parameters" Click="BatchPatchMaterialsParameters_Click" ToolTip="Batch add/modify a list of vector or scalar parameters in a list of given materials to all files in a given DLC folder."/>
         <MenuItem Header="Batch Set Bool Property Value" Click="BatchSetBoolPropVal_Click" ToolTip="Batch set the value of a boolean property to all given classes in a given DLC folder."/>
         <MenuItem Header="The Baldinator" Click="Baldinator_Click" ToolTip="Modify the hair morph targets of a male headmorph to make it bald."/>
+        <MenuItem Header="The Rollinator" Click="Rollinator_Click" ToolTip="Modify the hair morph targets of a male headmorph to make it rollins."/>
         <MenuItem Header="Copy Property" Click="CopyProperty_Click" ToolTip="Copy the selected property to another export of the same class."/>
         <MenuItem Header="Copy Material to BioMaterialOverrides or MaterialInstanceConstants" Click="CopyMatToBMOorMIC_Click" ToolTip="Copies the texture, vector, and scalar properties of a BioMaterialOverride into [Bio]MaterialInstanceConstants, or vice-versa."/>
         <MenuItem Header="Remove References to SkeletalMesh or StaticMesh in Distance" Click="SMRefRemover_Click" ToolTip="Removes SMC references to a SkeletalMesh or StaticMesh within a given distance"/>
+        <MenuItem Header="Clean BioConversation for Cloning" Click="CleanConvoDonor_Click" ToolTip="Rename a BioConversation, change its ID, rename all the FXAs and audio elements, and keep only VOTracks, Conversation InterpGroups and conversation objects."/>
+        <MenuItem Header="Clean Sequence" Click="CleanSequence_Click" ToolTip="Cleans a sequence of objects that are not ConvNode, Interp, InterpData, and ConvNodeEnd; and optionally, of non-Conversation InterpGroups and non-VOElements InterpTracks."/>
+        <MenuItem Header="Clean Sequence's InterpDatas" Click="CleanSequenceInterpDatas_Click" ToolTip="Clean a sequence of non-Conversation InterpGroups and non-VOElements InterpTracks."/>
+        <MenuItem Header="Change Conversation ID and ConvNodes' ID" Click="ChangeConvoIDandConvNodeIDs_Click" ToolTip="Change a conversation's ConvResRefID and give its ConvNodes a new ID range."/>
+        <MenuItem Header="Rename Conversation" Click="RenameConversation_Click" ToolTip="Rename a conversation, changing the WwiseBank name and FXAs and related elements too, and optionally, updating its WwiseBank ID."/>
+        <MenuItem Header="Update class properties of AmbPerfGameData" Click="UpdateAmbPerfClass_Click" ToolTip="Update WepPropClass, PropName, and PropResource props of an AmbPerf."/>
+        <MenuItem Header="Batch update class properties of AmbPerfGameDatas" Click="BatchUpdateAmbPerfClass_Click" ToolTip="Batch update WepPropClass, PropName, and PropResource props of an AmbPerfs in a selected Package."/>
+        <MenuItem Header="Replace 1D lightMap colors" Click="Replace1DLightMapColors_Click" ToolTip="Replaces the colors in the DirectionalSamples of the 1D Lightmap of a StaticMeshComponent"/>
+        <MenuItem Header="Replace 1D lightMap colors of exports" Click="Replace1DLightMapColorsOfExports_Click" ToolTip="Replaces the colors in the DirectionalSamples of the 1D Lightmap of the StaticMeshComponent of the given export IDs."/>
+        <MenuItem Header="Batch replace 1D lightMap colors" Click="BatchReplace1DLightMapColors_Click" ToolTip="Replaces the colors in the DirectionalSamples of the 1D Lightmap of all StaticMeshComponent"/>
+        <MenuItem Header="Add ForcedExport flags to descendants" Click="MakeExportsForced_Click" ToolTip="Adds the ForcedExport flag to all descendant exports of the selected export, including itself."/>
+        <MenuItem Header="Collect StaticMeshComponents into StaticMeshCollectionActor" Click="CollectSMCsintoSMCA_Click" ToolTip="Collect all StaticMeshComponents, referenced by StatichMeshActors, and add them into a new StaticMeshCollectionActor"/>
+        <MenuItem Header="Add Prefab to Level" Click="AddPrefabToLevel_Click" ToolTip="Creates instances of all the prefab archetypes of a Prefab into the file's persistent level."/>
+        <MenuItem Header="Add Streaming Kismet" Click="AddStreamingKismet_Click" ToolTip="Adds a level streaming kismet to either TheWorld or PersistentLevel."/>
+        <MenuItem Header="Stream File" Click="StreamFile_Click" ToolTip="Set the loading and streaming of the given file name in all the BioTriggerStreams where the conditional file is present."/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>

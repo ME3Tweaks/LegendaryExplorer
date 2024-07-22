@@ -10,13 +10,12 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
     {
         public ConversationScanner() : base()
         {
-
         }
 
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
             if (e.IsDefault) return;
-            if (options.ScanLines && e.ClassName == "BioConversation" && !db.GeneratedConvo.ContainsKey(e.Export.ObjectName.Instanced))
+            if (e.ClassName == "BioConversation" && !db.GeneratedConvo.ContainsKey(e.Export.ObjectName.Instanced))
             {
                 bool IsAmbient = true;
 
@@ -45,7 +44,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                     {
                         db.GeneratedLines.TryAdd(linestrref.ToString(), newLine);
                     }
-
                 }
 
                 var replyprop = e.Properties.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");

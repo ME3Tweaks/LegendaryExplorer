@@ -25,6 +25,7 @@
   </ResourceDictionary.MergedDictionaries>
 
   <conv:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+  <conv:DivisionConverter x:Key="DivisionConverter"/>
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
 
@@ -217,7 +218,7 @@
         </Grid.RowDefinitions>
         <Grid>
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
@@ -230,17 +231,16 @@
                   ClipToBounds="True"
                   Background="{StaticResource CheckerBrush}">
             <Canvas x:Name="PART_ColorShadingCanvas"
-                    Width="200"
-                    Height="100"
-                    HorizontalAlignment="Left"
+                    Height="{Binding ElementName=PART_ColorShadingCanvas, Path=ActualWidth, Converter={StaticResource DivisionConverter}, ConverterParameter=2}"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Top">
               <Rectangle x:Name="ColorShadingRectangle"
-                         Height="{Binding ElementName=PART_ColorShadingCanvas, Path=Height}"
-                         Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
+                         Height="{Binding ElementName=PART_ColorShadingCanvas, Path=ActualHeight}"
+                         Width="{Binding ElementName=PART_ColorShadingCanvas, Path=ActualWidth}"
                          Fill="{Binding SelectedColor, ElementName=PART_SpectrumSlider, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
               <Rectangle x:Name="WhiteGradient"
-                         Width="{Binding ElementName=PART_ColorShadingCanvas,Path=Width}"
-                         Height="{Binding ElementName=PART_ColorShadingCanvas,Path=Height}">
+                         Width="{Binding ElementName=PART_ColorShadingCanvas,Path=ActualWidth}"
+                         Height="{Binding ElementName=PART_ColorShadingCanvas,Path=ActualHeight}">
                 <Rectangle.Fill>
                   <LinearGradientBrush StartPoint="0,0"
                                        EndPoint="1,0">
@@ -252,8 +252,8 @@
                 </Rectangle.Fill>
               </Rectangle>
               <Rectangle x:Name="BlackGradient"
-                         Width="{Binding ElementName=PART_ColorShadingCanvas,Path=Width}"
-                         Height="{Binding ElementName=PART_ColorShadingCanvas,Path=Height}">
+                         Width="{Binding ElementName=PART_ColorShadingCanvas,Path=ActualWidth}"
+                         Height="{Binding ElementName=PART_ColorShadingCanvas,Path=ActualHeight}">
                 <Rectangle.Fill>
                   <LinearGradientBrush StartPoint="0,1"
                                        EndPoint="0, 0">

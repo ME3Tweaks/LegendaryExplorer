@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -14,6 +15,7 @@ namespace LegendaryExplorerCore.Coalesced
 		Unknown
 	}
 
+	[DebuggerDisplay("CoalesceAsset {Name} with {Sections.Count} sections")]
 	public class CoalesceAsset
 	{
 		public CoalesceAsset(string name = null, CoalesceSections sections = null)
@@ -162,7 +164,6 @@ namespace LegendaryExplorerCore.Coalesced
                     }
                 }
 
-
             }
 
             return ini;
@@ -182,7 +183,6 @@ namespace LegendaryExplorerCore.Coalesced
 
             return "";
         }
-
 
 		/// <summary>
 		/// Converts this asset to an Xml representation (Game 3)

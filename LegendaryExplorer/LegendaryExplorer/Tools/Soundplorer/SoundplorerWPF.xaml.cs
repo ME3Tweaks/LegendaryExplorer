@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using FontAwesome5;
 using LegendaryExplorer.Audio;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -28,7 +29,9 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Sound.ISACT;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
@@ -91,7 +94,11 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new() { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc;*.xxx|Package files|*.pcc;*.u;*.sfm;*.upk;*.xxx|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
+            OpenFileDialog d = new()
+            {
+                Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc;*.xxx|Package files|*.pcc;*.u;*.sfm;*.upk;*.xxx|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
@@ -132,7 +139,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     LoadMEPackage(fileName);
                     StatusBarIDText = Pcc.Game.ToString();
                 }
-
 
                 if (LoadedISBFile != null)
                 {
@@ -277,9 +283,10 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void LoadISBFile_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Result is ISBank result)
+            if (e.Result is ISACTBank result)
             {
-                var entries = new List<ISACTFileEntry>(result.BankEntries.Where(x => x.DataAsStored != null).Select(x => new ISACTFileEntry(x)));
+                // Get all sound samples as entries.
+                var entries = new List<ISACTFileEntry>(result.GetAllBankChunks().Where(x => x.ChunkName == "data").Select(x => new ISACTFileEntry(x.GetParent() as ISACTListBankChunk)));
                 BindedItemsList.AddRange(entries);
                 backgroundScanner = new BackgroundWorker();
                 backgroundScanner.DoWork += GetStreamTimes;
@@ -293,7 +300,8 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         private void LoadISBFile(object sender, DoWorkEventArgs e)
         {
-            ISBank bank = new ((string)e.Argument);
+            using var fs = File.OpenRead((string)e.Argument);
+            ISACTBank bank = new ISACTBank(fs);
             e.Result = bank;
         }
 
@@ -353,7 +361,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     await Task.Delay(200);
                 }
             }
-
 
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;
@@ -420,8 +427,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 }
             }
 
-
-
             if (exportsRequiringReload.Any())
             {
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
@@ -460,7 +465,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
             {
                 soundPanel.UnloadAFCEntry();
             }
-
 
             if (isEntry != null) soundPanel.LoadISACTEntry(isEntry.Entry);
             if (spExport != null) soundPanel.LoadExport(spExport.Export);
@@ -613,7 +617,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 MessageBox.Show("Done.");
             }
         }
-
 
         private void ExportWave(SoundplorerExport spExport, string outputLocation = null)
         {
@@ -837,7 +840,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
                 // Note that you can have more than one file.
                 e.Data.GetData(DataFormats.FileDrop) is string[] files)
             {
-
                 // Assuming you have one file that you care about, pass it off to whatever
                 // handling code you have defined.
                 LoadFile(files[0]);
@@ -880,7 +882,6 @@ namespace LegendaryExplorer.Tools.Soundplorer
             
             string convertedFolder = await WwiseCliHandler.RunWwiseConversion(srod.ChosenSettings.TargetGame, dlg.FileName, srod.ChosenSettings);
             MessageBox.Show("Done. Converted files have been placed into:\n" + convertedFolder);
-
         }
 
         private void SetWwisePaths_Clicked(object sender, RoutedEventArgs e)
@@ -925,7 +926,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                             }
                         case ISACTFileEntry ife:
                             {
-                                string outfile = Path.Combine(location, Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
+                                string outfile = Path.Combine(location, Path.GetFileNameWithoutExtension(ife.Entry.TitleInfo.Value) + ".wav");
                                 MemoryStream ms = AudioStreamHelper.GetWaveStreamFromISBEntry(ife.Entry);
                                 File.WriteAllBytes(outfile, ms.ToArray());
                                 break;
@@ -1050,7 +1051,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                             AllWems.Add(wem);
                             i++;
                         }
-                        bank.EmbeddedFiles.Clear();
+                        bank.EmbeddedFiles.Empty(AllWems.Count);
                         bank.EmbeddedFiles.AddRange(AllWems.Select(wem => new KeyValuePair<uint, byte[]>(wem.Id, wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData)));
                         ExportBank(spExport);
                     }
@@ -1058,35 +1059,8 @@ namespace LegendaryExplorer.Tools.Soundplorer
             }
         }
 
-        private void ExtractISACTAsRaw_Clicked(object sender, RoutedEventArgs e)
-        {
-            if (SoundExports_ListBox.SelectedItem is ISACTFileEntry spExport)
-            {
-                ExportISACTEntryRaw(spExport);
-            }
-        }
-
         private void ExtractISACTAsWave_Clicked(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private static void ExportISACTEntryRaw(ISACTFileEntry spExport)
-        {
-            SaveFileDialog d = new()
-            {
-                Filter = "ISACT Audio|*.isa",
-                FileName = spExport.Entry.FileName + ".isa",
-                Title = "Select save location for ISACT file"
-            };
-
-            bool? res = d.ShowDialog();
-            if (res.HasValue && res.Value)
-            {
-                //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
-                File.WriteAllBytes(d.FileName, spExport.Entry.DataAsStored);
-                MessageBox.Show("Done.");
-            }
         }
 
         private void SoundplorerWPF_OnLoaded(object sender, RoutedEventArgs e)
@@ -1118,5 +1092,4 @@ namespace LegendaryExplorer.Tools.Soundplorer
 
         public string Toolname => "Soundplorer";
     }
-
 }

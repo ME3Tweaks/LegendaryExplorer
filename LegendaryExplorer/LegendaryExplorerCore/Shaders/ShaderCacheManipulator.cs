@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -14,7 +12,7 @@ namespace LegendaryExplorerCore.Shaders
 {
     public static class ShaderCacheManipulator
     {
-        public static void CompactSeekFreeShaderCaches(IMEPackage pcc)
+        public static void CompactSeekFreeShaderCaches(IMEPackage pcc, string gamePathOverride = null)
         {
             var staticParamSetsInFile = new HashSet<StaticParameterSet>();
             //figure out which MaterialShaderMaps to keep
@@ -29,14 +27,14 @@ namespace LegendaryExplorerCore.Shaders
                     staticParamSetsInFile.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
                 }
             }
-            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSetsInFile, pcc.Game);
+            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSetsInFile, pcc.Game, gamePathOverride);
 
             var localCache = pcc.FindExport("SeekFreeShaderCache");
 
             localCache?.WriteBinary(GetLocalShaders(staticParamSetsInFile, localCache));
         }
 
-        public static ShaderCache GetLocalShadersForMaterials(List<ExportEntry> materials)
+        public static ShaderCache GetLocalShadersForMaterials(List<ExportEntry> materials, string gamePathOverride = null)
         {
             if (materials.Count is 0)
             {
@@ -69,7 +67,7 @@ namespace LegendaryExplorerCore.Shaders
             {
                 return null;
             }
-            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game);
+            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
             if (staticParamSets.Count is 0)
             {
                 return null;
@@ -84,8 +82,8 @@ namespace LegendaryExplorerCore.Shaders
 
             var tempCache = new ShaderCache
             {
-                Shaders = new OrderedMultiValueDictionary<Guid, Shader>(),
-                MaterialShaderMaps = new OrderedMultiValueDictionary<StaticParameterSet, MaterialShaderMap>(),
+                Shaders = new (),
+                MaterialShaderMaps = new (),
                 ShaderTypeCRCMap = localCache.ShaderTypeCRCMap,
                 VertexFactoryTypeCRCMap = localCache.VertexFactoryTypeCRCMap
             };
@@ -101,16 +99,16 @@ namespace LegendaryExplorerCore.Shaders
 
             //get the guids for every shader referenced by the MaterialShaderMaps
             var shaderGuids = new HashSet<Guid>();
-            foreach (MaterialShaderMap materialShaderMap in tempCache.MaterialShaderMaps.Values())
+            foreach (MaterialShaderMap materialShaderMap in tempCache.MaterialShaderMaps.Values)
             {
-                foreach (ShaderReference shaderRef in materialShaderMap.Shaders.Values())
+                foreach ((_, ShaderReference shaderRef) in materialShaderMap.Shaders)
                 {
                     shaderGuids.Add(shaderRef.Id);
                 }
 
                 foreach (MeshShaderMap meshShaderMap in materialShaderMap.MeshShaderMaps)
                 {
-                    foreach (ShaderReference shaderRef in meshShaderMap.Shaders.Values())
+                    foreach ((_, ShaderReference shaderRef) in meshShaderMap.Shaders)
                     {
                         shaderGuids.Add(shaderRef.Id);
                     }
@@ -136,7 +134,7 @@ namespace LegendaryExplorerCore.Shaders
             {
                 destFile.AddExport(new ExportEntry(destFile, 0, seekfreeshadercache, BitConverter.GetBytes(-1), binary: shadersToAdd)
                 {
-                    Class = destFile.getEntryOrAddImport("Engine.ShaderCache"),
+                    Class = destFile.GetEntryOrAddImport("Engine.ShaderCache", "Class"),
                     ObjectFlags = EObjectFlags.LoadForClient | EObjectFlags.LoadForEdit | EObjectFlags.LoadForServer | EObjectFlags.Standalone
                 });
                 return;
@@ -163,7 +161,7 @@ namespace LegendaryExplorerCore.Shaders
             destCacheExport.WriteBinary(destCache);
         }
 
-        public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc)
+        public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc, string gamePathOverride = null)
         {
             var brokenMaterials = new List<ExportEntry>();
             if (!pcc.Game.IsMEGame())
@@ -188,7 +186,7 @@ namespace LegendaryExplorerCore.Shaders
                 return brokenMaterials;
             }
             HashSet<StaticParameterSet> staticParamSets = staticParamSetsToMaterialsDict.Keys.ToHashSet();
-            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game);
+            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
             if (staticParamSets.Count is 0)
             {
                 return brokenMaterials;

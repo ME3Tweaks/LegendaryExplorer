@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.SharedUI;
@@ -36,7 +37,7 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
         public void OpenFile()
         {
-            var dlg = new OpenFileDialog { Filter = "Support files|*.pcc;*.upk", Multiselect = false };
+            var dlg = AppDirectories.GetOpenPackageDialog();
 
             if (dlg.ShowDialog() != true)
             {
@@ -44,7 +45,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
             }
 
             LoadFile(dlg.FileName);
-
         }
 
         public void LoadFile(string path)
@@ -90,7 +90,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (CodexMapControl != null)
             {
-
                 if (CodexMapView.TryFindCodexMap(Pcc, out ExportEntry export, out int _))
                 {
                     using var stream = new MemoryStream();
@@ -105,7 +104,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (QuestMapControl != null)
             {
-
                 if (QuestMapControl.TryFindQuestMap(Pcc, out ExportEntry export, out int _))
                 {
                     using var stream = new MemoryStream();
@@ -120,7 +118,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (StateEventMapControl != null)
             {
-
                 if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export))
                 {
                     using var stream = new MemoryStream();
@@ -135,7 +132,6 @@ namespace LegendaryExplorer.Tools.PlotEditor
 
             if (ConsequenceMapControl != null)
             {
-
                 if (StateEventMapView.TryFindStateEventMap(Pcc, out ExportEntry export, "ConsequenceMap"))
                 {
                     using var stream = new MemoryStream();

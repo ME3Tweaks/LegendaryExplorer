@@ -52,14 +52,31 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         /// <summary>
+        /// Gets the data offset of this node.
+        /// </summary>
+        /// <returns></returns>
+        public int GetOffset()
+        {
+            if (Name != null && Name.StartsWith("_"))
+            {
+                if (int.TryParse(Name.Substring(1), out var dataOffset)) // remove _
+                {
+                    return dataOffset;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         /// Recursively removes null nodes, which may happen due to conditional adds
         /// </summary>
-        public void Finalize()
+        public void RemoveNullNodes()
         {
             Items.RemoveAll(x => x == null);
             foreach (var item in Items.OfType<BinInterpNode>())
             {
-                item.Finalize();
+                item.RemoveNullNodes();
             }
         }
 
@@ -133,7 +150,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 (Items[i] as BinInterpNode)?.PrintPretty(indent, str, i == Items.Count - 1, associatedExport);
             }
         }
-
 
         public bool IsProgramaticallySelecting;
         private bool isSelected;

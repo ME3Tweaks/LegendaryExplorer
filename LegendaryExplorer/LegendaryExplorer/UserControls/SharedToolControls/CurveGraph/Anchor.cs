@@ -322,7 +322,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
                 if (LeftHandle != null) LeftHandle.Y -= e.VerticalChange;
                 if (RightHandle != null) RightHandle.Y -= e.VerticalChange;
 
-
             }
         }
 

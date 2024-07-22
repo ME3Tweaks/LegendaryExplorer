@@ -6,19 +6,18 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
-    public class ASTHighlighter : IHighlighter, ILineTracker
+    public sealed class ASTHighlighter : IHighlighter, ILineTracker
     {
-
         public IDocument Document { get; }
         public HighlightingColor DefaultTextColor { get; }
-        readonly WeakLineTracker weakLineTracker;
+        private readonly WeakLineTracker weakLineTracker;
 
         private readonly SyntaxInfo SyntaxInfo;
 
         public ASTHighlighter(TextDocument document, SyntaxInfo syntaxInfo)
         {
             SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo));
-            DefaultTextColor = SyntaxInfo.Colors[EF.None];
+            DefaultTextColor = SyntaxInfo.HighlightingColors[EF.None];
             Document = document ?? throw new ArgumentNullException(nameof(document));
             document.VerifyAccess();
             //weakLineTracker = WeakLineTracker.Register(document, this);
@@ -28,7 +27,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         {
             IDocumentLine line = Document.GetLineByNumber(lineNumber);
             var highlightedLine = new HighlightedLine(Document, line);
-            
+
             int lineLength = line.Length;
             if (lineLength == 0)
             {
@@ -56,7 +55,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             for (; i < endIndex; i++)
             {
                 SyntaxSpan syntaxSpan = syntaxSpans[i];
-                
+
                 //if a highlighted section is not entirely within the line,
                 //AvalonEdit will throw an uncatchable exception and LEX will instantly crash.
                 //let's avoid that
@@ -69,7 +68,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                 {
                     Offset = syntaxSpan.Offset,
                     Length = syntaxSpan.Length,
-                    Color = SyntaxInfo.Colors[syntaxSpan.FormatType]
+                    Color = SyntaxInfo.HighlightingColors[syntaxSpan.FormatType]
                 });
             }
 
@@ -80,7 +79,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
                 {
                     Offset = commentSpan.Offset,
                     Length = commentSpan.Length,
-                    Color = SyntaxInfo.Colors[commentSpan.FormatType]
+                    Color = SyntaxInfo.HighlightingColors[commentSpan.FormatType]
                 });
             }
 
@@ -89,7 +88,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public void UpdateHighlightingState(int lineNumber)
         {
-            
         }
 
         public event HighlightingStateChangedEventHandler HighlightingStateChanged;

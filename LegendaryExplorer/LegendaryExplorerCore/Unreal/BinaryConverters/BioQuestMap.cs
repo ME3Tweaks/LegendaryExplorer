@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.BioQuestMap;
@@ -107,7 +105,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-
     public static partial class SCExt
     {
         public static void Serialize(this SerializingContainer2 sc, ref BioQuest quest)
@@ -129,7 +126,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref goal.Description);
             sc.Serialize(ref goal.Conditional);
             sc.Serialize(ref goal.State);
-
         }
 
         public static void Serialize(this SerializingContainer2 sc, ref BioQuestTask task)

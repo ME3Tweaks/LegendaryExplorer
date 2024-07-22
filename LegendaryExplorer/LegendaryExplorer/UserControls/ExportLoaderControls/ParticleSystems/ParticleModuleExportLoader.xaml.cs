@@ -25,7 +25,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void LoadCommands()
         {
-
         }
 
         public override bool CanParse(ExportEntry exportEntry) => exportEntry.IsA("ParticleModule");
@@ -37,7 +36,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             DistributionFloats.ClearEx();
             var props = exportEntry.GetProperties();
 
-            var structs = props.Where(x => x is StructProperty sp && (sp.StructType == "RawDistributionVector" || sp.StructType == "RawDistributionFloat")).Select(x => x as StructProperty);
+            var structs = props.Where(x => x is StructProperty sp && (sp.StructType is "RawDistributionVector" or "RawDistributionFloat" or "BioRawDistributionRwVector3")).Select(x => x as StructProperty);
 
             foreach (var sp in structs)
             {
@@ -47,7 +46,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var lookupTable = sp.GetProp<ArrayProperty<FloatProperty>>("LookupTable");
                     if (lookupTable != null && lookupTable.Any())
                     {
-
                         float min = lookupTable[0];
                         float max = lookupTable[1];
 
@@ -55,7 +53,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         List<Vector3> vectors = new List<Vector3>();
                         while (index < lookupTable.Count)
                         {
-
                             Vector3 v = new Vector3(lookupTable[index], lookupTable[index + 1], lookupTable[index + 2]);
                             vectors.Add(v);
                             index += 3;
@@ -80,7 +77,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var lookupTable = sp.GetProp<ArrayProperty<FloatProperty>>("LookupTable");
                     if (lookupTable != null && lookupTable.Any())
                     {
-
                         float min = lookupTable[0];
                         float max = lookupTable[1];
 
@@ -100,8 +96,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         DistributionFloats.Add(df);
                     }
                 }
-            }
 
+                // LE uses these
+                if (sp.StructType == "BioRawDistributionRwVector3")
+                {
+                    var prop = sp.Name.Name; // e.g. ColorOverLife
+                    var lookupTable = sp.GetProp<ArrayProperty<StructProperty>>("LookupTable");
+                    if (lookupTable != null && lookupTable.Any())
+                    {
+                        List<Vector3> vectors = new List<Vector3>();
+                        float min = sp.Properties.GetProp<FloatProperty>("LookupTableMinOut");
+                        float max = sp.Properties.GetProp<FloatProperty>("LookupTableMaxOut");
+
+                        foreach (var vprop in lookupTable)
+                        {
+                            Vector3 v = new Vector3(vprop.Properties.GetProp<FloatProperty>("X"),
+                                vprop.Properties.GetProp<FloatProperty>("Y"),
+                                vprop.Properties.GetProp<FloatProperty>("Z"));
+                            vectors.Add(v);
+                        }
+
+                        DistributionVector dv = new DistributionVector
+                        {
+                            HasLookupTable = true,
+                            MinValue = min,
+                            MaxValue = max,
+                            Property = sp,
+                            PropertyName = sp.Name.Name,
+                            IsRwType = true
+                        };
+                        dv.Vectors.ReplaceAll(vectors.Select(v => new UIVector { Vector = v }));
+                        dv.SetupUIProps();
+                        DistributionVectors.Add(dv);
+                    }
+                }
+            }
         }
 
         public override void UnloadExport()
@@ -133,6 +162,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             public float MinValue { get; set; }
             public float MaxValue { get; set; }
             public ObservableCollectionExtended<UIVector> Vectors { get; } = new ObservableCollectionExtended<UIVector>();
+            /// <summary>
+            /// LE uses RwTypes, sometimes
+            /// </summary>
+            public bool IsRwType { get; set; }
 
             public void SetupUIProps()
             {
@@ -189,7 +222,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return "Z: " + Vector.X;
                 }
             }
-
         }
 
         public ObservableCollectionExtended<DistributionFloat> DistributionFloats { get; } = new ObservableCollectionExtended<DistributionFloat>();

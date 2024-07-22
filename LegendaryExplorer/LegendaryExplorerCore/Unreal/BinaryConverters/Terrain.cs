@@ -111,7 +111,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action, string prefix)
         {
             base.ForEachUIndex(game, in action, prefix);
-            Unsafe.AsRef(action).Invoke(ref Terrain, $"{prefix}Terrain");
+            Unsafe.AsRef(in action).Invoke(ref Terrain, $"{prefix}Terrain");
         }
     }
 

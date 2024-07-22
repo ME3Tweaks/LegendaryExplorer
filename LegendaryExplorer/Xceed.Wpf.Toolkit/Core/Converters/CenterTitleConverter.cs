@@ -38,7 +38,6 @@ namespace Xceed.Wpf.Toolkit.Core.Converters
             double titleColWidth = headerColumns[2].ActualWidth;
             double buttonsColWidth = headerColumns[3].ActualWidth;
 
-
             // Result (1) Title is Centered across all HeaderColumns
             if ((titleTextWidth + buttonsColWidth * 2) < windowWidth)
                 return 1;

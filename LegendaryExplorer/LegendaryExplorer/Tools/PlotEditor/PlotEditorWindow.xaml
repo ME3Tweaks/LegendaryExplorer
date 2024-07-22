@@ -12,7 +12,7 @@
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Icon="pack://application:,,,/Tools/Icons/16x16/PlotEditor_Icon_16.ico"
     Height="600" 
-    Width="800" 
+    Width="1200" 
     SizeToContent="Manual" 
     Title="Plot Editor"
     DragOver="Window_DragOver"

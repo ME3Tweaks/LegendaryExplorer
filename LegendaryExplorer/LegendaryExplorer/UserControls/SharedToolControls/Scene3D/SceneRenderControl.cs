@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
@@ -9,7 +10,8 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
 using LegendaryExplorerCore.Unreal;
-using PropertyChanged;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -187,22 +189,39 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// <summary>
     /// Hosts a <see cref="RenderContext"/> in a WPF control.
     /// </summary>
-    [AddINotifyPropertyChangedInterface]
-    public class SceneRenderControl : ContentControl, IDisposable
+    public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPropertyChanged
     {
         private Microsoft.Wpf.Interop.DirectX.D3D11Image D3DImage;
         private Image Image;
         private readonly Stopwatch Stopwatch = new();
+        private bool _shouldRender;
+        private RenderContext _context;
+        private Action _onImageRendered;
+        private bool _captureNextFrame;
 
-        public RenderContext Context { get; set; }
+        public RenderContext Context
+        {
+            get => _context;
+            set => SetProperty(ref _context, value);
+        }
 
         /// <summary>
         /// Invoked when the D3D11Image object has completed a rendering update
         /// </summary>
-        public Action OnImageRendered { get; set; }
+        public Action OnImageRendered
+        {
+            get => _onImageRendered;
+            set => SetProperty(ref _onImageRendered, value);
+        }
+
         public int RenderWidth => (int)RenderSize.Width;
         public int RenderHeight => (int)RenderSize.Height;
-        public bool CaptureNextFrame { get; set; }
+
+        public bool CaptureNextFrame
+        {
+            get => _captureNextFrame;
+            set => SetProperty(ref _captureNextFrame, value);
+        }
 
         public SceneRenderControl()
         {
@@ -210,14 +229,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             Loaded += (s, e) =>
             {
                 // only at this point the control is ready
-                Window.GetWindow(this) // get the parent window
-                    .Closing += (s1, e1) =>
+                var window = Window.GetWindow(this); // get the parent window
+                //this will obviously always be true at runtime, but is NOT true in the designer.
+                if (window is not null)
                 {
-                    if (!e1.Cancel)
+                    window.Closing += (s1, e1) =>
                     {
-                        Dispose();
-                    }
-                };
+                        if (!e1.Cancel)
+                        {
+                            Dispose();
+                        }
+                    };
+                }
             };
         }
 
@@ -234,7 +257,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (!InitiallyLoaded)
             {
-                Debug.WriteLine("SceneRenderControl_Loaded");
+                // Debug.WriteLine("SceneRenderControl_Loaded");
                 D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
                 {
                     OnRender = D3DImage_OnRender,
@@ -345,15 +368,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-
-
         public event EventHandler Render;
 
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
             if (isNewSurface)
             {
-                Debug.WriteLine("IsNewSurface");
+                // Debug.WriteLine("IsNewSurface");
                 if (Context.Backbuffer != null)
                 {
                     Context.DisposeSizeDependentResources();
@@ -371,7 +392,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
             if (isNewSurface || _shouldRender)
             {
-                Debug.WriteLine("_shouldRender");
+                // Debug.WriteLine("_shouldRender");
                 Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
                 Stopwatch.Restart();
                 bool capturing = false;
@@ -392,8 +413,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 OnImageRendered?.Invoke();
             }
         }
-
-        private bool _shouldRender = false;
 
         public void SetShouldRender(bool shouldRender)
         {
@@ -475,6 +494,34 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         ~SceneRenderControl()
         {
             Dispose();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Notifies listeners when given property is updated.
+        /// </summary>
+        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
+        private void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+
+        /// <summary>
+        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
+        /// Should be called in property setters.
+        /// </summary>
+        /// <typeparam name="T">Type of given property.</typeparam>
+        /// <param name="field">Backing field to update.</param>
+        /// <param name="value">New value of property.</param>
+        /// <param name="propertyName">Name of property.</param>
+        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
+        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

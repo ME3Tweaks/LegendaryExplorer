@@ -1,13 +1,13 @@
 ﻿using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class BioStage : ObjectBinary
     {
         public int length;
-        public OrderedMultiValueDictionary<NameReference, PropertyCollection> CameraList; //PropertyCollection is struct of type BioStageCamera, which contains nothing that needs relinking
+        public UMultiMap<NameReference, PropertyCollection> CameraList; //PropertyCollection is struct of type BioStageCamera, which contains nothing that needs relinking //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer2 sc)
         {
@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (sc.IsLoading)
                 {
-                    CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>();
+                    CameraList = new();
                 }
                 return;
             }
@@ -25,7 +25,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (sc.IsLoading)
                 {
-                    CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>();
+                    CameraList = new();
                 }
                 return;
             }
@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 int count = sc.ms.ReadInt32();
                 sc.ms.SkipInt32();
-                CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>(count);
+                CameraList = new(count);
                 for (int i = 0; i < count; i++)
                 {
                     CameraList.Add(sc.ms.ReadNameReference(sc.Pcc), PropertyCollection.ReadProps(Export, sc.ms.BaseStream, "BioStageCamera", true, entry: Export));
@@ -69,7 +69,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                CameraList = new OrderedMultiValueDictionary<NameReference, PropertyCollection>()
+                CameraList = new ()
             };
         }
 

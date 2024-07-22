@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
     {
         public static bool TryGetTrash<T>(this IMEPackage pcc, out T entry) where T : class, IEntry
         {
-            IEntry trashPackage = pcc.FindEntry(UnrealPackageFile.TrashPackageName);
+            IEntry trashPackage = pcc.FindEntry(UnrealPackageFile.TrashPackageName, "Package");
             if (trashPackage is null)
             {
                 entry = null;
@@ -49,10 +49,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 _ => throw new ArgumentOutOfRangeException(nameof(node))
             };
 
-        public static IEntry ResolveEnum(Enumeration e, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc).InstancedFullPath}.{e.Name}", "Enum");
-        public static IEntry ResolveStruct(Struct s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "ScriptStruct");
-        public static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
-        public static IEntry ResolveState(State s, IMEPackage pcc) => pcc.getEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
+        public static IEntry ResolveEnum(Enumeration e, IMEPackage pcc) => pcc.GetEntryOrAddImport($"{ResolveSymbol(e.Outer, pcc).InstancedFullPath}.{e.Name}", "Enum");
+        public static IEntry ResolveStruct(Struct s, IMEPackage pcc) => pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "ScriptStruct");
+        public static IEntry ResolveFunction(Function f, IMEPackage pcc) => pcc.GetEntryOrAddImport($"{ResolveSymbol(f.Outer, pcc).InstancedFullPath}.{f.Name}", "Function");
+        public static IEntry ResolveState(State s, IMEPackage pcc) => pcc.GetEntryOrAddImport($"{ResolveSymbol(s.Outer, pcc).InstancedFullPath}.{s.Name}", "State");
 
         public static IEntry ResolveClass(Class c, IMEPackage pcc)
         {

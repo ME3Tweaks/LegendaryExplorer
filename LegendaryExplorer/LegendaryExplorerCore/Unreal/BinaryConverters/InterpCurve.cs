@@ -8,14 +8,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     //When using these classes, DON'T specify T where you use it, just put one or more of these in the file.
     //These are the only valid versions
-    using InterpCurveVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector3>;
-    using InterpCurveVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<System.Numerics.Vector2>;
-    using InterpCurveFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurve<float>;
-
-    using InterpCurvePointVector = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<System.Numerics.Vector3>;
-    using InterpCurvePointVector2D = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<System.Numerics.Vector2>;
-    using InterpCurvePointFloat = LegendaryExplorerCore.Unreal.BinaryConverters.InterpCurvePoint<float>;
-
     //ONLY WORKS WHEN T is float, System.Numerics.Vector3 or System.Numerics.Vector2
     public class InterpCurvePoint<T>
     {
@@ -96,7 +88,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                               CommonStructs.GetVector2(prop.GetProp<StructProperty>("LeaveTangent")),
                                               GetCurveMode(prop));
 
-
             StructProperty ISpec<Vector2>.ToStructProperty(InterpCurvePoint<Vector2> icp, MEGame game)
             {
                 return new StructProperty("InterpCurvePointVector2D", new PropertyCollection
@@ -108,7 +99,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     icp.GetEnumProp(game)
                 });
             }
-
 
             #endregion
 
@@ -418,7 +408,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public static readonly Specializations Inst = new();
             private Specializations() { }
         }
-
 
         //generic specialization code is based on https://stackoverflow.com/a/29379250
         private static U Lerp<U>(U start, U end, float amount) => Specialization<U>.Inst.Lerp(start, end, amount);

@@ -53,7 +53,6 @@ namespace LegendaryExplorerCore.Tests
                                 Debug.WriteLine("Extra props:");
                                 foreach(var v in propNames) Debug.WriteLine(v);
 
-
                                 DebugTools.DebugUtilities.CompareByteArrays(startData, endData);
                             }
 #endif

@@ -16,6 +16,51 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Packages
 {
+    [Flags]
+    public enum PackageChange
+    {
+        Export = 0x1,
+        Import = 0x2,
+        Name = 0x4,
+        Add = 0x8,
+        Remove = 0x10,
+        Data = 0x20,
+        Header = 0x40,
+        Entry = 0x80,
+        EntryAdd = Entry | Add,
+        EntryRemove = Entry | Remove,
+        EntryHeader = Entry | Header,
+        ExportData = Export | Data | Entry,
+        ExportHeader = Export | EntryHeader,
+        ImportHeader = Import | EntryHeader,
+        ExportAdd = Export | EntryAdd,
+        ImportAdd = Import | EntryAdd,
+        ExportRemove = Export | EntryRemove,
+        ImportRemove = Import | EntryRemove,
+        NameAdd = Name | Add,
+        NameRemove = Name | Remove,
+        NameEdit = Name | Data
+    }
+
+    [DebuggerDisplay("PackageUpdate | {Change} on index {Index}")]
+    public readonly struct PackageUpdate
+    {
+        /// <summary>
+        /// Details on what piece of data has changed
+        /// </summary>
+        public readonly PackageChange Change;
+        /// <summary>
+        /// index of what item has changed. Meaning depends on value of Change
+        /// </summary>
+        public readonly int Index;
+
+        public PackageUpdate(PackageChange change, int index)
+        {
+            this.Change = change;
+            this.Index = index;
+        }
+    }
+
     public abstract partial class UnrealPackageFile : INotifyPropertyChanged
     {
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
@@ -36,9 +81,14 @@ namespace LegendaryExplorerCore.Packages
         public Guid PackageGuid { get; set; }
 
         /// <summary>
-        /// For concurrency
+        /// For concurrency when rebuilding the lookup table
         /// </summary>
         private object _packageSyncObj = new object();
+
+        /// <summary>
+        /// For concurrency when accessing FindExport/Import/Entry, and the table needs regenerated. This prevents multi-threading use from searching a currently rebuilding lookup table
+        /// </summary>
+        private object _findEntrySyncObj = new object();
 
         public bool IsCompressed => Flags.Has(UnrealFlags.EPackageFlags.Compressed);
 
@@ -116,7 +166,6 @@ namespace LegendaryExplorerCore.Packages
         #region Names
         protected uint namesAdded;
 
-
         // Used to make name lookups quick when doing a contains operation as this method is called
         // quite often
         protected readonly CaseInsensitiveDictionary<int> nameLookupTable = new();
@@ -128,7 +177,6 @@ namespace LegendaryExplorerCore.Packages
         public bool IsName(int index) => index >= 0 && index < names.Count;
 
         public string GetNameEntry(int index) => IsName(index) ? names[index] : "";
-
 
         public int FindNameOrAdd(string name)
         {
@@ -259,6 +307,10 @@ namespace LegendaryExplorerCore.Packages
 
         public void AddExport(ExportEntry exportEntry)
         {
+            // Uncomment this to debug when an export is being added
+            //if (exportEntry.ObjectName == @"SFXPower_Pull_Heavy_Hench")
+            //    Debugger.Break();
+
             if (exportEntry.FileRef != this)
                 throw new Exception("Cannot add an export entry from another package file");
 
@@ -273,11 +325,13 @@ namespace LegendaryExplorerCore.Packages
             if (!lookupTableNeedsToBeRegenerated)
             {
                 // CROSSGEN-V: CHECK BEFORE ADDING TO MAKE SURE WE DON'T GOOF IT UP
+#if DEBUG
                 if (EntryLookupTable.TryGetValue(exportEntry.InstancedFullPath, out _))
                 {
-                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
+                    // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
                     //Debugger.Break(); // This already exists!
                 }
+#endif
                 // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
                 _tree.Add(exportEntry);
@@ -285,38 +339,109 @@ namespace LegendaryExplorerCore.Packages
 
             //Debug.WriteLine($@" >> Added export {exportEntry.InstancedFullPath}");
 
-
             UpdateTools(PackageChange.ExportAdd, exportEntry.UIndex);
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs((nameof(ExportCount));
         }
 
-        public IEntry FindEntry(string instancedname)
+        public IEntry FindEntry(string instancedPath)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            IEntry matchingEntry;
+            // START CRITICAL SECTION ---------------------------------
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedPath, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            // END CRITICAL SECTION ------------------------------------
             return matchingEntry;
         }
+
+        public IEntry FindEntry(string instancedPath, string className)
+        {
+            IEntry matchingEntry = FindEntry(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (IEntry entry in Exports.Concat<IEntry>(Imports))
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
         public ImportEntry FindImport(string instancedname)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            IEntry matchingEntry;
+            // START CRITICAL SECTION ---------------------------------
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            // END CRITICAL SECTION ------------------------------------
+
+            if (matchingEntry is ExportEntry)
+            {
+                // We want import version
+                // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                // for some reason
+                // Look manually for object
+                return Imports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
             return matchingEntry as ImportEntry;
         }
 
         public ExportEntry FindExport(string instancedname)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            IEntry matchingEntry;
+            // START CRITICAL SECTION ---------------------------------
+            lock (_findEntrySyncObj)
             {
-                RebuildLookupTable();
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+                EntryLookupTable.TryGetValue(instancedname, out matchingEntry);
             }
-            EntryLookupTable.TryGetValue(instancedname, out var matchingEntry);
+            // END CRITICAL SECTION ------------------------------------
+
+            if (matchingEntry is ImportEntry)
+            {
+                // We want export version
+                // Some files like LE2 Engine.pcc have imports and exports for same named thing
+                // for some reason
+                // Look manually for object
+                return Exports.FirstOrDefault(x => x.InstancedFullPath == instancedname);
+            }
+
             return matchingEntry as ExportEntry;
+        }
+
+        public ExportEntry FindExport(string instancedPath, string className)
+        {
+            ExportEntry matchingEntry = FindExport(instancedPath);
+            if (matchingEntry is null || matchingEntry.ClassName.CaseInsensitiveEquals(className))
+            {
+                return matchingEntry;
+            }
+            foreach (ExportEntry entry in Exports)
+            {
+                if (entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
+            return null;
         }
 
         public ExportEntry GetUExport(int uindex) => exports[uindex - 1];
@@ -368,7 +493,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 if (EntryLookupTable.TryGetValue(importEntry.InstancedFullPath, out _))
                 {
-                    Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
+                    // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {importEntry.InstancedFullPath}");
                     //Debugger.Break(); // This already exists!
                 }
                 EntryLookupTable[importEntry.InstancedFullPath] = importEntry;
@@ -388,7 +513,6 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public void RebuildLookupTable()
         {
-
             // This needs locked or multithreaded use might corrupt the lookup table
             // We don't want it to be the concurrent version since we don't want the lookup table being modified
             // in multiple locations at the same time
@@ -531,7 +655,6 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-
             //remove imports
             for (int i = ImportCount - 1; i >= 0; i--)
             {
@@ -657,9 +780,9 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Reads local TLK exports. Only use in Game 1 packages.
         /// </summary>
-        /// <param name="lang"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
-        public List<ME1TalkFile> ReadLocalTLKs(string language = null)
+        public List<ME1TalkFile> ReadLocalTLKs(string language = null, bool getAllGenders = false)
         {
             var tlks = new List<ME1TalkFile>();
             var langToMatch = language ?? LegendaryExplorerCoreLibSettings.Instance.TLKDefaultLanguage;
@@ -674,7 +797,15 @@ namespace LegendaryExplorerCore.Packages
                     {
                         if (!addedLoad && langToMatch.Equals(lang, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                            if (getAllGenders)
+                            {
+                                exportsToLoad.Add(GetUExport(bioTlkSet.Male));
+                                exportsToLoad.Add(GetUExport(bioTlkSet.Female));
+                            }
+                            else
+                            {
+                                exportsToLoad.Add(GetUExport(LegendaryExplorerCoreLibSettings.Instance.TLKGenderIsMale ? bioTlkSet.Male : bioTlkSet.Female));
+                            }
                             addedLoad = true;
                         }
                         processedExports.Add(bioTlkSet.Male);

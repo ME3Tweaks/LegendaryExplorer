@@ -18,5 +18,4 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         internal const string VTest_PrecomputedDir = @"Y:ModLibrary\LE1\V Test\PrecomputedFiles";
         internal const string VTest_ModManagerPath = @"C:\Users\mgame\source\repos\ME3Tweaks\MassEffectModManager\MassEffectModManagerCore\bin\x64\Debug\net5.0-windows8.0\win10-x64\ME3TweaksModManager.exe";
     }
-
 }

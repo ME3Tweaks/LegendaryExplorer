@@ -109,6 +109,18 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Gets the other generation version of this game. Does not work on anything but OT/LE games.
+        /// </summary>
+        /// <param name="game">Input game</param>
+        /// <returns>Game that will not be this generation</returns>
+        public static MEGame ToOppositeGeneration(this MEGame game)
+        {
+            if (game.IsOTGame()) return ToLEVersion(game);
+            if (game.IsLEGame()) return ToOTVersion(game);
+            return game;
+        }
+
+        /// <summary>
         /// Returns the name of the CookedPC directory for a specific game
         /// </summary>
         /// <remarks>This method is different to <see cref="LegendaryExplorerCore.GameFilesystem.MEDirectories.CookedName"/>,

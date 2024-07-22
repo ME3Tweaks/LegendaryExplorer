@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Coalesced
 {
+	[DebuggerDisplay("CoalesceSection {Name} with {_properties.Count} unique property names")]
 	public class CoalesceSection : IDictionary<string, CoalesceProperty>
 	{
 		private readonly IDictionary<string, CoalesceProperty> _properties;
 
 		public CoalesceSection(string name = null, IDictionary<string, CoalesceProperty> properties = null)
 		{
-			_properties = properties ?? new Dictionary<string, CoalesceProperty>();
+			_properties = properties ?? new CaseInsensitiveDictionary<CoalesceProperty>();
 			Name = name ?? string.Empty;
 		}
 
@@ -83,7 +86,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -96,7 +99,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -109,7 +112,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -122,7 +125,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -134,7 +137,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -149,7 +152,7 @@ namespace LegendaryExplorerCore.Coalesced
 						{
 							if (!TryGetValue(otherName, out property))
 							{
-								property = new CoalesceProperty();
+								property = new CoalesceProperty(otherName);
 								Add(otherName, property);
 							}
 
@@ -221,7 +224,7 @@ namespace LegendaryExplorerCore.Coalesced
 		}
 
 		/// <summary>
-		/// Adds a value to a property. This method can only add one at a time.
+		/// Adds a value to a property if the property doesn't contain exist with the specified value
 		/// </summary>
 		/// <param name="value"></param>
         public void AddEntryIfUnique(CoalesceProperty value)

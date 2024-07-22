@@ -22,6 +22,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Path = System.IO.Path;
 
@@ -35,7 +36,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         /// <summary>
         /// If game has told us it's ready for anim commands
         /// </summary>
-        private bool Initialized;
+        private new bool Initialized;
         /// <summary>
         /// Game this instance is for
         /// </summary>
@@ -43,7 +44,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private static readonly Dictionary<MEGame, AnimationViewerWindow2> Instances = new();
         public static AnimationViewerWindow2 Instance(MEGame game)
         {
-            if (!GameController.GetInteropTargetForGame(game)?.CanUseLLE ?? true)
+            if (!game.IsLEGame())
                 throw new ArgumentException(@"Animation Viewer 2 does not support this game!", nameof(game));
 
             return Instances.TryGetValue(game, out var lle) ? lle : null;
@@ -66,6 +67,11 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                     if (Game == MEGame.LE1)
                     {
                         PrepChangeLE1Actor(value);
+                        return;
+                    }
+                    else if (Game == MEGame.LE2)
+                    {
+                        PrepChangeLE2Actor(value);
                         return;
                     }
 
@@ -102,6 +108,42 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 return; // We haven't received the init message yet
             var packageName = actorFullPath.Split('.').FirstOrDefault(); // 1
             var memoryName = string.Join('.', actorFullPath.Split('.').Skip(1)); // The rest
+
+            // Tell game to load package and change the pawn
+            InteropHelper.SendMessageToGame($"ANIMV_CHANGE_PAWN {packageName}.{memoryName}", Game);
+            InteropHelper.SendMessageToGame($"CAUSEEVENT ChangeActor", Game);
+        }
+
+        #endregion
+
+        #region LE2 SPECIFIC
+
+        private List<string> CurrentParentPackages;
+        private void PrepChangeLE2Actor(string actorFullPath)
+        {
+            if (!Initialized)
+                return; // We haven't received the init message yet
+            var packageName = actorFullPath.Split('.').FirstOrDefault(); // 1
+            var memoryName = string.Join('.', actorFullPath.Split('.').Skip(1)); // The rest
+
+            // LE2: Load parent packages for memory
+            if (CurrentParentPackages?.Count > 0)
+            {
+                // Unload packages.
+                foreach (var parentPackage in CurrentParentPackages)
+                {
+                    InteropHelper.SendMessageToGame($"STREAMLEVELOUT {Path.GetFileNameWithoutExtension(parentPackage)}", Game);
+                }
+            }
+
+            // Get new list.
+            CurrentParentPackages = EntryImporter.GetBioXParentFiles(MEGame.LE2, packageName, true, false, ".pcc", "INT");
+            CurrentParentPackages.Reverse(); // We want BioP as top not bottom
+            foreach (var parentPackage in CurrentParentPackages)
+            {
+                InteropHelper.SendMessageToGame($"ONLYLOADLEVEL {Path.GetFileNameWithoutExtension(parentPackage)}", Game);
+                Thread.Sleep(100); // Allow command to run for a moment.
+            }
 
             // Tell game to load package and change the pawn
             InteropHelper.SendMessageToGame($"ANIMV_CHANGE_PAWN {packageName}.{memoryName}", Game);
@@ -172,7 +214,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 FileListExtended.Add((fileName, db.ContentDir[dirIndex]));
             }
             Animations.AddRange(db.Animations.Where(a => a.IsAmbPerf == false));
-
         }
 
         private void AnimationExplorerWPF_Loaded(object sender, RoutedEventArgs e)
@@ -211,9 +252,10 @@ namespace LegendaryExplorer.Tools.AnimationViewer
         private void ReceivedGameMessage(string msg)
         {
             // Check message is for us
+            Debug.WriteLine($"Message: {msg}");
+
             if (!msg.StartsWith("ANIMVIEWER"))
                 return;
-            Debug.WriteLine($"Message: {msg}");
             if (msg == "ANIMVIEWER LOADED")
             {
                 Initialized = true;
@@ -462,23 +504,23 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 listBoxAnims.ItemsSource = Animations;
             }).ContinueWith(x =>
             {
-                if (Game == MEGame.LE1)
+                if (Game is MEGame.LE1 or MEGame.LE2)
                 {
+                    var classNameToCheck = Game == MEGame.LE1 ? "BioPawnChallengeScaledType" : "BioPawnType";
                     // Object Instance DB doesn't include class name, and AssetDB doesn't store name of usage
                     // Object -> Package containing it
                     var foundActorTypes = new Dictionary<string, string>();
                     foreach (var cr in db.ClassRecords)
                     {
-                        if (cr.Class == "BioPawnChallengeScaledType")
+                        if (cr.Class == classNameToCheck)
                         {
                             // Types of actors that can be spawned
-                            foreach (var usage in cr.Usages)
+                            foreach (var usage in cr.Usages) // Usages of the class (per file)
                             {
-
                                 var file = db.FileList[usage.FileKey];
                                 if (MELoadedFiles.GetFilesLoadedInGame(Game).TryGetValue(file.FileName, out var fullPath))
                                 {
-                                    using var p = MEPackageHandler.UnsafePartialLoad(fullPath, x => false); // Just load the tables
+                                    var p = MEPackageHandler.UnsafePartialLoad(fullPath, _ => false); // Just load the tables
                                     var exp = p.GetUExport(usage.UIndex);
                                     if (!exp.IsDefaultObject && !foundActorTypes.ContainsKey(exp.InstancedFullPath))
                                     {
@@ -497,14 +539,12 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 CommandManager.InvalidateRequerySuggested();
                 EndBusy();
             });
-
         }
 
         private bool AllRequirementsMet() => me3InstalledReq.IsFullfilled && asiLoaderInstalledReq.IsFullfilled && me3ClosedReq.IsFullfilled && dbLoadedReq.IsFullfilled && interopASIInstalledReq.IsFullfilled;
 
         private void StartGame()
         {
-
             // This doesn't work...
             //InteropHelper.SendMessageToGame($"CACHEPACKAGE {animViewerStagePath}", Game);
             //Thread.Sleep(50); // Give it a sec...
@@ -518,16 +558,17 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             Task.Run(() =>
             {
                 var animLevelBaseName = $"{Game}LiveAnimViewerStage";
-                var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
+                //var animViewerStagePath = Path.Combine(AppDirectories.ExecFolder, $"{animLevelBaseName}.pcc");
+                //using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
+                IsBusy = true;
+                BusyText = "Preparing animation viewer";
 
-                using var mapPcc = MEPackageHandler.OpenMEPackage(animViewerStagePath);
-                AnimViewer.OpenMapInGame(mapPcc, true, false, animLevelBaseName);
-                BusyText = "Launching game...";
+                AnimViewer.OpenMapInGame(Game, true, false, animLevelBaseName);
+                BusyText = "Loading game";
 
                 AnimViewer.SetUpAnimStreamFile(Game, null, 0, $"{Game}AnimViewer_StreamAnim"); //placeholder for making sure file is in TOC
             });
         }
-
 
         #endregion
 
@@ -663,16 +704,16 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             if (noUpdate) return;
 
             var rot = new Rotator(((float)Pitch).DegreesToUnrealRotationUnits(), ((float)Yaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.XRotComponent),
-                                                     VarCmd(rot.Y, FloatVarIndexes.YRotComponent),
-                                                     VarCmd(rot.Z, FloatVarIndexes.ZRotComponent),
-                                                     "ce SetActorRotation");
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.X, FloatVarIndexes.XRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Y, FloatVarIndexes.YRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Z, FloatVarIndexes.ZRotComponent));
+            GameTarget.ModernExecuteConsoleCommand("ce SetActorRotation");
         }
 
         private void UpdateOffset()
         {
             if (noUpdate) return;
-            GameTarget.ExecuteConsoleCommands(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(RemoveOffset, BoolVarIndexes.RemoveOffset));
             LoadAnimation(SelectedAnimation);
         }
 
@@ -811,7 +852,6 @@ namespace LegendaryExplorer.Tools.AnimationViewer
 
         private void StopAnimation_Click(object sender, RoutedEventArgs e)
         {
-
             if (noUpdate) return;
             playbackState = PlaybackState.Stopped;
             PlayPauseIcon = EFontAwesomeIcon.Solid_Play;
@@ -878,27 +918,25 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                 {
                     if (value)
                     {
-                        GameTarget.ExecuteConsoleCommands("ce StartCameraFollow");
+                        GameTarget.ModernExecuteConsoleCommand("ce StartCameraFollow");
                     }
                     else
                     {
-                        GameTarget.ExecuteConsoleCommands("ce StopCameraFollow");
+                        GameTarget.ModernExecuteConsoleCommand("ce StopCameraFollow");
                     }
                 }
             }
         }
-
-
 
         private void UpdateCamRotation()
         {
             if (noUpdate) return;
 
             var rot = new Rotator(((float)CamPitch).DegreesToUnrealRotationUnits(), ((float)CamYaw).DegreesToUnrealRotationUnits(), 0).GetDirectionalVector();
-            GameTarget.ExecuteConsoleCommands(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent),
-                                                     VarCmd(rot.Y, FloatVarIndexes.CamYRotComponent),
-                                                     VarCmd(rot.Z, FloatVarIndexes.CamZRotComponent),
-                                                     "ce SetCameraRotation");
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.X, FloatVarIndexes.CamXRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Y, FloatVarIndexes.CamYRotComponent));
+            GameTarget.ModernExecuteConsoleCommand(VarCmd(rot.Z, FloatVarIndexes.CamZRotComponent));
+            GameTarget.ModernExecuteConsoleCommand("ce SetCameraRotation");
         }
 
         private void ResetCamRotation_Click(object sender, RoutedEventArgs e)
@@ -921,11 +959,13 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             {
                 if (SetProperty(ref _selectedSquadMember, value) && !noUpdate)
                 {
-                    GameTarget.ExecuteConsoleCommands(VarCmd((int)value, IntVarIndexes.SquadMember), "ce LoadNewHench");
+                    GameTarget.ModernExecuteConsoleCommand(VarCmd((int)value, IntVarIndexes.SquadMember));
+                    GameTarget.ModernExecuteConsoleCommand("ce LoadNewHench");
                 }
             }
         }
 
         public static IEnumerable<ESquadMember> ESquadMemberValues => Enums.GetValues<ESquadMember>();
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2];
     }
 }

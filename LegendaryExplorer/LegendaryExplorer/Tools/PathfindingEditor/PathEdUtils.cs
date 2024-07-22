@@ -66,13 +66,11 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     startNode.WriteProperty(PathList);
                     outgoingSpec.WriteProperties(properties);
 
-
                     //Write Spec Size
                     PathEdUtils.SetReachSpecSize(outgoingSpec, size.SpecRadius, size.SpecHeight);
 
                     //Reindex reachspecs.
                     PathEdUtils.ReindexMatchingObjects(outgoingSpec);
-
                 }
             }
             else
@@ -82,7 +80,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 //int outgoingSpec = pcc.ExportCount;
                 //int incomingSpec = pcc.ExportCount + 1;
-
 
                 if (reachSpectoClone != null)
                 {
@@ -137,7 +134,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
                         incomingSpecStartProp.Value = destinationNode.UIndex; //Uindex
                         incomingSpecEndProp.Value = startNode.UIndex;
-
 
                         //Add reachspec to destination node's path list (returning)
                         var DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
@@ -236,8 +232,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             //upstreamImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == upstream);
 
-
-
             //Check if this is an export instead
             /* itemAsImport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == importFullName && x.indexValue == 0);
             if (itemAsImport != null)
@@ -291,7 +285,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                 if (lastPeriodIndex > 0)
                 {
                     downstreamClassName = importdbinfo["fullclasspath"].Substring(lastPeriodIndex + 1);
-
                 }
 
                 //ImportEntry classImport = getOrAddImport();
@@ -353,7 +346,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
             return null;
         }
-
 
         /// <summary>
         /// Reindexes all objects in this pcc that have the same full path.
@@ -454,7 +446,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                         return new Point3D(positions[idx].X, positions[idx].Y, positions[idx].Z);
                     }
                 }
-
             }
             else
             {
@@ -692,7 +683,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
         public string inboundspectype { get; set; }
     }
 
-
     public class Point3D
     {
         public float X { get; set; }
@@ -701,7 +691,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
 
         public Point3D()
         {
-
         }
 
         public Point3D(float X, float Y, float Z)

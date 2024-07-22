@@ -15,13 +15,12 @@ using PropertyChanged;
 
 namespace LegendaryExplorerCore.Textures.Studio
 {
-
     /// <summary>
     /// Describes a memory-unique texture, e.g. a unique full path.
     /// </summary>
     [AddINotifyPropertyChangedInterface]
     [DebuggerDisplay("TextureMapMemoryEntry {Children.Count} children, {Instances.Count} instances, TFC name {TFCName}")]
-    public class TextureMapMemoryEntry
+    public partial class TextureMapMemoryEntry
     {
         /// <summary>
         /// Parses a Texture object
@@ -103,7 +102,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 parentT = parentT.Parent;
             }
 
-
             TextureMapMemoryEntry lastParent = null;
             for (int i = 0; i < parents.Count; i++)
             {
@@ -130,7 +128,6 @@ namespace LegendaryExplorerCore.Textures.Studio
 
                     textureMapMemoryEntries[p.InstancedFullPath] = lastParent;
                 }
-
             }
 
             return lastParent;
@@ -139,7 +136,7 @@ namespace LegendaryExplorerCore.Textures.Studio
         public TextureMapMemoryEntry(IEntry iEntry)
         {
             IsTexture = iEntry.IsTexture();
-            ObjectName = iEntry.ObjectName;
+            ObjectName = iEntry.ObjectName.Instanced;
         }
 
         /// <summary>
@@ -235,7 +232,6 @@ namespace LegendaryExplorerCore.Textures.Studio
     {
         public TextureMapPackageEntry()
         {
-
         }
 
         /// <summary>
@@ -270,7 +266,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 {
                     CompressedMipInfos.Add(new MEMTextureMap.CompressedMipInfo() { Offset = em.DataOffset, CompressedSize = em.CompressedSize, UncompressedSize = em.UncompressedSize, StorageType = em.StorageType });
                 }
-
             }
 
             var props = exportEntry.GetProperties();
@@ -322,12 +317,11 @@ namespace LegendaryExplorerCore.Textures.Studio
                 {
                     crcCache[$"{TFCName}_{t2d.GetTopMip().externalOffset}"] = CRC;
                 }
-
             }
             catch (Exception)
             {
                 // CRC could not be calculated
-                
+
             }
         }
 
@@ -449,14 +443,12 @@ namespace LegendaryExplorerCore.Textures.Studio
             }
         }
 
-
         public static TextureMap GenerateMapForFolder(string rootDirectory,
             Func<IEntry, TextureMapMemoryEntry> nodeGeneratorDelegate,
             Action<TextureMapMemoryEntry> addRootElementDelegate,
             Action<string, int, int> progressDelegate = null,
             CancellationToken cts = default)
         {
-
             var rootNodes = new List<TextureMapMemoryEntry>();
             var game = MEGame.Unknown;
 
@@ -473,7 +465,6 @@ namespace LegendaryExplorerCore.Textures.Studio
             var tfcs = Directory.GetFiles(rootDirectory, "*.tfc", SearchOption.AllDirectories).ToList();
             progressDelegate?.Invoke(@"Calculating texture map", 0, packageFiles.Count);
 
-
             // Pass 1: Find all unique memory texture paths
             int numDone = 0;
             Dictionary<uint, MEMTextureMap.TextureMapEntry> vanillaMap = null;
@@ -483,17 +474,17 @@ namespace LegendaryExplorerCore.Textures.Studio
                 var filename = Path.GetFileName(p);
                 progressDelegate?.Invoke($@"Scanning {filename}", numDone, packageFiles.Count);
 
-                if (cts.IsCancellationRequested) 
+                if (cts.IsCancellationRequested)
                     break;
                 //using var package = MEPackageHandler.OpenMEPackage(p);
-                using var package = MEPackageHandler.UnsafePartialLoad(p, x=> !x.IsDefaultObject && x.IsTexture());
+                using var package = MEPackageHandler.UnsafePartialLoad(p, x => !x.IsDefaultObject && x.IsTexture());
 
                 if (game != MEGame.Unknown && game != package.Game)
                 {
                     // This workspace has files from multiple games!
                     throw new Exception("A directory being scanned cannot have packages from different games in it");
                 }
-                
+
                 if (vanillaMap is null)
                 {
                     game = package.Game;
@@ -534,7 +525,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                     {
                         // Some textures are not the same across the same entry!
                         // This will lead to weird engine behavior as memory is dumped and newly loaded data is different
-                        Debug.WriteLine(@"UNMATCHED CRCSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+                        Debug.WriteLine($@"UNMATCHED CRCSs for texture {t.ObjectName}");
                         SetUnmatchedCRC(t, true);
                     }
                     else
@@ -556,7 +547,6 @@ namespace LegendaryExplorerCore.Textures.Studio
                 CalculatedMap = rootNodes,
                 Game = game,
             };
-
         }
 
         public static void RegenerateEntries(string selectedFolder, List<TextureMapMemoryEntry> entriesToRefresh,

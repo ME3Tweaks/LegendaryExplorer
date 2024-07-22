@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 
 namespace LegendaryExplorerCore.Misc
 {
-
     /// <summary>
     /// This is total hackjob cause I don't want to have pass type argument to static method in ObservableCollectionExtended.
     /// </summary>
@@ -21,21 +20,22 @@ namespace LegendaryExplorerCore.Misc
         public static Action<IEnumerable, object> EnableCrossThreadUpdatesDelegate;
     }
 
-
     [Localizable(false)]
     public class ObservableCollectionExtended<T> : ObservableCollection<T>
     {
-
         //INotifyPropertyChanged inherited from ObservableCollection<T>
         #region INotifyPropertyChanged
 
         protected override event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Event handler that can be subscribed to when a property is changed, as the default is protected.
+        /// </summary>
         public event PropertyChangedEventHandler PublicPropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            PublicPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PublicPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // This is so you can listen to internal property changes externally as PropertyChanged is protected
         }
 
         #endregion INotifyPropertyChanged
@@ -106,7 +106,6 @@ namespace LegendaryExplorerCore.Misc
                 OnPropertyChanged(nameof(Any));
                 OnPropertyChanged(nameof(Count));
             }
-
         }
 
         /// <summary> 

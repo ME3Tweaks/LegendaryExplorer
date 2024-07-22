@@ -19,8 +19,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
-using System.Security;
-using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -58,15 +56,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
     public Zoombox()
       : base()
     {
-      try
-      {
-        new UIPermission( PermissionState.Unrestricted ).Demand();
-        _cacheBits[ ( int )CacheBits.HasUIPermission ] = true;
-      }
-      catch( SecurityException )
-      {
-      }
-
       this.InitCommands();
 
       // use the LayoutUpdated event to keep the Viewport in sync
@@ -1449,18 +1438,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
 
     #endregion
 
-    #region HasUIPermission Private Property
-
-    private bool HasUIPermission
-    {
-      get
-      {
-        return _cacheBits[ ( int )CacheBits.HasUIPermission ];
-      }
-    }
-
-    #endregion
-
     #region IsContentWrapped Private Property
 
     private bool IsContentWrapped
@@ -1969,7 +1946,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
         return size;
       }
 
-
       // avoid returning infinity
       if( double.IsInfinity( constraint.Height ) )
       {
@@ -2053,9 +2029,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
 
       base.OnRender( drawingContext );
     }
-
-
-
 
     private static void RefocusView( DependencyObject o, DependencyPropertyChangedEventArgs e )
     {
@@ -2478,12 +2451,8 @@ namespace Xceed.Wpf.Toolkit.Zoombox
     }
 
     private void MonitorInput()
-    {
-      // cannot pre-process input in partial trust
-      if( this.HasUIPermission )
-      {
-        this.PreProcessInput();
-      }
+    { 
+      this.PreProcessInput();
     }
 
     private void OnContentSizeChanged( object sender, SizeChangedEventArgs e )
@@ -2909,7 +2878,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
             }
             else if( view != ZoomboxView.Empty )
             {   // USING ABSOLUTE POSITION AND SCALE VALUES
-
               // ensure that the scale value falls within the valid range
               if( newRelativeScale > MaxScale )
               {
@@ -4033,7 +4001,6 @@ namespace Xceed.Wpf.Toolkit.Zoombox
       HasArrangedContentPresenter = 0x00000040,
       HasRenderedFirstView = 0x00000080,
       RefocusViewOnFirstRender = 0x00000100,
-      HasUIPermission = 0x00000200,
     }
 
     #endregion

@@ -5,9 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using LegendaryExplorer.Libraries;
+using LegendaryExplorer.MainWindow;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using Microsoft.AppCenter.Analytics;
@@ -45,16 +48,18 @@ namespace LegendaryExplorer.SharedUI.Bases
 
         private void WPFBase_Closing(object sender, CancelEventArgs e)
         {
-            if (pcc is { IsModified: true } && pcc.Users.Count == 1 &&
-                MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo))
+            if (pcc is { IsModified: true } && pcc.Users.Count == 1)
             {
-                e.Cancel = true;
+                this.RestoreAndBringToFront();
+                if (MessageBoxResult.No == MessageBox.Show(this, $"{Path.GetFileName(pcc.FilePath)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+                {
+                    LEXMainWindow.IsAllowedToClose = false; // Do not let main window close at this time
+                    e.Cancel = true;
+                    return;
+                }
             }
-            else
-            {
-                DataContext = null; //Remove all binding sources
-                Closing -= WPFBase_Closing;
-            }
+            DataContext = null; //Remove all binding sources
+            Closing -= WPFBase_Closing;
         }
 
         /// <summary>
@@ -68,10 +73,14 @@ namespace LegendaryExplorer.SharedUI.Bases
             Pcc = MEPackageHandler.OpenMEPackage(package, this);
         }
 
-        protected void LoadMEPackage(string s)
+        /// <summary>
+        /// Loads a package into this window from the specified filepath. If you already have a package object, consider using <see cref="RegisterPackage(IMEPackage)"/> instead.
+        /// </summary>
+        /// <param name="filePath">Filepath of package to open</param>
+        protected void LoadMEPackage(string filePath)
         {
             UnLoadMEPackage();
-            Pcc = MEPackageHandler.OpenMEPackage(s, this);
+            Pcc = MEPackageHandler.OpenMEPackage(filePath, this);
         }
 
         protected void LoadMEPackage(Stream stream, string associatedFilePath = null)
@@ -144,6 +153,32 @@ namespace LegendaryExplorer.SharedUI.Bases
             {
                 EndBusy();
             }
+        }
+
+        /// <summary>
+        /// If the loaded package is an ME-game package (not UDK or other game)
+        /// </summary>
+        /// <returns></returns>
+        public bool IsLoadedPackageME() => Pcc?.Game.IsMEGame() == true;
+
+        /// <summary>
+        /// Gets status bar text that displays the filename, the installation location, and if it is the highest mounted version of the file
+        /// </summary>
+        /// <returns></returns>
+        public string GetStatusBarText()
+        {
+            if (Pcc == null || Pcc.FilePath == null) // FilePath will be null if loaded from stream and not passed a name
+                return null;
+            string fileName = Path.GetFileName(Pcc.FilePath);
+            string notHighestMountedWarning = "";
+            var isInInstallation = MEDirectories.GetLocationDescriptor(Pcc.FilePath, Pcc.Game, out var descriptor);
+
+            if (isInInstallation && MELoadedFiles.TryGetHighestMountedFile(Pcc.Game, fileName, out string highestMountedPath) && Path.GetFullPath(Pcc.FilePath) != highestMountedPath)
+            {
+                notHighestMountedWarning = "NOT HIGHEST MOUNTED VERSION";
+            }
+            string statusBarText = $"{fileName}  ( {descriptor} )  {notHighestMountedWarning}";
+            return statusBarText;
         }
 
         #region Busy variables

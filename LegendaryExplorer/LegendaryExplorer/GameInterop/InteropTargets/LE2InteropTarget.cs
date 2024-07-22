@@ -14,9 +14,8 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         public override bool CanUpdateTOC => false;
         public override bool CanUseLLE => true;
 
-        public override string InteropASIDownloadLink => 
-            "https://github.com/ME3Tweaks/LE2-ASI-Plugins/releases/tag/LE2LEXInterop-v6";
-        public override string InteropASIMD5 => "51844745233e526fb9dd4e41968bbaf6";
+        public override string InteropASIDownloadLink => "https://github.com/ME3Tweaks/LE2-ASI-Plugins/releases/tag/LE2LEXInterop-v7";
+        public override string InteropASIMD5 => "7ae5b617655dd75517804b43cd3c8019";
         public override string BinkBypassMD5 { get; }
         public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
 

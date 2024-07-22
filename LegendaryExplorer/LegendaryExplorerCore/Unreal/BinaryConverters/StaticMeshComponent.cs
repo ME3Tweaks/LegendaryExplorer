@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using LegendaryExplorerCore.Packages;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -67,21 +65,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             switch (this)
             {
                 case LightMap_1D lightMap1D:
-                    Unsafe.AsRef(action).Invoke(ref lightMap1D.Owner, $"{prefix}LightMap.Owner");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap1D.Owner, $"{prefix}LightMap.Owner");
                     break;
                 case LightMap_2D lightMap2D:
-                    Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture1, $"{prefix}LightMap.Texture1");
-                    Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture2, $"{prefix}LightMap.Texture2");
-                    Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture3, $"{prefix}LightMap.Texture3");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap2D.Texture1, $"{prefix}LightMap.Texture1");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap2D.Texture2, $"{prefix}LightMap.Texture2");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap2D.Texture3, $"{prefix}LightMap.Texture3");
                     if (game < MEGame.ME3)
                     {
-                        Unsafe.AsRef(action).Invoke(ref lightMap2D.Texture4, $"{prefix}LightMap.Texture4");
+                        Unsafe.AsRef(in action).Invoke(ref lightMap2D.Texture4, $"{prefix}LightMap.Texture4");
                     }
                     break;
                 case LightMap_4or6 lightMap4Or6:
-                    Unsafe.AsRef(action).Invoke(ref lightMap4Or6.Texture1, $"{prefix}LightMap.Texture1");
-                    Unsafe.AsRef(action).Invoke(ref lightMap4Or6.Texture2, $"{prefix}LightMap.Texture2");
-                    Unsafe.AsRef(action).Invoke(ref lightMap4Or6.Texture3, $"{prefix}LightMap.Texture3");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap4Or6.Texture1, $"{prefix}LightMap.Texture1");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap4Or6.Texture2, $"{prefix}LightMap.Texture2");
+                    Unsafe.AsRef(in action).Invoke(ref lightMap4Or6.Texture3, $"{prefix}LightMap.Texture3");
                     break;
             }
         }
@@ -262,7 +260,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
         private static void Serialize(this SerializingContainer2 sc, LightMap_2D lmap)
         {
-
             sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
             sc.Serialize(ref lmap.Texture1);
             sc.Serialize(ref lmap.ScaleVector1);

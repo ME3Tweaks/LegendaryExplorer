@@ -28,6 +28,7 @@ using DragEventArgs = System.Windows.DragEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using LegendaryExplorer.Misc;
 
 namespace LegendaryExplorer.Tools.Meshplorer
 {
@@ -56,7 +57,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                     BinaryInterpreterTab_BinaryInterpreter.UnloadExport();
                     InterpreterTab_Interpreter.UnloadExport();
                     Mesh3DViewer.UnloadExport();
-
                 }
                 else
                 {
@@ -69,7 +69,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private string FileQueuedForLoad;
         private ExportEntry ExportQueuedForFocusing;
-
 
         /// <summary>
         /// Inits a new instance of Meshplorer. If you are auto loading an export use the ExportEntry constructor instead.
@@ -175,7 +174,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
             {
                 try
                 {
-
                     switch (ObjectBinary.From(CurrentExport))
                     {
                         case SkeletalMesh skelMesh:
@@ -206,7 +204,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
             {
                 try
                 {
-
                     MEPackageHandler.CreateAndSavePackage(d.FileName, MEGame.UDK);
                     using (IMEPackage upk = MEPackageHandler.OpenUDKPackage(d.FileName))
                     {
@@ -249,10 +246,13 @@ namespace LegendaryExplorer.Tools.Meshplorer
             ReplaceFromUDK(false);
         }
 
-
         private void ReplaceFromUDK(bool lodOnly)
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
+            var d = new OpenFileDialog
+            {
+                Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 try
@@ -268,21 +268,38 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
                             if (newMesh.RefSkeleton.Length != originalMesh.RefSkeleton.Length)
                             {
-                                MessageBox.Show(this, "Cannot replace a SkeletalMesh with one that has a different number of bones!");
-                                return;
+                                if (!lodOnly)
+                                {
+                                    var msgBoxResult = MessageBox.Show(this, "This SkeletalMesh has a different number of bones than the one you are replacing! " +
+                                                                             "This may cause animations to no longer work for this mesh. " +
+                                                                             "Are you SURE you want to continue?", "Bone count differs!", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                                    if (msgBoxResult != MessageBoxResult.Yes)
+                                    {
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show(this, "Cannot replace a SkeletalMesh LOD with one that has a different number of bones!");
+                                    return;
+                                }
                             }
 
                             if (newMesh.RotOrigin.Pitch != originalMesh.RotOrigin.Pitch ||
                                 newMesh.RotOrigin.Yaw != originalMesh.RotOrigin.Yaw ||
                                 newMesh.RotOrigin.Roll != originalMesh.RotOrigin.Roll)
                             {
-                                MessageBox.Show("The rotation origin of this mesh has changed. The original value is:" +
+                                var messageBoxResult = MessageBox.Show(this, "The rotation origin of this mesh has changed. The original value is:" +
                                                 $"\nPitch {originalMesh.RotOrigin.Roll}, Yaw {originalMesh.RotOrigin.Yaw}, Roll {originalMesh.RotOrigin.Roll}\n" +
                                                 "The new value is:\n" +
                                                 $"Pitch {newMesh.RotOrigin.Roll}, Yaw {newMesh.RotOrigin.Yaw}, Roll {newMesh.RotOrigin.Roll}\n" +
-                                                "These values may need to be adjusted to be accurate.");
-                            }
+                                                "Would you like to preserve the original value?", "Rotation origin changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
+                                if (messageBoxResult == MessageBoxResult.Yes)
+                                {
+                                    newMesh.RotOrigin = originalMesh.RotOrigin;
+                                }
+                            }
 
                             newMesh.Materials = originalMesh.Materials.ArrayClone();
 
@@ -313,7 +330,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                                 {
                                     MessageBox.Show("ASSERT: The amount of LODs has increased for this mesh. You must adjust the amount of items in the LODInfo struct to match.");
                                 }
-
 
                             }
                             else
@@ -367,7 +383,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
                                     CurrentExport.WriteProperty(lods);
                                 }
                             }
-
                         }
                         else
                         {
@@ -415,7 +430,11 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void ImportFromUDK()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.UDKFileFilter };
+            var d = new OpenFileDialog
+            {
+                Filter = GameFileFilters.UDKFileFilter, Title = "Select UDK package file",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
             if (d.ShowDialog() == true)
             {
                 try
@@ -459,7 +478,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
             if (CurrentExport.ClassName == "SkeletalMesh")
             {
                 StaticMesh stm = CurrentExport.GetBinaryData<SkeletalMesh>().ConvertToME3LEStaticMesh();
-                CurrentExport.Class = Pcc.getEntryOrAddImport("Engine.StaticMesh");
+                CurrentExport.Class = Pcc.GetEntryOrAddImport("Engine.StaticMesh", "Class");
                 CurrentExport.WritePropertiesAndBinary(new PropertyCollection
                 {
                     new BoolProperty(true, "UseSimpleBoxCollision"),
@@ -469,8 +488,6 @@ namespace LegendaryExplorer.Tools.Meshplorer
         }
 
         private bool PackageIsLoaded() => Pcc != null;
-
-
 
         private async void SaveFile()
         {
@@ -504,7 +521,7 @@ namespace LegendaryExplorer.Tools.Meshplorer
 
         private void OpenFile()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
 #if !DEBUG

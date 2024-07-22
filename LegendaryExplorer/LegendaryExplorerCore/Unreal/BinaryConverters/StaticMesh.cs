@@ -35,7 +35,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint unk10; //UDK
         public uint unk11; //UDK
 
-
         protected override void Serialize(SerializingContainer2 sc)
         {
             sc.Serialize(ref Bounds);
@@ -165,12 +164,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            Unsafe.AsRef(action).Invoke(ref BodySetup, nameof(BodySetup));
+            Unsafe.AsRef(in action).Invoke(ref BodySetup, nameof(BodySetup));
             for (int i = 0; i < LODModels.Length; i++)
             {
                 for (int j = 0; j < LODModels[i].Elements.Length; j++)
                 {
-                    Unsafe.AsRef(action).Invoke(ref LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material");
+                    Unsafe.AsRef(in action).Invoke(ref LODModels[i].Elements[j].Material, $"LODModels[{i}].Elements[{j}].Material");
                 }
             }
         }
@@ -220,7 +219,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public kDOP BoundingVolume;
         public bool bIsLeaf;
         public Union u;
-
     }
 
     public class kDOP

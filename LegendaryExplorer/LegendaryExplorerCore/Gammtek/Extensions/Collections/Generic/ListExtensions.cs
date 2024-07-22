@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 {
@@ -16,6 +18,20 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
             {
                 collection[index] = item;
             }
+        }
+
+        // IDK how to do this with .ToDictionary()
+        public static CaseInsensitiveDictionary<TOutObjType> ToCaseInsensitiveDictionary<TOutObjType, TInObjType>(
+            this IList<TInObjType> collection, Func<TInObjType, string> keySelector,
+            Func<TInObjType, TOutObjType> valueSelector)
+        {
+            var cid = new CaseInsensitiveDictionary<TOutObjType>(collection.Count);
+            foreach (var item in collection)
+            {
+                cid.Add(keySelector(item), valueSelector(item));
+            }
+
+            return cid;
         }
     }
 }

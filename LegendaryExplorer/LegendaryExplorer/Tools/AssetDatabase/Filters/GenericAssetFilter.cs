@@ -64,7 +64,6 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         /// <returns></returns>
         protected virtual IEnumerable<IAssetSpecification<T>> GetAdditionalSpecifications() => new AssetSpecification<T>[] { };
 
-
         public virtual void SetSelected(IAssetSpecification<T> spec)
         {
             spec.IsSelected = !spec.IsSelected;

@@ -25,7 +25,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             for (int i = 0; i < 4; i++)
             {
-
                 sc.Serialize(ref EditorViews[i]);
             }
 
@@ -47,7 +46,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             var world = new World
             {
-                ExtraReferencedObjects = Array.Empty<UIndex>()
+                ExtraReferencedObjects = []
             };
             for (int i = 0; i < 4; i++)
             {
@@ -59,14 +58,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            Unsafe.AsRef(action).Invoke(ref PersistentLevel, nameof(PersistentLevel));
+            Unsafe.AsRef(in action).Invoke(ref PersistentLevel, nameof(PersistentLevel));
             if (game == MEGame.ME3 || game.IsLEGame())
             {
-                Unsafe.AsRef(action).Invoke(ref PersistentFaceFXAnimSet, nameof(PersistentFaceFXAnimSet));
+                Unsafe.AsRef(in action).Invoke(ref PersistentFaceFXAnimSet, nameof(PersistentFaceFXAnimSet));
             }
             else if (game.IsGame1())
             {
-                Unsafe.AsRef(action).Invoke(ref DecalManager, nameof(DecalManager));
+                Unsafe.AsRef(in action).Invoke(ref DecalManager, nameof(DecalManager));
             }
             ForEachUIndexInSpan(action, ExtraReferencedObjects.AsSpan(), nameof(ExtraReferencedObjects));
         }

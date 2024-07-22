@@ -40,24 +40,16 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
             return process != null;
         }
 
-        public void ExecuteConsoleCommands(params string[] commands) =>
-            ExecuteConsoleCommands(commands.AsEnumerable());
-        public void ExecuteConsoleCommands(IEnumerable<string> commands)
+        // This needs to be kept around for ME3 since we aren't updating its ASI anymore
+        public void ME3ExecuteConsoleCommands(params string[] commands)
         {
             if (CanExecuteConsoleCommands && TryGetProcess(out Process gameProcess))
             {
-                ExecuteConsoleCommands(gameProcess.MainWindowHandle, commands);
+                string execFilePath = Path.Combine(MEDirectories.GetDefaultGamePath(Game), "Binaries", ExecFileName);
+
+                File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands.AsEnumerable()));
+                GameController.DirectExecuteConsoleCommand(gameProcess.MainWindowHandle, $"exec {ExecFileName}");
             }
-        }
-
-        // This needs kept around for ME3 since we aren't updating its ASI anymore
-        public void ExecuteConsoleCommands(IntPtr hWnd, params string[] commands) => ExecuteConsoleCommands(hWnd, commands.AsEnumerable());
-        public void ExecuteConsoleCommands(IntPtr hWnd, IEnumerable<string> commands)
-        {
-            string execFilePath = Path.Combine(MEDirectories.GetDefaultGamePath(Game), "Binaries", ExecFileName);
-
-            File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
-            GameController.DirectExecuteConsoleCommand(hWnd, $"exec {ExecFileName}");
         }
 
         /// <summary>

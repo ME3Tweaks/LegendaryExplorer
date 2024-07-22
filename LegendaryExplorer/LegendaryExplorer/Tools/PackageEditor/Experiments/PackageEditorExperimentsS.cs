@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Tools.ScriptDebugger;
 using LegendaryExplorer.UnrealExtensions.Classes;
+using LegendaryExplorerCore;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -18,18 +22,25 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.UDK;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
+using LegendaryExplorerCore.UnrealScript.Compiling;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Decompiling;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Parsing;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
+using static LegendaryExplorer.Tools.ScriptDebugger.DebuggerInterface;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
+
+#pragma warning disable CS8321 //unused function warning
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -55,6 +66,431 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     yield return filePath;
                 }
+            }
+        }
+
+        public enum GhidraTypeKind
+        {
+            Normal,
+            Array,
+            Pointer
+        }
+
+        public record GhidraProperty(string Name, string TypeName, int Offset, int ElementSize, GhidraTypeKind TypeKind = GhidraTypeKind.Normal, int NumElements = 1, int BitOffset = 0);
+        public record GhidraStruct(string Name, int Size, string Super, List<GhidraProperty> Properties);
+        public record GhidraEnum(string Name, List<string> Values);
+
+        public static async void GenerateGhidraStructInsertionScript(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Generating Ghidra Scripts";
+
+            try
+            {
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+                {
+                    if (!GameController.TryGetMEProcess(game, out Process meProcess)) continue;
+                    var structDict = new Dictionary<string, GhidraStruct>
+                    {
+                        ["TArray"] = new("TArray", 16, null, new List<GhidraProperty>
+                        {
+                            new("Data", "pointer", 0, 8),
+                            new("Count", "int", 8, 4),
+                            new("Max", "int", 12, 4),
+                        }),
+                        ["FString"] = new("FString", 16, null, new List<GhidraProperty>
+                        {
+                            new("Data", "wchar_t", 0, 8, GhidraTypeKind.Pointer),
+                            new("Count", "int", 8, 4),
+                            new("Max", "int", 12, 4),
+                        }),
+                        ["FScriptDelegate"] = new("FScriptDelegate", 16, null, new List<GhidraProperty>
+                        {
+                            new("Object", "UObject", 0, 8, GhidraTypeKind.Pointer),
+                            new("FunctionName", "FName", 8, 4)
+                        }),
+                        ["FScriptInterface"] = new("FScriptInterface", 16, null, new List<GhidraProperty>
+                        {
+                            new("Object", "UObject", 0, 8, GhidraTypeKind.Pointer),
+                            new("Interface", "pointer", 8, 4)
+                        }),
+                    };
+                    //this must be created on the main thread!
+                    var debugger = new DebuggerInterface(game, meProcess);
+                    try
+                    {
+                        await debugger.WaitForAttach();
+                        await debugger.WaitForBreak();
+
+                        foreach (NObject nObject in debugger.IterateGObjects())
+                        {
+                            if (nObject is NClass nClass && nClass.ClassFlags.Has(EClassFlags.Native))
+                            {
+                                AddStruct(nClass);
+                            }
+                            else if (nObject is NScriptStruct nScriptStruct && (nScriptStruct.StructFlags.Has(ScriptStructFlags.Native) || nScriptStruct.Outer is NClass structOuter && structOuter.ClassFlags.Has(EClassFlags.Native)))
+                            {
+                                AddStruct(nScriptStruct);
+                            }
+
+                            void AddStruct(NStruct nStruct)
+                            {
+                                string name = nStruct.CPlusPlusName(game);
+                                if (structDict.ContainsKey(name))
+                                {
+                                    return;
+                                }
+                                var props = new List<GhidraProperty>();
+
+                                if (nStruct is not NClass || !GlobalUnrealObjectInfo.IsA(nStruct.Name, "Interface", game))
+                                {
+                                    for (NField child = nStruct.FirstChild; child is not null; child = child.Next)
+                                    {
+                                        if (child is NScriptStruct nScriptStruct)
+                                        {
+                                            AddStruct(nScriptStruct);
+                                        }
+                                        else if (child is NProperty nProp)
+                                        {
+                                            (string typename, GhidraTypeKind typeKind) = GetTypeName(nProp);
+                                            (string, GhidraTypeKind) GetTypeName(NProperty nProperty)
+                                            {
+                                                (string typename, GhidraTypeKind typeKind) = nProperty switch
+                                                {
+                                                    NArrayProperty => (null, GhidraTypeKind.Array),
+                                                    NBioMask4Property => ("byte", GhidraTypeKind.Normal),
+                                                    NBoolProperty => ("bool", GhidraTypeKind.Normal),
+                                                    NByteProperty => ("byte", GhidraTypeKind.Normal),
+                                                    NClassProperty => ("UClass", GhidraTypeKind.Pointer),
+                                                    NDelegateProperty => ("FScriptDelegate", GhidraTypeKind.Normal),
+                                                    NFloatProperty => ("float", GhidraTypeKind.Normal),
+                                                    NInterfaceProperty => ("FScriptInterface", GhidraTypeKind.Normal),
+                                                    NIntProperty => ("int", GhidraTypeKind.Normal),
+                                                    NMapProperty => ("FMap_Mirror", GhidraTypeKind.Normal),
+                                                    NNameProperty => ("FName", GhidraTypeKind.Normal),
+                                                    //NComponentProperty
+                                                    NObjectProperty nObjectProperty => (nObjectProperty.PropertyClass.CPlusPlusName(game), GhidraTypeKind.Pointer),
+                                                    NStringRefProperty => ("int", GhidraTypeKind.Normal),
+                                                    NStrProperty => ("FString", GhidraTypeKind.Normal),
+                                                    NStructProperty nStructProperty => (nStructProperty.Struct.CPlusPlusName(game), GhidraTypeKind.Normal),
+                                                    _ => throw new ArgumentOutOfRangeException(nameof(nProperty))
+                                                };
+                                                typename = typename switch
+                                                {
+                                                    "FPointer" => "pointer",
+                                                    "FQWord" => "qword",
+                                                    _ => typename
+                                                };
+                                                return (typename, typeKind);
+                                            }
+
+                                            int arrayDim = nProp.GetRealArrayDim();
+                                            arrayDim = arrayDim == 0 ? 1 : arrayDim;
+                                            NameReference nPropName = nProp.Name;
+                                            int nPropOffset = nProp.Offset;
+                                            int nPropElementSize = nProp.ElementSize;
+                                            int bitOffset = 0;
+                                            if (nProp is NBoolProperty nBoolProp)
+                                            {
+                                                bitOffset = BitOperations.TrailingZeroCount(nBoolProp.BitMask);
+                                            }
+                                            if (nProp is NArrayProperty nArrayProp)
+                                            {
+                                                (string innerPropName, GhidraTypeKind innerTypeKind) = GetTypeName(nArrayProp.InnerProperty);
+                                                if (innerPropName is "FPointer")
+                                                {
+                                                    innerPropName = "pointer";
+                                                }
+                                                string fullInnerName = innerPropName;
+                                                if (innerTypeKind is GhidraTypeKind.Pointer)
+                                                {
+                                                    fullInnerName += "*";
+                                                }
+                                                typename = $"TArray<{fullInnerName}>";
+                                                if (!structDict.ContainsKey(typename))
+                                                {
+                                                    structDict[typename] = new GhidraStruct(typename, 16, null, new List<GhidraProperty>
+                                                {
+                                                    //incorrect technically, as this should be a pointer to the innerProp kind. Will be fixed up in the ghidra script
+                                                    new("Data", innerPropName, 0, 8, innerTypeKind),
+                                                    new("Count", "int", 8, 4),
+                                                    new("Max", "int", 12, 4),
+                                                });
+                                                }
+                                            }
+                                            props.Add(new GhidraProperty(nPropName, typename, nPropOffset, nPropElementSize, typeKind, arrayDim, bitOffset));
+                                        }
+                                    }
+                                }
+
+                                var ghidraStruct = new GhidraStruct(name, nStruct.PropertySize, (nStruct.Super as NStruct)?.CPlusPlusName(game), props);
+                                structDict[name] = ghidraStruct;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        debugger.Detach();
+                        debugger.Dispose();
+                    }
+
+                    await using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}ImportStructs.java"), FileMode.Create);
+                    //await using var textWriter = new StreamWriter(fileStream);
+                    //await textWriter.WriteAsync(JsonConvert.SerializeObject(structDict, Formatting.Indented));
+                    //continue;
+                    using var writer = new CodeWriter(fileStream);
+                    writer.WriteLine(
+                        $@"//Imports {game} structure definitions
+//@author SirCxyrtyx
+//@category Data Types
+//@keybinding 
+//@menupath 
+//@toolbar 
+
+import ghidra.app.script.GhidraScript;
+import ghidra.program.model.util.*;
+import ghidra.program.model.reloc.*;
+import ghidra.program.model.data.*;
+import ghidra.program.model.block.*;
+import ghidra.program.model.symbol.*;
+import ghidra.program.model.scalar.*;
+import ghidra.program.model.mem.*;
+import ghidra.program.model.listing.*;
+import ghidra.program.model.lang.*;
+import ghidra.program.model.pcode.*;
+import ghidra.program.model.address.*;
+import java.util.*;"
+                    );
+                    GhidraStruct[][] chunks = structDict.Values.Chunk(100).ToArray();
+                    writer.WriteBlock($"public class {game}ImportStructs extends GhidraScript", () =>
+                    {
+                        writer.WriteLine();
+                        writer.WriteLine("private static final String CATEGORY = \"/SDK_Test\";");
+                        writer.WriteLine();
+                        writer.WriteLine("//Can be either DataTypeConflictHandler.REPLACE_HANDLER or DataTypeConflictHandler.KEEP_HANDLER");
+                        writer.WriteLine("private static final DataTypeConflictHandler CONFLICT_HANDLER = DataTypeConflictHandler.REPLACE_HANDLER;");
+                        writer.WriteLine();
+                        writer.WriteBlock("public void run() throws Exception", () =>
+                        {
+                            writer.WriteLine("DataTypeManager typeMan = currentProgram.getDataTypeManager();");
+                            writer.WriteLine("var structDict = new HashMap<String, DataType>();");
+                            writer.WriteLine("var categoryPath = new CategoryPath(CATEGORY);");
+                            writer.WriteLine("var dwordType = typeMan.getDataType(new CategoryPath(\"/\"), \"dword\");");
+                            foreach (string primitive in new[]{"pointer", "int", "byte", "byte", "float", "wchar_t", "qword"})
+                            {
+                                writer.WriteLine($"structDict.put(\"{primitive}\", typeMan.getDataType(new CategoryPath(\"/\"), \"{primitive}\"));");
+                            }
+                            writer.WriteLine();
+                            writer.WriteLine("var fName = new StructureDataType(categoryPath, \"FName\", 8, typeMan);");
+                            writer.WriteLine("fName.insertBitFieldAt(0, 4, 0, dwordType, 29, \"Offset\" , null);");
+                            writer.WriteLine("fName.insertBitFieldAt(0, 4, 29, dwordType, 3, \"Chunk\" , null);");
+                            writer.WriteLine("fName.replaceAtOffset(4, typeMan.getDataType(new CategoryPath(\"/\"), \"int\"), 4, \"Number\", null);");
+                            writer.WriteLine("typeMan.addDataType(fName, CONFLICT_HANDLER);");
+                            writer.WriteLine("structDict.put(\"FName\", fName);");
+                            writer.WriteLine();
+                            writer.WriteLine("//This is chunked because java has a limit on how large methods can be");
+                            for (int i = 0; i < chunks.Length; i++)
+                            {
+                                writer.WriteLine($"createStructs{i}(structDict, typeMan, categoryPath);");
+                            }
+                            writer.WriteLine();
+                            for (int i = 0; i < chunks.Length; i++)
+                            {
+                                writer.WriteLine($"populateStructs{i}(structDict, typeMan, dwordType);");
+                            }
+                        });
+                        for (int i = 0; i < chunks.Length; i++)
+                        {
+                            GhidraStruct[] chunk = chunks[i];
+                            writer.WriteBlock($"private void createStructs{i}(HashMap<String, DataType> structDict, DataTypeManager typeMan, CategoryPath categoryPath) throws Exception", () =>
+                            {
+                                foreach (GhidraStruct ghidraStruct in chunk)
+                                {
+                                    writer.WriteLine($"structDict.put(\"{ghidraStruct.Name}\", new StructureDataType(categoryPath, \"{ghidraStruct.Name}\", {ghidraStruct.Size}, typeMan));");
+                                }
+                            });
+                        }
+                        for (int i = 0; i < chunks.Length; i++)
+                        {
+                            GhidraStruct[] chunk = chunks[i];
+                            writer.WriteBlock($"private void populateStructs{i}(HashMap<String, DataType> structDict, DataTypeManager typeMan, DataType dwordType) throws Exception", () =>
+                            {
+                                //populate the structs and add them to the type manager
+                                writer.WriteLine("StructureDataType struct = null;");
+                                foreach ((string structName, int structSize, string superName, List<GhidraProperty> properties) in chunk)
+                                {
+                                    writer.WriteLine($"struct = (StructureDataType)structDict.get(\"{structName}\");");
+                                    if (structName.StartsWith("TArray<"))
+                                    {
+                                        string typeGetter = $"structDict.get(\"{properties[0].TypeName}\")";
+                                        if (properties[0].TypeKind is GhidraTypeKind.Pointer)
+                                        {
+                                            typeGetter = $"typeMan.getPointer({typeGetter})";
+                                        }
+                                        writer.WriteLine($"struct.replaceAtOffset(0, typeMan.getPointer({typeGetter}), 8, \"Data\", null);");
+                                        writer.WriteLine("struct.replaceAtOffset(8, structDict.get(\"int\"), 4, \"Count\", null);");
+                                        writer.WriteLine("struct.replaceAtOffset(12, structDict.get(\"int\"), 4, \"Max\", null);");
+                                        continue;
+                                    }
+                                    if (superName is not null)
+                                    {
+                                        GhidraStruct superStruct = structDict[superName];
+                                        writer.WriteLine($"struct.replaceAtOffset(0, structDict.get(\"{superStruct.Name}\"), {superStruct.Size}, \"Super\", null);");
+                                    }
+                                    foreach ((string propName, string typeName, int offset, int elementSize, GhidraTypeKind ghidraTypeKind, int numElements, int bitOffset) in properties)
+                                    {
+                                        if (typeName == "bool")
+                                        {
+                                            if (numElements > 1)
+                                            {
+                                                Debugger.Break();
+                                            }
+                                            writer.WriteLine($"struct.insertBitFieldAt({offset}, 4, {bitOffset}, dwordType, 1, \"{propName}\" , null);");
+                                        }
+                                        else
+                                        {
+                                            string typeGetter = $"structDict.get(\"{typeName}\")";
+                                            if (ghidraTypeKind is GhidraTypeKind.Pointer)
+                                            {
+                                                typeGetter = $"typeMan.getPointer({typeGetter})";
+                                            }
+                                            int fullSize = elementSize;
+                                            if (numElements > 1)
+                                            {
+                                                fullSize *= numElements;
+                                                typeGetter = $"new ArrayDataType({typeGetter}, {numElements}, {elementSize}, typeMan)";
+                                            }
+                                            writer.WriteLine($"struct.replaceAtOffset({offset}, {typeGetter}, {fullSize}, \"{propName}\", null);");
+                                        }
+                                    }
+                                    writer.WriteLine("typeMan.addDataType(struct, CONFLICT_HANDLER);");
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            finally
+            {
+                pewpf.IsBusy = false;
+            }
+        }
+
+        public static async void GenerateGhidraEnumInsertionScript(PackageEditorWindow pewpf)
+        {
+            pewpf.IsBusy = true;
+            pewpf.BusyText = "Generating Ghidra Enum Scripts";
+
+            try
+            {
+                foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+                {
+                    if (!GameController.TryGetMEProcess(game, out Process meProcess)) continue;
+                    var enumDict = new Dictionary<string, GhidraEnum>();
+                    //this must be created on the main thread!
+                    var debugger = new DebuggerInterface(game, meProcess);
+                    try
+                    {
+                        await debugger.WaitForAttach();
+                        await debugger.WaitForBreak();
+
+                        foreach (NObject nObject in debugger.IterateGObjects())
+                        {
+                            if (nObject is NClass nClass && nClass.ClassFlags.Has(EClassFlags.Native))
+                            {
+                                for (NField child = nClass.FirstChild; child is not null; child = child.Next)
+                                {
+                                    if (child is NEnum nEnum)
+                                    {
+                                        string enumName = nEnum.Name.Instanced;
+                                        if (!enumDict.ContainsKey(enumName))
+                                        {
+                                            enumDict.Add(enumName, new GhidraEnum(enumName, nEnum.Names.Select(fName => debugger.GetNameReference(fName).Instanced).ToList()));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        debugger.Detach();
+                        debugger.Dispose();
+                    }
+
+                    await using var fileStream = new FileStream(Path.Combine(AppDirectories.ExecFolder, $"{game}ImportEnums.java"), FileMode.Create);
+                    //await using var textWriter = new StreamWriter(fileStream);
+                    //await textWriter.WriteAsync(JsonConvert.SerializeObject(structDict, Formatting.Indented));
+                    //continue;
+                    using var writer = new CodeWriter(fileStream);
+                    writer.WriteLine(
+                        $@"//Imports {game} enum definitions
+//@author SirCxyrtyx
+//@category Data Types
+//@keybinding 
+//@menupath 
+//@toolbar 
+
+import ghidra.app.script.GhidraScript;
+import ghidra.program.model.util.*;
+import ghidra.program.model.reloc.*;
+import ghidra.program.model.data.*;
+import ghidra.program.model.block.*;
+import ghidra.program.model.symbol.*;
+import ghidra.program.model.scalar.*;
+import ghidra.program.model.mem.*;
+import ghidra.program.model.listing.*;
+import ghidra.program.model.lang.*;
+import ghidra.program.model.pcode.*;
+import ghidra.program.model.address.*;
+import java.util.*;"
+                    );
+                    GhidraEnum[][] chunks = enumDict.Values.Chunk(100).ToArray();
+                    writer.WriteBlock($"public class {game}ImportEnums extends GhidraScript", () =>
+                    {
+                        writer.WriteLine();
+                        writer.WriteLine("private static final String CATEGORY = \"/SDK_Test\";");
+                        writer.WriteLine();
+                        writer.WriteLine("//Can be either DataTypeConflictHandler.REPLACE_HANDLER or DataTypeConflictHandler.KEEP_HANDLER");
+                        writer.WriteLine("private static final DataTypeConflictHandler CONFLICT_HANDLER = DataTypeConflictHandler.REPLACE_HANDLER;");
+                        writer.WriteLine();
+                        writer.WriteBlock("public void run() throws Exception", () =>
+                        {
+                            writer.WriteLine("DataTypeManager typeMan = currentProgram.getDataTypeManager();");
+                            writer.WriteLine("var structDict = new HashMap<String, DataType>();");
+                            writer.WriteLine("var categoryPath = new CategoryPath(CATEGORY);");
+                            writer.WriteLine();
+                            writer.WriteLine();
+                            writer.WriteLine("//This is chunked because java has a limit on how large methods can be");
+                            for (int i = 0; i < chunks.Length; i++)
+                            {
+                                writer.WriteLine($"createEnums{i}(typeMan, categoryPath);");
+                            }
+                        });
+                        for (int i = 0; i < chunks.Length; i++)
+                        {
+                            GhidraEnum[] chunk = chunks[i];
+                            writer.WriteBlock($"private void createEnums{i}(DataTypeManager typeMan, CategoryPath categoryPath) throws Exception", () =>
+                            {
+                                writer.WriteLine("EnumDataType enumDef;");
+                                foreach (GhidraEnum ghidraEnum in chunk)
+                                {
+                                    writer.WriteLine($"enumDef = new EnumDataType(categoryPath, \"{ghidraEnum.Name}\", 1, typeMan);");
+                                    for (int j = 0; j < ghidraEnum.Values.Count; j++)
+                                    {
+                                        writer.WriteLine($"enumDef.add(\"{ghidraEnum.Values[j]}\", {j});");
+                                    }
+                                    writer.WriteLine("typeMan.addDataType(enumDef, CONFLICT_HANDLER);");
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            finally
+            {
+                pewpf.IsBusy = false;
+                MessageBox.Show("Done!");
             }
         }
 
@@ -120,7 +556,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 levelExport.WriteBinary(levelBin);
                 levelExport.WriteProperty(otLevelExport.GetProperty<FloatProperty>("ShadowmapTotalSize"));
-
 
                 void PortShadowMap(ExportEntry otsmcExp, ExportEntry smcExp)
                 {
@@ -266,7 +701,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void ReSerializeAllObjectBinary(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;
-            pewpf.BusyText = "Re-serializing all binary in LE2 and LE3";
+            pewpf.BusyText = "Re-serializing all binary in LE1";
             var interestingExports = new List<EntryStringPair>();
             var comparisonDict = new Dictionary<string, (byte[] original, byte[] newData)>();
             var classesMissingObjBin = new List<string>();
@@ -618,7 +1053,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-
         public static void ScanPackageHeader(PackageEditorWindow pewpf)
         {
             pewpf.IsBusy = true;
@@ -774,7 +1208,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             var foundClasses = new HashSet<string>(); //new HashSet<string>(BinaryInterpreterWPF.ParsableBinaryClasses);
             var foundProps = new Dictionary<string, string>();
 
-
             var unkOpcodes = new List<int>();//Enumerable.Range(0x5B, 8).ToList();
             unkOpcodes.Add(0);
             unkOpcodes.Add(1);
@@ -787,44 +1220,47 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3/*, MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1*/})
+                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
-                    using DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
-                        .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f)));
-                    using var packageCache = new PackageCache();
-                    packageCache.InsertIntoCache(baseFiles);
-                    if (game == MEGame.ME3)
+                    using (DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
+                               .Select(f => Path.Combine(MEDirectories.GetCookedPath(game), f))))
+                    using (var packageCache = new PackageCache {CacheMaxSize = 20})
                     {
-                        baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
-                    }
+                        packageCache.InsertIntoCache(baseFiles);
+                        if (game == MEGame.ME3)
+                        {
+                            baseFiles.Add(MEPackageHandler.OpenMEPackage(Path.Combine(ME3Directory.CookedPCPath, "BIOP_MP_COMMON.pcc")));
+                        }
 
-                    foreach (string filePath in EnumerateOfficialFiles(game))
-                    {
-                        //ScanShaderCache(filePath);
-                        //ScanMaterials(filePath);
-                        //ScanStaticMeshComponents(filePath);
-                        //ScanLightComponents(filePath);
-                        //ScanLevel(filePath);
-                        //if (findClass(filePath, "ShaderCache", true)) break;
-                        //findClassesWithBinary(filePath);
-                        //ScanScripts2(filePath);
-                        //RecompileAllFunctions(filePath);
-                        //RecompileAllStates(filePath);
-                        //RecompileAllDefaults(filePath, packageCache);
-                        //RecompileAllStructs(filePath, packageCache);
-                        //RecompileAllEnums(filePath, packageCache);
-                        RecompileAllClasses(filePath, packageCache);
+                        foreach (string filePath in EnumerateOfficialFiles(game))
+                        {
+                            //ScanShaderCache(filePath);
+                            //ScanMaterials(filePath);
+                            //ScanStaticMeshComponents(filePath);
+                            //ScanLightComponents(filePath);
+                            //ScanLevel(filePath);
+                            //if (findClass(filePath, "ShaderCache", true)) break;
+                            //findClassesWithBinary(filePath);
+                            //ScanScripts2(filePath);
+                            //RecompileAllFunctions(filePath);
+                            //RecompileAllStates(filePath);
+                            //RecompileAllDefaults(filePath, packageCache);
+                            RecompileAllPropsOfNonScriptExports(filePath, packageCache);
+                            //RecompileAllStructs(filePath, packageCache);
+                            //RecompileAllEnums(filePath, packageCache);
+                            //RecompileAllClasses(filePath, packageCache);
+                        }
                     }
+                    //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
+                    MemoryAnalyzer.ForceFullGC();
                     if (interestingExports.Any())
                     {
-                        break;
+                        return;
                     }
                 }
             }).ContinueWithOnUIThread(prevTask =>
             {
-                //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
-                MemoryAnalyzer.ForceFullGC();
                 pewpf.IsBusy = false;
                 if (extraInfo.Count > 0)
                 {
@@ -1069,7 +1505,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                         }
                                     }
 
-
                                 }
                             }
                         }
@@ -1218,7 +1653,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1270,7 +1704,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             interestingExports.Add(new EntryStringPair($"{pcc.FilePath} failed to compile!"));
                             return;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1278,6 +1711,37 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\n{exception}"));
                         return;
                     }
+                }
+            }
+
+            void RecompileAllPropsOfNonScriptExports(string filePath, PackageCache packageCache = null)
+            {
+                try
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    ExportEntry firstExport = pcc.Exports.FirstOrDefault();
+                    string src = UnrealScriptCompiler.DecompileBulkProps(pcc, out MessageLog log, packageCache);
+                    if (src is null || log.HasErrors)
+                    {
+                        interestingExports.Add(new EntryStringPair(firstExport, $"{pcc.FilePath} failed to decompile props!"));
+                        return;
+                    }
+                    log = UnrealScriptCompiler.CompileBulkPropertiesFile(src, pcc, packageCache);
+                    if (log.HasErrors || log.HasLexErrors)
+                    {
+                        interestingExports.Add(new EntryStringPair(firstExport, $"{pcc.FilePath} failed to recompile props!"));
+                        return;
+                    }
+                    if (pcc.IsModified)
+                    {
+                        interestingExports.Add(new EntryStringPair(firstExport, $"{pcc.FilePath} was modified!"));
+                        return;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                    interestingExports.Add(new EntryStringPair($"{filePath}\n{exception}"));
                 }
             }
 
@@ -1292,12 +1756,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     if (exp.ClassName is "ScriptStruct")
                     {
                         string instancedFullPath = exp.InstancedFullPath;
-                        if (foundClasses.Contains(instancedFullPath))
+                        if (!foundClasses.Add(instancedFullPath))
                         {
                             continue;
                         }
 
-                        foundClasses.Add(instancedFullPath);
                         if (exp.GetBinaryData<UScriptStruct>().StructFlags.Has(ScriptStructFlags.Native))
                         {
                             continue;
@@ -1422,37 +1885,37 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 }
                                 foundClasses.Add(instancedFullPath);
                                 var log = new MessageLog();
-                                (ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
-                                if (ast is not Class classAST || log.HasErrors)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
-                                    return;
-                                }
-
-                                UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
-                                if (log.HasErrors)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
-                                    return;
-                                }
-                                if (vfTableChanged)
-                                {
-                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
-                                    return;
-                                }
-
-                                //(ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
-                                //if (ast is not Class || log.HasErrors)
+                                //(ast, _) = UnrealScriptCompiler.CompileOutlineAST(script, "Class", log, pcc.Game);
+                                //if (ast is not Class classAST || log.HasErrors)
                                 //{
                                 //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                 //    return;
                                 //}
 
-                                //if (!fileLib.ReInitializeFile())
+                                //UnrealScriptCompiler.CompileNewClassAST(pcc, classAST, log, fileLib, out bool vfTableChanged);
+                                //if (log.HasErrors)
                                 //{
-                                //    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
                                 //    return;
                                 //}
+                                //if (vfTableChanged)
+                                //{
+                                //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nVTableChanged!"));
+                                //    return;
+                                //}
+
+                                (ast, log) = UnrealScriptCompiler.CompileClass(pcc, script, fileLib, exp, exp.Parent, packageCache);
+                                if (ast is not Class || log.HasErrors)
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {pcc.FilePath}\nfailed to parse class!"));
+                                    //return;
+                                }
+
+                                if (!fileLib.ReInitializeFile())
+                                {
+                                    interestingExports.Add(new EntryStringPair(exp, $"{pcc.FilePath} failed to re-initialize after compiling {$"#{exp.UIndex}",-9}"));
+                                    return;
+                                }
                                 //if (exp.EntryHasPendingChanges )//|| exp.GetAllDescendants().Any(entry => entry.EntryHasPendingChanges))
                                 //{
                                 //    interestingExports.Add(new EntryStringPair(exp, $"{exp.UIndex}: {filePath}\nRecompilation does not match!"));
@@ -1507,7 +1970,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                             interestingExports.Add(import);
                             return true;
                         }
-
                     }
                     catch (Exception exception)
                     {
@@ -1674,7 +2136,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                    foreach (Shader shader in shaderCache.Shaders.Values())
+                    foreach (Shader shader in shaderCache.Shaders.Values)
                     {
                         string shaderType = shader.ShaderType;
                         string pathWithoutInvalids = Path.Combine(dlg.FileName,
@@ -1787,7 +2249,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return (filePath, export.UIndex);
                             }
                         }
-                        catch (Exception e)
+                        catch
                         {
                             return (filePath, export.UIndex);
                         }
@@ -1795,7 +2257,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 return (null, 0);
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
@@ -1815,66 +2276,58 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void UDKifyTest(PackageEditorWindow pewpf)
         {
             // TODO: IMPLEMENT IN LEX
-            /*
-            var Pcc = pewpf.Pcc;
-            var udkPath = Settings.UDKCustomPath;
+
+            IMEPackage Pcc = pewpf.Pcc;
+            string udkPath = UDKDirectory.DefaultGamePath;
             if (udkPath == null || !Directory.Exists(udkPath))
             {
-                var udkDlg = new System.Windows.Forms.FolderBrowserDialog();
-                udkDlg.Description = @"Select UDK\Custom folder";
-                System.Windows.Forms.DialogResult result = udkDlg.ShowDialog();
+                var udkDlg = new CommonOpenFileDialog(@"Select your UDK\Custom folder");
+                udkDlg.IsFolderPicker = true;
+                var result = udkDlg.ShowDialog();
 
-                if (result != System.Windows.Forms.DialogResult.OK ||
-                    string.IsNullOrWhiteSpace(udkDlg.SelectedPath))
+                if (result is not CommonFileDialogResult.Ok || string.IsNullOrWhiteSpace(udkDlg.FileName) || !Directory.Exists(udkDlg.FileName))
                     return;
-                udkPath = udkDlg.SelectedPath;
-                Settings.UDKCustomPath = udkPath;
+                udkPath = udkDlg.FileName;
+                LegendaryExplorerCoreLibSettings.Instance.UDKCustomDirectory = udkPath;
+                UDKDirectory.ReloadDefaultGamePath();
             }
 
-            string fileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
-            bool convertAll = fileName.StartsWith("BioP") && MessageBoxResult.Yes ==
-                MessageBox.Show("Convert BioA and BioD files for this level?", "", MessageBoxButton.YesNo);
+            string persistentLevelFileName = Path.GetFileNameWithoutExtension(Pcc.FilePath);
 
             pewpf.IsBusy = true;
-            pewpf.BusyText = $"Converting {fileName}";
+            pewpf.BusyText = $"Converting {persistentLevelFileName}";
             Task.Run(() =>
             {
-                string persistentPath = StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, Pcc);
-                if (convertAll)
+                string persistentPath = ConvertToUDK.GenerateUDKFileForLevel(Pcc); 
+                var levelFiles = new List<string>();
+                if (Pcc is MEPackage mePackage)
                 {
-                    var levelFiles = new List<string>();
-                    string levelName = fileName.Split('_')[1];
-                    foreach ((string fileName, string filePath) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
+                    var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(Pcc.Game);
+                    foreach (string additionalPackage in mePackage.AdditionalPackagesToCook)
                     {
-                        if (!fileName.Contains("_LOC_") && fileName.Split('_') is { } parts && parts.Length >= 2 &&
-                            parts[1] == levelName)
+                        if (loadedFiles.TryGetValue($"{additionalPackage}.pcc", out string filePath))
                         {
-                            pewpf.BusyText = $"Converting {fileName}";
+                            pewpf.BusyText = $"Converting {additionalPackage}";
                             using IMEPackage levPcc = MEPackageHandler.OpenMEPackage(filePath);
-                            levelFiles.Add(StaticLightingGenerator.GenerateUDKFileForLevel(udkPath, levPcc));
+                            levelFiles.Add(ConvertToUDK.GenerateUDKFileForLevel(levPcc));
                         }
                     }
 
                     using IMEPackage persistentUDK = MEPackageHandler.OpenUDKPackage(persistentPath);
                     IEntry levStreamingClass =
-                        persistentUDK.getEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded");
+                        persistentUDK.GetEntryOrAddImport("Engine.LevelStreamingAlwaysLoaded", "Class");
                     IEntry theWorld = persistentUDK.Exports.First(exp => exp.ClassName == "World");
                     int i = 1;
                     int firstLevStream = persistentUDK.ExportCount;
-                    foreach (string levelFile in levelFiles)
+                    foreach (string fileName in levelFiles.Select(Path.GetFileNameWithoutExtension))
                     {
-                        string fileName = Path.GetFileNameWithoutExtension(levelFile);
-                        persistentUDK.AddExport(new ExportEntry(persistentUDK, properties: new PropertyCollection
-                            {
-                                new NameProperty(fileName, "PackageName"),
-                                CommonStructs.ColorProp(
-                                    System.Drawing.Color.FromArgb(255, (byte) (i % 256), (byte) ((255 - i) % 256),
-                                        (byte) ((i * 7) % 256)), "DrawColor")
-                            })
+                        persistentUDK.AddExport(new ExportEntry(persistentUDK, theWorld, new NameReference("LevelStreamingAlwaysLoaded", i), properties: new PropertyCollection
                         {
-                            ObjectName = new NameReference("LevelStreamingAlwaysLoaded", i),
-                            Class = levStreamingClass,
-                            Parent = theWorld
+                            new NameProperty(fileName, "PackageName"),
+                            CommonStructs.ColorProp(System.Drawing.Color.FromArgb(255, (byte)(i % 256), (byte)((255 - i) % 256), (byte)(i * 7 % 256)), "DrawColor")
+                        })
+                        {
+                            Class = levStreamingClass
                         });
                         i++;
                     }
@@ -1889,10 +2342,14 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         .WriteProperty(streamingLevelsProp);
                     persistentUDK.Save();
                 }
-
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                if (prevTask.IsFaulted)
+                {
+                    new ExceptionHandlerDialog(prevTask.Exception).ShowDialog();
+                }
                 pewpf.IsBusy = false;
             });
-            */
         }
 
         public static void MakeME1TextureFileList(PackageEditorWindow pewpf)
@@ -1947,7 +2404,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
 
                 return textureFiles;
-
             }).ContinueWithOnUIThread(prevTask =>
             {
                 pewpf.IsBusy = false;
@@ -1965,13 +2421,13 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //pewpf.BusyText = "Building Native Tables";
             //Task.Run(() =>
             //{
-            //    foreach (MEGame game in new[] { MEGame.LE1, MEGame.LE2, MEGame.LE3 })
+            //    foreach (MEGame game in new[] {  MEGame.UDK })
             //    {
-            //        string cookedPath = MEDirectories.GetCookedPath(game);
+            //        string scriptPath = UDKDirectory.ScriptPath;
             //        var entries = new List<(int, string)>();
             //        foreach (string fileName in FileLib.BaseFileNames(game))
             //        {
-            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(cookedPath, fileName));
+            //            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(Path.Combine(scriptPath, fileName));
             //            foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "Function"))
             //            {
             //                var func = export.GetBinaryData<UFunction>();
@@ -2049,8 +2505,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             //        });
             //    }
-            //}).ContinueWithOnUIThread(_ =>
+            //}).ContinueWithOnUIThread(prevTask =>
             //{
+            //    if (prevTask.IsFaulted)
+            //    {
+            //        new ExceptionHandlerDialog(prevTask.Exception).ShowDialog();
+            //    }
             //    pewpf.IsBusy = false;
             //});
         }
@@ -2134,8 +2594,36 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         public static void DumpSound(PackageEditorWindow packEd)
         {
             if (InputComboBoxDialog.GetValue(packEd, "Choose game:", "Game to dump sound for", new[] { "ME3", "ME2", "LE3", "LE2" }, "LE3") is string gameStr &&
-                Enum.TryParse(gameStr, out MEGame game))
+                Enum.TryParse(gameStr, out MEGame game)
+                &&
+             InputComboBoxDialog.GetValue(packEd, "Choose language:", "Choose language", new[] { MELocalization.INT, MELocalization.FRA, MELocalization.DEU, MELocalization.ITA, MELocalization.POL }, MELocalization.INT.ToString()) is string loc &&
+                Enum.TryParse(loc, out MELocalization localization))
             {
+                var languagePrefixes = new List<string>();
+                switch (localization)
+                {
+                    case MELocalization.INT:
+                        languagePrefixes.Add("en_us");
+                        languagePrefixes.Add("en-us");
+                        break;
+                    case MELocalization.FRA:
+                        languagePrefixes.Add("fr_fr");
+                        languagePrefixes.Add("fr-fr");
+                        break;
+                    case MELocalization.DEU:
+                        languagePrefixes.Add("de_de");
+                        languagePrefixes.Add("de-de");
+                        break;
+                    case MELocalization.ITA:
+                        languagePrefixes.Add("it_it");
+                        languagePrefixes.Add("it-it");
+                        break;
+                    case MELocalization.POL:
+                        languagePrefixes.Add("pl-pl");
+                        // No ME3 loc
+                        break;
+                }
+
                 string tag = PromptDialog.Prompt(packEd, "Character tag:", defaultValue: "player_f", selectText: true);
                 if (string.IsNullOrWhiteSpace(tag))
                 {
@@ -2170,7 +2658,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
                         foreach (ExportEntry export in pcc.Exports.Where(exp => exp.ClassName == "WwiseStream"))
                         {
-                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && parts[0] == "en-us" && parts[1] == tag)
+                            if (export.ObjectNameString.Split(',') is string[] { Length: > 1 } parts && languagePrefixes.Contains(parts[0]) && parts[1] == tag)
                             {
                                 string fileName = Path.Combine(outFolder, $"{export.ObjectNameString}.wav");
                                 using var fs = new FileStream(fileName, FileMode.Create);
@@ -2186,7 +2674,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     MessageBox.Show("Done");
                 });
             }
-
         }
 
         private record StringMEGamePair(string str, MEGame game);
@@ -2300,7 +2787,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             });
         }
 
-
         public static void RecompileAll(PackageEditorWindow pew)
         {
             if (pew.Pcc is { Platform: MEPackage.GamePlatform.PC } && pew.Pcc.Game != MEGame.UDK)
@@ -2330,7 +2816,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                                 return;
                             }
                         }
-                        catch (Exception e)
+                        catch 
                         {
                             exportsWithDecompilationErrors.Add(new EntryStringPair(export, "Compilation Error!"));
                             break;
@@ -2385,6 +2871,180 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 };
                 dlg.Show();
             }
+        }
+
+        public static void CompileLooseClassFolder(PackageEditorWindow pew)
+        {
+            var folderPicker = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select folder with .uc files"
+            };
+            if (folderPicker.ShowDialog(pew) is not CommonFileDialogResult.Ok) return;
+            string classFolder = folderPicker.FileName;
+
+            string gameString = InputComboBoxDialog.GetValue(pew, "Choose a game to compile for:",
+                "Create new package file", new[] { "LE3", "LE2", "LE1", "ME3", "ME2", "ME1", "UDK" }, "LE3");
+            if (!Enum.TryParse(gameString, out MEGame game)) return;
+
+            var dlg = new SaveFileDialog
+            {
+                Filter = game switch
+                {
+                    MEGame.UDK => GameFileFilters.UDKFileFilter,
+                    MEGame.ME1 => GameFileFilters.ME1SaveFileFilter,
+                    MEGame.ME2 => GameFileFilters.ME3ME2SaveFileFilter,
+                    MEGame.ME3 => GameFileFilters.ME3ME2SaveFileFilter,
+                    _ => GameFileFilters.LESaveFileFilter
+                },
+                CustomPlaces = AppDirectories.GameCustomPlaces,
+                InitialDirectory = classFolder
+            };
+            if (dlg.ShowDialog() != true) return;
+            string packagePath = dlg.FileName;
+
+            pew.SetBusy("Compiling loose classes");
+            Task.Run(() =>
+            {
+                var classes = new List<UnrealScriptCompiler.LooseClass>();
+                foreach (string ucFilePath in Directory.EnumerateFiles(classFolder, "*.uc", SearchOption.AllDirectories))
+                {
+                    string source = File.ReadAllText(ucFilePath);
+                    //files must be named Classname.uc
+                    classes.Add(new UnrealScriptCompiler.LooseClass(Path.GetFileNameWithoutExtension(ucFilePath), source));
+                }
+
+                using IMEPackage pcc = MEPackageHandler.CreateAndOpenPackage(packagePath, game);
+
+                //in real use, you would want a way to associate classes with the right packages (e.g. SFXGameContent).
+                //Perhaps this could be encoded in the directory structure of the loose files?
+                var looseClassPackages = new List<UnrealScriptCompiler.LooseClassPackage>
+                {
+                    new("CompiledClasses", classes)
+                };
+
+                MessageLog log = UnrealScriptCompiler.CompileLooseClasses(pcc, looseClassPackages, MissingObjectResolver, vtableDonorGetter: VTableDonorGetter);
+
+                if (log.HasErrors)
+                {
+                    return (object)log;
+                }
+
+                pcc.Save();
+                return packagePath;
+
+                //a real resolver might want to pull in donors, or at least keep track of which exports had been stubbed
+                static IEntry MissingObjectResolver(IMEPackage pcc, string instancedPath)
+                {
+                    ExportEntry export = null;
+                    foreach (string name in instancedPath.Split('.'))
+                    {
+                        export = ExportCreator.CreatePackageExport(pcc, NameReference.FromInstancedString(name), export);
+                    }
+                    return export;
+                }
+
+                //terrible function, there are better ways of implementing it.
+                List<string> VTableDonorGetter(string className)
+                {
+                    var classInfo = GlobalUnrealObjectInfo.GetClassOrStructInfo(game, className);
+                    if (classInfo is not null)
+                    {
+                        string path = Path.Combine(MEDirectories.GetBioGamePath(game), classInfo.pccPath);
+                        if (File.Exists(path))
+                        {
+                            IMEPackage partialLoad = MEPackageHandler.UnsafePartialLoad(path, exp => exp.IsClass && exp.ObjectName == className);
+                            foreach (ExportEntry export in partialLoad.Exports)
+                            {
+                                if (export.IsClass && export.ObjectName == className)
+                                {
+                                    var obj = export.GetBinaryData<UClass>();
+                                    return obj.VirtualFunctionTable.Select(uIdx => partialLoad.GetEntry(uIdx).ObjectName.Name).ToList();
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pew.EndBusy();
+                switch (prevTask.Result)
+                {
+                    case MessageLog log:
+                        new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Errors occured while compiling loose classes", "", pew).Show();
+                        break;
+                    case string path:
+                        pew.LoadFile(path);
+                        break;
+                }
+            });
+        }
+
+        public static void DumpClassSource(PackageEditorWindow pew)
+        {
+            var pcc = pew.Pcc;
+            if (pcc is null)
+            {
+                return;
+            }
+
+            var folderPicker = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select folder to dump .uc files"
+            };
+            if (folderPicker.ShowDialog(pew) is not CommonFileDialogResult.Ok) return;
+            string folderPath = folderPicker.FileName;
+            pew.SetBusy("Dumping source code");
+            Task.Run(() =>
+            {
+                var fileLib = new FileLib(pcc);
+                if (!fileLib.Initialize())
+                {
+                    return "Failed to initialize FileLib";
+                }
+                int numFiles = 0;
+                foreach (ExportEntry classExport in pew.Pcc.Exports.Where(exp => exp.IsClass))
+                {
+                    try
+                    {
+                        (ASTNode ast, string script) = UnrealScriptCompiler.DecompileExport(classExport, fileLib);
+                        var cls = (Class)ast;
+                        if (!cls.IsFullyDefined)
+                        {
+                            continue;
+                        }
+                        File.WriteAllText(Path.Combine(folderPath, $"{cls.Name}.uc"), script);
+                        numFiles++;
+                    }
+                    catch (Exception exception)
+                    {
+                        return exception.FlattenException();
+                    }
+                }
+                return $"Dumped {numFiles} files.";
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pew.EndBusy();
+                MessageBox.Show(prevTask.Result);
+            });
+        }
+
+        public static void RegenCachedPhysBrushData(PackageEditorWindow pew)
+        {
+            var pcc = pew.Pcc;
+            if (pcc is null || !pcc.Game.IsLEGame() || !pew.TryGetSelectedExport(out ExportEntry brushComponentExport) || brushComponentExport.ClassName != "BrushComponent")
+            {
+                MessageBox.Show(pew, "Must have a BrushComponent selected in an LE pcc.");
+                return;
+            }
+            var bin = brushComponentExport.GetBinaryData<BrushComponent>();
+            bin.RegenCachedPhysBrushData();
+            brushComponentExport.WriteBinary(bin);
+            MessageBox.Show(pew, "Regenerated!");
         }
     }
 }

@@ -7,7 +7,6 @@ using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {
-
     [ValueConversion(typeof(int), typeof(string))]
     public class CountToStringConverter : IValueConverter
     {

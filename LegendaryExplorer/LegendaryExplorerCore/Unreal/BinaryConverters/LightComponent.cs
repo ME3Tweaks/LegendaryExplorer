@@ -1,9 +1,6 @@
 ﻿using System.Numerics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -13,8 +10,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ConvexVolume[] ExclusionConvexVolumes;
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref InclusionConvexVolumes, SCExt.Serialize);
-            sc.Serialize(ref ExclusionConvexVolumes, SCExt.Serialize);
+            if (sc.Game is not MEGame.UDK)
+            {
+                sc.Serialize(ref InclusionConvexVolumes, SCExt.Serialize);
+                sc.Serialize(ref ExclusionConvexVolumes, SCExt.Serialize);
+            }
+            else if (sc.IsLoading)
+            {
+                InclusionConvexVolumes = Array.Empty<ConvexVolume>();
+                ExclusionConvexVolumes = Array.Empty<ConvexVolume>();
+            }
         }
 
         public static LightComponent Create()

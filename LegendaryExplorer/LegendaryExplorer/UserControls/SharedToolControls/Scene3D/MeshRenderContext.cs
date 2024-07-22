@@ -171,7 +171,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             // Load the default position-texture shader
             DefaultEffect = new Effect<WorldConstants, WorldVertex>(Device, EmbeddedResources.StandardShader);
 
-
             this.ImmediateContext.OutputMerger.SetBlendState(this.AlphaBlendState);
         }
 
@@ -217,13 +216,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (!IsReady)
                 return;
 
-            TextureCache.Dispose();
-            DefaultTextureView.Dispose();
-            DefaultTexture.Dispose();
-            SampleState.Dispose();
-            DefaultEffect.Dispose();
-            FillRasterizerState.Dispose();
-            WireframeRasterizerState.Dispose();
+            TextureCache?.Dispose();
+            DefaultTextureView?.Dispose();
+            DefaultTexture?.Dispose();
+            SampleState?.Dispose();
+            DefaultEffect?.Dispose();
+            FillRasterizerState?.Dispose();
+            WireframeRasterizerState?.Dispose();
             base.DisposeResources();
         }
 

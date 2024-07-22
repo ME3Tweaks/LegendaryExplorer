@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 
@@ -57,7 +58,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 return ME1Directory.OfficialDLC.Contains(dlcName) || File.Exists(Path.Combine(dir, "AutoLoad.ini"));
             }
             else if (game == MEGame.LE1) return dlcName.StartsWith("DLC_MOD") && File.Exists(Path.Combine(dir, "AutoLoad.ini"));
-            return dlcName.StartsWith("DLC_") && File.Exists(GetMountDLCFromDLCDir(dir, game));
+            return (dlcName.StartsWith("DLC_") || game == MEGame.ME2) && File.Exists(GetMountDLCFromDLCDir(dir, game));
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         /// <param name="dlcDirectory">Path to a DLC folder</param>
         /// <param name="game">Game of DLC</param>
-        /// <returns>Mount priority</returns>
+        /// <returns>Mount priority, or 0 if file defining mount file is not found</returns>
         public static int GetMountPriority(string dlcDirectory, MEGame game)
         {
             if (game.IsGame1())
@@ -95,10 +96,31 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
                 // DLC folder is Game1 mod
                 string autoLoadPath = Path.Combine(dlcDirectory, "AutoLoad.ini");
-                var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
-                return Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
+                if (File.Exists(autoLoadPath)) // This helps suppress exceptions.
+                {
+                    var dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
+                    if (int.TryParse(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value, out var value))
+                    {
+                        return value;
+                    }
+                    LECLog.Error($@"Invalid mount priority value in Autoload.ini: {dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value}");
+                }
+                else
+                {
+                    LECLog.Error($@"Could not find Autoload.ini file in DLC folder: {autoLoadPath}");
+                }
+
+                return 0;
             }
-            return MountFile.GetMountPriority(GetMountDLCFromDLCDir(dlcDirectory, game));
+
+            var mp = GetMountDLCFromDLCDir(dlcDirectory, game);
+            if (File.Exists(mp))
+            {
+                return MountFile.GetMountPriority(mp);
+            }
+
+            LECLog.Error($@"Could not find mount.dlc file in DLC folder: {mp}");
+            return 0;
         }
 
         /// <summary>
@@ -113,9 +135,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// Gets all the enabled DLC in a game along with the mount value.
         /// </summary>
         /// <returns>Dictionary of DLC folder name to mount priority</returns>
-        public static Dictionary<string, int> GetDLCNamesWithMounts(MEGame game)
+        public static Dictionary<string, int> GetDLCNamesWithMounts(MEGame game, string gameDirectoryOverride = null)
         {
-            var dlcs = GetEnabledDLCFolders(game);
+            var dlcs = GetEnabledDLCFolders(game, gameDirectoryOverride);
             var mountlist = new Dictionary<string, int>();
             foreach (var d in dlcs)
             {
@@ -123,6 +145,18 @@ namespace LegendaryExplorerCore.GameFilesystem
                 mountlist.Add(Path.GetFileName(d), m);
             }
             return mountlist;
+        }
+
+        /// <summary>
+        /// Gets the list of enabled DLC in load order, that is lowest-to-highest mount priority. This does not factor in SFAR packed DLCs from ME3.
+        /// </summary>
+        /// <param name="game">The game to enumerate DLC for</param>
+        /// <param name="gameDirectoryOverride">The directory of the game. If null, the default path will be used</param>
+        /// <returns></returns>
+        public static List<string> GetDLCNamesInMountOrder(MEGame game, string gameDirectoryOverride = null)
+        {
+            var list = GetDLCNamesWithMounts(game, gameDirectoryOverride);
+            return list.OrderBy(x => x.Value).Select(x => x.Key).ToList();
         }
     }
 }

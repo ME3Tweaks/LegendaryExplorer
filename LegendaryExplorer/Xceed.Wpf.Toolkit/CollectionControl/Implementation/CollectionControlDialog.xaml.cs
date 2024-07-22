@@ -27,6 +27,7 @@ using System.Security;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Xceed.Wpf.Toolkit.PropertyGrid;
+using System.Runtime.CompilerServices;
 
 namespace Xceed.Wpf.Toolkit
 {
@@ -199,15 +200,9 @@ namespace Xceed.Wpf.Toolkit
       object result = null;
       var sourceType = source.GetType();
 
-      if( source is Array )
+      if( source is Array array )
       {
-        using( var stream = new MemoryStream() )
-        {
-          var formatter = new BinaryFormatter();
-          formatter.Serialize( stream, source );
-          stream.Seek( 0, SeekOrigin.Begin );
-          result = ( Array )formatter.Deserialize( stream );
-        }
+        result = array.Clone();
       }
       // For IDictionary, we need to create EditableKeyValuePair to edit the Key-Value.
       else if( ( this.ItemsSource is IDictionary )
@@ -223,7 +218,7 @@ namespace Xceed.Wpf.Toolkit
         // Initialized a new object with default values
         try
         {
-          result = FormatterServices.GetUninitializedObject( sourceType );
+          result = RuntimeHelpers.GetUninitializedObject( sourceType );
         }
         catch( Exception )
         {

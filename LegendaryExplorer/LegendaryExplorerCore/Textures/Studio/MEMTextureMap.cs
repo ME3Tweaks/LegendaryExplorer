@@ -47,9 +47,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 }
             }
 
-
             using var fs = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($"Precomputed.TextureMap.vanilla{game}Map.bin");
-
 
             // read the precomputed vanilla texture map.
             // this map will help identify vanilla textures

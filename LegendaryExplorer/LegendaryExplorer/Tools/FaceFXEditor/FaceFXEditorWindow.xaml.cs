@@ -23,7 +23,6 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
     /// </summary>
     public partial class FaceFXEditorWindow : WPFBase, IRecents
     {
-
         public ObservableCollectionExtended<ExportEntry> AnimSets { get; } = new();
 
         public string CurrentFile => Pcc != null ? Path.GetFileName(Pcc.FilePath) : "Select a file to load";
@@ -111,7 +110,7 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
 
         private void OpenPackage()
         {
-            var d = new OpenFileDialog { Filter = GameFileFilters.OpenFileFilter };
+            var d = AppDirectories.GetOpenPackageDialog();
             if (d.ShowDialog() == true)
             {
                 try

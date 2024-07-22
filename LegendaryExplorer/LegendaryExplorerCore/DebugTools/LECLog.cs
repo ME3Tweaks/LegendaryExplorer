@@ -31,11 +31,49 @@ namespace LegendaryExplorerCore.DebugTools
             logger?.Error($"{Prefix}{message}");
         }
 
-        public static void Debug(string message)
+        public static void Debug(string message, bool shouldLog = true)
         {
-            if (LogDebug)
+            if (shouldLog && LogDebug)
             {
                 logger?.Debug($"{Prefix}{message}");
+            }
+        }
+
+        /// <summary>
+        /// Writes a pre-message and a stacktrace to the log.
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="preMessage"></param>
+        /// <param name="fatal"></param>
+        /// <param name="customPrefix"></param>
+        public static void Exception(Exception exception, string preMessage, bool fatal = false)
+        {
+            Log.Error($@"{Prefix}{preMessage}");
+
+            // Log exception
+            while (exception != null)
+            {
+                var line1 = exception.GetType().Name + @": " + exception.Message;
+                foreach (var line in line1.Split("\n")) // do not localize
+                {
+                    if (fatal)
+                        Log.Fatal(line);
+                    else
+                        Log.Error(line);
+                }
+
+                if (exception.StackTrace != null)
+                {
+                    foreach (var line in exception.StackTrace.Split("\n")) // do not localize
+                    {
+                        if (fatal)
+                            Log.Fatal(line);
+                        else
+                            Log.Error(line);
+                    }
+                }
+
+                exception = exception.InnerException;
             }
         }
     }

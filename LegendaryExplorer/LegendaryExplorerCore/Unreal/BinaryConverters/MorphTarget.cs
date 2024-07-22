@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -24,8 +22,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                MorphLODModels = Array.Empty<MorphLODModel>(),
-                BoneOffsets = Array.Empty<BoneOffset>()
+                MorphLODModels = [],
+                BoneOffsets = []
             };
         }
 
@@ -67,7 +65,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 else
                 {
-                    MemoryMarshal.Write(span, ref vert);
+                    MemoryMarshal.Write(span, in vert);
                     sc.ms.Writer.Write(span[..18]);
                 }
             }

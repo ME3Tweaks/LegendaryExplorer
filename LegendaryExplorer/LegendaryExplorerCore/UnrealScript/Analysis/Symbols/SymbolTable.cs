@@ -14,7 +14,6 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 {
-
     internal class SymbolTable
     {
         private class OperatorDefinitions
@@ -99,12 +98,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
             table.AddType(NameType);
 
-            
+            //Add fake constants
+            float unrealNaN = BitConverter.UInt32BitsToSingle(uint.MaxValue);//specific NaN value to reserialize existing NaNs identically
+            objectClass.TypeDeclarations.Add(new Const("NaN", "NaN"){Literal = new FloatLiteral(unrealNaN)});
+            objectClass.TypeDeclarations.Add(new Const("Infinity", "Infinity"){Literal = new FloatLiteral(float.PositiveInfinity)});
+
             Class packageType = null;
-            if (game >= MEGame.ME3)
+            switch (game)
             {
-                packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
-                table.AddType(packageType);
+                case >= MEGame.ME3:
+                    packageType = new Class("Package", objectClass, objectClass, intrinsicClassFlags);
+                    table.AddType(packageType);
+                    break;
+                case MEGame.ME1:
+                    table.AddType(new Class("ObjectRedirector", objectClass, objectClass, intrinsicClassFlags));
+                    break;
             }
 
             //script type intrinsics
@@ -209,9 +217,28 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     table.AddSymbol(clientClassVarDecl.Name, clientClassVarDecl);
                 }
             table.PopScope();
-            var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories);
+            var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
+            {
+                VariableDeclarations =
+                {
+                    new VariableDeclaration(BoolType, default, "UseSimpleRigidBodyCollision"),
+                    new VariableDeclaration(BoolType, default, "UseSimpleLineCollision"),
+                    new VariableDeclaration(BoolType, default, "UseSimpleBoxCollision"),
+                    new VariableDeclaration(BoolType, default, "bUsedForInstancing"),
+                    new VariableDeclaration(BoolType, default, "ForceDoubleSidedShadowVolumes"),
+                    new VariableDeclaration(BoolType, default, "UseFullPrecisionUVs"),
+                    //"BodySetup" added in the AddType function
+                    new VariableDeclaration(FloatType, default, "LODDistanceRatio"),
+                    new VariableDeclaration(IntType, default, "LightMapCoordinateIndex"),
+                    new VariableDeclaration(IntType, default, "LightMapResolution"),
+                }
+            };
             table.AddType(staticMeshType);
             table.PushScope(staticMeshType.Name);
+                foreach (VariableDeclaration stmVarDecl in staticMeshType.VariableDeclarations)
+                {
+                    table.AddSymbol(stmVarDecl.Name, stmVarDecl);
+                }
                 var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
                 {
                     VariableDeclarations =
@@ -265,9 +292,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var levelBase = new Class("LevelBase", objectClass, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
             table.AddType(levelBase);
             table.PushScope(levelBase.Name);
-                var levelType = new Class("Level", levelBase, objectClass, intrinsicClassFlags);
+                var levelType = new Class("Level", levelBase, objectClass, intrinsicClassFlags)
+                {
+                    VariableDeclarations =
+                    {
+                        new VariableDeclaration(FloatType, default, "LightmapTotalSize"),
+                        new VariableDeclaration(FloatType, default, "ShadowmapTotalSize"),
+                    }
+                };
                 table.AddType(levelType);
-                table.PushScope(levelType.Name); table.PopScope();
+                table.PushScope(levelType.Name); 
+                    foreach (VariableDeclaration levelVarDecl in levelType.VariableDeclarations)
+                    {
+                        table.AddSymbol(levelVarDecl.Name, levelVarDecl);
+                    }
+                table.PopScope();
                 var pendingLevel = new Class("PendingLevel", levelBase, objectClass, intrinsicClassFlags | EClassFlags.Abstract);
                 table.AddType(pendingLevel);
                 table.PushScope(pendingLevel.Name); table.PopScope();
@@ -281,12 +320,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var polysType = new Class("Polys", objectClass, objectClass, intrinsicClassFlags);
             table.AddType(polysType);
             table.PushScope(polysType.Name); table.PopScope();
-
-            //NetConnection and ChildConnection are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
+            table.AddType(new Class("ShaderCache", objectClass, objectClass, intrinsicClassFlags));
+            //NetConnection, ChildConnection, LightMapTexture2D, and CodecMovieBink are also intrinsic, but are added in the AddType function because they subclass the non-instrinsic class 'Player'
             #endregion
 
             return table;
-
         }
 
         private bool me3le3operatorsInitialized;
@@ -307,7 +345,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             var vector2DType = TypeDict["Vector2D"];
             var colorType = TypeDict["Color"];
             var linearColorType = TypeDict["LinearColor"];
-
 
             const EPropertyFlags parm = EPropertyFlags.Parm;
             const EPropertyFlags outFlags = parm | EPropertyFlags.OutParm;
@@ -372,7 +409,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             AddOperator(new InOpDeclaration(TokenType.DivAssign, 34, 160, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(FloatType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.AddAssign, 34, 161, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.SubAssign, 34, 162, IntType, new FunctionParameter(IntType, outFlags, "A"), new FunctionParameter(IntType, parm, "B")));
-
 
             AddOperator(new InOpDeclaration(TokenType.Power, 12, 170, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.StarSign, 16, 171, FloatType, new FunctionParameter(FloatType, parm, "A"), new FunctionParameter(FloatType, parm, "B")));
@@ -466,7 +502,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             AddOperator(new InOpDeclaration(TokenType.PlusSign, 16, 270, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
             AddOperator(new InOpDeclaration(TokenType.MinusSign, 16, 271, quatType, new FunctionParameter(quatType, parm, "A"), new FunctionParameter(quatType, parm, "B")));
 
-
             //operators without a nativeIndex. must be linked directly to their function representations
             AddOperator(new InOpDeclaration(TokenType.ClockwiseFrom, 24, 0, BoolType, new FunctionParameter(IntType, parm, "A"), new FunctionParameter(IntType, parm, "B"))
             {
@@ -521,7 +556,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 Implementer = (Function)objectScope["Multiply_LinearColorFloat"]
             });
-
 
             Operators.InFixOperatorSymbols.AddRange(Operators.InfixOperators.Keys);
             me3le3operatorsInitialized = true;
@@ -874,6 +908,31 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     PopScope();
                     break;
                 }
+                case "Texture2D":
+                {
+                    var objClass = TypeDict[OBJECT];
+                    var lightmapTexture2DType = new Class("LightMapTexture2D", node, objClass, EClassFlags.Intrinsic | EClassFlags.Config) { ConfigName = "Engine" };
+                    AddType(lightmapTexture2DType);
+                    PushScope(lightmapTexture2DType.Name);
+                    PopScope();
+                    break;
+                }
+                case "RB_BodySetup":
+                {
+                    PushScope("StaticMesh");
+                        var bodySetup = new VariableDeclaration(node, default, "BodySetup");
+                        ((Class)TypeDict["StaticMesh"]).VariableDeclarations.Add(bodySetup);
+                        AddSymbol(bodySetup.Name, bodySetup);
+                    PopScope();
+                    break;
+                }
+                case "CodecMovie":
+                {
+                    var codecBinkType = new Class("CodecMovieBink", node, TypeDict[OBJECT], EClassFlags.Intrinsic | EClassFlags.Transient);
+                    AddType(codecBinkType);
+                    PushScope(codecBinkType.Name); PopScope();
+                    break;
+                }
             }
 
             if (node is Class c && c.Flags.Has(EClassFlags.Intrinsic))
@@ -916,10 +975,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             return true;
         }
 
-        public bool GoDirectlyToStack(string lowestScope)
+        public bool GoDirectlyToStack(string lowestScope, bool createScopesIfNeccesary = false)
         {
             string scope = lowestScope;
-            // TODO: 5 AM coding.. REVISIT THIS!
             if (!string.Equals(CurrentScopeName, OBJECT, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Tried to go a scopestack while not at the top level scope!");
             if (string.Equals(scope, OBJECT, StringComparison.OrdinalIgnoreCase))
@@ -933,8 +991,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             }
             for (int n = 1; n < scopes.Length; n++) // Start after "Object."
             {
-                if (!Cache.ContainsKey($"{CurrentScopeName}.{scopes[n]}"))
-                    return false; // this should not happen? possibly load classes from ppc on demand?
+                if (!createScopesIfNeccesary && !Cache.ContainsKey($"{CurrentScopeName}.{scopes[n]}"))
+                {
+                    throw new InvalidOperationException($"Could not go to scope \"{lowestScope}\" because scope \"{CurrentScopeName}.{scopes[n]}\" does not exist! Please file a detailed bug report if you see this.");
+                }
                 PushScope(scopes[n]);
             }
 

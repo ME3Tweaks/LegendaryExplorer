@@ -97,7 +97,8 @@ namespace LegendaryExplorerCore.Dialogue
         /// <param name="conditionalOrBool">The nConditionalFunc value of this node</param>
         /// <param name="transition">The nStateTransition value of this node</param>
         /// <param name="replyType">The ReplyType value of this node</param>
-        public DialogueNodeExtended(StructProperty nodeProp, bool isReply, int nodeCount, int speakerIndex, int lineStrRef, string line, bool firesConditional, int conditionalOrBool, int transition, EReplyTypes replyType)
+        /// <param name="conditionalParam">The ConditionalParam value of this node</param>
+        public DialogueNodeExtended(StructProperty nodeProp, bool isReply, int nodeCount, int speakerIndex, int lineStrRef, string line, bool firesConditional, int conditionalOrBool, int transition, EReplyTypes replyType, int conditionalParam = 0)
         {
             NodeProp = nodeProp;
             IsReply = isReply;
@@ -107,6 +108,7 @@ namespace LegendaryExplorerCore.Dialogue
             Line = line;
             FiresConditional = firesConditional;
             ConditionalOrBool = conditionalOrBool;
+            ConditionalParam = conditionalParam;
             Transition = transition;
             ReplyType = replyType;
         }
@@ -156,5 +158,4 @@ namespace LegendaryExplorerCore.Dialogue
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore
     }
-
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -275,8 +274,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case (byte)OpCodes.StringRefConst:
                     return DecompileStringRefConst();
 
-
-
                 /*****
                  * TODO: all of these needs changes, see functions below.
                  * */
@@ -289,7 +286,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     return DecompileInstanceDelegate();
 
                 #endregion
-
 
                 // TODO: 41, debugInfo
 
@@ -593,7 +589,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                     break;
             }
-
         }
         static bool ResolveEnumValues(ref Expression a, ref Expression b)
         {
@@ -629,7 +624,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var expr = DecompileExpression();
             if (expr == null)
                 return null; // ERROR
-
 
             StartPositions.Pop();
             if (expr is NoneLiteral)
@@ -704,22 +698,36 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 
                 if (IsSuper(funcObj)) // If we're calling ourself, it's a super call
                 {
-                    var classExp = DataContainer.Export.Parent;
-                    while (classExp != null && classExp.ClassName != "Class")
-                    {
-                        classExp = classExp.Parent;
-                    }
-                    var currentClass = (classExp as ExportEntry).GetBinaryData<UClass>();
-                    classExp = funcObj;
-                    while (classExp != null && classExp.ClassName != "Class")
-                    {
-                        classExp = classExp.Parent;
-                    }
-                    var funcOuterClass = classExp?.ObjectName.Instanced;
                     isSuper = true;
-                    if (currentClass == null || currentClass.SuperClass == 0 || Pcc.GetEntry(currentClass.SuperClass).ObjectName.Instanced != funcOuterClass)
+                    IEntry classExp = DataContainer.Export.Parent;
+                    string currentStateName = null;
+                    if (DataContainer is UState)
                     {
-                        superSpecifier = new VariableType(funcOuterClass);
+                        currentStateName = DataContainer.Export.ObjectName.Instanced;
+                    }
+                    else if (classExp.ClassName.CaseInsensitiveEquals("State"))
+                    {
+                        currentStateName = classExp.ObjectName.Instanced;
+                    }
+                    while (classExp != null && classExp.ClassName != "Class")
+                    {
+                        classExp = classExp.Parent;
+                    }
+                    IEntry funcClassExp = funcObj;
+                    while (funcClassExp != null && funcClassExp.ClassName != "Class")
+                    {
+                        funcClassExp = funcClassExp.Parent;
+                    }
+
+                    if (funcClassExp != classExp
+                        && (!funcObj.Parent.ClassName.CaseInsensitiveEquals("State") || funcObj.Parent.ObjectName.Instanced.CaseInsensitiveEquals(currentStateName)))
+                    {
+                        string funcOuterClass = funcClassExp?.ObjectName.Instanced;
+                        var currentClass = (classExp as ExportEntry).GetBinaryData<UClass>();
+                        if (currentClass == null || currentClass.SuperClass == 0 || Pcc.GetEntry(currentClass.SuperClass).ObjectName.Instanced != funcOuterClass)
+                        {
+                            superSpecifier = new VariableType(funcOuterClass);
+                        }
                     }
                 }
             }

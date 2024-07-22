@@ -7,10 +7,12 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:plotEditor="clr-namespace:LegendaryExplorer.Tools.PlotEditor"
     xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+	xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
     mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	d:DesignHeight="600" d:DesignWidth="800">
 	<UserControl.Resources>
+		<converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
 		<Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
 			<Style.Triggers>
 				<Trigger Property="HasItems" Value="True">
@@ -47,20 +49,22 @@
 					</Grid.RowDefinitions>
 
 					<!-- Grid Content -->
-					<ListBox x:Name="QuestsListBox" Grid.Column="0" Grid.Row="0" Width="150" Style="{DynamicResource ListBoxStyle}"
+					<ListBox x:Name="QuestsListBox" Grid.Column="0" Grid.Row="0" Width="200" Style="{DynamicResource ListBoxStyle}"
 						ItemsSource="{Binding Quests, NotifyOnTargetUpdated=True}" SelectedItem="{Binding SelectedQuest, Mode=TwoWay}">
                         <ListBox.ItemTemplate>
                             <!--<DataTemplate DataType="{x:Type questMap:BioQuest}">-->
                             <DataTemplate>
-                                <TextBlock Text="{Binding Key, StringFormat='Quest \{0\}'}" Width="125">
-                                    <TextBlock.ContextMenu>
+	                            <StackPanel>
+									<TextBlock Text="{Binding Key, StringFormat='Quest \{0\}'}" Width="125"/>
+									<TextBlock Text="{Binding Value.QuestName}" TextWrapping="Wrap" FontSize="10" Visibility="{Binding Value.QuestName, Converter={StaticResource NullVisibilityConverter}}"/>
+									<StackPanel.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Change Id" Click="ChangeQuestId_Click" />
                                             <MenuItem Header="Copy" Click="CopyQuest_Click"/>
                                             <MenuItem Header="Remove" Click="RemoveQuest_Click"/>
                                         </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                    </StackPanel.ContextMenu>
+		                        </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -93,18 +97,13 @@
 						</Grid.RowDefinitions>
 
 						<!-- Selected Quest Properties -->
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<Label Grid.ColumnSpan="2"
-								Content="Quest Properties:" />
-						</Grid>
+						<StackPanel Orientation="Vertical">
+							<Label Content="Quest Properties:" FontSize="13"/>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Is Mission:"/>
+								<CheckBox VerticalAlignment="Center" IsChecked="{Binding SelectedQuest.Value.IsMission}"/>
+							</StackPanel>
+						</StackPanel>
 
 						<TabControl Grid.Column="0" Grid.Row="1" Margin="0,5,0,0">
 							<!-- Quest Goals -->
@@ -144,14 +143,19 @@
 											<ColumnDefinition Width="5" />
 											<ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions>
-										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto" />
-										</Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="5" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
 										<!-- Grid Content -->
-										<Button Grid.Column="0" Grid.Row="0" Content="Add" Click="AddQuestGoal_Click"/>
+                                        <Button Grid.Column="0" Grid.Row="0" Content="Move Up" x:Name="MoveQuestGoalUpButton" Command="{Binding Path=MoveQuestGoalUpCommand}"/>
+                                        <Button Grid.Column="2" Grid.Row="0" Content="Move Down" x:Name="MoveQuestGoalDownButton" Command="{Binding Path=MoveQuestGoalDownCommand}"/>
 
-										<Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveQuestGoal_Click"/>
+                                        <Button Grid.Column="0" Grid.Row="3" Content="Add" Click="AddQuestGoal_Click"/>
+
+										<Button Grid.Column="2" Grid.Row="3" Content="Remove" Click="RemoveQuestGoal_Click"/>
 									</Grid>
 
 									<!-- Quest Goal Content -->
@@ -159,7 +163,7 @@
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition MaxWidth="350" Width="*" />
+                                            <ColumnDefinition MaxWidth="600" Width="*" />
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
@@ -372,12 +376,16 @@
 										</Grid.ColumnDefinitions>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="Auto" />
+											<RowDefinition Height="5" />
+											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
 
 										<!-- Grid Content -->
-										<Button Grid.Column="0" Grid.Row="0" Content="Add" Click="AddQuestTask_Click"/>
+										<Button Grid.Column="0" Grid.Row="0" Content="Move Up" x:Name="MoveQuestTaskUpButton" Command="{Binding Path=MoveQuestTaskUpCommand}"/>
+										<Button Grid.Column="2" Grid.Row="0" Content="Move Down" x:Name="MoveQuestTaskDownButton" Command="{Binding Path=MoveQuestTaskDownCommand}"/>
+										<Button Grid.Column="0" Grid.Row="2" Content="Add" Click="AddQuestTask_Click"/>
 
-										<Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveQuestTask_Click"/>
+										<Button Grid.Column="2" Grid.Row="2" Content="Remove" Click="RemoveQuestTask_Click"/>
 									</Grid>
 
 									<!-- Quest Task Content -->
@@ -413,7 +421,7 @@
 
                                         <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
 											Text="{Binding Path=SelectedQuestTask.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" />
+											Width="150" Margin="5,5" HorizontalAlignment="Left" VerticalAlignment="Center" ValueChanged="txt_ValueChanged"/>
 
                                         <TextBox Name="txt_taskDesc" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Text="Description String" IsReadOnly="True"
                                                  TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Padding="3,3" Margin="10,5"/>

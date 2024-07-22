@@ -198,7 +198,6 @@ namespace LegendaryExplorerCore.Shaders
                         }
                     }
 
-
                     string destinationParameterTokenString = ReadDestinationParameterToken(inStream, shaderType);
                     writer?.WriteLine($"    dcl{suffix}{destinationParameterTokenString}");
                 }
@@ -455,7 +454,6 @@ namespace LegendaryExplorerCore.Shaders
         public static ShaderInfo GetShaderInfo(Stream shaderBytecodeStream) => DisassembleShader(shaderBytecodeStream);
 
         public static ShaderInfo GetShaderInfo(byte[] shaderByteCode) => GetShaderInfo(new MemoryStream(shaderByteCode));
-
 
         private const uint CTAB = 0x42415443;
         private static readonly string[] swizzleLookup = { "x", "y", "z", "w" };

@@ -21,8 +21,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         private readonly string Text;
         private int CurrentIndex;
         
-        private readonly Dictionary<int, ScriptToken> Comments;
-
+        private readonly List<(int, ScriptToken)> Comments = [];
 
         private Lexer(string code, MessageLog log = null)
         {
@@ -32,7 +31,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             Builder = new StringBuilder();
             uint lineGuess = BitOperations.RoundUpToPowerOf2((uint)code.Length / 100);
             Lines = new List<int>((int)Math.Min(lineGuess, 524_288));
-            Comments = new Dictionary<int, ScriptToken>();
         }
         
         public static TokenStream Lex(string code, MessageLog log = null)
@@ -58,7 +56,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             uint tokenGuess = BitOperations.RoundUpToPowerOf2((uint)Text.Length / 20);
             var tokens = new List<ScriptToken>((int)Math.Min(tokenGuess, 2_097_152));
 
-
             Lines.Add(CurrentIndex);
 
             while (CurrentIndex < Text.Length)
@@ -81,7 +78,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
                 if (token.Type == TokenType.SingleLineComment)
                 {
-                    Comments[Lines.Count] = token;
+                    Comments.Add((Lines.Count, token));
                 }
                 else
                 {
@@ -208,7 +205,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             if (result == null)
             {
                 int endPos = startPos != CurrentIndex ? CurrentIndex : CurrentIndex + 1;
-                Log.LogError($"Could not lex '{GetCurrentChar()}'", startPos, endPos);
+                Log.LogLexError($"Could not lex '{GetCurrentChar()}'", startPos, endPos);
                 Advance();
                 return new ScriptToken(TokenType.INVALID, GetCurrentChar().ToString(), startPos, endPos) { SyntaxType = EF.ERROR };
             }
@@ -276,8 +273,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                     }
                     else
                     {
-                        Log.LogError("Incomplete number! Expected digit after '.'", CurrentIndex);
-                        return null;
+                        Log.LogLexError("Incomplete number! Expected digit after '.'", CurrentIndex);
+                        return new ScriptToken(type, first.ToString(), startPos, CurrentIndex) { SyntaxType = EF.Number };
                     }
                 }
                 else
@@ -394,8 +391,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                             Builder.Append(peek);
                             continue;
                         default:
-                            Log.LogError(@$"Unrecognized escape sequence: '\{peek}'", CurrentIndex);
-                            return null;
+                            Log.LogLexError(@$"Unrecognized escape sequence: '\{peek}'", CurrentIndex);
+                            goto end;
                     }
                 }
 
@@ -406,25 +403,25 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                         continue;
                     case '\'':
                     {
-                        string value = Builder.ToString();
                         ++CurrentIndex;
-                        if (value is "")
+                        if (Builder.Length is 0)
                         {
-                            value = "None"; //empty name literals should be interpreted as 'None'
+                            Builder.Append("None"); //empty name literals should be interpreted as 'None'
                         }
-                        return new ScriptToken(TokenType.NameLiteral, value, startPos, CurrentIndex) { SyntaxType = EF.Name };
+                        goto end;
                     }
                     case '\n':
-                        Log.LogError("Name Literals can not contain line breaks!", startPos, CurrentIndex);
-                        return null;
+                        Log.LogLexError("Name Literals can not contain line breaks!", startPos, CurrentIndex);
+                        goto end;
                     default:
                         Builder.Append(peek);
                         continue;
                 }
             }
 
-            Log.LogError("Name Literal was not terminated properly!", startPos, CurrentIndex);
-            return null;
+            Log.LogLexError("Name Literal was not terminated properly!", startPos, CurrentIndex);
+        end:
+            return new ScriptToken(TokenType.NameLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.Name };
         }
 
         private ScriptToken MatchString()
@@ -455,8 +452,8 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                             Builder.Append('\t');
                             continue;
                         default:
-                            Log.LogError(@$"Unrecognized escape sequence: '\{peek}'", CurrentIndex);
-                            return null;
+                            Log.LogLexError(@$"Unrecognized escape sequence: '\{peek}'", CurrentIndex);
+                            goto end;
                     }
                 }
 
@@ -467,30 +464,31 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                         continue;
                     case '"':
                         ++CurrentIndex;
-                        return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.String };
+                        goto end;
                     case '\n':
-                        Log.LogError("String Literals can not contain line breaks!", startPos, CurrentIndex);
-                        return null;
+                        Log.LogLexError("String Literals can not contain line breaks!", startPos, CurrentIndex);
+                        goto end;
                     default:
                         Builder.Append(peek);
                         continue;
                 }
             }
             
-            Log.LogError("String Literal was not terminated properly!", startPos, CurrentIndex);
-            return null;
+            Log.LogLexError("String Literal was not terminated properly!", startPos, CurrentIndex);
+        end:
+            return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.String };
         }
 
         private ScriptToken MatchSingleLineComment()
         {
             int startPos = CurrentIndex;
-            CurrentIndex += 2;
-            while (CurrentIndex < Text.Length && Text[CurrentIndex] is not '\n')
+            int commentStart = CurrentIndex += 2;
+            while (CurrentIndex < Text.Length && Text[CurrentIndex] is not ('\n' or '\r'))
             {
                 ++CurrentIndex;
             }
             
-            return new ScriptToken(TokenType.SingleLineComment, null, startPos, CurrentIndex) { SyntaxType = EF.Comment };
+            return new ScriptToken(TokenType.SingleLineComment, Text.Substring(commentStart, CurrentIndex - commentStart), startPos, CurrentIndex) { SyntaxType = EF.Comment };
         }
         
         private ScriptToken MakeSymbolToken(TokenType type, string symbol)
@@ -499,7 +497,6 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         }
 
         #endregion
-
 
         //adapted from .NET bcl IndexOf
         private static unsafe int SkipSpaces(string str, int startIndex)

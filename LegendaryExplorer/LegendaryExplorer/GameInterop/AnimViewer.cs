@@ -24,7 +24,6 @@ namespace LegendaryExplorer.GameInterop
             {
                 try
                 {
-
                     Debug.WriteLine($"AnimViewer Loading: {animSourceFilePath} #{animSequenceUIndex}");
 
                     using IMEPackage animSourceFile = MEPackageHandler.OpenMEPackage(animSourceFilePath);
@@ -34,7 +33,6 @@ namespace LegendaryExplorer.GameInterop
                     var animInterpData = pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence.InterpData_0");
                     var animTrack = pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence.InterpData_0.InterpGroup_0.InterpTrackAnimControl_0");
                     var dynamicAnimSet = pcc.FindExport("TheWorld.PersistentLevel.Main_Sequence.KIS_DYN_Animset");
-
 
                     IEntry parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceAnimSeq.ParentFullPath, animSourceFile, pcc, new RelinkerOptionsPackage());
 
@@ -67,7 +65,6 @@ namespace LegendaryExplorer.GameInterop
                 {
                     MessageBox.Show($"Error loading {animSourceFilePath} #{animSequenceUIndex}");
                 }
-
             }
 
             string tempFilePath = Path.Combine(MEDirectories.GetCookedPath(pcc.Game), $"{saveAsName}.pcc");
@@ -87,17 +84,17 @@ namespace LegendaryExplorer.GameInterop
         /// <param name="canHotLoad"></param>
         /// <param name="shouldPad"></param>
         /// <param name="mapName">Name of the map file - without extension</param>
-        public static void OpenMapInGame(IMEPackage pcc, bool canHotLoad = false, bool shouldPad = true, string mapName = null)
+        public static void OpenMapInGame(MEGame game, bool canHotLoad = false, bool shouldPad = true, string mapName = null)
         {
-            var interopTarget = GameController.GetInteropTargetForGame(pcc.Game);
+            var interopTarget = GameController.GetInteropTargetForGame(game);
             var tempMapName = mapName ?? GameController.TempMapName;
-            string tempDir = MEDirectories.GetCookedPath(pcc.Game);
+            string tempDir = MEDirectories.GetCookedPath(game);
             string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.pcc");
 
-            //pcc.Save(tempFilePath);
+            //pcc.Save(tempFilePath); // This eventually needs reinstated!!
 
             // LE games don't need this
-            if (pcc.Game is MEGame.ME3 && shouldPad)
+            if (game is MEGame.ME3 && shouldPad)
             {
                 if (!InteropHelper.TryPadFile(tempFilePath))
                 {
@@ -106,9 +103,9 @@ namespace LegendaryExplorer.GameInterop
                 }
             }
 
-            if (interopTarget.TryGetProcess(out var gameProcess) && (canHotLoad || pcc.Game.IsLEGame()))
+            if (interopTarget.TryGetProcess(out var gameProcess) && (canHotLoad || game.IsLEGame()))
             {
-                if (pcc.Game.IsLEGame())
+                if (game.IsLEGame())
                 {
                     // LE
                     interopTarget.ModernExecuteConsoleCommand($"at {tempMapName}");
@@ -116,7 +113,7 @@ namespace LegendaryExplorer.GameInterop
                 else
                 {
                     // ME3 
-                    interopTarget.ExecuteConsoleCommands($"at {tempMapName}");
+                    interopTarget.ME3ExecuteConsoleCommands($"at {tempMapName}");
                 }
                 return;
             }
@@ -126,17 +123,17 @@ namespace LegendaryExplorer.GameInterop
             int resY = 800;
             int posX = (int)(SystemParameters.PrimaryScreenWidth - (resX + 100));
             int posY = (int)(SystemParameters.PrimaryScreenHeight - resX) / 2;
-            TOCCreator.CreateTOCForGame(pcc.Game);
-            var args = $"{tempMapName} -NOHOMEDIR -nosplash -nostartupmovies -Windowed ResX={resX} ResY={resY} WindowPosX={posX} WindowPosY={posY}";
-            if (pcc.Game is MEGame.LE1 or MEGame.LE2)
+            TOCCreator.CreateTOCForGame(game);
+            var args = $"{tempMapName} -nosplash -nostartupmovies -Windowed ResX={resX} ResY={resY} WindowPosX={posX} WindowPosY={posY}";
+            if (game is MEGame.LE1 or MEGame.LE2)
             {
                 args += " -NOHOMEDIR";
             }
 
-            ProcessStartInfo psi = new ProcessStartInfo(MEDirectories.GetExecutablePath(pcc.Game))
+            ProcessStartInfo psi = new ProcessStartInfo(MEDirectories.GetExecutablePath(game))
             {
                 Arguments = args,
-                WorkingDirectory = MEDirectories.GetExecutableFolderPath(pcc.Game)
+                WorkingDirectory = MEDirectories.GetExecutableFolderPath(game)
             };
             Process.Start(psi);
         }

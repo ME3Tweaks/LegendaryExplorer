@@ -70,6 +70,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.DefaultGamePath,
                 MEGame.LE2 => LE2Directory.DefaultGamePath,
                 MEGame.LE3 => LE3Directory.DefaultGamePath,
+                MEGame.UDK => UDKDirectory.DefaultGamePath,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -91,6 +92,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE1 => LE1Directory.GetBioGamePath(gamePathRoot),
                 MEGame.LE2 => LE2Directory.GetBioGamePath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetBioGamePath(gamePathRoot),
+                MEGame.UDK => UDKDirectory.GetUDKGamePath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -135,6 +137,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.GetExecutablePath(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetExecutablePath(gamePathRoot),
                 MEGame.LELauncher => LEDirectory.GetLauncherExecutable(gamePathRoot),
+                MEGame.UDK => UDKDirectory.GetExecutablePath(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -157,6 +160,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.GetExecutableDirectory(gamePathRoot),
                 MEGame.LE3 => LE3Directory.GetExecutableDirectory(gamePathRoot),
                 MEGame.LELauncher => LEDirectory.GetExecutableDirectory(gamePathRoot),
+                MEGame.UDK => UDKDirectory.GetExecutableDirectory(gamePathRoot),
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -220,6 +224,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 MEGame.LE2 => LE2Directory.ExecutableNames,
                 MEGame.LE3 => LE3Directory.ExecutableNames,
                 MEGame.LELauncher => LEDirectory.ExecutableNames,
+                MEGame.UDK => UDKDirectory.ExecutableNames,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
             };
         }
@@ -402,6 +407,41 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
+        /// Gets a short description of where the file is located (Basegame, DLC name, or Not in installation). Does not specify game
+        /// </summary>
+        public static bool GetLocationDescriptor(IMEPackage pcc, out string descriptor, string gameRootOverride = null) => GetLocationDescriptor(pcc.FilePath, pcc.Game, out descriptor, gameRootOverride);
+
+        /// <summary>
+        /// Gets a short description of where the file is located (Basegame, DLC name, or Not in installation). Does not specify game
+        /// </summary>
+        public static bool GetLocationDescriptor(string filePath, MEGame game, out string descriptor, string gameRootOverride = null)
+        {
+            descriptor = "Not in installation";
+            if (filePath is not null && game.IsMEGame() && (GetDefaultGamePath(game) is not null || gameRootOverride is not null))
+            {
+                filePath = Path.GetFullPath(filePath);
+                if (filePath.StartsWith(GetCookedPath(game, gameRootOverride)))
+                {
+                    descriptor = "Basegame";
+                    return true;
+                }
+                string dlcPath = GetDLCPath(game, gameRootOverride);
+                if (filePath.StartsWith(dlcPath))
+                {
+                    string relativePath = Path.GetRelativePath(dlcPath, filePath);
+                    int dirSepIndex = relativePath.AsSpan().IndexOfAny(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    if (dirSepIndex > 0)
+                    {
+                        descriptor = relativePath[..dirSepIndex];
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Refreshes the default game path for all games
         /// </summary>
         /// <param name="forceUseRegistry">If true, all paths will attempt to be loaded from registry. If false, existing path settings may be used.</param>
@@ -413,6 +453,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             LE1Directory.ReloadDefaultGamePath(forceUseRegistry);
             LE2Directory.ReloadDefaultGamePath(forceUseRegistry);
             LE3Directory.ReloadDefaultGamePath(forceUseRegistry);
+            UDKDirectory.ReloadDefaultGamePath();
         }
 
         /// <summary>
@@ -489,19 +530,38 @@ namespace LegendaryExplorerCore.GameFilesystem
                 switch (game)
                 {
                     case MEGame.ME1:
-                        predicate = s => s.ToLowerInvariant().EndsWith(".upk", true, null) || s.ToLowerInvariant().EndsWith(".u", true, null) || s.ToLowerInvariant().EndsWith(".sfm", true, null);
+                        predicate = s => s.EndsWith(".upk", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".u", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".sfm", StringComparison.OrdinalIgnoreCase);
                         break;
                     case MEGame.ME2:
                     case MEGame.ME3:
                     case MEGame.LE1:
                     case MEGame.LE2:
                     case MEGame.LE3:
-                        predicate = s => s.ToLowerInvariant().EndsWith(".pcc", true, null) || s.ToLowerInvariant().EndsWith(".tfc", true, null);
+                        predicate = s => s.EndsWith(".pcc", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".tfc", StringComparison.OrdinalIgnoreCase);
                         break;
+                    case MEGame.UDK:
+                        predicate = s => s.EndsWith(".upk", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".u", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".udk", StringComparison.OrdinalIgnoreCase);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(game), game, null);
                 }
             }
 
             return files.Where(t => predicate(t)).ToList();
+        }
+
+        public static string GetProfileSave(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME1 => ME1Directory.LocalProfilePath,
+                MEGame.ME2 => ME2Directory.LocalProfilePath,
+                MEGame.ME3 => ME3Directory.LocalProfilePath,
+                MEGame.LE1 => LE1Directory.LocalProfilePath,
+                MEGame.LE2 => LE2Directory.LocalProfilePath,
+                MEGame.LE3 => LE3Directory.LocalProfilePath,
+                _ => throw new ArgumentOutOfRangeException(nameof(game), game, null),
+            };
         }
     }
 }

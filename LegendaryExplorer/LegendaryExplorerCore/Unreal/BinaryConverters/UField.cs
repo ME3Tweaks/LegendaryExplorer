@@ -6,18 +6,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public abstract class UField : ObjectBinary
     {
-        public UIndex SuperClass;
+        public UIndex SuperClass; //actually a member of UStruct in UDK
         public UIndex Next;
         protected override void Serialize(SerializingContainer2 sc)
         {
-            sc.Serialize(ref SuperClass);
+            if (sc.Game is not MEGame.UDK)
+            {
+                sc.Serialize(ref SuperClass);
+            }
             sc.Serialize(ref Next);
         }
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            Unsafe.AsRef(action).Invoke(ref SuperClass, nameof(SuperClass));
-            Unsafe.AsRef(action).Invoke(ref Next, nameof(Next));
+            if (game is not MEGame.UDK)
+            {
+                Unsafe.AsRef(in action).Invoke(ref SuperClass, nameof(SuperClass));
+            }
+            Unsafe.AsRef(in action).Invoke(ref Next, nameof(Next));
         }
     }
 }

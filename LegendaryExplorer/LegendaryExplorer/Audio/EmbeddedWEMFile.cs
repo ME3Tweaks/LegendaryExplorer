@@ -25,7 +25,6 @@ namespace LegendaryExplorer.Audio
             this.WemData = WemData;
             this.DisplayString = DisplayString;
 
-
             int size = EndianReader.ToInt32(WemData, 4, export.FileRef.Endian);
             int subchunk2size = EndianReader.ToInt32(WemData, 0x5A, export.FileRef.Endian);
 
@@ -109,7 +108,6 @@ namespace LegendaryExplorer.Audio
                 // Position 4
 
                 // This info seems wrong. Needs to be updated. Probably for 5.1.
-
 
                 er.Seek(0xC, SeekOrigin.Current); // Post 'fmt ', get fmt size
                 var fmtSize = er.ReadInt32();

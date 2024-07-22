@@ -45,7 +45,8 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                 Filter = GameFileFilters.LESaveFileFilter,
                 CheckFileExists = true,
                 Multiselect = false,
-                Title = $"Select {Game} file containing the FaceFXAnimSet you want to edit"
+                Title = $"Select {Game} file containing the FaceFXAnimSet you want to edit",
+                CustomPlaces = AppDirectories.GameCustomPlaces
             };
             if (dlg.ShowDialog() == true)
             {
@@ -102,7 +103,6 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
                             {
                                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, soldierFile.FindExport($"BioChar_Player.Archetypes.UIWorld.{(isFemale ? "Fem" : "M")}aleShepard_UIWorld"),
                                     LiveFile, levelExport, true, new RelinkerOptionsPackage(), out ent);
-
                             }
                         }
                         ExportEntry actor = (ExportEntry)ent;
@@ -188,7 +188,6 @@ namespace LegendaryExplorer.Tools.FaceFXEditor
             KismetHelper.CreateOutputLink(playEvent, "Out", interp);
 
             var interpGroup = MatineeHelper.AddNewGroupToInterpData(interpData, ActorTag);
-
 
             LiveFile.Save();
 

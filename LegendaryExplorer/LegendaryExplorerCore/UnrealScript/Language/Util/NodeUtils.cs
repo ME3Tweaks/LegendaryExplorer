@@ -2,6 +2,7 @@
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Util
 {
@@ -48,7 +49,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
                     return (Class)clsType.ClassLimiter;
             }
 
-            var outer = node.Outer;
+            var outer = node?.Outer;
             while (outer?.Outer != null && outer is not Class)
                 outer = outer.Outer;
             return outer as Class;
@@ -61,7 +62,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
                 outer = outer.Outer;
             return outer as ObjectType;
         }
-
 
         public static bool TypeEqual(VariableType a, VariableType b)
         {
@@ -88,6 +88,29 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Util
                 || a is null && b is DelegateType || a is DelegateType && b is null 
                 || a is Enumeration && b == SymbolTable.ByteType || a == SymbolTable.ByteType && b is Enumeration
                 || (a?.PropertyType is EPropertyType.Vector or EPropertyType.Rotator) && a.PropertyType == b.PropertyType;
+        }
+
+        public static Function LookupFunction(this Class @class, string funcName, bool lookInParents = true)
+        {
+            int firstCharLower = funcName[0] | 0x20;
+            while (true)
+            {
+                foreach (Function func in @class.Functions.AsSpan())
+                {
+                    string name = func.Name;
+                    //will almost always be false, so we want to fail fast 
+                    if ((name[0] | 0x20) == firstCharLower && string.Equals(name, funcName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return func;
+                    }
+                }
+                if (lookInParents && @class.Parent is Class parentClass)
+                {
+                    @class = parentClass;
+                    continue;
+                }
+                return null;
+            }
         }
     }
 }

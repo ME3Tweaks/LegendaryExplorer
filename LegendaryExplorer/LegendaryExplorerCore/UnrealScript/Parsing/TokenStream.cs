@@ -14,7 +14,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private readonly ScriptToken EndToken;
         private int CurrentIndex;
         public LineLookup LineLookup { get; }
-        public Dictionary<int, ScriptToken> Comments;
+        public List<(int, ScriptToken)> Comments;
         public readonly List<(ASTNode node, int offset, int length)> DefinitionLinks;
 
         public ReadOnlySpan<ScriptToken> TokensSpan => Data.AsSpan();
@@ -30,16 +30,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public TokenStream(List<ScriptToken> tokens, LineLookup lineLookup) : this(tokens)
         {
-
             LineLookup = lineLookup;
 
-            DefinitionLinks = new();
+            DefinitionLinks = [];
         }
 
         public TokenStream(List<ScriptToken> tokens, TokenStream parent) : this(tokens)
         {
             LineLookup = parent.LineLookup;
             DefinitionLinks = parent.DefinitionLinks;
+            Comments = parent.Comments;
         }
 
         public ScriptToken ConsumeToken(TokenType type)
@@ -60,7 +60,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public ScriptToken CurrentItem => CurrentIndex >= Data.Count ? EndToken : Data[CurrentIndex];
 
-
         public List<ScriptToken> GetTokensInRange(int start, int end)
         {
             var tokens = new List<ScriptToken>();
@@ -77,6 +76,23 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
             return tokens;
+        }
+
+        public int GetIndexOfTokenAtOffset(int offset)
+        {
+            return TokensSpan.BinarySearch(new TokenOffsetComparer(offset));
+        }
+
+        private readonly struct TokenOffsetComparer(int offset) : IComparable<ScriptToken>
+        {
+            public int CompareTo(ScriptToken other)
+            {
+                if (offset < other.StartPos)
+                {
+                    return -1;
+                }
+                return offset >= other.EndPos ? 1 : 0;
+            }
         }
 
         public List<ScriptToken> GetRestOfScope()

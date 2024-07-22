@@ -396,9 +396,6 @@ namespace Xceed.Wpf.Toolkit
       }
     }
 
-
-
-
     #endregion //Base Class Overrides
 
     #region Event Handlers
@@ -559,8 +556,8 @@ namespace Xceed.Wpf.Toolkit
 
       _currentColorPosition = p;
 
-      _colorShadeSelectorTransform.X = ( p.X * _colorShadingCanvas.Width ) - 5;
-      _colorShadeSelectorTransform.Y = ( p.Y * _colorShadingCanvas.Height ) - 5;
+      _colorShadeSelectorTransform.X = ( p.X * _colorShadingCanvas.ActualWidth ) - 5;
+      _colorShadeSelectorTransform.Y = ( p.Y * _colorShadingCanvas.ActualHeight ) - 5;
     }
 
     private void CalculateColor( Point p )

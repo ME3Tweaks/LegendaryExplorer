@@ -43,6 +43,25 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     PopByte();
                     ushort jumpLoc = ReadUInt16();
+                    if (PeekByte is (byte)OpCodes.StringConst)
+                    {
+                        int savedPos = Position;
+                        var comment = new CommentStatement();
+                        do
+                        {
+                            PopByte();
+                            comment.CommentLines.Add(ReadNullTerminatedString());
+                        } while (PeekByte is (byte)OpCodes.StringConst);
+
+                        if (Position == jumpLoc)
+                        {
+                            StatementLocations.Add(StartPositions.Pop(), comment);
+                            return comment;
+                        }
+                        //if the jump is not to the end of the strings, this is not a well-formed comment
+                        //reset position and read as normal
+                        Position = savedPos;
+                    }
                     if (ForEachScopes.Count > 0 && jumpLoc == ForEachScopes.Peek())
                     {
                         var brk = new BreakStatement();
@@ -329,7 +348,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         private Statement DecompileCase()
         {
             PopByte();
-            var offs = ReadUInt16(); // MemOff
+            ushort offs = ReadUInt16(); // MemOff
             Statement statement;
 
             if (offs == (ushort)0xFFFF)
@@ -342,7 +361,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 if (expr == null)
                     return null; //ERROR ?
 
-                statement = new CaseStatement(expr, -1, -1);
+                statement = new CaseStatement(expr, -1, -1) { LocationOfNextCase = offs};
             }
 
             StatementLocations.Add(StartPositions.Pop(), statement);

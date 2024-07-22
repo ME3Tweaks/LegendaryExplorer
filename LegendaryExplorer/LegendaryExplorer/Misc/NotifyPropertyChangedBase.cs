@@ -72,7 +72,6 @@ namespace LegendaryExplorer.Misc
             return true;
         }
 
-
         //Disable Automation of this window. The only thing this "feature" ever does is cause memory leaks.
         protected override AutomationPeer OnCreateAutomationPeer() => new FakeWindowPeer(this);
         private class FakeWindowPeer : WindowAutomationPeer
@@ -115,7 +114,6 @@ namespace LegendaryExplorer.Misc
             OnPropertyChanged(propertyName);
             return true;
         }
-
 
         //Disable Automation of this control. The only thing this "feature" ever does is cause memory leaks.
         protected override AutomationPeer OnCreateAutomationPeer() => new FakeControlPeer(this);

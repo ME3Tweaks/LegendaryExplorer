@@ -60,7 +60,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
-            Unsafe.AsRef(action).Invoke(ref Owner, nameof(Owner));
+            Unsafe.AsRef(in action).Invoke(ref Owner, nameof(Owner));
         }
     }
     public class Poly
@@ -151,6 +151,5 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 poly.RulesetVariation = "None";
             }
         }
-
     }
 }

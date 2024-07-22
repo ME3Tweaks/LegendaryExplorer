@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
@@ -11,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public DoUntilLoop(Expression cond, CodeBody body,
             int start = -1, int end = -1)
-            : base(ASTNodeType.WhileLoop, start, end)
+            : base(ASTNodeType.DoUntilLoop, start, end)
         {
             Condition = cond;
             Body = body;

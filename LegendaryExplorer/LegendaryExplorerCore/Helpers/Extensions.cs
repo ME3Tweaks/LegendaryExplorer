@@ -310,7 +310,6 @@ namespace LegendaryExplorerCore.Helpers
             }
         }
 
-
         //IEnumerable containing everything before item
         public static IEnumerable<T> Before<T>(this IEnumerable<T> src, T item)
         {
@@ -395,6 +394,12 @@ namespace LegendaryExplorerCore.Helpers
                 return string.Empty;
             return char.ToUpper(str[0]) + str.Substring(1);
         }
+
+        /// <summary>
+        /// Returns if the given string ends with a package file extension.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static bool RepresentsPackageFilePath(this string path)
         {
             string extension = Path.GetExtension(path);
@@ -428,7 +433,7 @@ namespace LegendaryExplorerCore.Helpers
                 return n;
             }
 
-            var v1 = new int[m + 1];
+            int[] v1 = new int[m + 1];
             for (int i = 0; i <= m; i++)
             {
                 v1[i] = i;
@@ -454,7 +459,6 @@ namespace LegendaryExplorerCore.Helpers
                     }
                     cost += v0[j - 1];
                     v1[j] = Math.Min(above, Math.Min(left, cost));
-
                 }
             }
 
@@ -477,7 +481,7 @@ namespace LegendaryExplorerCore.Helpers
         public static Guid ToGuid(this string src) //Do not edit this function!
         {
             byte[] stringbytes = Encoding.UTF8.GetBytes(src);
-            byte[] hashedBytes = new System.Security.Cryptography.SHA1CryptoServiceProvider().ComputeHash(stringbytes);
+            byte[] hashedBytes = System.Security.Cryptography.SHA1.Create().ComputeHash(stringbytes);
             Array.Resize(ref hashedBytes, 16);
             return new Guid(hashedBytes);
         }
@@ -499,7 +503,6 @@ namespace LegendaryExplorerCore.Helpers
             return string.Equals(value, Encoding.Latin1.GetString(Encoding.Latin1.GetBytes(value)));
         }
     }
-
 
     public static class IOExtensions
     {
@@ -845,7 +848,6 @@ namespace LegendaryExplorerCore.Helpers
 
             var sy = Math.Sin(yaw);
             var cy = Math.Cos(yaw);
-
 
             var syAxis = new Vector3((float)-sy, (float)cy, 0f);
 

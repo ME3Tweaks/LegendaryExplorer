@@ -13,7 +13,8 @@
         Title="Legendary Explorer" Height="670" Width="875" Opacity="0" SizeToContent="Width" 
         WindowStyle="None" Foreground="{x:Null}" AllowsTransparency="True"
         Background="#F015181D"  WindowStartupLocation="CenterScreen"  ResizeMode="CanMinimize"
-        BorderBrush="#15181D" BorderThickness="2">
+        BorderBrush="#15181D" BorderThickness="2"
+        Closing="MainWindow_Closing">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="SystemCommand_CanExecute" Executed="CloseCommand_Executed" />
         <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="SystemCommand_CanExecute" Executed="MinimizeCommand_Executed" />

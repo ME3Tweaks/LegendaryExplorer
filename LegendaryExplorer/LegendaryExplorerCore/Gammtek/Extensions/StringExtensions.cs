@@ -15,6 +15,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             if (game == MEGame.LE1) return 4;
             if (game == MEGame.LE2) return 5;
             if (game == MEGame.LE3) return 6;
+            if (game == MEGame.LELauncher) return 7; // ME3Tweaks Mod Manager uses this to denote LELauncher game
             return 0;
         }
 
@@ -218,7 +219,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
             }
         }
 
-
         /// <summary>
         /// Wraps a sting to a max length
         /// </summary>
@@ -239,7 +239,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
         /// <returns>List of Strings</returns>
         public static List<String> WrapLines(this string text, int maxLength)
         {
-
             // Return empty list of strings if the text was empty
             if (text.Length == 0) return new List<string>();
 
@@ -249,7 +248,6 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
             foreach (var currentWord in words)
             {
-
                 if ((currentLine.Length > maxLength) || ((currentLine.Length + currentWord.Length) > maxLength))
                 {
                     lines.Add(currentLine);
@@ -260,14 +258,21 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
                     currentLine += " " + currentWord;
                 else
                     currentLine += currentWord;
-
             }
 
             if (currentLine.Length > 0)
                 lines.Add(currentLine);
 
-
             return lines;
+        }
+
+        public static int CountLeadingWhitespace(this string text)
+        {
+            int i = 0;
+            for (; i < text.Length && char.IsWhiteSpace(text[i]); i++)
+            {
+            }
+            return i;
         }
     }
 }

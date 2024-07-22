@@ -100,6 +100,17 @@ namespace LegendaryExplorerCore.Packages
             return localizationName;
         }
 
+        public static string SetUnrealLocalization(this string str, MEGame game, MELocalization loc)
+        {
+            var ext = Path.GetExtension(str);
+            var fileNoExtension = Path.GetFileNameWithoutExtension(str).StripUnrealLocalization();
+            var preFilename = str.Substring(0, str.LastIndexOf(fileNoExtension));
+
+            if (loc == MELocalization.None)
+                return $"{preFilename}{fileNoExtension}{ext}";
+
+            return $"{preFilename}{fileNoExtension}_{loc.ToLocaleString(game)}{ext}";
+        }
 
         /// <summary>
         /// Attempts to determine the localization of the given string. Localizations end with either LOC_[LANG] or just _[LANG].
@@ -139,6 +150,7 @@ namespace LegendaryExplorerCore.Packages
                     return MELocalization.DEU;
                 case "ES":
                 case "ESN":
+                case "LOC_ES":
                 case "LOC_ESN":
                     return MELocalization.ESN;
                 case "FR":
@@ -172,6 +184,7 @@ namespace LegendaryExplorerCore.Packages
                 case "RUS":
                 case "LOC_RUS":
                 case "LOC_RA":
+                case "LOC_RU":
                     return MELocalization.RUS;
                 default:
                     return MELocalization.None;

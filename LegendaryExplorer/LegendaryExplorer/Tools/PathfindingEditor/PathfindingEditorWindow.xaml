@@ -102,6 +102,9 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Open other generation version of file (OT &lt;-&gt; LE)" ToolTip="Opens the opposite generation's version of this file, if it exists." Command="{Binding OpenOtherVersionCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <MenuItem Header="Add export to level" Command="{Binding AddExportToLevelCommand}"
+                              ToolTip="Add an export to this file's level" />
                     <MenuItem Header="Add export to level" Command="{Binding AddExportToLevelCommand}"
                               ToolTip="Add an export to this file's level" />
                     <MenuItem Header="Find node via Tag" Command="{Binding FocusFindCommand}" InputGestureText="CTRL+F"
@@ -207,6 +210,7 @@
                     <MenuItem Header="Show Experimental Level Tools" IsCheckable="True"
                               IsChecked="{Binding ShowArtTools}" />
                     <MenuItem Header="Remove all spotlights from level" Command="{Binding RemoveAllSpotlightsCommand}" />
+                    <MenuItem Header="Add all PathNodes to BioSquadCombat" Command="{Binding AddAllPathnodesToBioSquadCombatCommand}"  ToolTip="Adds all the PathNodes in the package to the selected BioSquadCombat's AssignedPathNodes array."/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

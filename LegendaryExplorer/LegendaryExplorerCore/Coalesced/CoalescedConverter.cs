@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +12,7 @@ using LegendaryExplorerCore.Coalesced.Xml;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Coalesced
 {
@@ -25,7 +27,7 @@ namespace LegendaryExplorerCore.Coalesced
         public static readonly int CoalescedMagicNumber = 1718448749;
 
         /// <summary>
-        /// The list of filenames supported by this compiler
+        /// The list of ini filenames supported by this compiler
         /// </summary>
         public static readonly SortedSet<string> ProperNames =
             new SortedSet<string>
@@ -43,20 +45,27 @@ namespace LegendaryExplorerCore.Coalesced
                 "BioUI",
                 "BioQA",
                 "BioWeapon",
-                "Core",
-                "Descriptions",
-                "EditorTips",
-                "Engine",
-                "GFxUI",
-                "IpDrv",
-                "Launch",
-                "OnlineSubsystemGamespy",
-                "Startup",
-                "Subtitles",
-                "UnrealEd",
-                "WinDrv",
-                "XWindow"
             };
+
+        /// <summary>
+        /// These files go in the Localizations folder and have a localized suffix. They aren't used except for some error handling messages
+        /// </summary>
+        public static readonly SortedSet<string> LocalizedFiles = new SortedSet<string>
+        {
+            "Core",
+            "Descriptions",
+            "EditorTips",
+            "Engine",
+            "GFxUI",
+            "IpDrv",
+            "Launch",
+            "OnlineSubsystemGamespy",
+            "Startup",
+            "Subtitles",
+            "UnrealEd",
+            "WinDrv",
+            "XWindow"
+        };
 
         public static readonly Dictionary<string, string> SpecialCharacters =
             new Dictionary<string, string>
@@ -76,10 +85,8 @@ namespace LegendaryExplorerCore.Coalesced
             var fileMapping = new CaseInsensitiveDictionary<string>();
             var coal = new CoalescedFileXml();
             coal.Deserialize(inputStream);
-
             XDocument xDoc;
             XElement rootElement;
-
 
             foreach (var file in coal.Files)
             {
@@ -245,7 +252,6 @@ namespace LegendaryExplorerCore.Coalesced
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         /// <summary>
@@ -647,7 +653,7 @@ namespace LegendaryExplorerCore.Coalesced
         /// <param name="inputStream">The input stream to read from</param>
         /// <param name="name">The name of the coalesced file - this is written to the manifest file and will be the name the file reserializes to (in tools such as M3)</param>
         /// <returns></returns>
-        public static Dictionary<string, DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
+        public static CaseInsensitiveDictionary<DuplicatingIni> DecompileLE1LE2ToMemory(Stream inputStream, string name)
         {
             return LECoalescedConverter.UnpackToMemory(inputStream, name).Files;
         }
@@ -656,15 +662,80 @@ namespace LegendaryExplorerCore.Coalesced
         /// Compiles a LE1/LE2 Coalesced file from a memory map.
         /// </summary>
         /// <param name="iniFileMap">Mapping of filenames to the ini object that represents the file contents.</param>
+        /// <param name="loc">Localization of this config file. This is important as it enables debug logger appErrorF messages.</param>
         /// <returns>Memorystream of the compiled Coalesced file</returns>
-        public static MemoryStream CompileLE1LE2FromMemory(Dictionary<string, DuplicatingIni> iniFileMap)
+        public static MemoryStream CompileLE1LE2FromMemory(Dictionary<string, DuplicatingIni> iniFileMap, MELocalization loc)
         {
             LECoalescedBundle cb = new LECoalescedBundle("");
             cb.Files.AddRange(iniFileMap);
             MemoryStream ms = new MemoryStream();
-            cb.WriteToStream(ms);
+            cb.WriteToStream(ms, loc);
             ms.Position = 0;
             return ms;
+        }
+
+        /// <summary>
+        /// Decompiles the coalesced file (specified by the stream) to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileLE1LE2ToAssets(Stream coalescedData, string name, bool stripExtensions = false)
+        {
+            var decompiled = DecompileLE1LE2ToMemory(coalescedData, name);
+            var assets = new CaseInsensitiveDictionary<CoalesceAsset>();
+
+            foreach (var decomp in decompiled)
+            {
+                if (stripExtensions)
+                {
+                    assets[Path.GetFileNameWithoutExtension(decomp.Key)] = ConfigFileProxy.ParseIni(decomp.Value.ToString()); // Technically this is extra work as we parsed from data -> DuplicatingIni -> string data -> Coalesced asset. This may be able to be improved by directly loading from data, but that would require a lot of API changes
+                }
+                else
+                {
+                    assets[decomp.Key] = ConfigFileProxy.ParseIni(decomp.Value.ToString()); // Technically this is extra work as we parsed from data -> DuplicatingIni -> string data -> Coalesced asset. This may be able to be improved by directly loading from data, but that would require a lot of API changes
+                }
+            }
+
+            return assets;
+        }
+
+        /// <summary>
+        /// Decompiles the ME3/LE3 coalesced file to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileGame3ToAssets(string filePath, bool stripExtensions = false)
+        {
+            using var f = File.OpenRead(filePath);
+            return DecompileGame3ToAssets(f, Path.GetFileName(filePath), stripExtensions: stripExtensions);
+        }
+
+        /// <summary>
+        /// Decompiles the ME3/LE3 coalesced file (specified by the stream) to CoalescedAsset objects
+        /// </summary>
+        /// <param name="coalescedData">The data of the Coalesced</param>
+        /// <param name="name">The name of the coalesced file - this is written to the manifest file data</param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<CoalesceAsset> DecompileGame3ToAssets(Stream coalescedData, string name, bool stripExtensions = false)
+        {
+            var decompiled = DecompileGame3ToMemory(coalescedData);
+            var assets = new CaseInsensitiveDictionary<CoalesceAsset>();
+
+            foreach (var decomp in decompiled)
+            {
+                if (stripExtensions)
+                {
+                    assets[Path.GetFileNameWithoutExtension(decomp.Key)] = XmlCoalesceAsset.LoadFromMemory(decomp.Value);
+                }
+                else
+                {
+                    assets[decomp.Key] = XmlCoalesceAsset.LoadFromMemory(decomp.Value);
+                }
+            }
+
+            return assets;
         }
     }
 }

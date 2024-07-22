@@ -29,14 +29,14 @@
                                 <TextBlock Text="Requirements:" Margin="0,5,0,0" />
                                 <StackPanel>
                                     <controls:Requirement x:Name="me3InstalledReq"
-                                                       FullfilledText="Mass Effect 3 is installed" Margin="0,5,0,5"
-                                                       UnFullfilledText="Can't find Mass Effect 3 installation!"
-                                                       ButtonText="Set ME3 path"
+                                                       FullfilledText="Game is installed" Margin="0,5,0,5"
+                                                       UnFullfilledText="Unable to find game installation!'}"
+                                                       ButtonText="Set game path"
                                                        Command="{Binding ME3InstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
                                     <controls:Requirement x:Name="asiLoaderInstalledReq"
                                                        FullfilledText="Binkw32 asi loader is installed"
                                                        Margin="0,5,0,5"
-                                                       UnFullfilledText="Binkw32 asi loader is not installed!"
+                                                       UnFullfilledText="Bink2w64 asi loader is not installed!"
                                                        ButtonText="Get dlls"
                                                        Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
                                     <controls:Requirement x:Name="interopASIInstalledReq"
@@ -46,9 +46,9 @@
                                                           ButtonText="Get Interop ASI"
                                                           Command="{Binding InteropASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
                                     <controls:Requirement x:Name="me3ClosedReq"
-                                                       FullfilledText="Mass Effect 3 is not running" Margin="0,5,0,5"
-                                                       UnFullfilledText="Mass Effect 3 must be quit!"
-                                                       ButtonText="Kill ME3 process"
+                                                       FullfilledText="Game is not running" Margin="0,5,0,5"
+                                                       UnFullfilledText="Game must be quit!"
+                                                       ButtonText="Kill game process"
                                                        Command="{Binding GameClosedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
                                     <controls:Requirement x:Name="dbLoadedReq"
                                                        FullfilledText="Animation data is loaded" Margin="0,5,0,5"
@@ -56,7 +56,7 @@
                                                        ButtonText="Load Database"
                                                        Command="{Binding DatabaseLoadedRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
                                 </StackPanel>
-                                <Button Name="startME3Button" Content="Start Mass Effect 3 in Animation Viewer Mode"
+                                <Button Name="startME3Button" Content="Start game in Animation Viewer Mode"
                                         Margin="20,10,20,0"
                                         Command="{Binding StartGameCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AnimationViewerWindow2}}}" />
                             </StackPanel>

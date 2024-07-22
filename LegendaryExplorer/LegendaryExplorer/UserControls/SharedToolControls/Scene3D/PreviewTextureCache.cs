@@ -86,7 +86,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-
         /// <summary>
         /// Disposes all the textures and resource views.
         /// </summary>

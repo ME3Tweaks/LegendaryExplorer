@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-
     public class UTexture : ObjectBinary
     {
         public byte[] Thumbnail; // Not ME3 or LE3
@@ -99,6 +95,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ((int)StorageType & (int)StorageFlags.compressedLZMA) != 0 ||
                 ((int)StorageType & (int)StorageFlags.compressedZlib) != 0 ||
                 ((int)StorageType & (int)StorageFlags.compressedOodle) != 0;
+
+            public Texture2DMipMap() { }
+
+            /// <summary>
+            /// Creates an uncompressed mipmap object from the given data and size.
+            /// </summary>
+            /// <param name="src">Mipmap data, uncompressed.</param>
+            /// <param name="w">The width of the mipmap</param>
+            /// <param name="h">The height of the mipmap</param>
+            public Texture2DMipMap(byte[] src, int w, int h)
+            {
+                StorageType = StorageTypes.pccUnc;
+                UncompressedSize = CompressedSize = src.Length;
+                Mip = src;
+                SizeX = w;
+                SizeY = h;
+            }
         }
     }
 

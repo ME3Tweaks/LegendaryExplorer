@@ -68,7 +68,6 @@ namespace LegendaryExplorer.Tools.MountEditor
             set => SetProperty(ref _currentMountFileText, value);
         }
 
-
         public MountEditorWindow() : base("Mount Editor", true)
         {
             CurrentMountFileText = "No mount file loaded. Mouse over fields for descriptions of their values.";
@@ -98,12 +97,11 @@ namespace LegendaryExplorer.Tools.MountEditor
                 Title = "Select Mount.dlc file",
             };
 
-            m.Filters.Add(new CommonFileDialogFilter("Mount files", ".dlc"));
+            m.Filters.Add(new CommonFileDialogFilter("Mount files", "*.dlc"));
             if (m.ShowDialog(this) == CommonFileDialogResult.Ok)
             {
                 LoadFile(m.FileName);
             }
-
         }
 
         public void LoadFile(string fileName)
@@ -168,7 +166,7 @@ namespace LegendaryExplorer.Tools.MountEditor
                     DefaultFileName = "mount.dlc",
                     InitialDirectory = (!string.IsNullOrEmpty(CurrentMountFileText) && File.Exists(CurrentMountFileText) ? Path.GetDirectoryName(CurrentMountFileText) : null)
                 };
-                m.Filters.Add(new CommonFileDialogFilter("Mount files", ".dlc"));
+                m.Filters.Add(new CommonFileDialogFilter("Mount files", "*.dlc"));
                 if (m.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     var mf = new MountFile() //We will write this to disk
@@ -313,7 +311,6 @@ namespace LegendaryExplorer.Tools.MountEditor
 
         private void MountOptionsComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         private bool loadingNewData;
