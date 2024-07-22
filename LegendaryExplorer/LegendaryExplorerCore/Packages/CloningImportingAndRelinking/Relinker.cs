@@ -128,6 +128,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // 11/20/2023: Initialize an empty package cache
             Cache = cache ?? new PackageCache();
         }
+
+        /// <summary>
+        /// When importing an export that is a donor, and the donor is found, this can be set to override how the donor export is processed into the destination package. Return the newly created export.
+        /// </summary>
+        public Func<IMEPackage, ExportEntry, RelinkerOptionsPackage, ExportEntry> CustomDonorImporter { get; set; }
     }
 
     public static class Relinker
