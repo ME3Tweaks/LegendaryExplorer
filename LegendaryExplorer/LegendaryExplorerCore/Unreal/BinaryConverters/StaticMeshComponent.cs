@@ -2,6 +2,7 @@
 using LegendaryExplorerCore.Packages;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using LegendaryExplorerCore.Gammtek;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -10,16 +11,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public StaticMeshComponentLODInfo[] LODData;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref LODData, SCExt.Serialize);
+            sc.Serialize(ref LODData, sc.Serialize);
         }
 
         public static StaticMeshComponent Create()
         {
             return new()
             {
-                LODData = Array.Empty<StaticMeshComponentLODInfo>()
+                LODData = []
             };
         }
 
@@ -125,11 +126,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public Guid[] LightGuids;
         public UIndex Texture1;
-        public float[] unkFloats1 = new float[8];
+        public Fixed8<float> unkFloats1;
         public UIndex Texture2;
-        public float[] unkFloats2 = new float[8];
+        public Fixed8<float> unkFloats2;
         public UIndex Texture3;
-        public float[] unkFloats3 = new float[8];
+        public Fixed8<float> unkFloats3;
         public Vector2 CoordinateScale;
         public Vector2 CoordinateBias;
     }
@@ -154,36 +155,36 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public SharpDX.Color Coefficient;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref QuantizedSimpleLightSample samp)
+        public void Serialize(ref QuantizedSimpleLightSample samp)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 samp = new QuantizedSimpleLightSample();
             }
 
-            sc.Serialize(ref samp.Coefficient);
+            Serialize(ref samp.Coefficient);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref QuantizedDirectionalLightSample samp)
+        public void Serialize(ref QuantizedDirectionalLightSample samp)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 samp = new QuantizedDirectionalLightSample();
             }
 
-            if (sc.Game < MEGame.ME3)
+            if (Game < MEGame.ME3)
             {
-                sc.Serialize(ref samp.Coefficient1);
+                Serialize(ref samp.Coefficient1);
             }
-            sc.Serialize(ref samp.Coefficient2);
-            sc.Serialize(ref samp.Coefficient3);
+            Serialize(ref samp.Coefficient2);
+            Serialize(ref samp.Coefficient3);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref LightMap lmap)
+        public void Serialize(ref LightMap lmap)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                var type = (ELightMapType)sc.ms.ReadInt32();
+                var type = (ELightMapType)ms.ReadInt32();
                 switch (type)
                 {
                     case ELightMapType.LMT_None:
@@ -213,11 +214,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                if (!sc.Game.IsGame3() && lmap.LightMapType > ELightMapType.LMT_2D)
+                if (!Game.IsGame3() && lmap.LightMapType > ELightMapType.LMT_2D)
                 {
                     lmap = new LightMap();
                 }
-                sc.ms.Writer.WriteInt32((int)lmap.LightMapType);
+                ms.Writer.WriteInt32((int)lmap.LightMapType);
             }
 
             switch (lmap.LightMapType)
@@ -225,118 +226,118 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case ELightMapType.LMT_None:
                     break;
                 case ELightMapType.LMT_1D:
-                    sc.Serialize((LightMap_1D)lmap);
+                    Serialize((LightMap_1D)lmap);
                     break;
                 case ELightMapType.LMT_2D:
-                    sc.Serialize((LightMap_2D)lmap);
+                    Serialize((LightMap_2D)lmap);
                     break;
                 case ELightMapType.LMT_3:
-                    sc.Serialize((LightMap_3)lmap);
+                    Serialize((LightMap_3)lmap);
                     break;
                 case ELightMapType.LMT_4:
                 case ELightMapType.LMT_6:
-                    sc.Serialize((LightMap_4or6)lmap);
+                    Serialize((LightMap_4or6)lmap);
                     break;
                 case ELightMapType.LMT_5:
-                    sc.Serialize((LightMap_5)lmap);
+                    Serialize((LightMap_5)lmap);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-        private static void Serialize(this SerializingContainer2 sc, LightMap_1D lmap)
+        private void Serialize(LightMap_1D lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
-            sc.Serialize(ref lmap.Owner);
-            sc.SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
-            sc.Serialize(ref lmap.ScaleVector1);
-            sc.Serialize(ref lmap.ScaleVector2);
-            sc.Serialize(ref lmap.ScaleVector3);
-            if (sc.Game < MEGame.ME3)
+            Serialize(ref lmap.LightGuids, Serialize);
+            Serialize(ref lmap.Owner);
+            SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
+            Serialize(ref lmap.ScaleVector1);
+            Serialize(ref lmap.ScaleVector2);
+            Serialize(ref lmap.ScaleVector3);
+            if (Game < MEGame.ME3)
             {
-                sc.Serialize(ref lmap.ScaleVector4);
+                Serialize(ref lmap.ScaleVector4);
             }
-            sc.SerializeBulkData(ref lmap.SimpleSamples, Serialize);
+            SerializeBulkData(ref lmap.SimpleSamples, Serialize);
         }
-        private static void Serialize(this SerializingContainer2 sc, LightMap_2D lmap)
+        private void Serialize(LightMap_2D lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
-            sc.Serialize(ref lmap.Texture1);
-            sc.Serialize(ref lmap.ScaleVector1);
-            sc.Serialize(ref lmap.Texture2);
-            sc.Serialize(ref lmap.ScaleVector2);
-            sc.Serialize(ref lmap.Texture3);
-            sc.Serialize(ref lmap.ScaleVector3);
-            if (sc.Game < MEGame.ME3)
+            Serialize(ref lmap.LightGuids, Serialize);
+            Serialize(ref lmap.Texture1);
+            Serialize(ref lmap.ScaleVector1);
+            Serialize(ref lmap.Texture2);
+            Serialize(ref lmap.ScaleVector2);
+            Serialize(ref lmap.Texture3);
+            Serialize(ref lmap.ScaleVector3);
+            if (Game < MEGame.ME3)
             {
-                sc.Serialize(ref lmap.Texture4);
-                sc.Serialize(ref lmap.ScaleVector4);
+                Serialize(ref lmap.Texture4);
+                Serialize(ref lmap.ScaleVector4);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 lmap.Texture4 = 0;
             }
-            sc.Serialize(ref lmap.CoordinateScale);
-            sc.Serialize(ref lmap.CoordinateBias);
+            Serialize(ref lmap.CoordinateScale);
+            Serialize(ref lmap.CoordinateBias);
         }
-        private static void Serialize(this SerializingContainer2 sc, LightMap_3 lmap)
+        private void Serialize(LightMap_3 lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
-            sc.Serialize(ref lmap.unkInt);
-            sc.SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
-            sc.Serialize(ref lmap.unkVector1);
-            sc.Serialize(ref lmap.unkVector2);
+            Serialize(ref lmap.LightGuids, Serialize);
+            Serialize(ref lmap.unkInt);
+            SerializeBulkData(ref lmap.DirectionalSamples, Serialize);
+            Serialize(ref lmap.unkVector1);
+            Serialize(ref lmap.unkVector2);
         }
-        private static void Serialize(this SerializingContainer2 sc, LightMap_4or6 lmap)
+        private void Serialize(LightMap_4or6 lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
-            sc.Serialize(ref lmap.Texture1);
+            Serialize(ref lmap.LightGuids, Serialize);
+            Serialize(ref lmap.Texture1);
             for (int i = 0; i < 8; i++)
             {
-                sc.Serialize(ref lmap.unkFloats1[i]);
+                Serialize(ref lmap.unkFloats1[i]);
             }
-            sc.Serialize(ref lmap.Texture2);
+            Serialize(ref lmap.Texture2);
             for (int i = 0; i < 8; i++)
             {
-                sc.Serialize(ref lmap.unkFloats2[i]);
+                Serialize(ref lmap.unkFloats2[i]);
             }
-            sc.Serialize(ref lmap.Texture3);
+            Serialize(ref lmap.Texture3);
             for (int i = 0; i < 8; i++)
             {
-                sc.Serialize(ref lmap.unkFloats3[i]);
+                Serialize(ref lmap.unkFloats3[i]);
             }
-            sc.Serialize(ref lmap.CoordinateScale);
-            sc.Serialize(ref lmap.CoordinateBias);
+            Serialize(ref lmap.CoordinateScale);
+            Serialize(ref lmap.CoordinateBias);
         }
-        private static void Serialize(this SerializingContainer2 sc, LightMap_5 lmap)
+        private void Serialize(LightMap_5 lmap)
         {
-            sc.Serialize(ref lmap.LightGuids, SCExt.Serialize);
-            sc.Serialize(ref lmap.unkInt);
-            sc.SerializeBulkData(ref lmap.SimpleSamples, Serialize);
-            sc.Serialize(ref lmap.unkVector);
+            Serialize(ref lmap.LightGuids, Serialize);
+            Serialize(ref lmap.unkInt);
+            SerializeBulkData(ref lmap.SimpleSamples, Serialize);
+            Serialize(ref lmap.unkVector);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticMeshComponentLODInfo lod)
+        public void Serialize(ref StaticMeshComponentLODInfo lod)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 lod = new StaticMeshComponentLODInfo();
             }
 
-            sc.Serialize(ref lod.ShadowMaps, Serialize);
-            sc.Serialize(ref lod.ShadowVertexBuffers, Serialize);
-            sc.Serialize(ref lod.LightMap);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref lod.ShadowMaps, Serialize);
+            Serialize(ref lod.ShadowVertexBuffers, Serialize);
+            Serialize(ref lod.LightMap);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref lod.bLoadVertexColorData);
+                Serialize(ref lod.bLoadVertexColorData);
                 if (lod.bLoadVertexColorData > 0)
                 {
-                    sc.Serialize(ref lod.OverrideVertexColors);
+                    Serialize(ref lod.OverrideVertexColors);
                 }
 
-                if (sc.Game == MEGame.UDK)
+                if (Game == MEGame.UDK)
                 {
                     int dummy = 0;
-                    sc.Serialize(ref dummy);
+                    Serialize(ref dummy);
                 }
             }
         }

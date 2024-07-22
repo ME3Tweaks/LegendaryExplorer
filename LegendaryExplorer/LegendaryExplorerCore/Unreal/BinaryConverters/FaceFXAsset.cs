@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public List<int> LipSyncPhonemeNames;
         private List<int> EndingInts;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game == MEGame.ME2) throw new NotSupportedException("ME2 FaceFXAsset parsing is not supported");
 
@@ -31,13 +31,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             sc.SerializeFaceFXHeader(ref Version);
 
-            sc.Serialize(ref HNodes, SCExt.Serialize);
-            sc.Serialize(ref Names, SCExt.SerializeFaceFXString);
+            sc.Serialize(ref HNodes, sc.Serialize);
+            sc.Serialize(ref Names, sc.SerializeFaceFXString);
             sc.Serialize(ref int0);
             sc.Serialize(ref int0);
 
-            sc.Serialize(ref BoneNodes, SCExt.Serialize);
-            sc.Serialize(ref CombinerNodes, SCExt.Serialize);
+            sc.Serialize(ref BoneNodes, sc.Serialize);
+            sc.Serialize(ref CombinerNodes, sc.Serialize);
 
             // Do not serialize TableC count - it is the same length as combiner nodes (except not really)
             // Table C sucks. That's all i'm gonna say about it
@@ -58,11 +58,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref unk1);
             sc.Serialize(ref Name);
 
-            sc.Serialize(ref Lines, SCExt.Serialize);
+            sc.Serialize(ref Lines, sc.Serialize);
             sc.Serialize(ref int0);
 
-            sc.Serialize(ref TableD, SCExt.Serialize);
-            sc.Serialize(ref LipSyncPhonemeNames, SCExt.Serialize);
+            sc.Serialize(ref TableD, sc.Serialize);
+            sc.Serialize(ref LipSyncPhonemeNames, sc.Serialize);
 
             // Serialize length (at the start of the binary)
             var endingPosition = sc.ms.Position;
@@ -75,7 +75,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref int0);
             if (sc.Game is MEGame.LE1 or MEGame.LE2)
             {
-                sc.Serialize(ref EndingInts, SCExt.Serialize);
+                sc.Serialize(ref EndingInts, sc.Serialize);
             }
 
             if (sc.IsLoading)
@@ -91,15 +91,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                HNodes = new List<HNode>(),
-                Names = new List<string>(),
-                BoneNodes = new List<FaceFXBoneNode>(),
-                CombinerNodes = new List<FxNode>(),
-                TableC = Array.Empty<FXATableCElement>(),
-                Lines = new List<FaceFXLine>(),
-                TableD = new List<FXATableDElement>(),
-                LipSyncPhonemeNames = new List<int>(),
-                EndingInts = new List<int>(),
+                HNodes = [],
+                Names = [],
+                BoneNodes = [],
+                CombinerNodes = [],
+                TableC = [],
+                Lines = [],
+                TableD = [],
+                LipSyncPhonemeNames = [],
+                EndingInts = [],
                 Version = game switch
                 {
                     MEGame.ME1 => 1710,
@@ -120,16 +120,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             /// <returns></returns>
             public static HNode[] GetFXANodeTable()
             {
-                return new HNode[]
-                {
-                    new HNode {unk1 = 0x1A, Names=new (string, ushort)[] { ("FxObject", 0) }},
-                    new HNode {unk1 = 0x48, Names=new (string, ushort)[] { ("FxAnim", 6) }},
-                    new HNode {unk1 = 0x54, Names=new (string, ushort)[] { ("FxAnimSet", 0) }},
-                    new HNode {unk1 = 0x5F, Names=new (string, ushort)[] { ("FxNamedObject", 0) }},
-                    new HNode {unk1 = 0x64, Names=new (string, ushort)[] { ("FxName", 1) }},
-                    new HNode {unk1 = 0x6D, Names=new (string, ushort)[] { ("FxAnimCurve", 1) }},
-                    new HNode {unk1 = 0x75, Names=new (string, ushort)[] { ("FxAnimGroup", 0) }}
-                };
+                return
+                [
+                    new HNode {unk1 = 0x1A, Names= [("FxObject", 0)] },
+                    new HNode {unk1 = 0x48, Names= [("FxAnim", 6)] },
+                    new HNode {unk1 = 0x54, Names= [("FxAnimSet", 0)] },
+                    new HNode {unk1 = 0x5F, Names= [("FxNamedObject", 0)] },
+                    new HNode {unk1 = 0x64, Names= [("FxName", 1)] },
+                    new HNode {unk1 = 0x6D, Names= [("FxAnimCurve", 1)] },
+                    new HNode {unk1 = 0x75, Names= [("FxAnimGroup", 0)] }
+                ];
             }
         }
 
@@ -255,122 +255,122 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public string StringParameter;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXAsset.HNode node)
+        public void Serialize(ref FaceFXAsset.HNode node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new FaceFXAsset.HNode();
             }
-            sc.Serialize(ref node.unk1);
-            if (sc.IsLoading)
+            Serialize(ref node.unk1);
+            if (IsLoading)
             {
-                node.Names = new (string, ushort)[sc.ms.ReadInt32()];
+                node.Names = new (string, ushort)[ms.ReadInt32()];
             }
             else
             {
-                sc.ms.Writer.WriteInt32(node.Names.Length);
+                ms.Writer.WriteInt32(node.Names.Length);
             }
 
             for (int i = 0; i < node.Names.Length; i++)
             {
                 (string, ushort) name = node.Names[i];
-                sc.SerializeFaceFXString(ref name.Item1);
-                sc.Serialize(ref name.Item2);
+                SerializeFaceFXString(ref name.Item1);
+                Serialize(ref name.Item2);
                 node.Names[i] = name;
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXBoneNode node)
+        public void Serialize(ref FaceFXBoneNode node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new FaceFXBoneNode();
             }
-            sc.Serialize(ref node.BoneName);
-            sc.Serialize(ref node.X);
-            sc.Serialize(ref node.Y);
-            sc.Serialize(ref node.Z);
+            Serialize(ref node.BoneName);
+            Serialize(ref node.X);
+            Serialize(ref node.Y);
+            Serialize(ref node.Z);
 
             for (int i = 0; i < node.unkFloats.Length; i++)
             {
-                sc.Serialize(ref node.unkFloats[i]);
+                Serialize(ref node.unkFloats[i]);
             }
-            sc.Serialize(ref node.Children, Serialize);
+            Serialize(ref node.Children, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXBoneNodeChild node)
+        public void Serialize(ref FaceFXBoneNodeChild node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new FaceFXBoneNodeChild();
             }
-            sc.Serialize(ref node.CombinerIndex);
-            sc.Serialize(ref node.ParentName);
+            Serialize(ref node.CombinerIndex);
+            Serialize(ref node.ParentName);
 
             for (int i = 0; i < node.unkFloats.Length; i++)
             {
-                sc.Serialize(ref node.unkFloats[i]);
+                Serialize(ref node.unkFloats[i]);
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FxNode node)
+        public void Serialize(ref FxNode node)
         {
-            if (sc.IsLoading) node = new FxNode();
+            if (IsLoading) node = new FxNode();
 
-            sc.Serialize(ref node.format);
-            sc.Serialize(ref node.Name);
-            sc.Serialize(ref node.MinVal);
-            sc.Serialize(ref node.unk1);
-            sc.Serialize(ref node.MaxVal);
-            sc.Serialize(ref node.unk2);
-            sc.Serialize(ref node.inputOp);
-            sc.Serialize(ref node.ChildLinks, Serialize);
-            sc.Serialize(ref node.Parameters, Serialize);
+            Serialize(ref node.format);
+            Serialize(ref node.Name);
+            Serialize(ref node.MinVal);
+            Serialize(ref node.unk1);
+            Serialize(ref node.MaxVal);
+            Serialize(ref node.unk2);
+            Serialize(ref node.inputOp);
+            Serialize(ref node.ChildLinks, Serialize);
+            Serialize(ref node.Parameters, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FxNodeParentLink node)
+        public void Serialize(ref FxNodeParentLink node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new FxNodeParentLink();
             }
-            sc.Serialize(ref node.NodeIndex);
-            sc.Serialize(ref node.linkFunction);
-            sc.Serialize(ref node.FunctionSettings, Serialize);
+            Serialize(ref node.NodeIndex);
+            Serialize(ref node.linkFunction);
+            Serialize(ref node.FunctionSettings, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FxNodeParameter param)
+        public void Serialize(ref FxNodeParameter param)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 param = new FxNodeParameter();
             }
-            sc.Serialize(ref param.Name);
-            sc.Serialize(ref param.paramFormat);
-            sc.Serialize(ref param.IntParameter);
-            sc.Serialize(ref param.FloatParameter);
-            sc.Serialize(ref param.unk2);
+            Serialize(ref param.Name);
+            Serialize(ref param.paramFormat);
+            Serialize(ref param.IntParameter);
+            Serialize(ref param.FloatParameter);
+            Serialize(ref param.unk2);
             if (param.paramFormat == 3)
             {
-                sc.SerializeFaceFXString(ref param.StringParameter);
+                SerializeFaceFXString(ref param.StringParameter);
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXAsset.FXATableCElement el)
+        public void Serialize(ref FaceFXAsset.FXATableCElement el)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 el = new FaceFXAsset.FXATableCElement();
             }
-            sc.Serialize(ref el.Name);
-            sc.Serialize(ref el.unk1);
-            if (sc.IsLoading)
+            Serialize(ref el.Name);
+            Serialize(ref el.unk1);
+            if (IsLoading)
             {
-                el.StringTuples = new (int, string)[sc.ms.ReadInt32()];
+                el.StringTuples = new (int, string)[ms.ReadInt32()];
             }
-            else sc.ms.Writer.WriteInt32(el.StringTuples.Length);
+            else ms.Writer.WriteInt32(el.StringTuples.Length);
 
             for (int i = 0; i < el.StringTuples.Length; i++)
             {
@@ -381,22 +381,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 // Every extra string takes one away from the outer loop of TableC entries. I have no idea why.
                 if (i > 0)
                 {
-                    sc.Serialize(ref entry.Item1);
+                    Serialize(ref entry.Item1);
                 }
-                sc.SerializeFaceFXString(ref entry.Item2);
+                SerializeFaceFXString(ref entry.Item2);
                 el.StringTuples[i] = entry;
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXAsset.FXATableDElement el)
+        public void Serialize(ref FaceFXAsset.FXATableDElement el)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 el = new FaceFXAsset.FXATableDElement();
             }
-            sc.Serialize(ref el.Name1);
-            sc.Serialize(ref el.Name2);
-            sc.Serialize(ref el.unk1);
+            Serialize(ref el.Name1);
+            Serialize(ref el.Name2);
+            Serialize(ref el.unk1);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public byte[] CompressedXbox360Data;
         public byte[] CompressedPS3Data;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game.IsLEGame() || sc.Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
@@ -18,24 +18,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.SerializeConstInt(0);
                 sc.SerializeConstInt(0);
             }
-            sc.SerializeBulkData(ref RawData, SCExt.Serialize);
+            sc.SerializeBulkData(ref RawData, sc.Serialize);
             if (sc.Game.IsLEGame())
             {
                 sc.SerializeConstInt(0);
             }
-            sc.SerializeBulkData(ref CompressedPCData, SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedXbox360Data, SCExt.Serialize);
-            sc.SerializeBulkData(ref CompressedPS3Data, SCExt.Serialize);
+            sc.SerializeBulkData(ref CompressedPCData, sc.Serialize);
+            sc.SerializeBulkData(ref CompressedXbox360Data, sc.Serialize);
+            sc.SerializeBulkData(ref CompressedPS3Data, sc.Serialize);
         }
 
         public static SoundNodeWave Create()
         {
             return new()
             {
-                RawData = Array.Empty<byte>(),
-                CompressedPCData = Array.Empty<byte>(),
-                CompressedXbox360Data = Array.Empty<byte>(),
-                CompressedPS3Data = Array.Empty<byte>(),
+                RawData = [],
+                CompressedPCData = [],
+                CompressedXbox360Data = [],
+                CompressedPS3Data = [],
             };
         }
     }

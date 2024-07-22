@@ -48,22 +48,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex ArtPlaceable1;//ME1
         public UIndex ArtPlaceable2;//ME1
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref Self);
-            sc.Serialize(ref Actors, SCExt.Serialize);
+            sc.Serialize(ref Actors, sc.Serialize);
             sc.Serialize(ref URL);
             sc.Serialize(ref Model);
-            sc.Serialize(ref ModelComponents, SCExt.Serialize);
-            sc.Serialize(ref GameSequences, SCExt.Serialize);
-            sc.Serialize(ref TextureToInstancesMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref ModelComponents, sc.Serialize);
+            sc.Serialize(ref GameSequences, sc.Serialize);
+            sc.Serialize(ref TextureToInstancesMap, sc.Serialize, sc.Serialize);
             if (sc.Game == MEGame.UDK)
             {
-                sc.Serialize(ref MeshComponentsWithDynamiclighting, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref MeshComponentsWithDynamiclighting, sc.Serialize, sc.Serialize);
             }
             else
             {
-                MeshComponentsWithDynamiclighting = new ();
+                MeshComponentsWithDynamiclighting = [];
             }
             if (sc.Game >= MEGame.ME3)
             {
@@ -71,23 +71,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else if (sc.IsLoading)
             {
-                ApexMesh = Array.Empty<byte>();
+                ApexMesh = [];
             }
 
             int byteSize = 1;
             sc.Serialize(ref byteSize);
             sc.Serialize(ref CachedPhysBSPData);
 
-            sc.Serialize(ref CachedPhysSMDataMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref CachedPhysSMDataStore, SCExt.Serialize);
-            sc.Serialize(ref CachedPhysPerTriSMDataMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref CachedPhysPerTriSMDataStore, SCExt.Serialize);
+            sc.Serialize(ref CachedPhysSMDataMap, sc.Serialize, sc.Serialize);
+            sc.Serialize(ref CachedPhysSMDataStore, sc.Serialize);
+            sc.Serialize(ref CachedPhysPerTriSMDataMap, sc.Serialize, sc.Serialize);
+            sc.Serialize(ref CachedPhysPerTriSMDataStore, sc.Serialize);
             sc.Serialize(ref CachedPhysBSPDataVersion);
             sc.Serialize(ref CachedPhysSMDataVersion);
-            sc.Serialize(ref ForceStreamTextures, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref ForceStreamTextures, sc.Serialize, sc.Serialize);
             if (sc.Game == MEGame.UDK)
             {
-                var dummy = new KCachedConvexData { CachedConvexElements = Array.Empty<KCachedConvexDataElement>() };
+                var dummy = new KCachedConvexData { CachedConvexElements = [] };
                 sc.Serialize(ref dummy);
                 int dummyInt = 0;
                 sc.Serialize(ref dummyInt);
@@ -103,25 +103,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (sc.Game.IsGame3()) // Gated by licensee version
             {
-                sc.Serialize(ref CrossLevelCoverGuidRefs, SCExt.Serialize);
-                sc.Serialize(ref CoverLinkRefs, SCExt.Serialize);
-                sc.Serialize(ref CoverIndexPairs, SCExt.Serialize);
-                sc.Serialize(ref CrossLevelNavGuidRefs, SCExt.Serialize);
-                sc.Serialize(ref NavRefs, SCExt.Serialize);
-                sc.Serialize(ref NavRefIndicies, SCExt.Serialize);
+                sc.Serialize(ref CrossLevelCoverGuidRefs, sc.Serialize);
+                sc.Serialize(ref CoverLinkRefs, sc.Serialize);
+                sc.Serialize(ref CoverIndexPairs, sc.Serialize);
+                sc.Serialize(ref CrossLevelNavGuidRefs, sc.Serialize);
+                sc.Serialize(ref NavRefs, sc.Serialize);
+                sc.Serialize(ref NavRefIndicies, sc.Serialize);
             }
             else if (sc.IsLoading)
             {
                 PylonListStart = 0;
                 PylonListEnd = 0;
-                CrossLevelCoverGuidRefs = new List<GuidIndexPair>();
-                CoverLinkRefs = new List<UIndex>();
-                CoverIndexPairs = new List<CoverIndexPair>();
-                CrossLevelNavGuidRefs = new List<GuidIndexPair>();
-                NavRefs = new List<UIndex>();
-                NavRefIndicies = new List<int>();
+                CrossLevelCoverGuidRefs = [];
+                CoverLinkRefs = [];
+                CoverIndexPairs = [];
+                CrossLevelNavGuidRefs = [];
+                NavRefs = [];
+                NavRefIndicies = [];
             }
-            sc.Serialize(ref CrossLevelActors, SCExt.Serialize);
+            sc.Serialize(ref CrossLevelActors, sc.Serialize);
             if (sc.Game == MEGame.UDK)
             {
                 int dummy = 0;
@@ -166,42 +166,42 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new()
             {
                 Self = 0,
-                Actors = new List<UIndex>(),
+                Actors = [],
                 URL = new URL
                 {
                     Protocol = "unreal",
                     Host = "",
                     Map = game.IsGame1() ? "Entry.SFM" : "EntryMenu",
                     Portal = "",
-                    Op = Array.Empty<string>(),
+                    Op = [],
                     Port = game.IsGame3() ? 3659 : 7777,
                     Valid = 1
                 },
                 Model = 0,
-                ModelComponents = Array.Empty<UIndex>(),
-                GameSequences = Array.Empty<UIndex>(),
-                TextureToInstancesMap = new(),
-                MeshComponentsWithDynamiclighting = new(),
-                ApexMesh = Array.Empty<byte>(),
-                CachedPhysBSPData = Array.Empty<byte>(),
-                CachedPhysSMDataMap = new UMultiMap<UIndex, CachedPhysSMData>(),
-                CachedPhysSMDataStore = new List<KCachedConvexData>(),
-                CachedPhysPerTriSMDataMap = new UMultiMap<UIndex, CachedPhysSMData>(),
-                CachedPhysPerTriSMDataStore = new List<KCachedPerTriData>(),
-                ForceStreamTextures = new(),
+                ModelComponents = [],
+                GameSequences = [],
+                TextureToInstancesMap = [],
+                MeshComponentsWithDynamiclighting = [],
+                ApexMesh = [],
+                CachedPhysBSPData = [],
+                CachedPhysSMDataMap = [],
+                CachedPhysSMDataStore = [],
+                CachedPhysPerTriSMDataMap = [],
+                CachedPhysPerTriSMDataStore = [],
+                ForceStreamTextures = [],
                 NavListStart = 0,
                 NavListEnd = 0,
                 CoverListStart = 0,
                 CoverListEnd = 0,
                 PylonListStart = 0,
                 PylonListEnd = 0,
-                CrossLevelCoverGuidRefs = new List<GuidIndexPair>(),
-                CoverLinkRefs = new List<UIndex>(),
-                CoverIndexPairs = new List<CoverIndexPair>(),
-                CrossLevelNavGuidRefs = new List<GuidIndexPair>(),
-                NavRefs = new List<UIndex>(),
-                NavRefIndicies = new List<int>(),
-                CrossLevelActors = new List<UIndex>(),
+                CrossLevelCoverGuidRefs = [],
+                CoverLinkRefs = [],
+                CoverIndexPairs = [],
+                CrossLevelNavGuidRefs = [],
+                NavRefs = [],
+                NavRefIndicies = [],
+                CrossLevelActors = [],
                 ArtPlaceable1 = 0,
                 ArtPlaceable2 = 0
             };
@@ -319,98 +319,98 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public byte[] CachedPerTriData; //BulkSerialized
     }
 
-    public partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref URL url)
+        public void Serialize(ref URL url)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 url = new URL();
             }
 
-            sc.Serialize(ref url.Protocol);
-            sc.Serialize(ref url.Host);
-            sc.Serialize(ref url.Map);
-            sc.Serialize(ref url.Portal);
-            sc.Serialize(ref url.Op, Serialize);
-            sc.Serialize(ref url.Port);
-            sc.Serialize(ref url.Valid);
+            Serialize(ref url.Protocol);
+            Serialize(ref url.Host);
+            Serialize(ref url.Map);
+            Serialize(ref url.Portal);
+            Serialize(ref url.Op, Serialize);
+            Serialize(ref url.Port);
+            Serialize(ref url.Valid);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref StreamableTextureInstanceList texInstList)
+        public void Serialize(ref StreamableTextureInstanceList texInstList)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 texInstList = new StreamableTextureInstanceList();
             }
 
-            sc.Serialize(ref texInstList.Instances, Serialize);
+            Serialize(ref texInstList.Instances, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref StreamableTextureInstance texInst)
+        public void Serialize(ref StreamableTextureInstance texInst)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 texInst = new StreamableTextureInstance();
             }
 
-            sc.Serialize(ref texInst.BoundingSphere);
-            sc.Serialize(ref texInst.TexelFactor);
+            Serialize(ref texInst.BoundingSphere);
+            Serialize(ref texInst.TexelFactor);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref CachedPhysSMData smData)
+        public void Serialize(ref CachedPhysSMData smData)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 smData = new CachedPhysSMData();
             }
 
-            sc.Serialize(ref smData.Scale3D);
-            sc.Serialize(ref smData.CachedDataIndex);
+            Serialize(ref smData.Scale3D);
+            Serialize(ref smData.CachedDataIndex);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref KCachedConvexData convData)
+        public void Serialize(ref KCachedConvexData convData)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 convData = new KCachedConvexData();
             }
 
-            sc.Serialize(ref convData.CachedConvexElements, Serialize);
+            Serialize(ref convData.CachedConvexElements, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref KCachedConvexDataElement convDataElem)
+        public void Serialize(ref KCachedConvexDataElement convDataElem)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 convDataElem = new KCachedConvexDataElement();
             }
 
-            sc.BulkSerialize(ref convDataElem.ConvexElementData, Serialize, 1);
+            BulkSerialize(ref convDataElem.ConvexElementData, Serialize, 1);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref KCachedPerTriData triData)
+        public void Serialize(ref KCachedPerTriData triData)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 triData = new KCachedPerTriData();
             }
 
             int byteSize = 1;
-            sc.Serialize(ref byteSize);
-            sc.Serialize(ref triData.CachedPerTriData);
+            Serialize(ref byteSize);
+            Serialize(ref triData.CachedPerTriData);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref CoverIndexPair val)
+        public void Serialize(ref CoverIndexPair val)
         {
-            sc.Serialize(ref val.CoverIndexIdx);
-            sc.Serialize(ref val.SlotIdx);
+            Serialize(ref val.CoverIndexIdx);
+            Serialize(ref val.SlotIdx);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref GuidIndexPair val)
+        public void Serialize(ref GuidIndexPair val)
         {
-            sc.Serialize(ref val.Guid);
-            sc.Serialize(ref val.CoverIndexIdx);
+            Serialize(ref val.Guid);
+            Serialize(ref val.CoverIndexIdx);
         }
     }
 }

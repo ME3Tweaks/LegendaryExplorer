@@ -18,16 +18,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public byte[] CachedDisplacements;//not ME1 and not UDK
         public float MaxCollisionDisplacement;//not ME1 and not UDK
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref Heights);
-            sc.Serialize(ref InfoData, SCExt.Serialize);
-            sc.Serialize(ref AlphaMaps, SCExt.Serialize);
-            sc.Serialize(ref WeightedTextureMaps, SCExt.Serialize);
-            sc.Serialize(ref CachedTerrainMaterials, SCExt.Serialize);
+            sc.Serialize(ref InfoData, sc.Serialize);
+            sc.Serialize(ref AlphaMaps, sc.Serialize);
+            sc.Serialize(ref WeightedTextureMaps, sc.Serialize);
+            sc.Serialize(ref CachedTerrainMaterials, sc.Serialize);
             if (sc.Game != MEGame.ME1)
             {
-                sc.Serialize(ref CachedTerrainMaterials2, SCExt.Serialize);
+                sc.Serialize(ref CachedTerrainMaterials2, sc.Serialize);
             }
             if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
             {
@@ -40,13 +40,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                Heights = Array.Empty<ushort>(),
-                InfoData = Array.Empty<TerrainInfoFlags>(),
-                AlphaMaps = Array.Empty<AlphaMap>(),
-                WeightedTextureMaps = Array.Empty<UIndex>(),
-                CachedTerrainMaterials = Array.Empty<TerrainMaterialResource>(),
-                CachedTerrainMaterials2 = Array.Empty<TerrainMaterialResource>(),
-                CachedDisplacements = Array.Empty<byte>(),
+                Heights = [],
+                InfoData = [],
+                AlphaMaps = [],
+                WeightedTextureMaps = [],
+                CachedTerrainMaterials = [],
+                CachedTerrainMaterials2 = [],
+                CachedDisplacements = [],
             };
         }
 
@@ -121,47 +121,47 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ulong BitMask;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref TerrainInfoFlags flags)
+        public void Serialize(ref TerrainInfoFlags flags)
         {
             byte b = (byte)flags;
-            sc.Serialize(ref b);
+            Serialize(ref b);
             flags = (TerrainInfoFlags)b;
         }
-        public static void Serialize(this SerializingContainer2 sc, ref AlphaMap map)
+        public void Serialize(ref AlphaMap map)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 map = new AlphaMap();
             }
-            sc.Serialize(ref map.Data);
+            Serialize(ref map.Data);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref TerrainMaterialMask mask)
+        public void Serialize(ref TerrainMaterialMask mask)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 mask = new TerrainMaterialMask();
             }
-            sc.Serialize(ref mask.NumBits);
-            sc.Serialize(ref mask.BitMask);
+            Serialize(ref mask.NumBits);
+            Serialize(ref mask.BitMask);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref TerrainMaterialResource mat)
+        public void Serialize(ref TerrainMaterialResource mat)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 mat = new TerrainMaterialResource();
             }
 
             MaterialResource materialResource = mat;
-            sc.Serialize(ref materialResource);
+            Serialize(ref materialResource);
 
-            sc.Serialize(ref mat.Terrain);
-            sc.Serialize(ref mat.Mask);
-            sc.Serialize(ref mat.MaterialIds, SCExt.Serialize);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref mat.Terrain);
+            Serialize(ref mat.Mask);
+            Serialize(ref mat.MaterialIds, Serialize);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref mat.LightingGuid);
+                Serialize(ref mat.LightingGuid);
             }
         }
     }

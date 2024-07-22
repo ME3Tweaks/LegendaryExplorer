@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public TreeNode(T data)
         {
             Data = data;
-            Children = new List<U>();
+            Children = [];
         }
 
         public void Add(U item) => Children.Add(item);
@@ -28,7 +28,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public TreeNode(T data)
         {
             Data = data;
-            Children = new List<TreeNode<T>>();
+            Children = [];
         }
 
         public void Add(TreeNode<T> item) => Children.Add(item);

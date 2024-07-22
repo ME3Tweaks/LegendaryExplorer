@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BrushComponent : ObjectBinary
     {
         public KCachedConvexData CachedPhysBrushData;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref CachedPhysBrushData);
         }
@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 CachedPhysBrushData = new KCachedConvexData
                 {
-                    CachedConvexElements = Array.Empty<KCachedConvexDataElement>()
+                    CachedConvexElements = []
                 }
             };
         }

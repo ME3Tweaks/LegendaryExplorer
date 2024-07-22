@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public List<string> Names;
         public List<FaceFXLine> Lines;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             var startPos = sc.ms.Position;//come back here to serialize length at the end
             int length = 0;
@@ -30,7 +30,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     FixNodeTable();
                 }
-                sc.Serialize(ref HNodes, SCExt.Serialize);
+                sc.Serialize(ref HNodes, sc.Serialize);
             }
 
             if (sc.Game == MEGame.ME2)
@@ -61,7 +61,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                sc.Serialize(ref Names, SCExt.SerializeFaceFXString);
+                sc.Serialize(ref Names, sc.SerializeFaceFXString);
             }
 
             sc.Serialize(ref int0);
@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             #endregion
 
-            sc.Serialize(ref Lines, SCExt.Serialize);
+            sc.Serialize(ref Lines, sc.Serialize);
 
             var endingPosition = sc.ms.Position;
             length = (int)(endingPosition - startPos - 4);
@@ -154,166 +154,166 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float leaveTangent;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void SerializeFaceFXString(this SerializingContainer2 sc, ref string str)
+        public void SerializeFaceFXString(ref string str)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                str = sc.ms.ReadStringASCII(sc.ms.ReadInt32());
+                str = ms.ReadStringASCII(ms.ReadInt32());
             }
             else
             {
-                sc.ms.Writer.WriteInt32(str.Length);
-                sc.ms.Writer.WriteStringLatin1(str);
+                ms.Writer.WriteInt32(str.Length);
+                ms.Writer.WriteStringLatin1(str);
             }
         }
 
-        public static void SerializeFaceFXHeader(this SerializingContainer2 sc, ref int version)
+        public void SerializeFaceFXHeader(ref int version)
         {
             int int0 = 0;
             short short1 = 1;
 
             uint FACE = 1162035526U;
-            sc.Serialize(ref FACE);
-            sc.Serialize(ref version);
+            Serialize(ref FACE);
+            Serialize(ref version);
             if (version == 1731)
             {
-                sc.Serialize(ref int0);
+                Serialize(ref int0);
             }
             else if (version == 1610)
             {
-                sc.Serialize(ref short1);
+                Serialize(ref short1);
             }
 
             string licensee = "Unreal Engine 3 Licensee";
             string project = "Unreal Engine 3 Project";
-            if (sc.IsSaving && version == 1731)
+            if (IsSaving && version == 1731)
             {
                 licensee += '\0';
                 project += '\0';
             }
-            sc.SerializeFaceFXString(ref licensee);
-            if (sc.Game == MEGame.ME2)
+            SerializeFaceFXString(ref licensee);
+            if (Game == MEGame.ME2)
             {
-                sc.Serialize(ref short1);
+                Serialize(ref short1);
             }
-            sc.SerializeFaceFXString(ref project);
-            int version2 = sc.Game switch
+            SerializeFaceFXString(ref project);
+            int version2 = Game switch
             {
                 MEGame.ME1 => 1000,
                 _ => 1100
             };
-            sc.Serialize(ref version2);
-            if (sc.Game == MEGame.ME2)
+            Serialize(ref version2);
+            if (Game == MEGame.ME2)
             {
-                sc.Serialize(ref int0);
+                Serialize(ref int0);
             }
             else
             {
-                sc.Serialize(ref short1);
+                Serialize(ref short1);
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXControlPoint point)
+        public void Serialize(ref FaceFXControlPoint point)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 point = new FaceFXControlPoint();
             }
-            sc.Serialize(ref point.time);
-            sc.Serialize(ref point.weight);
-            sc.Serialize(ref point.inTangent);
-            sc.Serialize(ref point.leaveTangent);
+            Serialize(ref point.time);
+            Serialize(ref point.weight);
+            Serialize(ref point.inTangent);
+            Serialize(ref point.leaveTangent);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref FaceFXLine line)
+        public void Serialize(ref FaceFXLine line)
         {
             int int0 = 0;
             short short0 = 0;
             short short1 = 1;
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 line = new FaceFXLine();
             }
 
-            if (sc.Game == MEGame.ME2)
+            if (Game == MEGame.ME2)
             {
-                sc.Serialize(ref int0);
-                sc.Serialize(ref short1);
+                Serialize(ref int0);
+                Serialize(ref short1);
             }
-            sc.Serialize(ref line.NameIndex);
-            if (sc.Game == MEGame.ME2)
+            Serialize(ref line.NameIndex);
+            if (Game == MEGame.ME2)
             {
                 int unk6 = 6;
-                sc.Serialize(ref unk6);
+                Serialize(ref unk6);
             }
             //AnimationNames
             {
                 int count = line.AnimationNames?.Count ?? 0;
-                sc.Serialize(ref count);
+                Serialize(ref count);
                 int int1 = 1;
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
                     line.AnimationNames = new List<int>(count);
                 }
                 for (int i = 0; i < count; i++)
                 {
-                    if (sc.Game == MEGame.ME2)
+                    if (Game == MEGame.ME2)
                     {
-                        sc.Serialize(ref int0);
-                        sc.Serialize(ref short1);
+                        Serialize(ref int0);
+                        Serialize(ref short1);
                     }
-                    if (sc.IsLoading)
+                    if (IsLoading)
                     {
                         int tmp = default;
-                        sc.Serialize(ref tmp);
+                        Serialize(ref tmp);
                         line.AnimationNames.Add(tmp);
                     }
                     else
                     {
                         int tmp = line.AnimationNames[i];
-                        sc.Serialize(ref tmp);
+                        Serialize(ref tmp);
                     }
-                    if (sc.Game == MEGame.ME2)
+                    if (Game == MEGame.ME2)
                     {
-                        sc.Serialize(ref int1);
-                        sc.Serialize(ref short0);
+                        Serialize(ref int1);
+                        Serialize(ref short0);
                     }
                     else
                     {
-                        sc.Serialize(ref int0);
+                        Serialize(ref int0);
                     }
                 }
             }
 
-            sc.Serialize(ref line.Points, Serialize);
+            Serialize(ref line.Points, Serialize);
             if (line.Points.Any())
             {
-                if (sc.Game == MEGame.ME2)
+                if (Game == MEGame.ME2)
                 {
-                    sc.Serialize(ref short0);
+                    Serialize(ref short0);
                 }
-                sc.Serialize(ref line.NumKeys, SCExt.Serialize);
+                Serialize(ref line.NumKeys, Serialize);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 line.NumKeys = Enumerable.Repeat(0, line.AnimationNames.Count).ToList();
             }
-            sc.Serialize(ref line.FadeInTime);
-            sc.Serialize(ref line.FadeOutTime);
-            sc.Serialize(ref int0);
-            if (sc.Game == MEGame.ME2)
+            Serialize(ref line.FadeInTime);
+            Serialize(ref line.FadeOutTime);
+            Serialize(ref int0);
+            if (Game == MEGame.ME2)
             {
-                sc.Serialize(ref short0);
-                sc.Serialize(ref short1);
+                Serialize(ref short0);
+                Serialize(ref short1);
             }
-            sc.SerializeFaceFXString(ref line.Path);
-            if (sc.Game == MEGame.ME2)
+            SerializeFaceFXString(ref line.Path);
+            if (Game == MEGame.ME2)
             {
-                sc.Serialize(ref short1);
+                Serialize(ref short1);
             }
-            sc.SerializeFaceFXString(ref line.ID);
-            sc.Serialize(ref line.Index);
+            SerializeFaceFXString(ref line.ID);
+            Serialize(ref line.Index);
         }
     }
 }

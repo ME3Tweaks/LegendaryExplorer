@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using UIndex = System.Int32;
 
@@ -10,12 +11,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         private UIndex PersistentLevel;
         private UIndex PersistentFaceFXAnimSet; //ME3/LE
-        private readonly LevelViewportInfo[] EditorViews = new LevelViewportInfo[4];
+        private Fixed4<LevelViewportInfo> EditorViews;
         private UIndex DecalManager; //ME1/LE1
         private float unkFloat; //UDK
         public UIndex[] ExtraReferencedObjects;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref PersistentLevel);
             if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
@@ -39,7 +40,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref DecalManager);
             }
 
-            sc.Serialize(ref ExtraReferencedObjects, SCExt.Serialize);
+            sc.Serialize(ref ExtraReferencedObjects, sc.Serialize);
         }
 
         public static World Create()
@@ -78,17 +79,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float CamOrthoZoom;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref LevelViewportInfo info)
+        public void Serialize(ref LevelViewportInfo info)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 info = new LevelViewportInfo();
             }
-            sc.Serialize(ref info.CamPosition);
-            sc.Serialize(ref info.CamRotation);
-            sc.Serialize(ref info.CamOrthoZoom);
+            Serialize(ref info.CamPosition);
+            Serialize(ref info.CamRotation);
+            Serialize(ref info.CamOrthoZoom);
         }
     }
 }

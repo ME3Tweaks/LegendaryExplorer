@@ -3,7 +3,7 @@
     public class BioQuestProgressionMap : ObjectBinary
     {
         public int unk;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref unk);
         }

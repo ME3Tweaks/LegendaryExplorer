@@ -15,12 +15,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioSquadCombat : ObjectBinary
     {
         public EntryGuidNumPair[] EntryGuidNumPairs;//? Speculative name
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (!sc.Game.IsGame1())
                 return; // No binary except in Game 1
 
-            sc.Serialize(ref EntryGuidNumPairs, SCExt.Serialize);
+            sc.Serialize(ref EntryGuidNumPairs, sc.Serialize);
         }
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
@@ -35,20 +35,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref EntryGuidNumPair egnp)
+        public void Serialize(ref EntryGuidNumPair egnp)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 egnp = new EntryGuidNumPair();
             }
-            if (sc.Game == MEGame.LE1)
+            if (Game == MEGame.LE1)
             {
-                sc.Serialize(ref egnp.Entry);
+                Serialize(ref egnp.Entry);
             }
-            sc.Serialize(ref egnp.GUID);
-            sc.Serialize(ref egnp.UnknownZero);
+            Serialize(ref egnp.GUID);
+            Serialize(ref egnp.UnknownZero);
         }
     }
 }

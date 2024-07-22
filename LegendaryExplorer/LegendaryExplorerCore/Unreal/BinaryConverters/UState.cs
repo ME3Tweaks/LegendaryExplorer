@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort LabelTableOffset;
         public EStateFlags StateFlags;
         public UMultiMap<NameReference, UIndex> LocalFunctionMap; //TODO: Make this a UMap
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             if (sc.Game is MEGame.UDK)
@@ -35,16 +35,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             sc.Serialize(ref LabelTableOffset);
             sc.Serialize(ref StateFlags);
-            sc.Serialize(ref LocalFunctionMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref LocalFunctionMap, sc.Serialize, sc.Serialize);
         }
 
         public static UState Create()
         {
             return new()
             {
-                ScriptBytes = Array.Empty<byte>(),
+                ScriptBytes = [],
                 IgnoreMask = (EProbeFunctions)ulong.MaxValue,
-                LocalFunctionMap = new ()
+                LocalFunctionMap = []
             };
         }
         
@@ -70,28 +70,28 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint Offset; // standard bytescript MemOffs
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref EStateFlags flags)
+        public void Serialize(ref EStateFlags flags)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                flags = (EStateFlags)sc.ms.ReadUInt32();
+                flags = (EStateFlags)ms.ReadUInt32();
             }
             else
             {
-                sc.ms.Writer.WriteUInt32((uint)flags);
+                ms.Writer.WriteUInt32((uint)flags);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref EProbeFunctions flags)
+        public void Serialize(ref EProbeFunctions flags)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                flags = (EProbeFunctions)sc.ms.ReadUInt64();
+                flags = (EProbeFunctions)ms.ReadUInt64();
             }
             else
             {
-                sc.ms.Writer.WriteUInt64((ulong)flags);
+                ms.Writer.WriteUInt64((ulong)flags);
             }
         }
     }

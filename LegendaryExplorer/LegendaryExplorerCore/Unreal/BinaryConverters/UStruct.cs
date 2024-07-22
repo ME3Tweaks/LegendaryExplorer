@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int ScriptBytecodeSize; //ME3, LE
         public int ScriptStorageSize;
         public byte[] ScriptBytes;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             if (sc.Game is MEGame.UDK)

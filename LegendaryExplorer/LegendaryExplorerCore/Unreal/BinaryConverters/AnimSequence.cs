@@ -31,7 +31,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private AnimationCompressionFormat posCompression;
         private AnimationKeyFormat keyEncoding;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game.IsGame2())
             {
@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     DecompressAnimationData();
                 }
-                sc.Serialize(ref RawAnimationData, SCExt.Serialize);
+                sc.Serialize(ref RawAnimationData, sc.Serialize);
             }
 
             if (sc.IsLoading)
@@ -85,12 +85,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                RawAnimationData = new List<AnimTrack>(),
-                CompressedAnimationData = Array.Empty<byte>(),
-                Bones = new List<string>(),
+                RawAnimationData = [],
+                CompressedAnimationData = [],
+                Bones = [],
                 Name = new NameReference("None"),
                 RateScale = 1,
-                TrackOffsets = Array.Empty<int>(),
+                TrackOffsets = [],
             };
         }
 
@@ -521,21 +521,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public List<Quaternion> Rotations;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref AnimTrack track)
+        public void Serialize(ref AnimTrack track)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 track = new AnimTrack();
             }
 
             int vector3Size = 12;
-            sc.Serialize(ref vector3Size);
-            sc.Serialize(ref track.Positions, Serialize);
+            Serialize(ref vector3Size);
+            Serialize(ref track.Positions, Serialize);
             int quatSize = 16;
-            sc.Serialize(ref quatSize);
-            sc.Serialize(ref track.Rotations, Serialize);
+            Serialize(ref quatSize);
+            Serialize(ref track.Rotations, Serialize);
         }
     }
 }
