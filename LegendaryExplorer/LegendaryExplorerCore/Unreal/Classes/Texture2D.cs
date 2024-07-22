@@ -1063,8 +1063,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="mipped"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public static ExportEntry CreateTexture(IMEPackage package, NameReference textureName, int sizeX, int sizeY, PixelFormat pixelFormat, bool mipped, IEntry parent = null)
+        public static ExportEntry CreateTexture(IMEPackage package, NameReference textureName, int sizeX, int sizeY, PixelFormat pixelFormat, bool mipped, IEntry parent = null, NameReference textureGroup = default)
         {
+
+            if (textureGroup.Name == null)
+            {
+                textureGroup = new NameReference("TextureGroup_Environment", 513);
+            }
 
             // There's probably more properties to set, but right now this seems OK, I suppose...
             var exp = ExportCreator.CreateExport(package, textureName, @"Texture2D", parent: parent, indexed: false);
@@ -1079,16 +1084,14 @@ namespace LegendaryExplorerCore.Unreal.Classes
             props.AddOrReplaceProp(new IntProperty(sizeX, @"SizeX"));
             props.AddOrReplaceProp(new IntProperty(sizeY, @"SizeY"));
             props.AddOrReplaceProp(new BoolProperty(true, @"NeverStream"));
+            props.AddOrReplaceProp(new EnumProperty(textureGroup, "TextureGroup", package.Game, "LODGroup"));
 
             if (!mipped)
             {
                 props.AddOrReplaceProp(new BoolProperty(true, @"CompressionNoMipmaps"));
             }
 
-            // In LE this does not matter but we will set one anyways.
-            props.AddOrReplaceProp(new EnumProperty(@"TEXTUREGROUP_UI", @"TextureGroup", package.Game, @"LODGroup"));
             exp.WriteProperties(props);
-
 
             UTexture2D texTemp = UTexture2D.Create();
             if (!mipped)
