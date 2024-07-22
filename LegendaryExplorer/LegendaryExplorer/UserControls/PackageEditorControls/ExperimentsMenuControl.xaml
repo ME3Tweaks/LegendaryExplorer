@@ -48,12 +48,10 @@
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
         <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
 
-        <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
         <MenuItem Header="Dump all export uscript to folder" Click="DumpUScriptFromPackage_Click"/>
         <MenuItem Header="Compile all export uscript from folder" Click="FromPackageUScriptFromFolder_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
-        <MenuItem Header="Run MaterialInstanceScreenshot" Click="RunMaterialInstanceScreenshot_Click"/>
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
         <MenuItem Header="Convert Static Light component to non-static" Click="ConvertSLCALightToNonSLCA"/>
         <MenuItem Header="Find bad index location from appErrorF message (doesn't work)" Click="FindAppErrorFLocation_Click"/>
@@ -65,7 +63,6 @@
         <MenuItem Header="Export Terrain Collision Data to UDK" Click="ExportTerrainCollisionDataToUDK_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Print LE1 Terrains By Size to debug console" Click="PrintTerrainsBySize_Click"/>
         <MenuItem Header="Rebuild selected Material's expressions list" Click="RebuildSelectedMaterialExpressions"/>
-        <MenuItem Header="Test CrossGen class porting" Click="TestCrossGenClassPort_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Map Material IDs" Click="MapMaterialIDs_Click" />
         <MenuItem Header="Check NeverStreams" Click="CheckNeverStream_Click"/>
         <MenuItem Header="Print Texture Formats" Click="PrintTextureFormats_Click"/>
@@ -81,12 +78,10 @@
         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
-        <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
         <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
 
         <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
         <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
-        <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
 
         <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
         <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
@@ -96,7 +91,6 @@
         <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
-        <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
