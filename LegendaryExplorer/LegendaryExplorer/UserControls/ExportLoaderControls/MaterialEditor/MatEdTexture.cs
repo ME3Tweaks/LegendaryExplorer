@@ -109,8 +109,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                     if (TextureExp.FileRef != EditingPackage)
                     {
                         // Needs moved to editing package
+                        var rop = new RelinkerOptionsPackage()
+                        {
+                            ImportExportDependencies = true,
+                            Cache = new PackageCache(),
+                        };
                         EntryExporter.ExportExportToPackage(TextureExp, EditingPackage, out var newExp); // Maybe use cache here
-                        TextureExp = newExp as ExportEntry; // Todo: Consider renaming to avoid memory collisions on saved package
+                        if (newExp is ImportEntry imp)
+                        {
+                            // We must forcibly create the texture export
+                            var parent = ExportCreator.CreatePackageExport(EditingPackage, "LLEMatEd_ReplacedTextures");
+                            Texture2D orig = new Texture2D(TextureExp);
+                            TextureExp = Texture2D.CreateTexture(EditingPackage, "CustomTexture_MatEd", orig.GetTopMip().width, orig.GetTopMip().height, Image.getPixelFormatType(orig.TextureFormat), true, parent);
+                        }
+                        else
+                        {
+                            TextureExp = newExp as ExportEntry;
+                        }
                         TextureExp.ObjectName = new NameReference(TextureExp.ObjectName.Name, new Random().Next(12341234)); // Make something random
                     }
 

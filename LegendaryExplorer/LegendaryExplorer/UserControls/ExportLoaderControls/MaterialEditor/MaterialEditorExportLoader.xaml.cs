@@ -15,7 +15,6 @@ using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Xceed.Wpf.Toolkit;
-using DocumentFormat.OpenXml.Bibliography;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
@@ -132,7 +131,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         public bool IsReadOnly
         {
             get => (bool)GetValue(IsReadOnlyProperty);
-            set => SetValue(IsReadOnlyProperty, value);
+            set
+            {
+                SetValue(IsReadOnlyProperty, value);
+                if (value)
+                    ShowSaveBar = false; // might need set anyways as you don't know order properties will be set.
+            }
         }
 
         /// <summary>
@@ -151,6 +155,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             get => (bool)GetValue(AlwaysLoadDataProperty);
             set => SetValue(AlwaysLoadDataProperty, value);
+        }
+
+        private bool _showSaveBar = true;
+        /// <summary>
+        /// If the save changes bar should be shown.
+        /// </summary>
+        public bool ShowSaveBar
+        {
+            get => _showSaveBar;
+            set => SetProperty(ref _showSaveBar, value);
         }
 
         private void SaveChanges()
@@ -217,7 +231,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             if (CurrentLoadedExport != null)
             {
-                var elhw = new ExportLoaderHostedWindow(new MaterialEditorExportLoader(), CurrentLoadedExport);
+                var elhw = new ExportLoaderHostedWindow(new MaterialEditorExportLoader() { AlwaysLoadData = true }, CurrentLoadedExport);
                 elhw.Title = GetPoppedOutTitle();
                 elhw.Show();
             }
@@ -307,11 +321,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                 vp.ParameterValue.Y = fe.SelectedColor.Value.B / 255f;
                 vp.ParameterValue.Z = fe.SelectedColor.Value.A / 255f;
                 IsLoadingData = false;
+                if (vp is VectorParameterMatEd vpme)
+                    vpme.IsDefaultParameter = false;
                 VectorValueChanged?.Invoke(vp, EventArgs.Empty);
             }
         }
 
-        public void CommitSettingsToMIC(ExportEntry matInstConst)
+        public void CommitSettingsToMIC(ExportEntry matInstConst, ExportEntry newTexturesPackage = null)
         {
             var matInstConstProps = matInstConst.GetProperties();
 
@@ -350,6 +366,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             {
                 foreach (var expr in MatInfo.Expressions.OfType<TextureParameterMatEd>())
                 {
+                    if (newTexturesPackage != null && !expr.IsDefaultParameter)
+                    {
+                        // Move under new textures package
+                        expr.TextureExp.idxLink = newTexturesPackage.UIndex;
+                    }
                     textureParameters.Add(expr.ToStruct());
                 }
             }
@@ -383,6 +404,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
             var matInstConst = ExportCreator.CreateExport(matExp.FileRef, name,
                 "MaterialInstanceConstant", matExp.Parent, indexed: false);
+            if (matExp.Parent != null)
+            {
+                // Set as ForcedExport as we are 'forced' into subpackage export
+                matExp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+            }
 
             var matInstConstProps = matInstConst.GetProperties();
             var lightingParent = matExp.GetProperty<StructProperty>("LightingGuid");
