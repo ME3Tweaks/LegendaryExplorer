@@ -78,7 +78,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         {
             TextureParameterMatEd te = new TextureParameterMatEd();
             var props = expression.GetProperties();
-            te.ParameterName = props.GetProp<NameProperty>("ParameterName").Value.Instanced;
+            te.ParameterName = props.GetProp<NameProperty>("ParameterName")?.Value.Instanced ?? "None";
             te.ParameterValue = props.GetProp<ObjectProperty>("Texture").Value; // This is the Object reference
             te.ExpressionGUID = props.GetProp<StructProperty>("ExpressionGUID");
             te.IsDefaultParameter = true;
@@ -176,6 +176,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             else
             {
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, other.TextureExp, TextureExp.FileRef, TextureExp, true, new RelinkerOptionsPackage(), out _);
+                TextureExp.ObjectName = new NameReference(TextureExp.ObjectName.Name + $"_LLE{new Random().Next(5000)}", 0);
             }
             MatEditorTextureLoader.InitTexture(this, TextureExp.FileRef, TextureExp.UIndex, cache); // Reload the texture
             IsDefaultParameter = false;

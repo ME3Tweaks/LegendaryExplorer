@@ -411,15 +411,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ImportBankTest(GetPEWindow());
         }
 
-        private void MakeVTestDonor_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.ConvertMaterialToDonor(GetPEWindow());
-        }
-        private void RunMaterialInstanceScreenshot_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.StartMatScreenshot(GetPEWindow());
-        }
-
         private void BuildPreviewLevel_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.BuildPreviewLevel(GetPEWindow());
@@ -485,11 +476,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.TestCurrentPackageForUnknownBinary(GetPEWindow());
         }
 
-        private void TestCrossGenClassPort_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.TestCrossGenClassPorting(GetPEWindow());
-        }
-
         private void CheckNeverStream_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CheckNeverstream(GetPEWindow());
@@ -516,11 +502,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         }
 
         private void CoalesceBioActorTypesLE1_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
-        }
-
-        private void ForceVignetteOff_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CoalesceBioActorTypes(GetPEWindow());
         }
@@ -560,78 +541,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.CheckAllGameImports(GetPEWindow().Pcc);
         }
 
-        private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
-        {
-            var pew = GetPEWindow();
-            string myBasePath = ME1Directory.DefaultGamePath;
-            string[] extensions = [".u", ".upk"];
-            FileInfo[] files = new DirectoryInfo(ME1Directory.CookedPCPath)
-                .EnumerateFiles("*", SearchOption.AllDirectories)
-                .Where(f => extensions.Contains(f.Extension.ToLower()))
-                .ToArray();
-            int i = 1;
-            var stringMapping = new SortedDictionary<int, KeyValuePair<string, List<string>>>();
-            foreach (FileInfo f in files)
-            {
-                pew.StatusBar_LeftMostText.Text = $"[{i}/{files.Length}] Scanning {f.FullName}";
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                int basePathLen = myBasePath.Length;
-                using IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName);
-                List<ExportEntry> tlkExports = pack.Exports.Where(x =>
-                    (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
-                if (tlkExports.Count > 0)
-                {
-                    string subPath = f.FullName.Substring(basePathLen);
-                    Debug.WriteLine($"Found exports in {f.FullName.AsSpan(basePathLen)}");
-                    foreach (ExportEntry exp in tlkExports)
-                    {
-                        var talkFile = new ME1TalkFile(exp);
-                        foreach (var sref in talkFile.StringRefs)
-                        {
-                            if (sref.StringID == 0) continue; //skip blank
-                            if (sref.Data is null or "-1" or "") continue; //skip blank
-
-                            if (!stringMapping.TryGetValue(sref.StringID, out var dictEntry))
-                            {
-                                dictEntry = new KeyValuePair<string, List<string>>(sref.Data, []);
-                                stringMapping[sref.StringID] = dictEntry;
-                            }
-
-                            if (sref.StringID == 158104)
-                            {
-                                Debugger.Break();
-                            }
-
-                            dictEntry.Value.Add($"{subPath} in uindex {exp.UIndex} \"{exp.ObjectName}\"");
-                        }
-                    }
-                }
-
-                i++;
-            }
-
-            int total = stringMapping.Count;
-            using (StreamWriter file = new StreamWriter(@"C:\Users\Public\SuperTLK.txt"))
-            {
-                pew.StatusBar_LeftMostText.Text = "Writing... ";
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                foreach (KeyValuePair<int, KeyValuePair<string, List<string>>> entry in stringMapping)
-                {
-                    // do something with entry.Value or entry.Key
-                    file.WriteLine(entry.Key);
-                    file.WriteLine(entry.Value.Key);
-                    foreach (string fi in entry.Value.Value)
-                    {
-                        file.WriteLine(" - " + fi);
-                    }
-
-                    file.WriteLine();
-                }
-            }
-
-            pew.StatusBar_LeftMostText.Text = "Done";
-        }
-
         private void ListNetIndexes_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ListNetIndexes(GetPEWindow());
@@ -662,11 +571,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void GenerateGUIDCacheForFolder_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.GenerateGUIDCacheForFolder(GetPEWindow());
-        }
-
-        private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.MakeAllGrenadesAndAmmoRespawn(GetPEWindow());
         }
 
         private void PrintTerrainsBySize_Click(object sender, RoutedEventArgs e)
@@ -707,20 +611,9 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             Task.Run(() => PackageEditorExperimentsM.CheckImports(pew.Pcc)).ContinueWithOnUIThread(prevTask => { pew.IsBusy = false; });
         }
 
-        private void ResolveAllGameImports_Clicked(object sender, RoutedEventArgs e)
-        {
-            var pew = GetPEWindow();
-            Task.Run(() => PackageEditorExperimentsM.CheckAllGameImports(pew.Pcc)).ContinueWithOnUIThread(prevTask => { pew.IsBusy = false; });
-        }
-
         private void TintAllNormalizedAverageColor_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.TintAllNormalizedAverageColors(GetPEWindow().Pcc);
-        }
-
-        private void RebuildLevelNetindexing_Clicked(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.RebuildFullLevelNetindexes();
         }
 
         private void BuildNativeTable_OnClick(object sender, RoutedEventArgs e)
@@ -830,10 +723,6 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.StripLightmap(GetPEWindow());
         }
 
-        private void FixFXAMemoryNames_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsM.FixFXAMemoryNames(GetPEWindow());
-        }
         private void ConvertExportToImport_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ConvertExportToImport(GetPEWindow());

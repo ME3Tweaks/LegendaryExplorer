@@ -122,7 +122,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             PropertyCollection props = new PropertyCollection();
             props.Add(new NameProperty(ParameterName, "ParameterName"));
 
-            if (Property.StructType == "SMAVectorParameter")
+            if (Property != null && Property.StructType == "SMAVectorParameter")
             {
                 props.Add(StructTools.ToFourPartFloatStruct("LinearColor", true, ParameterValue.W, ParameterValue.X, ParameterValue.Y, ParameterValue.Z,
                     "R", "G", "B", "A", "Parameter"));

@@ -50,13 +50,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     /// </summary>
     public static class PackageEditorExperimentsM
     {
-        private static MaterialScreenshotLE1 msLE1; // Don't fall out of scope
-        public static void StartMatScreenshot(PackageEditorWindow pe)
-        {
-            msLE1 = new MaterialScreenshotLE1();
-            msLE1.StartWorkflow(pe);
-        }
-
         public static void BuildPreviewLevel(PackageEditorWindow pe)
         {
             var package = PreviewLevelBuilder.BuildAssetViewerLevel(MEGame.LE3);
@@ -1291,39 +1284,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        // For making testing materials faster
-        public static void ConvertMaterialToDonor(PackageEditorWindow pe)
-        {
-            if (pe.Pcc != null && pe.TryGetSelectedExport(out var exp) && (exp.ClassName == "Material" || exp.ClassName == "MaterialInstanceConstant"))
-            {
-                var donorFullName = PromptDialog.Prompt(pe, "Enter instanced full path of donor this is for", "Material Donor");
-                if (string.IsNullOrEmpty(donorFullName))
-                    return;
-                var donorPath = Path.Combine(ModManagerIntegration.GetDonorOutputPath(), $"{donorFullName}.pcc");
-                MEPackageHandler.CreateAndSavePackage(donorPath, pe.Pcc.Game);
-                using var donorPackage = MEPackageHandler.OpenMEPackage(donorPath);
-
-                var parts = donorFullName.Split('.');
-                ExportEntry parent = null;
-                for (int i = 0; i < parts.Length; i++)
-                {
-                    if (i < parts.Length - 1)
-                    {
-                        parent = ExportCreator.CreatePackageExport(donorPackage, parts[i], parent);
-                        parent.indexValue = 0;
-                    }
-                    else
-                    {
-                        exp.ObjectName = parts[i];
-                        EntryExporter.ExportExportToPackage(exp, donorPackage, out var portedEntry);
-                        portedEntry.idxLink = parent?.UIndex ?? 0;
-                        //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, exp, donorPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out var newDonor);
-                    }
-                }
-                donorPackage.Save();
-            }
-        }
-
         public static void GenerateMaterialInstanceConstantFromMaterial(PackageEditorWindow pe)
         {
             if (pe.Pcc != null && pe.TryGetSelectedExport(out var matExp) && (matExp.ClassName == "Material" || matExp.ClassName == "MaterialInstanceConstant"))
@@ -2153,6 +2113,16 @@ defaultproperties
 
         public static void MScanner(PackageEditorWindow pe)
         {
+            if (pe.TryGetSelectedExport(out var exp) && exp.ClassName == "Material")
+            {
+                var bin = ObjectBinary.From<Material>(exp);
+                var json = JsonConvert.SerializeObject(bin);
+                Debug.WriteLine(json);
+            }
+
+            return;
+
+
             var packages = new[] { "Engine.pcc", "SFXGame.pcc", "SFXOnlineFoundation.pcc" };
             foreach (var f in packages)
             {
@@ -3581,26 +3551,6 @@ defaultproperties
             }).ContinueWithOnUIThread(_ => { pe.EndBusy(); });
         }
 
-        public static void PortSequenceObjectClassAcrossGame(PackageEditorWindow pe)
-        {
-            var seqObjsToPort = pe.Pcc.Exports.Where(x => !x.IsDefaultObject && x.SuperClassName == "SequenceAction" && x.IsClass).ToList();
-            var sourceDir = PAEMPaths.VTest_DonorsDir;
-
-            List<string> createdPackages = new List<string>();
-            foreach (var seqObjClass in seqObjsToPort)
-            {
-                var package = seqObjClass.ParentName;
-                var donorDest = Path.Combine(PAEMPaths.VTest_DonorsDir, $"{package}.pcc");
-                if (!createdPackages.Contains(package))
-                {
-                    createdPackages.Add(package);
-                    MEPackageHandler.CreateAndSavePackage(donorDest, pe.Pcc.Game.ToLEVersion());
-                }
-
-                using var p = MEPackageHandler.OpenMEPackage(donorDest);
-            }
-        }
-
         public static void SearchObjectInfos(PackageEditorWindow pe)
         {
             var searchTerm = PromptDialog.Prompt(pe, "Enter key value to search", "ObjectInfos Search");
@@ -3627,55 +3577,6 @@ defaultproperties
                 }
 
                 MessageBox.Show(searchResult);
-            }
-        }
-
-        public static void TestCrossGenClassPorting(PackageEditorWindow pe)
-        {
-            var destFile = Path.Combine(PAEMPaths.VTest_DonorsDir, "BIOC_BaseDLC_Vegas.pcc");
-            var sourceFile = "BIOC_BaseDLC_Vegas.u";
-
-            var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.ME1);
-            if (loadedFiles.TryGetValue(sourceFile, out var vegasU))
-            {
-                using var vegasP = MEPackageHandler.OpenMEPackage(vegasU);
-                MEPackageHandler.CreateAndSavePackage(destFile, MEGame.LE1);
-                using var destP = MEPackageHandler.OpenMEPackage(destFile);
-
-                // BIOC_BASE -> SFXGame
-                var bcBaseIdx = vegasP.findName("BIOC_Base");
-                vegasP.replaceName(bcBaseIdx, "SFXGame");
-
-                // Should probably make method for name correction
-
-                var packageName = Path.GetFileNameWithoutExtension(sourceFile);
-                var link = ExportCreator.CreatePackageExport(destP, packageName);
-
-                List<EntryStringPair> results = new List<EntryStringPair>();
-                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
-                {
-                    IsCrossGame = vegasP.Game != destP.Game,
-                    ImportExportDependencies = true
-                };
-
-                foreach (var v in vegasP.Exports.Where(x => x.IsClass))
-                {
-                    results.AddRange(EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, v, destP, null, true, rop, out _));
-                }
-
-                foreach (var v in destP.Exports.Where(x => x.ObjectName != packageName && x.Parent == null))
-                {
-                    v.idxLink = link.UIndex;
-                }
-
-                destP.Save();
-
-                if (results.Any())
-                {
-                    var b = new ListDialog(results, "Errors porting classes", "The following errors occurred porting classes.", pe);
-                    b.Show();
-                }
-
             }
         }
 

@@ -66,6 +66,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         public ICommand FindUsagesInFileCommand { get; set; }
         public ICommand GoToDefinitionCommand { get; set; }
         public ICommand ToggleCommentCommand { get; set; }
+        public ICommand IncreaseFontSizeCommand { get; set; }
+        public ICommand DecreaseFontSizeCommand { get; set; }
 
         public UnrealScriptIDE() : base("UnrealScript IDE")
         {
@@ -84,6 +86,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             FindUsagesInFileCommand = new GenericCommand(FindUsagesInFile, CanFindReferences);
             GoToDefinitionCommand = new GenericCommand(() => VisualLineDefinitionLinkText.GoToDefinition(contextMenuDefinitionNode, ScrollTo), () => contextMenuDefinitionNode is not null && CurrentFileLib.IsInitialized);
             ToggleCommentCommand = new GenericCommand(ToggleComment, CanToggleComment);
+
+            IncreaseFontSizeCommand = new GenericCommand(() => textEditor.UpdateFontSize(true));
+            DecreaseFontSizeCommand = new GenericCommand(() => textEditor.UpdateFontSize(false));
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
@@ -1151,6 +1156,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     }
                     break;
             }
+        }
+
+        private void TextEditor_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                textEditor.UpdateFontSize(e.Delta > 0);
+                e.Handled = true;
+            }
+        }
+
+        private void TextEditor_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                switch (e.Key)
+                {
+                    case Key.OemPlus:
+                        textEditor.UpdateFontSize(true);
+                        e.Handled = true;
+                        break;
+                    case Key.OemMinus:
+                        textEditor.UpdateFontSize(false);
+                        e.Handled = true;
+                        break;
+                }
+            }
+        }
+
+        private void ThemePicker_OnClick(object sender, RoutedEventArgs e)
+        {
+            new IdeThemePicker(Window.GetWindow(this)).Show();
         }
     }
 }

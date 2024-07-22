@@ -4,18 +4,11 @@ using ICSharpCode.AvalonEdit.Rendering;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
-    public class ASTColorizer : HighlightingColorizer
+    public class ASTColorizer(SyntaxInfo syntaxInfo) : HighlightingColorizer
     {
-        private readonly SyntaxInfo SyntaxInfo;
-
-        public ASTColorizer(SyntaxInfo syntaxInfo)
-        {
-            SyntaxInfo = syntaxInfo;
-        }
-
         protected override IHighlighter CreateHighlighter(TextView textView, TextDocument document)
         {
-            return new ASTHighlighter(document, SyntaxInfo);
+            return new ASTHighlighter(document, syntaxInfo);
         }
     }
 }

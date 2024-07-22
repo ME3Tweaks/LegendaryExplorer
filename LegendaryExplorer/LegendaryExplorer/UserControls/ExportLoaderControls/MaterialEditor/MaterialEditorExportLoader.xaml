@@ -85,7 +85,7 @@
         </DataTemplate>
     </UserControl.Resources>
     <DockPanel>
-        <StatusBar DockPanel.Dock="Top" HorizontalContentAlignment="Stretch" Visibility="{Binding IsReadOnly, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+        <StatusBar DockPanel.Dock="Top" HorizontalContentAlignment="Stretch" Visibility="{Binding ShowSaveBar, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Button Content="Save changes" Padding="8,4" HorizontalAlignment="Right" Command="{Binding SaveChangesCommand}" VerticalAlignment="Center"/>
             <TextBlock Text="Has unsaved changes" Foreground="Red" Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center"/>
             <CheckBox Content="Auto save changes" VerticalAlignment="Center" IsChecked="{Binding UpdatesTakeEffectInstantly}"/>
