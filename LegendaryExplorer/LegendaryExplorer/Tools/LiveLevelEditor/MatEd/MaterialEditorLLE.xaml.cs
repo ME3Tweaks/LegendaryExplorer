@@ -78,7 +78,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             InitializeComponent();
             MEELC.ScalarValueChanged += UpdateScalarParameter;
             MEELC.VectorValueChanged += UpdateVectorParameter;
-
+            MEELC.ShowSaveBar = false;
             GameTarget = GameController.GetInteropTargetForGame(Game);
             if (GameTarget is null)
             {
@@ -206,7 +206,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             if (AutoUpdateOnChanges && sender is ScalarParameter obj)
             {
                 // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_SCALAR_EXPRESSION} {SelectedComponentSlot.SlotIdx} {obj.ParameterName} {obj.ParameterValue}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_SCALAR_EXPRESSION} {SelectedComponentSlot.SlotIdx} \"{obj.ParameterName}\" {obj.ParameterValue}", Game);
             }
         }
 
@@ -215,7 +215,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             if (AutoUpdateOnChanges && sender is VectorParameter obj)
             {
                 // Floats sent to game must use localization-specific strings as they will be interpreted by the current locale
-                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_VECTOR_EXPRESSION} {SelectedComponentSlot.SlotIdx} {obj.ParameterName} {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_VECTOR_EXPRESSION} {SelectedComponentSlot.SlotIdx} \"{obj.ParameterName}\" {obj.ParameterValue.W} {obj.ParameterValue.X} {obj.ParameterValue.Y} {obj.ParameterValue.Z}", Game);
             }
         }
 
@@ -355,11 +355,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 Cache = cache,
                 PortImportsMemorySafe = true,
             };
-            var idxLink = otherMat.idxLink;
-            var package = ExportCreator.CreatePackageExport(otherMat.FileRef, "LLEMatEd");
-            otherMat.idxLink = package.UIndex;
             EntryExporter.ExportExportToPackage(otherMat, newPackage, out var newentry, cache, rop);
-            otherMat.idxLink = idxLink; // Restore the export
             if (newentry is ExportEntry exp)
             {
                 if (exp.ClassName.CaseInsensitiveEquals("Material"))
@@ -367,6 +363,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                     // Convert it for editor? // this is for MLE
                     exp = MEELC.ConvertMaterialToInstance(exp);
                 }
+                var package = ExportCreator.CreatePackageExport(exp.FileRef, "LLEMatEd");
+                exp.idxLink = package.UIndex; // Move under our custom package
                 MEELC.LoadExport(exp);
             }
         }
@@ -374,6 +372,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         public void SendToGame()
         {
             // Prepare for shipment
+            SerializeMaterialSettingsToPackage();
             var package = MatInfo.MaterialExport.FileRef.SaveToStream(false); // Don't waste time compressing
             package.Position = 0;
             var newP = MEPackageHandler.OpenMEPackageFromStream(package, "LLEMaterialPackage.pcc");
@@ -419,13 +418,17 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 if (MatInfo.Expressions.Any())
                 {
                     // We need to convert this to a material instance constant
-                    MEELC.CommitSettingsToMIC(MEELC.ConvertMaterialToInstance(MatInfo.MaterialExport));
+                    var package = ExportCreator.CreatePackageExport(MEELC.CurrentLoadedExport.FileRef, "LLEMatEd_ChangedTextures");
+                    var inst = MEELC.ConvertMaterialToInstance(MatInfo.MaterialExport);
+                    MEELC.CommitSettingsToMIC(inst, package);
+                    inst.idxLink = package.UIndex; // Move under here
                 }
             }
 
             if (MatInfo.MaterialExport.IsA("MaterialInstanceConstant"))
             {
-                MEELC.CommitSettingsToMIC(MatInfo.MaterialExport);
+                var package = ExportCreator.CreatePackageExport(MEELC.CurrentLoadedExport.FileRef, "LLEMatEd_ChangedTextures");
+                MEELC.CommitSettingsToMIC(MatInfo.MaterialExport, package);
             }
         }
 
