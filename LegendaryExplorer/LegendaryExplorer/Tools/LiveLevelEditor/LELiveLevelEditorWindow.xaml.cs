@@ -721,6 +721,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             string text = actorFilterSearchBox.Text;
             return ae.ActorName.Contains(text, StringComparison.OrdinalIgnoreCase)
                    || ae.Tag is not null && ae.Tag.Contains(text, StringComparison.OrdinalIgnoreCase)
+                   || ae.DisplayText.Contains(text, StringComparison.OrdinalIgnoreCase)
                    || ae.ComponentName is not null && ae.ComponentName.Contains(text, StringComparison.OrdinalIgnoreCase);
         }
 
