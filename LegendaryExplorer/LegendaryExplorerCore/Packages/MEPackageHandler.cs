@@ -522,7 +522,10 @@ namespace LegendaryExplorerCore.Packages
             // 01/12/2024 - Indexed level name is assigned properly
             if (indexedLevelName.Number > 0)
             {
-                pcc.FindExport(indexedLevelName.Name).ObjectName = indexedLevelName;
+                if (pcc.FindExport(indexedLevelName.Name) != null) // udk levels don't have this in them that we create
+                {
+                    pcc.FindExport(indexedLevelName.Name).ObjectName = indexedLevelName;
+                }
             }
 
             var packguid = Guid.NewGuid();

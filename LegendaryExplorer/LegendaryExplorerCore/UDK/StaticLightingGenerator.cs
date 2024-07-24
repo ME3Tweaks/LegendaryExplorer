@@ -153,7 +153,7 @@ namespace LegendaryExplorerCore.UDK
                         relinkMap[matImp] = defMat;
                     }
                 }
-                
+
                 foreach (ExportEntry stmExport in staticMeshes)
                 {
                     if (relinkMap.TryGetValue(stmExport, out IEntry destEnt) && destEnt is ExportEntry destExp)
@@ -164,8 +164,29 @@ namespace LegendaryExplorerCore.UDK
             }
             #endregion
 
-            relinkerOptionsPackage = null;
+            // This is absolutely horrendous performance. We should use EntryTree
+            foreach (var export in meshPackage.Exports.OrderBy(x => x.InstancedFullPath.Length).ToList())
+            {
+                var parent = export.Parent;
+                while (parent != null)
+                {
+                    var nextParent = parent.Parent; // cache cause trashing will change parents
+                    if (parent is ImportEntry imp)
+                    {
+                        if (!EntryImporter.FilesSafeToImportFrom(MEGame.UDK)
+                                .Select(Path.GetFileNameWithoutExtension)
+                                .Contains(imp.GetRootName(), StringComparer.OrdinalIgnoreCase))
+                        {
+                            // File is not safe to import from
+                            ConvertPackageImportToExport(imp, nextParent == null);
+                        }
+                    }
+                    parent = nextParent;
+                }
+            }
 
+            relinkerOptionsPackage = null;
+            (meshPackage as UDKPackage).FixupTrash();
             meshPackage.Save();
 
             #endregion
@@ -547,6 +568,48 @@ namespace LegendaryExplorerCore.UDK
                 udkPackage2.Save(resultFilePath);
             }
             return resultFilePath;
+        }
+
+        private static void ConvertPackageImportToExport(ImportEntry imp, bool isRoot)
+        {
+            var impName = imp.ObjectName;
+            imp.ObjectName = "portingTemp";
+            var newExport = ExportCreator.CreatePackageExport(imp.FileRef, impName, imp.Parent, forcedExport: true);
+            if (isRoot)
+            {
+                newExport.PackageFlags |= UnrealFlags.EPackageFlags.Cooked;
+            }
+
+            var relinkMap = new ListenableDictionary<IEntry, IEntry>();
+
+            foreach (var imp2 in imp.FileRef.Imports)
+            {
+                if (imp2 == imp)
+                {
+                    relinkMap[imp2] = newExport;
+                }
+                else
+                {
+                    relinkMap[imp2] = imp2; // Nothing is changing.
+                }
+
+                if (imp2.idxLink == imp.UIndex)
+                    imp2.idxLink = newExport.UIndex;
+            }
+            foreach (var exp in imp.FileRef.Exports)
+            {
+                // Move to new parent.
+                if (exp.idxLink == imp.UIndex)
+                    exp.idxLink = newExport.UIndex;
+                relinkMap[exp] = exp; // Nothing is changing.
+            }
+            var rop = new RelinkerOptionsPackage() { CrossPackageMap = relinkMap };
+            Relinker.RelinkAll(rop);
+
+
+
+            // Technically we should copy the original export's data... like info on Package export
+            EntryPruner.TrashEntries(imp.FileRef, [imp]); // Get rid of the original
         }
 
         private static void UDKifyLights(IMEPackage pcc)
