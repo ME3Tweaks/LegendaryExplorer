@@ -52,6 +52,12 @@ namespace LegendaryExplorerCore.Packages
             {
                 Class = EntryImporter.EnsureClassIsInFile(pcc, className, rop)
             };
+            if (parent is ImportEntry or ExportEntry { IsForcedExport: true })
+            {
+                // Import parents will always yield forced export since we are in a different package.
+                exp.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+            }
+
             relinkResultsAvailable?.Invoke(rop.RelinkReport);
             pcc.AddExport(exp);
 

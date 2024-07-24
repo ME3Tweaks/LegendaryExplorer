@@ -357,6 +357,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                 }
                 bool usingDonor = false;
+                bool usingRedirectedObject = false;
                 if (donorFiles != null && donorFiles.Any())
                 {
                     // See if any packages are open in our cache that already contain this asset
@@ -403,6 +404,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             if (testExp == null)
                                 testExp = donorPackage.FindExport(seIFP); // Try without specific class.
 
+                            // 07/20/2024 - support using object redirector for cleaner custom object insertion
+                            if (testExp.ClassName.CaseInsensitiveEquals("ObjectRedirector"))
+                            {
+                                // Follow redirect to different object.
+                                var redir = ObjectBinary.From<ObjectRedirector>(testExp);
+                                testExp = testExp.FileRef.GetUExport(redir.DestinationObject);
+                                usingRedirectedObject = true;
+                            }
+
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
                                 sourceExport = testExp;
@@ -416,7 +426,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             if (testExp.ClassName != sourceExport.ClassName)
                             {
                                 // have to manually try to find the export...
-                                var properDonor = donorPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == seIFP && x.ClassName == sourceExport.ClassName);
+                                var properDonor = donorPackage.FindExport(seIFP, sourceExport.ClassName);
 
                                 if (properDonor == null)
                                 {
@@ -444,6 +454,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             var testExp = donorPackage.FindExport(ifp, sourceExport.ClassName);
                             if (testExp == null)
                                 testExp = donorPackage.FindExport(ifp); // Try without specific class, perhaps it changed across games.
+
+                            // 07/20/2024 - support using object redirector for cleaner custom object insertion
+                            if (testExp.ClassName.CaseInsensitiveEquals("ObjectRedirector"))
+                            {
+                                // Follow redirect to different object.
+                                var redir = ObjectBinary.From<ObjectRedirector>(testExp);
+                                testExp = testExp.FileRef.GetUExport(redir.DestinationObject);
+                                usingRedirectedObject = true;
+                            }
+
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant")) // Use GFxMovieInfo Donors for BioSWF export
                             {
                                 sourceExport = testExp;
@@ -482,6 +502,24 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             NonDonorItems.Add(entryStr);
                         }
                     }
+                }
+
+                // Check if a redirected object was used
+
+                // Test if redirected object is already in the package
+                // Would be nice if this could be done as import. But that'd break a lot of stuff.
+                if (usingRedirectedObject && usingDonor)
+                {
+                    if (destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName) != null)
+                        return destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName);
+                }
+
+                // 07/20/2024 - Add custom way to handle donor importing for users of LEC
+                if (usingDonor && rop.CustomDonorImporter != null)
+                {
+                    var result =  rop.CustomDonorImporter(destPackage, sourceExport, rop);
+                    if (result != null)
+                        return result;
                 }
             }
 
@@ -708,7 +746,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
         internal static void ApplyCrossGamePropertyFixes(ExportEntry sourceExport, IMEPackage destPackage, PropertyCollection props)
         {
-            // 06/25/2022 - Support corrections to allow more sucessful porting
+            // 06/25/2022 - Support corrections to allow more successful porting
             // Mgamerz
 
             // Doesn't go backwards for OT since they use different Wwise versions

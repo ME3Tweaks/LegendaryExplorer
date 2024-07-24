@@ -1180,6 +1180,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             AddCore("DelegateProperty", "Property");
             AddCore("StringRefProperty", "Property");
 
+            if (game == MEGame.LE3)
+            {
+                // Exists in executable but is not in any package file, so was not exposed to packages.
+                AddCore("ObjectRedirector", "Object");
+            }
+
             classes["LevelBase"] = new ClassInfo
             {
                 baseClass = "Object",
