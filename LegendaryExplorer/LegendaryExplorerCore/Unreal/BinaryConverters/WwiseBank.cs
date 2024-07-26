@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint Unk2; //Game2
         public byte[] BnkFile; // Raw Bank file
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (!sc.Game.IsGame2() && !sc.Game.IsGame3())
             {
@@ -44,7 +44,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                BnkFile = Array.Empty<byte>()
+                BnkFile = []
             };
         }
 
@@ -108,9 +108,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint ID;
         public uint Version;
 
-        public UMultiMap<uint, byte[]> EmbeddedFiles = new(); //TODO: Make this a UMap?
-        public UMultiMap<uint, HIRCObject> HIRCObjects = new(); //TODO: Make this a UMap?
-        public UMultiMap<uint, string> ReferencedBanks = new(); //TODO: Make this a UMap?
+        public UMultiMap<uint, byte[]> EmbeddedFiles = []; //TODO: Make this a UMap?
+        public UMultiMap<uint, HIRCObject> HIRCObjects = []; //TODO: Make this a UMap?
+        public UMultiMap<uint, string> ReferencedBanks = []; //TODO: Make this a UMap?
 
         public WwiseStateManagement InitStateManagement;//Only present in Init bank. ME3 version
         private byte[] ME2STMGFallback; //STMG chunk for ME2 isn't decoded yet
@@ -121,18 +121,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         #region Serialization
 
-        private static readonly uint bkhd = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("BKHD"), 0);
-        private static readonly uint stmg = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("STMG"), 0);
-        private static readonly uint didx = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("DIDX"), 0);
-        private static readonly uint data = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("DATA"), 0);
-        private static readonly uint hirc = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("HIRC"), 0);
-        private static readonly uint stid = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("STID"), 0);
-        private static readonly uint envs = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("ENVS"), 0);
-        private static readonly uint fxpr = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("FXPR"), 0);
-        private static readonly uint init = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("INIT"), 0);
-        private static readonly uint plat = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("PLAT"), 0);
+        private static readonly uint bkhd = BitConverter.ToUInt32("BKHD"u8);
+        private static readonly uint stmg = BitConverter.ToUInt32("STMG"u8);
+        private static readonly uint didx = BitConverter.ToUInt32("DIDX"u8);
+        private static readonly uint data = BitConverter.ToUInt32("DATA"u8);
+        private static readonly uint hirc = BitConverter.ToUInt32("HIRC"u8);
+        private static readonly uint stid = BitConverter.ToUInt32("STID"u8);
+        private static readonly uint envs = BitConverter.ToUInt32("ENVS"u8);
+        private static readonly uint fxpr = BitConverter.ToUInt32("FXPR"u8);
+        private static readonly uint init = BitConverter.ToUInt32("INIT"u8);
+        private static readonly uint plat = BitConverter.ToUInt32("PLAT"u8);
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
 
@@ -203,7 +203,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
 
-        private void ReadChunks(SerializingContainer2 sc)
+        private void ReadChunks(SerializingContainer sc)
         {
             while (sc.ms.Position < sc.ms.Length)
             {
@@ -340,7 +340,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        private void WriteChunks(SerializingContainer2 sc)
+        private void WriteChunks(SerializingContainer sc)
         {
             EndianWriter writer = sc.ms.Writer;
             if (EmbeddedFiles.Count > 0)
@@ -496,7 +496,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public virtual int DataLength(MEGame game) => unparsed.Length + 4;
             public byte[] unparsed;
 
-            public static HIRCObject Create(SerializingContainer2 sc)
+            public static HIRCObject Create(SerializingContainer sc)
             {
                 HIRCType type = (HIRCType)((sc.Game is MEGame.ME2) ? (byte)sc.ms.ReadInt32() : sc.ms.ReadByte());
                 int len = sc.ms.ReadInt32();
@@ -578,7 +578,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return ms.ToArray();
             }
 
-            public static SoundSFXVoice Create(SerializingContainer2 sc, uint id, int len)
+            public static SoundSFXVoice Create(SerializingContainer sc, uint id, int len)
             {
                 SoundSFXVoice sfxVoice = new SoundSFXVoice
                 {
@@ -645,7 +645,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 clone.EventActions = EventActions.Clone();
                 return clone;
             }
-            public static Event Create(SerializingContainer2 sc, uint id)
+            public static Event Create(SerializingContainer sc, uint id)
             {
                 var list = new List<uint>();
                 int count = sc.Game.IsLEGame() ? sc.ms.ReadByte() : sc.ms.ReadInt32();
@@ -723,7 +723,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ms.WriteFromBuffer(unparsed);
                 return ms.ToArray();
             }
-            public static EventAction Create(SerializingContainer2 sc, uint id, int len)
+            public static EventAction Create(SerializingContainer sc, uint id, int len)
             {
                 var action = new EventAction
                 {

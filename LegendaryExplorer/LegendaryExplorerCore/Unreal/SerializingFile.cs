@@ -4,7 +4,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 
 namespace LegendaryExplorerCore.Unreal
 {
-    [Obsolete($"{nameof(BinaryConverters.SerializingContainer2)} is a better implementation of the same concept.")]
+    [Obsolete($"{nameof(BinaryConverters.SerializingContainer)} is a better implementation of the same concept.")]
     internal struct SerializingFile
     {
         public bool isLoading;

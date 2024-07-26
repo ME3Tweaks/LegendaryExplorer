@@ -12,10 +12,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public MorphLODModel[] MorphLODModels;
         public BoneOffset[] BoneOffsets;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref MorphLODModels, SCExt.Serialize);
-            sc.Serialize(ref BoneOffsets, SCExt.Serialize);
+            sc.Serialize(ref MorphLODModels, sc.Serialize);
+            sc.Serialize(ref BoneOffsets, sc.Serialize);
         }
 
         public static MorphTarget Create()
@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public override List<(NameReference, string)> GetNames(MEGame game) => new List<(NameReference, string)>(BoneOffsets.Select((offset, i) => (offset.Bone, $"BoneOffsets[{i}]")));
+        public override List<(NameReference, string)> GetNames(MEGame game) => BoneOffsets.Select((offset, i) => (offset.Bone, $"BoneOffsets[{i}]")).ToList();
 
         [StructLayout(LayoutKind.Sequential)]
         public struct MorphVertex
@@ -50,53 +50,54 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public unsafe static void Serialize(SerializingContainer2 sc, ref MorphTarget.MorphVertex vert)
+        public unsafe void Serialize(ref MorphTarget.MorphVertex vert)
         {
-            if (sc.ms.Endian.IsNative)
+            if (ms.Endian.IsNative)
             {
+                //MorphVertex has 18 bytes of data, but aligned size is 20
                 Span<byte> span = stackalloc byte[20];
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
                     span.Clear();
-                    sc.ms.Read(span[..18]);
+                    ms.Read(span[..18]);
                     vert = MemoryMarshal.Read<MorphTarget.MorphVertex>(span);
                 }
                 else
                 {
                     MemoryMarshal.Write(span, in vert);
-                    sc.ms.Writer.Write(span[..18]);
+                    ms.Writer.Write(span[..18]);
                 }
             }
             else
             {
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
                     vert = new MorphTarget.MorphVertex();
                 }
-                sc.Serialize(ref vert.PositionDelta);
-                sc.Serialize(ref vert.TangentZDelta);
-                sc.Serialize(ref vert.SourceIdx);
+                Serialize(ref vert.PositionDelta);
+                Serialize(ref vert.TangentZDelta);
+                Serialize(ref vert.SourceIdx);
             }
         }
-        public static void Serialize(SerializingContainer2 sc, ref MorphTarget.MorphLODModel lod)
+        public void Serialize(ref MorphTarget.MorphLODModel lod)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 lod = new MorphTarget.MorphLODModel();
             }
-            sc.Serialize(ref lod.Vertices, Serialize);
-            sc.Serialize(ref lod.NumBaseMeshVerts);
+            Serialize(ref lod.Vertices, Serialize);
+            Serialize(ref lod.NumBaseMeshVerts);
         }
-        public static void Serialize(SerializingContainer2 sc, ref MorphTarget.BoneOffset boff)
+        public void Serialize(ref MorphTarget.BoneOffset boff)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 boff = new MorphTarget.BoneOffset();
             }
-            sc.Serialize(ref boff.Offset);
-            sc.Serialize(ref boff.Bone);
+            Serialize(ref boff.Offset);
+            Serialize(ref boff.Bone);
         }
     }
 }

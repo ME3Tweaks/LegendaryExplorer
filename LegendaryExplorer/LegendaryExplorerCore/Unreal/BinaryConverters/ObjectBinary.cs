@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static T From<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
         {
             var t = new T { Export = export };
-            t.Serialize(new SerializingContainer2(export.GetReadOnlyBinaryStream(), export.FileRef, true, export.DataOffset + export.propsEnd(), packageCache));
+            t.Serialize(new SerializingContainer(export.GetReadOnlyBinaryStream(), export.FileRef, true, export.DataOffset + export.propsEnd(), packageCache));
             return t;
         }
 
@@ -464,7 +464,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return GenericObjectBinary.Create();
         }
 
-        protected abstract void Serialize(SerializingContainer2 sc);
+        protected abstract void Serialize(SerializingContainer sc);
 
         /// <summary>
         /// Gets a list of entry references made in this ObjectBinary.
@@ -492,7 +492,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public virtual void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {
-            Serialize(new SerializingContainer2(ms.BaseStream, pcc, false, fileOffset));
+            Serialize(new SerializingContainer(ms.BaseStream, pcc, false, fileOffset));
         }
 
         public virtual byte[] ToBytes(IMEPackage pcc, int fileOffset = 0)
@@ -580,36 +580,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     /// <summary>
     /// Puts all the UIndexes in a List
     /// </summary>
-    public readonly struct UIndexCollector : IUIndexAction
+    public readonly struct UIndexCollector(List<int> uIndexes) : IUIndexAction
     {
-        private readonly List<int> UIndexes;
-
-        public UIndexCollector(List<int> uIndexes)
-        {
-            UIndexes = uIndexes;
-        }
-
         public void Invoke(ref int uIndex, string propName)
         {
-            UIndexes.Add(uIndex);
+            uIndexes.Add(uIndex);
         }
     }
 
     /// <summary>
     /// Puts all the UIndexes and PropNames in a List
     /// </summary>
-    public readonly struct UIndexAndPropNameCollector : IUIndexAction
+    public readonly struct UIndexAndPropNameCollector(List<(int, string)> uindexAndPropNames) : IUIndexAction
     {
-        private readonly List<(int, string)> UindexAndPropNames;
-
-        public UIndexAndPropNameCollector(List<(int, string)> uindexAndPropNames)
-        {
-            UindexAndPropNames = uindexAndPropNames;
-        }
-
         public void Invoke(ref int uIndex, string propName)
         {
-            UindexAndPropNames.Add((uIndex, propName));
+            uindexAndPropNames.Add((uIndex, propName));
         }
     }
 
@@ -623,12 +609,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         //should never be called
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             data = sc.ms.BaseStream.ReadFully();
         }
 
-        public static GenericObjectBinary Create() => new(Array.Empty<byte>());
+        public static GenericObjectBinary Create() => new([]);
 
         public override void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {

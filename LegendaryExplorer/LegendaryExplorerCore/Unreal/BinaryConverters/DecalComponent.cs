@@ -10,16 +10,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public StaticReceiverData[] StaticReceivers;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref StaticReceivers, SCExt.Serialize);
+            sc.Serialize(ref StaticReceivers, sc.Serialize);
         }
 
         public static DecalComponent Create()
         {
             return new()
             {
-                StaticReceivers = Array.Empty<StaticReceiverData>()
+                StaticReceivers = []
             };
         }
         
@@ -60,44 +60,44 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector2 NormalTransform2;//< ME3
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void  Serialize(this SerializingContainer2 sc, ref DecalVertex vert)
+        public void Serialize(ref DecalVertex vert)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 vert = new DecalVertex();
             }
-            sc.Serialize(ref vert.Position);
-            sc.Serialize(ref vert.TangentX);
-            sc.Serialize(ref vert.TangentZ);
-            if (sc.Game < MEGame.ME3)
+            Serialize(ref vert.Position);
+            Serialize(ref vert.TangentX);
+            Serialize(ref vert.TangentZ);
+            if (Game < MEGame.ME3)
             {
-                sc.Serialize(ref vert.ProjectedUVs);
+                Serialize(ref vert.ProjectedUVs);
             }
-            sc.Serialize(ref vert.LightMapCoordinate);
-            if (sc.Game < MEGame.ME3)
+            Serialize(ref vert.LightMapCoordinate);
+            if (Game < MEGame.ME3)
             {
-                sc.Serialize(ref vert.NormalTransform1);
-                sc.Serialize(ref vert.NormalTransform2);
+                Serialize(ref vert.NormalTransform1);
+                Serialize(ref vert.NormalTransform2);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticReceiverData dat)
+        public void Serialize(ref StaticReceiverData dat)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 dat = new StaticReceiverData();
             }
-            sc.Serialize(ref dat.PrimitiveComponent);
-            sc.BulkSerialize(ref dat.Vertices, Serialize, sc.Game >= MEGame.ME3 ? 28 : 52);
-            sc.BulkSerialize(ref dat.Indices, Serialize, 2);
-            sc.Serialize(ref dat.NumTriangles);
-            sc.Serialize(ref dat.LightMap);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref dat.PrimitiveComponent);
+            BulkSerialize(ref dat.Vertices, Serialize, Game >= MEGame.ME3 ? 28 : 52);
+            BulkSerialize(ref dat.Indices, Serialize, 2);
+            Serialize(ref dat.NumTriangles);
+            Serialize(ref dat.LightMap);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref dat.ShadowMap1D, Serialize);
-                sc.Serialize(ref dat.Data);
-                sc.Serialize(ref dat.InstanceIndex);
+                Serialize(ref dat.ShadowMap1D, Serialize);
+                Serialize(ref dat.Data);
+                Serialize(ref dat.InstanceIndex);
             }
         }
     }

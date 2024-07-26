@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int unk1;
         public int unk2;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game.IsGame1() || sc.Game.IsGame2())
             {
@@ -16,6 +16,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static BioGamePropertyEventDispatcher Create() => new BioGamePropertyEventDispatcher();
+        public static BioGamePropertyEventDispatcher Create() => new();
     }
 }

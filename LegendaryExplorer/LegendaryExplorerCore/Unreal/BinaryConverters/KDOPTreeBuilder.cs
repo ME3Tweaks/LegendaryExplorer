@@ -9,14 +9,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         class kDopBuildTriangle
         {
-            public ushort Vertex1;
-            public ushort Vertex2;
-            public ushort Vertex3;
-            public ushort MaterialIndex;
-            public Vector3 Centroid;
-            public Vector3 V0;
-            public Vector3 V1;
-            public Vector3 V2;
+            public readonly ushort Vertex1;
+            public readonly ushort Vertex2;
+            public readonly ushort Vertex3;
+            public readonly ushort MaterialIndex;
+            public readonly Vector3 Centroid;
+            public readonly Vector3 V0;
+            public readonly Vector3 V1;
+            public readonly Vector3 V2;
 
             public kDopBuildTriangle(ushort i1, ushort i2, ushort i3, ushort matIndex, Vector3 v0, Vector3 v1, Vector3 v2)
             {
@@ -33,16 +33,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 : this(tri.Vertex1, tri.Vertex2, tri.Vertex3, tri.MaterialIndex, v0, v1, v2){}
 
             public static implicit operator kDOPCollisionTriangle(kDopBuildTriangle buildTri) =>
-                new kDOPCollisionTriangle(buildTri.Vertex1, buildTri.Vertex2, buildTri.Vertex3, buildTri.MaterialIndex);
+                new(buildTri.Vertex1, buildTri.Vertex2, buildTri.Vertex3, buildTri.MaterialIndex);
         }
 
         public static kDOPTreeCompact ToCompact(kDOPCollisionTriangle[] oldTriangles, Vector3[] vertices)
         {
-            var rootBound = new kDOP
-            {
-                Min = new float[3],
-                Max = new float[3]
-            };
+            var rootBound = new kDOP();
             for (int i = 0; i < 3; i++)
             {
                 rootBound.Max[i] = float.MaxValue;
@@ -54,8 +50,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return new kDOPTreeCompact
                 {
                     RootBound = rootBound,
-                    Nodes = new kDOPCompact[0],
-                    Triangles = new kDOPCollisionTriangle[0]
+                    Nodes = [],
+                    Triangles = []
                 };
             }
 
@@ -147,11 +143,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         static readonly Vector3[] PlaneNormals =
-        {
+        [
             Vector3.UnitX,
             Vector3.UnitY,
             Vector3.UnitZ
-        };
+        ];
 
         static void AddPoint(this kDOP kdop, Vector3 point)
         {

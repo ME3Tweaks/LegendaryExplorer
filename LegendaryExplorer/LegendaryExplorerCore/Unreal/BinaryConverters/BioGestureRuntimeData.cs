@@ -11,16 +11,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UMultiMap<NameReference, BioMeshPropData> m_mapMeshProps;//ME3/2  //TODO: Make this a UMap
         public UMultiMap<NameReference, BioGestCharOverride> m_mapCharTypeOverrides;//ME1  //TODO: Make this a UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref m_mapAnimSetOwners, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref m_mapAnimSetOwners, sc.Serialize, sc.Serialize);
             if (sc.Game.IsGame1())
             {
-                sc.Serialize(ref m_mapCharTypeOverrides, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref m_mapCharTypeOverrides, sc.Serialize, sc.Serialize);
             }
             else
             {
-                sc.Serialize(ref m_mapMeshProps, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref m_mapMeshProps, sc.Serialize, sc.Serialize);
             }
         }
 
@@ -140,73 +140,73 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref BioGestureRuntimeData.BioPropClientEffectParams p)
+        public void Serialize(ref BioGestureRuntimeData.BioPropClientEffectParams p)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 p = new BioGestureRuntimeData.BioPropClientEffectParams();
             }
-            sc.Serialize(ref p.vHitLocation);
-            sc.Serialize(ref p.vHitNormal);
-            sc.Serialize(ref p.nmHitBone);
-            sc.Serialize(ref p.vRayDir);
-            sc.Serialize(ref p.vSpawnValue);
+            Serialize(ref p.vHitLocation);
+            Serialize(ref p.vHitNormal);
+            Serialize(ref p.nmHitBone);
+            Serialize(ref p.vRayDir);
+            Serialize(ref p.vSpawnValue);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref BioGestureRuntimeData.BioMeshPropActionData d)
+        public void Serialize(ref BioGestureRuntimeData.BioMeshPropActionData d)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 d = new BioGestureRuntimeData.BioMeshPropActionData();
             }
-            sc.Serialize(ref d.nmActionName);
-            if (sc.Game.IsGame2())
+            Serialize(ref d.nmActionName);
+            if (Game.IsGame2())
             {
-                sc.Serialize(ref d.sClientEffect);
+                Serialize(ref d.sClientEffect);
             }
-            sc.Serialize(ref d.bActivate);
-            sc.Serialize(ref d.nmAttachTo);
-            sc.Serialize(ref d.vOffsetLocation);
-            sc.Serialize(ref d.rOffsetRotation);
-            sc.Serialize(ref d.vOffsetScale);
-            if (sc.Game.IsGame3())
+            Serialize(ref d.bActivate);
+            Serialize(ref d.nmAttachTo);
+            Serialize(ref d.vOffsetLocation);
+            Serialize(ref d.rOffsetRotation);
+            Serialize(ref d.vOffsetScale);
+            if (Game.IsGame3())
             {
-                sc.Serialize(ref d.sParticleSys);
-                sc.Serialize(ref d.sClientEffect);
-                sc.Serialize(ref d.bCooldown);
-                sc.Serialize(ref d.TSpawnParams);
+                Serialize(ref d.sParticleSys);
+                Serialize(ref d.sClientEffect);
+                Serialize(ref d.bCooldown);
+                Serialize(ref d.TSpawnParams);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref BioGestureRuntimeData.BioMeshPropData d)
+        public void Serialize(ref BioGestureRuntimeData.BioMeshPropData d)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 d = new BioGestureRuntimeData.BioMeshPropData();
             }
-            sc.Serialize(ref d.nmPropName);
-            sc.Serialize(ref d.sMesh);
-            sc.Serialize(ref d.nmAttachTo);
-            sc.Serialize(ref d.vOffsetLocation);
-            sc.Serialize(ref d.rOffsetRotation);
-            sc.Serialize(ref d.vOffsetScale);
-            sc.Serialize(ref d.mapActions, Serialize, Serialize);
+            Serialize(ref d.nmPropName);
+            Serialize(ref d.sMesh);
+            Serialize(ref d.nmAttachTo);
+            Serialize(ref d.vOffsetLocation);
+            Serialize(ref d.rOffsetRotation);
+            Serialize(ref d.vOffsetScale);
+            Serialize(ref d.mapActions, Serialize, Serialize);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref BioGestureRuntimeData.BioGestCharOverride o)
+        public void Serialize(ref BioGestureRuntimeData.BioGestCharOverride o)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 o = new BioGestureRuntimeData.BioGestCharOverride();
             }
-            sc.Serialize(ref o.nm_Female);
-            sc.Serialize(ref o.nm_Asari);
-            sc.Serialize(ref o.nm_Turian);
-            sc.Serialize(ref o.nm_Salarian);
-            sc.Serialize(ref o.nm_Quarian);
-            sc.Serialize(ref o.nm_Other);
-            sc.Serialize(ref o.nm_Krogan);
-            sc.Serialize(ref o.nm_Geth);
-            sc.Serialize(ref o.nm_Other_Artificial);
+            Serialize(ref o.nm_Female);
+            Serialize(ref o.nm_Asari);
+            Serialize(ref o.nm_Turian);
+            Serialize(ref o.nm_Salarian);
+            Serialize(ref o.nm_Quarian);
+            Serialize(ref o.nm_Other);
+            Serialize(ref o.nm_Krogan);
+            Serialize(ref o.nm_Geth);
+            Serialize(ref o.nm_Other_Artificial);
         }
     }
 }

@@ -22,19 +22,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 Bounds = skeletalMesh.Bounds,
                 BodySetup = 0,
-                LODModels = new[] { new StaticMeshRenderData
+                LODModels =
+                [
+                    new StaticMeshRenderData
                 {
                     IndexBuffer = lodModel.IndexBuffer.ArrayClone(),
                     NumVertices = numVertices,
-                    Edges = Array.Empty<MeshEdge>(),
-                    RawTriangles = Array.Empty<StaticMeshTriangle>(),
+                    Edges = [],
+                    RawTriangles = [],
                     ColorVertexBuffer = new ColorVertexBuffer(),
-                    ShadowTriangleDoubleSided = Array.Empty<byte>(),
-                    WireframeIndexBuffer = Array.Empty<ushort>(),
+                    ShadowTriangleDoubleSided = [],
+                    WireframeIndexBuffer = [],
                     ShadowExtrusionVertexBuffer = new ExtrusionVertexBuffer
                     {
                         Stride = 4,
-                        VertexData = Array.Empty<float>()
+                        VertexData = []
                     },
                     PositionVertexBuffer = new PositionVertexBuffer
                     {
@@ -61,12 +63,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                             NumTriangles = (uint)sec.NumTriangles,
                             MaterialIndex = sec.MaterialIndex,
                             Material = skeletalMesh.Materials[sec.MaterialIndex],
-                            Fragments = Array.Empty<FragmentRange>(),
+                            Fragments = [],
                             MinVertexIndex = indices.Min(),
                             MaxVertexIndex = indices.Max()
                         };
                     }).ToArray()
-                } },
+                }
+                ],
                 InternalVersion = 18,
                 LightingGuid = Guid.NewGuid()
             };
@@ -81,7 +84,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     posVertData[i] = vert.Position;
                     stmVertData[i] = new StaticMeshVertexBuffer.StaticMeshFullVertex
                     {
-                        HalfPrecisionUVs = new Vector2DHalf[] { vert.UV },
+                        HalfPrecisionUVs = [vert.UV],
                         TangentX = vert.TangentX,
                         TangentZ = vert.TangentZ
                     };
@@ -95,7 +98,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     posVertData[i] = vert.Position;
                     stmVertData[i] = new StaticMeshVertexBuffer.StaticMeshFullVertex
                     {
-                        HalfPrecisionUVs = new[] { vert.UV },
+                        HalfPrecisionUVs = [vert.UV],
                         TangentX = vert.TangentX,
                         TangentZ = vert.TangentZ
                     };

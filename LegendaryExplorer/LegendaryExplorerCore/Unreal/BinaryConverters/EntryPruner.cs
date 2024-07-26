@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <summary>
         /// The list of arrayproperties on BioWorldInfo to enumerate and remove trashed items from
         /// </summary>
-        private static readonly string[] BWIProperitesToCleanupOnTrash = new string[] { "ClientDestroyedActorContent" }; // Array cause we might add more as we encountered them
+        private static readonly string[] BWIProperitesToCleanupOnTrash = ["ClientDestroyedActorContent"]; // Array cause we might add more as we encountered them
 
         public static void TrashEntriesAndDescendants(IEnumerable<IEntry> itemsToTrash)
         {

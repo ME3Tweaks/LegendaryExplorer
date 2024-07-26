@@ -1747,7 +1747,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private WwiseBankParsed.HIRCObject CreateHircObjectFromHex(byte[] bytes)
         {
-            return WwiseBankParsed.HIRCObject.Create(new SerializingContainer2(new MemoryStream(bytes), Pcc, true));
+            return WwiseBankParsed.HIRCObject.Create(new SerializingContainer(new MemoryStream(bytes), Pcc, true));
         }
 
         private bool CanSearchHIRCHex()

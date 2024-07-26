@@ -19,11 +19,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort NonCriticalBuildVersion;// ME3/UDK
         public ushort LicenseeNonCriticalBuildVersion;// ME3/UDK
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref SourceStaticMesh);
-            sc.Serialize(ref Fragments, SCExt.Serialize);
+            sc.Serialize(ref Fragments, sc.Serialize);
             sc.Serialize(ref CoreFragmentIndex);
             if (sc.Game >= MEGame.ME3)
             {
@@ -51,12 +51,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 Bounds = new BoxSphereBounds(),
                 BodySetup = 0,
-                kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact(Array.Empty<kDOPCollisionTriangle>(), Array.Empty<Vector3>()),
-                LODModels = Array.Empty<StaticMeshRenderData>(),
+                kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact([], []),
+                LODModels = [],
                 HighResSourceMeshName = "",
-                unkFloats = Array.Empty<float>(),
+                unkFloats = [],
                 SourceStaticMesh = 0,
-                Fragments = Array.Empty<FragmentInfo>(),
+                Fragments = [],
                 InteriorElementIndex = -1,
                 CoreMeshScale3D = new Vector3(1, 1, 1),
                 PlaneBias = new Vector3(1, 1, 1),
@@ -96,41 +96,41 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Box ElemBox;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref ConvexHull hull)
+        public void Serialize(ref ConvexHull hull)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 hull = new ConvexHull();
             }
-            sc.Serialize(ref hull.VertexData);
-            sc.Serialize(ref hull.PermutedVertexData, Serialize);
-            sc.Serialize(ref hull.FaceTriData, SCExt.Serialize);
-            sc.Serialize(ref hull.EdgeDirections);
-            sc.Serialize(ref hull.FaceNormalDirections);
-            sc.Serialize(ref hull.FacePlaneData, Serialize);
-            sc.Serialize(ref hull.ElemBox);
+            Serialize(ref hull.VertexData);
+            Serialize(ref hull.PermutedVertexData, Serialize);
+            Serialize(ref hull.FaceTriData, Serialize);
+            Serialize(ref hull.EdgeDirections);
+            Serialize(ref hull.FaceNormalDirections);
+            Serialize(ref hull.FacePlaneData, Serialize);
+            Serialize(ref hull.ElemBox);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref FragmentInfo info)
+        public void Serialize(ref FragmentInfo info)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 info = new FragmentInfo();
             }
-            sc.Serialize(ref info.Center);
-            sc.Serialize(ref info.ConvexHull);
-            sc.Serialize(ref info.Bounds);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref info.Center);
+            Serialize(ref info.ConvexHull);
+            Serialize(ref info.Bounds);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref info.Neighbours);
-                sc.Serialize(ref info.bCanBeDestroyed);
-                sc.Serialize(ref info.bRootFragment);
-                sc.Serialize(ref info.bNeverSpawnPhysicsChunk);
-                sc.Serialize(ref info.AverageExteriorNormal);
-                sc.Serialize(ref info.NeighbourDims, SCExt.Serialize);
+                Serialize(ref info.Neighbours);
+                Serialize(ref info.bCanBeDestroyed);
+                Serialize(ref info.bRootFragment);
+                Serialize(ref info.bNeverSpawnPhysicsChunk);
+                Serialize(ref info.AverageExteriorNormal);
+                Serialize(ref info.NeighbourDims, Serialize);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 info.Neighbours = new byte[info.ConvexHull.FacePlaneData.Length];
                 info.bCanBeDestroyed = true;

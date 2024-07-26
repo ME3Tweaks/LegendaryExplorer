@@ -8,10 +8,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public List<BioCodexPage> Pages;
         public List<BioCodexSection> Sections;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref Sections, SCExt.Serialize);
-            sc.Serialize(ref Pages, SCExt.Serialize);
+            sc.Serialize(ref Sections, sc.Serialize);
+            sc.Serialize(ref Pages, sc.Serialize);
         }
 
         public static BioCodexMap Create()
@@ -66,56 +66,56 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref BioCodexPage page)
+        public void Serialize(ref BioCodexPage page)
         {
-            if (sc.IsLoading) page = new BioCodexPage();
-            sc.Serialize(ref page.ID);
-            sc.Serialize(ref page.InstanceVersion);
-            sc.Serialize(ref page.Title);
-            sc.Serialize(ref page.Description);
-            sc.Serialize(ref page.TextureIndex);
-            sc.Serialize(ref page.Priority);
+            if (IsLoading) page = new BioCodexPage();
+            Serialize(ref page.ID);
+            Serialize(ref page.InstanceVersion);
+            Serialize(ref page.Title);
+            Serialize(ref page.Description);
+            Serialize(ref page.TextureIndex);
+            Serialize(ref page.Priority);
 
             switch (page.InstanceVersion)
             {
                 case 4:
-                    sc.Serialize(ref page.CodexSound);
-                    sc.Serialize(ref page.Section);
+                    Serialize(ref page.CodexSound);
+                    Serialize(ref page.Section);
                     break;
                 case 2:
-                    sc.Serialize(ref page.Section);
-                    sc.Serialize(ref page.CodexSoundString);
+                    Serialize(ref page.Section);
+                    Serialize(ref page.CodexSoundString);
                     break;
 
                 case 3:
-                    if (sc.Game is MEGame.LE1)
+                    if (Game is MEGame.LE1)
                     {
-                        sc.Serialize(ref page.LE1Unk);
-                        sc.Serialize(ref page.Section);
-                        sc.Serialize(ref page.CodexSoundString);
+                        Serialize(ref page.LE1Unk);
+                        Serialize(ref page.Section);
+                        Serialize(ref page.CodexSoundString);
                     }
-                    else sc.Serialize(ref page.Section);
+                    else Serialize(ref page.Section);
                     break;
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioCodexSection section)
+        public void Serialize(ref BioCodexSection section)
         {
-            if (sc.IsLoading) section = new BioCodexSection();
-            sc.Serialize(ref section.ID);
-            sc.Serialize(ref section.InstanceVersion);
-            sc.Serialize(ref section.Title);
-            sc.Serialize(ref section.Description);
-            sc.Serialize(ref section.TextureIndex);
-            sc.Serialize(ref section.Priority);
+            if (IsLoading) section = new BioCodexSection();
+            Serialize(ref section.ID);
+            Serialize(ref section.InstanceVersion);
+            Serialize(ref section.Title);
+            Serialize(ref section.Description);
+            Serialize(ref section.TextureIndex);
+            Serialize(ref section.Priority);
 
             if(section.InstanceVersion >= 3)
             {
-                sc.Serialize(ref section.CodexSound);
+                Serialize(ref section.CodexSound);
             }
-            sc.Serialize(ref section.IsPrimary);
+            Serialize(ref section.IsPrimary);
         }
     }
 }

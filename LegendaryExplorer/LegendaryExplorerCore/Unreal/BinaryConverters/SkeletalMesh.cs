@@ -27,44 +27,44 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float[] unkFloats; //UDK
         public uint unk3; //UDK
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref Bounds);
-            sc.Serialize(ref Materials, SCExt.Serialize);
+            sc.Serialize(ref Materials, sc.Serialize);
             sc.Serialize(ref Origin);
             sc.Serialize(ref RotOrigin);
-            sc.Serialize(ref RefSkeleton, SCExt.Serialize);
+            sc.Serialize(ref RefSkeleton, sc.Serialize);
             sc.Serialize(ref SkeletalDepth);
-            sc.Serialize(ref LODModels, SCExt.Serialize);
-            sc.Serialize(ref NameIndexMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref PerPolyBoneKDOPs, SCExt.Serialize);
+            sc.Serialize(ref LODModels, sc.Serialize);
+            sc.Serialize(ref NameIndexMap, sc.Serialize, sc.Serialize);
+            sc.Serialize(ref PerPolyBoneKDOPs, sc.Serialize);
 
             if (sc.Game >= MEGame.ME3)
             {
                 if (sc.IsSaving && sc.Game == MEGame.UDK)
                 {
-                    ClothingAssets = Array.Empty<UIndex>();
+                    ClothingAssets = [];
                 }
-                sc.Serialize(ref BoneBreakNames, SCExt.Serialize);
-                sc.Serialize(ref ClothingAssets, SCExt.Serialize);
+                sc.Serialize(ref BoneBreakNames, sc.Serialize);
+                sc.Serialize(ref ClothingAssets, sc.Serialize);
             }
             else
             {
-                BoneBreakNames = Array.Empty<string>();
-                ClothingAssets = Array.Empty<UIndex>();
+                BoneBreakNames = [];
+                ClothingAssets = [];
             }
 
             if (sc.Game == MEGame.UDK)
             {
                 sc.Serialize(ref unk1);
                 sc.Serialize(ref unk2);
-                sc.Serialize(ref unkFloats, SCExt.Serialize);
+                sc.Serialize(ref unkFloats, sc.Serialize);
                 sc.Serialize(ref unk3);
             }
             else if (sc.IsLoading)
             {
                 unk1 = 1;
-                unkFloats = new []{1f, 0f, 0f, 0f};
+                unkFloats = [1f, 0f, 0f, 0f];
             }
         }
 
@@ -73,15 +73,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new()
             {
                 Bounds = new BoxSphereBounds(),
-                Materials = Array.Empty<UIndex>(),
-                RefSkeleton = Array.Empty<MeshBone>(),
-                LODModels = Array.Empty<StaticLODModel>(),
-                NameIndexMap = new(),
-                PerPolyBoneKDOPs = Array.Empty<PerPolyBoneCollisionData>(),
-                BoneBreakNames = Array.Empty<string>(),
-                ClothingAssets = Array.Empty<UIndex>(),
+                Materials = [],
+                RefSkeleton = [],
+                LODModels = [],
+                NameIndexMap = [],
+                PerPolyBoneKDOPs = [],
+                BoneBreakNames = [],
+                ClothingAssets = [],
                 unk1 = 1,
-                unkFloats = new[] { 1f, 0f, 0f, 0f }
+                unkFloats = [1f, 0f, 0f, 0f]
             };
         }
 
@@ -213,126 +213,126 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3[] CollisionVerts;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref MeshBone mb)
+        public void Serialize(ref MeshBone mb)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 mb = new MeshBone();
             }
-            sc.Serialize(ref mb.Name);
-            sc.Serialize(ref mb.Flags);
-            sc.Serialize(ref mb.Orientation);
-            sc.Serialize(ref mb.Position);
-            sc.Serialize(ref mb.NumChildren);
-            sc.Serialize(ref mb.ParentIndex);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref mb.Name);
+            Serialize(ref mb.Flags);
+            Serialize(ref mb.Orientation);
+            Serialize(ref mb.Position);
+            Serialize(ref mb.NumChildren);
+            Serialize(ref mb.ParentIndex);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref mb.BoneColor);
+                Serialize(ref mb.BoneColor);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 mb.BoneColor = new SharpDX.Color(255, 255, 255, 255);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref SkelMeshSection sms)
+        public void Serialize(ref SkelMeshSection sms)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 sms = new SkelMeshSection();
             }
-            sc.Serialize(ref sms.MaterialIndex);
-            sc.Serialize(ref sms.ChunkIndex);
-            sc.Serialize(ref sms.BaseIndex);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref sms.MaterialIndex);
+            Serialize(ref sms.ChunkIndex);
+            Serialize(ref sms.BaseIndex);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref sms.NumTriangles);
+                Serialize(ref sms.NumTriangles);
             }
             else
             {
                 ushort tmp = (ushort)sms.NumTriangles;
-                sc.Serialize(ref tmp);
+                Serialize(ref tmp);
                 sms.NumTriangles = tmp;
             }
 
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
-                sc.Serialize(ref sms.TriangleSorting);
+                Serialize(ref sms.TriangleSorting);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref RigidSkinVertex rsv)
+        public void Serialize(ref RigidSkinVertex rsv)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 rsv = new RigidSkinVertex();
             }
-            sc.Serialize(ref rsv.Position);
-            sc.Serialize(ref rsv.TangentX);
-            sc.Serialize(ref rsv.TangentY);
-            sc.Serialize(ref rsv.TangentZ);
-            sc.Serialize(ref rsv.UV);
-            if (sc.Game == MEGame.UDK)
+            Serialize(ref rsv.Position);
+            Serialize(ref rsv.TangentX);
+            Serialize(ref rsv.TangentY);
+            Serialize(ref rsv.TangentZ);
+            Serialize(ref rsv.UV);
+            if (Game == MEGame.UDK)
             {
-                sc.Serialize(ref rsv.UV2);
-                sc.Serialize(ref rsv.UV3);
-                sc.Serialize(ref rsv.UV4);
-                sc.Serialize(ref rsv.BoneColor);
+                Serialize(ref rsv.UV2);
+                Serialize(ref rsv.UV3);
+                Serialize(ref rsv.UV4);
+                Serialize(ref rsv.BoneColor);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 rsv.BoneColor = new SharpDX.Color(255,255,255,255);
             }
-            sc.Serialize(ref rsv.Bone);
+            Serialize(ref rsv.Bone);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref SoftSkinVertex ssv)
+        public void Serialize(ref SoftSkinVertex ssv)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 ssv = new SoftSkinVertex();
             }
-            sc.Serialize(ref ssv.Position);
-            sc.Serialize(ref ssv.TangentX);
-            sc.Serialize(ref ssv.TangentY);
-            sc.Serialize(ref ssv.TangentZ);
-            sc.Serialize(ref ssv.UV);
-            if (sc.Game == MEGame.UDK)
+            Serialize(ref ssv.Position);
+            Serialize(ref ssv.TangentX);
+            Serialize(ref ssv.TangentY);
+            Serialize(ref ssv.TangentZ);
+            Serialize(ref ssv.UV);
+            if (Game == MEGame.UDK)
             {
-                sc.Serialize(ref ssv.UV2);
-                sc.Serialize(ref ssv.UV3);
-                sc.Serialize(ref ssv.UV4);
-                sc.Serialize(ref ssv.BoneColor);
+                Serialize(ref ssv.UV2);
+                Serialize(ref ssv.UV3);
+                Serialize(ref ssv.UV4);
+                Serialize(ref ssv.BoneColor);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 ssv.BoneColor = new SharpDX.Color(255, 255, 255, 255);
             }
-            sc.Serialize(ref ssv.InfluenceBones);
-            sc.Serialize(ref ssv.InfluenceWeights);
+            Serialize(ref ssv.InfluenceBones);
+            Serialize(ref ssv.InfluenceWeights);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref SkelMeshChunk smc)
+        public void Serialize(ref SkelMeshChunk smc)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 smc = new SkelMeshChunk();
             }
-            sc.Serialize(ref smc.BaseVertexIndex);
-            sc.Serialize(ref smc.RigidVertices, Serialize);
-            sc.Serialize(ref smc.SoftVertices, Serialize);
-            sc.Serialize(ref smc.BoneMap);
-            sc.Serialize(ref smc.NumRigidVertices);
-            sc.Serialize(ref smc.NumSoftVertices);
-            sc.Serialize(ref smc.MaxBoneInfluences);
+            Serialize(ref smc.BaseVertexIndex);
+            Serialize(ref smc.RigidVertices, Serialize);
+            Serialize(ref smc.SoftVertices, Serialize);
+            Serialize(ref smc.BoneMap);
+            Serialize(ref smc.NumRigidVertices);
+            Serialize(ref smc.NumSoftVertices);
+            Serialize(ref smc.MaxBoneInfluences);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref SkeletalMeshVertexBuffer svb)
+        public void Serialize(ref SkeletalMeshVertexBuffer svb)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 svb = new SkeletalMeshVertexBuffer();
             }
 
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
                 svb.bUsePackedPosition = true;
             }
@@ -342,73 +342,73 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 svb.bUseFullPrecisionUVs = false;
             }
 
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
                 svb.NumTexCoords = 1;
-                sc.Serialize(ref svb.NumTexCoords);
+                Serialize(ref svb.NumTexCoords);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 svb.NumTexCoords = 1;
             }
-            sc.Serialize(ref svb.bUseFullPrecisionUVs);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref svb.bUseFullPrecisionUVs);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref svb.bUsePackedPosition);
-                sc.Serialize(ref svb.MeshExtension);
-                sc.Serialize(ref svb.MeshOrigin);
+                Serialize(ref svb.bUsePackedPosition);
+                Serialize(ref svb.MeshExtension);
+                Serialize(ref svb.MeshOrigin);
             }
             int elementSize = 32;
-            sc.Serialize(ref elementSize);
+            Serialize(ref elementSize);
 
             //vertexData
             int count = svb.VertexData?.Length ?? 0;
-            sc.Serialize(ref count);
-            if (sc.IsLoading)
+            Serialize(ref count);
+            if (IsLoading)
             {
                 svb.VertexData = new GPUSkinVertex[count];
             }
 
             //slow path
-            if (sc.Game is MEGame.ME2 || svb.bUseFullPrecisionUVs || svb.NumTexCoords > 1 || !sc.ms.Endian.IsNative)
+            if (Game is MEGame.ME2 || svb.bUseFullPrecisionUVs || svb.NumTexCoords > 1 || !ms.Endian.IsNative)
             {
                 for (int j = 0; j < count; j++)
                 {
                     ref GPUSkinVertex gsv = ref svb.VertexData[j];
-                    if (sc.IsLoading)
+                    if (IsLoading)
                     {
                         gsv = new GPUSkinVertex();
                     }
 
-                    if (sc.Game == MEGame.ME2)
+                    if (Game == MEGame.ME2)
                     {
-                        sc.Serialize(ref gsv.Position);
+                        Serialize(ref gsv.Position);
                     }
-                    sc.Serialize(ref gsv.TangentX);
-                    sc.Serialize(ref gsv.TangentZ);
-                    sc.Serialize(ref gsv.InfluenceBones);
-                    sc.Serialize(ref gsv.InfluenceWeights);
-                    if (sc.Game >= MEGame.ME3)
+                    Serialize(ref gsv.TangentX);
+                    Serialize(ref gsv.TangentZ);
+                    Serialize(ref gsv.InfluenceBones);
+                    Serialize(ref gsv.InfluenceWeights);
+                    if (Game >= MEGame.ME3)
                     {
-                        sc.Serialize(ref gsv.Position);
+                        Serialize(ref gsv.Position);
                     }
 
                     if (svb.bUseFullPrecisionUVs)
                     {
                         Vector2 fullUV = gsv.UV;
-                        sc.Serialize(ref fullUV);
+                        Serialize(ref fullUV);
                         gsv.UV = fullUV;
                     }
                     else
                     {
-                        sc.Serialize(ref gsv.UV);
+                        Serialize(ref gsv.UV);
                     }
 
                     if (svb.NumTexCoords > 1)
                     {
-                        if (sc.IsLoading)
+                        if (IsLoading)
                         {
-                            sc.ms.Skip((svb.NumTexCoords - 1) * (svb.bUseFullPrecisionUVs ? 8 : 4));
+                            ms.Skip((svb.NumTexCoords - 1) * (svb.bUseFullPrecisionUVs ? 8 : 4));
                         }
                         else
                         {
@@ -420,108 +420,108 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             //fast path
             else
             {
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
-                    sc.ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
+                    ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
                 }
                 else
                 {
-                    sc.ms.Writer.Write(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
+                    ms.Writer.Write(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
                 }
             }
 
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 svb.NumTexCoords = 1;
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticLODModel slm)
+        public void Serialize(ref StaticLODModel slm)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 slm = new StaticLODModel();
             }
-            sc.Serialize(ref slm.Sections, Serialize);
+            Serialize(ref slm.Sections, Serialize);
             int indexSize = 2;
             slm.DataTypeSize = 2;
-            if (sc.Game == MEGame.UDK && sc.IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
+            if (Game == MEGame.UDK && IsSaving && slm.IndexBuffer.Length > ushort.MaxValue)
             {
                 slm.DataTypeSize = 4;
                 indexSize = 4;
             }
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
                 slm.NeedsCPUAccess = true;
-                sc.Serialize(ref slm.NeedsCPUAccess);
-                sc.Serialize(ref slm.DataTypeSize);
+                Serialize(ref slm.NeedsCPUAccess);
+                Serialize(ref slm.DataTypeSize);
             }
-            sc.Serialize(ref indexSize);
-            if (sc.Game == MEGame.UDK && indexSize == 4)
+            Serialize(ref indexSize);
+            if (Game == MEGame.UDK && indexSize == 4)
             {
                 //have to do this manually due to the size mismatch
                 //as far as I know, despite being saved as uints when the IndexBuffer is longer than ushort.MaxValue,
                 //the actual indicies themselves should not exceed the range of a ushort
                 int count = slm.IndexBuffer?.Length ?? 0;
-                sc.Serialize(ref count);
-                if (sc.IsLoading)
+                Serialize(ref count);
+                if (IsLoading)
                 {
                     slm.IndexBuffer = new ushort[count];
                 }
 
                 for (int i = 0; i < count; i++)
                 {
-                    if (sc.IsLoading)
-                        slm.IndexBuffer[i] = (ushort)sc.ms.ReadUInt32();
+                    if (IsLoading)
+                        slm.IndexBuffer[i] = (ushort)ms.ReadUInt32();
                     else
-                        sc.ms.Writer.WriteUInt32(slm.IndexBuffer[i]);
+                        ms.Writer.WriteUInt32(slm.IndexBuffer[i]);
                 }
             }
             else
             {
-                sc.Serialize(ref slm.IndexBuffer);
+                Serialize(ref slm.IndexBuffer);
             }
-            if (sc.Game != MEGame.UDK)
+            if (Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowIndices);
+                Serialize(ref slm.ShadowIndices);
             }
-            sc.Serialize(ref slm.ActiveBoneIndices);
-            if (sc.Game != MEGame.UDK)
+            Serialize(ref slm.ActiveBoneIndices);
+            if (Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.ShadowTriangleDoubleSided);
+                Serialize(ref slm.ShadowTriangleDoubleSided);
             }
-            sc.Serialize(ref slm.Chunks, Serialize);
-            sc.Serialize(ref slm.Size);
-            sc.Serialize(ref slm.NumVertices);
-            if (sc.Game <= MEGame.LE3 && slm.NumVertices > ushort.MaxValue)
+            Serialize(ref slm.Chunks, Serialize);
+            Serialize(ref slm.Size);
+            Serialize(ref slm.NumVertices);
+            if (Game <= MEGame.LE3 && slm.NumVertices > ushort.MaxValue)
             {
                 throw new Exception($"Mass Effect games do not support SkeletalMeshes with more than {ushort.MaxValue} vertices!");
             }
-            if (sc.Game != MEGame.UDK)
+            if (Game != MEGame.UDK)
             {
-                sc.Serialize(ref slm.Edges, Serialize);
+                Serialize(ref slm.Edges, Serialize);
             }
-            sc.Serialize(ref slm.RequiredBones);
-            if (sc.Game == MEGame.UDK)
+            Serialize(ref slm.RequiredBones);
+            if (Game == MEGame.UDK)
             {
-                int[] UDKRawPointIndices = sc.IsSaving ? Array.ConvertAll(slm.RawPointIndices, u => (int)u) : Array.Empty<int>();
-                sc.SerializeBulkData(ref UDKRawPointIndices, SCExt.Serialize);
+                int[] UDKRawPointIndices = IsSaving ? Array.ConvertAll(slm.RawPointIndices, u => (int)u) : [];
+                SerializeBulkData(ref UDKRawPointIndices, Serialize);
                 slm.RawPointIndices = Array.ConvertAll(UDKRawPointIndices, i => (ushort)i);
             }
             else
             {
-                sc.SerializeBulkData(ref slm.RawPointIndices, SCExt.Serialize);
+                SerializeBulkData(ref slm.RawPointIndices, Serialize);
             }
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
-                sc.Serialize(ref slm.NumTexCoords);
+                Serialize(ref slm.NumTexCoords);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 slm.NumTexCoords = 1;
             }
-            if (sc.Game == MEGame.ME1)
+            if (Game == MEGame.ME1)
             {
-                if (sc.IsSaving && slm.ME1VertexBufferGPUSkin == null)
+                if (IsSaving && slm.ME1VertexBufferGPUSkin == null)
                 {
                     GPUSkinVertex[] vertexData = slm.VertexBufferGPUSkin.VertexData;
                     slm.ME1VertexBufferGPUSkin = new SoftSkinVertex[vertexData.Length];
@@ -544,12 +544,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
 
                 int softSkinVertexSize = 40;
-                sc.Serialize(ref softSkinVertexSize);
-                sc.Serialize(ref slm.ME1VertexBufferGPUSkin, Serialize);
+                Serialize(ref softSkinVertexSize);
+                Serialize(ref slm.ME1VertexBufferGPUSkin, Serialize);
             }
             else
             {
-                if (sc.IsSaving && slm.VertexBufferGPUSkin == null)
+                if (IsSaving && slm.VertexBufferGPUSkin == null)
                 {
                     slm.VertexBufferGPUSkin = new SkeletalMeshVertexBuffer
                     {
@@ -571,82 +571,82 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         };
                     }
                 }
-                sc.Serialize(ref slm.VertexBufferGPUSkin);
+                Serialize(ref slm.VertexBufferGPUSkin);
             }
 
-            if (sc.Game >= MEGame.ME3)
+            if (Game >= MEGame.ME3)
             {
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
                     int vertexInfluenceSize = 0;
-                    sc.Serialize(ref vertexInfluenceSize);
+                    Serialize(ref vertexInfluenceSize);
                     if (vertexInfluenceSize > 0)
                     {
-                        if (sc.Game == MEGame.UDK)
+                        if (Game == MEGame.UDK)
                         {
                             int[] vertexInfluences = null;
-                            sc.Serialize(ref vertexInfluences, SCExt.Serialize);
+                            Serialize(ref vertexInfluences, Serialize);
                             int dummy = 0;
-                            sc.Serialize(ref dummy);
+                            Serialize(ref dummy);
                         }
                         else
                         {
-                            throw new Exception($"VertexInfluences exist on this SkeletalMesh! Mesh in: {sc.Pcc.FilePath}");
+                            throw new Exception($"VertexInfluences exist on this SkeletalMesh! Mesh in: {Pcc.FilePath}");
                         }
                     }
                 }
                 else
                 {
-                    sc.ms.Writer.WriteInt32(0);
+                    ms.Writer.WriteInt32(0);
                 }
             }
 
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
-                sc.Serialize(ref slm.NeedsCPUAccess);
-                sc.Serialize(ref slm.DataTypeSize);
+                Serialize(ref slm.NeedsCPUAccess);
+                Serialize(ref slm.DataTypeSize);
                 int elementSize = 2;
-                sc.Serialize(ref elementSize);
+                Serialize(ref elementSize);
                 if (elementSize == 4)
                 {
-                    var secondIndexBuffer = new uint[0];
-                    sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
+                    uint[] secondIndexBuffer = [];
+                    Serialize(ref secondIndexBuffer, Serialize);
                 }
                 else
                 {
-                    var secondIndexBuffer = new ushort[0];
-                    sc.Serialize(ref secondIndexBuffer, SCExt.Serialize);
+                    ushort[] secondIndexBuffer = [];
+                    Serialize(ref secondIndexBuffer, Serialize);
                 }
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref PerPolyBoneCollisionData bcd)
+        public void Serialize(ref PerPolyBoneCollisionData bcd)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 bcd = new PerPolyBoneCollisionData();
             }
-            if (sc.IsSaving)
+            if (IsSaving)
             {
-                if (sc.Game >= MEGame.ME3 && bcd.kDOPTreeME3UDK == null)
+                if (Game >= MEGame.ME3 && bcd.kDOPTreeME3UDK == null)
                 {
                     bcd.kDOPTreeME3UDK = KDOPTreeBuilder.ToCompact(bcd.kDOPTreeME1ME2.Triangles, bcd.CollisionVerts);
                 }
-                else if (sc.Game <= MEGame.ME2 && bcd.kDOPTreeME1ME2 == null)
+                else if (Game <= MEGame.ME2 && bcd.kDOPTreeME1ME2 == null)
                 {
                     //todo: need to convert kDOPTreeCompact to kDOPTree
                     throw new NotImplementedException("Cannot convert this SkeletalMesh to ME1 or ME2 format :(");
                 }
             }
-            if (sc.Game >= MEGame.ME3)
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref bcd.kDOPTreeME3UDK);
+                Serialize(ref bcd.kDOPTreeME3UDK);
             }
             else
             {
-                sc.Serialize(ref bcd.kDOPTreeME1ME2);
+                Serialize(ref bcd.kDOPTreeME1ME2);
             }
 
-            sc.Serialize(ref bcd.CollisionVerts);
+            Serialize(ref bcd.CollisionVerts);
         }
     }
 }

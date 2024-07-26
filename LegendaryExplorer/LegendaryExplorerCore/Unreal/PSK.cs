@@ -17,7 +17,7 @@ namespace LegendaryExplorerCore.Unreal
 
         private const int version = 1999801;
 
-        protected void Serialize(SerializingContainer2 sc)
+        protected void Serialize(SerializingContainer sc)
         {
             var mainHeader = new PSA.ChunkHeader
             {
@@ -34,7 +34,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Points?.Count ?? 0
             };
             sc.Serialize(ref pointsHeader);
-            sc.Serialize(ref Points, pointsHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Points, pointsHeader.DataCount, sc.Serialize);
             var wedgesHeader = new PSA.ChunkHeader
             {
                 ChunkID = "VTXW0000",
@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Wedges?.Count ?? 0
             };
             sc.Serialize(ref wedgesHeader);
-            sc.Serialize(ref Wedges, wedgesHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Wedges, wedgesHeader.DataCount, sc.Serialize);
             var facesHeader = new PSA.ChunkHeader
             {
                 ChunkID = "FACE0000",
@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Faces?.Count ?? 0
             };
             sc.Serialize(ref facesHeader);
-            sc.Serialize(ref Faces, facesHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Faces, facesHeader.DataCount, sc.Serialize);
             var matsHeader = new PSA.ChunkHeader
             {
                 ChunkID = "MATT0000",
@@ -61,7 +61,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Materials?.Count ?? 0
             };
             sc.Serialize(ref matsHeader);
-            sc.Serialize(ref Materials, matsHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Materials, matsHeader.DataCount, sc.Serialize);
             var bonesHeader = new PSA.ChunkHeader
             {
                 ChunkID = "REFSKELT",
@@ -70,7 +70,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Bones?.Count ?? 0
             };
             sc.Serialize(ref bonesHeader);
-            sc.Serialize(ref Bones, bonesHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Bones, bonesHeader.DataCount, sc.Serialize);
             var weightsHeader = new PSA.ChunkHeader
             {
                 ChunkID = "RAWWEIGHTS",
@@ -79,36 +79,36 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Weights?.Count ?? 0
             };
             sc.Serialize(ref weightsHeader);
-            sc.Serialize(ref Weights, weightsHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Weights, weightsHeader.DataCount, sc.Serialize);
         }
 
         public void ToFile(string filePath)
         {
             using var fs = new FileStream(filePath, FileMode.Create);
-            Serialize(new SerializingContainer2(fs, null));
+            Serialize(new SerializingContainer(fs, null));
         }
 
         public static PSK FromFile(string filePath)
         {
             var psk = new PSK();
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            psk.Serialize(new SerializingContainer2(fs, null, true));
+            psk.Serialize(new SerializingContainer(fs, null, true));
             return psk;
         }
 
         public static PSK CreateFromSkeletalMesh(SkeletalMesh skelMesh, int lodIdx = 0)
         {
-            var lod = skelMesh.LODModels[0];
+            var lod = skelMesh.LODModels[lodIdx];
 
             int numVertices = (int)lod.NumVertices;
             var psk = new PSK
             {
                 Points = new List<Vector3>(numVertices),
-                Wedges = new List<PSKWedge>(),
-                Faces = new List<PSKTriangle>(),
-                Materials = new List<PSKMaterial>(),
-                Bones = new List<PSA.PSABone>(),
-                Weights = new List<PSKWeight>()
+                Wedges = [],
+                Faces = [],
+                Materials = [],
+                Bones = [],
+                Weights = []
             };
             int numTriangles = 0;
             var matIndices = new byte[numVertices];
@@ -206,7 +206,7 @@ namespace LegendaryExplorerCore.Unreal
                     Flags = meshBone.Flags,
                     ParentIndex = meshBone.ParentIndex,
                     NumChildren = meshBone.NumChildren,
-                    Position = new Vector3(meshBone.Position.X, meshBone.Position.Y * -1, meshBone.Position.Z),
+                    Position = meshBone.Position with { Y = meshBone.Position.Y * -1 },
                     Rotation = new Quaternion(meshBone.Orientation.X, meshBone.Orientation.Y * -1, meshBone.Orientation.Z, meshBone.Orientation.W * -1)
                 });
             }
@@ -251,58 +251,58 @@ namespace LegendaryExplorerCore.Unreal
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref PSK.PSKWedge wedge)
+        public void Serialize(ref PSK.PSKWedge wedge)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 wedge = new PSK.PSKWedge();
             }
-            sc.Serialize(ref wedge.PointIndex);
-            sc.SerializeConstShort(0); //Padding
-            sc.Serialize(ref wedge.U);
-            sc.Serialize(ref wedge.V);
-            sc.Serialize(ref wedge.MatIndex);
-            sc.SerializeConstByte(0); //Reserved
-            sc.SerializeConstShort(0); //Padding
+            Serialize(ref wedge.PointIndex);
+            SerializeConstShort(0); //Padding
+            Serialize(ref wedge.U);
+            Serialize(ref wedge.V);
+            Serialize(ref wedge.MatIndex);
+            SerializeConstByte(0); //Reserved
+            SerializeConstShort(0); //Padding
         }
-        public static void Serialize(this SerializingContainer2 sc, ref PSK.PSKTriangle tri)
+        public void Serialize(ref PSK.PSKTriangle tri)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 tri = new PSK.PSKTriangle();
             }
-            sc.Serialize(ref tri.WedgeIdx0);
-            sc.Serialize(ref tri.WedgeIdx1);
-            sc.Serialize(ref tri.WedgeIdx2);
-            sc.Serialize(ref tri.MatIndex);
-            sc.SerializeConstByte(0);
-            sc.SerializeConstInt(0);
+            Serialize(ref tri.WedgeIdx0);
+            Serialize(ref tri.WedgeIdx1);
+            Serialize(ref tri.WedgeIdx2);
+            Serialize(ref tri.MatIndex);
+            SerializeConstByte(0);
+            SerializeConstInt(0);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref PSK.PSKMaterial mat)
+        public void Serialize(ref PSK.PSKMaterial mat)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 mat = new PSK.PSKMaterial();
             }
-            sc.SerializeFixedSizeString(ref mat.Name, 64);
-            sc.Serialize(ref mat.Texture);
-            sc.Serialize(ref mat.polyflags);
-            sc.Serialize(ref mat.auxmaterial);
-            sc.Serialize(ref mat.auxflags);
-            sc.Serialize(ref mat.LODbias);
-            sc.Serialize(ref mat.LODstyle);
+            SerializeFixedSizeString(ref mat.Name, 64);
+            Serialize(ref mat.Texture);
+            Serialize(ref mat.polyflags);
+            Serialize(ref mat.auxmaterial);
+            Serialize(ref mat.auxflags);
+            Serialize(ref mat.LODbias);
+            Serialize(ref mat.LODstyle);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref PSK.PSKWeight w)
+        public void Serialize(ref PSK.PSKWeight w)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 w = new PSK.PSKWeight();
             }
-            sc.Serialize(ref w.Weight);
-            sc.Serialize(ref w.Point);
-            sc.Serialize(ref w.Bone);
+            Serialize(ref w.Weight);
+            Serialize(ref w.Point);
+            Serialize(ref w.Bone);
         }
     }
 }
