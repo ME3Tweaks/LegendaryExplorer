@@ -12,27 +12,17 @@ using LegendaryExplorerCore.Unreal.Collections;
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     [DebuggerDisplay("SC, {IsLoading ? \"Loading\" : \"Saving\"}, Position @ {ms.Position.ToString(\"X8\")}")]
-    public partial class SerializingContainer
+    public partial class SerializingContainer(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0, PackageCache packageCache = null)
     {
-        public readonly PackageCache packageCache;
-        public readonly EndianReader ms;
-        public readonly bool IsLoading;
-        public readonly IMEPackage Pcc;
-        public readonly int startOffset;
-        public readonly MEGame Game;
+        public readonly EndianReader ms = new(stream) { Endian = pcc?.Endian ?? Endian.Little };
+        public readonly bool IsLoading = isLoading;
+        public readonly MEGame Game = pcc?.Game ?? MEGame.Unknown;
+        public readonly PackageCache PackageCache = packageCache;
+        public readonly IMEPackage Pcc = pcc;
+        public readonly int startOffset = offset;
 
         public bool IsSaving => !IsLoading;
         public int FileOffset => startOffset + (int)ms.Position;
-
-        public SerializingContainer(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0, PackageCache packageCache = null)
-        {
-            Game = pcc?.Game ?? MEGame.Unknown;
-            ms = new EndianReader(stream) { Endian = pcc?.Endian ?? Endian.Little };
-            IsLoading = isLoading;
-            Pcc = pcc;
-            startOffset = offset;
-            this.packageCache = packageCache;
-        }
     }
 
     public partial class SerializingContainer

@@ -1036,6 +1036,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsS.RegenCachedPhysBrushData(GetPEWindow());
         }
+        private void JSONSerialize_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsS.JSONSerialize(GetPEWindow());
+        }
 
         #endregion
 

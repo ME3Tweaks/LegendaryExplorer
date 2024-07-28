@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -51,6 +54,32 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 SM2MaterialResource.ForEachUIndex(game, action, "SM2MaterialResource.");
             }
+        }
+
+        public void JsonSerialize(Stream outStream)
+        {
+            if (Export?.FileRef is null)
+            {
+                throw new Exception($"Cannot serialize to JSON a {nameof(Material)} that was not constructed from an {nameof(ExportEntry)}.");
+            }
+            JsonSerializer.Serialize(outStream, this, LEXJSONState.CreateSerializerOptions(Export.FileRef, options: new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new MaterialResource.MaterialResourceJsonConverter()
+                }
+            }));
+        }
+
+        public static Material JsonDeserialize(Stream inStream, IMEPackage pcc, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        {
+            return JsonSerializer.Deserialize<Material>(inStream, LEXJSONState.CreateSerializerOptions(pcc, missingObjectResolver, new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new MaterialResource.MaterialResourceJsonConverter()
+                }
+            }));
         }
     }
     public class MaterialInstance : ObjectBinary
@@ -124,21 +153,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int MaxTextureDependencyLength;
         public Guid ID;
         public uint NumUserTexCoords;
-        public UIndex[] UniformExpressionTextures; //serialized for ME3, but will be set here for ME1 and ME2 as well
-        //begin Not ME3
+        public UIndex[] UniformExpressionTextures; //serialized for ME3/LE, but will be set here for ME1 and ME2 as well
+        //begin ME1/ME2
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
         public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
         public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
-        //end Not ME3
+        //end ME1/ME2
         public bool bUsesSceneColor;
         public bool bUsesSceneDepth;
-        //begin ME3
+        //begin >= ME3
         public bool bUsesDynamicParameter;
         public bool bUsesLightmapUVs;
         public bool bUsesMaterialVertexPositionOffset;
         public bool unkBool1;
-        //end ME3
+        //end >= ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
         public uint unkUint1;
@@ -312,6 +341,129 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         a.Invoke(ref expressionsElement.UniformCubeTextureExpressions[i].TextureIndex, $"{prefix}MaterialUniformExpressions[{j}].UniformCubeTextureExpressions[{i}]");
                     }
                 }
+            }
+        }
+
+        internal class MaterialResourceJsonConverter : JsonConverter<MaterialResource>
+        {
+            public override MaterialResource Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (!options.TryGetState(out LEXJSONState state))
+                {
+                    throw new JsonException($"Could not retrieve {nameof(LEXJSONState)} for this serialization!");
+                }
+                MaterialResource mat = Create();
+                reader.Expect(JsonTokenType.StartObject);
+
+                mat.CompileErrors = [.. reader.ReadList(nameof(CompileErrors), (ref Utf8JsonReader reader) => reader.GetString())];
+                reader.ExpectPropertyName(nameof(TextureDependencyLengthMap));
+                reader.Read();
+                reader.Expect(JsonTokenType.StartObject);
+                while (reader.Read())
+                {
+                    if (reader.TokenType is JsonTokenType.EndObject)
+                    {
+                        break;
+                    }
+                    reader.Expect(JsonTokenType.PropertyName);
+                    int key = state.PathToUIndex(reader.GetString());
+                    reader.Read();
+                    int val = reader.GetInt32();
+                    mat.TextureDependencyLengthMap.Add(key, val);
+                }
+                reader.ReadNumProp(out mat.MaxTextureDependencyLength, nameof(MaxTextureDependencyLength));
+                mat.ID = reader.ReadGuidProp(nameof(ID));
+                reader.ReadNumProp(out mat.NumUserTexCoords, nameof(NumUserTexCoords));
+                mat.UniformExpressionTextures = [.. reader.ReadList(nameof(UniformExpressionTextures), state.ReadEntryValue)];
+                mat.bUsesSceneColor = reader.ReadBoolProp(nameof(bUsesSceneColor));
+                mat.bUsesSceneDepth = reader.ReadBoolProp(nameof(bUsesSceneDepth));
+                mat.bUsesDynamicParameter = reader.ReadBoolProp(nameof(bUsesDynamicParameter));
+                mat.bUsesLightmapUVs = reader.ReadBoolProp(nameof(bUsesLightmapUVs));
+                mat.bUsesMaterialVertexPositionOffset = reader.ReadBoolProp(nameof(bUsesMaterialVertexPositionOffset));
+                mat.unkBool1 = reader.ReadBoolProp(nameof(unkBool1));
+                reader.ReadNumProp(out mat.UsingTransforms, nameof(UsingTransforms));
+                mat.TextureLookups = reader.ReadList(nameof(TextureLookups), static (ref Utf8JsonReader reader) =>
+                {
+                    reader.Expect(JsonTokenType.StartObject);
+                    var lookup = new TextureLookup();
+                    reader.ReadNumProp(out lookup.TexCoordIndex, nameof(TextureLookup.TexCoordIndex));
+                    reader.ReadNumProp(out lookup.TextureIndex, nameof(TextureLookup.TextureIndex));
+                    reader.ReadNumProp(out lookup.UScale, nameof(TextureLookup.UScale));
+                    reader.ReadNumProp(out lookup.VScale, nameof(TextureLookup.VScale));
+                    reader.ReadNumProp(out lookup.Unk, nameof(TextureLookup.Unk));
+                    reader.Read();
+                    reader.Expect(JsonTokenType.EndObject);
+                    return lookup;
+                }).ToArray();
+
+                reader.ReadNumProp(out mat.unkUint1, nameof(unkUint1));
+                reader.ReadNumProp(out mat.udkUnk2, nameof(udkUnk2));
+                reader.ReadNumProp(out mat.udkUnk3, nameof(udkUnk3));
+                reader.ReadNumProp(out mat.udkUnk4, nameof(udkUnk4));
+
+                reader.Read();
+                reader.Expect(JsonTokenType.EndObject);
+                return mat;
+            }
+
+            public override void Write(Utf8JsonWriter writer, MaterialResource value, JsonSerializerOptions options)
+            {
+                if (!options.TryGetState(out LEXJSONState state))
+                {
+                    throw new JsonException($"Could not retrieve {nameof(LEXJSONState)} for this serialization!");
+                }
+                if (state.Pcc.Game <= MEGame.ME2)
+                {
+                    throw new JsonException("ME1/ME2 MaterialResources cannot be serialized to JSON");
+                }
+                writer.WriteStartObject();
+
+                writer.WriteStartArray(nameof(CompileErrors));
+                foreach (string error in value.CompileErrors)
+                {
+                    writer.WriteStringValue(error);
+                }
+                writer.WriteEndArray();
+                writer.WriteStartObject(nameof(TextureDependencyLengthMap));
+                foreach ((UIndex key, int val) in value.TextureDependencyLengthMap)
+                {
+                    writer.WriteNumber(state.UIndexToPath(key), val);
+                }
+                writer.WriteEndObject();
+                writer.WriteNumber(nameof(MaxTextureDependencyLength), value.MaxTextureDependencyLength);
+                writer.WriteString(nameof(ID), value.ID);
+                writer.WriteNumber(nameof(NumUserTexCoords), value.NumUserTexCoords);
+                writer.WriteStartArray(nameof(UniformExpressionTextures));
+                foreach (UIndex texUidx in value.UniformExpressionTextures)
+                {
+                    writer.WriteStringValue(state.UIndexToPath(texUidx));
+                }
+                writer.WriteEndArray();
+                writer.WriteBoolean(nameof(bUsesSceneColor), value.bUsesSceneColor);
+                writer.WriteBoolean(nameof(bUsesSceneDepth), value.bUsesSceneDepth);
+                writer.WriteBoolean(nameof(bUsesDynamicParameter), value.bUsesDynamicParameter);
+                writer.WriteBoolean(nameof(bUsesLightmapUVs), value.bUsesLightmapUVs);
+                writer.WriteBoolean(nameof(bUsesMaterialVertexPositionOffset), value.bUsesMaterialVertexPositionOffset);
+                writer.WriteBoolean(nameof(unkBool1), value.unkBool1);
+                writer.WriteNumber(nameof(UsingTransforms), value.UsingTransforms);
+                writer.WriteStartArray(nameof(TextureLookups));
+                foreach (TextureLookup texLookup in value.TextureLookups)
+                {
+                    writer.WriteStartObject();
+                    writer.WriteNumber(nameof(TextureLookup.TexCoordIndex), texLookup.TexCoordIndex);
+                    writer.WriteNumber(nameof(TextureLookup.TextureIndex), texLookup.TextureIndex);
+                    writer.WriteNumber(nameof(TextureLookup.UScale), texLookup.UScale);
+                    writer.WriteNumber(nameof(TextureLookup.VScale), texLookup.VScale);
+                    writer.WriteNumber(nameof(TextureLookup.Unk), texLookup.Unk);
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
+                writer.WriteNumber(nameof(unkUint1), value.unkUint1);
+                writer.WriteNumber(nameof(udkUnk2), value.udkUnk2);
+                writer.WriteNumber(nameof(udkUnk3), value.udkUnk3);
+                writer.WriteNumber(nameof(udkUnk4), value.udkUnk4);
+
+                writer.WriteEndObject();
             }
         }
     }

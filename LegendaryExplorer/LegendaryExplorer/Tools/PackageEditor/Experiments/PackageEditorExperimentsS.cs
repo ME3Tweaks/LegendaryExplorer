@@ -3086,5 +3086,20 @@ import java.util.*;"
             brushComponentExport.WriteBinary(bin);
             MessageBox.Show(pew, "Regenerated!");
         }
+
+        public static void JSONSerialize(PackageEditorWindow pew)
+        {
+            var pcc = pew.Pcc;
+            if (pcc is null || !pcc.Game.IsLEGame() || !pew.TryGetSelectedExport(out ExportEntry export) || export.ClassName != "Material")
+            {
+                MessageBox.Show(pew, "Must have a Material selected in an LE pcc.");
+                return;
+            }
+            var mat = export.GetBinaryData<Material>();
+            using FileStream fs = File.Open(Path.Combine(AppDirectories.ExecFolder, "Mat.json"), FileMode.OpenOrCreate);
+            mat.JsonSerialize(fs);
+            //var mat = Material.JsonDeserialize(fs, pcc);
+            //export.WriteBinary(mat);
+        }
     }
 }

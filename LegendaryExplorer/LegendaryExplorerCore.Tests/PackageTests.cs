@@ -155,6 +155,7 @@ namespace LegendaryExplorerCore.Tests
 
             var packagesPath = GlobalTest.GetTestPackagesDirectory();
             var packages = Directory.GetFiles(packagesPath, "*.*", SearchOption.AllDirectories);
+            var stream = new MemoryStream();
             foreach (var p in packages)
             {
                 if (p.RepresentsPackageFilePath())
@@ -175,36 +176,47 @@ namespace LegendaryExplorerCore.Tests
 
                             byte[] original = export.Data;
                             export.WritePropertiesAndBinary(props, bin);
-                            byte[] changed = export.Data;
+                            var changed = export.DataReadOnly;
                             Assert.AreEqual(original.Length, changed.Length,
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different sized byte array than the input. Original size: {original.Length}, reserialized: {changed.Length}, difference: 0x{(changed.Length - original.Length):X8} bytes. File: {p}");
-                            Assert.IsTrue(original.AsSpan().SequenceEqual(changed),
+                            Assert.IsTrue(changed.SequenceEqual(original),
                                 $"Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different byte array than the input. File: {p}");
 
                             bin.GetNames(game);
                             bin.ForEachUIndex(game, new UIndexValidityChecker(originalLoadedPackage, export));
+
+                            //JSON
+                            if (game.IsLEGame() && bin is Material mat)
+                            {
+                                stream.SetLength(0);
+                                mat.JsonSerialize(stream);
+                                stream.Position = 0;
+                                mat = Material.JsonDeserialize(stream, originalLoadedPackage, MissingObjectResolver);
+
+                                IEntry MissingObjectResolver(IMEPackage arg1, string arg2)
+                                {
+                                    Assert.Fail($"Could not find '{arg2}' in package while doing JSON reserialization of {export.UIndex} {export.InstancedFullPath}. File: {p}");
+                                    return null;
+                                }
+
+                                export.WriteBinary(mat);
+                                var jsonChanged = export.DataReadOnly;
+                                Assert.IsTrue(jsonChanged.SequenceEqual(original),
+                                    $"JSON Reserialization of export {export.UIndex} {export.InstancedFullPath} produced a different byte array than the input. File: {p}");
+                            }
                         }
                     }
                 }
             }
         }
 
-        private readonly struct UIndexValidityChecker : IUIndexAction
+        private readonly struct UIndexValidityChecker(IMEPackage pcc, ExportEntry export) : IUIndexAction
         {
-            private readonly IMEPackage Pcc;
-            private readonly ExportEntry Export;
-
-            public UIndexValidityChecker(IMEPackage pcc, ExportEntry export)
-            {
-                Pcc = pcc;
-                Export = export;
-            }
-
             public void Invoke(ref int uIndex, string propName)
             {
                 if (uIndex is not 0)
                 {
-                    Assert.IsNotNull(Pcc.GetEntry(uIndex), $"Invalid UIndex at Binary property '{propName}' of export #{Export.UIndex} {Export.InstancedFullPath} in File: {Pcc.FilePath}");
+                    Assert.IsNotNull(pcc.GetEntry(uIndex), $"Invalid UIndex at Binary property '{propName}' of export #{export.UIndex} {export.InstancedFullPath} in File: {pcc.FilePath}");
                 }
             }
         }

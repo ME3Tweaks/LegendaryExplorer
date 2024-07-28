@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             DefaultsStartPosition = sc.ms.Position;
             if (sc.IsLoading)
             {
-                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, entry: Export, packageCache: sc.packageCache);
+                Defaults = PropertyCollection.ReadProps(Export, sc.ms.BaseStream, Export.ObjectName, entry: Export, packageCache: sc.PackageCache);
             }
             else
             {

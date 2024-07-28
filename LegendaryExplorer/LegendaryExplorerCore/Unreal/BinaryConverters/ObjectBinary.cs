@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -12,6 +13,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public abstract class ObjectBinary
     {
+        [JsonIgnore]
         public ExportEntry Export { get; init; }
         public static T From<T>(ExportEntry export, PackageCache packageCache = null) where T : ObjectBinary, new()
         {
