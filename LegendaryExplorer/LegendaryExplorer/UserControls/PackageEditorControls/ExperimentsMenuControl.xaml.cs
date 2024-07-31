@@ -416,6 +416,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.BuildPreviewLevel(GetPEWindow());
         }
 
+        private void ExtractTextMap_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ExtractTextMap(GetPEWindow());
+        }
+
         private void OrganizeParticleSystemExports_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.OrganizeParticleSystems(GetPEWindow());
@@ -460,6 +465,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsM.LE2ConvertBioPawnToSFXPawn(GetPEWindow());
         }
+
+        private void GenerateTextMesh_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateTextMesh(GetPEWindow());
+        }
+
 
         private void GigaSDKGen_Click(object sender, RoutedEventArgs e)
         {

@@ -42,15 +42,18 @@
         <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
         <MenuItem Header="Resynthesize package" Click="ResynthesizePackage_Click"/>
         <MenuItem Header="Build Preview Level" Click="BuildPreviewLevel_Click"/>
-        
+
         <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Generate text mesh" Click="GenerateTextMesh_Click"/>
+        <MenuItem Header="Extract Text Map to debug console" Click="ExtractTextMap_Click"/>
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
         <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
 
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
-        <MenuItem Header="Dump all export uscript to folder" Click="DumpUScriptFromPackage_Click"/>
-        <MenuItem Header="Compile all export uscript from folder" Click="FromPackageUScriptFromFolder_Click"/>
+        <MenuItem Header="Dump material for compile" Click="DumpUScriptFromPackage_Click"/>
+        <MenuItem Header="Dump material for compile" Click="DumpUScriptFromPackage_Click"/>
+        <MenuItem Header="Fix GUIDs on Material Instance Constant expressions" Click="FromPackageUScriptFromFolder_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
         <MenuItem Header="Convert Static Light component to non-static" Click="ConvertSLCALightToNonSLCA"/>
