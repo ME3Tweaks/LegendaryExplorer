@@ -4035,31 +4035,67 @@ defaultproperties
             // Have to find the other letters.
 
             { 'A', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0f, UV1Y = 0f, UV2X = 0.2479248f, UV2Y = 0.16101074f } },
+            { 'B', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.2479248f, UV1Y = 0f, UV2X = 0.48535156f, UV2Y = 0.16101074f } },
             { 'C', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.48706055f, UV1Y = 0f, UV2X = 0.7138672f, UV2Y = 0.16101074f } },
             { 'D', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.71533203f, UV1Y = 0f, UV2X = 0.95654297f, UV2Y = 0.16101074f } },
             { 'E', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0f, UV1Y = 0.8251953f, UV2X = 0.21875f, UV2Y = 0.98583984f } },
+            { 'F', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0f, UV1Y = 0.16491699f, UV2X = 0.21777344f, UV2Y = 0.32617188f } },
             { 'G', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.21960449f, UV1Y = 0.16491699f, UV2X = 0.4501953f, UV2Y = 0.32617188f } },
-
+            { 'H', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.45117188f, UV1Y = 0.16491699f, UV2X = 0.6796875f, UV2Y = 0.32617188f } },
             { 'I', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.6821289f, UV1Y = 0.16491699f, UV2X = 0.734375f, UV2Y = 0.32617188f } },
+            { 'J', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.67089844f, UV1Y = 0.8251953f, UV2X = 0.8886719f, UV2Y = 0.98583984f } },
             { 'K', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.22167969f, UV1Y = 0.8251953f, UV2X = 0.44726562f, UV2Y = 0.98583984f } },
             { 'L', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0f, UV1Y = 0.33007812f, UV2X = 0.21777344f, UV2Y = 0.4909668f } },
             { 'M', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.21960449f, UV1Y = 0.33007812f, UV2X = 0.49487305f, UV2Y = 0.4909668f } },
             { 'N', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.4970703f, UV1Y = 0.33007812f, UV2X = 0.72021484f, UV2Y = 0.4909668f } },
-
-            { 'O', new TextTextureLetter() {  LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0f, UV1Y = 0, UV2X = 0.31835938f, UV2Y = 0.22265625f } },
+            { 'O', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0f, UV1Y = 0, UV2X = 0.31835938f, UV2Y = 0.22265625f } },
             { 'P', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.78808594f, UV1Y = 0.66015625f, UV2X = 1f, UV2Y = 0.82128906f } },
+            { 'Q', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0f, UV1Y = 0.49487305f, UV2X = 0.25585938f, UV2Y = 0.6557617f } },
             { 'R', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.25756836f, UV1Y = 0.49487305f, UV2X = 0.4970703f, UV2Y = 0.6557617f } },
             { 'S', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.5f, UV1Y = 0.49487305f, UV2X = 0.72314453f, UV2Y = 0.6557617f } },
             { 'T', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.72314453f, UV1Y = 0.49487305f, UV2X = 0.9433594f, UV2Y = 0.6557617f } },
-
             { 'U', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.73535156f, UV1Y = 0.16491699f, UV2X = 0.9667969f, UV2Y = 0.32617188f } },
+            { 'V', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0f, UV1Y = 0.66015625f, UV2X = 0.234375f, UV2Y = 0.82128906f } },
+            { 'W', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.23535156f, UV1Y = 0.66015625f, UV2X = 0.5390625f, UV2Y = 0.82128906f } },
             { 'X', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.5419922f, UV1Y = 0.66015625f, UV2X = 0.78808594f, UV2Y = 0.82128906f } },
             { 'Y', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.7368164f, UV1Y = 0.33007812f, UV2X = 0.94384766f, UV2Y = 0.4909668f } },
+            { 'Z', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Red, UV1X = 0.44799805f, UV1Y = 0.8251953f, UV2X = 0.6694336f, UV2Y = 0.98583984f } },
 
+            // Lowercase
+            { 'a', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0f, UV1Y = 0f, UV2X = 0.16589355f, UV2Y = 0.21472168f } },
+            { 'b', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.16589355f, UV1Y = 0f, UV2X = 0.34057617f, UV2Y = 0.21472168f } },
+            { 'c', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.5239258f, UV1Y = 0.39135742f, UV2X = 0.6772461f, UV2Y = 0.60595703f } },
+            { 'd', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.43139648f, UV1Y = 0f, UV2X = 0.60595703f, UV2Y = 0.21472168f } },
+            { 'e', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.6899414f, UV1Y = 0.7817383f, UV2X = 0.85546875f, UV2Y = 0.9970703f } },
+
+            { 'i', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.8598633f, UV1Y = 0f, UV2X = 0.92285156f, UV2Y = 0.21472168f } },
+            { 'l', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.7919922f, UV1Y = 0f, UV2X = 0.8466797f, UV2Y = 0.21472168f } },
+
+            { 'm', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.61865234f, UV1Y = 0.21472168f, UV2X = 0.8442383f, UV2Y = 0.4296875f } },
+            { 'n', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.5f, UV1Y = 0.60595703f, UV2X = 0.6743164f, UV2Y = 0.82128906f } },
+            { 'o', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.3786621f, UV1Y = 0.7817383f, UV2X = 0.55322266f, UV2Y = 0.9970703f } },
+
+            { 'r', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.17370605f, UV1Y = 0.21472168f, UV2X = 0.28979492f, UV2Y = 0.4296875f } },
+            { 'u', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.6899414f, UV1Y = 0.7817383f, UV2X = 0.85546875f, UV2Y = 0.9970703f } },
+            { 'y', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.6772461f, UV1Y = 0.39135742f, UV2X = 0.8520508f, UV2Y = 0.60595703f } },
+
+
+            // NUMBERS 
+            // 0 is same as O (as in 'Oh')
+            { '0', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0f, UV1Y = 0, UV2X = 0.31835938f, UV2Y = 0.22265625f } },
             { '1', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0f, UV1Y = 0.66796875f, UV2X = 0.15039062f, UV2Y = 0.8901367f } },
             { '2', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0.31835938f, UV1Y = 0, UV2X = 0.62109375f, UV2Y = 0.22265625f } },
+            { '3', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0.62109375f, UV1Y = 0f, UV2X = 0.9067383f, UV2Y = 0.22265625f } },
             { '4', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0f, UV1Y = 0.22265625f, UV2X = 0.32788086f, UV2Y = 0.44506836f } },
+            { '5', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0.32788086f, UV1Y = 0.22265625f, UV2X = 0.62841797f, UV2Y = 0.44506836f } },
+            { '6', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0.62841797f, UV1Y = 0.22265625f, UV2X = 0.9477539f, UV2Y = 0.44506836f } },
+            { '7', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0f, UV1Y = 0.44506836f, UV2X = 0.28979492f, UV2Y = 0.66796875f } },
+            { '8', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0.28979492f, UV1Y = 0.44506836f, UV2X = 0.5864258f, UV2Y = 0.66796875f } },
             { '9', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Blue, UV1X = 0.58496094f, UV1Y = 0.44506836f, UV2X = 0.9067383f, UV2Y = 0.66796875f } },
+
+            // SYMBOLS
+            { '-', new TextTextureLetter() { LayerIndex = TextTextureLetter.EGUIMasterLayer.Green, UV1X = 0.7895508f, UV1Y = 0.66796875f, UV2X = 0.86083984f, UV2Y = 0.8198242f } },
+
         };
 
         class TextTextureLetter
