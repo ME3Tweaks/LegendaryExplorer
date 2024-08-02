@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BCnEncoder.Shared.ImageFiles;
+using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -17,8 +20,11 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SharpDX;
 using SharpDX.D3DCompiler;
+using TerraFX.Interop.DirectX;
+using TerraFX.Interop.Windows;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -50,7 +56,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _topInfoText, value);
         }
 
+        public string TopShaderInfoText
+        {
+            get => (shaderInView != null) ? "LoadedShader GUID: " + shaderInView.Id : "LoadedShader GUID: null";
+        }
+
+        // currently loaded tree view shader.
+        private TreeViewShader shaderInView = null;
+
         public ICommand CreateShadersCopyCommand { get; set; }
+        public ICommand ReplaceLoadedShaderCommand { get; set; }
 
         public MaterialExportLoader() : base("Material")
         {
@@ -62,6 +77,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public void LoadCommands()
         {
             CreateShadersCopyCommand = new GenericCommand(CreateShadersCopy, CanCreateShadersCopy);
+            ReplaceLoadedShaderCommand = new GenericCommand(ReplaceShaderCommand, CanCreateShadersCopy);
         }
 
         public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new();
@@ -109,6 +125,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             MeshShaderMaps.ClearEx();
             shaderDissasemblyTextBlock.Text = "";
             TopInfoText = "";
+            TopShaderInfoTextBlock.Text = "";
         }
 
         public override void PopOut()
@@ -131,8 +148,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (e.NewValue is TreeViewShader tvs)
             {
-                shaderDissasemblyTextBlock.Text = tvs.DissasembledShader;
+                MeshShaderMaps_TreeView_Update(tvs);
             }
+        }
+
+        private void MeshShaderMaps_TreeView_Update(TreeViewShader tvs)
+        {
+            shaderInView = tvs; // Set tvs as currently loaded shader.
+            TopShaderInfoTextBlock.Text = TopShaderInfoText; // Set text
+            shaderDissasemblyTextBlock.Text = tvs.DissasembledShader;
         }
 
         private void LoadShaders_Button_Click(object sender, RoutedEventArgs e)
@@ -296,6 +320,104 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 MessageBox.Show(Window.GetWindow(this), "This material now has its own unique shaders in the local SeekFreeShaderCache. " +
                                                         "Porting this material to another package will bring the shaders along to that package's shader cache.\n\n" +
                                                         "You should change this material's name, so it will not conflict with other instances that use its original shaders.");
+            });
+        }
+
+
+        private void ReplaceShaderCommand()
+        {
+            IsBusy = true;
+            BusyText = "Replacing Shader";
+            Shader foundShader;
+            var seekFreeShaderCacheExport = Pcc.FindExport("SeekFreeShaderCache");
+            ShaderCache seekFreeShaderCache;
+            byte[] selectedFile = new byte[0];
+
+            if (seekFreeShaderCacheExport is null)
+            {
+                throw new Exception("Cant find shader cache.");
+            }
+            else
+            {
+                seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+            }
+
+            var dlg = new CommonOpenFileDialog
+            {
+                DefaultExtension = ".bin",
+                EnsurePathExists = true,
+                Title = "Select shader BIN file."
+            };
+            dlg.Filters.Add(new CommonFileDialogFilter("BIN files", "*.bin"));
+
+            if(dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                selectedFile = ShaderBytecode.FromFile(dlg.FileName);
+            }
+
+            Task.Run(() =>
+            {
+                if (selectedFile.Length == 0)
+                {
+                    throw new Exception("You need to select a shader binary file.");
+                }
+
+                if (shaderInView != null)
+                {
+                    if (seekFreeShaderCache.Shaders.ContainsKey(shaderInView.Id))
+                    {
+                        foundShader = seekFreeShaderCache.Shaders[shaderInView.Id];
+                    }
+                    else
+                    {
+                        throw new Exception("Shader ID not found in the cache.");
+                    }
+
+                    return shaderInView.Id;
+                }
+                else
+                {
+                    throw new Exception("No shader selected!");
+                }
+
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                if (prevTask.Exception is AggregateException aggregateException)
+                {
+                    new ExceptionHandlerDialog(aggregateException).ShowDialog();
+                    IsBusy = false;
+                    return;
+                }
+                if (seekFreeShaderCache.Shaders.ContainsKey(shaderInView.Id))
+                {
+                    foundShader = seekFreeShaderCache.Shaders[shaderInView.Id];
+
+                    // Insert new bytecode
+                    foundShader.Replace(selectedFile);
+
+                    // Get Disassembly
+                    string dissasembledShader = ShaderBytecode.FromStream(new MemoryStream(selectedFile)).Disassemble();
+                    // Get last line that contains instruction counts
+                    string result = string.Join("", dissasembledShader.Split('\n').Reverse().Take(2).ToArray());
+                    // Get digits from the result
+                    string digits = string.Join("", new String(result.Where(Char.IsDigit).ToArray()));
+                    int instructions = int.Parse(digits);
+
+                    // Insert new instruction count
+                    foundShader.InstructionCount = instructions;
+
+                    // Update the cache
+                    seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
+                }
+                else
+                {
+                    throw new NotImplementedException("Failed to replace shader.");
+                }
+                // Update shaders.
+                LoadShaders();
+                // Update text box.
+                MeshShaderMaps_TreeView_Update(new TreeViewShader { Id = foundShader.Guid, ShaderType = foundShader.ShaderType, Game = Pcc.Game });
+                MessageBox.Show(Window.GetWindow(this), "Shader " + seekFreeShaderCache.Shaders[shaderInView.Id].Guid + " has been replaced");
             });
         }
     }
