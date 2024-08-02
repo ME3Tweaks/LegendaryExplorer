@@ -66,6 +66,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public ICommand CreateShadersCopyCommand { get; set; }
         public ICommand ReplaceLoadedShaderCommand { get; set; }
+        public ICommand ExportAllShadersCommand { get; set; }
+        public ICommand ImportAllShadersCommand { get; set; }
 
         public MaterialExportLoader() : base("Material")
         {
@@ -77,7 +79,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public void LoadCommands()
         {
             CreateShadersCopyCommand = new GenericCommand(CreateShadersCopy, CanCreateShadersCopy);
-            ReplaceLoadedShaderCommand = new GenericCommand(ReplaceShaderCommand, CanCreateShadersCopy);
+            ReplaceLoadedShaderCommand = new GenericCommand(ReplaceShader, CanCreateShadersCopy);
+            ExportAllShadersCommand = new GenericCommand(ExportAllShaders, CanCreateShadersCopy);
+            ImportAllShadersCommand = new GenericCommand(ReplaceAllShaders, CanCreateShadersCopy);
         }
 
         public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new();
@@ -324,7 +328,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
 
-        private void ReplaceShaderCommand()
+        private void ReplaceShader()
         {
             IsBusy = true;
             BusyText = "Replacing Shader";
@@ -344,11 +348,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             var dlg = new CommonOpenFileDialog
             {
-                DefaultExtension = ".bin",
+                DefaultExtension = ".fxc",
                 EnsurePathExists = true,
-                Title = "Select shader BIN file."
+                Title = "Select shader FXC file."
             };
-            dlg.Filters.Add(new CommonFileDialogFilter("BIN files", "*.bin"));
+            dlg.Filters.Add(new CommonFileDialogFilter("FXC files", "*.fxc"));
 
             if(dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
@@ -411,6 +415,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
+                    IsBusy = false;
                     throw new NotImplementedException("Failed to replace shader.");
                 }
                 // Update shaders.
@@ -418,6 +423,194 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 // Update text box.
                 MeshShaderMaps_TreeView_Update(new TreeViewShader { Id = foundShader.Guid, ShaderType = foundShader.ShaderType, Game = Pcc.Game });
                 MessageBox.Show(Window.GetWindow(this), "Shader " + seekFreeShaderCache.Shaders[shaderInView.Id].Guid + " has been replaced");
+            });
+        }
+
+
+        private void ExportAllShaders()
+        {
+            IsBusy = true;
+            BusyText = "Exporting Shaders";
+            var seekFreeShaderCacheExport = Pcc.FindExport("SeekFreeShaderCache");
+            ShaderCache seekFreeShaderCache;
+
+            if (seekFreeShaderCacheExport is null)
+            {
+                throw new Exception("Cant find shader cache.");
+            }
+            else
+            {
+                seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+            }
+
+            var dlg = new CommonOpenFileDialog("Select folder")
+            {
+                IsFolderPicker = true
+            };
+            var dialogResult = dlg.ShowDialog();
+
+            Task.Run(() =>
+            {
+                if (MeshShaderMaps == null)
+                {
+                    throw new Exception("Something is wrong, mesh shader maps are not loaded?");
+                }
+                if (dialogResult != CommonFileDialogResult.Ok)
+                {
+                    throw new DirectoryNotFoundException("Selection cancelled");
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                if (prevTask.Exception is AggregateException aggregateException)
+                {
+                    new ExceptionHandlerDialog(aggregateException).ShowDialog();
+                    IsBusy = false;
+                    return;
+                }
+
+                string selectedPath = dlg.FileName;
+                int notFoundShaders = 0;
+
+                // Export all shaders to the selected directory.
+                foreach (TreeViewMeshShaderMap TVshaderMap in MeshShaderMaps)
+                {
+                    string factoryType = TVshaderMap.VertexFactoryType;
+
+                    foreach (TreeViewShader TVshader in TVshaderMap.Shaders)
+                    {
+                        byte[] shaderFile = new byte[0];
+                        string shaderType = "";
+                        string fileName = "";
+                        int shaderIndex = TVshader.Index;
+
+                        if (seekFreeShaderCache.Shaders.ContainsKey(TVshader.Id))
+                        {
+                            shaderType = seekFreeShaderCache.Shaders[TVshader.Id].ShaderType;
+                            shaderFile = seekFreeShaderCache.Shaders[TVshader.Id].ShaderByteCode;
+                        }
+                        else
+                        {
+                            notFoundShaders++;
+                            continue;
+                        }
+
+                        fileName = shaderIndex + "_" + factoryType + "_" + shaderType;
+
+                        string fullPath = Path.Combine(selectedPath, fileName);
+                        fullPath = fullPath.Replace("<", "[").Replace(">", "]"); // fix shader names <> into [] so they can be saved as files
+                        fullPath = Path.ChangeExtension(fullPath, "fxc");
+                        File.WriteAllBytes(fullPath, shaderFile);
+                    } 
+                }
+
+                MessageBox.Show(Window.GetWindow(this), "All selected shaders have been exported.");
+                IsBusy = false;
+            });
+        }
+
+
+        private void ReplaceAllShaders()
+        {
+            IsBusy = true;
+            BusyText = "Importing Shaders";
+            var seekFreeShaderCacheExport = Pcc.FindExport("SeekFreeShaderCache");
+            ShaderCache seekFreeShaderCache;
+
+            if (seekFreeShaderCacheExport is null)
+            {
+                throw new Exception("Cant find shader cache.");
+            }
+            else
+            {
+                seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+            }
+
+            var dlg = new CommonOpenFileDialog("Select folder")
+            {
+                IsFolderPicker = true
+            };
+            var dialogResult = dlg.ShowDialog();
+
+            Task.Run(() =>
+            {
+                if (MeshShaderMaps == null)
+                {
+                    throw new Exception("Something is wrong, mesh shader maps are not loaded?");
+                }
+                if (dialogResult != CommonFileDialogResult.Ok)
+                {
+                    throw new DirectoryNotFoundException("Selection cancelled");
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                if (prevTask.Exception is AggregateException aggregateException)
+                {
+                    new ExceptionHandlerDialog(aggregateException).ShowDialog();
+                    IsBusy = false;
+                    return;
+                }
+
+                string selectedPath = dlg.FileName;
+                int notFoundShaders = 0;
+
+                // Import all shader files with a suffix_edited to the selected shader.
+                foreach (TreeViewMeshShaderMap TVshaderMap in MeshShaderMaps)
+                {
+                    string factoryType = TVshaderMap.VertexFactoryType;
+
+                    foreach (TreeViewShader TVshader in TVshaderMap.Shaders)
+                    {
+                        byte[] newShaderFile = new byte[0];
+                        string shaderType = "";
+                        string fileName = "";
+                        int shaderIndex = TVshader.Index;
+                        Shader shader = null;
+
+                        if (seekFreeShaderCache.Shaders.ContainsKey(TVshader.Id))
+                        {
+                            shader = seekFreeShaderCache.Shaders[TVshader.Id];
+                            shaderType = shader.ShaderType;
+                        }
+                        else
+                        {
+                            notFoundShaders++;
+                            continue;
+                        }
+
+                        fileName = shaderIndex + "_" + factoryType + "_" + shaderType + "_edited";
+
+                        string fullPath = Path.Combine(selectedPath, fileName);
+                        fullPath = fullPath.Replace("<", "[").Replace(">", "]");
+                        fullPath = Path.ChangeExtension(fullPath, "fxc");
+
+                        if (File.Exists(fullPath) && shader != null)
+                        {
+                            newShaderFile = ShaderBytecode.FromFile(fullPath);
+
+                            // Insert new bytecode
+                            shader.Replace(newShaderFile);
+
+                            // Get Disassembly
+                            string dissasembledShader = ShaderBytecode.FromStream(new MemoryStream(newShaderFile)).Disassemble();
+                            // Get last line that contains instruction counts
+                            string result = string.Join("", dissasembledShader.Split('\n').Reverse().Take(2).ToArray());
+                            // Get digits from the result
+                            string digits = string.Join("", new String(result.Where(Char.IsDigit).ToArray()));
+                            int instructions = int.Parse(digits);
+
+                            // Insert new instruction count
+                            shader.InstructionCount = instructions;
+                        }
+                    }
+                }
+
+                // Update the cache
+                seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
+                // Update shaders.
+                LoadShaders();
+                // Inform.
+                MessageBox.Show(Window.GetWindow(this), "All selected shaders have been imported.");
+                IsBusy = false;
             });
         }
     }
