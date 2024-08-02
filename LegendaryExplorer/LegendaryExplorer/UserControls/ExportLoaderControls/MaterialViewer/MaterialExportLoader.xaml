@@ -22,6 +22,10 @@
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                     <TextBlock Text="{Binding TopInfoText}" />
                     <Button Name="createShadersCopy_Button" Content="Create Unique Copy of Shaders" Command="{Binding CreateShadersCopyCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <TextBlock Name="TopShaderInfoTextBlock" Text="{Binding TopShaderInfoText}" />
+                    <Button x:Name="replaceLoadedShader_Button" Content="Replace Shader" Command="{Binding ReplaceLoadedShaderCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <Button x:Name="ExportAllShaders_Button" Content="Export Shaders" Command="{Binding ExportAllShadersCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <Button x:Name="ImportAllShaders_Button" Content="Import Shaders" Command="{Binding ImportAllShadersCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                 </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
