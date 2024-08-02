@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal.Collections;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -163,6 +164,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 unkBytes = unkBytes.ArrayClone()
             };
             return newShader;
+        }
+        
+        // replace shader bytes
+        public void Replace(byte[] newShaderByteCode)
+        {
+            // insert new binary
+            ShaderByteCode = newShaderByteCode;
+
+            // return
+            return;
         }
     }
 
