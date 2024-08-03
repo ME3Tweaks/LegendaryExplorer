@@ -541,6 +541,15 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>vorbisenc.dll</TargetPath>
 		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Libraries\HLSLDecompiler.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>HLSLDecompiler.dll</TargetPath>
+		</ContentWithTargetPath>
+		<!-- HLSL decompiler-->
+		<ContentWithTargetPath Include="Libraries\d3dcompiler_46.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>d3dcompiler_46.dll</TargetPath>
+		</ContentWithTargetPath>
 	</ItemGroup>
 
 	<PropertyGroup>
