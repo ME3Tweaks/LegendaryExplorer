@@ -1458,7 +1458,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         //Uncomment this to write it out to disk. sometimes pasting big text busts things
                         //File.WriteAllText(@"C:\users\public\bincopy.txt", stringoutput.ToString());
 #endif
-                        Clipboard.SetText(stringoutput.ToString());
+                        Clipboard.SetDataObject(stringoutput.ToString(), false);
                     }
                 }
                 catch (Exception ex)
