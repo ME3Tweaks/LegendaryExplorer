@@ -3883,21 +3883,54 @@ defaultproperties
             // Build vertices and tris
             float xOffset = 0;
             var vertices = new List<Vector3>();
+            float rowHeight = 0;
             List<kDOPCollisionTriangle> tris = new List<kDOPCollisionTriangle>(text.Length * 2);
             for (int charIdx = 0; charIdx < text.Length; charIdx++)
             {
+                if (text[charIdx] == ' ')
+                {
+                    xOffset += (0.1f * TextSizeScale);
+                    continue;
+                }
                 if (TextMap.TryGetValue(text[charIdx], out var info))
                 {
+                    var localScale = 1f;
+                    var width = (info.UV2X - info.UV1X) * TextSizeScale;
                     var height = Math.Abs(info.UV2Y - info.UV1Y) * TextSizeScale;
+                    if (rowHeight != 0)
+                    {
+                        // Match row size
+                        if (Math.Abs(height - rowHeight) > 2)
+                        {
+                            localScale = Math.Abs(rowHeight - height) / ((rowHeight + height) / 2);
+                            if (height > rowHeight)
+                            {
+                                // Scale down
+                                localScale = 1 - localScale;
+                            }
+                            else
+                            {
+                                // Scale up
+                                localScale = 1 + localScale;
+                            }
+                        }
+                        height = rowHeight;
+                    }
+                    else
+                    {
+                        // Set height
+                        rowHeight = height;
+                    }
+
                     var vertexStart = (ushort)vertices.Count;
                     vertices.Add(new Vector3(xOffset, height, 0));
                     vertices.Add(new Vector3(xOffset, 0, 0));
-                    vertices.Add(new Vector3(xOffset + ((info.UV2X - info.UV1X) * TextSizeScale), 0, 0));
-                    vertices.Add(new Vector3(xOffset + ((info.UV2X - info.UV1X) * TextSizeScale), height, 0));
+                    vertices.Add(new Vector3(xOffset + (width * localScale), 0, 0));
+                    vertices.Add(new Vector3(xOffset + (width * localScale), height, 0));
 
                     tris.Add(new kDOPCollisionTriangle(vertexStart, (ushort)(vertexStart + 1u), (ushort)(vertexStart + 2), 0));
                     tris.Add(new kDOPCollisionTriangle((ushort)(vertexStart + 2), (ushort)(vertexStart + 3), vertexStart, 0));
-                    xOffset += ((info.UV2X - info.UV1X) * TextSizeScale); // No clue what
+                    xOffset += width * localScale; // No clue what
                 }
             }
 
