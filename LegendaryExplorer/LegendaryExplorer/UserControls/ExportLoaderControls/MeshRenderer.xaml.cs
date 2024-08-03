@@ -495,8 +495,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            return !exportEntry.IsDefaultObject && (parsableClasses.Contains(exportEntry.ClassName)
-                   || (exportEntry.ClassName == "BrushComponent" && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null));
+            return !exportEntry.IsDefaultObject &&
+                   (parsableClasses.Contains(exportEntry.ClassName, StringComparer.OrdinalIgnoreCase) ||
+                    (exportEntry.ClassName.CaseInsensitiveEquals("BrushComponent") && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null) ||
+                    (exportEntry.ClassName.CaseInsensitiveEquals("StaticMeshComponent") && exportEntry.GetProperty<ObjectProperty>("StaticMesh")?.Value != 0));
         }
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -528,6 +530,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
             var assetCache = new PackageCache();
 
+            if (CurrentLoadedExport.ClassName is "StaticMeshComponent")
+            {
+                var cache = new PackageCache();
+                var mesh = CurrentLoadedExport.GetProperty<ObjectProperty>("StaticMesh").ResolveToExport(exportEntry.FileRef, cache);
+                if (mesh != null)
+                {
+                    var mats = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("Materials");
+                    if (mats != null)
+                    {
+                        OverlayMaterials = mats.Select(x => x.Value != 0 ? x.ResolveToExport(CurrentLoadedExport.FileRef, cache) : null).OfType<IEntry>().ToList();
+                    }
+                }
+
+                // Reload on the mesh.
+                LoadExport(mesh);
+                return;
+            }
+
             if (CurrentLoadedExport.ClassName is "StaticMesh" or "FracturedStaticMesh")
             {
                 IsStaticMesh = true;
@@ -538,6 +558,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     IsBusy = true;
 
                     var meshObject = ObjectBinary.From<StaticMesh>(CurrentLoadedExport);
+                    if (OverlayMaterials != null)
+                    {
+                        meshObject.SetMaterials(OverlayMaterials, true);
+                        OverlayMaterials = null;
+                    }
                     var pmd = new ModelPreview.PreloadedModelData
                     {
                         meshObject = meshObject,
@@ -808,6 +833,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 });
             }
         }
+
+        /// <summary>
+        /// Material overrides for a mesh
+        /// </summary>
+        public List<IEntry> OverlayMaterials { get; set; }
 
         /// <summary>
         /// Exports via UModel after ensuring
