@@ -32,12 +32,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
     }
     public class ScalarParameter : ExpressionParameter
     {
-        public static List<ScalarParameter> GetScalarParameters(ExportEntry export, bool returnNullOnNotFound = false)
+        public static List<ScalarParameter> GetScalarParameters(ExportEntry export, bool returnNullOnNotFound = false, Func<ScalarParameter> generator = null)
         {
             var scalars = export.GetProperty<ArrayProperty<StructProperty>>("ScalarParameterValues");
             if (scalars == null)
                 return returnNullOnNotFound ? null : new List<ScalarParameter>();
-            return scalars?.Select(FromStruct).ToList();
+            return scalars?.Select(x => FromStruct(x, generator)).ToList();
         }
 
         public static void WriteScalarParameters(ExportEntry export, List<ScalarParameter> parameters, string paramName = "ScalarParameterValues")
@@ -47,16 +47,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             export.WriteProperty(arr);
         }
 
-        public static ScalarParameter FromStruct(StructProperty sp)
+        public static ScalarParameter FromStruct(StructProperty sp, Func<ScalarParameter> objectGenerator = null)
         {
-            return new ScalarParameter
-            {
-                Property = sp,
-                ParameterName = sp.GetProp<NameProperty>("ParameterName")?.Value,
-                ParameterValue = sp.GetProp<FloatProperty>(sp.StructType == "SMAScalarParameter" ? "Parameter" : "ParameterValue").Value,
-                ExpressionGUID = sp.GetProp<StructProperty>("ExpressionGUID"),
-                Group = sp.GetProp<NameProperty>("Group")
-            };
+            var scalar = objectGenerator?.Invoke() ?? new ScalarParameter();
+            scalar.Property = sp;
+            scalar.ParameterName = sp.GetProp<NameProperty>("ParameterName")?.Value;
+            scalar.ParameterValue = sp.GetProp<FloatProperty>(sp.StructType == "SMAScalarParameter" ? "Parameter" : "ParameterValue").Value;
+            scalar.ExpressionGUID = sp.GetProp<StructProperty>("ExpressionGUID");
+            scalar.Group = sp.GetProp<NameProperty>("Group");
+            return scalar;
         }
 
         public StructProperty ToStruct()
@@ -90,12 +89,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
     public class VectorParameter : ExpressionParameter
     {
-        public static List<VectorParameter> GetVectorParameters(ExportEntry export, bool returnNullOnNotFound = false)
+        public static List<VectorParameter> GetVectorParameters(ExportEntry export, bool returnNullOnNotFound = false, Func<VectorParameter> objectGenerator = null)
         {
             var vectors = export.GetProperty<ArrayProperty<StructProperty>>("VectorParameterValues");
             if (vectors == null)
                 return returnNullOnNotFound ? null : new List<VectorParameter>();
-            return vectors?.Select(FromStruct).ToList();
+            return vectors?.Select(x => FromStruct(x, objectGenerator)).ToList();
         }
 
         public static void WriteVectorParameters(ExportEntry export, List<VectorParameter> parameters, string paramName = "VectorParameterValues")
@@ -105,16 +104,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             export.WriteProperty(arr);
         }
 
-        public static VectorParameter FromStruct(StructProperty sp)
+        public static VectorParameter FromStruct(StructProperty sp, Func<VectorParameter> objectGenerator = null)
         {
-            return new VectorParameter
-            {
-                Property = sp,
-                ParameterName = sp.GetProp<NameProperty>("ParameterName")?.Value,
-                ParameterValue = StructTools.FromLinearColorStructProperty(sp.GetProp<StructProperty>(sp.StructType == "SMAVectorParameter" ? "Parameter" : "ParameterValue")),
-                ExpressionGUID = sp.GetProp<StructProperty>("ExpressionGUID"),
-                Group = sp.GetProp<NameProperty>("Group")
-            };
+            var vp = objectGenerator?.Invoke() ?? new VectorParameter();
+            vp.Property = sp;
+            vp.ParameterName = sp.GetProp<NameProperty>("ParameterName")?.Value;
+            vp.ParameterValue = StructTools.FromLinearColorStructProperty(sp.GetProp<StructProperty>(sp.StructType == "SMAVectorParameter" ? "Parameter" : "ParameterValue"));
+            vp.ExpressionGUID = sp.GetProp<StructProperty>("ExpressionGUID");
+            vp.Group = sp.GetProp<NameProperty>("Group");
+            return vp;
         }
 
         public StructProperty ToStruct()
@@ -149,19 +147,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
     public class TextureParameter : ExpressionParameter
     {
-        public static List<TextureParameter> GetTextureParameters(ExportEntry export, bool returnNullOnNotFound = false, Func<TextureParameter> objectGenerator = null)
+        public static List<TextureParameter> GetTextureParameters(ExportEntry export, bool returnNullOnNotFound = false, Func<TextureParameter> generator = null)
         {
             var textures = export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues");
             if (textures == null)
                 return returnNullOnNotFound ? null : new List<TextureParameter>();
-            return textures?.Select(x => FromStruct(x, objectGenerator)).ToList();
-        }
-
-        public static void WriteScalarParameters(ExportEntry export, List<TextureParameter> parameters, string paramName = "TextureParameterValues")
-        {
-            var arr = new ArrayProperty<StructProperty>(paramName);
-            arr.AddRange(parameters.Select(x => x.ToStruct()));
-            export.WriteProperty(arr);
+            return textures?.Select(x => FromStruct(x, generator)).ToList();
         }
 
         public static TextureParameter FromStruct(StructProperty sp, Func<TextureParameter> objectGenerator = null)

@@ -110,7 +110,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         GetAllScalarParameters(GetMatParent(exp, cache), true, cache, parameterList);
                         return;
                     }
-                    var scalars = ScalarParameter.GetScalarParameters(exp, true);
+                    var scalars = ScalarParameter.GetScalarParameters(exp, true, () => new ScalarParameterMatEd());
                     if (scalars == null)
                     {
                         // Do it again with the parent. We are not locally overridding
@@ -165,7 +165,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         GetAllVectorParameters(GetMatParent(exp, cache), true, cache, parameterList);
                         return;
                     }
-                    var vectors = VectorParameter.GetVectorParameters(exp, true);
+                    var vectors = VectorParameter.GetVectorParameters(exp, true, () => new VectorParameterMatEd());
                     if (vectors == null)
                     {
                         // Do it again with the parent. We are not locally overridding
@@ -224,8 +224,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         GetAllTextureParameters(GetMatParent(exp, cache), true, cache, parameterList);
                         return;
                     }
-                    var textures = TextureParameter.GetTextureParameters(exp, true, 
-                        () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef, HostingControlGuid = HostingControlGuid});
+                    var textures = TextureParameter.GetTextureParameters(exp, true,
+                        () => new TextureParameterMatEd() { EditingPackage = MaterialExport.FileRef, HostingControlGuid = HostingControlGuid });
                     if (textures == null)
                     {
                         // Do it again with the parent. We are not locally overridding

@@ -334,6 +334,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         private void SetMaterial()
         {
+            // Todo: Load material into editor
             InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {SelectedMaterial}", Game);
         }
 
@@ -350,12 +351,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         {
             var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(@"LLEMaterialEditor.pcc", Game);
             var cache = new PackageCache();
-            var rop = new RelinkerOptionsPackage()
-            {
-                Cache = cache,
-                PortImportsMemorySafe = true,
-            };
-            EntryExporter.ExportExportToPackage(otherMat, newPackage, out var newentry, cache, rop);
+            EntryExporter.ExportExportToPackage(otherMat, newPackage, out var newentry, cache);
             if (newentry is ExportEntry exp)
             {
                 if (exp.ClassName.CaseInsensitiveEquals("Material"))
@@ -371,6 +367,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         public void SendToGame()
         {
+            // Todo: Send default material first, GC, then set material to ensure ours is used.
             // Prepare for shipment
             SerializeMaterialSettingsToPackage();
             var package = MatInfo.MaterialExport.FileRef.SaveToStream(false); // Don't waste time compressing
@@ -379,16 +376,55 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
 
             var matExp = newP.FindExport(MatInfo.MaterialExport.InstancedFullPath);
-            // Rename for Memory Uniqueness when loaded into the game
-            foreach (var exp in newP.Exports.Where(x => x.idxLink == 0))
+
+            // Track imports so we don't break them when we do memory-uniqueness stuff.
+            Dictionary<IEntry, List<IEntry>> rootToImportChildrenMap = new();
+            foreach (var imp in newP.Imports.Where(x => x.GetRoot() is ExportEntry).ToList())
             {
+                if (!rootToImportChildrenMap.TryGetValue(imp.GetRoot(), out var list))
+                {
+                    list = new List<IEntry>();
+                    rootToImportChildrenMap[imp.GetRoot()] = list;
+                }
+
+                list.Add(imp);
+            }
+
+            // Rename for Memory Uniqueness when loaded into the game
+            var matEd = newP.FindExport("LLEMatEd");
+            if (matEd == null)
+                matEd = ExportCreator.CreatePackageExport(newP, "LLEMatEd");
+            matEd.ObjectName = new NameReference(matEd.ObjectName.Name + $"_LLEMATED_{GetRandomString(8)}", matEd.ObjectName.Number);
+
+
+            foreach (var exp in newP.Exports.Where(x => x.ClassName != "Package").ToList())
+            {
+                // Do not change these
+                if (exp.Parent is { ClassName: "TextureCube" or "Material" })
+                    continue;
+
+                // exp.idxLink = matEd.UIndex;
                 exp.ObjectName = new NameReference(exp.ObjectName.Name + $"_LLEMATED_{GetRandomString(8)}", exp.ObjectName.Number);
+
+                /*
+                // Todo: Do not do this for things that have import children as it will break the imports. For things like physical materials
+                var origName = exp.ObjectName;
+                exp.ObjectName = new NameReference(exp.ObjectName.Name + $"_LLEMATED_{GetRandomString(8)}", exp.ObjectName.Number);
+                if (rootToImportChildrenMap.TryGetValue(exp, out var imps))
+                {
+                    // Move imports back under original parent
+                    var origPackage = ExportCreator.CreatePackageExport(newP, origName);
+                    foreach (var imp in imps.Where(x => x.idxLink == exp.UIndex))
+                    {
+                        imp.idxLink = origPackage.UIndex;
+                    }
+                }*/
             }
 
             //PackageEditorWindow pe = new PackageEditorWindow();
             //pe.LoadPackage(newP);
             //pe.Show();
-            // return;
+            //return;
             LoadCustomMaterialInGame(newP, matExp.MemoryFullPath);
         }
 
@@ -401,7 +437,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             var d = new SaveFileDialog { Filter = fileFilter };
             if (d.ShowDialog() == true)
             {
-                await MatInfo.MaterialExport.FileRef.SaveAsync(d.FileName);
+                //EntryExporter.ExportExportToFile(MatInfo.MaterialExport, d.FileName, out var exp);
+                //PackageEditorWindow pw = new PackageEditorWindow();
+                //pw.LoadEntry(exp);
+                //pw.Show();
                 MessageBox.Show("Done");
             }
         }

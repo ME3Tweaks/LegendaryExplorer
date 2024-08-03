@@ -62,9 +62,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 
         public void LoadData(IMEPackage package, PackageCache cache)
         {
+            ReplaceTextureCommand = new GenericCommand(ReplaceTexture);
             if (ParameterValue != 0)
             {
-                ReplaceTextureCommand = new GenericCommand(ReplaceTexture);
                 MatEditorTextureLoader.InitTexture(this, package, ParameterValue, cache);
             }
         }
