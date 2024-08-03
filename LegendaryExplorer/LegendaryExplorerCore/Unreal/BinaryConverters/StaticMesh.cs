@@ -198,6 +198,28 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             return LODModels[0].Elements.Select(x => x.Material).ToArray();
         }
+
+        /// <summary>
+        /// Sets the material UIndexes on the top LOD of the mesh. For convenience only. You probably shouldn't use this for actual editing, this is used by LEX mesh preview.
+        /// </summary>
+        /// <param name="overlay">If null values should not be set</param>
+        /// <returns></returns>
+        public void SetMaterials(List<IEntry> materials, bool overlay = false)
+        {
+            if (LODModels.Length == 0)
+                return;
+            if (LODModels[0].Elements.Length != materials.Count)
+                return; // Invalid length
+
+            for (int i = 0; i < materials.Count; i++)
+            {
+                var mat = materials[i];
+                if (mat != null || !overlay)
+                {
+                    LODModels[0].Elements[i].Material = mat?.UIndex ?? 0;
+                }
+            }
+        }
     }
 
     #region kDOPTree
