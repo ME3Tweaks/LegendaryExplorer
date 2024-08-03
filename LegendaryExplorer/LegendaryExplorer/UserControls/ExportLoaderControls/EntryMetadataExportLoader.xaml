@@ -111,7 +111,7 @@
         
         <TextBlock Name="InfoTab_ExportFlags_TextBlock"  VerticalAlignment="Center" Text="0x?? ExportFlags:" Grid.Row="16" Grid.Column="0"/>
         <TextBlock Name="InfoTab_GenerationNetObjectCount_TextBlock" VerticalAlignment="Center" Text="0x?? GenerationNetObjectCount:" Grid.Row="17" Grid.Column="0"/>
-        <TextBlock Name="InfoTab_GUID_TextBlock" VerticalAlignment="Center" Text="0x?? GUID:" Grid.Row="18" Grid.Column="0"/>
+        <TextBlock Name="InfoTab_GUID_TextBlock" VerticalAlignment="Center" Text="0x?? Package GUID:" Grid.Row="18" Grid.Column="0"/>
         <TextBlock Name="InfoTab_PackageFlags_TextBlock" VerticalAlignment="Center" Text="0x?? PackageFlags:" Grid.Row="19" Grid.Column="0"/>
 
         <!--rightside-->
@@ -191,7 +191,9 @@
                             ToolTip="ExportFlags for this entry&#10;It is very rare you will ever need to change these"/>
         <TextBox Name="InfoTab_GenerationNetObjectCount_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="18" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-        <TextBox Name="InfoTab_PackageFlags_TextBox" Grid.Row="19" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+        <xctk:CheckComboBox Name="InfoTab_PackageFlags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="19" Grid.Column="1"
+                            GotFocus="InfoTab_PackageFlags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_PackageFlags_ComboBox_ItemSelectionChanged"
+                            ToolTip="PackageFlags for this package entry&#10;It is very rare you will ever need to change these"/>        
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="20">
             <Button Name="Info_HeaderHexSaveChanges" Content="Save all changes"  Margin="0,0,3,0" Padding="5,2" Command="{Binding SaveHexChangesCommand}"/>
             <TextBlock Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="{Binding HexChanged, Converter={StaticResource BoolToVisibilityConverter}}"/>
