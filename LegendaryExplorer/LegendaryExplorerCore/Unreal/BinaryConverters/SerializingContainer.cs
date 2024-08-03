@@ -396,7 +396,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public void Serialize(ref NameReference name)
+        public virtual void Serialize(ref NameReference name)
         {
             if (IsLoading)
             {

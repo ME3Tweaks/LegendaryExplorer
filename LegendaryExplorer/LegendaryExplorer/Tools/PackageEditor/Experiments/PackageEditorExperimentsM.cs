@@ -40,6 +40,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorer.Tools.AssetViewer;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
 
 //using ImageMagick;
 
@@ -2775,9 +2776,44 @@ defaultproperties
             //}
             //pl.WriteBinary(bin);
             return;
-            #region GlobalShaderCache.bin parsing
 
-            /*var infile = @"D:\Steam\steamapps\common\Mass Effect Legendary Edition\Game\ME1\BioGame\CookedPCConsole\GlobalShaderCache-PC-D3D-SM5.bin"; ;
+            //just dump whatever shit you want to find here
+            ConcurrentDictionary<string, string> dupes = new ConcurrentDictionary<string, string>();
+            Parallel.ForEach(MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/), filePath =>
+            {
+                {
+                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                    Dictionary<string, string> expMap = new();
+
+                    foreach (ExportEntry export in pcc.Exports)
+                    {
+                        if (expMap.TryGetValue(export.InstancedFullPath, out _))
+                        {
+                            Debug.WriteLine($"FOUND A DUPLICATE: {export.InstancedFullPath} in {Path.GetFileName(filePath)}");
+                            dupes[export.InstancedFullPath] = filePath;
+                        }
+
+                        expMap[export.InstancedFullPath] = export.InstancedFullPath;
+
+                    }
+                }
+            });
+
+            foreach (var duplicate in dupes)
+            {
+                Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
+            }
+#endif
+        }
+
+        public static void GlobalShaderCacheResearch()
+        {
+            var infile = Path.Combine(LE3Directory.CookedPCPath, "GlobalShaderCache-PC-D3D-SM5.bin");
+            ShaderExportLoader mel = new ShaderExportLoader() { AutoLoad = true };
+            mel.LoadFile(infile);
+            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(mel, infile);
+            elhw.Show();
+            return;
             var stream = new MemoryStream(File.ReadAllBytes(infile));
             Debug.WriteLine($"Magic: {stream.ReadStringASCII(4)}");
             Debug.WriteLine($"Unreal version: {stream.ReadInt32()}");
@@ -2841,39 +2877,6 @@ defaultproperties
             }
 
             Debug.WriteLine($"Position: 0x{(stream.Position):X8}");
-
-
-            return;*/
-
-            #endregion
-
-            //just dump whatever shit you want to find here
-            ConcurrentDictionary<string, string> dupes = new ConcurrentDictionary<string, string>();
-            Parallel.ForEach(MELoadedFiles.GetOfficialFiles(MEGame.LE1 /*, MEGame.LE2, MEGame.LE3*/), filePath =>
-            {
-                {
-                    using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                    Dictionary<string, string> expMap = new();
-
-                    foreach (ExportEntry export in pcc.Exports)
-                    {
-                        if (expMap.TryGetValue(export.InstancedFullPath, out _))
-                        {
-                            Debug.WriteLine($"FOUND A DUPLICATE: {export.InstancedFullPath} in {Path.GetFileName(filePath)}");
-                            dupes[export.InstancedFullPath] = filePath;
-                        }
-
-                        expMap[export.InstancedFullPath] = export.InstancedFullPath;
-
-                    }
-                }
-            });
-
-            foreach (var duplicate in dupes)
-            {
-                Debug.WriteLine($"DUPLICATE IFP: {duplicate.Key} in {duplicate.Value}");
-            }
-#endif
         }
 
         private static void ConvertCover(IMEPackage srcPackage, IMEPackage destPackage)

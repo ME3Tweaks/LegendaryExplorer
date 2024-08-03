@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -10,28 +12,71 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class ShaderCache : ObjectBinary
     {
+        public bool IsGlobalShaderCache;
         public UMultiMap<NameReference, uint> ShaderTypeCRCMap; //TODO: Make this a UMap
         public UMultiMap<Guid, Shader> Shaders; //TODO: Make this a UMap
         public UMultiMap<NameReference, uint> VertexFactoryTypeCRCMap; //TODO: Make this a UMap
+        public UMultiMap<NameReference, Guid> VertexFactoryTypeGuidMap; // GlobalShaderCache
         public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
+
+        public static ShaderCache ReadGlobalShaderCache(Stream fs)
+        {
+            ShaderCache sc = new ShaderCache
+            {
+                IsGlobalShaderCache = true,
+            };
+            var magic = fs.ReadStringASCII(4);
+            var unrealver = fs.ReadInt32();
+            var licenseever = fs.ReadInt32();
+            var container = new GlobalShaderCacheSerializingContainer(fs, null, true);
+            sc.Serialize(container);
+            if (fs.Position != fs.Length)
+                Debugger.Break(); // Did not fully read!
+            return sc;
+        }
+
+        public class GlobalShaderCacheSerializingContainer(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0, PackageCache packageCache = null) : SerializingContainer(stream, pcc, isLoading, offset, packageCache)
+        {
+            // Global shader cache is not in a package. Thus name references are directly written.
+            public override void Serialize(ref NameReference name)
+            {
+                if (IsLoading)
+                {
+                    name = NameReference.FromInstancedString(ms.ReadUnrealString());
+                }
+                else
+                {
+                    ms.Writer.WriteUnrealString(name.Instanced, MEGame.ME3); // Unicode.
+                }
+            }
+        }
 
         protected override void Serialize(SerializingContainer sc)
         {
-            if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
-            byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
-            sc.Serialize(ref platform);
+            if (!IsGlobalShaderCache)
+            {
+                if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
+                byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
+                sc.Serialize(ref platform);
+            }
+            else
+            {
+                byte platform = 5;
+                sc.Serialize(ref platform);
+            }
+
             sc.Serialize(ref ShaderTypeCRCMap, sc.Serialize, sc.Serialize);
-            if (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 && sc.IsLoading)
+            if (IsGlobalShaderCache || (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3) && sc.IsLoading)
             {
                 int nameMapCount = sc.ms.ReadInt32();
                 sc.ms.Skip(nameMapCount * 12);
             }
-            else if (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 && sc.IsSaving)
+            else if (IsGlobalShaderCache || (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3) && sc.IsSaving)
             {
                 sc.ms.Writer.WriteInt32(0);
             }
 
-            if (sc.Game == MEGame.ME1)
+            if (!IsGlobalShaderCache && sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
             }
@@ -57,18 +102,45 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
 
-            if (sc.Game != MEGame.ME1)
+
+            if (IsGlobalShaderCache)
             {
-                sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
+                int count = 0;
+                sc.Serialize(ref count);
+                if (sc.IsLoading)
+                {
+                    VertexFactoryTypeGuidMap = new UMultiMap<NameReference, Guid>(count);
+                }
+                
+                int i = 0;
+                while (i < count)
+                {
+                    NameReference name = default;
+                    sc.Serialize(ref name);
+                    Guid value = default;
+                    sc.Serialize(ref value);
+                    sc.Serialize(ref name); // duplicate
+                    VertexFactoryTypeGuidMap.Add(name, value);
+                    i++;
+                }
             }
-            sc.Serialize(ref MaterialShaderMaps, sc.Serialize, sc.Serialize);
-            if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1))
+            else
             {
-                int dummy = 0;
-                sc.Serialize(ref dummy);
+                if (sc.Game != MEGame.ME1)
+                {
+                    sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
+                }
+
+                // Global has no material shaders.
+                sc.Serialize(ref MaterialShaderMaps, sc.Serialize, sc.Serialize);
+
+                if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1))
+                {
+                    int dummy = 0;
+                    sc.Serialize(ref dummy);
+                }
             }
         }
-
         public static ShaderCache Create()
         {
             return new()
@@ -126,15 +198,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public byte[] unkBytesPreName; //only exists in some Shaders with a FVertexFactoryParameterRef
         public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
         public byte[] unkBytes;
+        public byte[] unkSM2Bytes;
 
         private string dissassembly;
         private ShaderInfo info;
+        public byte[] SM3UnkBinkBytes;
 
         public ShaderInfo ShaderInfo => info ?? DisassembleShader();
 
         public string ShaderDisassembly
         {
-            get {
+            get
+            {
                 if (dissassembly == null)
                 {
                     DisassembleShader();
@@ -164,6 +239,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
             return newShader;
         }
+
+        // replace shader bytes
+        public void Replace(byte[] newShaderByteCode)
+        {
+            // insert new binary
+            ShaderByteCode = newShaderByteCode;
+
+            // return
+            return;
+        }
     }
 
     public class MaterialShaderMap
@@ -182,7 +267,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public MaterialUniformExpression[] UniformVertexVectorExpressions;
         public MaterialUniformExpression[] UniformVertexScalarExpressions;
 
-        public  List<(NameReference, string)> GetNames(MEGame game)
+        public List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
 
@@ -274,7 +359,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 meshShaderMap.Shaders = new UMultiMap<NameReference, ShaderReference>(MeshShaderMaps[i].Shaders.Count);
                 CopyShaderRefs(MeshShaderMaps[i].Shaders, meshShaderMap.Shaders);
             }
-            
+
             shaderCache.MaterialShaderMaps.Add(newMSM.StaticParameters, newMSM);
 
             return guidMap;
@@ -288,7 +373,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     {
                         newShaderGuid = shaderReference.Id;
                     }
-                    dest.Add(type, new ShaderReference{Id = newShaderGuid, ShaderType = shaderReference.ShaderType});
+                    dest.Add(type, new ShaderReference { Id = newShaderGuid, ShaderType = shaderReference.ShaderType });
                 }
             }
         }
@@ -315,6 +400,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 shader = new Shader();
             }
+            Debug.WriteLine($"Reading shader at 0x{stream.Position:X8}");
             Serialize(ref shader.ShaderType);
             Serialize(ref shader.Guid);
             int endOffset = 0;
@@ -323,6 +409,33 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             byte platform = Game.IsLEGame() ? (byte)5 : (byte)0;
             Serialize(ref platform);
             Serialize(ref shader.Frequency);
+            if (platform == 0x3)
+            {
+                // Shader Model 2 - global shader cache in LE seems to have this for bink
+                // seems to have extra 6 unknown bytes.
+                if (IsLoading)
+                {
+                    shader.unkSM2Bytes = ms.ReadBytes(0x6);
+                }
+                else
+                {
+                    ms.Writer.WriteBytes(shader.unkSM2Bytes);
+                }
+            }
+
+            if (platform == 0x0 && shader.ShaderType == "FBinkYCrCbToRGBNoPixelAlphaPixelShader")
+            {
+                // Found in LE3's global shader cache.
+                if (IsLoading)
+                {
+                    shader.SM3UnkBinkBytes = ms.ReadBytes(0x30);
+                }
+                else
+                {
+                    ms.Writer.WriteBytes(shader.SM3UnkBinkBytes);
+                }
+            }
+
             Serialize(ref shader.ShaderByteCode);
             Serialize(ref shader.ParameterMapCRC);
             Serialize(ref shader.Guid);//intentional duplicate

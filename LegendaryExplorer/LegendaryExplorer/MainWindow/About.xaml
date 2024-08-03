@@ -99,7 +99,7 @@
                         4rterius      <LineBreak/>
                         HenBagle      <LineBreak/>
                         Exkywor       <LineBreak/>
-                        Nanuke       <LineBreak/>
+                        Nanuke        <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -134,7 +134,9 @@
                         BioWare - MELE Plot Databases                   <LineBreak/>
                         gabbyh - ME Head Morph Exporter                 <LineBreak/>
                         TheBenefactor - Technical information           <LineBreak/>
-                        etnlGD - HLSLDecompiler                         <LineBreak/>
+                        DarkStarSword - Migoto HLSLDecompiler           <LineBreak/>
+                        bo3b - Migoto HLSLDecompiler                    <LineBreak/>
+                        Chiri - Migoto HLSLDecompiler                   <LineBreak/>                        
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>

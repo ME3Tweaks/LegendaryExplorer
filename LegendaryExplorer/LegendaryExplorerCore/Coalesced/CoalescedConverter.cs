@@ -36,11 +36,16 @@ namespace LegendaryExplorerCore.Coalesced
                 "BioCompat",
                 "BioCredits",
                 "BioDifficulty",
+                "BioEditor", // LE1
+                "BioEditorKeyBindings", // LE1
+                "BIoEditorUserSettings", // LE1
                 "BioEngine",
                 "BioGame",
                 "BioGuiResources", // PC Main Menu PC New Character
                 "BioInput",
                 "BioLightmass",
+                "BioParty", // LE1
+                "BioStringTypeMap", // LE1
                 "BioTest",
                 "BioUI",
                 "BioQA",

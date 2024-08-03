@@ -581,7 +581,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Shader Viewer" ToolTip="View Material's Shaders"/>
                         </TabItem.Header>
-                        <exportLoaderControls:MaterialExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
+                        <exportLoaderControls:ShaderExportLoader x:Name="MaterialViewerTab_MaterialExportLoader"/>
                     </TabItem>
                     <TabItem Name="RADLaunch_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

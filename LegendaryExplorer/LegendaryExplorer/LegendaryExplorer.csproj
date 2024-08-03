@@ -546,9 +546,9 @@
 			<TargetPath>HLSLDecompiler.dll</TargetPath>
 		</ContentWithTargetPath>
 		<!-- HLSL decompiler-->
-		<ContentWithTargetPath Include="Libraries\d3dcompiler_46.dll">
+		<ContentWithTargetPath Include="Libraries\d3dcompiler_47.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>d3dcompiler_46.dll</TargetPath>
+			<TargetPath>d3dcompiler_47.dll</TargetPath>
 		</ContentWithTargetPath>
 	</ItemGroup>
 

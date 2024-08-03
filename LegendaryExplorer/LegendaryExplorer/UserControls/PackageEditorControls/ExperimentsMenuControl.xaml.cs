@@ -431,6 +431,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ConvertSLCALightToNonSLCA(GetPEWindow());
         }
 
+        private void GlobalShaderCacheResearch_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GlobalShaderCacheResearch();
+        }
+
         //private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
         //{
         //    PackageEditorExperimentsM.MakeMakoLevel(GetPEWindow());
