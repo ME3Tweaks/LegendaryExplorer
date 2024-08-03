@@ -723,6 +723,19 @@ namespace LegendaryExplorer.Tools.PackageEditor
         }
 
         private void CreateObjectRedirector()
+        {
+#if DEBUG
+            if (TryGetSelectedExport(out var exp))
+            {
+                var objRe = ExportCreator.CreateExport(exp.FileRef, exp.ObjectName, "ObjectRedirector", indexed: false);
+                var objReBin = ObjectRedirector.Create();
+                objReBin.DestinationObject = exp.UIndex;
+                objRe.WriteBinary(objReBin);
+                GoToEntry(objRe.InstancedFullPath);
+            }
+#endif
+        }
+
         private void CreateClass()
         {
             IEntry parent = null;
@@ -2744,55 +2757,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 {
                     int offsetDec = int.Parse(result, NumberStyles.HexNumber);
                     GotoEntryViaOffset(offsetDec);
-                    //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
-                    for (int i = 0; i < Pcc.ImportCount; i++)
-                    {
-                        ImportEntry imp = Pcc.Imports[i];
-                        if (offsetDec >= imp.HeaderOffset && offsetDec < imp.HeaderOffset + ImportEntry.HeaderLength)
-                        {
-                            GoToNumber(imp.UIndex);
-                            Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + ImportEntry.HeaderLength - offsetDec);
-                            return;
-                        }
                     }
-
-                    foreach (ExportEntry exp in Pcc.Exports)
-                    {
-                        //header
-                        if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.HeaderLength)
-                        {
-                            GoToNumber(exp.UIndex);
-                            Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.HeaderLength - offsetDec);
-                            return;
-                        }
-
-                        //data
-                        if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
-                        {
-                            GoToNumber(exp.UIndex);
-                            int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
-                            int propsEnd = exp.propsEnd();
-
-                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
-                                BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
-                            {
-                                BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                                BinaryInterpreter_Tab.IsSelected = true;
-                            }
-                            else
-                            {
-                                InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                                Interpreter_Tab.IsSelected = true;
-                            }
-
-                            return;
-                        }
-                    }
-
-                    MessageBox.Show($"No entry or header containing offset 0x{result} was found.");
-                }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error: " + ex.Message);
