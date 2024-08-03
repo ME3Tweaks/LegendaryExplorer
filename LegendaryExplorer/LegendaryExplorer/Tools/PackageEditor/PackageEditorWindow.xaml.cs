@@ -197,6 +197,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand MultiCloneCommand { get; set; }
         public ICommand MultiCloneTreeCommand { get; set; }
         public ICommand FindEntryViaOffsetCommand { get; set; }
+        public ICommand FindEntryViaBadIndexCommand { get; set; }
         public ICommand ResolveImportsTreeViewCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
@@ -246,6 +247,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CalculateExportMD5Command { get; set; }
         public ICommand CreateClassCommand { get; set; }
         public ICommand CreatePackageExportCommand { get; set; }
+        public ICommand CreateObjectRedirectorCommand { get; set; }
         public ICommand CreateObjectReferencerCommand { get; set; }
         public ICommand CreateTextureCommand { get; set; }
         public ICommand DeleteEntryCommand { get; set; }
@@ -267,6 +269,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             MultiCloneCommand = new GenericCommand(CloneEntryMultiple, EntryIsSelected);
             MultiCloneTreeCommand = new GenericCommand(CloneTreeMultiple, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
+            FindEntryViaBadIndexCommand = new GenericCommand(FindEntryViaBadIndex, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             CheckForBrokenMaterialsCommand = new GenericCommand(CheckForBrokenMaterials, IsLoadedPackageME);
@@ -328,6 +331,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
+            CreateObjectRedirectorCommand = new GenericCommand(CreateObjectRedirector, ExportIsSelected);
             CreateObjectReferencerCommand = new GenericCommand(CreateObjectReferencer, IsLoadedPackageME);
             CreateTextureCommand = new GenericCommand(CreateTexture, IsLoadedPackageME);
             DeleteEntryCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
@@ -335,6 +339,103 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportAllPropsCommand = new GenericCommand(ExportAllProps, PackageIsLoaded);
             ApplyBulkPropEditsCommand = new GenericCommand(ApplyBulkPropEdits, PackageIsLoaded);
             ViewReferenceGraphCommand = new GenericCommand(ViewReferenceGraph, EntryIsSelected);
+        }
+
+        private void FindEntryViaBadIndex()
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+
+            string input = "Enter the bad export/import index that is listed in the output of Debug Logger.";
+            string result = PromptDialog.Prompt(this, input, "Enter bad index");
+            if (result != null)
+            {
+                try
+                {
+                    int badIndex = int.Parse(result);
+
+                    var decomp = Pcc.SaveToStream(false);
+                    bool found = false;
+                    while (decomp.Position <= decomp.Length - 4)
+                    {
+                        var readVal = decomp.ReadInt32();
+                        decomp.Position -= 3;
+                        if (readVal == badIndex)
+                        {
+                            found = true;
+                            decomp.Position--; // Go back one more
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        GotoEntryViaOffset((int)decomp.Position);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Did not find any instance of the number {badIndex} in the uncompressed package file.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+
+        private void GotoEntryViaOffset(int offset)
+        {
+            //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
+            for (int i = 0; i < Pcc.ImportCount; i++)
+            {
+                ImportEntry imp = Pcc.Imports[i];
+                if (offset >= imp.HeaderOffset && offset < imp.HeaderOffset + ImportEntry.HeaderLength)
+                {
+                    GoToNumber(imp.UIndex);
+                    Metadata_Tab.IsSelected = true;
+                    MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + ImportEntry.HeaderLength - offset);
+                    return;
+                }
+            }
+
+            foreach (ExportEntry exp in Pcc.Exports)
+            {
+                //header
+                if (offset >= exp.HeaderOffset && offset < exp.HeaderOffset + exp.HeaderLength)
+                {
+                    GoToNumber(exp.UIndex);
+                    Metadata_Tab.IsSelected = true;
+                    MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.HeaderLength - offset);
+                    return;
+                }
+
+                //data
+                if (offset >= exp.DataOffset && offset < exp.DataOffset + exp.DataSize)
+                {
+                    GoToNumber(exp.UIndex);
+                    int inExportDataOffset = exp.DataOffset + exp.DataSize - offset;
+                    int propsEnd = exp.propsEnd();
+
+                    if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
+                        BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
+                    {
+                        BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                        BinaryInterpreter_Tab.IsSelected = true;
+                    }
+                    else
+                    {
+                        InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                        Interpreter_Tab.IsSelected = true;
+                    }
+
+                    return;
+                }
+            }
+
+            MessageBox.Show($"No entry or header containing offset 0x{offset:X8} was found.");
         }
 
         private void ViewReferenceGraph()
@@ -621,6 +722,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             GoToNumber(package.UIndex);
         }
 
+        private void CreateObjectRedirector()
         private void CreateClass()
         {
             IEntry parent = null;
@@ -2641,7 +2743,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 try
                 {
                     int offsetDec = int.Parse(result, NumberStyles.HexNumber);
-
+                    GotoEntryViaOffset(offsetDec);
                     //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
                     for (int i = 0; i < Pcc.ImportCount; i++)
                     {

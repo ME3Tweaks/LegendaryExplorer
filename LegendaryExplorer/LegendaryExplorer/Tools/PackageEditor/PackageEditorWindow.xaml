@@ -22,6 +22,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
         mc:Ignorable="d"
+        xmlns:global="clr-namespace:LegendaryExplorer"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
@@ -212,6 +213,8 @@
                     <MenuItem Header="Create new Class" ToolTip="Adds a new UnrealScript class to this package" Command="{Binding CreateClassCommand}"/>
                     <MenuItem Header="Create new Package export" ToolTip="Adds a new package export to the root of the current loaded package" Command="{Binding CreatePackageExportCommand}"/>
                     <MenuItem Header="Create ObjectReferencer" ToolTip="Adds an ObjectReferencer to the root of the package if one does not exist" Command="{Binding CreateObjectReferencerCommand}"/>
+                    <MenuItem Header="Create ObjectRedirector" ToolTip="Adds an object redirector at the package root for the given export" Command="{Binding CreateObjectRedirectorCommand}"
+                              Visibility="{x:Static global:App.IsDebugVisibility}"/>
                     <MenuItem Header="Create blank texture" ToolTip="Creates a blank texture based on input parameters such as pixel format" Command="{Binding CreateTextureCommand}"/>
                 </MenuItem>
 
@@ -246,7 +249,8 @@
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Debugging" Padding="4">
-                    <MenuItem Header="Find entry via File Offset" ToolTip="Find which entry contains the offset you put in.&#x0a;This is typically useful when trying to locate a bad index. You can do this by:&#x0a;Looking at ME3Logger output, searching for the value in the file's binary via a hex editor like HxD, and then looking up that offset with this tool." Command="{Binding FindEntryViaOffsetCommand}"/>
+                    <MenuItem Header="Find entry via Bad Import/Export Index Value" ToolTip="Attempts to find the given value given from the game when an invalid import/export index is encountered." Command="{Binding FindEntryViaBadIndexCommand}" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+                    <MenuItem Header="Find entry via File Offset" ToolTip="Find which entry contains the offset you put in.&#x0a;This is typically useful when trying to locate a bad index. You can do this by:&#x0a;Looking at Debug Logger ASI output, searching for the value in the file's binary via a hex editor like HxD, and then looking up that offset with this tool." Command="{Binding FindEntryViaOffsetCommand}"/>
                     <MenuItem Header="Find entry via Tag" ToolTip="Find entry with Tag NameProperty that matches the specified value." Command="{Binding FindEntryViaTagCommand}"/>
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                     <MenuItem Header="Check for bad references" ToolTip="Checks imports and exports for references out of bounds of tables" Command="{Binding CheckForInvalidObjectPropertiesCommand}"/>
