@@ -1259,12 +1259,21 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public string GetRootName()
         {
+            return GetRoot().InstancedFullPath;
+        }
+
+        /// <summary>
+        /// Gets the top level object by following the idxLink up the chain.
+        /// </summary>
+        /// <returns></returns>
+        public IEntry GetRoot()
+        {
             IEntry current = this;
             while (current.Parent != null)
             {
                 current = current.Parent;
             }
-            return current.InstancedFullPath;
+            return current;
         }
 
         /// <summary>
