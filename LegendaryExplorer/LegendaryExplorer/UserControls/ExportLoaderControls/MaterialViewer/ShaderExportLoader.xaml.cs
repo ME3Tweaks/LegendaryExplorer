@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using BCnEncoder.Shared.ImageFiles;
-using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorerCore.Coalesced;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -22,6 +21,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
@@ -71,6 +71,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand ReplaceLoadedShaderCommand { get; set; }
         public ICommand ExportAllShadersCommand { get; set; }
         public ICommand ImportAllShadersCommand { get; set; }
+        public ICommand SearchForShaderCommand { get; set; }
 
         public ShaderExportLoader() : base("ShaderViewer")
         {
@@ -85,6 +86,98 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ReplaceLoadedShaderCommand = new GenericCommand(ReplaceShader, CanCreateShadersCopy);
             ExportAllShadersCommand = new GenericCommand(ExportAllShaders, CanCreateShadersCopy);
             ImportAllShadersCommand = new GenericCommand(ReplaceAllShaders, CanCreateShadersCopy);
+            SearchForShaderCommand = new GenericCommand(SearchForShader, ShadersAreLoaded);
+        }
+
+        private bool ShadersAreLoaded()
+        {
+            return MeshShaderMaps.Any();
+        }
+
+        private void SearchForShader()
+        {
+            //if (MeshShaderMaps_TreeView.SelectedItem is TreeViewShader tvs)
+            //{
+            //    var shaderHash = HLSLDecompiler.DecompileShader(tvs.Bytecode, false).Trim().HashCrc32();
+            //    foreach (var msm in MeshShaderMaps)
+            //    {
+            //        foreach (var shader in msm.Shaders)
+            //        {
+            //            var testShaderText = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
+            //            var testHash = testShaderText.HashCrc32();
+            //            if (shaderHash == testHash)
+            //            {
+            //                // Found !!
+            //                // god damnit its a treeview!!
+
+            //                MessageBox.Show($"Found shader: Index {shader.Index}");
+            //                return;
+            //            }
+            //        }
+            //    }
+            //}
+
+            // return;
+            var shaderText = PromptDialog.Prompt(this, "Paste your unmodified decompiled shader from renderdoc here to search for this shader.", "Paste shader", inputType: PromptDialog.InputType.Multiline);
+            if (string.IsNullOrWhiteSpace(shaderText))
+                return;
+
+
+            if (shaderText.StartsWith("// ---- Created with "))
+            {
+                shaderText = shaderText.Substring(shaderText.IndexOf('\n')); // Remove /r
+            }
+
+            // Remove carriage return
+            shaderText = shaderText.Replace("\r", "");
+            shaderText = shaderText.Trim();
+
+            foreach (var msm in MeshShaderMaps)
+            {
+                foreach (var shader in msm.Shaders)
+                {
+                    var testShaderText = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
+                    if (shaderText.Length == testShaderText.Length)
+                    {
+                        // Found !!
+                        // god damnit its a treeview!!
+
+                        MessageBox.Show($"Found shader: Index {shader.Index}");
+                        return;
+                    }
+
+                    Debug.WriteLine($"{shaderText.Split('\n').Length} vs {testShaderText.Split('\n').Length} {shader.ShaderType}");
+                }
+            }
+
+            var crc = shaderText.HashCrc32();
+            var refHashes = JsonConvert.DeserializeObject<Dictionary<uint, Guid>>(File.ReadAllText(Path.Combine(AppDirectories.ExecFolder, "LE3RefShaderHashes.json")));
+            if (refHashes.TryGetValue(crc, out var guid))
+            {
+                MessageBox.Show($"Found shader in ref cache. Guid: {guid}");
+                return;
+            }
+
+            //var refCacheF = Path.Combine(LE3Directory.CookedPCPath, "RefShaderCache-PC-D3D-SM5.upk");
+            //var refCacheP = MEPackageHandler.OpenMEPackage(refCacheF);
+            //var refCache = ObjectBinary.From<ShaderCache>(refCacheP.Exports.First());
+            //Dictionary<uint, Guid> shaderHashToGuid = new Dictionary<uint, Guid>();
+            //foreach (var s in refCache.Shaders)
+            //{
+            //    var testShaderText = HLSLDecompiler.DecompileShader(s.Value.ShaderByteCode, false).Trim();
+            //    var hash = testShaderText.HashCrc32();
+            //    shaderHashToGuid[hash] = s.Key;
+            //    //if (shaderText == testShaderText)
+            //    //{
+            //    //    MessageBox.Show($"Found shader in ref cache. {s.Value.ShaderType} {s.Key}");
+            //    //    return;
+            //    //}
+            //}
+
+            //var shaderMap = JsonConvert.SerializeObject(shaderHashToGuid);
+            //File.WriteAllText(@"C:\users\public\shaderMap.json", shaderMap);
+
+            MessageBox.Show($"No shader found with matching decompilation.");
         }
 
         public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new();

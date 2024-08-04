@@ -28,6 +28,7 @@
                     <Button x:Name="replaceLoadedShader_Button" Content="Replace Shader" Command="{Binding ReplaceLoadedShaderCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                     <Button x:Name="ExportAllShaders_Button" Content="Export Shaders" Command="{Binding ExportAllShadersCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                     <Button x:Name="ImportAllShaders_Button" Content="Import Shaders" Command="{Binding ImportAllShadersCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    <Button Content="Search for Shader" Command="{Binding SearchForShaderCommand, Mode=OneTime}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                 </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
