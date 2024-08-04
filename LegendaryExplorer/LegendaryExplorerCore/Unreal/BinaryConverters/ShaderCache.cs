@@ -255,6 +255,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private string dissassembly;
         private ShaderInfo info;
         public byte[] SM3UnkBinkBytes;
+        public byte Platform; // LE is 5, OT is 0. However, LE also has a few 2 and 3 for SM2 and SM3 shaders. So we must store this info.
 
         public ShaderInfo ShaderInfo => info ?? DisassembleShader();
 
@@ -457,10 +458,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int endOffset = 0;
             long endOffsetPos = ms.Position;
             Serialize(ref endOffset);
-            byte platform = Game.IsLEGame() ? (byte)5 : (byte)0;
-            Serialize(ref platform);
+            Serialize(ref shader.Platform);
             Serialize(ref shader.Frequency);
-            if (platform == 0x3)
+            if (shader.Platform == 0x3)
             {
                 // Shader Model 2 - global shader cache in LE seems to have this for bink
                 // seems to have extra 6 unknown bytes.
@@ -474,7 +474,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
 
-            if (platform == 0x0 && shader.ShaderType == "FBinkYCrCbToRGBNoPixelAlphaPixelShader")
+            if (shader.Platform == 0x0 && shader.ShaderType == "FBinkYCrCbToRGBNoPixelAlphaPixelShader")
             {
                 // Found in LE3's global shader cache.
                 if (IsLoading)
