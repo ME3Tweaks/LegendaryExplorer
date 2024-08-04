@@ -3865,7 +3865,8 @@ defaultproperties
         public static void GenerateTextMesh(PackageEditorWindow peWpf)
         {
             var text = PromptDialog.Prompt(peWpf, "Enter text to generate", "Enter text", "Test", true);
-
+            if (string.IsNullOrWhiteSpace(text))
+                return;
             var staticMesh = ExportCreator.CreateExport(peWpf.Pcc, text, "StaticMesh");
             PropertyCollection props = new PropertyCollection();
             props.AddOrReplaceProp(new IntProperty(1, "LightMapCoordinateIndex"));
