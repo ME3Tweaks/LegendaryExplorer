@@ -400,7 +400,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 shader = new Shader();
             }
-            Debug.WriteLine($"Reading shader at 0x{stream.Position:X8}");
             Serialize(ref shader.ShaderType);
             Serialize(ref shader.Guid);
             int endOffset = 0;
