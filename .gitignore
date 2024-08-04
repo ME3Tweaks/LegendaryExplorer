@@ -226,3 +226,4 @@ Release_x64/
 # Ignore Doxygen working folder and Doxygen output
 /Documentation/Output
 /Documentation/Doxygen
+/LegendaryExplorer/TexConverter/TexConverter/WinRelease/TexConverter.vcxproj.FileListAbsolute.txt
