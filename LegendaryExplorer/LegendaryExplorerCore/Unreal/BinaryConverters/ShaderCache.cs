@@ -19,16 +19,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UMultiMap<NameReference, Guid> VertexFactoryTypeGuidMap; // GlobalShaderCache
         public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
 
-        public static ShaderCache ReadGlobalShaderCache(Stream fs)
+        public static ShaderCache ReadGlobalShaderCache(Stream fs, MEGame game)
         {
             ShaderCache sc = new ShaderCache
             {
                 IsGlobalShaderCache = true,
             };
-            var magic = fs.ReadStringASCII(4);
-            var unrealver = fs.ReadInt32();
-            var licenseever = fs.ReadInt32();
             var container = new GlobalShaderCacheSerializingContainer(fs, null, true);
+            container.ActualGame = game;
             sc.Serialize(container);
             if (fs.Position != fs.Length)
                 Debugger.Break(); // Did not fully read!
@@ -49,6 +47,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     ms.Writer.WriteUnrealString(name.Instanced, MEGame.ME3); // Unicode.
                 }
             }
+
+            /// <summary>
+            /// Game this container is for. Used for reserialization.
+            /// </summary>
+            public MEGame ActualGame { get; set; }
         }
 
         protected override void Serialize(SerializingContainer sc)
@@ -61,19 +64,45 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                byte platform = 5;
+                if (sc is GlobalShaderCacheSerializingContainer gscsc)
+                {
+                    // Requires special container as it does not have a package.
+                    if (gscsc.IsLoading)
+                    {
+                        gscsc.ms.ReadStringASCII(4); // BMSG
+                    }
+                    else
+                    {
+                        gscsc.ms.Writer.WriteStringASCII("BMSG");
+                    }
+
+                    int version = UnrealPackageFile.UnrealVersion(gscsc.ActualGame);
+                    gscsc.Serialize(ref version);
+                    int licensee = UnrealPackageFile.LicenseeVersion(gscsc.ActualGame);
+                    gscsc.Serialize(ref licensee);
+                }
+
+                byte platform = 5; // LE only
                 sc.Serialize(ref platform);
             }
 
             sc.Serialize(ref ShaderTypeCRCMap, sc.Serialize, sc.Serialize);
-            if (IsGlobalShaderCache || (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3) && sc.IsLoading)
+            if (IsGlobalShaderCache)
             {
-                int nameMapCount = sc.ms.ReadInt32();
-                sc.ms.Skip(nameMapCount * 12);
+                int zero = 0;
+                sc.Serialize(ref zero);
             }
-            else if (IsGlobalShaderCache || (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3) && sc.IsSaving)
+            else if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
-                sc.ms.Writer.WriteInt32(0);
+                if (sc.IsLoading)
+                {
+                    int nameMapCount = sc.ms.ReadInt32();
+                    sc.ms.Skip(nameMapCount * 12);
+                }
+                else
+                {
+                    sc.ms.Writer.WriteInt32(0);
+                }
             }
 
             if (!IsGlobalShaderCache && sc.Game == MEGame.ME1)
@@ -105,23 +134,38 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (IsGlobalShaderCache)
             {
-                int count = 0;
-                sc.Serialize(ref count);
                 if (sc.IsLoading)
                 {
-                    VertexFactoryTypeGuidMap = new UMultiMap<NameReference, Guid>(count);
+                    VertexFactoryTypeGuidMap = new UMultiMap<NameReference, Guid>();
                 }
-                
-                int i = 0;
-                while (i < count)
+
+                int count = VertexFactoryTypeGuidMap.Count;
+                sc.Serialize(ref count);
+
+                if (sc.IsLoading)
                 {
-                    NameReference name = default;
-                    sc.Serialize(ref name);
-                    Guid value = default;
-                    sc.Serialize(ref value);
-                    sc.Serialize(ref name); // duplicate
-                    VertexFactoryTypeGuidMap.Add(name, value);
-                    i++;
+                    int i = 0;
+                    while (i < count)
+                    {
+                        NameReference name = default;
+                        sc.Serialize(ref name);
+                        Guid value = default;
+                        sc.Serialize(ref value);
+                        sc.Serialize(ref name); // duplicate
+                        VertexFactoryTypeGuidMap.Add(name, value);
+                        i++;
+                    }
+                }
+                else
+                {
+                    foreach (var keyMap in VertexFactoryTypeGuidMap)
+                    {
+                        var key = keyMap.Key;
+                        sc.Serialize(ref key);
+                        var value = keyMap.Value;
+                        sc.Serialize(ref value);
+                        sc.Serialize(ref key); // duplicate
+                    }
                 }
             }
             else
@@ -131,7 +175,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
                 }
 
-                // Global has no material shaders.
                 sc.Serialize(ref MaterialShaderMaps, sc.Serialize, sc.Serialize);
 
                 if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1))
@@ -178,6 +221,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        /// <summary>
+        /// Writes this binary directly to the given serializing container. Make sure you've set it up correctly!
+        /// </summary>
+        /// <param name="container"></param>
+        public void WriteTo(SerializingContainer container)
+        {
+            Serialize(container);
         }
     }
 
