@@ -300,6 +300,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Id = shader.Key,
                     ShaderType = shader.Value.ShaderType,
                 };
+                // Dumping code.
+                //var decomp = HLSLDecompiler.DecompileShader(tve.Bytecode, false);
+                //var sanitizedType = tve.ShaderType.Replace("<", "_").Replace(">", "_");
+                //var name = Path.Combine($@"C:\users\public\GlobalShader-{i}-{sanitizedType}.hlsl");
+                //File.WriteAllText(name, decomp);
                 root.Shaders.Add(tve);
                 i++;
             }
@@ -379,91 +384,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BusyText = "Copying Shaders";
             Task.Run(() =>
             {
-                StaticParameterSet sps = CurrentLoadedExport.ClassName switch
-                {
-                    "Material" => (StaticParameterSet)ObjectBinary.From<Material>(CurrentLoadedExport)
-                        .SM3MaterialResource.ID,
-                    _ => throw new NotImplementedException(
-                        "MaterialInstance shader cloning has not been implemented yet")
-                };
-                ShaderCache seekFreeShaderCache;
-                Guid newMatGuid;
-                if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is { } seekFreeShaderCacheExport)
-                {
-                    seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
-                    if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
-                    {
-                        Dictionary<Guid, Guid> shaderGuidMap =
-                            msm.DeepCopyWithNewGuidsInto(seekFreeShaderCache, out newMatGuid);
-                        foreach ((Guid oldGuid, Guid newGuid) in shaderGuidMap)
-                        {
-                            if (!seekFreeShaderCache.Shaders.TryGetValue(oldGuid, out Shader oldShader))
-                            {
-                                throw new Exception($"Shader {oldGuid} not found!");
-                            }
-
-                            Shader newShader = oldShader.Clone();
-                            newShader.Guid = newGuid;
-                            seekFreeShaderCache.Shaders.Add(newGuid, newShader);
-                        }
-
-                        seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
-                        return newMatGuid;
-                    }
-                }
-                else
-                {
-                    seekFreeShaderCacheExport = new ExportEntry(Pcc, 0, "SeekFreeShaderCache",
-                        BitConverter.GetBytes(-1), binary: ShaderCache.Create())
-                    {
-                        Class = Pcc.GetEntryOrAddImport("Engine.ShaderCache", "Class"),
-                        ObjectFlags = UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForEdit |
-                                      UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.Standalone
-                    };
-                    Pcc.AddExport(seekFreeShaderCacheExport);
-                    seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
-                }
-
-                if (!RefShaderCacheReader.IsShaderOffsetsDictInitialized(Pcc.Game))
-                {
-                    BusyText = "Calculating Shader offsets\n(May take ~15s)";
-                }
-
-                MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(Pcc.Game, sps, out _);
-                if (msmFromGlobalCache != null && CurrentLoadedExport is not null)
-                {
-                    Dictionary<Guid, Guid> shaderGuidMap =
-                        msmFromGlobalCache.DeepCopyWithNewGuidsInto(seekFreeShaderCache, out newMatGuid);
-                    Shader[] shaders = RefShaderCacheReader.GetShaders(Pcc.Game, shaderGuidMap.Keys,
-                        out UMultiMap<NameReference, uint> shaderTypeCRCMap,
-                        out UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap);
-                    if (shaders is null)
-                    {
-                        throw new Exception("Unable to retrieve shaders from RefShaderCache");
-                    }
-
-                    foreach (Shader oldShader in shaders)
-                    {
-                        Shader newShader = oldShader.Clone();
-                        newShader.Guid = shaderGuidMap[oldShader.Guid];
-                        seekFreeShaderCache.Shaders.Add(newShader.Guid, newShader);
-                    }
-
-                    foreach ((NameReference key, uint value) in shaderTypeCRCMap)
-                    {
-                        seekFreeShaderCache.ShaderTypeCRCMap.TryAddUnique(key, value);
-                    }
-
-                    foreach ((NameReference key, uint value) in vertexFactoryTypeCRCMap)
-                    {
-                        seekFreeShaderCache.VertexFactoryTypeCRCMap.TryAddUnique(key, value);
-                    }
-
-                    seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
-                    return newMatGuid;
-                }
-
-                throw new Exception("Material Shader Map has dissapeared!");
+                var newGuid = ShaderCacheManipulator.CopyRefShadersToLocal(CurrentLoadedExport, true);
+                if (newGuid == null)
+                    throw new Exception("Material Shader Map has disappeared!");
+                return newGuid.Value;
             }).ContinueWithOnUIThread(prevTask =>
             {
                 if (prevTask.Exception is AggregateException aggregateException)
@@ -473,21 +397,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return;
                 }
 
-                Guid newMatGuid = prevTask.Result;
-                if (CurrentLoadedExport.ClassName is "Material")
-                {
-                    var matBin = ObjectBinary.From<Material>(CurrentLoadedExport);
-                    matBin.SM3MaterialResource.ID = newMatGuid;
-                    CurrentLoadedExport.WriteBinary(matBin);
-                }
-                else
-                {
-                    throw new NotImplementedException("MaterialInstance shader cloning has not been implemented yet");
-                }
-
                 LoadShaders();
                 MessageBox.Show(Window.GetWindow(this),
-                    "This material now has its own unique shaders in the local SeekFreeShaderCache. " +
+                    "This material now has its own unique shaders in the local SeekFreeShaderCache." +
                     "Porting this material to another package will bring the shaders along to that package's shader cache.\n\n" +
                     "You should change this material's name, so it will not conflict with other instances that use its original shaders.");
             });
@@ -596,13 +508,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void ExportAllShaders()
         {
             IsBusy = true;
-            BusyText = "Exporting Shaders";
+            BusyText = "Exporting local shaders";
             var seekFreeShaderCacheExport = Pcc.FindExport("SeekFreeShaderCache");
-            ShaderCache seekFreeShaderCache;
+            ShaderCache seekFreeShaderCache = null;
 
             if (seekFreeShaderCacheExport is null)
             {
-                throw new Exception("Cant find shader cache.");
+                IsBusy = false;
+                MessageBox.Show(Window.GetWindow(this), "This package doesn't have a local shader cache.", "No cache", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             else
             {
@@ -782,7 +695,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void LoadFile(string filepath)
         {
-            var fs = File.OpenRead(filepath);
+            using var fs = File.OpenRead(filepath);
             var magic = fs.ReadStringASCII(4);
             if (magic != "BMSG")
             {
