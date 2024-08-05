@@ -28,8 +28,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var container = new GlobalShaderCacheSerializingContainer(fs, null, true);
             container.ActualGame = game;
             sc.Serialize(container);
-            if (fs.Position != fs.Length)
-                Debugger.Break(); // Did not fully read!
+
+            // Sanity check
+            //if (fs.Position != fs.Length)
+            //    // We add an extra 0 on the end to make size different. This way it always is different size.
+            //    if (fs.Position != fs.Length - 1 || fs.ReadByte() == 0)
+            //        Debugger.Break(); // Did not fully read!
             return sc;
         }
 
