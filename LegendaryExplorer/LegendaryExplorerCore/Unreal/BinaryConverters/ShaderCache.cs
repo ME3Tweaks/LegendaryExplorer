@@ -289,6 +289,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Frequency = Frequency,
                 ShaderByteCode = ShaderByteCode.ArrayClone(),
                 ParameterMapCRC = ParameterMapCRC,
+                Platform = Platform,
                 InstructionCount = InstructionCount,
                 unkBytesPreName = unkBytesPreName?.ArrayClone(),
                 VertexFactoryType = VertexFactoryType,

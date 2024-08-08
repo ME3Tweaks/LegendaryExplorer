@@ -156,7 +156,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         // Found !!
                         // god damnit its a treeview!!
 
-                        MessageBox.Show($"Found shader: Index {shader.Index}");
+                        MessageBox.Show($"Found shader: Index {shader.Index} {shader.ShaderType}");
                         return;
                     }
 
@@ -513,16 +513,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         // < and > are not valid filesystem characters
                         var sanitizedName = shader.ShaderType.Replace("<", "_").Replace(">", "_");
-                        var outPath = Path.Combine(subFolder, $"{sanitizedName}.hlsl");
+                        var outPath = Path.Combine(subFolder, $"{sanitizedName}.fxc");
 
                         // Ensure bytecode loaded from ref
                         if (shader.Bytecode == null && RefShaderCacheReader.GetShaderBytecode(shader.Game, shader.Id) is byte[] bytecode)
                         {
                             shader.Bytecode = bytecode;
                         }
-
-                        var hlsl = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
-                        File.WriteAllText(outPath, hlsl);
+                        File.WriteAllBytes(outPath, shader.Bytecode);
+                        //var hlsl = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
+                        //File.WriteAllText(outPath, hlsl);
                     }
                 }
             }).ContinueWithOnUIThread(task =>
