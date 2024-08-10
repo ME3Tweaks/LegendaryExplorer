@@ -328,6 +328,14 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
             if (preloadMaterial != null)
             {
+                if (preloadMaterial.ClassName == "Material")
+                {
+                    ShaderEd.LoadExport(preloadMaterial);
+                }
+                else
+                {
+                    ShaderEd.UnloadExport();
+                }
                 MEELC.LoadExport(preloadMaterial);
             }
         }

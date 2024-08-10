@@ -1082,12 +1082,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             case FloatProperty fp:
                             case IntProperty ip:
                                 {
-                                    if (uptve.Parent.Property is StructProperty p && p.IsImmutable)
+                                    if (uptve.UPParent.Property is StructProperty p && p.IsImmutable)
                                     {
                                         BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 4);
                                         return;
                                     }
-                                    else if (uptve.Parent.Property is ArrayProperty<IntProperty> || uptve.Parent.Property is ArrayProperty<FloatProperty> || uptve.Parent.Property is ArrayProperty<ObjectProperty>)
+                                    else if (uptve.UPParent.Property is ArrayProperty<IntProperty> || uptve.UPParent.Property is ArrayProperty<FloatProperty> || uptve.UPParent.Property is ArrayProperty<ObjectProperty>)
                                     {
                                         BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 4);
                                         return;
@@ -1097,12 +1097,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 break;
                             case NameProperty np:
                                 {
-                                    if (uptve.Parent.Property is StructProperty p && p.IsImmutable)
+                                    if (uptve.UPParent.Property is StructProperty p && p.IsImmutable)
                                     {
                                         BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 8);
                                         return;
                                     }
-                                    else if (uptve.Parent.Property is ArrayProperty<NameProperty>)
+                                    else if (uptve.UPParent.Property is ArrayProperty<NameProperty>)
                                     {
                                         BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 8);
                                         return;
@@ -1369,7 +1369,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         BinInterpNode container = bitvi;
                         if ((NodeType)container.Tag == NodeType.ArrayLeafObject)
                         {
-                            container = bitvi.Parent; //container
+                            container = (BinInterpNode)bitvi.Parent; //container
                         }
                         var dataCopy = CurrentLoadedExport.Data;
                         int countOffset = int.Parse(container.Name.Substring(1)); //chop off _

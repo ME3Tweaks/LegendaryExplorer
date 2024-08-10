@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
@@ -19,8 +20,6 @@ using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
-using WwiseParserLib.Structures.Chunks;
-using WwiseParserLib.Structures.SoundBanks;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -389,15 +388,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var shaderNode = new BinInterpNode(bin.Position - 8, $"Shader {i} {shaderName.Instanced}");
                     embeddedShaderCount.Items.Add(shaderNode);
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}") { Length = 8 });
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}") { Length = 16 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}")
+                    { Length = 8 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}")
+                    { Length = 16 });
                     if (Pcc.Game == MEGame.UDK)
                     {
                         shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
                         shaderNode.Items.Add(MakeUInt32Node(bin, "unk?"));
                     }
+
                     int shaderEndOffset = bin.ReadInt32();
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}") { Length = 4 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}")
+                    { Length = 4 });
 
                     if (CurrentLoadedExport.Game == MEGame.UDK)
                     {
@@ -420,33 +423,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (CurrentLoadedExport.Game.IsLEGame())
                         {
                             shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                                $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
+                                    $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
                             { Length = 1 });
                         }
                         else
                         {
                             shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                                $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
+                                    $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
                             { Length = 1 });
                         }
 
                         shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                            $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
+                                $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
                         { Length = 1 });
                     }
 
                     int shaderSize = bin.ReadInt32();
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}") { Length = 4 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}")
+                    { Length = 4 });
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") { Length = shaderSize });
                     bin.Skip(shaderSize);
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}") { Length = 16 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
+                    { Length = 16 });
 
                     string shaderType;
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}") { Length = 8 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position,
+                        $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}")
+                    { Length = 8 });
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
@@ -458,7 +465,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     if (bin.Position != (shaderEndOffset - dataOffset))
                     {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position, "Unparsed Shader Parameters") { Length = (shaderEndOffset - dataOffset) - (int)bin.Position });
+                        var unparsedShaderParams =
+                            new BinInterpNode(bin.Position,
+                                    $"Unparsed Shader Parameters ({shaderEndOffset - dataOffset - bin.Position} bytes)")
+                            { Length = (shaderEndOffset - dataOffset) - (int)bin.Position };
+                        shaderNode.Items.Add(unparsedShaderParams);
+                        while (bin.Position + dataOffset < shaderEndOffset)
+                        {
+                            var param = new BinInterpNode(bin.Position, $"Param");
+                            unparsedShaderParams.Items.Add(param);
+                            param.Items.Add(MakeInt16Node(bin, "BaseIndex"));
+                            param.Items.Add(MakeInt16Node(bin, "NumResources"));
+                            param.Items.Add(MakeInt16Node(bin, "SamplerIndex"));
+                        }
                     }
 
                     bin.JumpTo(shaderEndOffset - dataOffset);
@@ -2322,7 +2341,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         })
                     }
                 });
-                endPos = (int) bin.Position;
+                endPos = (int)bin.Position;
             }
             catch (Exception ex)
             {
@@ -7124,7 +7143,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
 
         private static BinInterpNode MakeVector2DHalfNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.BaseStream.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
+            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
 
         private static BinInterpNode MakeColorNode(EndianReader bin, string name)
         {
