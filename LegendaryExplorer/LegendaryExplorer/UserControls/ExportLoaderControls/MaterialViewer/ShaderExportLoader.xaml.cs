@@ -6,9 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using DocumentFormat.OpenXml.Wordprocessing;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Search;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Resources;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Coalesced;
@@ -19,7 +21,6 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -68,6 +69,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         // currently loaded tree view shader.
         private TreeViewShader SelectedTreeViewShader => MeshShaderMaps_TreeView?.SelectedItem as TreeViewShader;
 
+        private TextDocument _document;
+        public TextDocument Document
+        {
+            get => _document;
+            set => SetProperty(ref _document, value);
+        }
+
+        private string ShaderText
+        {
+            get => Document?.Text ?? "";
+            set => Dispatcher.Invoke(() =>
+            {
+                Document = new TextDocument(value);
+            });
+        }
+
         public ICommand CreateShadersCopyCommand { get; set; }
         public ICommand ReplaceShaderCommand { get; set; }
         public ICommand ExportShaderMapCommand { get; set; }
@@ -85,6 +102,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             LoadCommands();
             InitializeComponent();
             DataContext = this;
+            shaderTextEditor.SyntaxHighlighting = EmbeddedResources.HlslSyntaxDefinition;
+            SearchPanel.Install(shaderTextEditor.TextArea);
+            shaderTextEditor.Options.ConvertTabsToSpaces = true;
         }
 
         public void LoadCommands()
@@ -102,9 +122,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void CompileShader()
         {
-            var shaderText = shaderDissasemblyTextBlock.Text;
             var profile = SelectedTreeViewShader.ShaderType.Contains("VertexShader") ? "vs_5_0" : "ps_5_0";
-            var compiled = SharpDX.D3DCompiler.ShaderBytecode.Compile(shaderText, "main", profile);
+            var compiled = ShaderBytecode.Compile(ShaderText, "main", profile);
             if (compiled != null)
             {
                 InternalReplaceShader(compiled.Bytecode.Data, SelectedTreeViewShader.Id);
@@ -256,7 +275,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             CurrentLoadedExport = null;
             MeshShaderMaps.ClearEx();
-            shaderDissasemblyTextBlock.Text = "";
+            ShaderText = "";
             TopInfoText = "";
             TopShaderInfoTextBlock.Text = "";
         }
@@ -281,7 +300,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (e.NewValue is TreeViewShader tvs)
             {
-                shaderDissasemblyTextBlock.Text = tvs.DissassembledShader;
+                ShaderText = tvs.DissassembledShader;
             }
         }
 

@@ -196,7 +196,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
         {
             var window = Window.GetWindow(this);
-            if (window is { })
+            if (window is not null)
             {
                 window.Closed += (_, _) => UnloadFileLib();
             }
@@ -356,7 +356,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         private void outputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems?.Count == 1 && e.AddedItems[0] is PositionedMessage msg)
+            if (e.AddedItems is [PositionedMessage msg])
             {
                 ScrollTo(msg.Start, msg.End - msg.Start);
             }
