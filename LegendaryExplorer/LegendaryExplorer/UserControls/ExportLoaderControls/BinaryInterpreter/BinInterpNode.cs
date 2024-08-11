@@ -3,18 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
-    public interface ITreeItem
-    {
-        bool IsSelected { get; set; }
-        bool IsExpanded { get; set; }
-        void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport);
-    }
+
 
     public class BinInterpNode : NotifyPropertyChangedBase, ITreeItem
     {
@@ -32,10 +28,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public string Header { get; set; }
         public string Name { get; set; }
         public object Tag { get; set; }
-        public BinInterpNode Parent;
         public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
 
         public bool IsExpanded { get; set; }
+        public ITreeItem Parent { get; set; }
 
         /// <summary>
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
@@ -175,7 +171,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 // operations will be added to the queue after all of the parent expansions.
                 if (value)
                 {
-                    var ancestorsToExpand = new Stack<BinInterpNode>();
+                    var ancestorsToExpand = new Stack<ITreeItem>();
 
                     var parent = Parent;
                     while (parent != null)

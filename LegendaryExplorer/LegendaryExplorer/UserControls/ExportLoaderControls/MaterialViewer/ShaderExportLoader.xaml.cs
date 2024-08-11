@@ -72,6 +72,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand ReplaceShaderCommand { get; set; }
         public ICommand ExportShaderMapCommand { get; set; }
         public ICommand SearchForShaderCommand { get; set; }
+        public ICommand CompileShaderCommand { get; set; }
 
 
         // Scheduled to move out
@@ -92,10 +93,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SearchForShaderCommand = new GenericCommand(SearchForShader, ShadersAreLoaded);
             ExportShaderMapCommand = new GenericCommand(ExportMapShaders, ShadersAreLoaded);
             ReplaceShaderCommand = new GenericCommand(ReplaceShader, CanCreateShadersCopy);
+            CompileShaderCommand = new GenericCommand(CompileShader, ShaderIsSelected);
 
             // Scheduled to move out
             ExportAllShadersCommand = new GenericCommand(ExportAllShaders, CanCreateShadersCopy);
             ImportAllShadersCommand = new GenericCommand(ReplaceAllShaders, CanCreateShadersCopy);
+        }
+
+        private void CompileShader()
+        {
+            var shaderText = shaderDissasemblyTextBlock.Text;
+            var profile = SelectedTreeViewShader.ShaderType.Contains("VertexShader") ? "vs_5_0" : "ps_5_0";
+            var compiled = SharpDX.D3DCompiler.ShaderBytecode.Compile(shaderText, "main", profile);
+            if (compiled != null)
+            {
+                InternalReplaceShader(compiled.Bytecode.Data, SelectedTreeViewShader.Id);
+            }
         }
 
         private bool ShaderIsSelected()
@@ -153,9 +166,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var testShaderText = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
                     if (shaderText.Length == testShaderText.Length)
                     {
-                        // Found !!
-                        // god damnit its a treeview!!
-
+                        SelectedItem = shader;
                         MessageBox.Show($"Found shader: Index {shader.Index} {shader.ShaderType}");
                         return;
                     }
@@ -208,20 +219,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             LoadedContent_Panel.Visibility = Visibility.Collapsed;
         }
 
-        public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(MaterialShaderMap msm,
-            ShaderCache localShaderCache = null)
+        public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(MaterialShaderMap msm, ShaderCache localShaderCache = null)
         {
             var result = new List<TreeViewMeshShaderMap>();
+            bool isFirst = true;
             foreach (MeshShaderMap meshShaderMap in msm.MeshShaderMaps)
             {
-                var tvmsm = new TreeViewMeshShaderMap { VertexFactoryType = meshShaderMap.VertexFactoryType };
+                var tvmsm = new TreeViewMeshShaderMap { VertexFactoryType = meshShaderMap.VertexFactoryType, IsExpanded = isFirst };
+                isFirst = false;
                 foreach ((NameReference shaderType, ShaderReference shaderReference) in meshShaderMap.Shaders)
                 {
                     var tvs = new TreeViewShader
                     {
                         Id = shaderReference.Id,
                         ShaderType = shaderReference.ShaderType,
-                        Game = Pcc.Game
+                        Game = Pcc.Game,
+                        Parent = tvmsm,
                     };
                     if (localShaderCache != null && localShaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
                     {
@@ -264,8 +277,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
         }
 
-        private void MeshShaderMaps_TreeView_OnSelectedItemChanged(object sender,
-            RoutedPropertyChangedEventArgs<object> e)
+        private void MeshShaderMaps_TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TreeViewShader tvs)
             {
@@ -273,33 +285,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private void MeshShaderMaps_TreeView_Update(TreeViewShader tvs)
-        {
-            TopShaderInfoTextBlock.Text = TopShaderInfoText; // Set text
-            shaderDissasemblyTextBlock.Text = tvs.DissassembledShader;
-        }
-
         private void LoadShaders_Button_Click(object sender, RoutedEventArgs e)
         {
             LoadShaders();
         }
 
-        private void LoadShaders()
+        private void LoadShaders(TreeViewShader itemToHighlight = null)
         {
             if (GlobalShaderCache != null)
             {
-                LoadGlobalShaders();
+                LoadGlobalShaders(itemToHighlight);
             }
             else
             {
-                LoadPackageShaders();
+                LoadPackageShaders(itemToHighlight);
             }
         }
 
-        private void LoadGlobalShaders()
+        private void LoadGlobalShaders(TreeViewShader itemToHighlight)
         {
             MeshShaderMaps.ClearEx();
-            var root = new TreeViewMeshShaderMap() { VertexFactoryType = "Global Shaders" };
+            var root = new TreeViewMeshShaderMap() { VertexFactoryType = "Global Shaders", IsExpanded = true };
             MeshShaderMaps.Add(root);
             int i = 0;
             foreach (var shader in GlobalShaderCache.Shaders)
@@ -311,6 +317,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Game = MEGame.LE3,
                     Id = shader.Key,
                     ShaderType = shader.Value.ShaderType,
+                    Parent = root,
                 };
                 // Dumping code.
                 //var decomp = HLSLDecompiler.DecompileShader(tve.Bytecode, false);
@@ -325,7 +332,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Loads shaders that are referenced and stored in package file format
         /// </summary>
-        private void LoadPackageShaders()
+        /// <param name="itemToHighlight"></param>
+        private void LoadPackageShaders(TreeViewShader itemToHighlight)
         {
             IsBusy = true;
             BusyText = "Loading Shaders";
@@ -379,6 +387,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (treeviewItems != null && CurrentLoadedExport != null)
                 {
                     MeshShaderMaps.AddRange(treeviewItems);
+                }
+
+                if (itemToHighlight != null)
+                {
+                    foreach (var stype in MeshShaderMaps)
+                    {
+                        if (stype.VertexFactoryType == ((TreeViewMeshShaderMap)itemToHighlight.Parent).VertexFactoryType)
+                        {
+                            foreach (var s in stype.Shaders)
+                            {
+                                if (s.ShaderType == itemToHighlight.ShaderType)
+                                {
+                                    SelectedItem = s;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 OnDemand_Panel.Visibility = Visibility.Collapsed;
@@ -451,6 +477,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
+            InternalReplaceShader(File.ReadAllBytes(dlg.FileName), selectedShaderInfo.Id);
+        }
+
+        private void InternalReplaceShader(byte[] bytecode, Guid id)
+        {
+
             IsBusy = true;
             BusyText = "Replacing shader";
 
@@ -460,10 +492,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var sfscExport = Pcc.FindExport("SeekFreeShaderCache");
                 var sfsc = ObjectBinary.From<ShaderCache>(sfscExport);
 
-                if (sfsc.Shaders.TryGetValue(selectedShaderInfo.Id, out var shader))
+                if (sfsc.Shaders.TryGetValue(id, out var shader))
                 {
                     // Insert new bytecode
-                    shader.Replace(File.ReadAllBytes(dlg.FileName));
+                    shader.Replace(bytecode);
 
                     // Update the cache
                     sfscExport.WriteBinary(sfsc);
@@ -482,10 +514,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 // Update shaders.
-                LoadShaders();
+                LoadShaders(SelectedTreeViewShader);
                 // Update text box.
-                MeshShaderMaps_TreeView_Update(new TreeViewShader { Id = selectedShaderInfo.Id, ShaderType = selectedShaderInfo.ShaderType, Game = Pcc.Game });
-                MessageBox.Show(Window.GetWindow(this), $"Shader {selectedShaderInfo.Id} has been replaced.");
+                // MessageBox.Show(Window.GetWindow(this), $"Shader {id} has been replaced.");
             });
         }
 
@@ -790,6 +821,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// If shader should automatically be loaded when the control becomes loaded
         /// </summary>
         public bool AutoLoad { get; set; }
+
+        private ITreeItem _selectedItem;
+        public ITreeItem SelectedItem { get => _selectedItem; set => SetProperty(ref _selectedItem, value); }
+
         private void ShaderExportLoader_OnLoaded(object sender, RoutedEventArgs e)
         {
             if (!ControlLoaded)
@@ -805,14 +840,62 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     }
 
 
-    public class TreeViewMeshShaderMap
+    public class TreeViewMeshShaderMap : ITreeItem
     {
+        #region Equality
+        protected bool Equals(TreeViewMeshShaderMap other)
+        {
+            return VertexFactoryType == other.VertexFactoryType;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TreeViewMeshShaderMap)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (VertexFactoryType != null ? VertexFactoryType.GetHashCode() : 0);
+        }
+        #endregion
+
         public string VertexFactoryType { get; set; }
         public ObservableCollectionExtended<TreeViewShader> Shaders { get; } = new();
+        public bool IsSelected { get; set; }
+        public bool IsExpanded { get; set; }
+        public ITreeItem Parent { get; set; } // Will always be null
+
+        public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)
+        {
+            str.WriteLine(VertexFactoryType);
+        }
     }
 
-    public class TreeViewShader
+    public class TreeViewShader : ITreeItem
     {
+        #region Equality
+        protected bool Equals(TreeViewShader other)
+        {
+            return Id.Equals(other.Id) && ShaderType == other.ShaderType;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TreeViewShader)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, ShaderType);
+        }
+        #endregion
+
         public MEGame Game;
         public Guid Id { get; set; }
         public string Description => $"{ShaderType} ({Index})";
@@ -855,6 +938,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             set => dissasembledShader = value;
+        }
+
+        public bool IsSelected { get; set; }
+        public bool IsExpanded { get; set; }
+        public ITreeItem Parent { get; set; }
+
+        public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)
+        {
+            str.WriteLine(ShaderType);
         }
     }
 }

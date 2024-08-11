@@ -16,6 +16,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorerCore.Gammtek;
@@ -285,7 +286,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void CopyProperty()
         {
-            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Parent != null && tvi.Parent.Property == null && tvi.Property is not NoneProperty)
+            if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi && tvi.UPParent != null && tvi.UPParent.Property == null && tvi.Property is not NoneProperty)
             {
                 CopiedProperty = tvi.Property;
                 CopiedPropertyPackage.SetTarget(CurrentLoadedExport.FileRef);
@@ -326,7 +327,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (CurrentLoadedExport != null && Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi)
             {
                 if (tvi.Property is NoneProperty) return false; // You cannot copy NoneProperties
-                return tvi.Parent != null && tvi.Parent.Property == null; // Parent has no property, which means this is a root node
+                return tvi.UPParent != null && tvi.UPParent.Property == null; // Parent has no property, which means this is a root node
             }
             return false;
         }
@@ -492,13 +493,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedExport.WriteProperty(CommonStructs.GuidProp(Guid.NewGuid(), SelectedItem.Property.Name));
         }
 
-        private bool ArrayElementIsSelected() => SelectedItem?.Parent?.Property is ArrayPropertyBase;
+        private bool ArrayElementIsSelected() => SelectedItem?.UPParent?.Property is ArrayPropertyBase;
 
-        private bool CanMoveArrayElementUp() => ArrayElementIsSelected() && SelectedItem.Parent.ChildrenProperties.IndexOf(SelectedItem) > 0;
+        private bool CanMoveArrayElementUp() => ArrayElementIsSelected() && SelectedItem.UPParent.ChildrenProperties.IndexOf(SelectedItem) > 0;
 
         private bool CanMoveArrayElementDown()
         {
-            var entries = SelectedItem?.Parent?.ChildrenProperties;
+            var entries = SelectedItem?.UPParent?.ChildrenProperties;
             return entries != null && ArrayElementIsSelected() && entries.IndexOf(SelectedItem) < entries.Count - 1;
         }
 
@@ -736,13 +737,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void RemoveProperty()
         {
-            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Parent != null && tvi.Property != null)
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.UPParent != null && tvi.Property != null)
             {
-                if (tvi.Parent.Parent == null)
+                if (tvi.UPParent.UPParent == null)
                 {
                     CurrentLoadedProperties.Remove(tvi.Property);
                 }
-                else if (tvi.Parent.Property is StructProperty sp) //inside struct
+                else if (tvi.UPParent.Property is StructProperty sp) //inside struct
                 {
                     sp.Properties.Remove(tvi.Property);
                 }
@@ -754,9 +755,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (Interpreter_TreeView?.SelectedItem is UPropertyTreeViewEntry tvi)
             {
-                return tvi.Parent != null && tvi.Property is not NoneProperty &&
-                       (tvi.Parent.Parent == null //items with a single parent (root nodes)
-                     || tvi.Parent.Property is StructProperty { IsImmutable: false }); //properties that are part of a non-immutable StructProperty
+                return tvi.UPParent != null && tvi.Property is not NoneProperty &&
+                       (tvi.UPParent.UPParent == null //items with a single parent (root nodes)
+                     || tvi.UPParent.Property is StructProperty { IsImmutable: false }); //properties that are part of a non-immutable StructProperty
             }
             return false;
         }
@@ -884,7 +885,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 topLevelTree.ChildrenProperties.Add(new UPropertyTreeViewEntry
                 {
                     DisplayName = $"Class objects do not have properties.\nDefault properties for this class are located in the Default__{CurrentLoadedExport.ObjectName} object.",
-                    Parent = topLevelTree,
+                    UPParent = topLevelTree,
                     AdvancedModeText = "" //blank the bottom line
                 });
 
@@ -928,7 +929,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             //Ensure we are at array level so we can choose the last item
                             if (!(itemToSelect.Property is ArrayPropertyBase))
                             {
-                                itemToSelect = itemToSelect.Parent;
+                                itemToSelect = itemToSelect.UPParent;
                             }
 
                             RescanSelectionOffset = 0;
@@ -1495,7 +1496,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 EditableValue = editableValue,
                 ParsedValue = parsedValue,
                 DisplayName = displayName,
-                Parent = parent,
+                UPParent = parent,
                 AttachedExport = parsingExport,
                 IsExpanded = isExpanded
             };
@@ -1849,7 +1850,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case IntProperty ip:
                         Value_TextBox.Text = ip.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
-                        if (newSelectedItem.Parent?.Property is StructProperty { StructType: "Rotator" })
+                        if (newSelectedItem.UPParent?.Property is StructProperty { StructType: "Rotator" })
                         {
                             //we support editing rotators as degrees. We will preview the raw value and enter data in degrees instead.
                             SupportedEditorSetElements.Add(ParsedValue_TextBlock);
@@ -1973,7 +1974,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             // Find if this is contained in a struct; we use that for property type parsing, 
             // otherwise just use the class itself
             string containingClassOrStructName = CurrentLoadedExport.ClassName; // Default
-            var parentProperty = uPropertyTreeViewEntry.Parent;
+            var parentProperty = uPropertyTreeViewEntry.UPParent;
             while (parentProperty != null && parentProperty.Property != null)
             {
                 if (parentProperty.Property is StructProperty sp)
@@ -1986,10 +1987,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     containingClassOrStructName = apb.Reference;
                 }
 
-                parentProperty = parentProperty.Parent;
+                parentProperty = parentProperty.UPParent;
             }
 
-            var expectedType = GlobalUnrealObjectInfo.GetExpectedClassTypeForObjectProperty(CurrentLoadedExport, op, containingClassOrStructName, uPropertyTreeViewEntry.Parent?.Property);
+            var expectedType = GlobalUnrealObjectInfo.GetExpectedClassTypeForObjectProperty(CurrentLoadedExport, op, containingClassOrStructName, uPropertyTreeViewEntry.UPParent?.Property);
             Value_ObjectComboBox.ItemsSource = MakeAllEntriesList(expectedType);
         }
 
@@ -2064,7 +2065,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 switch (tvi.Property)
                 {
                     case IntProperty _:
-                        if (tvi.Parent?.Property is StructProperty property && property.StructType == "Rotator")
+                        if (tvi.UPParent?.Property is StructProperty property && property.StructType == "Rotator")
                         {
                             //yes it is a float - we convert raw value to floating point degrees so we use float to raw int
                             if (float.TryParse(Value_TextBox.Text, out float degrees))
@@ -2162,7 +2163,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         //New selected property is struct property
 
-                        switch (newSelectedItem.Parent.Property)
+                        switch (newSelectedItem.UPParent.Property)
                         {
                             //If we are in an array
                             /* || newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>*/
@@ -2179,7 +2180,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else if (newSelectedItem.Property is ArrayPropertyBase arrayProperty)
                     {
-                        if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true })
+                        if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true })
                         {
                             Interpreter_Hexbox.Highlight(arrayProperty.StartOffset, arrayProperty.GetLength(Pcc, true));
                         }
@@ -2201,7 +2202,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case FloatProperty:
                         case IntProperty:
                             {
-                                switch (newSelectedItem.Parent.Property)
+                                switch (newSelectedItem.UPParent.Property)
                                 {
                                     case StructProperty { IsImmutable: true }:
                                     case ArrayProperty<IntProperty>:
@@ -2217,7 +2218,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case EnumProperty ep:
                             {
-                                switch (newSelectedItem.Parent.Property)
+                                switch (newSelectedItem.UPParent.Property)
                                 {
                                     case StructProperty { IsImmutable: true }:
                                         Interpreter_Hexbox.Highlight(ep.ValueOffset, 8);
@@ -2232,7 +2233,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case ByteProperty bp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<ByteProperty>)
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true } or ArrayProperty<ByteProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(bp.ValueOffset, 1);
                                     return;
@@ -2241,7 +2242,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case BioMask4Property b4p:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<BioMask4Property>)
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true } or ArrayProperty<BioMask4Property>)
                                 {
                                     Interpreter_Hexbox.Highlight(b4p.ValueOffset, 1);
                                     return;
@@ -2250,7 +2251,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case StrProperty sp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<StrProperty>)
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true } or ArrayProperty<StrProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(sp.StartOffset, sp.GetLength(Pcc, true));
                                     return;
@@ -2260,7 +2261,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case BoolProperty boolp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true })
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true })
                                 {
                                     Interpreter_Hexbox.Highlight(boolp.ValueOffset, 1);
                                     return;
@@ -2270,7 +2271,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case NameProperty np:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<NameProperty>)
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true } or ArrayProperty<NameProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(np.ValueOffset, 8);
                                     return;
@@ -2280,7 +2281,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case DelegateProperty dp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<DelegateProperty>)
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true } or ArrayProperty<DelegateProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(dp.ValueOffset, 12);
                                     return;
@@ -2290,7 +2291,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         case StringRefProperty srefp:
                             {
-                                if (newSelectedItem.Parent.Property is StructProperty { IsImmutable: true } or ArrayProperty<StringRefProperty>)
+                                if (newSelectedItem.UPParent.Property is StructProperty { IsImmutable: true } or ArrayProperty<StringRefProperty>)
                                 {
                                     Interpreter_Hexbox.Highlight(srefp.ValueOffset, 4);
                                     return;
@@ -2425,7 +2426,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             //scoped for variable re-use
 
                             //ROTATORS
-                            if (tvi.Parent?.Property is StructProperty structProperty && structProperty.StructType == "Rotator")
+                            if (tvi.UPParent?.Property is StructProperty structProperty && structProperty.StructType == "Rotator")
                             {
                                 //yes it is a float - we convert raw value to floating point degrees so we use float to raw int
                                 if (float.TryParse(Value_TextBox.Text, out float degrees))
@@ -2621,17 +2622,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     propertyToAddItemTo = arrayProperty;
                     insertIndex = arrayProperty.Count;
                     ArrayElementJustAdded = true;
-                    if (tvi.Parent?.Property is StructProperty structProp)
+                    if (tvi.UPParent?.Property is StructProperty structProp)
                     {
                         containingType = structProp.StructType;
                     }
                 }
-                else if (tvi.Parent?.Property is ArrayPropertyBase parentArray)
+                else if (tvi.UPParent?.Property is ArrayPropertyBase parentArray)
                 {
                     propertyToAddItemTo = parentArray;
-                    insertIndex = tvi.Parent.ChildrenProperties.IndexOf(tvi);
+                    insertIndex = tvi.UPParent.ChildrenProperties.IndexOf(tvi);
                     ForcedRescanOffset = (int)tvi.Property.StartOffset;
-                    if (tvi.Parent.Parent?.Property is StructProperty structProp)
+                    if (tvi.UPParent.UPParent?.Property is StructProperty structProp)
                     {
                         containingType = structProp.StructType;
                     }
@@ -2729,15 +2730,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (tvi.Property is StructProperty sp && sp.IsImmutable)
                 return true;
 
-            return IsInImmutable(tvi.Parent);
+            return IsInImmutable(tvi.UPParent);
         }
 
         private void RemoveArrayElement()
         {
             if (SelectedItem is UPropertyTreeViewEntry tvi
-             && tvi.Parent?.Property is ArrayPropertyBase arrayProperty)
+             && tvi.UPParent?.Property is ArrayPropertyBase arrayProperty)
             {
-                int index = tvi.Parent.ChildrenProperties.IndexOf(tvi);
+                int index = tvi.UPParent.ChildrenProperties.IndexOf(tvi);
                 if (index >= 0)
                 {
                     if (arrayProperty.Properties.HasExactly(1))
@@ -2809,9 +2810,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void MoveArrayElement(bool up)
         {
-            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null && tvi.Parent?.Property is ArrayPropertyBase arrayProperty)
+            if (SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property != null && tvi.UPParent?.Property is ArrayPropertyBase arrayProperty)
             {
-                int index = tvi.Parent.ChildrenProperties.IndexOf(tvi);
+                int index = tvi.UPParent.ChildrenProperties.IndexOf(tvi);
                 int swapIndex = up ? index - 1 : index + 1;
                 //selection should be changed to the location of the element we are swapping with
                 ForcedRescanOffset = (int)arrayProperty[swapIndex].StartOffset;
@@ -2920,6 +2921,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref isExpanded, value);
         }
 
+        // Interface implementation
+        public ITreeItem Parent
+        {
+            get => UPParent;
+            set
+            {
+                if (value is UPropertyTreeViewEntry u)
+                {
+                    UPParent = u;
+                }
+            }
+        }
+
         /// <summary>
         /// Used for inline editing. Return true to allow inline editing for property type
         /// </summary>
@@ -2948,10 +2962,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public void ExpandParents()
         {
-            if (Parent != null)
+            if (UPParent != null)
             {
-                Parent.ExpandParents();
-                Parent.IsExpanded = true;
+                UPParent.ExpandParents();
+                UPParent.IsExpanded = true;
             }
         }
 
@@ -2971,7 +2985,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public event EventHandler PropertyUpdated;
 
-        public UPropertyTreeViewEntry Parent { get; set; }
+        public UPropertyTreeViewEntry UPParent { get; set; }
 
         /// <summary>
         /// The UProperty object from the export's properties that this node represents
@@ -3098,7 +3112,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             if (op.Name.Name != null)
                             {
                                 string container = AttachedExport.ClassName;
-                                if (Parent?.Property is StructProperty psp)
+                                if (UPParent?.Property is StructProperty psp)
                                 {
                                     container = psp.StructType;
                                 }

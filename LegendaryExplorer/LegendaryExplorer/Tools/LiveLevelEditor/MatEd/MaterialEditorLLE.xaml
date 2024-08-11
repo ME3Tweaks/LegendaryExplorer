@@ -85,6 +85,9 @@
                     </Grid>
                 </Grid>
             </TabItem>
+            <TabItem Header="Shader Editor">
+                <exportLoaderControls:ShaderExportLoader x:Name="ShaderEd" AutoLoad="True"/>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </misc:NotifyPropertyChangedControlBase>

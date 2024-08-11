@@ -85,13 +85,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer
 
             // Load shaders
             string textureShader = LegendaryExplorer.Resources.EmbeddedResources.TextureShader;
-            SharpDX.D3DCompiler.CompilationResult result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "VSMain", "vs_4_0");
+            SharpDX.D3DCompiler.CompilationResult result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "VSMain", "vs_5_0");
             SharpDX.D3DCompiler.ShaderBytecode vsbytecode = result.Bytecode;
             this.TextureVertexShader = new VertexShader(Device, vsbytecode);
             vsbytecode.Dispose();
 
             // Load pixel shader
-            result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "PSMain", "ps_4_0");
+            result = SharpDX.D3DCompiler.ShaderBytecode.Compile(textureShader, "PSMain", "ps_5_0");
             SharpDX.D3DCompiler.ShaderBytecode psbytecode = result.Bytecode;
             this.TexturePixelShader = new PixelShader(Device, psbytecode);
             psbytecode.Dispose();
