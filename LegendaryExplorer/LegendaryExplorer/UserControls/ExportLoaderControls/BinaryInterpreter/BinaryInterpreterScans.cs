@@ -1015,7 +1015,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
                 case "FMaterialUniformExpressionTexture":
                 case "FMaterialUniformExpressionFlipBookTextureParameter":
-                    if (Pcc.Game == MEGame.ME3)
+                    if (Pcc.Game >= MEGame.ME3)
                     {
                         node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
                     }
