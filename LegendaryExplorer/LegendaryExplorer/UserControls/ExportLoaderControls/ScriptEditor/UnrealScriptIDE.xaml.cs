@@ -1158,33 +1158,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
         }
 
-        private void TextEditor_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                textEditor.UpdateFontSize(e.Delta > 0);
-                e.Handled = true;
-            }
-        }
-
-        private void TextEditor_OnPreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                switch (e.Key)
-                {
-                    case Key.OemPlus:
-                        textEditor.UpdateFontSize(true);
-                        e.Handled = true;
-                        break;
-                    case Key.OemMinus:
-                        textEditor.UpdateFontSize(false);
-                        e.Handled = true;
-                        break;
-                }
-            }
-        }
-
         private void ThemePicker_OnClick(object sender, RoutedEventArgs e)
         {
             new IdeThemePicker(Window.GetWindow(this)).Show();
