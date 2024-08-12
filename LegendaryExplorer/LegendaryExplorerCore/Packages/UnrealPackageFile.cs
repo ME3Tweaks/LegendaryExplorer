@@ -327,6 +327,10 @@ namespace LegendaryExplorerCore.Packages
             if (exportEntry.FileRef != this)
                 throw new Exception("Cannot add an export entry from another package file");
 
+            // Useful for breaking when a duplicate is being added
+            //if (FindExport(exportEntry.InstancedFullPath) != null)
+            //    Debugger.Break(); // Found duplicate.
+
             exportEntry.DataChanged = true;
             exportEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the export has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             exportEntry.Index = exports.Count;
@@ -337,15 +341,6 @@ namespace LegendaryExplorerCore.Packages
 
             if (!lookupTableNeedsToBeRegenerated)
             {
-                // CROSSGEN-V: CHECK BEFORE ADDING TO MAKE SURE WE DON'T GOOF IT UP
-#if FALSE && DEBUG
-                if (EntryLookupTable.TryGetValue(exportEntry.InstancedFullPath, out _))
-                {
-                    // Debug.WriteLine($"ENTRY LOOKUP TABLE ALREADY HAS ITEM BEING ADDED!!! ITEM: {exportEntry.InstancedFullPath}");
-                    //Debugger.Break(); // This already exists!
-                }
-#endif
-                // END CROSSGEN-V
                 EntryLookupTable[exportEntry.InstancedFullPath] = exportEntry;
                 _tree.Add(exportEntry);
             }

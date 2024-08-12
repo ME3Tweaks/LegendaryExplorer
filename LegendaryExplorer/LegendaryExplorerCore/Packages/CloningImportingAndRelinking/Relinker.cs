@@ -132,7 +132,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <summary>
         /// When importing an export that is a donor, and the donor is found, this can be set to override how the donor export is processed into the destination package. Return the newly created export.
         /// </summary>
-        public Func<IMEPackage, ExportEntry, RelinkerOptionsPackage, ExportEntry> CustomDonorImporter { get; set; }
+        public Func<IMEPackage, ExportEntry, RelinkerOptionsPackage, IEntry> CustomDonorImporter { get; set; }
     }
 
     public static class Relinker
@@ -769,7 +769,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Porting as export instead");
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
-                            ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
+                            var importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
                             // Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
 
                             if (!rop.CrossPackageMap.ContainsKey(importFullName))
@@ -962,7 +962,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
 
-                    ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
+                    var importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
                     if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
                     {
                         // This needs to be suppressed if we are doing replace export with another
