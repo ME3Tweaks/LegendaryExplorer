@@ -322,16 +322,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         // END CROSSGEN-V HACKS
 
         /// <summary>
-        /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
+        /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries(). This returns IEntry, as it may return an ImportEntry if the export is found in a higher tier file and ROP options for imports are set.
         /// </summary>
         /// <param name="destPackage">Package to import to</param>
         /// <param name="sourceExport">Export object from the other package to import</param>
         /// <param name="link">Local parent node UIndex</param>
         /// <param name="rop">Options for relinking</param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
+        public static IEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
             //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
+#if DEBUG
+            // These variables are used for debugging as it is semi-difficult to trace execution of this method. 
+            bool checkedDonor = false;
+            var originalIFP = sourceExport.InstancedFullPath; // Can change if ObjectRedirector is followed
+#endif
             //if (sourceExport.InstancedFullPath == "BioVFX_Z_TEXTURES.Generic.Biotic_Current_2")
             //    Debugger.Break();
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
@@ -413,7 +418,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 usingRedirectedObject = true;
                             }
 
-                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
+                            if (testExp.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) || (sourceExport.ClassName.CaseInsensitiveEquals("BioSWF") && testExp.ClassName.CaseInsensitiveEquals("GFxMovieInfo")) || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
                                 sourceExport = testExp;
                                 isCached = true;
@@ -430,7 +435,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                                 if (properDonor == null)
                                 {
-                                    if (sourceExport.ClassName != "Model" && sourceExport.ClassName != "Brush")
+                                    if (!sourceExport.ClassName.CaseInsensitiveEquals("Model") && !sourceExport.ClassName.CaseInsensitiveEquals("Brush"))
                                         Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
                                 }
                                 else
@@ -517,7 +522,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // 07/20/2024 - Add custom way to handle donor importing for users of LEC
                 if (usingDonor && rop.CustomDonorImporter != null)
                 {
-                    var result =  rop.CustomDonorImporter(destPackage, sourceExport, rop);
+                    var result = rop.CustomDonorImporter(destPackage, sourceExport, rop);
                     if (result != null)
                         return result;
                 }

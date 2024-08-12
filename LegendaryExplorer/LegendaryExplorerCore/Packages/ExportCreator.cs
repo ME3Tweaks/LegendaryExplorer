@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public static ExportEntry CreatePackageExport(IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null, bool forcedExport = true)
         {
-            var testName = parent != null ? NameReference.FromInstancedString($"{parent.ParentInstancedFullPath}.{packageName.Instanced}") : packageName;
+            var testName = parent != null ? NameReference.FromInstancedString($"{parent.InstancedFullPath}.{packageName.Instanced}") : packageName;
             var testEntry = pcc.FindExport(testName, "Package");
             if (testEntry != null)
                 return testEntry;
