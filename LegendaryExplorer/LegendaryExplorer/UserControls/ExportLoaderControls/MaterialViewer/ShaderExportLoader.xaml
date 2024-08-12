@@ -10,6 +10,8 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
         xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
+        xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d" 
         Background="{x:Static SystemColors.WindowBrush}"
         d:DesignHeight="450" d:DesignWidth="800"
@@ -33,7 +35,6 @@
                         <Button Content="Export shader map" Command="{Binding ExportShaderMapCommand}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
                         <Button Content="Search for shader" Command="{Binding SearchForShaderCommand}" Padding="5,4" sharedUi:Bindings.VisibilityToEnabled="True"/>
 
-
                         <!-- Scheduled to move out of this control -->
                         <Button x:Name="replaceLoadedShader_Button" Content="Replace Shader" Command="{Binding ReplaceLoadedShaderCommand, Mode=OneTime}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
                         <Button x:Name="ExportAllShaders_Button" Content="Export Shaders" Command="{Binding ExportAllShadersCommand, Mode=OneTime}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
@@ -47,8 +48,13 @@
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <TreeView x:Name="MeshShaderMaps_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
                               SelectedItemChanged="MeshShaderMaps_TreeView_OnSelectedItemChanged"
+                              VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
                               ItemsSource="{Binding MeshShaderMaps}" FocusManager.IsFocusScope="True">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type exportLoaderControls:TreeViewMeshShaderMap}"
@@ -87,10 +93,17 @@
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                                              Color="Black" />
                         </TreeView.Resources>
+                        <b:Interaction.Behaviors>
+                            <peregrineTreeView:TreeSelectionBehavior SelectedItem="{Binding SelectedItem}" />
+                        </b:Interaction.Behaviors>
                     </TreeView>
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-                    <TextBox Grid.Column="2" Name="shaderDissasemblyTextBlock" VerticalScrollBarVisibility="Visible"
-                             Background="{x:Static SystemColors.WindowBrush}" IsReadOnly="True" />
+                    <avalonedit:TextEditor x:Name="shaderTextEditor" Grid.Column="2" Document="{Binding Document}" SyntaxHighlighting="HLSL" 
+                                           Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
+                                           FontFamily="Consolas" ShowLineNumbers="True"/>
+                    <DockPanel Grid.Column="2" Grid.Row="1">
+                        <Button Content="Compile shader" Command="{Binding CompileShaderCommand}"/>
+                    </DockPanel>
                 </Grid>
             </DockPanel>
         </Grid>

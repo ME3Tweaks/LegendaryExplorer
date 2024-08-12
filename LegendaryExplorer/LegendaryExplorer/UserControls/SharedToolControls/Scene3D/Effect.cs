@@ -22,12 +22,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public Effect(SharpDX.Direct3D11.Device Device, string ShaderCode)
         {
             // Load vertex shader
-            SharpDX.D3DCompiler.CompilationResult result = SharpDX.D3DCompiler.ShaderBytecode.Compile(ShaderCode, VertexShaderEntrypoint, "vs_4_0");
+            SharpDX.D3DCompiler.CompilationResult result = SharpDX.D3DCompiler.ShaderBytecode.Compile(ShaderCode, VertexShaderEntrypoint, "vs_5_0");
             SharpDX.D3DCompiler.ShaderBytecode vsb = result.Bytecode;
             VertexShader = new VertexShader(Device, vsb);
 
             // Load pixel shader
-            result = SharpDX.D3DCompiler.ShaderBytecode.Compile(ShaderCode, PixelShaderEntrypoint, "ps_4_0");
+            result = SharpDX.D3DCompiler.ShaderBytecode.Compile(ShaderCode, PixelShaderEntrypoint, "ps_5_0");
             SharpDX.D3DCompiler.ShaderBytecode psb = result.Bytecode;
             PixelShader = new PixelShader(Device, psb);
             psb.Dispose();

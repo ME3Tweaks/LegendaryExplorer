@@ -44,6 +44,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Resources\HLSL.xshd" />
 		<None Remove="Resources\Images\bink.jpg" />
 		<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
 		<Compile Remove="Resources\exec\**" />
@@ -194,9 +195,8 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\TextureShader.hlsl" />
-	</ItemGroup>
-	<ItemGroup>
 		<EmbeddedResource Include="Resources\StandardShader.hlsl" />
+		<EmbeddedResource Include="Resources\HLSL.xshd" />
 	</ItemGroup>
 
 	<ItemGroup>
