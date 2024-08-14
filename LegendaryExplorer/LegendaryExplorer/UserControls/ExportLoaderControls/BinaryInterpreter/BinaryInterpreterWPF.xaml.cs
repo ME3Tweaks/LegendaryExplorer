@@ -1058,6 +1058,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             Value_TextBox.Text = EndianReader.ToSingle(CurrentLoadedExport.DataReadOnly, dataOffset, CurrentLoadedExport.FileRef.Endian).ToString();
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
+                        case NodeType.Guid:
+                            Value_TextBox.Text = EndianReader.ToGuid(CurrentLoadedExport.DataReadOnly.Slice(dataOffset, 16), CurrentLoadedExport.FileRef.Endian).ToString();
+                            SupportedEditorSetElements.Add(Value_TextBox);
+                            break;
                     }
                     if (bitve.ArrayAddAlgoritm != BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
                     {
@@ -1293,6 +1297,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 data.OverwriteRange(dataOffset + 4, BitConverter.GetBytes(nameIndex));
                                 CurrentLoadedExport.Data = data;
                                 Debug.WriteLine("Set data");
+                            }
+                            break;
+                        case NodeType.Guid:
+                            bool parsedGuidSucceeded = Guid.TryParse(Value_TextBox.Text, out var parsedGuidVal);
+                            if (dataOffset != 0 && parsedGuidSucceeded)
+                            {
+                                byte[] data = CurrentLoadedExport.Data;
+                                var ms = new MemoryStream(data);
+                                ms.Seek(dataOffset, SeekOrigin.Begin);
+                                ms.WriteGuid(parsedGuidVal);
+                                CurrentLoadedExport.Data = ms.ToArray();
                             }
                             break;
                     }
