@@ -139,6 +139,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                     {
                         // Needs moved to editing package
                         EntryExporter.ExportExportToPackage(TextureExp, EditingPackage, out var newExp); // Maybe use cache here
+                        if (newExp is ImportEntry)
+                        {
+                            // Create a blank texture
+                            newExp = Texture2D.CreateTexture(EditingPackage, TextureExp.ObjectName, image.mipMaps[0].width, image.mipMaps[0].height, image.pixelFormat, image.mipMaps.Count > 1);
+                        }
                         TextureExp = newExp as ExportEntry; // Todo: Consider renaming to avoid memory collisions on saved package
                         ParameterValue = TextureExp.UIndex; // Update the texture UIndex for loading
                     }
