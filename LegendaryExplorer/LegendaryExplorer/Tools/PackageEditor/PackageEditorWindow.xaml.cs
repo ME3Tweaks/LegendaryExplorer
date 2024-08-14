@@ -47,6 +47,7 @@ using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using GongSolutions.Wpf.DragDrop;
+using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -1635,9 +1636,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             {
                                 return pcc.GetEntry(exp.idxSuperClass);
                             }
-                            if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => uIndexes.Contains(kvp.Value)))
+                            if (exp.HasComponentMap)
                             {
-                                return pcc.GetEntry(exp.ComponentMap.Values.First(uIdx => uIndexes.Contains(uIdx)));
+                                var componentMap = exp.ComponentMap;
+                                if (componentMap.Any(kvp => uIndexes.Contains(kvp.Value + 1)))
+                                {
+                                    return pcc.GetEntry(componentMap.Values.First(idx => uIndexes.Contains(idx + 1)));
+                                }
                             }
 
                             //find stack references
