@@ -101,7 +101,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
             props = new PropertyCollection();
             props.AddOrReplaceProp(new ObjectProperty(0, "ReplacementPrimitive"));
             props.AddOrReplaceProp(new ObjectProperty(mesh, "StaticMesh"));
-            smc.WriteProperties(props);
+            smc.WritePropertiesAndBinary(props, new byte[4]); // Empty LODData count.
 
             PreviewLevelBuilder.SetLightingChannels(smc, "Static");
 
