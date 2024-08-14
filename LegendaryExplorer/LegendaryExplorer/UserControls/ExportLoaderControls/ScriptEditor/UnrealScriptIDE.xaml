@@ -48,9 +48,8 @@
             </ToolBar>
             <ide:UnrealScriptTextEditor x:Name="textEditor" Grid.Row="1" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
-                                        FontFamily="Consolas" ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
-                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped" 
-                                        PreviewMouseWheel="TextEditor_OnPreviewMouseWheel" PreviewKeyDown="TextEditor_OnPreviewKeyDown">
+                                        FontFamily="Consolas" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
+                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
                 <avalonedit:TextEditor.InputBindings>
                     <!-- OemQuestion is the forward slash key -->
                     <KeyBinding Key="OemQuestion" Modifiers="Control" Command="{Binding ToggleCommentCommand}"/>

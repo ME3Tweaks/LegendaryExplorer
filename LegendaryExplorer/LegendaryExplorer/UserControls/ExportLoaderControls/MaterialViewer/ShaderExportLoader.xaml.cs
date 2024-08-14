@@ -102,9 +102,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             LoadCommands();
             InitializeComponent();
             DataContext = this;
-            shaderTextEditor.SyntaxHighlighting = EmbeddedResources.HlslSyntaxDefinition;
-            SearchPanel.Install(shaderTextEditor.TextArea);
-            shaderTextEditor.Options.ConvertTabsToSpaces = true;
         }
 
         public void LoadCommands()
@@ -224,7 +221,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             MessageBox.Show($"No shader found with matching decompilation.");
         }
 
-        public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = new();
+        public ObservableCollectionExtended<TreeViewMeshShaderMap> MeshShaderMaps { get; } = [];
 
         public override bool CanParse(ExportEntry exportEntry) =>
             !exportEntry.IsDefaultObject && exportEntry.Game != MEGame.UDK &&
@@ -246,7 +243,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var tvmsm = new TreeViewMeshShaderMap { VertexFactoryType = meshShaderMap.VertexFactoryType, IsExpanded = isFirst };
                 isFirst = false;
-                foreach ((NameReference shaderType, ShaderReference shaderReference) in meshShaderMap.Shaders)
+                foreach ((NameReference _, ShaderReference shaderReference) in meshShaderMap.Shaders)
                 {
                     var tvs = new TreeViewShader
                     {
@@ -284,7 +281,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != null)
             {
-                var elhw = new ExportLoaderHostedWindow(new ShaderExportLoader() { AutoLoad = true }, CurrentLoadedExport)
+                var elhw = new ExportLoaderHostedWindow(new ShaderExportLoader { AutoLoad = true }, CurrentLoadedExport)
                 {
                     Title = $"Shader Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.InstancedFullPath} - {CurrentLoadedExport.FileRef.FilePath}"
                 };
@@ -324,12 +321,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void LoadGlobalShaders(TreeViewShader itemToHighlight)
         {
             MeshShaderMaps.ClearEx();
-            var root = new TreeViewMeshShaderMap() { VertexFactoryType = "Global Shaders", IsExpanded = true };
+            var root = new TreeViewMeshShaderMap { VertexFactoryType = "Global Shaders", IsExpanded = true };
             MeshShaderMaps.Add(root);
             int i = 0;
             foreach (var shader in GlobalShaderCache.Shaders)
             {
-                var tve = new TreeViewShader()
+                var tve = new TreeViewShader
                 {
                     Bytecode = shader.Value.ShaderByteCode,
                     Index = i,
@@ -646,7 +643,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     foreach (TreeViewShader TVshader in TVshaderMap.Shaders)
                     {
-                        byte[] shaderFile = new byte[0];
+                        byte[] shaderFile = [];
                         string shaderType = "";
                         string fileName = "";
                         int shaderIndex = TVshader.Index;
@@ -728,15 +725,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     foreach (TreeViewShader TVshader in TVshaderMap.Shaders)
                     {
-                        byte[] newShaderFile = new byte[0];
+                        byte[] newShaderFile = [];
                         string shaderType = "";
                         string fileName = "";
                         int shaderIndex = TVshader.Index;
-                        Shader shader = null;
 
-                        if (seekFreeShaderCache.Shaders.ContainsKey(TVshader.Id))
+                        if (seekFreeShaderCache.Shaders.TryGetValue(TVshader.Id, out Shader shader))
                         {
-                            shader = seekFreeShaderCache.Shaders[TVshader.Id];
                             shaderType = shader.ShaderType;
                         }
                         else
@@ -763,7 +758,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             // Get last line that contains instruction counts
                             string result = string.Join("", dissasembledShader.Split('\n').Reverse().Take(2).ToArray());
                             // Get digits from the result
-                            string digits = string.Join("", new String(result.Where(Char.IsDigit).ToArray()));
+                            string digits = string.Join("", new String(result.Where(char.IsDigit).ToArray()));
                             int instructions = int.Parse(digits);
 
                             // Insert new instruction count

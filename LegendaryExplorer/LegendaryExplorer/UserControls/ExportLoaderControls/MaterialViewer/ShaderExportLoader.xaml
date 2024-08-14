@@ -12,6 +12,7 @@
         xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
         xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:materialViewer="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialViewer"
         mc:Ignorable="d" 
         Background="{x:Static SystemColors.WindowBrush}"
         d:DesignHeight="450" d:DesignWidth="800"
@@ -98,9 +99,9 @@
                         </b:Interaction.Behaviors>
                     </TreeView>
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-                    <avalonedit:TextEditor x:Name="shaderTextEditor" Grid.Column="2" Document="{Binding Document}" SyntaxHighlighting="HLSL" 
-                                           Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
-                                           FontFamily="Consolas" ShowLineNumbers="True"/>
+                    <materialViewer:HlslTextEditor x:Name="shaderTextEditor" Grid.Column="2" Document="{Binding Document}"
+                                           Background="#1F1F1F" Foreground="#CCCCCC" LineNumbersForeground ="#6E7681"
+                                           FontFamily="Consolas"/>
                     <DockPanel Grid.Column="2" Grid.Row="1">
                         <Button Content="Compile shader" Command="{Binding CompileShaderCommand}"/>
                     </DockPanel>
