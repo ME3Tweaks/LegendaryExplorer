@@ -65,6 +65,19 @@ namespace LegendaryExplorerCore.UDK
                         meshElement.Material = mats.Dequeue();
                     }
                 }
+
+                // UDK expects material indices to be correct
+                // If they aren't, it will try to regenerate the vertex buffer, which sometimes result in 0 vertices in UDK
+                // LE compiler didn't seem to care for some reason so it isn't always accurate
+                int matIndex = 0;
+                foreach (StaticMeshRenderData lodModel in stm.LODModels)
+                {
+                    foreach (StaticMeshElement meshElement in lodModel.Elements)
+                    {
+                        meshElement.MaterialIndex = matIndex++;
+                    }
+                }
+
                 portedMesh.WriteBinary(stm);
             }
 
