@@ -43,6 +43,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         public MEGame Game { get; set; }
 
         /// <summary>
+        /// Package that is being used for editing. Export loaders will load exclusively out of this package
+        /// </summary>
+        public IMEPackage EditorPackage { get; set; }
+
+        /// <summary>
         /// Invoked to push our material to the game for viewing.
         /// </summary>
         private readonly Action<IMEPackage, string> LoadMaterialInGameDelegate;
@@ -76,6 +81,8 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             Game = lle.Game;
             LoadCommands();
             InitializeComponent();
+            // Todo: On loading material we spawn new package in the editor
+            // We must set that material on the dest object or our changes won't make it to the actor... I think
             MEELC.ScalarValueChanged += UpdateScalarParameter;
             MEELC.VectorValueChanged += UpdateVectorParameter;
             MEELC.ShowSaveBar = false;
@@ -252,7 +259,10 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         }
 
 
-        private void LoadMaterialFromSource()
+        /// <summary>
+        /// Attempts to load the material from the game using the hooked linker filepath capture in the ASI
+        /// </summary>
+        private void LoadMaterialFromGame()
         {
             if (SelectedComponentSlot == null)
                 return;
@@ -328,21 +338,33 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
             if (preloadMaterial != null)
             {
-                if (preloadMaterial.ClassName == "Material")
+                // Load the material
+                LoadExport(preloadMaterial);
+            }
+        }
+
+        private void LoadExport(ExportEntry material)
+        {
+            // Create a new package and port the stuff in.
+            EditorPackage = MEPackageHandler.CreateMemoryEmptyPackage(@"LLEMatEd.pcc", Game);
+            // Todo: How to force material out of startup only files? e.g. holo material in SFXGame
+            EntryExporter.ExportExportToPackage(material, EditorPackage, out var portedMat);
+            if (portedMat is ExportEntry exp)
+            {
+                var package = ExportCreator.CreatePackageExport(exp.FileRef, "LLEMatEd");
+                exp.idxLink = package.UIndex; // Move under our custom package
+
+                if (exp.ClassName.CaseInsensitiveEquals("Material"))
                 {
-                    ShaderEd.LoadExport(preloadMaterial);
+                    exp = MEELC.ConvertMaterialToInstance(exp);
                 }
-                else
-                {
-                    ShaderEd.UnloadExport();
-                }
-                MEELC.LoadExport(preloadMaterial);
+                MEELC.LoadExport(exp);
+                ShaderEd.LoadExport(MEELC.MatInfo.BaseMaterial);
             }
         }
 
         private void SetMaterial()
         {
-            // Todo: Load material into editor
             InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {SelectedMaterial}", Game);
         }
 
@@ -353,24 +375,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             SetMaterialCommand = new GenericCommand(SetMaterial, () => SelectedMaterial != null);
             SetCustomMaterialCommand = new GenericCommand(SetCustomMaterial);
             RegenMaterialsListCommand = new GenericCommand(RegenMaterialsList);
-        }
-
-        public void LoadMaterialIntoEditor(ExportEntry otherMat)
-        {
-            var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(@"LLEMaterialEditor.pcc", Game);
-            var cache = new PackageCache();
-            EntryExporter.ExportExportToPackage(otherMat, newPackage, out var newentry, cache);
-            if (newentry is ExportEntry exp)
-            {
-                if (exp.ClassName.CaseInsensitiveEquals("Material"))
-                {
-                    // Convert it for editor? // this is for MLE
-                    exp = MEELC.ConvertMaterialToInstance(exp);
-                }
-                var package = ExportCreator.CreatePackageExport(exp.FileRef, "LLEMatEd");
-                exp.idxLink = package.UIndex; // Move under our custom package
-                MEELC.LoadExport(exp);
-            }
         }
 
         public void SendToGame()
@@ -503,7 +507,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         {
             if (CanDragDrop(dropInfo, out var exp))
             {
-                LoadMaterialIntoEditor(exp);
+                LoadExport(exp);
             }
         }
 
@@ -575,7 +579,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         {
             if (PreloadMaterial != null)
             {
-                LoadMaterialIntoEditor(PreloadMaterial);
+                LoadExport(PreloadMaterial);
                 PreloadMaterial = null;
             }
         }
@@ -614,12 +618,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             set
             {
                 MEELC?.UnloadExport();
-
+                ShaderEd?.UnloadExport();
                 if (SetProperty(ref _selectedComponentSlot, value))
                 {
                     if (value != null)
                     {
-                        LoadMaterialFromSource();
+                        LoadMaterialFromGame();
                     }
                 }
             }
@@ -652,7 +656,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
         {
             if (SelectedComponentSlot != null)
             {
-                LoadMaterialIntoEditor(export);
+                LoadExport(export);
                 if (MEELC.CurrentLoadedExport != null)
                 {
                     SendToGame();

@@ -122,9 +122,6 @@ namespace LegendaryExplorerCore.Pathing
                 // Add imports for all materials so we can reference them if they are in higher tier packages.
                 foreach (var tex in texturesOnMesh.ToList())
                 {
-                    //if (tex.UIndex == 53054)
-                    //    //&& package.FileNameNoExtension != "BioA_MPMoon")
-                    //    Debugger.Break();
                     if (tex.ClassName.CaseInsensitiveEquals("TextureCube"))
                     {
                         // Texture cubes are not streamable
