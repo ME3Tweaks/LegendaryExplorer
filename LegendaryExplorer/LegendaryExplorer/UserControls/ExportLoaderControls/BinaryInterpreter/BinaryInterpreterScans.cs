@@ -458,10 +458,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
                     //DONT DELETE. Shader Parameter research is ongoing, but display is disabled when it's not actively being worked on, as it still has lots of bugs
-                    //if (ReadShaderParameters(bin, shaderType) is BinInterpNode paramsNode)
-                    //{
-                    //    shaderNode.Items.Add(paramsNode);
-                    //}
+                    if (ReadShaderParameters(bin, shaderType) is BinInterpNode paramsNode)
+                    {
+                        shaderNode.Items.Add(paramsNode);
+                    }
 
                     if (bin.Position != (shaderEndOffset - dataOffset))
                     {
@@ -635,120 +635,126 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             switch (shaderType)
             {
-                case "TDepthOnlySolidPixelShader":
-                case "TDepthOnlyScreenDoorPixelShader":
+                case "FVelocityPixelShader":
                     node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                    node.Items.Add(FShaderParameter("VelocityScaleOffset"));
+                    node.Items.Add(FShaderParameter("IndividualVelocityScale"));
+                    node.Items.Add(FShaderParameter("ObjectVelocity"));
                     break;
-                case "FModShadowMeshPixelShader":
-                    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
-                    node.Items.Add(FShaderParameter("AttenAllowedParameter"));
-                    break;
-                case "FTextureDensityPixelShader":
-                    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
-                    node.Items.Add(FShaderParameter("TextureDensityParameters"));
-                    node.Items.Add(FShaderParameter("TextureLookupInfo"));
-                    break;
+                //case "TDepthOnlySolidPixelShader":
+                //case "TDepthOnlyScreenDoorPixelShader":
+                //    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                //    break;
+                //case "FModShadowMeshPixelShader":
+                //    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                //    node.Items.Add(FShaderParameter("AttenAllowedParameter"));
+                //    break;
+                //case "FTextureDensityPixelShader":
+                //    node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
+                //    node.Items.Add(FShaderParameter("TextureDensityParameters"));
+                //    node.Items.Add(FShaderParameter("TextureLookupInfo"));
+                //    break;
 
-                case "FVelocityVertexShader":
-                    node.Items.Add(FVertexFactoryParameterRef());
-                    //this can cause errors if the VertexFactory is of a type that hasn't had its shaderparameters parsed yet
-                    //only uncomment when actively working on parsing 
-                    //node.Items.Add(FMaterialVertexShaderParameters("MaterialParameters"));
-                    //node.Items.Add(FShaderParameter("PrevViewProjectionMatrixParameter"));
-                    //node.Items.Add(FShaderParameter("PreviousLocalToWorldParameter"));
-                    //node.Items.Add(FShaderParameter("StretchTimeScaleParameter"));
-                    break;
-                case "FFogVolumeApplyVertexShader":
-                case "FHitMaskVertexShader":
-                case "FHitProxyVertexShader":
-                case "FModShadowMeshVertexShader":
-                case "FSFXWorldNormalVertexShader":
-                case "FTextureDensityVertexShader":
-                case "TDepthOnlyVertexShader<0>":
-                case "TDepthOnlyVertexShader<1>":
-                case "TFogIntegralVertexShader<FConstantDensityPolicy>":
-                case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
-                case "TFogIntegralVertexShader<FSphereDensityPolicy>":
-                case "FShadowDepthVertexShader":
-                case "TShadowDepthVertexShader<ShadowDepth_OutputDepth>":
-                case "TShadowDepthVertexShader<ShadowDepth_OutputDepthToColor>":
-                case "TShadowDepthVertexShader<ShadowDepth_PerspectiveCorrect>":
-                case "TAOMeshVertexShader<0>":
-                case "TAOMeshVertexShader<1>":
-                case "TDistortionMeshVertexShader<FDistortMeshAccumulatePolicy>":
-                case "TLightMapDensityVertexShader<FNoLightMapPolicy>":
-                case "TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
-                case "TBasePassVertexShaderFNoLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFNoLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFNoLightMapPolicyFSphereDensityPolicy":
-                case "FShadowDepthNoPSVertexShader":
-                    node.Items.Add(FVertexFactoryParameterRef());
-                    break;
-                case "TLightMapDensityVertexShader<FDirectionalLightMapTexturePolicy>":
-                case "TLightMapDensityVertexShader<FDummyLightMapTexturePolicy>":
-                case "TLightMapDensityVertexShader<FSimpleLightMapTexturePolicy>":
-                case "TLightVertexShaderFDirectionalLightPolicyFNoStaticShadowingPolicy":
-                case "TLightVertexShaderFDirectionalLightPolicyFShadowVertexBufferPolicy":
-                case "TLightVertexShaderFPointLightPolicyFNoStaticShadowingPolicy":
-                case "TLightVertexShaderFPointLightPolicyFShadowVertexBufferPolicy":
-                case "TLightVertexShaderFSpotLightPolicyFNoStaticShadowingPolicy":
-                case "TLightVertexShaderFSpotLightPolicyFShadowVertexBufferPolicy":
-                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFPointLightLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFNoDensityPolicy":
-                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
-                    node.Items.Add(FShaderParameter(""));
-                    node.Items.Add(FVertexFactoryParameterRef());
-                    break;
-                case "TLightVertexShaderFDirectionalLightPolicyFShadowTexturePolicy":
-                case "TLightVertexShaderFDirectionalLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                case "TLightVertexShaderFPointLightPolicyFShadowTexturePolicy":
-                case "TLightVertexShaderFPointLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                case "TLightVertexShaderFSpotLightPolicyFShadowTexturePolicy":
-                case "TLightVertexShaderFSpotLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                case "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy":
-                    node.Items.Add(FShaderParameter(""));
-                    node.Items.Add(FShaderParameter(""));
-                    node.Items.Add(FVertexFactoryParameterRef());
-                    break;
+                //case "FVelocityVertexShader":
+                //    node.Items.Add(FVertexFactoryParameterRef());
+                //    //this can cause errors if the VertexFactory is of a type that hasn't had its shaderparameters parsed yet
+                //    //only uncomment when actively working on parsing 
+                //    node.Items.Add(FMaterialVertexShaderParameters("MaterialParameters"));
+                //    //node.Items.Add(FShaderParameter("PrevViewProjectionMatrixParameter"));
+                //    //node.Items.Add(FShaderParameter("PreviousLocalToWorldParameter"));
+                //    //node.Items.Add(FShaderParameter("StretchTimeScaleParameter"));
+                //    break;
+                //case "FFogVolumeApplyVertexShader":
+                //case "FHitMaskVertexShader":
+                //case "FHitProxyVertexShader":
+                //case "FModShadowMeshVertexShader":
+                //case "FSFXWorldNormalVertexShader":
+                //case "FTextureDensityVertexShader":
+                //case "TDepthOnlyVertexShader<0>":
+                //case "TDepthOnlyVertexShader<1>":
+                //case "TFogIntegralVertexShader<FConstantDensityPolicy>":
+                //case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
+                //case "TFogIntegralVertexShader<FSphereDensityPolicy>":
+                //case "FShadowDepthVertexShader":
+                //case "TShadowDepthVertexShader<ShadowDepth_OutputDepth>":
+                //case "TShadowDepthVertexShader<ShadowDepth_OutputDepthToColor>":
+                //case "TShadowDepthVertexShader<ShadowDepth_PerspectiveCorrect>":
+                //case "TAOMeshVertexShader<0>":
+                //case "TAOMeshVertexShader<1>":
+                //case "TDistortionMeshVertexShader<FDistortMeshAccumulatePolicy>":
+                //case "TLightMapDensityVertexShader<FNoLightMapPolicy>":
+                //case "TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
+                //case "TBasePassVertexShaderFNoLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFNoLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFNoLightMapPolicyFSphereDensityPolicy":
+                //case "FShadowDepthNoPSVertexShader":
+                //    node.Items.Add(FVertexFactoryParameterRef());
+                //    break;
+                //case "TLightMapDensityVertexShader<FDirectionalLightMapTexturePolicy>":
+                //case "TLightMapDensityVertexShader<FDummyLightMapTexturePolicy>":
+                //case "TLightMapDensityVertexShader<FSimpleLightMapTexturePolicy>":
+                //case "TLightVertexShaderFDirectionalLightPolicyFNoStaticShadowingPolicy":
+                //case "TLightVertexShaderFDirectionalLightPolicyFShadowVertexBufferPolicy":
+                //case "TLightVertexShaderFPointLightPolicyFNoStaticShadowingPolicy":
+                //case "TLightVertexShaderFPointLightPolicyFShadowVertexBufferPolicy":
+                //case "TLightVertexShaderFSpotLightPolicyFNoStaticShadowingPolicy":
+                //case "TLightVertexShaderFSpotLightPolicyFShadowVertexBufferPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFPointLightLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFNoDensityPolicy":
+                //case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
+                //    node.Items.Add(FShaderParameter(""));
+                //    node.Items.Add(FVertexFactoryParameterRef());
+                //    break;
+                //case "TLightVertexShaderFDirectionalLightPolicyFShadowTexturePolicy":
+                //case "TLightVertexShaderFDirectionalLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                //case "TLightVertexShaderFPointLightPolicyFShadowTexturePolicy":
+                //case "TLightVertexShaderFPointLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                //case "TLightVertexShaderFSpotLightPolicyFShadowTexturePolicy":
+                //case "TLightVertexShaderFSpotLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                //case "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy":
+                //    node.Items.Add(FShaderParameter(""));
+                //    node.Items.Add(FShaderParameter(""));
+                //    node.Items.Add(FVertexFactoryParameterRef());
+                //    break;
                 default:
                     node = null;
                     break;
@@ -809,7 +815,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         FShaderResourceParameter("SceneDepthTextureParameter"),
                         FShaderParameter("SceneDepthCalcParameter"),
                         FShaderParameter("ScreenPositionScaleBiasParameter"),
-                        FShaderResourceParameter("NvStereoFixTextureParameter"),
                     },
                     Length = 30
                 };
@@ -839,8 +844,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             BinInterpNode FMaterialPixelShaderParameters(string name)
             {
                 var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
-                super.Items.AddRange(new[]
-                {
+                super.Items.AddRange(
+                [
                     MakeArrayNode(bin, "UniformPixelScalarShaderParameters", i => TUniformParameter(FShaderParameter)),
                     MakeArrayNode(bin, "UniformPixelVectorShaderParameters", i => TUniformParameter(FShaderParameter)),
                     MakeArrayNode(bin, "UniformPixel2DShaderResourceParameters", i => TUniformParameter(FShaderResourceParameter)),
@@ -862,18 +867,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     FShaderParameter("ScreenDoorFadeSettingsParameter"),
                     FShaderParameter("ScreenDoorFadeSettings2Parameter"),
                     FShaderResourceParameter("ScreenDoorNoiseTextureParameter"),
-                });
+                    MakeUInt32Node(bin, "unk_4bytes"),
+                    MakeUInt32Node(bin, "unk_4bytes"),
+                    FShaderParameter("unk_FShaderParameter")
+                ]);
                 return super;
             }
 
             BinInterpNode FMaterialVertexShaderParameters(string name)
             {
                 var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
-                super.Items.AddRange(new[]
-                {
-                    MakeArrayNode(bin, "UniformVertexScalarShaderParameters", i => TUniformParameter(FShaderParameter)),
-                    MakeArrayNode(bin, "UniformVertexVectorShaderParameters", i => TUniformParameter(FShaderParameter)),
-                });
+                //super.Items.AddRange(new[]
+                //{
+                //    MakeArrayNode(bin, "UniformVertexScalarShaderParameters", i => TUniformParameter(FShaderParameter)),
+                //    MakeArrayNode(bin, "UniformVertexVectorShaderParameters", i => TUniformParameter(FShaderParameter)),
+                //});
                 return super;
             }
 
@@ -889,14 +897,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     case "FGPUSkinVertexFactory":
                         return new BinInterpNode[]
                         {
-                            FShaderParameter("LocalToWorldParameter"),
-                            FShaderParameter("WorldToLocalParameter"),
-                            FShaderParameter("BoneMatricesParameter"),
-                            FShaderParameter("BoneIndexOffsetAndScaleParameter"),
-                            FShaderParameter("MeshOriginParameter"),
-                            FShaderParameter("MeshExtensionParameter"),
-                            FShaderResourceParameter("PreviousBoneMatricesParameter"),
-                            FShaderParameter("UsePerBoneMotionBlurParameter"),
+                            FShaderParameter("LocalToWorld"),
+                            FShaderParameter("WorldToLocal"),
+                            FShaderParameter("BoneMatrices"),
+                            FShaderParameter("MaxBoneInfluences"),
+                            FShaderParameter("MeshOrigin"),
+                            FShaderParameter("MeshExtension"),
+                            FShaderParameter("WoundEllipse0"),
+                            FShaderParameter("WoundEllipse1"),
                         };
                     case "FLocalVertexFactory":
                         return new BinInterpNode[]
