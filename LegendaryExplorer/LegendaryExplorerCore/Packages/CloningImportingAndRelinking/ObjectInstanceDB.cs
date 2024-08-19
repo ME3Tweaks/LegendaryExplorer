@@ -106,7 +106,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             int[] files = new int[filesCount];
                             inStream.ReadToSpan(files.AsSpan().AsBytes());
                             exportMap.Add(key, new ObjectInstanceInfo(new List<int>(files))
-
                             {
                                 NetIndex = netIndex,
                                 GenerationNetObjCount = generationNetObjsCount
