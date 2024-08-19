@@ -109,11 +109,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     gameInstalledReq.UnFullfilledText = "Can't find Mass Effect 2 installation!";
                     gameInstalledReq.ButtonText = "Set ME2 path";
                     break;
-                case MEGame.LE1:
-                    gameInstalledReq.FullfilledText = "Legendary Edition is installed";
-                    gameInstalledReq.UnFullfilledText = "Can't find Legendary Edition installation!";
-                    gameInstalledReq.ButtonText = "Set LE1 path";
-                    break;
             }
         }
 

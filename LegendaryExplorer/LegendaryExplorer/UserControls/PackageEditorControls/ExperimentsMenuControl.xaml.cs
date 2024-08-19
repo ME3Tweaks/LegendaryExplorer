@@ -401,6 +401,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             new CustomFilesManagerWindow().Show();
         }
 
+        private void ImportStaticLighting_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ImportStaticLighting(GetPEWindow());
+        }
+
         private void ResynthesizePackage_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResynthesizePackage(GetPEWindow());

@@ -55,6 +55,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             UniformTextures.ClearEx();
             Expressions.ClearEx();
             LoadMaterialData(MaterialExport, cache);
+            var exprTemp = new List<ExpressionParameter>();
+            exprTemp.AddRange(Expressions.OfType<ScalarParameter>().OrderBy(x => x.ParameterName));
+            exprTemp.AddRange(Expressions.OfType<VectorParameter>().OrderBy(x => x.ParameterName));
+            exprTemp.AddRange(Expressions.OfType<TextureParameter>().OrderBy(x => x.ParameterName));
+            Expressions.ReplaceAll(exprTemp);
         }
 
         #endregion
@@ -253,7 +258,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
         /// <param name="cache"></param>
         public void LoadMaterialData(ExportEntry material, PackageCache cache)
         {
-            if (material.ClassName == "Material")
+            if (material.IsA("Material"))
             {
                 ReadMaterial(material, cache);
             }
@@ -265,6 +270,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             else if (MaterialExport.IsA("MaterialInstanceConstant"))
             {
                 ReadMaterialInstanceConstant(material, cache);
+            }
+            else
+            {
+                Debugger.Break();
             }
         }
 

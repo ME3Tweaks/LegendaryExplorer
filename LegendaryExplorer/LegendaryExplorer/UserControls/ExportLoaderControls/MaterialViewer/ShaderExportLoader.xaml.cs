@@ -351,6 +351,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <param name="itemToHighlight"></param>
         private void LoadPackageShaders(TreeViewShader itemToHighlight)
         {
+            if (CurrentLoadedExport == null)
+                return;
+
             IsBusy = true;
             BusyText = "Loading Shaders";
             Task.Run(() =>

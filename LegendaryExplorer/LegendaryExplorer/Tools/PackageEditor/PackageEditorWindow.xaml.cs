@@ -73,7 +73,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         [
             "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
             "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class", "State",
-            "TextureCube", "Bio2DA", "Bio2DANumberedRows"
+            "TextureCube", "Bio2DA", "Bio2DANumberedRows", "DecalMaterial", "MaterialInstanceConstant"
         ];
 
         //Objects in this collection are displayed on the left list view (names, imports, exports)
