@@ -14,7 +14,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.UDK
 {
-    internal class StaticLightingImporter
+    public static class StaticLightingImporter
     {
         /// <summary>
         /// Imports static lighting from UDK.
