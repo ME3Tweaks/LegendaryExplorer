@@ -20,6 +20,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -683,13 +684,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(FGammaShaderParameters("GammaParameters"));
                     node.Items.Add(FColorRemapShaderParameters("MaterialParameters"));
                     break;
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityManualPCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityFetch4PCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityHwPCF":
                 case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFMediumQualityManualPCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFMediumQualityFetch4PCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFMediumQualityHwPCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFLowQualityManualPCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFLowQualityFetch4PCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFLowQualityHwPCF":
                     FBranchingPCFModProjectionPixelShader();
-                    //FSpotLightPolicy::ModShadowPixelParamsType
-                    node.Items.Add(FShaderParameter("LightPositionParam"));
-                    node.Items.Add(FShaderParameter("FalloffParameters"));
-                    node.Items.Add(FShaderParameter("SpotDirectionParam"));
-                    node.Items.Add(FShaderParameter("SpotAnglesParam"));
+                    FSpotLightPolicy_ModShadowPixelParamsType();
                     break;
                 case "FGFxVertexShader<GFx_VS_Glyph>":
                 case "FGFxVertexShader<GFx_VS_XY16iCF32_T2>":
@@ -711,6 +716,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case "FGammaCorrectionVertexShader":
                 case "FNULLPixelShader":
                 case "FHorizonBasedAOVertexShader":
+                case "FModShadowVolumeVertexShader":
+                case "FOcclusionQueryVertexShader<0>":
+                case "FOcclusionQueryVertexShader<NUM_CUBE_VERTICES>":
+                case "FModShadowProjectionVertexShader":
+                case "FLUTBlenderVertexShader":
+                case "FPostProcessAAVertexShader":
+                case "FShadowProjectionVertexShader":
+                case "FScreenVertexShader":
+                case "FFluidVertexShader":
+                case "FEdgePreservingFilterVertexShader":
+                case "FLightFunctionVertexShader":
                     //These types have no params
                     return null;
                     break;
@@ -726,10 +742,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(FShaderResourceParameter("UnresolvedSurfaceParameter"));
                     break;
                 case "TModShadowVolumePixelShaderFPointLightPolicy":
-                    //unknown function call (FModShadowVolumePixelShader?)
-                    node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
-                    node.Items.Add(FShaderParameter("unk1"));
-                    node.Items.Add(FShaderParameter("unk2"));
+                    FModShadowVolumePixelShader_Maybe();
                     FPointLightPolicy_ModShadowPixelParamsType();
                     break;
                 case "FGammaCorrectionPixelShader":
@@ -776,6 +789,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(FShaderParameter("unk2"));
                     break;
                 case "TBranchingPCFModProjectionPixelShaderFPointLightPolicyFHighQualityManualPCF":
+                case "TBranchingPCFModProjectionPixelShaderFPointLightPolicyFMediumQualityFetch4PCF":
+                case "TBranchingPCFModProjectionPixelShaderFPointLightPolicyFMediumQualityHwPCF":
+                case "TBranchingPCFModProjectionPixelShaderFPointLightPolicyFMediumQualityManualPCF":
                     FBranchingPCFModProjectionPixelShader();
                     FPointLightPolicy_ModShadowPixelParamsType();
                     break;
@@ -792,19 +808,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case "FMotionBlurPixelShader":
                 case "FMotionBlurPixelShaderDynamicVelocitiesOnly":
                     node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
-                    //FMotionBlurShaderParameters
-                    node.Items.Add(FShaderResourceParameter("LowResSceneBuffer"));
-                    node.Items.Add(FShaderResourceParameter("VelocityBuffer"));
-                    node.Items.Add(FShaderParameter("ScreenToWorldParameter"));
-                    node.Items.Add(FShaderParameter("PrevViewProjParameter"));
-                    node.Items.Add(FShaderParameter("StaticVelocityParameters"));
-                    node.Items.Add(FShaderParameter("DynamicVelocityParameters"));
-                    node.Items.Add(FShaderParameter("RenderTargetClampParameter"));
-                    node.Items.Add(FShaderParameter("MotionBlurMaskScaleParameter"));
-                    node.Items.Add(FShaderParameter("StepOffsetsOpaqueParameter"));
-                    node.Items.Add(FShaderParameter("StepWeightsOpaqueParameter"));
-                    node.Items.Add(FShaderParameter("StepOffsetsTranslucentParameter"));
-                    node.Items.Add(FShaderParameter("StepWeightsTranslucentParameter"));
+                    node.Items.Add(FMotionBlurShaderParameters("MotionBlurParameters"));
                     break;
                 case "FDownsampleDepthVertexShader":
                     node.Items.Add(FShaderParameter("HalfSceneColorTexelSizeParameter"));
@@ -893,6 +897,230 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(FShaderParameter("unk1"));
                     node.Items.Add(FShaderParameter("unk2"));
                     node.Items.Add(FShaderParameter("unk3"));
+                    break;
+                case "FSFXUberPostProcessBlendPixelShader0011111":
+                case "FSFXUberPostProcessBlendPixelShader0101001":
+                case "FSFXUberPostProcessBlendPixelShader1111001":
+                case "FSFXUberPostProcessBlendPixelShader1010001":
+                case "FSFXUberPostProcessBlendPixelShader0110010":
+                case "FSFXUberPostProcessBlendPixelShader1100010":
+                case "FSFXUberPostProcessBlendPixelShader0011100":
+                case "FSFXUberPostProcessBlendPixelShader0101010":
+                case "FSFXUberPostProcessBlendPixelShader1111010":
+                case "FSFXUberPostProcessBlendPixelShader1010010":
+                case "FSFXUberPostProcessBlendPixelShader0010110":
+                case "FSFXUberPostProcessBlendPixelShader0101111":
+                case "FSFXUberPostProcessBlendPixelShader1111111":
+                case "FSFXUberPostProcessBlendPixelShader1010111":
+                case "FSFXUberPostProcessBlendPixelShader0100011":
+                case "FSFXUberPostProcessBlendPixelShader1110011":
+                case "FSFXUberPostProcessBlendPixelShader1011011":
+                case "FSFXUberPostProcessBlendPixelShader1001111":
+                case "FSFXUberPostProcessBlendPixelShader1000101":
+                case "FSFXUberPostProcessBlendPixelShader0101100":
+                case "FSFXUberPostProcessBlendPixelShader1111100":
+                case "FSFXUberPostProcessBlendPixelShader1010100":
+                case "FSFXUberPostProcessBlendPixelShader0011110":
+                case "FSFXUberPostProcessBlendPixelShader0101000":
+                case "FSFXUberPostProcessBlendPixelShader1111000":
+                case "FSFXUberPostProcessBlendPixelShader1010000":
+                case "FSFXUberPostProcessBlendPixelShader0110011":
+                case "FSFXUberPostProcessBlendPixelShader1100011":
+                case "FSFXUberPostProcessBlendPixelShader0011101":
+                case "FSFXUberPostProcessBlendPixelShader0101011":
+                case "FSFXUberPostProcessBlendPixelShader1111011":
+                case "FSFXUberPostProcessBlendPixelShader1010011":
+                case "FSFXUberPostProcessBlendPixelShader0010111":
+                case "FSFXUberPostProcessBlendPixelShader0101110":
+                case "FSFXUberPostProcessBlendPixelShader1111110":
+                case "FSFXUberPostProcessBlendPixelShader1010110":
+                case "FSFXUberPostProcessBlendPixelShader0100010":
+                case "FSFXUberPostProcessBlendPixelShader1110010":
+                case "FSFXUberPostProcessBlendPixelShader1011010":
+                case "FSFXUberPostProcessBlendPixelShader1001110":
+                case "FSFXUberPostProcessBlendPixelShader1000100":
+                case "FSFXUberPostProcessBlendPixelShader0101101":
+                case "FSFXUberPostProcessBlendPixelShader1111101":
+                case "FSFXUberPostProcessBlendPixelShader1010101":
+                case "FSFXUberPostProcessBlendPixelShader0100111":
+                case "FSFXUberPostProcessBlendPixelShader0111001":
+                case "FSFXUberPostProcessBlendPixelShader1110111":
+                case "FSFXUberPostProcessBlendPixelShader1101001":
+                case "FSFXUberPostProcessBlendPixelShader1011111":
+                case "FSFXUberPostProcessBlendPixelShader1001011":
+                case "FSFXUberPostProcessBlendPixelShader0100110":
+                case "FSFXUberPostProcessBlendPixelShader0111000":
+                case "FSFXUberPostProcessBlendPixelShader1110110":
+                case "FSFXUberPostProcessBlendPixelShader1101000":
+                case "FSFXUberPostProcessBlendPixelShader1011110":
+                case "FSFXUberPostProcessBlendPixelShader1001010":
+                case "FSFXUberPostProcessBlendPixelShader0100101":
+                case "FSFXUberPostProcessBlendPixelShader0110100":
+                case "FSFXUberPostProcessBlendPixelShader0111011":
+                case "FSFXUberPostProcessBlendPixelShader0111110":
+                case "FSFXUberPostProcessBlendPixelShader1110101":
+                case "FSFXUberPostProcessBlendPixelShader1101110":
+                case "FSFXUberPostProcessBlendPixelShader1101011":
+                case "FSFXUberPostProcessBlendPixelShader1100100":
+                case "FSFXUberPostProcessBlendPixelShader1011101":
+                case "FSFXUberPostProcessBlendPixelShader1001001":
+                case "FSFXUberPostProcessBlendPixelShader0100100":
+                case "FSFXUberPostProcessBlendPixelShader0110101":
+                case "FSFXUberPostProcessBlendPixelShader0111010":
+                case "FSFXUberPostProcessBlendPixelShader0111111":
+                case "FSFXUberPostProcessBlendPixelShader1110100":
+                case "FSFXUberPostProcessBlendPixelShader1101111":
+                case "FSFXUberPostProcessBlendPixelShader1101010":
+                case "FSFXUberPostProcessBlendPixelShader1100101":
+                case "FSFXUberPostProcessBlendPixelShader1011100":
+                case "FSFXUberPostProcessBlendPixelShader1001000":
+                case "FSFXUberPostProcessBlendPixelShader0011000":
+                case "FSFXUberPostProcessBlendPixelShader0100001":
+                case "FSFXUberPostProcessBlendPixelShader1110001":
+                case "FSFXUberPostProcessBlendPixelShader1011001":
+                case "FSFXUberPostProcessBlendPixelShader1001101":
+                case "FSFXUberPostProcessBlendPixelShader1000111":
+                case "FSFXUberPostProcessBlendPixelShader1000010":
+                case "FSFXUberPostProcessBlendPixelShader0011001":
+                case "FSFXUberPostProcessBlendPixelShader0100000":
+                case "FSFXUberPostProcessBlendPixelShader1110000":
+                case "FSFXUberPostProcessBlendPixelShader1011000":
+                case "FSFXUberPostProcessBlendPixelShader1001100":
+                case "FSFXUberPostProcessBlendPixelShader1000110":
+                case "FSFXUberPostProcessBlendPixelShader1000011":
+                case "FSFXUberPostProcessBlendPixelShader0011010":
+                case "FSFXUberPostProcessBlendPixelShader0110111":
+                case "FSFXUberPostProcessBlendPixelShader0111101":
+                case "FSFXUberPostProcessBlendPixelShader1101101":
+                case "FSFXUberPostProcessBlendPixelShader1100111":
+                case "FSFXUberPostProcessBlendPixelShader1000000":
+                case "FSFXUberPostProcessBlendPixelShader0011011":
+                case "FSFXUberPostProcessBlendPixelShader0110110":
+                case "FSFXUberPostProcessBlendPixelShader0111100":
+                case "FSFXUberPostProcessBlendPixelShader1101100":
+                case "FSFXUberPostProcessBlendPixelShader1100110":
+                case "FSFXUberPostProcessBlendPixelShader1000001":
+                case "FSFXUberPostProcessBlendPixelShader0110001":
+                case "FSFXUberPostProcessBlendPixelShader1100001":
+                case "FSFXUberPostProcessBlendPixelShader0110000":
+                case "FSFXUberPostProcessBlendPixelShader1100000":
+                case "FSFXUberPostProcessBlendPixelShader0000100":
+                case "FSFXUberPostProcessBlendPixelShader0010101":
+                case "FSFXUberPostProcessBlendPixelShader0000101":
+                case "FSFXUberPostProcessBlendPixelShader0010100":
+                case "FSFXUberPostProcessBlendPixelShader0010011":
+                case "FSFXUberPostProcessBlendPixelShader0010010":
+                case "FSFXUberPostProcessBlendPixelShader0010001":
+                case "FSFXUberPostProcessBlendPixelShader0010000":
+                case "FSFXUberPostProcessBlendPixelShader0001111":
+                case "FSFXUberPostProcessBlendPixelShader0001110":
+                case "FSFXUberPostProcessBlendPixelShader0001101":
+                case "FSFXUberPostProcessBlendPixelShader0001100":
+                case "FSFXUberPostProcessBlendPixelShader0001011":
+                case "FSFXUberPostProcessBlendPixelShader0001010":
+                case "FSFXUberPostProcessBlendPixelShader0001001":
+                case "FSFXUberPostProcessBlendPixelShader0001000":
+                case "FSFXUberPostProcessBlendPixelShader0000111":
+                case "FSFXUberPostProcessBlendPixelShader0000110":
+                case "FSFXUberPostProcessBlendPixelShader0000011":
+                case "FSFXUberPostProcessBlendPixelShader0000010":
+                case "FSFXUberPostProcessBlendPixelShader0000001":
+                case "FSFXUberPostProcessBlendPixelShader0000000":
+                    FUberPostProcessBlendPixelShader();
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderParameter("unk"));
+                    node.Items.Add(FShaderParameter("unk"));
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderParameter("unk"));
+                    node.Items.Add(FShaderParameter("unk"));
+                    break;
+                case "FUberPostProcessVertexShader":
+                    node.Items.Add(FShaderParameter("SceneCoordinate1ScaleBiasParameter"));
+                    node.Items.Add(FShaderParameter("SceneCoordinate2ScaleBiasParameter"));
+                    node.Items.Add(FShaderParameter("SceneCoordinate3ScaleBiasParameter"));
+                    break;
+                case "TModShadowVolumePixelShaderFSpotLightPolicy":
+                    FModShadowVolumePixelShader_Maybe();
+                    FSpotLightPolicy_ModShadowPixelParamsType();
+                    break;
+                case "FSFXUberHalfResPixelShader0001":
+                case "FSFXUberHalfResPixelShader0010":
+                case "FSFXUberHalfResPixelShader1000":
+                case "FSFXUberHalfResPixelShader1011":
+                case "FSFXUberHalfResPixelShader0000":
+                case "FSFXUberHalfResPixelShader0011":
+                case "FSFXUberHalfResPixelShader1001":
+                case "FSFXUberHalfResPixelShader1010":
+                case "FUberHalfResPixelShader101":
+                case "FUberHalfResPixelShader100":
+                case "FUberHalfResPixelShader001":
+                case "FUberHalfResPixelShader000":
+                    FDOFAndBloomBlendPixelShader();
+                    node.Items.Add(FMotionBlurShaderParameters("MotionBlurParameters"));
+                    node.Items.Add(FShaderResourceParameter("LowResSceneBufferPoint"));
+                    break;
+                case "FUberPostProcessBlendPixelShader001":
+                case "FUberPostProcessBlendPixelShader010":
+                case "FUberPostProcessBlendPixelShader100":
+                case "FUberPostProcessBlendPixelShader111":
+                case "FUberPostProcessBlendPixelShader000":
+                case "FUberPostProcessBlendPixelShader011":
+                case "FUberPostProcessBlendPixelShader101":
+                case "FUberPostProcessBlendPixelShader110":
+                    FUberPostProcessBlendPixelShader();
+                    break;
+                case "TAOApplyPixelShader<AOApply_ReadFromAOHistory>":
+                case "TAOApplyPixelShader<AOApply_Normal>":
+                    node.Items.Add(FAmbientOcclusionParams("AOParams"));
+                    node.Items.Add(FShaderParameter("OcclusionColorParameter"));
+                    node.Items.Add(FShaderParameter("FogColorParameter"));
+                    node.Items.Add(FShaderParameter("TargetSizeParameter"));
+                    node.Items.Add(FShaderParameter("InvEncodePowerParameter"));
+                    node.Items.Add(FShaderResourceParameter("FogTextureParameter"));
+                    break;
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF16SampleManualPCF":
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF16SampleFetch4PCF":
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF16SampleHwPCF":
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF4SampleManualPCF":
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF4SampleHwPCF":
+                    TModShadowProjectionPixelShader();
+                    FSpotLightPolicy_ModShadowPixelParamsType();
+                    break;
+                case "FFluidApplyPixelShader":;
+                    node.Items.Add(FShaderResourceParameter("FluidHeightTextureParameter"));
+                    node.Items.Add(FShaderResourceParameter("FluidNormalTextureParameter"));
+                    break;
+                case "TModShadowProjectionPixelShaderFDirectionalLightPolicyF16SampleManualPCF":
+                case "TModShadowProjectionPixelShaderFDirectionalLightPolicyF16SampleFetch4PCF":
+                case "TModShadowProjectionPixelShaderFDirectionalLightPolicyF16SampleHwPCF":
+                    TModShadowProjectionPixelShader();
+                    //FDirectionalLightPolicy::ModShadowPixelParamsType has no params
+                    break;
+                case "FXAAFilterComputeShaderVerticalDebug":
+                case "FXAAFilterComputeShaderVertical":
+                case "FXAAFilterComputeShaderHorizontalDebug":
+                case "FXAAFilterComputeShaderHorizontal":
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderResourceParameter("unk"));
+                    node.Items.Add(FShaderParameter("unk"));
+                    break;
+                case "TShadowProjectionPixelShader<F16SampleManualPCF>":
+                case "TShadowProjectionPixelShader<F16SampleFetch4PCF>":
+                case "TShadowProjectionPixelShader<F16SampleHwPCF>":
+                    node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
+                    node.Items.Add(FShaderParameter("VelocityScaleOffset?"));
+                    node.Items.Add(FShaderResourceParameter("ShadowDepthTextureParameter?"));
+                    node.Items.Add(FShaderResourceParameter("unk?"));
+                    node.Items.Add(FShaderParameter("SampleOffsetsParameter?"));
+                    node.Items.Add(FShaderParameter("ShadowBufferSizeAndSoftTransitionScaleParameter?"));
+                    node.Items.Add(FShaderParameter("ShadowFadeFractionParameter?"));
+                    break;
+                case "FBlurLightShaftsPixelShader":
+                    node.Items.Add(FLightShaftPixelShaderParameters("LightShaftParameters"));
+                    node.Items.Add(FShaderParameter("BlurPassIndexParameter"));
                     break;
 
 
@@ -1123,6 +1351,43 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 };
             }
 
+            BinInterpNode FAmbientOcclusionParams(string name)
+            {
+                return new BinInterpNode(bin.Position, $"{name}: FAmbientOcclusionParams")
+                {
+                    Items =
+                    {
+                        FShaderResourceParameter("AmbientOcclusionTextureParameter"),
+                        FShaderResourceParameter("AOHistoryTextureParameter"),
+                        FShaderParameter("AOScreenPositionScaleBiasParameter"),
+                        FShaderParameter("ScreenEdgeLimitsParameter"),
+                    },
+                };
+            }
+
+            BinInterpNode FLightShaftPixelShaderParameters(string name)
+            {
+                return new BinInterpNode(bin.Position, $"{name}: FLightShaftPixelShaderParameters")
+                {
+                    Items =
+                    {
+                        FShaderParameter("TextureSpaceBlurOriginParameter"),
+                        FShaderParameter("WorldSpaceBlurOriginAndRadiusParameter"),
+                        FShaderParameter("SpotAnglesParameter"),
+                        FShaderParameter("WorldSpaceSpotDirectionParameter"),
+                        FShaderParameter("WorldSpaceCameraPositionParameter"),
+                        FShaderParameter("UVMinMaxParameter"),
+                        FShaderParameter("AspectRatioAndInvAspectRatioParameter"),
+                        FShaderParameter("LightShaftParameters"),
+                        FShaderParameter("BloomTintAndThresholdParameter"),
+                        FShaderParameter("BloomScreenBlendThresholdParameter"),
+                        FShaderParameter("DistanceFadeParameter"),
+                        FShaderResourceParameter("SourceTextureParameter"),
+                        FShaderParameter("unk"),
+                    },
+                };
+            }
+
             void FBranchingPCFModProjectionPixelShader()
             {
                 //FBranchingPCFProjectionPixelShader
@@ -1146,6 +1411,85 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 node.Items.Add(FShaderParameter("LightPositionParam"));
                 node.Items.Add(FShaderParameter("FalloffParameters"));
+            }
+
+            void FModShadowVolumePixelShader_Maybe()
+            {
+                node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
+                node.Items.Add(FShaderParameter("unk1"));
+                node.Items.Add(FShaderParameter("unk2"));
+            }
+
+            void FSpotLightPolicy_ModShadowPixelParamsType()
+            {
+                node.Items.Add(FShaderParameter("LightPositionParam"));
+                node.Items.Add(FShaderParameter("FalloffParameters"));
+                node.Items.Add(FShaderParameter("SpotDirectionParam"));
+                node.Items.Add(FShaderParameter("SpotAnglesParam"));
+            }
+
+            void FDOFAndBloomBlendPixelShader()
+            {
+                node.Items.Add(FShaderParameter("PackedParameters?"));
+                node.Items.Add(FShaderParameter("MinMaxBlurClampParameter?"));
+                node.Items.Add(FShaderResourceParameter("unk"));
+                node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
+                node.Items.Add(FShaderResourceParameter("BlurredImageParameter?"));
+                node.Items.Add(FShaderResourceParameter("FilterColor2TextureParameter?"));
+                node.Items.Add(FShaderResourceParameter("DoFBlurBufferParameter?"));
+                node.Items.Add(FShaderResourceParameter("unk"));
+                node.Items.Add(FShaderParameter("BloomTintAndScreenBlendThresholdParameter?"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+            }
+
+            BinInterpNode FMotionBlurShaderParameters(string name)
+            {
+                var binInterpNode = new BinInterpNode(bin.Position, $"{name}: FColorRemapShaderParameters");
+                binInterpNode.Items.Add(FShaderResourceParameter("LowResSceneBuffer"));
+                binInterpNode.Items.Add(FShaderResourceParameter("VelocityBuffer"));
+                binInterpNode.Items.Add(FShaderParameter("ScreenToWorldParameter"));
+                binInterpNode.Items.Add(FShaderParameter("PrevViewProjParameter"));
+                binInterpNode.Items.Add(FShaderParameter("StaticVelocityParameters"));
+                binInterpNode.Items.Add(FShaderParameter("DynamicVelocityParameters"));
+                binInterpNode.Items.Add(FShaderParameter("RenderTargetClampParameter"));
+                binInterpNode.Items.Add(FShaderParameter("MotionBlurMaskScaleParameter"));
+                binInterpNode.Items.Add(FShaderParameter("StepOffsetsOpaqueParameter"));
+                binInterpNode.Items.Add(FShaderParameter("StepWeightsOpaqueParameter"));
+                binInterpNode.Items.Add(FShaderParameter("StepOffsetsTranslucentParameter"));
+                binInterpNode.Items.Add(FShaderParameter("StepWeightsTranslucentParameter"));
+                return binInterpNode;
+            }
+
+            void FUberPostProcessBlendPixelShader()
+            {
+                FDOFAndBloomBlendPixelShader();
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderResourceParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FShaderResourceParameter("unk"));
+                node.Items.Add(FShaderParameter("unk"));
+                node.Items.Add(FMotionBlurShaderParameters("MotionBlurParameters"));
+            }
+
+            void TModShadowProjectionPixelShader()
+            {
+                node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters?"));
+                node.Items.Add(FShaderParameter("ScreenToShadowMatrixParameter?"));
+                node.Items.Add(FShaderResourceParameter("ShadowDepthTextureParameter?"));
+                node.Items.Add(FShaderResourceParameter("RandomAngleTextureParameter?"));
+                node.Items.Add(FShaderParameter("RefiningSampleOffsetsParameter?"));
+                node.Items.Add(FShaderParameter("EdgeSampleOffsetsParameter?"));
+                node.Items.Add(FShaderParameter("ShadowBufferSizeParameter?"));
+                node.Items.Add(FShaderParameter("ShadowFadeFractionParameter?"));
+                node.Items.Add(FShaderParameter("ShadowModulateColorParam?"));
+                node.Items.Add(FShaderParameter("ScreenToWorldParam?"));
+                node.Items.Add(FShaderParameter("EmissiveAlphaMaskScale?"));
             }
         }
         private BinInterpNode MakeStringNode(EndianReader bin, string nodeName)
