@@ -120,7 +120,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
-            if (packagename != null && IsGlobalNonStartupFile(packagename))
+            if (packagename != null && IsGlobalNonStartupFile(packagename) && !source.FileRef.FileNameNoExtension.CaseInsensitiveEquals(target.FileNameNoExtension))
             {
                 PrepareGlobalFileForPorting(source.FileRef, packagename);
             }
@@ -134,7 +134,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // If the paths don't match then one of them is forced export, the other is not. We have to make a new parent package.
-            if (entry.InstancedFullPath != entry.MemoryFullPath)
+            if (entry.InstancedFullPath != entry.MemoryFullPath && !source.FileRef.FileNameNoExtension.CaseInsensitiveEquals(target.FileNameNoExtension))
             {
                 var parentPackage = target.FindEntry(entry.FileRef.FileNameNoExtension, "Package"); // Sure hope nothing indexing
                 if (parentPackage == null)
