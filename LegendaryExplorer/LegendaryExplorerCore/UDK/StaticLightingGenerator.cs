@@ -653,6 +653,12 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifySpotLights(IMEPackage pcc, IEnumerable<ExportEntry> spotLightComponents)
         {
+            // This forces these to be created. Due to issues in parent creation of this method
+            // they have the wrong package file.
+            pcc.GetEntryOrAddImport("Engine.Default__PointLight", null, packageFile: "Engine");
+            pcc.GetEntryOrAddImport("Engine.Default__SpotLight", null, packageFile: "Engine");
+            pcc.GetEntryOrAddImport("Engine.Default__DirectionalLight", null, packageFile: "Engine");
+
             var drawLightRadiusComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
             var drawLightConeComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightConeComponent", "Class");
             var drawLightRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
