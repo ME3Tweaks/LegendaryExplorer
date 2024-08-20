@@ -43,7 +43,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             Export = export;
             PropertyCollection properties = export.GetProperties();
-            TextureFormat = properties.GetProp<EnumProperty>(@"Format").Value.Name;
+
+            TextureFormat = properties.GetProp<EnumProperty>(@"Format")?.Value.Name;
             var cache = properties.GetProp<NameProperty>(@"TextureFileCacheName");
 
             NeverStream = properties.GetProp<BoolProperty>(@"NeverStream") ?? false;
