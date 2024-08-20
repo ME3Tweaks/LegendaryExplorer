@@ -108,6 +108,7 @@ namespace LegendaryExplorerCore.Packages
 
             string[] pathParts = instancedFullPath.Split('.');
 
+            // Todo: Package file should be set on this so parents get properly set
             IEntry parent = pcc.GetEntryOrAddImport(string.Join(".", pathParts[..^1]), null);
 
             var import = new ImportEntry(pcc, parent, NameReference.FromInstancedString(pathParts.Last()))
