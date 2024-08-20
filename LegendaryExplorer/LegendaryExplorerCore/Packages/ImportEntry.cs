@@ -466,5 +466,10 @@ namespace LegendaryExplorerCore.Packages
 
             return GetPackageFile(entry.Game, entry.ClassName);
         }
+
+        public string GetLinker()
+        {
+            return IEntry.GetLinker(this);
+        }
     }
 }

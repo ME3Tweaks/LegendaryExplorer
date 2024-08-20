@@ -7796,7 +7796,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
-
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    nodes.Add(MakeInt32Node(bin, "Number of material resources"));
+                }
                 nodes.Add(MakeMaterialResourceNode(bin, "Material Resource"));
                 if (Pcc.Game != MEGame.UDK)
                 {
