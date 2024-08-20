@@ -18,12 +18,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public MaterialResource SM2MaterialResource;
         protected override void Serialize(SerializingContainer sc)
         {
+            if (sc.Game == MEGame.UDK)
+            {
+                int numResources = 1;
+                sc.Serialize(ref numResources);
+            }
             sc.Serialize(ref SM3MaterialResource);
             if (sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref SM2MaterialResource);
             }
         }
+
+
 
         public static Material Create()
         {
@@ -148,7 +155,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public uint Unk; //LE only
         }
 
-        public string[] CompileErrors;
+        public string[] CompileErrors; // UDK this seems to serialize as number of resources?
         public UMultiMap<UIndex, int> TextureDependencyLengthMap;  //TODO: Make this a UMap
         public int MaxTextureDependencyLength;
         public Guid ID;
