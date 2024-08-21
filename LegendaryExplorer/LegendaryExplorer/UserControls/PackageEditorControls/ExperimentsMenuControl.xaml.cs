@@ -1297,6 +1297,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsH.ExportMorphFace(GetPEWindow());
         }
 
+        private void ReplaceAllWems_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.ReplaceAllWems(GetPEWindow());
+        }
+
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------

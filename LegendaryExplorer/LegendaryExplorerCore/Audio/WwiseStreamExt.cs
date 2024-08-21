@@ -25,15 +25,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return null; //it's pcc stored. we will return null for this case since we already coded for "".
             }
 
+            var afcFilename = (forcedFilename ?? Filename) + ".afc";
+
             //Look in current directory first
-            string path = Path.Combine(Path.GetDirectoryName(Export.FileRef.FilePath), (forcedFilename ?? Filename) + ".afc");
+            string path = Path.Combine(Path.GetDirectoryName(Export.FileRef.FilePath), afcFilename);
             if (File.Exists(path))
             {
                 return path; //in current directory of this pcc file
             }
 
+            var cooked = Export.FileRef.Game is Packages.MEGame.ME2 ? "CookedPC" : "CookedPCConsole";
+            //Look in top level CookedPCConsole folder next
+            if(path.Contains(cooked))
+            {
+                path = path.Split(cooked)[0];
+                path = Path.Combine(path, cooked, afcFilename);
+                if (File.Exists(path)) return path;
+            }
+
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(Export.FileRef.Game, includeAFCs: true);
-            gameFiles.TryGetValue((forcedFilename ?? Filename) + ".afc", out string afcPath);
+            gameFiles.TryGetValue(afcFilename, out string afcPath);
             return forcedFilename != null ? "" : afcPath ?? ""; // return "" if not found and the name is forced, we don't know where the afc path is right now.
         }
 
