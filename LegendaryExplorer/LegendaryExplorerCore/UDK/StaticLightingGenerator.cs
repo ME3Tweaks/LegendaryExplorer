@@ -65,6 +65,19 @@ namespace LegendaryExplorerCore.UDK
                         meshElement.Material = mats.Dequeue();
                     }
                 }
+
+                // UDK expects material indices to be correct
+                // If they aren't, it will try to regenerate the vertex buffer, which sometimes result in 0 vertices in UDK
+                // LE compiler didn't seem to care for some reason so it isn't always accurate
+                int matIndex = 0;
+                foreach (StaticMeshRenderData lodModel in stm.LODModels)
+                {
+                    foreach (StaticMeshElement meshElement in lodModel.Elements)
+                    {
+                        meshElement.MaterialIndex = matIndex++;
+                    }
+                }
+
                 portedMesh.WriteBinary(stm);
             }
 
@@ -640,6 +653,12 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifySpotLights(IMEPackage pcc, IEnumerable<ExportEntry> spotLightComponents)
         {
+            // This forces these to be created. Due to issues in parent creation of this method
+            // they have the wrong package file.
+            pcc.GetEntryOrAddImport("Engine.Default__PointLight", null, packageFile: "Engine");
+            pcc.GetEntryOrAddImport("Engine.Default__SpotLight", null, packageFile: "Engine");
+            pcc.GetEntryOrAddImport("Engine.Default__DirectionalLight", null, packageFile: "Engine");
+
             var drawLightRadiusComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
             var drawLightConeComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightConeComponent", "Class");
             var drawLightRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");

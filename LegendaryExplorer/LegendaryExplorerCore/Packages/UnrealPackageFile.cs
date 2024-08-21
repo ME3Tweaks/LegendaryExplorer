@@ -321,8 +321,8 @@ namespace LegendaryExplorerCore.Packages
         public void AddExport(ExportEntry exportEntry)
         {
             // Uncomment this to debug when an export is being added
-            if (exportEntry.ObjectName == TrashPackageName)
-                Debugger.Break();
+            //if (exportEntry.ObjectName == TrashPackageName)
+            //    Debugger.Break();
 
             if (exportEntry.FileRef != this)
                 throw new Exception("Cannot add an export entry from another package file");

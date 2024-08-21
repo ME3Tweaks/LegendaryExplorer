@@ -73,7 +73,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         [
             "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
             "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class", "State",
-            "TextureCube", "Bio2DA", "Bio2DANumberedRows"
+            "TextureCube", "Bio2DA", "Bio2DANumberedRows", "DecalMaterial", "MaterialInstanceConstant"
         ];
 
         //Objects in this collection are displayed on the left list view (names, imports, exports)
@@ -860,8 +860,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     IsBusy = false;
                     if (unresolvableImports.Exception == null)
                     {
-                        ListDialog ld = new ListDialog(unresolvableImports.Result, "Found unresolved imports", "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.", this) { DoubleClickEntryHandler = GetEntryDoubleClickAction() };
+                        if (unresolvableImports.Result.Count == 0)
+                        {
+                            MessageBox.Show("All imports resolved using Legendary Explorer's import resolution algorithm. This does not match how it works in the game and may not be accurate.");
+                        }
+                        else
+                        {
+                            ListDialog ld = new ListDialog(unresolvableImports.Result, "Found unresolved imports",
+                                "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.",
+                                this) { DoubleClickEntryHandler = GetEntryDoubleClickAction() };
                         ld.Show();
+                    }
                     }
                 });
             }

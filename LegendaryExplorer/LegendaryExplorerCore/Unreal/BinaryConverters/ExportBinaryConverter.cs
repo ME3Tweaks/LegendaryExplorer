@@ -204,6 +204,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)
         {
+            // NormalMap_HQ does not exist in games higher than 1/2
+            if (newGame == MEGame.UDK)
+            {
+                var format = export.GetProperty<EnumProperty>("Format");
+                if (format != null && format.Value.Name == "PF_NormalMap_HQ") // Technically also LQ
+                {
+                    format.Value = "PF_BC5";
+                    export.WriteProperty(format);
+                }
+            }
+
             MemoryStream bin = export.GetReadOnlyBinaryStream();
             if (bin.Length == 0)
             {

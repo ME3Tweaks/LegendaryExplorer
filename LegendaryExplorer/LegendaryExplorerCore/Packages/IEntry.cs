@@ -45,5 +45,35 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <returns></returns>
         public string GetRootName();
+
+        /// <summary>
+        /// Get package file this entry will be nested under in memory. Parent chain should be preferably exports
+        /// </summary>
+        /// <returns></returns>
+        public string GetLinker();
+
+        /// <summary>
+        /// Internal method takes argument that we don't want exposed to external API
+        /// </summary>
+        /// <param name="entry">Entry to get linker for; will go up the chain.</param>
+        /// <returns>Package this entry will be nested under in memory</returns>
+        internal static string GetLinker(IEntry entry)
+        {
+            if (entry.idxLink == 0)
+            {
+                if (entry.ClassName == "Package")
+                {
+                    if (entry is ExportEntry exp && exp.IsForcedExport)
+                        return entry.InstancedFullPath; // SFXGameContent
+                    if (entry is ImportEntry imp)
+                        return entry.InstancedFullPath; // Edge case; this should not occur after resynthesis of a package
+                }
+
+                // It's part of the package file itself.
+                return entry.FileRef.FileNameNoExtension;
+            }
+
+            return GetLinker(entry.Parent);
+        }
     }
 }

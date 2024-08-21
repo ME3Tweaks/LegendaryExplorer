@@ -498,7 +498,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return !exportEntry.IsDefaultObject &&
                    (parsableClasses.Contains(exportEntry.ClassName, StringComparer.OrdinalIgnoreCase) ||
                     (exportEntry.ClassName.CaseInsensitiveEquals("BrushComponent") && exportEntry.GetProperty<StructProperty>("BrushAggGeom") != null) ||
-                    (exportEntry.ClassName.CaseInsensitiveEquals("StaticMeshComponent") && exportEntry.GetProperty<ObjectProperty>("StaticMesh")?.Value != 0));
+                    (exportEntry.Game.IsMEGame() && exportEntry.ClassName.CaseInsensitiveEquals("StaticMeshComponent") && exportEntry.GetProperty<ObjectProperty>("StaticMesh")?.Value != 0));
         }
 
         public override bool CanParse(ExportEntry exportEntry)
@@ -530,10 +530,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Func<ModelPreview.PreloadedModelData> loadMesh = null;
             var assetCache = new PackageCache();
 
-            if (CurrentLoadedExport.ClassName is "StaticMeshComponent")
+            if (exportEntry.ClassName is "StaticMeshComponent")
             {
                 var cache = new PackageCache();
-                var mesh = CurrentLoadedExport.GetProperty<ObjectProperty>("StaticMesh").ResolveToExport(exportEntry.FileRef, cache);
+                var mesh = CurrentLoadedExport.GetProperty<ObjectProperty>("StaticMesh")?.ResolveToExport(exportEntry.FileRef, cache);
                 if (mesh != null)
                 {
                     var mats = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("Materials");

@@ -1360,5 +1360,10 @@ namespace LegendaryExplorerCore.Packages
             EntryHasPendingChanges = true;
             _fileRef.IsModified = true;
         }
+
+        public string GetLinker()
+        {
+            return IEntry.GetLinker(this);
+        }
     }
 }

@@ -49,7 +49,7 @@
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
         <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
-
+        <MenuItem Header="Import static lighting from UDK" Click="ImportStaticLighting_Click"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
         <MenuItem Header="GlobalShaderCache research" Click="GlobalShaderCacheResearch_Click"/>
         <MenuItem Header="Dump material for compile" Click="DumpUScriptFromPackage_Click"/>

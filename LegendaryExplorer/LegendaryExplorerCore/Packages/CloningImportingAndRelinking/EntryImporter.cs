@@ -1637,48 +1637,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             List<string> filesToCheck = new List<string>();
 
-            // 06/12/2022 - Disabled this code since we have a more definitive list of files safe to import from.
-            // This just added dupes to the list and worked under assumption that you could import from a SeekFreePackage like
-            // SFXPawn_Banshee - which was false, it must have been dynamic loaded
-
-            //string upkOrPcc = package.Game == MEGame.ME1 ? ".upk" : ".pcc";
-            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
-            //if (entry != null)
-            //{
-            //    bool addPackageFile = gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath);
-
-            //    // Let's see if there is same-named top level package folder file. This will resolve class imports from SFXGame, Engine, etc.
-            //    IEntry p = entry.Parent;
-            //    if (p != null)
-            //    {
-            //        while (p.Parent != null)
-            //        {
-            //            p = p.Parent;
-            //        }
-
-            //        if (p.ClassName == "Package")
-            //        {
-            //            if (gameFiles.TryGetValue($"{p.ObjectName}{upkOrPcc}", out var efPath) && !filesToCheck.Contains(efxPath))
-            //            {
-            //                filesToCheck.Add(Path.GetFileName(efPath));
-            //            }
-            //            else if (package.Game == MEGame.ME1)
-            //            {
-            //                if (gameFiles.TryGetValue(p.ObjectName + ".u", out var path) && !filesToCheck.Contains(efxPath))
-            //                {
-            //                    filesToCheck.Add(Path.GetFileName(path));
-            //                }
-            //            }
-            //        }
-            //    }
-            //    if (addPackageFile)
-            //    {
-            //        filesToCheck.Add(Path.GetFileName(efxPath));
-            //    }
-            //}
 
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
+
+            // 08/19/2024 - ME1, UDK use source-style lookups.
+            if (entry.Game is MEGame.ME1 or MEGame.UDK)
+            {
+                // Source-style lookups
+                // Add root level package
+                filesToCheck.Add(entry.GetRootName() + ".upk");
+            }
 
             //add base definition files that are always loaded (Core, Engine, etc.)
             foreach (var fileName in FilesSafeToImportFrom(package.Game))

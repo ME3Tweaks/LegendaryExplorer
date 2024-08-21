@@ -41,6 +41,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorerCore.UDK;
 
 //using ImageMagick;
 
@@ -4268,6 +4269,11 @@ defaultproperties
 
                 ];
             }
+        }
+
+        public static void ImportStaticLighting(PackageEditorWindow peWindow)
+        {
+            StaticLightingImporter.ImportStaticLighting(peWindow.Pcc);
         }
     }
 }
