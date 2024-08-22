@@ -8501,7 +8501,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         else
                         {
                             lodNode.Items.Add(MakeInt32Node(bin, "ushort size"));
-                            lodNode.Items.Add(MakeArrayNode(bin, "unknown buffer", j => MakeUInt16Node(bin, $"{j}")));
+                            lodNode.Items.Add(MakeArrayNode(bin, "AdjacencyIndexBuffer", j => MakeUInt16Node(bin, $"{j}"))); // Version 841+
                         }
                         lodNode.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.ME1, () => new List<ITreeItem>
                         {
