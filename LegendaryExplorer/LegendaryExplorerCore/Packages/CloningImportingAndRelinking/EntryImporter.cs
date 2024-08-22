@@ -307,20 +307,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        // CROSSGEN-V HACKS!
-        public static List<string> NonDonorItems = [];
-
-        // TODO: FIND WAY TO HANDLE DUPLICATE NAMED OBJECTS IN GAMES
-        // 1: Identify badly named objects
-        // 2: Probably have to find some hack or warning for entry lookups when these paths are encountered.
-        // Note: The following list is not complete for ME1.
-        private static readonly string[] badlyNamedME1Assets =
-        [
-            "BIOA_JUG80_T.JUG80_SAIL",
-            "BIOA_ICE60_T.checker",
-        ];
-        // END CROSSGEN-V HACKS
-
         /// <summary>
         /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries(). This returns IEntry, as it may return an ImportEntry if the export is found in a higher tier file and ROP options for imports are set.
         /// </summary>
@@ -368,12 +354,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     // See if any packages are open in our cache that already contain this asset
                     IMEPackage donorPackage = null;
                     bool isCached = false;
-
-                    if (badlyNamedME1Assets.Contains(ifp))
-                    {
-                        // Force use to use a donor without the cache
-                        rop.Cache?.ReleasePackages(); // Drop the cache so we have to look in the list of packages
-                    }
 
                     foreach (var df in donorFiles)
                     {
@@ -502,10 +482,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         var entryStr = $"{sourceExport.ClassName} {sourceExport.InstancedFullPath}";
                         Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
-                        if (!NonDonorItems.Contains(entryStr))
-                        {
-                            NonDonorItems.Add(entryStr);
-                        }
                     }
                 }
 
