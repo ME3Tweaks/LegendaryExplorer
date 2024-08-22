@@ -406,6 +406,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ImportStaticLighting(GetPEWindow());
         }
 
+        private void AdjustUDKLevelBrightness_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.AdjustUDKLevelLighting(GetPEWindow().Pcc);
+        }
+
+        private void PortME1MaterialsIntoUDK_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.PortME1MaterialsIntoUDK();
+        }
+
         private void ResynthesizePackage_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResynthesizePackage(GetPEWindow());

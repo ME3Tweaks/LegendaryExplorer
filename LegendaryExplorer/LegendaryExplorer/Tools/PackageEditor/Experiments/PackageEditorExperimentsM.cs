@@ -13,15 +13,12 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
-using LegendaryExplorer.Tools.LiveLevelEditor.MatEd;
 using LegendaryExplorer.Tools.WwiseEditor;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -35,7 +32,6 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.UnrealScript;
-using Function = LegendaryExplorerCore.Unreal.Classes.Function;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -466,6 +462,63 @@ return;
             }
         }
 
+        public static void AdjustUDKLevelLighting(IMEPackage incomingPackage)
+        {
+            if (incomingPackage is MEPackage package)
+            {
+                var result = PromptDialog.Prompt(null,
+                    "Enter multiplier value for lighting in UDK version of this persistent package.",
+                    "Enter multiplier", "0.4", true);
+                var udkPath = UDKDirectory.GetMapsPath();
+                if (float.TryParse(result, out var multiplier))
+                {
+                    var packagePath = Path.Combine(udkPath, package.FileNameNoExtension + ".udk");
+                    if (File.Exists(packagePath))
+                    {
+                        using var masterUdk = MEPackageHandler.OpenMEPackage(packagePath);
+                        AdjustLighting(masterUdk, multiplier);
+                        if (masterUdk.IsModified) 
+                            masterUdk.Save();
+                    }
+
+                    foreach (var f in package.AdditionalPackagesToCook)
+                    {
+                        packagePath = Path.Combine(udkPath, f + ".udk");
+                        if (File.Exists(packagePath))
+                        {
+                            using var udkPackage = MEPackageHandler.OpenMEPackage(packagePath);
+                            AdjustLighting(udkPackage, multiplier);
+                            if (udkPackage.IsModified)
+                                udkPackage.Save();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Must use this from the master ME level file, not a UDK one, as the master level will have AdditionalPackagesToCook.");
+            }
+        }
+
+        private static void AdjustLighting(IMEPackage package, float multiplier)
+        {
+            foreach (var exp in package.Exports.Where(x => x.IsA("LightComponent")))
+            {
+                Debug.WriteLine($"Adjusting brightness on {exp.InstancedFullPath} in {package.FileNameNoExtension}");
+                var brightness = exp.GetProperty<FloatProperty>("Brightness");
+                exp.WriteProperty(brightness);
+                if (brightness != null)
+                {
+                    brightness.Value *= multiplier;
+                    exp.WriteProperty(brightness);
+                }
+            }
+        }
+
+        public static void PortME1MaterialsIntoUDK()
+        {
+            ME1MaterialPort.PortMaterialsIntoUDK();
+        }
 
         /// <summary>
         /// Rebuilds all netindexes based on the AdditionalPackageToCook list in the listed file's header
