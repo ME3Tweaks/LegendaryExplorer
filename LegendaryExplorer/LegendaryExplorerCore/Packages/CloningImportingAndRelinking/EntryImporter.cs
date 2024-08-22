@@ -1584,12 +1584,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Coded a bit weird for optimization on allocations
             string forcedExportPath = null;
-            if (packageParts.Count > 1 && packName == packageParts[0]) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
+            if (packageParts.Count > 1 && packName.CaseInsensitiveEquals(packageParts[0])) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
             {
                 packageParts.RemoveAt(0);
                 forcedExportPath = string.Join(".", packageParts);
             }
-            else if (packName == packageParts[0])
+            else if (packName.CaseInsensitiveEquals(packageParts[0]))
             {
                 //it's literally the file itself (an imported package like SFXGame)
                 return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree

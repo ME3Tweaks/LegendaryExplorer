@@ -41,10 +41,16 @@ namespace LegendaryExplorerCore.Packages
         IEntry Clone(bool incrementIndex);
 
         /// <summary>
-        /// Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
+        /// Gets the name of the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
         /// </summary>
         /// <returns></returns>
         public string GetRootName();
+
+        /// <summary>
+        /// Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.
+        /// </summary>
+        /// <returns></returns>
+        public IEntry GetRoot();
 
         /// <summary>
         /// Get package file this entry will be nested under in memory. Parent chain should be preferably exports
