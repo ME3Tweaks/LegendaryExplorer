@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.UnrealExtensions.Classes;
+using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Sound.Wwise;
 using LegendaryExplorerCore.TLK;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
@@ -20,6 +23,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using BioMorphFace = LegendaryExplorerCore.Unreal.Classes.BioMorphFace;
+using Microsoft.VisualBasic;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -293,7 +297,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 // Ensure UModel
                 // Pass error message back
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     return UModelHelper.EnsureUModel(
                         () => pew.IsBusy = true,
@@ -320,6 +324,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             else
             {
                 MessageBox.Show("Must have 'BioMorphFace' export selected in the tree view.");
+            }
+        }
+
+        public static void ReplaceAllWems(PackageEditorWindow pew)
+        {
+            var streams = pew.Pcc.Exports.Where(e => e.ClassName == "WwiseStream");
+
+            var dlg = new CommonOpenFileDialog("Select folder containing converted files") { IsFolderPicker = true };
+            if (dlg.ShowDialog(pew) != CommonFileDialogResult.Ok) { return; }
+
+            string[] filesToConvert = Directory.GetFiles(dlg.FileName, "*.wem");
+
+            var destinationAfcFile = streams.First()?.GetProperty<NameProperty>("Filename").Value;
+
+            pew.IsBusy = true;
+            pew.BusyText = "Converting all WwiseStreams";
+            foreach (var stream in streams)
+            {
+                var wemFile = filesToConvert.Where(f => f.Contains(stream.ObjectNameString)).FirstOrDefault();
+                if (wemFile is null) break;
+
+                ReplaceAudioFromWwiseEncodedFile(wemFile, stream, false, destinationAfcFile);
+            }
+            pew.IsBusy = false;
+        }
+
+        /// <summary>
+        /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Audio file. (.ogg for ME3, .wem otherwise)
+        /// </summary>
+        /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
+        /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
+        public static void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false, string destAFCBasename = null)
+        {
+            ExportEntry exportToWorkOn = forcedExport;
+            if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
+            {
+                WwiseStream w = exportToWorkOn.GetBinaryData<WwiseStream>();
+
+                w.ImportFromFile(filePath, w.GetPathToAFC(destAFCBasename), destAFCBasename);
+                exportToWorkOn.WriteBinary(w);
+
+                if (updateReferencedEvents)
+                {
+                    var ms = (float)w.GetAudioInfo().GetLength().TotalMilliseconds;
+                    WwiseHelper.UpdateReferencedWwiseEventLengths(exportToWorkOn, ms);
+                }
             }
         }
     }
