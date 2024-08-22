@@ -20,11 +20,11 @@ namespace LegendaryExplorerCore.UDK
         /// Imports static lighting from UDK.
         /// </summary>
         /// <param name="package">The persistent package file. It MUST contain the AdditionalPackagesToCook or it will not import it. Tags must be set on StaticMeshActors to map their source.</param>
-        public static void ImportStaticLighting(IMEPackage package)
+        public static void ImportStaticLighting(IMEPackage package, string baseUdkMapPath = null)
         {
             var persistentPackage = (MEPackage)package;
             var basePath = Directory.GetParent(persistentPackage.FilePath).FullName;
-            using var persistentUdk = GetUDKMapPackage(persistentPackage.FileNameNoExtension);
+            using var persistentUdk = GetUDKMapPackage(persistentPackage.FileNameNoExtension, baseUdkMapPath);
             AssignStaticLighting(persistentPackage, persistentUdk);
 
             foreach (var subLevel in persistentPackage.AdditionalPackagesToCook)
@@ -44,7 +44,7 @@ namespace LegendaryExplorerCore.UDK
         /// <param name="mePackage"></param>
         private static void ClearLightmaps(IMEPackage mePackage)
         {
-            foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")))
+            foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
                 var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
                 foreach (var lod in meBin.LODData)
@@ -125,9 +125,9 @@ namespace LegendaryExplorerCore.UDK
             textureUIndex = lightmap.UIndex;
         }
 
-        private static UDKPackage GetUDKMapPackage(string baseName)
+        private static UDKPackage GetUDKMapPackage(string baseName, string baseMapPath = null)
         {
-            var udkPath = Path.Combine(UDKDirectory.MapsPath, baseName + ".udk");
+            var udkPath = Path.Combine(baseMapPath ?? UDKDirectory.MapsPath, baseName + ".udk");
             return (UDKPackage)MEPackageHandler.OpenUDKPackage(udkPath);
 
         }
