@@ -84,7 +84,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         return;
 
                     // Read default expressions
-                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(exp.FileRef)).Where(x => x.IsA("MaterialExpressionScalarParameter")).OfType<ExportEntry>())
+                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(exp.FileRef)).Where(x => x != null && x.IsA("MaterialExpressionScalarParameter")).OfType<ExportEntry>())
                     {
                         var parmName = expr.GetProperty<NameProperty>("ParameterName");
                         if (parmName == null)
@@ -139,7 +139,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         return;
 
                     // Read default expressions
-                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(exp.FileRef)).Where(x => x.IsA("MaterialExpressionVectorParameter")).OfType<ExportEntry>())
+                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(exp.FileRef)).Where(x => x != null && x.IsA("MaterialExpressionVectorParameter")).OfType<ExportEntry>())
                     {
                         var parmName = expr.GetProperty<NameProperty>("ParameterName");
                         if (parmName == null)
@@ -195,7 +195,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                         return;
 
                     // Read default expressions
-                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(exp.FileRef)).Where(x => x.IsA("MaterialExpressionTextureSampleParameter")).OfType<ExportEntry>())
+                    foreach (var expr in expressions.Select(x => x.ResolveToEntry(exp.FileRef)).Where(x => x != null && x.IsA("MaterialExpressionTextureSampleParameter")).OfType<ExportEntry>())
                     {
                         var parmName = expr.GetProperty<NameProperty>("ParameterName");
                         if (parmName == null)
