@@ -755,6 +755,48 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
                         GetConvoLinesBackground();
                     }
+                }).ContinueWith(x =>
+                {
+                    // RESEARCH
+                    //var shaderCacheF = @"S:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME3\BioGame\CookedPCConsole\RefShaderCache-PC-D3D-SM5.upk";
+                    //var shaderCacheP = MEPackageHandler.OpenMEPackage(shaderCacheF);
+                    //var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheP.Exports.FirstOrDefault());
+                    //Dictionary<Guid, string> refGuidMap = new();
+                    //foreach (var sm in shaderCache.MaterialShaderMaps)
+                    //{
+                    //    refGuidMap[sm.Value.ID] = sm.Value.FriendlyName;
+                    //}
+
+                    //Dictionary<Guid, string> materialGuidMap = new();
+                    //int testIdx = 0;
+                    //foreach (var mat in CurrentDataBase.Materials)
+                    //{
+                    //    testIdx++;
+                    //    if (testIdx % 40 == 0)
+                    //    {
+                    //        Debug.WriteLine($"Reading materials... {testIdx}/{CurrentDataBase.Materials.Count}");
+                    //    }
+                    //    var usage = mat.AssetUsages.First();
+                    //    var path = GetFilePath(usage.FileKey);
+                    //    using var package = MEPackageHandler.UnsafePartialLoad(path, x => x.UIndex == usage.UIndex);
+                    //    var uMat = package.GetUExport(usage.UIndex);
+                    //    var guid = ObjectBinary.From<Material>(uMat).SM3MaterialResource.ID;
+                    //    materialGuidMap[guid] = uMat.ObjectName.Instanced;
+                    //}
+
+                    //foreach (var mgm in materialGuidMap)
+                    //{
+                    //    if (refGuidMap.Remove(mgm.Key))
+                    //    {
+                    //        Debug.WriteLine($"Removed {mgm.Key} from ref map");
+                    //    }
+                    //}
+
+                    //Debug.WriteLine($"Unreferenced shaders");
+                    //foreach (var extraRef in refGuidMap.OrderBy(x=>x.Value))
+                    //{
+                    //    Debug.WriteLine($"{extraRef.Value} ({extraRef.Key})");
+                    //}
                 });
             }
             else
@@ -946,7 +988,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID, strRef);
+            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID, strRef, usagepkg);
         }
 
         private void OpenSourcePkg(object obj)
@@ -980,6 +1022,20 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             if (filePath == null)
             {
+                if (CurrentGame == MEGame.ME3)
+                {
+                    // This is very inefficient...
+                    var testFile = Directory.EnumerateFiles(rootPath, "Default.sfar", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+                    if (testFile != null)
+                    {
+                        DLCPackage dlp = new DLCPackage(testFile);
+                        var dlpFile = dlp.FindFileEntry(filename);
+                        if (dlpFile != -1)
+                        {
+                            return testFile; // It's in the SFAR
+                        }
+                    }
+                }
                 MessageBox.Show($"File {filename} not found in content directory {contentdir}.");
                 return null;
             }
@@ -987,10 +1043,28 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             return filePath;
         }
 
-        private void OpenInToolkit(string tool, string filePath, int uindex = 0, int strRef = 0)
+        private void OpenInToolkit(string tool, string filePath, int uindex = 0, int strRef = 0, string realFilename = null)
         {
             if (filePath == null)
                 return; // Do nothing.
+
+
+            IMEPackage package = null;
+            if (Path.GetFileName(filePath) == "Default.sfar")
+            {
+                // Must open sfar
+                DLCPackage dlp = new DLCPackage(filePath);
+                var dlpFile = dlp.FindFileEntry(realFilename);
+                if (dlpFile != -1)
+                {
+                    package = MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(dlpFile), realFilename);
+                }
+            }
+            else
+            {
+                package = MEPackageHandler.OpenMEPackage(filePath);
+            }
+
             switch (tool)
             {
                 case "Meshplorer":
@@ -1006,7 +1080,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     break;
                 case "PathEd":
-                    var pathEd = new PathfindingEditor.PathfindingEditorWindow(filePath);
+                    var pathEd = new PathfindingEditor.PathfindingEditorWindow(package);
                     pathEd.Show();
                     break;
                 case "DlgEd":
@@ -1023,7 +1097,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     break;
                 case "SeqEd":
-                    var SeqEd = new Sequence_Editor.SequenceEditorWPF();
+                    var SeqEd = new Sequence_Editor.SequenceEditorWPF(package);
                     SeqEd.Show();
                     if (uindex != 0)
                     {
@@ -1057,11 +1131,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     packEditor.Show();
                     if (uindex != 0)
                     {
-                        packEditor.LoadFile(filePath, uindex);
+                        packEditor.LoadPackage(package, uindex);
                     }
                     else
                     {
-                        packEditor.LoadFile(filePath);
+                        packEditor.LoadPackage(package);
                     }
                     break;
             }
@@ -1599,7 +1673,25 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private string GetFilePath(int fileListIndex)
         {
             (string filename, string contentdir, int mount) = FileListExtended[fileListIndex];
-            return Directory.GetFiles(MEDirectories.GetDefaultGamePath(CurrentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+            var retFile = Directory.GetFiles(MEDirectories.GetDefaultGamePath(CurrentGame), $"{filename}.*", SearchOption.AllDirectories).FirstOrDefault(f => f.Contains(contentdir));
+            if (retFile != null)
+                return retFile;
+            if (CurrentGame == MEGame.ME3)
+            {
+                var sfar = Path.Combine(MEDirectories.GetDLCPath(MEGame.ME3), contentdir, "CookedPCConsole", "Default.sfar");
+                if (File.Exists(sfar))
+                {
+                    DLCPackage dlp = new DLCPackage(sfar);
+                    var dlpFile = dlp.FindFileEntry(filename);
+                    if (dlpFile != -1)
+                    {
+                        // Technically we should check this is not an override by checking the uindex, but I don't care.
+                        return sfar; // It's in the SFAR
+                    }
+                }
+            }
+
+            return null;
         }
 
         private void genderTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2385,11 +2477,26 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     string filePath = GetFilePath(fileListIndex);
                     if (File.Exists(filePath))
                     {
-                        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                        if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp &&
-                            MaterialEditorExportLoader_Control.CanParse(exp))
+                        if (Path.GetFileName(filePath) == "Default.sfar")
                         {
-                            MaterialEditorExportLoader_Control.LoadExport(exp);
+                            (string filename, string contentdir, int mount) = FileListExtended[fileListIndex];
+                            DLCPackage dlp = new DLCPackage(filePath);
+                            var index = dlp.FindFileEntry(filename);
+                            var pcc = MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(index), filename);
+                            if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp &&
+                                MaterialEditorExportLoader_Control.CanParse(exp))
+                            {
+                                MaterialEditorExportLoader_Control.LoadExport(exp);
+                            }
+                        }
+                        else
+                        {
+                            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
+                            if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp &&
+                                MaterialEditorExportLoader_Control.CanParse(exp))
+                            {
+                                MaterialEditorExportLoader_Control.LoadExport(exp);
+                            }
                         }
                     }
                     else

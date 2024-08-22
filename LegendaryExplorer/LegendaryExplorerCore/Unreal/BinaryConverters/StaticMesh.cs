@@ -301,7 +301,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort[] WireframeIndexBuffer; //BulkSerialize
         public MeshEdge[] Edges; //BulkSerialize //not UDK
         public byte[] ShadowTriangleDoubleSided; //not UDK
-        public ushort[] unkBuffer; //UDK
+        public ushort[] AdjacencyIndexBuffer; //UDK
         public uint unk1; //ME1
         public byte[] xmlFile; //ME1 BulkData
     }
@@ -697,7 +697,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             if (Game == MEGame.UDK)
             {
-                BulkSerialize(ref data.unkBuffer, Serialize, 2);
+                BulkSerialize(ref data.AdjacencyIndexBuffer, Serialize, 2);
             }
             if (Game == MEGame.ME1)
             {

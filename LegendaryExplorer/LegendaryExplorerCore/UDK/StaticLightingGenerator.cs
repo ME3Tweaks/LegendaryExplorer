@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
@@ -13,6 +14,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using System.Threading;
 
 namespace LegendaryExplorerCore.UDK
 {
@@ -54,7 +56,35 @@ namespace LegendaryExplorerCore.UDK
                     rbBodySetup.RemoveProperty("PhysMaterial");
                 }
                 mesh.WriteBinary(stm);
-                IEntry newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage, new RelinkerOptionsPackage(packageCache));
+
+                // Change name so it doesn't use same names...
+                var meshRoot = mesh.GetRootName();
+                IEntry newParent = meshPackage.FindEntry(meshRoot);
+                if (newParent == null)
+                {
+                    if (pcc.Game is MEGame.LE1)
+                    {
+                        // Attempt to link up to ported content.
+                        var matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", "ME1MaterialPort", meshRoot + ".upk");
+                        if (File.Exists(matPath))
+                        {
+                            newParent = new ImportEntry(meshPackage, null, meshRoot)
+                            {
+                                ClassName = "Package",
+                                PackageFile = "Core",
+                            };
+                            meshPackage.AddImport(newParent as ImportEntry);
+                        }
+                    }
+
+                    if (newParent == null)
+                    {
+                        // Create export
+                        newParent = EntryImporter.GetOrAddCrossImportOrPackage(mesh.ParentFullPath, pcc, meshPackage,
+                            new RelinkerOptionsPackage(packageCache));
+                    }
+                }
+
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, mesh, meshPackage, newParent, false, relinkerOptionsPackage, out IEntry ent);
                 var portedMesh = (ExportEntry)ent;
                 stm = ObjectBinary.From<StaticMesh>(portedMesh);
@@ -91,6 +121,27 @@ namespace LegendaryExplorerCore.UDK
                 {
                     if (pcc.GetEntry(matUIndex) is ExportEntry matExp)
                     {
+                        if (pcc.Game is MEGame.LE1 && matExp.IsForcedExport)
+                        {
+                            // Attempt to link up to ported content.
+                            var matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", "ME1MaterialPort", matExp.GetRootName() + ".upk");
+                            if (File.Exists(matPath))
+                            {
+                                // Quickload; test if it exists
+                                var upk = MEPackageHandler.UnsafePartialLoad(matPath, x => false);
+                                // This is ugly hack but it's fast.
+                                var foundRef = upk.FindExport(matExp.InstancedFullPath.Substring(matExp.GetRootName().Length + 1), matExp.ClassName);
+                                if (foundRef != null)
+                                {
+                                    Debug.WriteLine("Using repointed material from ME1 materials port");
+                                    // Exists - generate import for this
+                                    var repointedMat = CreateImportsFor(foundRef, meshPackage);
+                                    relinkMap[matExp] = repointedMat;
+                                    continue;
+                                }
+                            }
+                        }
+
                         List<IEntry> textures = new MaterialInstanceConstant(matExp, packageCache).Textures;
                         ExportEntry diff = null;
                         ExportEntry norm = null;
@@ -126,7 +177,7 @@ namespace LegendaryExplorerCore.UDK
                                 var convertedImage = new Texture2D(texport).ToImage(PixelFormat.DXT1);
                                 properties.AddOrReplaceProp(new EnumProperty("PF_DXT1", "EPixelFormat", MEGame.UDK, "Format"));
                                 properties.AddOrReplaceProp(new EnumProperty("TC_NormalMap", "TextureCompressionSettings", MEGame.UDK, "CompressionSettings"));
-                                new Texture2D(importedExport){ TextureFormat = "PF_DXT1" }.Replace(convertedImage, properties, isPackageStored: true);
+                                new Texture2D(importedExport) { TextureFormat = "PF_DXT1" }.Replace(convertedImage, properties, isPackageStored: true);
                             }
                             else
                             {
@@ -140,7 +191,7 @@ namespace LegendaryExplorerCore.UDK
                             relinkMap[matExp] = defMat;
                             continue;
                         }
-                        diff= ImportTexture(diff, meshPackage, packageCache);
+                        diff = ImportTexture(diff, meshPackage, packageCache);
                         if (norm != null)
                         {
                             norm = ImportTexture(norm, meshPackage, packageCache);
@@ -186,21 +237,52 @@ namespace LegendaryExplorerCore.UDK
                     var nextParent = parent.Parent; // cache cause trashing will change parents
                     if (parent is ImportEntry imp)
                     {
-                        if (!EntryImporter.FilesSafeToImportFrom(MEGame.UDK)
-                                .Select(Path.GetFileNameWithoutExtension)
-                                .Contains(imp.GetRootName(), StringComparer.OrdinalIgnoreCase))
+                        var resolved = EntryImporter.ResolveImport(imp, null, unsafeLoad: true);
+                        if (resolved == null)
                         {
                             // File is not safe to import from
                             ConvertPackageImportToExport(imp, nextParent == null);
+                        }
+                        else
+                        {
+                            var children = export.FileRef.Exports.Where(x => x.idxLink == parent.UIndex);
+                            foreach (var child in children)
+                            {
+                                // Mark forced export... dunno if this is allowed in UDK
+                                // its not
+                                // Todo: DO NOT DO THIS!
+                                child.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+                            }
                         }
                     }
                     parent = nextParent;
                 }
             }
 
+
+            // Move all static meshes to consistent package system
+            foreach (var exp in meshPackage.Exports.Where(x => x.ClassName == "StaticMesh"/* && x.Parent != null && x.Parent.Parent == null*/).ToList())
+            {
+                var newParent = meshPackage.FindExport("UDKifyMeshes");
+                if (newParent == null)
+                {
+                    newParent = ExportCreator.CreatePackageExport(meshPackage,"UDKifyMeshes", forcedExport: false);
+                }
+
+                exp.idxLink = newParent.UIndex;
+            }
+
             relinkerOptionsPackage = null;
             (meshPackage as UDKPackage).FixupTrash();
-            meshPackage.Save();
+            if (meshPackage.Exports.Any())
+            {
+                meshPackage.Save();
+            }
+            else
+            {
+                // Do not save a file that has no exports.
+                File.Delete(meshFile);
+            }
 
             #endregion
 
@@ -263,6 +345,10 @@ namespace LegendaryExplorerCore.UDK
                     {
                         if (smc.Parent is ExportEntry parent && actorsInLevel.Contains(parent.UIndex) && parent.IsA("StaticMeshActorBase"))
                         {
+                            // List of things to not port
+                            if (parent.IsA("BioLedgeMeshActor"))
+                                continue; // Don't port these, they are not really useful in UDK for lighting
+
                             StructProperty locationProp;
                             StructProperty rotationProp;
                             StructProperty scaleProp = null;
@@ -346,6 +432,12 @@ namespace LegendaryExplorerCore.UDK
                     foreach (IEntry mp in topLevelMeshPackages)
                     {
                         mp.Parent = topMeshPackageImport;
+                        mp.ObjectName = "UDKifyMeshes";
+                    }
+
+                    foreach (var sm in tempPackage.Imports.Where(x => x.ClassName == "StaticMesh"))
+                    {
+                        sm.Parent = tempPackage.FindImport($"{meshPackageName}.UDKifyMeshes");
                     }
                 }
                 #endregion
@@ -430,6 +522,10 @@ namespace LegendaryExplorerCore.UDK
                                     plsProps.Add(scaleProp);
                                 }
                                 pla.WriteProperties(plsProps);
+
+                                var plce = portedPLC as ExportEntry;
+                                plce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+                                plce.Archetype = tempPackage.GetEntryOrAddImport("Engine.Default__PointLight.PointLightComponent0", "PointLightComponent", "Engine");
                                 lightActors.Add(pla);
                                 break;
                             case "SpotLightComponent":
@@ -489,6 +585,10 @@ namespace LegendaryExplorerCore.UDK
                                     slaProps.Add(scaleProp);
                                 }
                                 sla.WriteProperties(slaProps);
+                                var slce = portedSLC as ExportEntry;
+                                slce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+                                slce.Archetype = tempPackage.GetEntryOrAddImport("Engine.Default__SpotLight.SpotLightComponent0", "SpotLightComponent", "Engine");
+
                                 lightActors.Add(sla);
                                 break;
                             case "DirectionalLightComponent":
@@ -548,6 +648,10 @@ namespace LegendaryExplorerCore.UDK
                                     dlaProps.Add(scaleProp);
                                 }
                                 dla.WriteProperties(dlaProps);
+                                var dlce = portedDLC as ExportEntry; 
+                                dlce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+                                dlce.Archetype = tempPackage.GetEntryOrAddImport("Engine.Default__DirectionalLight.DirectionalLightComponent0", "DirectionalLightComponent", "Engine");
+
                                 lightActors.Add(dla);
                                 break;
                         }
@@ -581,6 +685,58 @@ namespace LegendaryExplorerCore.UDK
                 udkPackage2.Save(resultFilePath);
             }
             return resultFilePath;
+        }
+
+        /// <summary>
+        /// Creates UDK source-side imports.
+        /// </summary>
+        /// <param name="foundRef"></param>
+        /// <param name="meshPackage"></param>
+        private static IEntry CreateImportsFor(ExportEntry obj, IMEPackage destPackage)
+        {
+            Stack<IEntry> parentStack = new Stack<IEntry>();
+            parentStack.Add(obj);
+            IEntry entry = obj;
+            while (entry.Parent != null)
+            {
+                parentStack.Push(entry.Parent);
+                entry = entry.Parent;
+            }
+
+            // Create root package import
+            var rootPackage = destPackage.FindEntry(obj.FileRef.FileNameNoExtension, "Package");
+            if (rootPackage == null)
+            {
+                rootPackage = new ImportEntry(destPackage, null, obj.FileRef.FileNameNoExtension)
+                {
+                    ClassName = "Package",
+                    PackageFile = "Core",
+                };
+                destPackage.AddImport(rootPackage as ImportEntry);
+            }
+
+            // Create the children of the root import
+            IEntry parent = rootPackage;
+            while (parentStack.Count > 0)
+            {
+                var item = parentStack.Pop();
+                var ifp = parent.InstancedFullPath + '.' + item.ObjectName;
+                var tempParent = destPackage.FindEntry(ifp, item.ClassName);
+                if (tempParent != null)
+                {
+                    parent = tempParent;
+                    continue; // Already exists in package
+                }
+
+                parent = new ImportEntry(destPackage, parent.UIndex, item.ObjectName)
+                {
+                    PackageFile = ImportEntry.GetPackageFile(MEGame.UDK, item.ClassName),
+                    ClassName = item.ClassName,
+                };
+                destPackage.AddImport(parent as ImportEntry);
+            }
+
+            return parent;
         }
 
         private static void ConvertPackageImportToExport(ImportEntry imp, bool isRoot)
@@ -730,6 +886,10 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifyPointLights(IMEPackage pcc, IEnumerable<ExportEntry> pointLightComponents)
         {
+            pcc.GetEntryOrAddImport("Engine.Default__PointLight", "PointLight", packageFile: "Engine");
+            pcc.GetEntryOrAddImport("Engine.Default__SpotLight", "SpotLight", packageFile: "Engine");
+            pcc.GetEntryOrAddImport("Engine.Default__DirectionalLight", "DirectionalLight", packageFile: "Engine");
+
             var drawLightRadiusComponentClass = pcc.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
             var drawLightRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__PointLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
             var drawLightSourceRadiusArchetype = pcc.GetEntryOrAddImport("Engine.Default__PointLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");

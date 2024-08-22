@@ -22,26 +22,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
-            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, cache, customROP);
-            issues.AddRange(unresolvableImports);
-
-            // Imports are resolvable. We should port in level imports then port in the rest
-            var impToExpMapList = impToExpMap.ToList().OrderBy(x => x.Key.InstancedFullPath.Length); // Shorter names go first... should help ensure parents are generated first... maybe.....
-
-            foreach (var mapping in impToExpMapList)
+            if (customROP == null || customROP.CheckImportsWhenExportingToPackage)
             {
-                if (targetPackage.FindEntry(mapping.Key.InstancedFullPath) == null)
+                var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, cache, customROP);
+                issues.AddRange(unresolvableImports);
+
+                // Imports are resolvable. We should port in level imports then port in the rest
+                var impToExpMapList = impToExpMap.ToList().OrderBy(x => x.Key.InstancedFullPath.Length); // Shorter names go first... should help ensure parents are generated first... maybe.....
+
+                foreach (var mapping in impToExpMapList)
                 {
-                    // port it in
-                    //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
-                    var parent = PortParents(mapping.Value, targetPackage);
+                    if (targetPackage.FindEntry(mapping.Key.InstancedFullPath) == null)
+                    {
+                        // port it in
+                        //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
+                        var parent = PortParents(mapping.Value, targetPackage);
                     var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true,
                         customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache }, out _);
-                    issues.AddRange(relinkResults1);
-                }
-                else
-                {
-                    //Debug.WriteLine($"Already exists due to other porting in: {mapping.Key.InstancedFullPath}");
+                        issues.AddRange(relinkResults1);
+                    }
+                    else
+                    {
+                        //Debug.WriteLine($"Already exists due to other porting in: {mapping.Key.InstancedFullPath}");
+                    }
                 }
             }
 
@@ -81,8 +84,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="sourceExport"></param>
         /// <param name="targetPackage"></param>
         /// <param name="newEntry"></param>
-        /// <param name="compress"></param>
-        /// <param name="globalCache"></param>
         /// <param name="packageCache"></param>
         /// <returns></returns>
         public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache packageCache = null, RelinkerOptionsPackage customROP = null)
@@ -121,9 +122,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
-            if (packagename != null && IsGlobalNonStartupFile(packagename) && !source.FileRef.FileNameNoExtension.CaseInsensitiveEquals(target.FileNameNoExtension))
+            if (packagename != null)
             {
-                PrepareGlobalFileForPorting(source.FileRef, packagename);
+                if (IsGlobalNonStartupFile(packagename) && !source.FileRef.FileNameNoExtension.CaseInsensitiveEquals(target.FileNameNoExtension))
+                {
+                    // Porting out of file
+                    PrepareGlobalFileForPorting(source.FileRef, packagename);
+                }
             }
 
             Stack<IEntry> parentStack = new Stack<IEntry>();
@@ -134,16 +139,34 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 entry = entry.Parent;
             }
 
-            // If the paths don't match then one of them is forced export, the other is not. We have to make a new parent package.
-            if (entry.InstancedFullPath != entry.MemoryFullPath && !source.FileRef.FileNameNoExtension.CaseInsensitiveEquals(target.FileNameNoExtension))
+            // If the paths don't match then one of then this is a 'forced export', and we have to have the
+            // root package in the tree. Imports will always require package name at the root,
+            // however exports do not if they are not forced export.
+            bool portingIntoLinkerPackage = false;
+            if (entry.InstancedFullPath != entry.MemoryFullPath)
             {
-                var parentPackage = target.FindEntry(entry.FileRef.FileNameNoExtension, "Package"); // Sure hope nothing indexing
-                if (parentPackage == null)
+                // Are we porting into a file with a different linker?
+                if (!source.GetLinker().CaseInsensitiveEquals(target.FileNameNoExtension))
                 {
-                    // Create parent package
-                    parentPackage = ExportCreator.CreatePackageExport(target, entry.FileRef.FileNameNoExtension);
+                    // Porting out of file that uses !ForcedExport
+                    var parentPackage = target.FindEntry(entry.FileRef.FileNameNoExtension, "Package"); // Sure hope nothing indexing
+                    if (parentPackage == null)
+                    {
+                        // Create parent package
+                        parentPackage = ExportCreator.CreatePackageExport(target, entry.FileRef.FileNameNoExtension);
+                    }
+
+                    parentStack.Push(parentPackage);
                 }
-                parentStack.Push(parentPackage);
+                // Target linker is the same
+                // We are porting a forced export object out of linker package into its linker package
+                // Commented out cause I am not really sure how to handle this...
+                /*
+                else
+                {
+                    parentStack.Pop();
+                    portingIntoLinkerPackage = true;
+                }*/
             }
 
             var parentCount = parentStack.Count;
@@ -152,7 +175,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             IEntry parent = null;
             foreach (var pEntry in parentStack)
             {
-                var existingEntry = target.FindEntry(pEntry.InstancedFullPath);
+                var ifp = pEntry.InstancedFullPath;
+                if (portingIntoLinkerPackage)
+                {
+                    // Strip off the linker
+                    ifp = pEntry.InstancedFullPath.Substring(pEntry.GetLinker().Length + 1);
+                }
+                var existingEntry = target.FindEntry(ifp);
                 if (existingEntry == null)
                 {
                     var entriesBC = target.ExportCount;
@@ -177,6 +206,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     else
                     {
                         // Port in with relink... this could get really ugly performance wise
+                        // Unsure how this will work if it tries to bring over things as we port INTO linker package
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, PortImportsMemorySafe = true, Cache = cache }, out parent);
                     }
                     var entriesAC = target.ExportCount;

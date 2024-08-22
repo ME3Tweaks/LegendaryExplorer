@@ -133,6 +133,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// When importing an export that is a donor, and the donor is found, this can be set to override how the donor export is processed into the destination package. Return the newly created export.
         /// </summary>
         public Func<IMEPackage, ExportEntry, RelinkerOptionsPackage, IEntry> CustomDonorImporter { get; set; }
+
+        /// <summary>
+        /// USED BY ENTRYEXPORTER - Set to false to disable the import to export resolution. Use if you know you need imports and not exports.
+        /// </summary>
+        public bool CheckImportsWhenExportingToPackage { get; set; } = true;
     }
 
     public static class Relinker

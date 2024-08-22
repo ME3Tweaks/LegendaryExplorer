@@ -50,6 +50,8 @@
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
         <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
         <MenuItem Header="Import static lighting from UDK" Click="ImportStaticLighting_Click"/>
+        <MenuItem Header="Globally adjust UDK level brightness" Click="AdjustUDKLevelBrightness_Click"/>
+        <MenuItem Header="Port ME1 materials into UDK" Click="PortME1MaterialsIntoUDK_Click"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
         <MenuItem Header="GlobalShaderCache research" Click="GlobalShaderCacheResearch_Click"/>
         <MenuItem Header="Dump material for compile" Click="DumpUScriptFromPackage_Click"/>
@@ -164,6 +166,7 @@
         <MenuItem Header="Relink Children Tree and Update Local Functions" ToolTip="Must have UStruct selected (Class, State, Function, Struct, ScriptStruct)" Click="UpdateLocalFunctions_Click"/>
         <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
         <MenuItem Header="Export BioMorphFace to PSK with UModel" Click="ExportBioMorphFace_Click" ToolTip="Must have BioMorphFace selected and UModel installed"/>
+        <MenuItem Header="Replace all wems" Click="ReplaceAllWems_Click"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>

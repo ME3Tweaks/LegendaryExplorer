@@ -406,6 +406,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ImportStaticLighting(GetPEWindow());
         }
 
+        private void AdjustUDKLevelBrightness_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.AdjustUDKLevelLighting(GetPEWindow().Pcc);
+        }
+
+        private void PortME1MaterialsIntoUDK_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.PortME1MaterialsIntoUDK();
+        }
+
         private void ResynthesizePackage_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ResynthesizePackage(GetPEWindow());
@@ -1300,6 +1310,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ExportBioMorphFace_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsH.ExportMorphFace(GetPEWindow());
+        }
+
+        private void ReplaceAllWems_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.ReplaceAllWems(GetPEWindow());
         }
 
         #endregion
