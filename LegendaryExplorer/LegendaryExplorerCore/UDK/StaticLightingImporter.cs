@@ -25,6 +25,8 @@ namespace LegendaryExplorerCore.UDK
             var persistentPackage = (MEPackage)package;
             var basePath = Directory.GetParent(persistentPackage.FilePath).FullName;
             using var persistentUdk = GetUDKMapPackage(persistentPackage.FileNameNoExtension, baseUdkMapPath);
+            if (persistentUdk == null)
+                return; // Package not found
             AssignStaticLighting(persistentPackage, persistentUdk);
 
             foreach (var subLevel in persistentPackage.AdditionalPackagesToCook)
@@ -128,8 +130,12 @@ namespace LegendaryExplorerCore.UDK
         private static UDKPackage GetUDKMapPackage(string baseName, string baseMapPath = null)
         {
             var udkPath = Path.Combine(baseMapPath ?? UDKDirectory.MapsPath, baseName + ".udk");
-            return (UDKPackage)MEPackageHandler.OpenUDKPackage(udkPath);
+            if (File.Exists(udkPath))
+            {
+                return (UDKPackage)MEPackageHandler.OpenUDKPackage(udkPath);
+            }
 
+            return null;
         }
 
         private static void AssignStaticLighting(MEPackage mePackage, UDKPackage udkPackage)

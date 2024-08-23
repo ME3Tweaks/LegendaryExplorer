@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 
@@ -580,7 +581,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else if (prop is DelegateProperty delegateProp)
                 {
-                    if (delegateProp.Value.ContainingObjectUIndex!= 0)
+                    if (delegateProp.Value.ContainingObjectUIndex != 0)
                     {
                         // For purposes of delegate properties if the value is 0 we don't need a relink.
                         hasObjectProperties = true;
@@ -909,7 +910,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
             }
 
-            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath, rop.RelinkAllowDifferingClassesInRelink ? null : sourceExport.ClassName);
+            // 08/22/2024 - Change from only-class matching when allowing differing ROP option was set,
+            // to checking if it's a material interface if not set, since you can (most times) swap these.
+            // This addresses duplicate objects being ported in and then not being relinked if the source object
+            // is referenced multiple times and gets relinked in as a different object. We only do material interface
+            // because it's fairly easy to swap; others could probably be implemented here and in ImportExport().
+            // To allow all items to substitute, use the ROP's RelinkAllowDifferingClassesInRelink item.
+            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
+
+            if (existingEntry != null)
+            {
+                if (!existingEntry.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) && !rop.RelinkAllowDifferingClassesInRelink)
+                {
+                    // Allow substituting materials. This prevents a lot of other bugs versus allowing anything to 
+                    // be substituted since we can control it here.
+                    if (!existingEntry.IsA("MaterialInterface") || !sourceExport.IsA("MaterialInterface"))
+                    {
+                        // One of the objects is not a material interface and we aren't allowing any class substitutions during relink
+                        existingEntry = null;
+                    }
+                }
+            }
 
             if (existingEntry != null)
             {
