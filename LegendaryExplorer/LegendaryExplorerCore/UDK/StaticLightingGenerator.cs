@@ -266,7 +266,7 @@ namespace LegendaryExplorerCore.UDK
                 var newParent = meshPackage.FindExport("UDKifyMeshes");
                 if (newParent == null)
                 {
-                    newParent = ExportCreator.CreatePackageExport(meshPackage,"UDKifyMeshes", forcedExport: false);
+                    newParent = ExportCreator.CreatePackageExport(meshPackage, "UDKifyMeshes", forcedExport: false);
                 }
 
                 exp.idxLink = newParent.UIndex;
@@ -288,7 +288,8 @@ namespace LegendaryExplorerCore.UDK
 
             var staticMeshActors = new List<ExportEntry>();
             var lightActors = new List<ExportEntry>();
-            using IMEPackage tempPackage = MEPackageHandler.OpenMEPackageFromStream(MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(pcc.FilePath), MEGame.UDK));
+            var terrains = new List<ExportEntry>();
+            using IMEPackage tempPackage = MEPackageHandler.OpenMEPackageFromStream(MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(pcc.FilePath), MEGame.UDK), pcc.FileNameNoExtension + ".udk");
             {
                 var topLevelMeshPackages = new List<IEntry>();
                 foreach (ExportEntry exportEntry in staticMeshes)
@@ -439,6 +440,16 @@ namespace LegendaryExplorerCore.UDK
                     {
                         sm.Parent = tempPackage.FindImport($"{meshPackageName}.UDKifyMeshes");
                     }
+                }
+                #endregion
+
+                #region Terrain
+                // Not sure if we need to port this into temp
+                foreach (var t in pcc.Exports.Where(x => x.IsA("Terrain")))
+                {
+                    // Disabled as terrains do not port correctly due to TerrainMaterial serializer issues.
+                    //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, t, tempPackage, levelExport, true, new RelinkerOptionsPackage(packageCache) { PortExportsAsImportsWhenPossible = true }, out IEntry result);
+                    //terrains.Add(result as ExportEntry);
                 }
                 #endregion
 
@@ -648,7 +659,7 @@ namespace LegendaryExplorerCore.UDK
                                     dlaProps.Add(scaleProp);
                                 }
                                 dla.WriteProperties(dlaProps);
-                                var dlce = portedDLC as ExportEntry; 
+                                var dlce = portedDLC as ExportEntry;
                                 dlce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
                                 dlce.Archetype = tempPackage.GetEntryOrAddImport("Engine.Default__DirectionalLight.DirectionalLightComponent0", "DirectionalLightComponent", "Engine");
 
@@ -681,7 +692,21 @@ namespace LegendaryExplorerCore.UDK
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor, udkPackage2, levelExport, true, new RelinkerOptionsPackage(packageCache), out IEntry result);
                     levelBin.Actors.Add(result.UIndex);
                 }
+                foreach (var actor in terrains)
+                {
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, actor, udkPackage2, levelExport, true, new RelinkerOptionsPackage(packageCache), out IEntry result);
+                }
+
                 levelExport.WriteBinary(levelBin);
+
+                // Move stuff out from under imports in UDK
+                ExportEntry extrasBase = null;
+                foreach (var exp in udkPackage2.Exports.Where(x => x.idxLink != 0 && x.GetRoot() is ImportEntry imp && x.Parent == imp).ToList())
+                {
+                    extrasBase ??= ExportCreator.CreatePackageExport(udkPackage2, "ExtraStuff", null, forcedExport: false);
+                    exp.idxLink = extrasBase.UIndex;
+                }
+
                 udkPackage2.Save(resultFilePath);
             }
             return resultFilePath;
