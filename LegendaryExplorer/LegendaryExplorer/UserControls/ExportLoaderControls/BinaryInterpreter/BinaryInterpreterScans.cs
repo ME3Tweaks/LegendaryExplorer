@@ -6477,7 +6477,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return result;
         }
 
-        private BinInterpNode MakeMaterialResourceNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null, bool isTerrainMaterial = false)
+        private BinInterpNode MakeMaterialResourceNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null)
         {
             BinInterpNode node = new BinInterpNode(bin.Position, name)
             {
