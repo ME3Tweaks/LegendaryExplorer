@@ -14,7 +14,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public AlphaMap[] AlphaMaps;
         public UIndex[] WeightedTextureMaps;
         public TerrainMaterialResource[] CachedTerrainMaterials;
-        public TerrainMaterialResource[] CachedTerrainMaterials2;//not ME1
+        public TerrainMaterialResource[] CachedTerrainMaterials2;//not ME1, UDK
         public byte[] CachedDisplacements;//not ME1 and not UDK
         public float MaxCollisionDisplacement;//not ME1 and not UDK
 
@@ -25,15 +25,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref AlphaMaps, sc.Serialize);
             sc.Serialize(ref WeightedTextureMaps, sc.Serialize);
             sc.Serialize(ref CachedTerrainMaterials, sc.Serialize);
-            if (sc.Game != MEGame.ME1)
-            {
-                sc.Serialize(ref CachedTerrainMaterials2, sc.Serialize);
-            }
             if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
             {
+                // UDK doesn't serialize a second shader model 
+                sc.Serialize(ref CachedTerrainMaterials2, sc.Serialize);
                 sc.Serialize(ref CachedDisplacements);
                 sc.Serialize(ref MaxCollisionDisplacement);
             }
+
+            // Old code, left for posterity 08/23/2023
+            //if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
+            //{
+            //    sc.Serialize(ref CachedDisplacements);
+            //    sc.Serialize(ref MaxCollisionDisplacement);
+            //}
         }
 
         public static Terrain Create()
@@ -107,6 +112,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public TerrainMaterialMask Mask;
         public Guid[] MaterialIds;
         public Guid LightingGuid; // >= ME3
+        public bool bEnableSpecular; // UDK
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action, string prefix)
         {
@@ -146,22 +152,99 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref mask.NumBits);
             Serialize(ref mask.BitMask);
         }
-        public void Serialize(ref TerrainMaterialResource mat)
+        public void Serialize(ref TerrainMaterialResource mres)
         {
             if (IsLoading)
             {
-                mat = new TerrainMaterialResource();
+                mres = new TerrainMaterialResource();
             }
 
-            MaterialResource materialResource = mat;
-            Serialize(ref materialResource);
+            // Original code serializes it as MaterialResource
+            //MaterialResource materialResource = mres;
+            //Serialize(ref materialResource);
 
-            Serialize(ref mat.Terrain);
-            Serialize(ref mat.Mask);
-            Serialize(ref mat.MaterialIds, Serialize);
+
+            Serialize(ref mres.CompileErrors, Serialize);
+            Serialize(ref mres.TextureDependencyLengthMap, Serialize, Serialize);
+            Serialize(ref mres.MaxTextureDependencyLength);
+            Serialize(ref mres.ID);
+            Serialize(ref mres.NumUserTexCoords);
             if (Game >= MEGame.ME3)
             {
-                Serialize(ref mat.LightingGuid);
+                Serialize(ref mres.UniformExpressionTextures, Serialize);
+            }
+            else
+            {
+                Serialize(ref mres.UniformPixelVectorExpressions, Serialize);
+                Serialize(ref mres.UniformPixelScalarExpressions, Serialize);
+                Serialize(ref mres.Uniform2DTextureExpressions, Serialize);
+                Serialize(ref mres.UniformCubeTextureExpressions, Serialize);
+
+                if (IsLoading)
+                {
+                    mres.UniformExpressionTextures = mres.Uniform2DTextureExpressions.Select(texExpr => texExpr.TextureIndex).ToArray();
+                }
+            }
+            Serialize(ref mres.bUsesSceneColor);
+            Serialize(ref mres.bUsesSceneDepth);
+            if (Game >= MEGame.ME3)
+            {
+                Serialize(ref mres.bUsesDynamicParameter);
+                Serialize(ref mres.bUsesLightmapUVs);
+                Serialize(ref mres.bUsesMaterialVertexPositionOffset);
+                if (Game == MEGame.ME3 || Game.IsLEGame())
+                {
+                    Serialize(ref mres.unkBool1);
+                }
+            }
+            Serialize(ref mres.UsingTransforms);
+            if (Game == MEGame.ME1)
+            {
+                Serialize(ref mres.Me1MaterialUniformExpressionsList, Serialize);
+            }
+            else
+            {
+                Serialize(ref mres.TextureLookups, Serialize);
+                Serialize(ref mres.unkUint1);
+
+                // TERRAIN MATERIAL RESOURCE SPECIFIC ============================================
+                // If we are porting a terrain, these are NOT used in it's CachedMaterials!
+                // This will break porting from UDK
+                //if (Game == MEGame.UDK) // These are not used in Terrain Cached Materials!
+                //{
+                //    Serialize(ref mres.udkUnk2);
+                //    Serialize(ref mres.udkUnk3);
+                //    Serialize(ref mres.udkUnk4);
+                //}
+                // END TERRAIN MATERIAL RESOURCE SPECIFIC ========================================
+            }
+            if (Game == MEGame.ME1)
+            {
+                Serialize(ref mres.unk1);
+                int tmp = mres.unkCount;
+                Serialize(ref tmp);
+                mres.unkCount = tmp; //will create mr.unkList of unkCount size
+                Serialize(ref mres.unkInt2);
+                for (int i = 0; i < mres.unkCount; i++)
+                {
+                    Serialize(ref mres.unkList[i].Item1);
+                    Serialize(ref mres.unkList[i].Item2);
+                    Serialize(ref mres.unkList[i].Item3);
+                }
+            }
+
+            // Extra data on terrain material
+            Serialize(ref mres.Terrain);
+            Serialize(ref mres.Mask);
+            Serialize(ref mres.MaterialIds, Serialize);
+            if (Game >= MEGame.ME3)
+            {
+                Serialize(ref mres.LightingGuid);
+            }
+
+            if (Game == MEGame.UDK)
+            {
+                Serialize(ref mres.bEnableSpecular);
             }
         }
     }

@@ -155,7 +155,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             public uint Unk; //LE only
         }
 
-        public string[] CompileErrors; // UDK this seems to serialize as number of resources?
+        public string[] CompileErrors;
         public UMultiMap<UIndex, int> TextureDependencyLengthMap;  //TODO: Make this a UMap
         public int MaxTextureDependencyLength;
         public Guid ID;
@@ -993,11 +993,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 Serialize(ref mres.TextureLookups, Serialize);
                 Serialize(ref mres.unkUint1);
-                
-                
-                // If we are porting a terrain, these are NOT used in it's CachedMaterials!
-                // This will break porting from UDK
-                if (Game == MEGame.UDK) // These are not used in Terrain Cached Materials!
+
+                // Not used in TerrainMaterialResource (use that specific class instead)
+                if (Game == MEGame.UDK)
                 {
                     Serialize(ref mres.udkUnk2);
                     Serialize(ref mres.udkUnk3);
