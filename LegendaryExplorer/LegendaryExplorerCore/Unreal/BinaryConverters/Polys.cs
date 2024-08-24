@@ -61,6 +61,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             Unsafe.AsRef(in action).Invoke(ref Owner, nameof(Owner));
+            for (int i = 0; i < Elements.Length; i++)
+            {
+                Unsafe.AsRef(in action).Invoke(ref Elements[i].Actor, $"Actor[{i}]");
+                Unsafe.AsRef(in action).Invoke(ref Elements[i].Material, $"Material[{i}]");
+            }
         }
     }
     public class Poly

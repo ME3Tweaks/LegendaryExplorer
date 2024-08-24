@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Threading;
@@ -11,7 +12,7 @@ using LegendaryExplorerCore.Packages;
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
 
-
+    [DebuggerDisplay("BIN {Header}")]
     public class BinInterpNode : NotifyPropertyChangedBase, ITreeItem
     {
         public enum ArrayPropertyChildAddAlgorithm

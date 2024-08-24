@@ -566,7 +566,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ////for unsupported classes, this will just copy over the binary
             ////sometimes converting binary requires altering the properties as well
             ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
-
             //Set class.
 
             //if (sourceExport.ObjectName == @"SFXPower_EMPGrenade")
@@ -728,7 +727,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 rop.CrossPackageMap[sourceExport] = newExport;
             }
-
             return newExport;
         }
 
@@ -782,6 +780,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 locationProp.Name = destPackage.Game.IsGame3() ? "location" : "Location";
             }
+
+            if (destPackage.Game == MEGame.UDK)
+            {
+                var format = props.GetProp<EnumProperty>("Format");
+                if (format != null)
+                {
+                    if (format.Value.Name == "PF_NormalMap_HQ") // Technically also LQ
+                    {
+                        // NormalMap_HQ does not exist in games higher than 1/2
+                        // NormalMap_HQ is ATI2 which later became BC5
+                        props.AddOrReplaceProp(new EnumProperty("PF_BC5", "EPixelFormat", MEGame.UDK, "Format"));
+                    }
+                    else if (format.Value.Name == "PF_BC7")
+                    {
+                        // UDK doesn't support BC7
+                        // Don't remove these properties as they are needed to load data out of a TFC
+                        //props.RemoveNamedProperty("TextureFileCacheName");
+                        //props.RemoveNamedProperty("TFCFileGuid");
+                        props.RemoveNamedProperty("LODGroup");
+                        props.AddOrReplaceProp(new EnumProperty("PF_DXT1", "EPixelFormat", MEGame.UDK, "Format"));
+                        props.AddOrReplaceProp(new EnumProperty("TC_NormalMap", "TextureCompressionSettings", MEGame.UDK, "CompressionSettings"));
+                        // Texture data is converted in ConvertPostPropBinary()
+                    }
+                }
+            }
         }
 
         private static bool CanDonateObject(ExportEntry export)
@@ -825,6 +848,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             try
             {
                 PropertyCollection props = incomingExport.GetProperties();
+                ApplyCrossGamePropertyFixes(incomingExport, targetExport.FileRef, props);
                 ObjectBinary binary = ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game, props);
                 props.WriteTo(res.Writer, targetExport.FileRef);
                 res.Writer.WriteFromBuffer(binary.ToBytes(targetExport.FileRef));

@@ -450,7 +450,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, bool forceMipping = false)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, Stream outDataOverride = null)
         {
             var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
@@ -801,7 +801,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
             mem.Writer.WriteFromBuffer(Export.GetPrePropBinary());
             props.WriteTo(mem.Writer, Export.FileRef);
             SerializeNewData(mem.BaseStream);
-            Export.Data = mem.ToArray();
+            if (outDataOverride == null)
+            {
+                // Write to export
+                Export.Data = mem.ToArray();
+            }
+            else
+            {
+                // Used when you want to replace texture in memory but not commit to export
+                outDataOverride.Write(mem.ToArray());
+            }
 
             //using (MemoryStream newData = new MemoryStream())
             //{

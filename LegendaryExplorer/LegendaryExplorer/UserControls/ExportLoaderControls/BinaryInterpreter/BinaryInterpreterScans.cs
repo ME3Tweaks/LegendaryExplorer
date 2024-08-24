@@ -364,7 +364,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeArrayNode(bin, "InfoData", i => new BinInterpNode(bin.Position, $"{i}: {(EInfoFlags)bin.ReadByte()}")));
                 subnodes.Add(MakeArrayNode(bin, "AlphaMaps", i => MakeArrayNode(bin, $"{i}: Data", j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadByte()}"))));
                 subnodes.Add(MakeArrayNode(bin, "WeightedTextureMaps", i => MakeEntryNode(bin, $"{i}")));
-                for (int k = Pcc.Game is MEGame.ME1 ? 1 : 2; k > 0; k--)
+                for (int k = Pcc.Game is MEGame.ME1 or MEGame.UDK ? 1 : 2; k > 0; k--)
                 {
                     subnodes.Add(MakeArrayNode(bin, "CachedTerrainMaterials", i =>
                     {
@@ -386,6 +386,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             node.Items.Add(MakeGuidNode(bin, "LightingGuid"));
                         }
 
+                        if (Pcc.Game == MEGame.UDK)
+                        {
+                            node.Items.Add(MakeBoolIntNode(bin, "bEnableSpecular"));
+                        }
                         return node;
                     }));
                 }

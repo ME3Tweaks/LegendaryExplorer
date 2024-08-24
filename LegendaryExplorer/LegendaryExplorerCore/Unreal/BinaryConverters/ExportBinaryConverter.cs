@@ -7,6 +7,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary;
 
@@ -204,18 +205,29 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)
         {
-            // NormalMap_HQ does not exist in games higher than 1/2
+            MemoryStream bin = null;
             if (newGame == MEGame.UDK)
             {
                 var format = export.GetProperty<EnumProperty>("Format");
-                if (format != null && format.Value.Name == "PF_NormalMap_HQ") // Technically also LQ
+                if (format is { Value.Name: "PF_BC7" })
                 {
-                    format.Value = "PF_BC5";
-                    export.WriteProperty(format);
+                    // UDK doesn't support BC7
+                    var unused = new MemoryStream(); // We don't want to modify source export
+                    var convertedImage = new Texture2D(export).ToImage(PixelFormat.DXT1);
+                    var t2d = new Texture2D(export) { TextureFormat = "PF_DXT1" };
+                    t2d.Replace(convertedImage, export.GetProperties(), isPackageStored: true, outDataOverride: unused);
+                    bin = new MemoryStream();
+                    t2d.SerializeNewData(bin); // This serializes binary data.
+                    bin.SeekBegin();
                 }
             }
 
-            MemoryStream bin = export.GetReadOnlyBinaryStream();
+            if (bin == null)
+            {
+                bin = export.GetReadOnlyBinaryStream();
+            }
+
+
             if (bin.Length == 0)
             {
                 return bin.ToArray();
@@ -278,7 +290,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
-                            
+
                             // Only load mips if we need to.
                             mips ??= Texture2D.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
                             texture = Texture2D.GetTextureData(mips[i], export.Game, export.Game != MEGame.UDK ? MEDirectories.GetDefaultGamePath(export.Game) : null, false); //copy in external textures
