@@ -450,7 +450,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
         /// <returns></returns>
-        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, Stream outDataOverride = null)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, bool forceMipping = false, Stream outDataOverride = null)
         {
             var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
