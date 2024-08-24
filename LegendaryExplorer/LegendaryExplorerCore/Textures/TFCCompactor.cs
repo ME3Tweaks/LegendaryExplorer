@@ -199,8 +199,7 @@ namespace LegendaryExplorerCore.Textures
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(textureMap.Game, includeTFCs: true, gameRootOverride: infoPackage.GamePath);
 
             // add TFCs from the directory we're compacting so we can pull data out
-            foreach (var basePathTFC in Directory.GetFiles(infoPackage.BaseCompactionPath, "*.tfc",
-                SearchOption.AllDirectories))
+            foreach (var basePathTFC in Directory.GetFiles(infoPackage.BaseCompactionPath, "*.tfc", SearchOption.AllDirectories))
             {
                 gameFiles[Path.GetFileName(basePathTFC)] = basePathTFC;
             }
@@ -306,7 +305,8 @@ namespace LegendaryExplorerCore.Textures
                             continue;
                         }
 
-                        var t2d = ObjectBinary.From<UTexture2D>(exportToUpdate);
+                        // Ensure you use .From() and not the typed version so it properly serializes back.
+                        var t2d = (UTexture2D) ObjectBinary.From(exportToUpdate);
                         t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty); // Remove empty mips
 
                         // Update offset
@@ -365,8 +365,7 @@ namespace LegendaryExplorerCore.Textures
                 }
 
                 // Delete all existing TFCs
-                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories)
-                    .Where(x => !x.StartsWith(infoPackage.StagingPath));
+                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories).Where(x => !x.StartsWith(infoPackage.StagingPath));
                 foreach (var tfc in tfcsToDelete)
                 {
                     File.Delete(tfc);
@@ -382,7 +381,7 @@ namespace LegendaryExplorerCore.Textures
                 if (compactor.infoPackage.UseIndexing)
                 {
                     // Stub TFC
-                    File.WriteAllBytes(Path.Combine(destPath, $"Textures_{compactor.infoPackage.DLCName}.tfc"), Guid.NewGuid().ToByteArray());
+                    File.WriteAllBytes(Path.Combine(destPath, $"{infoPackage.TFCType}_{compactor.infoPackage.DLCName}.tfc"), Guid.NewGuid().ToByteArray());
                 }
             }
         }
