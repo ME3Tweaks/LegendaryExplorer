@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
@@ -59,6 +60,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref LightingGuid);
+                if (sc.IsSaving)
+                {
+                    // Ensure LightmassSettings struct is big enough 
+                    var lightMassMaxIndex = Surfs.Length > 0 ? Surfs.Max(x => x.iLightmassIndex) : 0; //Will +1
+                    LightmassSettings = new LightmassPrimitiveSettings[lightMassMaxIndex + 1]; // Index 1 = 2 items in list
+                    for (int i = 0; i < LightmassSettings.Length; i++)
+                    {
+                        LightmassSettings[i] = new LightmassPrimitiveSettings
+                        {
+                            FullyOccludedSamplesFraction = 1,
+                            EmissiveLightFalloffExponent = 2,
+                            EmissiveBoost = 1,
+                            DiffuseBoost = 1,
+                            SpecularBoost = 1
+                        };
+                    }
+                }
                 sc.Serialize(ref LightmassSettings, sc.Serialize);
             }
             else if (sc.IsLoading)
