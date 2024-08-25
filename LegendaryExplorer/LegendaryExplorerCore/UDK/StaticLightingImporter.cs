@@ -6,10 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.UDK
@@ -19,8 +22,8 @@ namespace LegendaryExplorerCore.UDK
         /// <summary>
         /// Imports static lighting from UDK.
         /// </summary>
-        /// <param name="package">The persistent package file. It MUST contain the AdditionalPackagesToCook or it will not import it. Tags must be set on StaticMeshActors to map their source.</param>
-        public static void ImportStaticLighting(IMEPackage package, string baseUdkMapPath = null)
+        /// <param name="package">The persistent package file. To import sublevels, the package must have AdditionalPackagesToCook set in the package. Tags must be set on StaticMeshActors to map their source.</param>
+        public static void ImportStaticLighting(IMEPackage package, string baseUdkMapPath = null, bool includeSublevels = true)
         {
             var persistentPackage = (MEPackage)package;
             var basePath = Directory.GetParent(persistentPackage.FilePath).FullName;
@@ -29,14 +32,17 @@ namespace LegendaryExplorerCore.UDK
                 return; // Package not found
             AssignStaticLighting(persistentPackage, persistentUdk);
 
-            foreach (var subLevel in persistentPackage.AdditionalPackagesToCook)
+            if (includeSublevels)
             {
-                var mePath = Path.Combine(basePath, subLevel + ".pcc");
-                using var mePackage = (MEPackage)MEPackageHandler.OpenMEPackage(mePath);
-                using var udkPackage = GetUDKMapPackage(subLevel);
-                AssignStaticLighting(mePackage, udkPackage);
-                if (mePackage.IsModified)
-                    mePackage.Save();
+                foreach (var subLevel in persistentPackage.AdditionalPackagesToCook)
+                {
+                    var mePath = Path.Combine(basePath, subLevel + ".pcc");
+                    using var mePackage = (MEPackage)MEPackageHandler.OpenMEPackage(mePath);
+                    using var udkPackage = GetUDKMapPackage(subLevel);
+                    AssignStaticLighting(mePackage, udkPackage);
+                    if (mePackage.IsModified)
+                        mePackage.Save();
+                }
             }
         }
 
@@ -52,69 +58,59 @@ namespace LegendaryExplorerCore.UDK
                 var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
                 foreach (var lod in meBin.LODData)
                 {
-                    if (lod.LightMap is LightMap_1D lm1d)
-                    {
-                        // No textures
-                    }
-                    else if (lod.LightMap is LightMap_2D lm2d)
-                    {
-                        // Has textures
-                        TrashRef(mePackage, ref lm2d.Texture1);
-                        TrashRef(mePackage, ref lm2d.Texture2);
-                        TrashRef(mePackage, ref lm2d.Texture3);
-                        TrashRef(mePackage, ref lm2d.Texture4);
-                    }
-                    else if (lod.LightMap is LightMap_3 lm3)
-                    {
-                        // No textures
-                    }
-                    else if (lod.LightMap is LightMap_4or6 lm46)
-                    {
-                        // Has textures
-                        TrashRef(mePackage, ref lm46.Texture1);
-                        TrashRef(mePackage, ref lm46.Texture1);
-                        TrashRef(mePackage, ref lm46.Texture1);
-                    }
-                    else if (lod.LightMap is LightMap_5 lm5)
-                    {
-                        // No textures
-                    }
+                    ClearLightmap(lod.LightMap, mePackage);
                 }
+
                 smc.WriteBinary(meBin);
             }
 
-            // Terrain
-            foreach (var terrain in mePackage.Exports.Where(x => x.IsA("TerrainComponent")).ToList())
+            foreach (var mc in mePackage.Exports.Where(x => x.IsA("ModelComponent")).ToList())
             {
-                var terrainC = ObjectBinary.From<TerrainComponent>(terrain);
-                if (terrainC.LightMap is LightMap_1D lm1d)
+                var meBin = ObjectBinary.From<ModelComponent>(mc);
+                foreach (var elem in meBin.Elements)
                 {
-                    // No textures
+                    ClearLightmap(elem.LightMap, mePackage);
                 }
-                else if (terrainC.LightMap is LightMap_2D lm2d)
-                {
-                    // Has textures
-                    TrashRef(mePackage, ref lm2d.Texture1);
-                    TrashRef(mePackage, ref lm2d.Texture2);
-                    TrashRef(mePackage, ref lm2d.Texture3);
-                    TrashRef(mePackage, ref lm2d.Texture4);
-                }
-                else if (terrainC.LightMap is LightMap_3 lm3)
-                {
-                    // No textures
-                }
-                else if (terrainC.LightMap is LightMap_4or6 lm46)
-                {
-                    // Has textures
-                    TrashRef(mePackage, ref lm46.Texture1);
-                    TrashRef(mePackage, ref lm46.Texture1);
-                    TrashRef(mePackage, ref lm46.Texture1);
-                }
-                else if (terrainC.LightMap is LightMap_5 lm5)
-                {
-                    // No textures
-                }
-                terrain.WriteBinary(terrainC);
+
+                mc.WriteBinary(meBin);
+            }
+
+            foreach (var tc in mePackage.Exports.Where(x => x.IsA("TerrainComponent")).ToList())
+            {
+                var meBin = ObjectBinary.From<TerrainComponent>(tc);
+                ClearLightmap(meBin.LightMap, mePackage);
+                tc.WriteBinary(meBin);
+            }
+        }
+
+        private static void ClearLightmap(LightMap lightMap, IMEPackage mePackage)
+        {
+            if (lightMap is LightMap_1D lm1d)
+            {
+                // No textures
+            }
+            else if (lightMap is LightMap_2D lm2d)
+            {
+                // Has textures
+                TrashRef(mePackage, ref lm2d.Texture1);
+                TrashRef(mePackage, ref lm2d.Texture2);
+                TrashRef(mePackage, ref lm2d.Texture3);
+                TrashRef(mePackage, ref lm2d.Texture4);
+            }
+            else if (lightMap is LightMap_3 lm3)
+            {
+                // No textures
+            }
+            else if (lightMap is LightMap_4or6 lm46)
+            {
+                // Has textures
+                TrashRef(mePackage, ref lm46.Texture1);
+                TrashRef(mePackage, ref lm46.Texture1);
+                TrashRef(mePackage, ref lm46.Texture1);
+            }
+            else if (lightMap is LightMap_5 lm5)
+            {
+                // No textures
             }
         }
 
@@ -138,7 +134,7 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Ports a lightmap from UDK into the given MEPackage, Package stored. For it to work properly it must be moved to TFC as lighting requires TFC
+        /// Ports a lightmap from UDK into the given MEPackage, package stored. For it to work properly it must be moved to TFC as lighting requires TFC
         /// </summary>
         /// <param name="mePackage"></param>
         /// <param name="textureUIndex">On input, this is the UIndex in the UDKPackage. On exit, it should be the MEPackage UIndex.</param>
@@ -150,16 +146,33 @@ namespace LegendaryExplorerCore.UDK
                 return;
 
             var udkTex = udkPackage.GetUExport(textureUIndex);
-            if (mePackage.FindExport(udkTex.InstancedFullPath) != null)
+            var existing = mePackage.FindExport(udkTex.InstancedFullPath);
+            if (existing != null)
             {
                 // Already in the file
-                textureUIndex = mePackage.FindExport(udkTex.InstancedFullPath).UIndex;
+                textureUIndex = existing.UIndex;
+                Debug.WriteLine($"Lightmap already in file: {existing.InstancedFullPath}");
                 return;
             }
 
             // Port it
             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, udkTex, mePackage, null, true, new RelinkerOptionsPackage(), out var lightmap);
             textureUIndex = lightmap.UIndex;
+            //Debug.WriteLine($"Installed lightmap {lightmap.InstancedFullPath}");
+
+            var lightmapTex = lightmap as ExportEntry;
+
+            // Turn on streaming
+            var bin = ObjectBinary.From<LightMapTexture2D>(lightmapTex);
+            bin.LightMapFlags = ELightMapFlags.LMF_Streamed;
+            lightmapTex.WriteBinary(bin);
+
+            var tex = new Texture2D(lightmapTex);
+            if (tex.Mips.Count == 1)
+            {
+                var format = mePackage.Game.IsLEGame() ? PixelFormat.BC7 : PixelFormat.DXT1;
+                tex.GenerateMips(format);
+            }
         }
 
         private static UDKPackage GetUDKMapPackage(string baseName, string baseMapPath = null)
@@ -182,9 +195,23 @@ namespace LegendaryExplorerCore.UDK
             {
                 var parent = smc.Parent as ExportEntry;
                 var tag = parent.GetProperty<NameProperty>("Tag");
-                if (tag != null && tag.Value.Name == udkPackage.FileNameNoExtension)
+                if (tag != null)
                 {
-                    meToUdkRemapping[mePackage.GetUExport(tag.Value.Number)] = smc;
+                    var exp = mePackage.FindExport(tag.Value.Name, "StaticMeshComponent");
+                    if (exp != null)
+                    {
+                        meToUdkRemapping[exp] = smc;
+                    }
+                }
+            }
+
+            // Non tagged, same IFP
+            foreach (var smc in udkPackage.Exports.Where(x => x.IsA("TerrainComponent") || x.IsA("ModelComponent")))
+            {
+                var meExp = mePackage.FindExport(smc.InstancedFullPath, smc.ClassName);
+                if (meExp != null)
+                {
+                    meToUdkRemapping[meExp] = smc;
                 }
             }
 
@@ -202,6 +229,7 @@ namespace LegendaryExplorerCore.UDK
                 {
                     udkSmc = udkPackage.FindExport(smc.InstancedFullPath);
                 }
+
                 if (udkSmc != null)
                 {
                     var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
@@ -209,6 +237,7 @@ namespace LegendaryExplorerCore.UDK
                     meBin.LODData = uBin.LODData;
                     foreach (var lod in meBin.LODData)
                     {
+                        // References will be updated since it's a copy of UDK version.
                         PortLightMaps(lod.LightMap, smc, udkPackage);
                     }
 
@@ -220,37 +249,41 @@ namespace LegendaryExplorerCore.UDK
                 }
             }
 
-
-            // TerrainComponent
-            foreach (var tc in mePackage.Exports.Where(x => x.IsA("TerrainComponent")).ToList())
+            // Terrain
+            foreach (var tcp in meToUdkRemapping.Where(x => x.Key.IsA("TerrainComponent")).ToList())
             {
-                meToUdkRemapping.TryGetValue(tc, out var udkSmc);
-                if (udkSmc == null)
+                var tc = tcp.Key;
+                var meBin = ObjectBinary.From<TerrainComponent>(tc);
+                var udkBin = ObjectBinary.From<TerrainComponent>(tcp.Value);
+                meBin.LightMap = udkBin.LightMap;
+                PortLightMaps(meBin.LightMap, tc, udkPackage); // Must assign UDK version here.
+                tc.WriteBinary(meBin);
+            }
+
+            // Model
+            foreach (var tcp in meToUdkRemapping.Where(x => x.Key.IsA("ModelComponent")).ToList())
+            {
+                var tc = tcp.Key;
+                var udkBin = ObjectBinary.From<ModelComponent>(tcp.Value);
+                var meBin = ObjectBinary.From<ModelComponent>(tcp.Value);
+
+                for (int i = 0; i < meBin.Elements.Length; i++)
                 {
-                    udkSmc = udkPackage.FindExport(tc.InstancedFullPath);
+                    meBin.Elements[i].LightMap = udkBin.Elements[i].LightMap;
+                    PortLightMaps(meBin.Elements[i].LightMap, tc, udkPackage);
                 }
-                if (udkSmc != null)
-                {
-                    var meBin = ObjectBinary.From<TerrainComponent>(tc);
-                    // var uBin = ObjectBinary.From<TerrainComponent>(udkSmc);
-                    PortLightMaps(meBin.LightMap, tc, udkPackage);
-                    tc.WriteBinary(meBin);
-                }
-                else
-                {
-                    Debug.WriteLine($"Did not find UDK SMC in remapping: {tc.InstancedFullPath}");
-                }
+                tc.WriteBinary(meBin);
             }
         }
 
-        private static void PortLightMaps(LightMap lm, ExportEntry meComponent, UDKPackage udkPackage)
+        private static void PortLightMaps(LightMap lmWithUdkRefs, ExportEntry meComponent, UDKPackage udkPackage)
         {
-            if (lm is LightMap_1D lm1d)
+            if (lmWithUdkRefs is LightMap_1D lm1d)
             {
                 // No textures
                 lm1d.Owner = meComponent.UIndex;
             }
-            else if (lm is LightMap_2D lm2d)
+            else if (lmWithUdkRefs is LightMap_2D lm2d)
             {
                 // Has textures
                 PortLightMap(meComponent.FileRef, ref lm2d.Texture1, udkPackage);
@@ -258,18 +291,18 @@ namespace LegendaryExplorerCore.UDK
                 PortLightMap(meComponent.FileRef, ref lm2d.Texture3, udkPackage);
                 PortLightMap(meComponent.FileRef, ref lm2d.Texture4, udkPackage);
             }
-            else if (lm is LightMap_3 lm3)
+            else if (lmWithUdkRefs is LightMap_3 lm3)
             {
                 // No textures
             }
-            else if (lm is LightMap_4or6 lm46)
+            else if (lmWithUdkRefs is LightMap_4or6 lm46)
             {
                 // Has textures
                 PortLightMap(meComponent.FileRef, ref lm46.Texture1, udkPackage);
                 PortLightMap(meComponent.FileRef, ref lm46.Texture2, udkPackage);
                 PortLightMap(meComponent.FileRef, ref lm46.Texture3, udkPackage);
             }
-            else if (lm is LightMap_5 lm5)
+            else if (lmWithUdkRefs is LightMap_5 lm5)
             {
                 // No textures
             }

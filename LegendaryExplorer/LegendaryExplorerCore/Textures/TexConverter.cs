@@ -233,40 +233,46 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
+        private static object _syncObj = new object();
+
         public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, PixelFormat inputFormat, PixelFormat outputFormat)
         {
-            TexConverter.EnsureInitialized();
-
-            fixed (byte* inputDataPointer = pixelData)
+            byte[] result = null;
+            lock (_syncObj)
             {
-                var inputBuffer = new TextureBuffer
+                TexConverter.EnsureInitialized();
+
+                fixed (byte* inputDataPointer = pixelData)
                 {
-                    PixelData = inputDataPointer,
-                    PixelDataLength = (nuint)pixelData.Length,
-                    Width = width,
-                    Height = height,
-                    Format = GetDXGIFormatForPixelFormat(inputFormat)
-                };
-                var outputBuffer = new TextureBuffer
-                {
-                    PixelData = null,
-                    PixelDataLength = 0,
-                    Width = width,
-                    Height = height,
-                    Format = GetDXGIFormatForPixelFormat(outputFormat)
-                };
+                    var inputBuffer = new TextureBuffer
+                    {
+                        PixelData = inputDataPointer,
+                        PixelDataLength = (nuint)pixelData.Length,
+                        Width = width,
+                        Height = height,
+                        Format = GetDXGIFormatForPixelFormat(inputFormat)
+                    };
+                    var outputBuffer = new TextureBuffer
+                    {
+                        PixelData = null,
+                        PixelDataLength = 0,
+                        Width = width,
+                        Height = height,
+                        Format = GetDXGIFormatForPixelFormat(outputFormat)
+                    };
 
-                int hr = TCConvertTexture(&inputBuffer, &outputBuffer);
-                Marshal.ThrowExceptionForHR(hr);
+                    int hr = TCConvertTexture(&inputBuffer, &outputBuffer);
+                    Marshal.ThrowExceptionForHR(hr);
 
-                byte[] result = new byte[outputBuffer.PixelDataLength];
-                Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
+                    result = new byte[outputBuffer.PixelDataLength];
+                    Marshal.Copy((IntPtr)outputBuffer.PixelData, result, 0, (int)outputBuffer.PixelDataLength);
 
-                hr = TCFreePixelData(&outputBuffer);
-                Marshal.ThrowExceptionForHR(hr);
-
-                return result;
+                    hr = TCFreePixelData(&outputBuffer);
+                    Marshal.ThrowExceptionForHR(hr);
+                }
             }
+
+            return result;
         }
 
         public static unsafe void SaveTexture(byte[] pixelData, uint width, uint height, PixelFormat pixelFormat, string filename)
