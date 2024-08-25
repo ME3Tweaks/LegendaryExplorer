@@ -975,7 +975,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         //}
                     }
 
-                    if (rop.PortExportsAsImportsWhenPossible && !relinkingExport.InstancedFullPath.StartsWith(@"TheWorld."))
+                    if (rop.PortExportsAsImportsWhenPossible && !sourceExport.InstancedFullPath.StartsWith(@"TheWorld."))
                     {
                         // Try convert to import
                         var testImport = new ImportEntry(sourceExport, parent?.UIndex ?? 0, relinkingExport.FileRef);

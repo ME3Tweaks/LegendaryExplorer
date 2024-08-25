@@ -52,6 +52,7 @@ namespace LegendaryExplorerCore.UDK
         /// <param name="mePackage"></param>
         private static void ClearLightmaps(IMEPackage mePackage)
         {
+            // StaticMeshes
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
                 var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
@@ -188,7 +189,9 @@ namespace LegendaryExplorerCore.UDK
         private static void AssignStaticLighting(MEPackage mePackage, UDKPackage udkPackage)
         {
             var meToUdkRemapping = new Dictionary<ExportEntry, ExportEntry>();
-            foreach (var smc in udkPackage.Exports.Where(x => x.IsA("StaticMeshComponent")))
+
+            // StaticMeshComponent
+            foreach (var smc in udkPackage.Exports.Where(x => x.IsA("StaticMeshComponent") || x.IsA("TerrainComponent")))
             {
                 var parent = smc.Parent as ExportEntry;
                 var tag = parent.GetProperty<NameProperty>("Tag");
@@ -216,7 +219,7 @@ namespace LegendaryExplorerCore.UDK
             // Remove so we don't have any collisions
             ClearLightmaps(mePackage);
 
-            // Import the lightamps
+            // Import the lightmaps
 
             // StaticMeshComponent
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())

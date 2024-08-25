@@ -15,6 +15,8 @@ using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System.Threading;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Localization;
 
 namespace LegendaryExplorerCore.UDK
 {
@@ -32,7 +34,7 @@ namespace LegendaryExplorerCore.UDK
 
             IEntry defMat = meshPackage.GetEntryOrAddImport("EngineMaterials.DefaultMaterial", "Material", "Engine");
             var allMats = new HashSet<int>();
-            var relinkerOptionsPackage = new RelinkerOptionsPackage();
+            var relinkerOptionsPackage = new RelinkerOptionsPackage() { Cache = new PackageCache() };
             ListenableDictionary<IEntry, IEntry> relinkMap = relinkerOptionsPackage.CrossPackageMap;
             PackageCache packageCache = relinkerOptionsPackage.Cache;
             #region StaticMeshes
@@ -133,7 +135,7 @@ namespace LegendaryExplorerCore.UDK
                                 var foundRef = upk.FindExport(matExp.InstancedFullPath.Substring(matExp.GetRootName().Length + 1), matExp.ClassName);
                                 if (foundRef != null)
                                 {
-                                    Debug.WriteLine("Using repointed material from ME1 materials port");
+                                    // Debug.WriteLine("Using repointed material from ME1 materials port");
                                     // Exists - generate import for this
                                     var repointedMat = CreateImportsFor(foundRef, meshPackage);
                                     relinkMap[matExp] = repointedMat;
@@ -346,6 +348,8 @@ namespace LegendaryExplorerCore.UDK
                     {
                         if (smc.Parent is ExportEntry parent && actorsInLevel.Contains(parent.UIndex) && parent.IsA("StaticMeshActorBase"))
                         {
+                            var originalIFP = smc.InstancedFullPath;
+
                             // List of things to not port
                             if (parent.IsA("BioLedgeMeshActor"))
                                 continue; // Don't port these, they are not really useful in UDK for lighting
@@ -408,8 +412,10 @@ namespace LegendaryExplorerCore.UDK
                             var props = new PropertyCollection
                             {
                                 new ObjectProperty(result.UIndex, "StaticMeshComponent"),
-                                new NameProperty(new NameReference(Path.GetFileNameWithoutExtension(smc.FileRef.FilePath), smc.UIndex),
-                                                 "Tag"),
+                                // 08/24/2024 - Use InstancedFullPath instead. If the source file changes at all, static lighting import will not be reliable. IFP is more reliable at the cost of more names.
+                                // We keep the smc.UIndex for extra info. The filename should match between ME<->UDK files.
+                                // new NameProperty(new NameReference(Path.GetFileNameWithoutExtension(smc.FileRef.FilePath), smc.UIndex), "Tag"),
+                                new NameProperty(new NameReference(originalIFP, smc.UIndex), "Tag"),
                                 new ObjectProperty(result.UIndex, "CollisionComponent")
                             };
                             if (locationProp != null)
@@ -447,9 +453,8 @@ namespace LegendaryExplorerCore.UDK
                 // Not sure if we need to port this into temp
                 foreach (var t in pcc.Exports.Where(x => x.IsA("Terrain")))
                 {
-                    // Disabled as terrains do not port correctly due to TerrainMaterial serializer issues.
-                    //EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, t, tempPackage, levelExport, true, new RelinkerOptionsPackage(packageCache) { PortExportsAsImportsWhenPossible = true }, out IEntry result);
-                    //terrains.Add(result as ExportEntry);
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, t, tempPackage, levelExport, true, new RelinkerOptionsPackage(packageCache) { PortExportsAsImportsWhenPossible = true }, out IEntry result);
+                    terrains.Add(result as ExportEntry);
                 }
                 #endregion
 
@@ -695,8 +700,45 @@ namespace LegendaryExplorerCore.UDK
                 foreach (var actor in terrains)
                 {
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, actor, udkPackage2, levelExport, true, new RelinkerOptionsPackage(packageCache), out IEntry result);
+                    levelBin.Actors.Add(result.UIndex);
                 }
 
+
+                // Port the Model and ModelComponent as some maps use these
+                // Line up the indexing for these so it works properly
+                var meLevelBin = pcc.GetLevelBinary();
+                var udkModel = udkPackage2.GetUExport(levelBin.Model);
+                var meModel = pcc.GetUExport(meLevelBin.Model);
+                udkModel.indexValue = meModel.indexValue; // Same name
+
+                var udkModelBin = ObjectBinary.From<Model>(udkModel);
+                var meModelBin = ObjectBinary.From<Model>(meModel);
+
+                var mePolys = pcc.GetUExport(meModelBin.Polys);
+                var udkPolys = udkPackage2.GetUExport(udkModelBin.Polys);
+                udkPolys.indexValue = mePolys.indexValue;
+                
+                // Overwrite it
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, meModel, udkPackage2, udkModel, true, 
+                    new RelinkerOptionsPackage() { PortExportsAsImportsWhenPossible = true }, out _);
+
+                List<int> newModelComps = new List<int>();
+                foreach (var mc in meLevelBin.ModelComponents)
+                {
+                    var sourceExp = pcc.GetUExport(mc);
+                    var udkModelComp = udkPackage2.FindExport(sourceExp.InstancedFullPath);
+                    if (udkModelComp == null)
+                    {
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExp, udkPackage2, udkModel, true,
+                            new RelinkerOptionsPackage() { PortExportsAsImportsWhenPossible = true }, out var portedmc);
+                        udkModelComp = portedmc as ExportEntry;
+                    }
+                    newModelComps.Add(udkModelComp.UIndex);
+                }
+
+                levelBin.ModelComponents = newModelComps.ToArray();
+                
+                //LevelTools.RebuildPersistentLevelChildren(levelExport);
                 levelExport.WriteBinary(levelBin);
 
                 // Move stuff out from under imports in UDK
@@ -707,7 +749,14 @@ namespace LegendaryExplorerCore.UDK
                     exp.idxLink = extrasBase.UIndex;
                 }
 
+
                 udkPackage2.Save(resultFilePath);
+                var rcp = new ReferenceCheckPackage();
+                EntryChecker.CheckReferences(rcp, udkPackage2, LECLocalizationShim.NonLocalizedStringConverter);
+                foreach (var v in rcp.GetSignificantIssues())
+                {
+                    Debug.WriteLine($"{v.Entry?.InstancedFullPath} {v.Message}");
+                }
             }
             return resultFilePath;
         }

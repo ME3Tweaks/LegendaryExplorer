@@ -338,5 +338,32 @@ namespace LegendaryExplorerCore.Pathing
             }
             return null;
         }
+
+        public static void RebuildPersistentLevelChildren(ExportEntry pl)
+        {
+            ExportEntry[] actorsToAdd = pl.FileRef.Exports.Where(exp => exp.Parent == pl && exp.IsA("Actor")).ToArray();
+            Level level = ObjectBinary.From<Level>(pl);
+            level.Actors.Clear();
+            foreach (var actor in actorsToAdd)
+            {
+                var lc = actor.GetProperty<ObjectProperty>("LightComponent");
+                if (lc != null && pl.FileRef.TryGetUExport(lc.Value, out var lightComp))
+                {
+                    if (lightComp.Parent != null && lightComp.Parent.ClassName == "StaticLightCollectionActor")
+                        continue; // don't add this one
+                }
+
+                level.Actors.Add(actor.UIndex);
+            }
+
+            // MUST HAVE AT LEAST 2 ITEMS
+            // Insert empty brush
+            if (pl.Game is > MEGame.ME1 and < MEGame.UDK)
+            {
+                level.Actors.Insert(1, 0);
+            }
+
+            pl.WriteBinary(level);
+        }
     }
 }

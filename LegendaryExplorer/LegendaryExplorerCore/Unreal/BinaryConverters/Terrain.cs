@@ -79,7 +79,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 return mat.GetNames(game).Select(tuple => (tuple.Item1, $"CachedTerrainMaterials[{i}].{tuple.Item2}"));
             }));
-            if (game != MEGame.ME1)
+            if (game != MEGame.ME1 && game != MEGame.UDK)
             {
                 names.AddRange(CachedTerrainMaterials2.SelectMany((mat, i) =>
                 {
