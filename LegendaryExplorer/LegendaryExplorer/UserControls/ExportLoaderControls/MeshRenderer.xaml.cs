@@ -516,6 +516,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void LoadExport(ExportEntry exportEntry)
         {
             UnloadExport();
+            if (exportEntry == null)
+                return; // Can reload due to static mesh component looking for static mesh
+
             // Get rid of old objects.
             // NEEDS RE-IMPLEMENTED
             //SceneViewer?.Context?.TextureCache?.ExpungeStaleCacheItems();
