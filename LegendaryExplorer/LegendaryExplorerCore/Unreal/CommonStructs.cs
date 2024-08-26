@@ -128,5 +128,16 @@ namespace LegendaryExplorerCore.Unreal
 
         public static System.Drawing.Color GetColor(StructProperty prop) => System.Drawing.Color.FromArgb(prop.GetProp<ByteProperty>("A").Value, prop.GetProp<ByteProperty>("R").Value,
                                                                             prop.GetProp<ByteProperty>("G").Value, prop.GetProp<ByteProperty>("B").Value);
+
+        public static StructProperty LinearColorProp(float r, float g, float b, float a, NameReference? name = null)
+        {
+            return new StructProperty("LinearColor", new PropertyCollection
+            {
+                new FloatProperty(r, "R"),
+                new FloatProperty(r, "G"),
+                new FloatProperty(r, "B"),
+                new FloatProperty(r, "A"),
+            }, name, true);
+        }
     }
 }
