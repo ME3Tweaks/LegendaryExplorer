@@ -260,6 +260,7 @@ namespace LegendaryExplorerCore.Pathing
             return new Point3D();
         }
 
+        // Location based stuff
         public static Point3D GetLocation(ExportEntry export)
         {
             float x = 0, y = 0, z = int.MinValue;
@@ -305,6 +306,111 @@ namespace LegendaryExplorerCore.Pathing
             return new Point3D(0, 0, 0);
         }
 
+        public static void SetLocation(ExportEntry export, float x, float y, float z)
+        {
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorLocation(export, x, y, z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "location"));
+            }
+        }
+
+        public static void SetLocation(ExportEntry export, Point3D point)
+        {
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorLocation(export, point.X, point.Y, point.Z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(point.X, point.Y, point.Z, "location"));
+            }
+        }
+
+        public static void SetLocation(StructProperty prop, float x, float y, float z)
+        {
+            prop.GetProp<FloatProperty>("X").Value = x;
+            prop.GetProp<FloatProperty>("Y").Value = y;
+            prop.GetProp<FloatProperty>("Z").Value = z;
+        }
+
+        public static void SetCollectionActorLocation(ExportEntry component, float x, float y, float z, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
+        {
+            if (collectionactor == null)
+            {
+                if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
+                    return;
+                collectionactor = (ExportEntry)component.Parent;
+            }
+
+            collectionitems ??= GetCollectionItems(collectionactor);
+
+            if (collectionitems?.Count > 0)
+            {
+                var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
+                if (idx >= 0)
+                {
+                    var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
+
+                    Matrix4x4 m = binData.LocalToWorldTransforms[idx];
+                    m.Translation = new Vector3(x, y, z);
+                    binData.LocalToWorldTransforms[idx] = m;
+
+                    collectionactor.WriteBinary(binData);
+                }
+            }
+        }
+
+
+
+
+
+
+
+        #region DRAWSCALE
+        public static void SetDrawScale3D(ExportEntry export, float x, float y, float z)
+        {
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorDrawScale3D(export, x, y, z);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.Vector3Prop(x, y, z, "DrawScale3D"));
+            }
+        }
+
+        public static void SetCollectionActorDrawScale3D(ExportEntry component, float x, float y, float z, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
+        {
+            if (collectionactor == null)
+            {
+                if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
+                    return;
+                collectionactor = (ExportEntry)component.Parent;
+            }
+
+            collectionitems ??= GetCollectionItems(collectionactor);
+
+            if (collectionitems?.Count > 0)
+            {
+                var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
+                if (idx >= 0)
+                {
+                    var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
+                    Matrix4x4 m = binData.LocalToWorldTransforms[idx];
+                    var dsd = m.UnrealDecompose();
+                    binData.LocalToWorldTransforms[idx] = ActorUtils.ComposeLocalToWorld(dsd.translation, dsd.rotation, new Vector3(x, y, z));
+                    collectionactor.WriteBinary(binData);
+                }
+            }
+        }
+        #endregion
+
+
+        #region COLLECTION ACTORS
         public static List<Point3D> GetCollectionLocationData(ExportEntry collectionactor)
         {
             if (!collectionactor.ClassName.Contains("CollectionActor"))
@@ -338,6 +444,7 @@ namespace LegendaryExplorerCore.Pathing
             }
             return null;
         }
+        #endregion
 
         public static void RebuildPersistentLevelChildren(ExportEntry pl)
         {
