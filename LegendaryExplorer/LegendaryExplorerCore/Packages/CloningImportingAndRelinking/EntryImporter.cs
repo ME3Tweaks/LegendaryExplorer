@@ -399,10 +399,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             }
 
                             // If IFP is the same but class changed the lookup earlier failed. We should retry here (used at least in Crossgen)
-                            if (destPackage.FindExport(seIFP, testExp.ClassName) != null)
+                            if (destPackage.FindExport(seIFP, testExp.ClassName) is {} existingExport)
                             {
                                 // Export already in destination package
-                                return destPackage.FindExport(seIFP, testExp.ClassName);
+                                return existingExport;
                             }
 
                             if (testExp.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) || (sourceExport.ClassName.CaseInsensitiveEquals("BioSWF") && testExp.ClassName.CaseInsensitiveEquals("GFxMovieInfo")) || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
