@@ -137,10 +137,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
     }
+
+    [Flags]
     public enum ELightMapFlags
     {
         LMF_None,
+
+        /// <summary>
+        /// This lightmap is streamed
+        /// </summary>
         LMF_Streamed,
+
+        /// <summary>
+        /// This is a simple lightmap
+        /// </summary>
         LMF_SimpleLightmap
     }
 
