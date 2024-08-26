@@ -2541,6 +2541,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             string result = PromptDialog.Prompt(this, input, "Enter new name");
             if (!string.IsNullOrEmpty(result))
             {
+                if (result.Contains('.'))
+                {
+                    MessageBox.Show("Names cannot contain the . character");
+                    return;
+                }
                 int idx = Pcc.FindNameOrAdd(result);
                 if (CurrentView == CurrentViewMode.Names)
                 {
