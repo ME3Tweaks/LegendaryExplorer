@@ -634,8 +634,9 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 string savepath = Path.Combine(outfolder, OutputFolder == null ? ShortFileName : Path.GetFileNameWithoutExtension(_packageToDump) + ".txt");
                 Directory.CreateDirectory(Path.GetDirectoryName(savepath));
 
-                //using StreamWriter stringoutput = new(savepath);
-                using StreamWriter stringoutput = new BlankWriter(new MemoryStream()); // Debug: Don't bother to disk
+                using StreamWriter stringoutput = new(savepath);
+                // For debugging:
+                //using StreamWriter stringoutput = new BlankWriter(new MemoryStream()); // Debug: Don't bother to disk
                 //if (imports)
                 //{
                 //writeVerboseLine("Getting Imports");
