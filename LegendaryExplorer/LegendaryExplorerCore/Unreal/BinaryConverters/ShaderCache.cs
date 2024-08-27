@@ -429,7 +429,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     var newShaderGuid = Guid.NewGuid();
                     if (!guidMap.TryAdd(shaderReference.Id, newShaderGuid))
                     {
-                        newShaderGuid = shaderReference.Id;
+                        // Nanuke 2024/08/27 - some shader maps point to the same GUID of shader file under different factories.
+                        // Make sure that new GUID for this shader has been generated before and use it if we can.
+                        if (guidMap.ContainsKey(shaderReference.Id))
+                        {
+                            // Use previously cloned shader new GUID for this shader.
+                            newShaderGuid = guidMap[shaderReference.Id];
+                        }
+                        else
+                        {
+                            // Use old GUID, because somethings wrong TM.
+                            newShaderGuid = shaderReference.Id;
+                        }
                     }
                     dest.Add(type, new ShaderReference { Id = newShaderGuid, ShaderType = shaderReference.ShaderType });
                 }
