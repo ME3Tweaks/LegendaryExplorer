@@ -19,14 +19,14 @@ namespace LegendaryExplorerCore.UDK
     /// <summary>
     /// Ports materials from ME1 (2008) into UDK so the materials can be used in-editor. Other games don't have the necessary information for this
     /// </summary>
-    public static class ME1MaterialPort
+    public static class UDKMaterialPort
     {
-        public static void PortMaterialsIntoUDK()
+        public static void PortMaterialsIntoUDK(MEGame game, string inputPath)
         {
             if (UDKDirectory.UDKGamePath == null)
                 return;
 
-            var basePath = Path.Combine(UDKDirectory.SharedPath, "ME1MaterialPort");
+            var basePath = Path.Combine(UDKDirectory.SharedPath, $"{game}MaterialPort");
             Directory.CreateDirectory(basePath);
 
             // Clear existing files
@@ -36,20 +36,20 @@ namespace LegendaryExplorerCore.UDK
                 File.Delete(df);
             }
 
-            var me1Path1 = Path.Combine(ME1Directory.DefaultGamePath); // Includes DLC.
+            var me1Path1 = Path.Combine(inputPath);
 
             var files = Directory.GetFiles(me1Path1, "*.*", SearchOption.AllDirectories).ToList();
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "Core.u"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "Engine.u"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EngineFonts.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EngineResources.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EngineMaterials.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EngineScenes.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "Engine_MI_Shaders.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "NodeBuddies.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EditorMaterials.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EditorMeshes.upk"));
-            files.Remove(Path.Combine(ME1Directory.CookedPCPath, "EditorResources.upk"));
+            files.Remove(Path.Combine(inputPath, "Core.u"));
+            files.Remove(Path.Combine(inputPath, "Engine.u"));
+            files.Remove(Path.Combine(inputPath, "EngineFonts.upk"));
+            files.Remove(Path.Combine(inputPath, "EngineResources.upk"));
+            files.Remove(Path.Combine(inputPath, "EngineMaterials.upk"));
+            files.Remove(Path.Combine(inputPath, "EngineScenes.upk"));
+            files.Remove(Path.Combine(inputPath, "Engine_MI_Shaders.upk"));
+            files.Remove(Path.Combine(inputPath, "NodeBuddies.upk"));
+            files.Remove(Path.Combine(inputPath, "EditorMaterials.upk"));
+            files.Remove(Path.Combine(inputPath, "EditorMeshes.upk"));
+            files.Remove(Path.Combine(inputPath, "EditorResources.upk"));
 
             PackageCache cache = new PackageCache();
             Parallel.ForEach(files.Where(x=>x.RepresentsPackageFilePath()), file =>
@@ -57,10 +57,9 @@ namespace LegendaryExplorerCore.UDK
                 //if (!file.Contains("BIOG_V_Z", StringComparison.OrdinalIgnoreCase))
                 //    continue;
 
-                var isSafeFile = EntryImporter.IsSafeToImportFrom(file, MEGame.ME1, file);
+                var isSafeFile = EntryImporter.IsSafeToImportFrom(file, game, file);
                 var quickSourceP = MEPackageHandler.UnsafePartialLoad(file, x => false);
-                var quickPortItems = quickSourceP.Exports.Any(x =>
-                    (!x.IsForcedExport || isSafeFile) && x.ClassName is "Material" or "Texture2D");
+                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsTexture()));
                 if (quickPortItems)
                 {
                     using var sourceP = MEPackageHandler.OpenMEPackage(file);
@@ -108,7 +107,7 @@ namespace LegendaryExplorerCore.UDK
                                     continue; // Skip it.
                             }
 
-                            EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false});
+                            5EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false});
                         }
 
                         CorrectExpressions(destP);
@@ -127,8 +126,7 @@ namespace LegendaryExplorerCore.UDK
 
                     if (isSafeFile)
                     {
-                        var forcedPortItems = sourceP.Exports
-                            .Where(x => x.IsForcedExport && x.ClassName is "Material" or "Texture2D").ToList();
+                        var forcedPortItems = sourceP.Exports.Where(x => x.IsForcedExport && (x.IsA("Material") || x.IsTexture())).ToList();
                         foreach (var forcedPortItem in forcedPortItems)
                         {
                             // This is VERY slow
@@ -183,9 +181,9 @@ namespace LegendaryExplorerCore.UDK
                     Debug.WriteLine($"ERROR: PACKAGE HAS ZERO EXPORTS: {tf}");
                 }
 
-                if (package.Names.Any(x => x == "BIOC_Base"))
+                if (package.Names.Any(x => x == "BIOC_Base" || x == "SFXGame"))
                 {
-                    Debug.WriteLine($"ERROR: PACKAGE HAS BIOC_BASE NAME: {tf}");
+                    Debug.WriteLine($"ERROR: PACKAGE HAS BIOC_BASE/SFXGame NAME: {tf}");
                 }
 
                 foreach (var imp in package.Imports)

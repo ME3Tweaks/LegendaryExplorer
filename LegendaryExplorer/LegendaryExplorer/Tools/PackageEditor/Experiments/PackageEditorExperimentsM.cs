@@ -517,7 +517,8 @@ return;
 
         public static void PortME1MaterialsIntoUDK()
         {
-            ME1MaterialPort.PortMaterialsIntoUDK();
+            var inputFolder = ME1Directory.DefaultGamePath;
+            UDKMaterialPort.PortMaterialsIntoUDK(MEGame.ME1, inputFolder);
         }
 
         /// <summary>

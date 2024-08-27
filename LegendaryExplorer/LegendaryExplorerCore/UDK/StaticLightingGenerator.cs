@@ -64,10 +64,20 @@ namespace LegendaryExplorerCore.UDK
                 IEntry newParent = meshPackage.FindEntry(meshRoot);
                 if (newParent == null)
                 {
-                    if (pcc.Game is MEGame.LE1)
+                    // Attempt to link up to ported content.
+                    var matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", $"{pcc.Game}MaterialPort", meshRoot + ".upk");
+                    if (File.Exists(matPath))
                     {
-                        // Attempt to link up to ported content.
-                        var matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", "ME1MaterialPort", meshRoot + ".upk");
+                        newParent = new ImportEntry(meshPackage, null, meshRoot)
+                        {
+                            ClassName = "Package",
+                            PackageFile = "Core",
+                        };
+                        meshPackage.AddImport(newParent as ImportEntry);
+                    }
+                    else
+                    {
+                        matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", $"{pcc.Game.ToOppositeGeneration()}MaterialPort", meshRoot + ".upk");
                         if (File.Exists(matPath))
                         {
                             newParent = new ImportEntry(meshPackage, null, meshRoot)
@@ -123,10 +133,28 @@ namespace LegendaryExplorerCore.UDK
                 {
                     if (pcc.GetEntry(matUIndex) is ExportEntry matExp)
                     {
-                        if (pcc.Game is MEGame.LE1 && matExp.IsForcedExport)
+                        if (pcc.Game.IsLEGame() && matExp.IsForcedExport)
                         {
                             // Attempt to link up to ported content.
-                            var matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", "ME1MaterialPort", matExp.GetRootName() + ".upk");
+                            var matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", $"{pcc.Game}MaterialPort", matExp.GetRootName() + ".upk");
+                            if (File.Exists(matPath))
+                            {
+                                // Quickload; test if it exists
+                                var upk = MEPackageHandler.UnsafePartialLoad(matPath, x => false);
+                                // This is ugly hack but it's fast.
+                                var foundRef = upk.FindExport(matExp.InstancedFullPath.Substring(matExp.GetRootName().Length + 1), matExp.ClassName);
+                                if (foundRef != null)
+                                {
+                                    // Debug.WriteLine("Using repointed material from ME1 materials port");
+                                    // Exists - generate import for this
+                                    var repointedMat = CreateImportsFor(foundRef, meshPackage);
+                                    relinkMap[matExp] = repointedMat;
+                                    continue;
+                                }
+                            }
+
+                            // Try the opposite generation
+                            matPath = Path.Combine(UDKDirectory.ContentPath, "Shared", $"{pcc.Game.ToOppositeGeneration()}MaterialPort", matExp.GetRootName() + ".upk");
                             if (File.Exists(matPath))
                             {
                                 // Quickload; test if it exists
@@ -724,9 +752,9 @@ namespace LegendaryExplorerCore.UDK
                 var mePolys = pcc.GetUExport(meModelBin.Polys);
                 var udkPolys = udkPackage2.GetUExport(udkModelBin.Polys);
                 udkPolys.indexValue = mePolys.indexValue;
-                
+
                 // Overwrite it
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, meModel, udkPackage2, udkModel, true, 
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, meModel, udkPackage2, udkModel, true,
                     new RelinkerOptionsPackage() { PortExportsAsImportsWhenPossible = true }, out _);
 
                 List<int> newModelComps = new List<int>();
@@ -744,7 +772,7 @@ namespace LegendaryExplorerCore.UDK
                 }
 
                 levelBin.ModelComponents = newModelComps.ToArray();
-                
+
                 //LevelTools.RebuildPersistentLevelChildren(levelExport);
                 levelExport.WriteBinary(levelBin);
 

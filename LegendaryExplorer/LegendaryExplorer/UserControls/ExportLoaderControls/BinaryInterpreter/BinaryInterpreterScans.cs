@@ -7629,7 +7629,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return subnodes; // no binary data
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3))
+                if (!Pcc.Game.IsGame3() || (Pcc.FilePath != null && Path.GetExtension(Pcc.FilePath) == ".upk"))
                 {
                     bin.Skip(8); // 12 zeros
                     int thumbnailSize = bin.ReadInt32();

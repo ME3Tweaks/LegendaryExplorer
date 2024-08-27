@@ -234,7 +234,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             using var os = MemoryManager.GetMemoryStream();
 
-            if (!export.Game.IsGame3())
+            if (!export.Game.IsGame3() || (export.FileRef.FilePath != null && Path.GetExtension(export.FileRef.FilePath) == ".upk"))
             {
                 bin.Skip(8);
                 bin.Skip(bin.ReadInt32()); // Skip the thumbnail

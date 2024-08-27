@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -10,7 +11,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         protected override void Serialize(SerializingContainer sc)
         {
-            if (!sc.Game.IsGame3())
+            if (!sc.Game.IsGame3() || (sc.Pcc.FilePath != null && Path.GetExtension(sc.Pcc.FilePath) == ".upk"))
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
