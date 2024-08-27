@@ -4326,7 +4326,8 @@ defaultproperties
 
         public static void ImportStaticLighting(PackageEditorWindow peWindow)
         {
-            StaticLightingImporter.ImportStaticLighting(peWindow.Pcc);
+            LightingImportSetup setup = new LightingImportSetup();
+            StaticLightingImporter.ImportStaticLighting(peWindow.Pcc, setup);
         }
     }
 }
