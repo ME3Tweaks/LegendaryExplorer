@@ -476,6 +476,9 @@ namespace LegendaryExplorerCore.UDK
                         {
                             continue;
                         }
+
+                        var originalIFP = lightComponent.InstancedFullPath;
+
                         StructProperty locationProp;
                         StructProperty rotationProp;
                         StructProperty scaleProp;
@@ -516,6 +519,8 @@ namespace LegendaryExplorerCore.UDK
                                     Class = pointLightClass,
                                 };
                                 pla.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
+                                pla.WriteProperty(new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag"));
+
                                 tempPackage.AddExport(pla);
 
                                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, lightComponent, tempPackage, pla, true, new RelinkerOptionsPackage(packageCache),
@@ -579,6 +584,7 @@ namespace LegendaryExplorerCore.UDK
                                     Class = spotLightClass
                                 };
                                 sla.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
+                                sla.WriteProperty(new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag"));
                                 tempPackage.AddExport(sla);
 
                                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, lightComponent, tempPackage, sla, true, new RelinkerOptionsPackage(packageCache),
@@ -642,6 +648,7 @@ namespace LegendaryExplorerCore.UDK
                                     Class = directionalLightClass
                                 };
                                 dla.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
+                                dla.WriteProperty(new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag"));
                                 tempPackage.AddExport(dla);
 
                                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, lightComponent, tempPackage, dla, true, new RelinkerOptionsPackage(packageCache),
