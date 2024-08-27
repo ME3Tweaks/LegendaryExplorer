@@ -1065,5 +1065,42 @@ namespace LegendaryExplorerCore.Kismet
             KismetHelper.AddObjectToSequence(fObj, sequence);
             return fObj;
         }
+
+        /// <summary>
+        /// Creates a BioSeqAct_ToggleSave, with an optional object to link as Enable/Disable variable.
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="enableSaveBool">Optional: Enable/Disable boolean variable</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateToggleSave(ExportEntry sequence, ExportEntry enableSaveBool = null, PackageCache cache = null)
+        {
+            // LE1
+            var fObj = CreateSequenceObject(sequence.FileRef, "BioSeqAct_ToggleSave", cache);
+            if (enableSaveBool != null)
+            {
+                KismetHelper.CreateVariableLink(fObj, "Enable", enableSaveBool);
+            }
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+            return fObj;
+
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_Bool with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="value">The value to set the bool to</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>    
+        public static ExportEntry CreateBool(ExportEntry sequence, bool value, PackageCache cache = null)
+        {
+            var fObj = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqVar_Bool", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            fObj.WriteProperty(new IntProperty(value ? 1 : 0, "bValue"));
+
+            return fObj;
+        }
     }
 }
