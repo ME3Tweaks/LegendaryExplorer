@@ -141,22 +141,53 @@ public partial class BinaryInterpreterWPF
 
                 shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
-                if (ReadShaderParameters(bin, shaderType, out Exception e) is BinInterpNode paramsNode)
+                //lazy loading the params reduces memory usage for the LE3 refshadercache by 7GB
+                if (isRefShaderCache)
                 {
-                    shaderNode.Items.Add(paramsNode);
+                    shaderNode.Items.Add(new BinInterpNodeLazy(bin.Position, "ShaderParameters", pos =>
+                    {
+                        try
+                        {
+                            var bin = new EndianReader(CurrentLoadedExport.GetReadOnlyDataStream()) { Endian = CurrentLoadedExport.FileRef.Endian };
+                            bin.JumpTo(pos);
+                            if (ReadShaderParameters(bin, shaderType, out Exception e) is BinInterpNode paramsNode)
+                            {
+                                if (e is not null) throw e;
+                                return paramsNode.Items;
+                            }
+                            if (e is not null) throw e;
+                            return
+                            [
+                                new BinInterpNode(pos,
+                                        $"Unparsed Shader Parameters ({shaderEndOffset - dataOffset - pos} bytes)")
+                                    { Length = (shaderEndOffset - dataOffset) - pos }
+                            ];
+                        }
+                        catch (Exception ex)
+                        {
+                            return [new BinInterpNode { Header = $"Error reading binary data: {ex}" }];
+                        }
+                    }));
                 }
-                if (e is not null)
+                else
                 {
-                    throw e;
-                }
+                    if (ReadShaderParameters(bin, shaderType, out Exception e) is BinInterpNode paramsNode)
+                    {
+                        shaderNode.Items.Add(paramsNode);
+                    }
+                    if (e is not null)
+                    {
+                        throw e;
+                    }
 
-                if (bin.Position != shaderEndOffset - dataOffset)
-                {
-                    var unparsedShaderParams =
-                        new BinInterpNode(bin.Position,
-                                $"Unparsed Shader Parameters ({shaderEndOffset - dataOffset - bin.Position} bytes)")
-                            { Length = (shaderEndOffset - dataOffset) - (int)bin.Position };
-                    shaderNode.Items.Add(unparsedShaderParams);
+                    if (bin.Position != shaderEndOffset - dataOffset)
+                    {
+                        var unparsedShaderParams =
+                            new BinInterpNode(bin.Position,
+                                    $"Unparsed Shader Parameters ({shaderEndOffset - dataOffset - bin.Position} bytes)")
+                                { Length = (shaderEndOffset - dataOffset) - (int)bin.Position };
+                        shaderNode.Items.Add(unparsedShaderParams);
+                    }
                 }
 
                 bin.JumpTo(shaderEndOffset - dataOffset);
@@ -1580,7 +1611,7 @@ public partial class BinaryInterpreterWPF
                 FShaderParameter("ScreenDoorFadeSettingsParameter"),
                 FShaderParameter("ScreenDoorFadeSettings2Parameter"),
                 FShaderResourceParameter("ScreenDoorNoiseTextureParameter"),
-                //false if any params in the related arrays have NumBytes != 10,
+                //false if any params in the related arrays have NumBytes != 16,
                 //or have differing BufferIndex values, or have Index values not in sequence,
                 //or have a BaseIndex value that is not the sum of the previous params BaseIndex and NumBytes values
                 MakeBoolIntNode(bin, "UniformPixelScalarShaderParameters is well formed?"),
@@ -2524,8 +2555,14 @@ public partial class BinaryInterpreterWPF
 
     private enum EShaderPlatformLE : byte
     {
-        PCDirect3D_ShaderModel5 = 5,
-        // Others unknown at this time
+        SM_SM3 = 0,
+        SM_PS3 = 1,
+        SM_360 = 2,
+        SM_SM2 = 3,
+        SM_SM4 = 4,
+        SM_SM5 = 5,
+        SM_Dingo = 6,
+        SM_Orbis = 7,
     }
 
     private enum EShaderFrequency : byte

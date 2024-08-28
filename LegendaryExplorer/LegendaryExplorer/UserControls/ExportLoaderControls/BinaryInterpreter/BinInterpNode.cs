@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,10 +25,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public string Header { get; set; }
         public ITreeItem Parent { get; set; }
 
+        private List<ITreeItem> _items = [];
         /// <summary>
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
         /// </summary>
-        public List<ITreeItem> Items { get; set; } = [];
+        public List<ITreeItem> Items
+        {
+            get => _items;
+            set => SetProperty(ref _items, value);
+        }
 
         /// <summary>
         /// Used to cache the UIndex of object refs
@@ -39,7 +45,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public BinaryInterpreterWPF.NodeType Tag { get; set; }
         public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
 
-        public bool IsExpanded { get; set; }
+        protected bool _isExpanded;
+        public virtual bool IsExpanded
+        {
+            get => _isExpanded;
+            set => SetProperty(ref _isExpanded, value);
+        }
 
         public BinInterpNode(string header) : this()
         {
@@ -193,6 +204,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
                 var unused = DispatcherHelper.ProcessQueueAsync();
+            }
+        }
+    }
+
+    public class BinInterpNodeLazy : BinInterpNode
+    {
+        private Func<int, List<ITreeItem>> _getChildrenCallback;
+
+        public BinInterpNodeLazy(long pos, string text, Func<int, List<ITreeItem>> getChildrenCallback) : base(pos, text)
+        {
+            _getChildrenCallback = getChildrenCallback;
+            Items.Add(new BinInterpNode());
+        }
+
+        public override bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                if (SetProperty(ref _isExpanded, value) && value)
+                {
+                    if (_getChildrenCallback is not null)
+                    {
+                        Items = _getChildrenCallback(Offset);
+                        _getChildrenCallback = null;
+                    }
+                }
             }
         }
     }
