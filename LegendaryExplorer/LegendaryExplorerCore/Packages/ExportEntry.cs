@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -1111,6 +1112,8 @@ namespace LegendaryExplorerCore.Packages
             return new MemoryStream(_data, start, _data.Length - start, false);
         }
 
+        public MemoryStream GetReadOnlyDataStream() => new(_data, 0, _data.Length, false);
+
         public void WriteBinary(byte[] binaryData)
         {
             int binStart = propsEnd();
@@ -1365,5 +1368,7 @@ namespace LegendaryExplorerCore.Packages
         {
             return IEntry.GetLinker(this);
         }
+
+        public ReadOptimizedByteProvider GetByteProvider() => new(_data);
     }
 }

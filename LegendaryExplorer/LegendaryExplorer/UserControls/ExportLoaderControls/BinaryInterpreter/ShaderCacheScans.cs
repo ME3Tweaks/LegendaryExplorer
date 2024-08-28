@@ -13,14 +13,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 public partial class BinaryInterpreterWPF
 {
 
-    private List<ITreeItem> StartShaderCacheScanStream(byte[] data, ref int binarystart)
+    private List<ITreeItem> StartShaderCacheScanStream(ref int binarystart)
     {
         var subnodes = new List<ITreeItem>();
         try
         {
             bool isRefShaderCache = Pcc.FileNameNoExtension.StartsWith("RefShaderCache");
             int dataOffset = CurrentLoadedExport.DataOffset;
-            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            var bin = new EndianReader(CurrentLoadedExport.GetReadOnlyDataStream()) { Endian = CurrentLoadedExport.FileRef.Endian };
             bin.JumpTo(binarystart);
 
             if (CurrentLoadedExport.Game == MEGame.UDK)
@@ -141,21 +141,16 @@ public partial class BinaryInterpreterWPF
 
                 shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
-                //creating all the shader param nodes on a RefShaderCache scan will eat ungodly amounts of memory
-                //until a workaround (lazy loading?) is found, just don't parse it
-                if (!isRefShaderCache)
+                if (ReadShaderParameters(bin, shaderType, out Exception e) is BinInterpNode paramsNode)
                 {
-                    if (ReadShaderParameters(bin, shaderType, out Exception e) is BinInterpNode paramsNode)
-                    {
-                        shaderNode.Items.Add(paramsNode);
-                    }
-                    if (e is not null)
-                    {
-                        throw e;
-                    }
+                    shaderNode.Items.Add(paramsNode);
+                }
+                if (e is not null)
+                {
+                    throw e;
                 }
 
-                if (bin.Position != (shaderEndOffset - dataOffset))
+                if (bin.Position != shaderEndOffset - dataOffset)
                 {
                     var unparsedShaderParams =
                         new BinInterpNode(bin.Position,
@@ -2212,14 +2207,14 @@ public partial class BinaryInterpreterWPF
     }
 
     //For Consoles
-    private List<ITreeItem> StartShaderCachePayloadScanStream(byte[] data, ref int binarystart)
+    private List<ITreeItem> StartShaderCachePayloadScanStream(ref int binarystart)
     {
         var subnodes = new List<ITreeItem>();
         try
         {
             var export = CurrentLoadedExport; //Prevents losing the reference
             int dataOffset = export.DataOffset;
-            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            var bin = new EndianReader(CurrentLoadedExport.GetReadOnlyDataStream()) { Endian = CurrentLoadedExport.FileRef.Endian };
             bin.JumpTo(binarystart);
 
             var platformByte = bin.ReadByte();
@@ -2515,5 +2510,27 @@ public partial class BinaryInterpreterWPF
         }
 
         return subnodes;
+    }
+
+    private enum EShaderPlatformOT : byte
+    {
+        PCDirect3D_ShaderModel3 = 0,
+        PS3 = 1,
+        XBOXDirect3D = 2,
+        PCDirect3D_ShaderModel4 = 3,
+        PCDirect3D_ShaderModel5 = 4, // UDK?
+        WiiU = 5 // unless its LE then it's SM5!
+    }
+
+    private enum EShaderPlatformLE : byte
+    {
+        PCDirect3D_ShaderModel5 = 5,
+        // Others unknown at this time
+    }
+
+    private enum EShaderFrequency : byte
+    {
+        Vertex = 0,
+        Pixel = 1,
     }
 }

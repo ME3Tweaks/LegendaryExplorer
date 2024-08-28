@@ -13,56 +13,37 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
 
     [DebuggerDisplay("BIN {Header}")]
-    public class BinInterpNode : NotifyPropertyChangedBase, ITreeItem
+    public class BinInterpNode() : NotifyPropertyChangedBase, ITreeItem
     {
-        public enum ArrayPropertyChildAddAlgorithm
+        public enum ArrayPropertyChildAddAlgorithm : byte
         {
             None,
             FourBytes
         }
 
-        /// <summary>
-        /// Used to cache the UIndex of object refs
-        /// </summary>
-        public int UIndexValue { get; set; }
-
         public string Header { get; set; }
-        public string Name { get; set; }
-        public object Tag { get; set; }
-        public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
-
-        public bool IsExpanded { get; set; }
         public ITreeItem Parent { get; set; }
 
         /// <summary>
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
         /// </summary>
-        public List<ITreeItem> Items { get; set; }
-        public BinInterpNode()
-        {
-            Items = new List<ITreeItem>();
-        }
+        public List<ITreeItem> Items { get; set; } = [];
+
+        /// <summary>
+        /// Used to cache the UIndex of object refs
+        /// </summary>
+        public int UIndexValue { get; set; }
+        public int Offset { get; set; } = -1;
+
+        public int Length { get; set; }
+        public BinaryInterpreterWPF.NodeType Tag { get; set; }
+        public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
+
+        public bool IsExpanded { get; set; }
 
         public BinInterpNode(string header) : this()
         {
             Header = header;
-        }
-
-        /// <summary>
-        /// Gets the data offset of this node.
-        /// </summary>
-        /// <returns></returns>
-        public int GetOffset()
-        {
-            if (Name != null && Name.StartsWith("_"))
-            {
-                if (int.TryParse(Name.Substring(1), out var dataOffset)) // remove _
-                {
-                    return dataOffset;
-                }
-            }
-
-            return -1;
         }
 
         /// <summary>
@@ -82,23 +63,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Header = pos >= 0 ? $"0x{pos:X8}: {text}" : text;
             if (pos >= 0)
             {
-                Name = $"_{pos}";
+                Offset = (int)pos;
             }
             Tag = nodeType;
         }
 
-        public long GetPos()
+        public int GetPos()
         {
-            if (!string.IsNullOrEmpty(Name) && long.TryParse(Name.Substring(1), out var pos)) return pos;
+            if (Offset >= 0) return Offset;
             return 0;
         }
 
         public int GetObjectRefValue(ExportEntry export)
         {
             if (UIndexValue != 0) return UIndexValue; //cached
-            if (Tag is BinaryInterpreterWPF.NodeType type && (type == BinaryInterpreterWPF.NodeType.ArrayLeafObject || type == BinaryInterpreterWPF.NodeType.ObjectProperty || type == BinaryInterpreterWPF.NodeType.StructLeafObject))
+            if (Tag is BinaryInterpreterWPF.NodeType.ArrayLeafObject or BinaryInterpreterWPF.NodeType.ObjectProperty or BinaryInterpreterWPF.NodeType.StructLeafObject)
             {
-                UIndexValue = EndianReader.ToInt32(export.DataReadOnly, (int)GetPos(), export.FileRef.Endian);
+                UIndexValue = EndianReader.ToInt32(export.DataReadOnly, GetPos(), export.FileRef.Endian);
             }
             return UIndexValue;
         }
@@ -120,9 +101,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     indent += "| ";
                 }
                 //if (Parent != null && Parent == )
-                if (Name != null)
+                if (Offset != null)
                 {
-                    str.Write(Name.TrimStart('_') + ": " + Header);// + " "  " (" + PropertyType + ")");
+                    str.Write(Offset + ": " + Header);// + " "  " (" + PropertyType + ")");
                 }
                 else
                 {
@@ -214,7 +195,5 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var unused = DispatcherHelper.ProcessQueueAsync();
             }
         }
-
-        public int Length { get; set; }
     }
 }

@@ -1,12 +1,7 @@
 ﻿using System;
 
-namespace Be.Windows.Forms
+namespace LegendaryExplorerCore.Misc
 {
-    /* TODO: Something to consider: if this class, as well as IByteProvider, were moved to LEC, we could avoid creating a copy of an export's Data array every time an export is displayed in a hex box,
-     * by having a GetByteProvider method on ExportEntry. Moving IByteProvider to LEC would make Be.Windows.Forms.HexBox dependent on LEC though, which seems gross.
-     * Might be worth it though, since it would avoid a lot of allocations, in PackEd especially.
-     */
-
     /// <summary>
     /// Can be used like a <see cref="DynamicByteProvider"/>, but is optimized for the case where it is never modified
     /// </summary>
@@ -140,7 +135,7 @@ namespace Be.Windows.Forms
         public void Clear()
         {
             int oldLength = realLength;
-            Bytes = Array.Empty<byte>();
+            Bytes = [];
             realLength = 0;
             OnLengthChanged();
             if (oldLength == realLength)

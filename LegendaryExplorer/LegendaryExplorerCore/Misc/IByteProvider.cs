@@ -1,6 +1,6 @@
 using System;
 
-namespace Be.Windows.Forms
+namespace LegendaryExplorerCore.Misc
 {
 	/// <summary>
 	/// Defines a byte provider for HexBox control

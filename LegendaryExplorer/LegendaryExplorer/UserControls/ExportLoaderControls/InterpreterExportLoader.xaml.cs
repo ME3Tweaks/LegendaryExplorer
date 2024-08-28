@@ -821,7 +821,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
             //EditorSet_Separator.Visibility = Visibility.Collapsed;
-            (Interpreter_Hexbox?.ByteProvider as ReadOptimizedByteProvider)?.Clear();
+            ((ReadOptimizedByteProvider)Interpreter_Hexbox?.ByteProvider)?.Clear();
             Interpreter_Hexbox?.Refresh();
             HasUnsavedChanges = false;
             PropertyNodes.Clear();
@@ -842,7 +842,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //TODO: Make this more reliable because it is recycling virtualization
             if (CurrentLoadedExport != null && export.FileRef == Pcc && export.UIndex == CurrentLoadedExport.UIndex)
             {
-                if (SelectedItem is UPropertyTreeViewEntry { Property: not null } tvi)
+                if (SelectedItem is { Property: not null } tvi)
                 {
                     RescanSelectionOffset = tvi.Property.StartOffset;
                 }
@@ -859,7 +859,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //Debug.WriteLine("Selection offset: " + RescanSelectionOffset);
             CurrentLoadedExport = export;
             isLoadingNewData = true;
-            (Interpreter_Hexbox.ByteProvider as ReadOptimizedByteProvider)?.ReplaceBytes(export.Data);
+            Interpreter_Hexbox.ByteProvider = export.GetByteProvider();
             hb1_SelectionChanged(null, null); //refresh bottom text
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
@@ -2401,10 +2401,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void Interpreter_SaveHexChanges()
         {
-            if (Interpreter_Hexbox.ByteProvider is ReadOptimizedByteProvider provider)
-            {
-                CurrentLoadedExport.Data = provider.Span.ToArray();
-            }
+            CurrentLoadedExport.Data = ((ReadOptimizedByteProvider)Interpreter_Hexbox.ByteProvider).Span.ToArray();
         }
 
         public override bool CanParse(ExportEntry exportEntry)

@@ -195,7 +195,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool IsSelectedItemAGuid()
         {
-            return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && b.Tag is NodeType nt && nt == NodeType.Guid;
+            return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode { Tag: NodeType.Guid };
         }
 
         private void FireNavigateCallback()
@@ -284,7 +284,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static bool IsObjectNodeType(object nodeobj)
         {
-            if (nodeobj is BinInterpNode { Tag: NodeType type })
+            if (nodeobj is BinInterpNode { Tag: var type })
             {
                 if (type == NodeType.ArrayLeafObject) return true;
                 if (type == NodeType.ObjectProperty) return true;
@@ -305,8 +305,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         #endregion
 
-        public static readonly HashSet<string> ParsableBinaryClasses = new()
-        {
+        public static readonly HashSet<string> ParsableBinaryClasses =
+        [
             "AnimSequence",
             "ArrayProperty",
             "BioCodexMap",
@@ -406,8 +406,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             "WwiseEvent",
             "WwiseStream",
             "Bio2DANumberedRows",
-            "Bio2DA",
-        };
+            "Bio2DA"
+        ];
 
         public override bool CanParse(ExportEntry exportEntry)
         {
@@ -432,10 +432,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private int PreviousLoadedUIndex = -1;
-        private string PreviousSelectedTreeName = "";
+        private int PreviousSelectedTreeOffset = -1;
 
         public override void LoadExport(ExportEntry exportEntry)
         {
+            PreviousSelectedTreeOffset = -1;
             LoadingNewData = true;
             ByteShift_UpDown.Value = 0;
             if (CurrentLoadedExport != null)
@@ -443,7 +444,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 PreviousLoadedUIndex = CurrentLoadedExport.UIndex;
                 if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b)
                 {
-                    PreviousSelectedTreeName = b.Name;
+                    PreviousSelectedTreeOffset = b.Offset;
                 }
             }
             CurrentLoadedExport = exportEntry;
@@ -465,7 +466,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         #region static stuff
-        public enum NodeType
+        public enum NodeType : sbyte
         {
             Unknown = -1,
             StructProperty = 0,
@@ -522,9 +523,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OnDemand_Subtext_TextBlock.Text = "Please wait";
             ParseBinary_Button.Visibility = Visibility.Collapsed;
             ParseBinary_Spinner.Visibility = Visibility.Visible;
-            byte[] data = CurrentLoadedExport.Data;
-            var db = new ReadOptimizedByteProvider(data);
-            BinaryInterpreter_Hexbox.ByteProvider = db;
+            BinaryInterpreter_Hexbox.ByteProvider = CurrentLoadedExport.GetByteProvider();
             hb1_SelectionChanged(BinaryInterpreter_Hexbox, EventArgs.Empty);//reassigning the ByteProvider won't trigger this, leaving old info in statusbar
             int binarystart = 0;
             if (CurrentLoadedExport.ClassName != "Class")
@@ -537,12 +536,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 Header = $"{binarystart:X4} : {CurrentLoadedExport.InstancedFullPath} - Binary start",
                 Tag = NodeType.Root,
-                Name = "_" + binarystart,
+                Offset = binarystart,
                 IsExpanded = true
             };
             //BinaryInterpreter_TreeView.Items.Add(topLevelTree);
 
-            Task.Run(() => PerformScanBackground(topLevelTree, data, binarystart))
+            Task.Run(() => PerformScanBackground(topLevelTree, binarystart))
                 .ContinueWithOnUIThread(prevTask =>
                 {
                     var result = prevTask.Result;
@@ -576,19 +575,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        private BinInterpNode PerformScanBackground(BinInterpNode topLevelTree, byte[] data, int binarystart)
+        private BinInterpNode PerformScanBackground(BinInterpNode topLevelTree, int binarystart)
         {
             if (CurrentLoadedExport == null) return topLevelTree; //Could happen due to multithread
             try
             {
                 var subNodes = new List<ITreeItem>();
+                topLevelTree.Items = subNodes;
                 bool isGenericScan = false;
-                bool appendGenericScan = false;
 
                 int netIndexOffset = 0;
                 if (CurrentLoadedExport.HasStack)
                 {
-                    subNodes.AddRange(StartStackScan(data, out netIndexOffset));
+                    subNodes.AddRange(StartStackScan(out netIndexOffset));
                 }
 
 
@@ -598,29 +597,38 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     case "DominantSpotLightComponent":
                     case "DominantDirectionalLightComponent":
-                        subNodes.AddRange(StartDominantLightScan(data));
+                        subNodes.AddRange(StartDominantLightScan());
                         break;
                 }
 
                 if (CurrentLoadedExport.TemplateOwnerClassIdx is var toci and >= 0)
                 {
-                    int n = EndianReader.ToInt32(data, toci, CurrentLoadedExport.FileRef.Endian);
+                    int n = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly[toci..], CurrentLoadedExport.FileRef.Endian);
                     subNodes.Add(new BinInterpNode(toci, $"TemplateOwnerClass: #{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}", NodeType.StructLeafObject) { Length = 4 });
                 }
                 else
                 {
-                    int netIndex = EndianReader.ToInt32(data, netIndexOffset, CurrentLoadedExport.FileRef.Endian);
+                    int netIndex = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly[netIndexOffset..], CurrentLoadedExport.FileRef.Endian);
                     subNodes.Add(new BinInterpNode(netIndexOffset, $"NetIndex: {netIndex}", NodeType.StructLeafInt) { Length = 4 });
                 }
 
                 if (!CurrentLoadedExport.IsDefaultObject)
                 {
                     string className = CurrentLoadedExport.ClassName;
+                    switch (className)
+                    {
+                        case "ShaderCache":
+                            subNodes.AddRange(StartShaderCacheScanStream(ref binarystart));
+                            return topLevelTree;
+                        case "ShaderCachePayload": //Consoles
+                            subNodes.AddRange(StartShaderCachePayloadScanStream(ref binarystart));
+                            return topLevelTree;
+                    }
                     if (CurrentLoadedExport.IsA("BioPawn"))
                     {
                         className = "BioPawn";
                     }
-
+                    var data = CurrentLoadedExport.Data;
                     switch (className)
                     {
                         case "IntProperty":
@@ -697,12 +705,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             break;
                         case "World":
                             subNodes.AddRange(StartWorldScan(data, ref binarystart));
-                            break;
-                        case "ShaderCache":
-                            subNodes.AddRange(StartShaderCacheScanStream(data, ref binarystart));
-                            break;
-                        case "ShaderCachePayload": //Consoles
-                            subNodes.AddRange(StartShaderCachePayloadScanStream(data, ref binarystart));
                             break;
                         case "Model":
                             subNodes.AddRange(StartModelScan(data, ref binarystart));
@@ -867,30 +869,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             break;
                     }
                 }
-
-                if (appendGenericScan)
-                {
-                    BinInterpNode genericContainer = new BinInterpNode { Header = "Generic scan data", IsExpanded = true };
-                    subNodes.Add(genericContainer);
-
-                    var genericItems = StartGenericScan(data, ref binarystart);
-                    foreach (ITreeItem o in genericItems)
-                    {
-                        if (o is BinInterpNode b)
-                        {
-                            b.Parent = genericContainer;
-                        }
-                    }
-                    genericContainer.Items.AddRange(genericItems);
-                }
-                if (PreviousLoadedUIndex == CurrentLoadedExport?.UIndex && PreviousSelectedTreeName != "")
+                if (PreviousLoadedUIndex == CurrentLoadedExport?.UIndex && PreviousSelectedTreeOffset != -1)
                 {
                     var reSelected = AttemptSelectPreviousEntry(subNodes);
                     Debug.WriteLine("Reselected previous entry");
                 }
 
-                GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
-                topLevelTree.Items = subNodes;
+                GenericEditorSetVisibility = isGenericScan ? Visibility.Visible : Visibility.Collapsed;
                 foreach (ITreeItem o in subNodes)
                 {
                     if (o is BinInterpNode b)
@@ -913,7 +898,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (o is BinInterpNode b)
                 {
-                    if (b.Name == PreviousSelectedTreeName)
+                    if (b.Offset == PreviousSelectedTreeOffset)
                     {
                         b.IsProgramaticallySelecting = true;
                         b.IsSelected = true;
@@ -992,7 +977,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinInterpNode bitve:
-                    int dataOffset = bitve.GetOffset();
+                    int dataOffset = bitve.Offset;
                     if (dataOffset >= 0)
                     {
                         BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
@@ -1382,12 +1367,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     case BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes:
                         BinInterpNode container = bitvi;
-                        if ((NodeType)container.Tag == NodeType.ArrayLeafObject)
+                        if (container.Tag == NodeType.ArrayLeafObject)
                         {
                             container = (BinInterpNode)bitvi.Parent; //container
                         }
                         var dataCopy = CurrentLoadedExport.Data;
-                        int countOffset = int.Parse(container.Name.Substring(1)); //chop off _
+                        int countOffset = container.Offset;
                         int count = BitConverter.ToInt32(dataCopy, countOffset);
 
                         //Incrememnt Count

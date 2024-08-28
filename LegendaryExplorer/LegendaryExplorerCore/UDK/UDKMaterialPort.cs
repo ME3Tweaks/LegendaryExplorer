@@ -107,7 +107,7 @@ namespace LegendaryExplorerCore.UDK
                                     continue; // Skip it.
                             }
 
-                            5EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false});
+                            EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false});
                         }
 
                         CorrectExpressions(destP);

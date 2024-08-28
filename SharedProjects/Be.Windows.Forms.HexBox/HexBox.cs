@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
+using LegendaryExplorerCore.Misc;
 
 namespace Be.Windows.Forms
 {
