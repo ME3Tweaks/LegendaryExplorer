@@ -17,16 +17,16 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 namespace LegendaryExplorerCore.UDK
 {
     /// <summary>
-    /// Ports materials from ME1 (2008) into UDK so the materials can be used in-editor. Other games don't have the necessary information for this
+    /// Ports materials from a game into UDK so the materials can be used in-editor. Full expression information must be available in the source data for this to be useful; UDK cannot compile shaders without it.
     /// </summary>
     public static class UDKMaterialPort
     {
-        public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null)
+        public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null, string gameRootOverride = null)
         {
-            if (UDKDirectory.UDKGamePath == null)
+            if (UDKDirectory.UDKGamePath == null && gameRootOverride == null)
                 return;
 
-            var basePath = Path.Combine(UDKDirectory.SharedPath, folderNameOverride ?? $"{game}MaterialPort");
+            var basePath = Path.Combine(UDKDirectory.GetSharedPath(gameRootOverride), folderNameOverride ?? $"{game}MaterialPort");
             Directory.CreateDirectory(basePath);
 
             // Clear existing files
@@ -59,7 +59,7 @@ namespace LegendaryExplorerCore.UDK
 
                 var isSafeFile = EntryImporter.IsSafeToImportFrom(file, game, file);
                 var quickSourceP = MEPackageHandler.UnsafePartialLoad(file, x => false);
-                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsTexture()));
+                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsA("Texture"))); // Don't use .IsTexture() as it does not include cubemaps
                 if (quickPortItems)
                 {
                     using var sourceP = MEPackageHandler.OpenMEPackage(file);
