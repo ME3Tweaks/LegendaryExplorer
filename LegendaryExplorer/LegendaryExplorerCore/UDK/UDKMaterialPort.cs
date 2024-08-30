@@ -21,12 +21,12 @@ namespace LegendaryExplorerCore.UDK
     /// </summary>
     public static class UDKMaterialPort
     {
-        public static void PortMaterialsIntoUDK(MEGame game, string inputPath)
+        public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null)
         {
             if (UDKDirectory.UDKGamePath == null)
                 return;
 
-            var basePath = Path.Combine(UDKDirectory.SharedPath, $"{game}MaterialPort");
+            var basePath = Path.Combine(UDKDirectory.SharedPath, folderNameOverride ?? $"{game}MaterialPort");
             Directory.CreateDirectory(basePath);
 
             // Clear existing files
