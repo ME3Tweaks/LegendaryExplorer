@@ -139,6 +139,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// USED BY ENTRYEXPORTER - Set to false to disable the import to export resolution. Use if you know you need imports and not exports.
         /// </summary>
         public bool CheckImportsWhenExportingToPackage { get; set; } = true;
+
+        /// <summary>
+        /// When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.
+        /// </summary>
+        public bool ForceSamePackageImportRelink { get; set; }
     }
 
     public static class Relinker
@@ -242,7 +247,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 origBCBIdx = sourcePcc.findName("BIOC_Base");
                                 sourcePcc.replaceName(origBCBIdx, "SFXGame");
 
-                                // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStratgic"AI"
+                                // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStrategic"AI"
                             }
 
                             var targetFuncEntry = rop.CrossPackageMap[f];
@@ -854,7 +859,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             IMEPackage destinationPcc = relinkingExport.FileRef;
-            if (importingPCC == destinationPcc && uIndex < 0)
+            if (!rop.ForceSamePackageImportRelink && importingPCC == destinationPcc && uIndex < 0)
             {
                 return null; //do not relink same-pcc imports.
             }
@@ -1067,6 +1072,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static void RelinkNameReference(string name, long position, byte[] data, ExportEntry destinationExport)
         {
             data.OverwriteRange((int)position, BitConverter.GetBytes(destinationExport.FileRef.FindNameOrAdd(name)));
+        }
+
+        /// <summary>
+        /// Relinks objects to different ones within the same package. Will not generate new exports or imports.
+        /// </summary>
+        /// <param name="package">Package to operate on</param>
+        /// <param name="relinkMap">List of entries that you are repointing to different objects. The remaining objects will have a relink performed to update references automatically.</param>
+        public static void RelinkSamePackage(IMEPackage package, ListenableDictionary<IEntry, IEntry> relinkMap)
+        {
+
+            foreach (var exp in package.Exports)
+            {
+                // Relink to self - this makes it so this export will have relink performed on it for the rest of the map contents
+                relinkMap.TryAdd(exp, exp);
+            }
+
+            foreach (var imp in package.Imports)
+            {
+                // Relink to self - this makes it so this export will have relink performed on it for the rest of the map contents
+                relinkMap.TryAdd(imp, imp);
+            }
+
+            Relinker.RelinkAll(new RelinkerOptionsPackage() { CrossPackageMap = relinkMap, ForceSamePackageImportRelink = true});
         }
     }
 }
