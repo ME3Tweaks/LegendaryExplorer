@@ -6270,12 +6270,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return subnodes; // no binary data
 
                 bin.JumpTo(binarystart);
-                if (!Pcc.Game.IsGame3() || (Pcc.FilePath != null && Path.GetExtension(Pcc.FilePath) == ".upk"))
+                if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3) || (Pcc.FilePath != null && Pcc.FilePath.EndsWith(".upk")))
                 {
-                    bin.Skip(8); // 12 zeros
+                    subnodes.Add(MakeInt32Node(bin, "Bulk Data Uncompressed Size"));
+                    subnodes.Add(MakeInt32Node(bin, "Bulk Data Compressed Size"));
                     int thumbnailSize = bin.ReadInt32();
+                    bin.Position -= 4;
+                    subnodes.Add(MakeInt32Node(bin, "Thumbnail size"));
                     subnodes.Add(MakeInt32Node(bin, "File Offset"));
-                    bin.Skip(thumbnailSize);
+                }
+
+                if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName.CaseInsensitiveEquals("TextureCube"))
+                {
+                    return subnodes; // No more nodes to parse
                 }
 
                 subnodes.Add(MakeInt32Node(bin, "NumMipMaps", out var numMipMaps));
