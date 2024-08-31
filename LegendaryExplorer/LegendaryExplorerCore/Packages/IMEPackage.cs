@@ -332,5 +332,12 @@ namespace LegendaryExplorerCore.Packages
         bool IsMemoryPackage { get; set; }
 
         void AllowLookupTableInvalidation(bool allow);
+    
+        /// <summary>
+        /// Used to override the internal FilePath of the package. This can be used to override using imports for global files when porting out - be extremely careful doing this!
+        /// You can easily break all sorts of things. You probably shouldn't save packages that you set this on when the value is different than the actual one on disk (if any).
+        /// </summary>
+        /// <param name="filePath">New FilePath to set. FilePatNoExtension will be extracted from this and set accordingly.</param>
+        void SetInternalFilepath(string filePath);
     }
 }
