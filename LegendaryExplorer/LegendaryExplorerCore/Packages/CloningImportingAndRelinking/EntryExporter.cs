@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             customROP?.CrossPackageMap.Clear();
 
             // Import the original item now
-            var lParent = PortParents(sourceExport, targetPackage);
+            var lParent = PortParents(sourceExport, targetPackage, cache: cache);
 
             // Test the entry was not ported in already, such as from a Parent reference
             var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
