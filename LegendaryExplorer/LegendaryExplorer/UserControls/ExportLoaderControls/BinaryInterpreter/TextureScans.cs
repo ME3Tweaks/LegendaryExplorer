@@ -107,12 +107,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
                 if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3) || (Pcc.FilePath != null && Pcc.FilePath.EndsWith(".upk")))
                 {
-                    subnodes.Add(MakeInt32Node(bin, "Bulk Data Uncompressed Size"));
-                    subnodes.Add(MakeInt32Node(bin, "Bulk Data Compressed Size"));
-                    int thumbnailSize = bin.ReadInt32();
-                    bin.Position -= 4;
-                    subnodes.Add(MakeInt32Node(bin, "Thumbnail size"));
-                    subnodes.Add(MakeInt32Node(bin, "File Offset"));
+                    ReadBulkData(bin, subnodes, "Thumbnail");
                 }
 
                 if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName.CaseInsensitiveEquals("TextureCube"))
@@ -123,7 +118,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(MakeInt32Node(bin, "NumMipMaps", out var numMipMaps));
                 for (int l = 0; l < numMipMaps; l++)
                 {
-                    MakeTextureMipNode(bin, l);
+                    subnodes.Add(MakeTextureMipNode(bin, l));
                 }
 
                 if (Pcc.Game != MEGame.UDK)
