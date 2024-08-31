@@ -177,10 +177,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //end >= ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
-        public uint unkUint1;
-        public uint udkUnk2;
-        public uint udkUnk3;
-        public uint udkUnk4;
+        public uint DummyDroppedFallbackComponents;
         //begin ME1
         public ME1MaterialUniformExpressionsElement[] Me1MaterialUniformExpressionsList;
         public int unk1;
@@ -189,8 +186,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             get => unkList?.Length ?? 0;
             set => Array.Resize(ref unkList, value);
         }
+
+        // UDK ONLY ----------------
+        public uint BlendModeOverrideValue;
+        public bool bIsMaskOverrideValue; // BOOL
+        public bool bIsBlendModeOverrided; // BOOL
+        // END UDK ONLY ============
+
         public int unkInt2;
         public (int, float, int)[] unkList;
+
+        
         //end ME1
 
         public static MaterialResource Create()
@@ -403,10 +409,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return lookup;
                 }).ToArray();
 
-                reader.ReadNumProp(out mat.unkUint1, nameof(unkUint1));
-                reader.ReadNumProp(out mat.udkUnk2, nameof(udkUnk2));
-                reader.ReadNumProp(out mat.udkUnk3, nameof(udkUnk3));
-                reader.ReadNumProp(out mat.udkUnk4, nameof(udkUnk4));
+                reader.ReadNumProp(out mat.DummyDroppedFallbackComponents, nameof(DummyDroppedFallbackComponents));
+                reader.ReadNumProp(out mat.BlendModeOverrideValue, nameof(BlendModeOverrideValue));
+                mat.bIsBlendModeOverrided = reader.ReadBoolProp(nameof(bIsBlendModeOverrided));
+                mat.bIsMaskOverrideValue = reader.ReadBoolProp(nameof(bIsMaskOverrideValue));
 
                 reader.Read();
                 reader.Expect(JsonTokenType.EndObject);
@@ -465,10 +471,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     writer.WriteEndObject();
                 }
                 writer.WriteEndArray();
-                writer.WriteNumber(nameof(unkUint1), value.unkUint1);
-                writer.WriteNumber(nameof(udkUnk2), value.udkUnk2);
-                writer.WriteNumber(nameof(udkUnk3), value.udkUnk3);
-                writer.WriteNumber(nameof(udkUnk4), value.udkUnk4);
+                writer.WriteNumber(nameof(DummyDroppedFallbackComponents), value.DummyDroppedFallbackComponents);
+                writer.WriteNumber(nameof(BlendModeOverrideValue), value.BlendModeOverrideValue);
+                writer.WriteBoolean(nameof(bIsBlendModeOverrided), value.bIsBlendModeOverrided);
+                writer.WriteBoolean(nameof(bIsMaskOverrideValue), value.bIsMaskOverrideValue);
 
                 writer.WriteEndObject();
             }
@@ -992,14 +998,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 Serialize(ref mres.TextureLookups, Serialize);
-                Serialize(ref mres.unkUint1);
+                Serialize(ref mres.DummyDroppedFallbackComponents);
 
                 // Not used in TerrainMaterialResource (use that specific class instead)
                 if (Game == MEGame.UDK)
                 {
-                    Serialize(ref mres.udkUnk2);
-                    Serialize(ref mres.udkUnk3);
-                    Serialize(ref mres.udkUnk4);
+                    Serialize(ref mres.BlendModeOverrideValue);
+                    Serialize(ref mres.bIsBlendModeOverrided);
+                    Serialize(ref mres.bIsMaskOverrideValue);
                 }
             }
             if (Game == MEGame.ME1)

@@ -37,6 +37,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int Unk1;
         public Guid TextureGuid;
 
+        // UDK only follows
+        public List<Texture2DMipMap> CachedPVRTCMips;
+        public int CachedFlashMipsMaxResolution;
+        public List<Texture2DMipMap> CachedATITCMips;
+        public int[] CachedFlashMipsBulkData;
+        public List<Texture2DMipMap> CachedETCMips;
+
         protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
@@ -53,12 +60,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (sc.Game == MEGame.UDK)
             {
-                var zeros = new byte[32];
-                sc.Serialize(ref zeros, 32);
+                // These appear to be mips or something of different format, maybe for different platforms
+                sc.Serialize(ref CachedPVRTCMips, sc.Serialize);
+                sc.Serialize(ref CachedFlashMipsMaxResolution);
+                sc.Serialize(ref CachedATITCMips, sc.Serialize);
+                sc.SerializeBulkData(ref CachedFlashMipsBulkData, sc.Serialize);
+                sc.Serialize(ref CachedETCMips, sc.Serialize);
             }
             if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
-                int dummy = 0;
+                int dummy = 0; // Bioware specific
                 sc.Serialize(ref dummy);
             }
         }
