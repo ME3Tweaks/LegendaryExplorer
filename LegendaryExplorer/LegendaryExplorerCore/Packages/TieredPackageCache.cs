@@ -24,6 +24,11 @@ public class TieredPackageCache : PackageCache
 #endif
 
     /// <summary>
+    /// If children caches can promote packages into this cache. Must be careful; too many promotions will result in high memory usage if the cache is long lived
+    /// </summary>
+    public bool CanBePromotedInto { get; set; }
+
+    /// <summary>
     /// If this package cache should use filenames (rather than file paths) for cache lookups.
     /// </summary>
     public bool FilenameOnlyMode { get; set; }
@@ -34,6 +39,11 @@ public class TieredPackageCache : PackageCache
     public TieredPackageCache ParentCache;
 
     /// <summary>
+    /// Used by children to synchronize the promo dictionary for tracking
+    /// </summary>
+    private object promoSyncObj = new object();
+
+    /// <summary>
     /// On access, will initialize global packages.
     /// </summary>
     private bool GlobalInitOnFirstUse { get; set; }
@@ -42,6 +52,11 @@ public class TieredPackageCache : PackageCache
     /// If next lookup in FilenameOnlyMode should refresh game files
     /// </summary>
     public bool ReloadFileList { get; set; }
+
+    /// <summary>
+    /// After child caches open the same package this many times, the package will be promoted into the parent cache. The parent cache must have 'CanBePromotedInto' set to true for this to do anything.
+    /// </summary>
+    public int PackagePromotionThreshold { get; set; } = 5;
 
     private string GameRootPath { get; set; }
     private MEGame? Game { get; set; }
@@ -58,11 +73,12 @@ public class TieredPackageCache : PackageCache
     /// <summary>
     /// Chains a new child cache to this one and returns the child cache.
     /// </summary>
-    /// <param name="parent"></param>
+    /// <param name="filenameOnlyMode">If the cache only operates on filename and not filepath</param>
+    /// <param name="canPromoteInto">If the newly chained cache can be promoted into by its possible future children</param>
     /// <returns></returns>
-    public TieredPackageCache ChainNewCache(bool filenameOnlyMode = false)
+    public TieredPackageCache ChainNewCache(bool filenameOnlyMode = false, bool canPromoteInto = false)
     {
-        var cache = new TieredPackageCache(this) { FilenameOnlyMode = filenameOnlyMode };
+        var cache = new TieredPackageCache(this) { FilenameOnlyMode = filenameOnlyMode, CanBePromotedInto = canPromoteInto };
         return cache;
     }
 
@@ -105,6 +121,20 @@ public class TieredPackageCache : PackageCache
     }
 
     /// <summary>
+    /// Moves a package into a higher tier. If a cache is shared, this will effectively cache this package for all children caches. This typically should only be used in a third tier cache; after global cache, chain a promotion tier, and then chain children off that.
+    /// </summary>
+    /// <param name="package"></param>
+    public void PromotePackage(IMEPackage package)
+    {
+        if (ParentCache != null && !ParentCache.CacheContains(package.FilePath))
+        {
+            Debug.WriteLine($"Promoting {package.FileNameNoExtension} to a higher tier cache");
+            ParentCache.InsertIntoCache(package);
+            Cache.Remove(package.FilePath, out _);
+        }
+    }
+
+    /// <summary>
     /// Returns a cached package. Ensure this cache is synchronized if across threads or you may end up saving two different instances of files to the same location
     /// </summary>
     /// <param name="packageName"></param>
@@ -125,6 +155,7 @@ public class TieredPackageCache : PackageCache
             // Run first global initialization.
             RunGlobalInit(Game.Value, GameRootPath);
         }
+
 
         return GetCachedPackageLocal(packageName, openIfNotInCache, openPackageMethod);
     }
@@ -160,7 +191,7 @@ public class TieredPackageCache : PackageCache
 
                 if (File.Exists(packagePath))
                 {
-                    Debug.WriteLine($@"TieredPackageCache local {guid} load: {packagePath}");
+                    // Debug.WriteLine($@"TieredPackageCache local {guid} load: {packagePath}");
                     package = openPackageMethod?.Invoke(packagePath);
                     if (package == null)
                     {
@@ -192,6 +223,26 @@ public class TieredPackageCache : PackageCache
 #endif
 
                     InsertIntoCache(package);
+
+                    // Promotion tracking
+                    if (ParentCache != null && ParentCache.CanBePromotedInto)
+                    {
+                        lock (ParentCache.promoSyncObj)
+                        {
+                            ParentCache.PromotionTracking.TryGetValue(packagePath, out int count);
+                            count++;
+                            if (count > PackagePromotionThreshold)
+                            {
+                                PromotePackage(package);
+                                ParentCache.PromotionTracking.Remove(packagePath, out _);
+                            }
+                            else
+                            {
+                                ParentCache.PromotionTracking[packagePath] = count;
+                            }
+                        }
+                    }
+
                     return package;
                 }
 
@@ -228,4 +279,9 @@ public class TieredPackageCache : PackageCache
         }
         CheckCacheFullness();
     }
+
+    /// <summary>
+    /// If a cache is promotable, this will be populated with how often packages are opened. If a package is commonly hit, it will be promoted up to the parent
+    /// </summary>
+    private CaseInsensitiveDictionary<int> PromotionTracking { get; } = new();
 }
