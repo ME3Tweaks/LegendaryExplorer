@@ -48,8 +48,9 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <param name="gameRootOverride">Optional: override game path root</param>
         /// <param name="forceUseCached">Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</param>
         /// <param name="additionalExtensions">Optional: Additional file extensions to include, besides .tfc and .afc. Null or empty array will not include any additional extensions</param>
+        /// <param name="includeModDLC">Optional: If false, DLC folders that are not from the vanilla game will be skipped.</param>
         /// <returns>Case insensitive dictionary where key is filename and value is file path</returns>
-        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null, bool forceUseCached = false, string[] additionalExtensions = null)
+        public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null, bool forceUseCached = false, string[] additionalExtensions = null, bool includeModDLC = true)
         {
             //Override: Do not use cached items
             if (!forceReload && gameRootOverride == null)
@@ -152,6 +153,11 @@ namespace LegendaryExplorerCore.GameFilesystem
                 }
                 foreach (string directory in directories)
                 {
+                    if (!includeModDLC && Path.GetFileName(directory) is string dlcName && dlcName.StartsWith("DLC_") && !MELoadedDLC.IsOfficialDLC(directory, game))
+                    {
+                        // Starts with DLC_, but is not official, and we are skipping non official
+                        continue;
+                    }
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions))
                     {
                         string fileName = Path.GetFileName(filePath);
