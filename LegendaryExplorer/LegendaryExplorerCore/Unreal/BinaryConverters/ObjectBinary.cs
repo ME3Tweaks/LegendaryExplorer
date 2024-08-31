@@ -141,6 +141,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     return From<WwiseBank>(export, packageCache);
                 case "BioGestureRuntimeData":
                     return From<BioGestureRuntimeData>(export, packageCache);
+                case "TextureRenderTarget2D":
+                    return From<UTextureRenderTarget2D>(export, packageCache);
                 case "LightMapTexture2D":
                     return From<LightMapTexture2D>(export, packageCache);
                 case "TextureCube":

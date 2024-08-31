@@ -31,6 +31,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
+    public class UTextureRenderTarget2D : UTexture
+    {
+        // This is here just to make sure it's different
+        protected override void Serialize(SerializingContainer sc)
+        {
+            base.Serialize(sc);
+        }
+    }
+
     public class UTexture2D : UTexture
     {
         public List<Texture2DMipMap> Mips;

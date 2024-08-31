@@ -110,7 +110,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     ReadBulkData(bin, subnodes, "Thumbnail");
                 }
 
-                if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName.CaseInsensitiveEquals("TextureCube"))
+                if (CurrentLoadedExport != null &&
+                    CurrentLoadedExport.ClassName.ToLower() is "texturecube" or "texturerendertarget2d")
                 {
                     return subnodes; // No more nodes to parse
                 }
