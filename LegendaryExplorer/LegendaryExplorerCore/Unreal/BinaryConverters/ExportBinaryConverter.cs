@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -20,7 +21,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             // 08/29/2024 - Don't use this check on TextureCube, as games may have zero face cubes which triggers this even though
             // the binary format needs changed in target game. We probably should maintain a list of classes that have binary formats
             // change that this could trigger on if there were no properties and no binary data in the source game.
-            if (export.propsEnd() == export.DataSize && !export.ClassName.CaseInsensitiveEquals("TextureCube"))
+            if (export.propsEnd() == export.DataSize && !export.IsA("Texture"))
             {
                 return Array.Empty<byte>();
             }
