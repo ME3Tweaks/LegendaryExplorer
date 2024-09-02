@@ -193,7 +193,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (IsSaving && mip.IsLocallyStored)
             {
                 // This code is not accurate as the start offset may be 0 if the export is new and doesn't have a DataOffset yet.
-                SerializeFileOffset();
+                mip.DataOffset = SerializeFileOffset(); // 08/31/2024 - Update the data offset when serializing out
             }
             else
             {

@@ -1123,12 +1123,12 @@ namespace LegendaryExplorerCore.Packages
             Data = m.ToArray();
         }
 
-        public void WriteBinary(ObjectBinary bin)
+        public void WriteBinary(ObjectBinary bin, int? dataOffsetOverride = null)
         {
             MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
             var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
-            bin.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
+            bin.WriteTo(m.Writer, _fileRef, dataOffsetOverride ?? _commonHeaderFields._dataOffset);
             Data = m.ToArray();
         }
 

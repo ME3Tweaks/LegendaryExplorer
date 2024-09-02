@@ -26,6 +26,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref SM3MaterialResource);
             if (sc.Game != MEGame.UDK)
             {
+                if (sc.IsSaving && SM2MaterialResource == null)
+                {
+                    // Can happen when converting UDK -> ME
+                    SM2MaterialResource = MaterialResource.Create();
+                }
                 sc.Serialize(ref SM2MaterialResource);
             }
         }
