@@ -83,15 +83,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
             subnodes.Add(new BinInterpNode(bin.Position, $"Element Count: {bin.ReadInt32()}"));
+            int bulkSize = 0;
             if (bulkDataName != null)
             {
-                subnodes.Add(MakeInt32Node(bin, $"BulkDataSizeOnDisk ({bulkDataName})"));
+                subnodes.Add(MakeInt32Node(bin, $"BulkDataSizeOnDisk ({bulkDataName})", out bulkSize));
             }
             else
             {
-                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
+                subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk", out bulkSize));
             }
             subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
+            bin.Skip(bulkSize);
         }
 
         private List<ITreeItem> StartTextureBinaryScan(byte[] data, int binarystart)
@@ -107,7 +109,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
                 if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3) || (Pcc.FilePath != null && Pcc.FilePath.EndsWith(".upk")))
                 {
-                    ReadBulkData(bin, subnodes, "Thumbnail");
+                    ReadBulkData(bin, subnodes, "SourceArt");
                 }
 
                 if (CurrentLoadedExport != null &&
