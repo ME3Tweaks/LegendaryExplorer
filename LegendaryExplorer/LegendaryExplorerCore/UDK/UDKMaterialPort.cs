@@ -52,6 +52,7 @@ namespace LegendaryExplorerCore.UDK
             files.Remove(Path.Combine(inputPath, "EditorResources.upk"));
 
             PackageCache cache = new PackageCache();
+            //foreach(var file in files)
             Parallel.ForEach(files.Where(x=>x.RepresentsPackageFilePath()), file =>
             {
                 //if (!file.Contains("BIOG_V_Z", StringComparison.OrdinalIgnoreCase))
@@ -169,7 +170,8 @@ namespace LegendaryExplorerCore.UDK
                         }
                     }
                 }
-            });
+            }
+            ); // Parallel
 
             var testFiles = Directory.GetFiles(basePath);
             foreach (var tf in testFiles)
@@ -192,7 +194,7 @@ namespace LegendaryExplorerCore.UDK
                     if (GlobalUnrealObjectInfo.IsAKnownNativeClass(imp.InstancedFullPath, MEGame.UDK))
                         continue;
 
-                    var resolved = EntryImporter.ResolveImport(imp, cache, unsafeLoad: true);
+                    var resolved = EntryImporter.ResolveImport(imp, cache, unsafeLoad: true, gameRootOverride: gameRootOverride);
                     if (resolved == null)
                     {
                         Debug.WriteLine($"ERROR: IMPORT FAILED TO RESOLVE: {imp.InstancedFullPath} IN: {tf}");
