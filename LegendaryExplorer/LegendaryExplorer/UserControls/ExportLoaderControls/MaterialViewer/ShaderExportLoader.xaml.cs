@@ -21,6 +21,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
@@ -514,7 +515,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (sfsc.Shaders.TryGetValue(id, out var shader))
                 {
                     // Insert new bytecode
-                    shader.Replace(bytecode);
+                    shader.ReplaceByteCode(bytecode);
 
                     // Update the cache
                     sfscExport.WriteBinary(sfsc);
@@ -751,7 +752,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             newShaderFile = ShaderBytecode.FromFile(fullPath);
 
                             // Insert new bytecode
-                            shader.Replace(newShaderFile);
+                            shader.ReplaceByteCode(newShaderFile);
 
                             // Get Disassembly
                             string dissasembledShader = ShaderBytecode.FromStream(new MemoryStream(newShaderFile)).Disassemble();

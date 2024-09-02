@@ -23,6 +23,35 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public bool IsSaving => !IsLoading;
         public int FileOffset => startOffset + (int)ms.Position;
+
+        internal DefferedFileOffsetWriter SerializeDefferedFileOffset() => new(this);
+    }
+
+    internal readonly ref struct DefferedFileOffsetWriter
+    {
+        private readonly long WritePos;
+
+        public DefferedFileOffsetWriter(SerializingContainer sc)
+        {
+            WritePos = sc.ms.Position;
+            int placeholder = 0;
+            sc.Serialize(ref placeholder);
+        }
+
+        internal DefferedFileOffsetWriter(long writePos)
+        {
+            WritePos = writePos;
+        }
+
+        public void SetPosition(SerializingContainer sc)
+        {
+            if (sc.IsLoading) return;
+            int fileOffset = sc.FileOffset;
+            long pos = sc.ms.Position;
+            sc.ms.JumpTo(WritePos);
+            sc.ms.Writer.WriteInt32(fileOffset);
+            sc.ms.JumpTo(pos);
+        }
     }
 
     public partial class SerializingContainer

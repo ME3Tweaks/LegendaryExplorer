@@ -116,4 +116,27 @@
     <Folder Include="Embedded\Packages\EmptyLevels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Gammtek\InlineArrays.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InlineArrays.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Gammtek\InlineArrays.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InlineArrays.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Gammtek\InlineArrays.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>InlineArrays.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>

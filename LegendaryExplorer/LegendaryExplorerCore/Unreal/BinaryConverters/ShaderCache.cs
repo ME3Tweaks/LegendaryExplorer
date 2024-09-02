@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -237,78 +237,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public enum ShaderFrequency : byte
-    {
-        Vertex = 0,
-        Pixel = 1,
-    }
-
-    public class Shader
-    {
-        public NameReference ShaderType;
-        public Guid Guid;
-        public ShaderFrequency Frequency;
-        public byte[] ShaderByteCode;
-        public uint ParameterMapCRC;
-        public int InstructionCount;
-        public byte[] unkBytesPreName; //only exists in some Shaders with a FVertexFactoryParameterRef
-        public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
-        public byte[] unkBytes;
-        public byte[] unkSM2Bytes;
-
-        private string dissassembly;
-        private ShaderInfo info;
-        public byte[] SM3UnkBinkBytes;
-        public byte Platform; // LE is 5, OT is 0. However, LE also has a few 2 and 3 for SM2 and SM3 shaders. So we must store this info.
-
-        public ShaderInfo ShaderInfo => info ?? DisassembleShader();
-
-        public string ShaderDisassembly
-        {
-            get
-            {
-                if (dissassembly == null)
-                {
-                    DisassembleShader();
-                }
-                return dissassembly;
-            }
-        }
-
-        private ShaderInfo DisassembleShader()
-        {
-            return info = ShaderReader.DisassembleShader(ShaderByteCode, out dissassembly);
-        }
-
-        public Shader Clone()
-        {
-            var newShader = new Shader
-            {
-                ShaderType = ShaderType,
-                Guid = Guid,
-                Frequency = Frequency,
-                ShaderByteCode = ShaderByteCode.ArrayClone(),
-                ParameterMapCRC = ParameterMapCRC,
-                Platform = Platform,
-                InstructionCount = InstructionCount,
-                unkBytesPreName = unkBytesPreName?.ArrayClone(),
-                VertexFactoryType = VertexFactoryType,
-                unkBytes = unkBytes.ArrayClone()
-            };
-            return newShader;
-        }
-
-        // replace shader bytes
-        public void Replace(byte[] newShaderByteCode)
-        {
-            // insert new binary
-            ShaderByteCode = newShaderByteCode;
-
-            // return
-            return;
-        }
-    }
-
     public class MaterialShaderMap
     {
         //usually empty! Shaders are in MeshShaderMaps
@@ -452,173 +380,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public partial class SerializingContainer
     {
-        public void Serialize(ref Shader shader)
-        {
-            if (IsLoading)
-            {
-                shader = new Shader();
-            }
-            Serialize(ref shader.ShaderType);
-            Serialize(ref shader.Guid);
-            int endOffset = 0;
-            long endOffsetPos = ms.Position;
-            Serialize(ref endOffset);
-            Serialize(ref shader.Platform);
-            Serialize(ref shader.Frequency);
-            if (shader.Platform == 0x3)
-            {
-                // Shader Model 2 - global shader cache in LE seems to have this for bink
-                // seems to have extra 6 unknown bytes.
-                if (IsLoading)
-                {
-                    shader.unkSM2Bytes = ms.ReadBytes(0x6);
-                }
-                else
-                {
-                    ms.Writer.WriteBytes(shader.unkSM2Bytes);
-                }
-            }
-
-            if (shader.Platform == 0x0 && shader.ShaderType == "FBinkYCrCbToRGBNoPixelAlphaPixelShader")
-            {
-                // Found in LE3's global shader cache.
-                if (IsLoading)
-                {
-                    shader.SM3UnkBinkBytes = ms.ReadBytes(0x30);
-                }
-                else
-                {
-                    ms.Writer.WriteBytes(shader.SM3UnkBinkBytes);
-                }
-            }
-
-            Serialize(ref shader.ShaderByteCode);
-            Serialize(ref shader.ParameterMapCRC);
-            Serialize(ref shader.Guid);//intentional duplicate
-            Serialize(ref shader.ShaderType);//intentional duplicate
-            Serialize(ref shader.InstructionCount);
-            if (IsLoading)
-            {
-                switch (shader.ShaderType.Name)
-                {
-                    case "FFogVolumeApplyVertexShader":
-                    case "FHitMaskVertexShader":
-                    case "FHitProxyVertexShader":
-                    case "FModShadowMeshVertexShader":
-                    case "FSFXWorldNormalVertexShader":
-                    case "FTextureDensityVertexShader":
-                    case "TDepthOnlyVertexShader<0>":
-                    case "TDepthOnlyVertexShader<1>":
-                    case "FVelocityVertexShader":
-                    case "TFogIntegralVertexShader<FConstantDensityPolicy>":
-                    case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
-                    case "TFogIntegralVertexShader<FSphereDensityPolicy>":
-                    case "FShadowDepthVertexShader":
-                    case "TShadowDepthVertexShader<ShadowDepth_OutputDepth>":
-                    case "TShadowDepthVertexShader<ShadowDepth_OutputDepthToColor>":
-                    case "TShadowDepthVertexShader<ShadowDepth_PerspectiveCorrect>":
-                    case "TAOMeshVertexShader<0>":
-                    case "TAOMeshVertexShader<1>":
-                    case "TDistortionMeshVertexShader<FDistortMeshAccumulatePolicy>":
-                    case "TLightMapDensityVertexShader<FNoLightMapPolicy>":
-                    case "TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFSphereDensityPolicy":
-                    case "FShadowDepthNoPSVertexShader":
-                        shader.unkBytesPreName = null;
-                        shader.VertexFactoryType = ms.ReadNameReference(Pcc);
-                        break;
-                    case "TLightMapDensityVertexShader<FDirectionalLightMapTexturePolicy>":
-                    case "TLightMapDensityVertexShader<FDummyLightMapTexturePolicy>":
-                    case "TLightMapDensityVertexShader<FSimpleLightMapTexturePolicy>":
-                    case "TLightVertexShaderFDirectionalLightPolicyFNoStaticShadowingPolicy":
-                    case "TLightVertexShaderFDirectionalLightPolicyFShadowVertexBufferPolicy":
-                    case "TLightVertexShaderFPointLightPolicyFNoStaticShadowingPolicy":
-                    case "TLightVertexShaderFPointLightPolicyFShadowVertexBufferPolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFNoStaticShadowingPolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFShadowVertexBufferPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFPointLightLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
-                        shader.unkBytesPreName = ms.ReadBytes(6);
-                        shader.VertexFactoryType = ms.ReadNameReference(Pcc);
-                        break;
-                    case "TLightVertexShaderFDirectionalLightPolicyFShadowTexturePolicy":
-                    case "TLightVertexShaderFDirectionalLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                    case "TLightVertexShaderFPointLightPolicyFShadowTexturePolicy":
-                    case "TLightVertexShaderFPointLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFShadowTexturePolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                    case "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy":
-                        shader.unkBytesPreName = ms.ReadBytes(12);
-                        shader.VertexFactoryType = ms.ReadNameReference(Pcc);
-                        break;
-                    default:
-                        shader.unkBytesPreName = null;
-                        shader.VertexFactoryType = null;
-                        break;
-                }
-                shader.unkBytes = ms.ReadToBuffer(endOffset - FileOffset);
-            }
-            else
-            {
-                if (shader.VertexFactoryType is NameReference vertexFactoryType)
-                {
-                    if (shader.unkBytesPreName is not null)
-                    {
-                        ms.Writer.WriteFromBuffer(shader.unkBytesPreName);
-                    }
-                    ms.Writer.WriteNameReference(vertexFactoryType, Pcc);
-                }
-                ms.Writer.WriteFromBuffer(shader.unkBytes);
-                endOffset = FileOffset;
-                long endPos = ms.Position;
-                ms.JumpTo(endOffsetPos);
-                ms.Writer.WriteInt32(endOffset);
-                ms.JumpTo(endPos);
-            }
-        }
-
         public void Serialize(ref MaterialShaderMap msm)
         {
             if (IsLoading)
@@ -685,18 +446,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (Game == MEGame.ME1)
             {
                 Serialize(ref msm.unk);
-            }
-        }
-
-        public void Serialize(ref ShaderFrequency sf)
-        {
-            if (IsLoading)
-            {
-                sf = (ShaderFrequency)ms.ReadByte();
-            }
-            else
-            {
-                ms.Writer.WriteByte((byte)sf);
             }
         }
     }
