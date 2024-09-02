@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -53,7 +52,7 @@ namespace LegendaryExplorerCore.UDK
 
             PackageCache cache = new PackageCache();
             //foreach(var file in files)
-            Parallel.ForEach(files.Where(x=>x.RepresentsPackageFilePath()), file =>
+            Parallel.ForEach(files.Where(x => x.RepresentsPackageFilePath()), file =>
             {
                 //if (!file.Contains("BIOG_V_Z", StringComparison.OrdinalIgnoreCase))
                 //    continue;
@@ -108,10 +107,16 @@ namespace LegendaryExplorerCore.UDK
                                     continue; // Skip it.
                             }
 
-                            EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false});
+                            EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false });
                         }
 
                         CorrectExpressions(destP);
+
+                        foreach (var tex in destP.Exports.Where(x => x.IsTexture()))
+                        {
+                            tex.RemoveProperty("TextureFileCacheName");
+                            tex.RemoveProperty("TextureFileCacheGuid");
+                        }
                         if (destP.Exports.Count > 0)
                         {
                             destP.Save();
@@ -143,6 +148,7 @@ namespace LegendaryExplorerCore.UDK
                                 destP = MEPackageHandler.CreateAndOpenPackage(destFile, MEGame.UDK);
                             }
 
+                            // Brings over a lot of stuff we don't want in UDK
                             forcedPortItem.RemoveProperty("PhysMaterial");
 
                             IEntry testRoot = forcedPortItem;
@@ -158,6 +164,13 @@ namespace LegendaryExplorerCore.UDK
                             var portedE = (ported as ExportEntry);
                             portedE.ExportFlags &= ~UnrealFlags.EExportFlags.ForcedExport;
                             CorrectExpressions(destP);
+
+                            foreach (var tex in destP.Exports.Where(x => x.IsTexture()))
+                            {
+                                tex.RemoveProperty("TextureFileCacheName");
+                                tex.RemoveProperty("TextureFileCacheGuid");
+                            }
+
                             if (destP.Exports.Count > 0)
                             {
                                 destP.Save();
