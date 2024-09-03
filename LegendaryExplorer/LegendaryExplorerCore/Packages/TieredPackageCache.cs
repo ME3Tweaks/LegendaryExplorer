@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
@@ -44,6 +45,16 @@ public class TieredPackageCache : PackageCache
     private object promoSyncObj = new object();
 
     /// <summary>
+    /// Use by children to synchronize promotion guid
+    /// </summary>
+    private object childSyncObj = new object();
+
+    /// <summary>
+    /// Used by children to synchronize promotions
+    /// </summary>
+    private object promoInsertionSyncObj = new object();
+
+    /// <summary>
     /// On access, will initialize global packages.
     /// </summary>
     private bool GlobalInitOnFirstUse { get; set; }
@@ -53,10 +64,23 @@ public class TieredPackageCache : PackageCache
     /// </summary>
     public bool ReloadFileList { get; set; }
 
+    // PROMOTION SYSTEM
     /// <summary>
     /// After child caches open the same package this many times, the package will be promoted into the parent cache. The parent cache must have 'CanBePromotedInto' set to true for this to do anything.
     /// </summary>
     public int PackagePromotionThreshold { get; set; } = 5;
+
+    /// <summary>
+    /// When checking parent for packages, if this does not match their current PromotionGuid, something was promoted into it, and we should drop any local packages that are now in the parent cache to reduce memory consumption
+    /// </summary>
+    public int ParentPromotionGuid { get; set; }
+
+    /// <summary>
+    /// Updated every time a package is promoted into this cache
+    /// </summary>
+    public int PromotionGuid { get; set; }
+
+    // END PROMOTION SYSTEM
 
     private string GameRootPath { get; set; }
     private MEGame? Game { get; set; }
@@ -126,11 +150,19 @@ public class TieredPackageCache : PackageCache
     /// <param name="package"></param>
     public void PromotePackage(IMEPackage package)
     {
-        if (ParentCache != null && !ParentCache.CacheContains(package.FilePath))
+        if (ParentCache != null)
         {
-            Debug.WriteLine($"Promoting {package.FileNameNoExtension} to a higher tier cache");
-            ParentCache.InsertIntoCache(package);
-            Cache.Remove(package.FilePath, out _);
+            // Lock promotion
+            lock (ParentCache.promoInsertionSyncObj)
+            {
+                if (!ParentCache.CacheContains(package.FilePath))
+                {
+                    Debug.WriteLine($"Promoting {package.FileNameNoExtension} to a higher tier cache. Parent cache size: {(ParentCache.Cache.Count + 1)}");
+                    ParentCache.InsertIntoCache(package);
+                    ParentCache.PromotionGuid = new Random().Next();
+                    Cache.Remove(package.FilePath, out _);
+                }
+            }
         }
     }
 
@@ -146,9 +178,31 @@ public class TieredPackageCache : PackageCache
             packageName = Path.GetFileName(packageName); // Ensure we only use filename
         }
 
-        var parentP = ParentCache?.GetCachedPackage(packageName, false);
-        if (parentP != null)
-            return parentP;
+        if (ParentCache != null)
+        {
+            lock (ParentCache.childSyncObj)
+            {
+                if (ParentCache.PromotionGuid != ParentPromotionGuid)
+                {
+                    var parentPackages = ParentCache.GetPackages();
+
+                    // Drop local packages that are in parent cache
+                    var droppedCount = ReleasePackages(x => parentPackages.Any(y => y.FilePath.CaseInsensitiveEquals(x)));
+                    if (droppedCount > 0)
+                    {
+                        Debug.WriteLine($"Dropped {droppedCount} packages from local cache that are in higher tier");
+                    }
+
+                    // We should resynchronize guids
+                    ParentPromotionGuid = ParentCache.PromotionGuid;
+                }
+            }
+
+
+            var parentP = ParentCache.GetCachedPackage(packageName, false);
+            if (parentP != null)
+                return parentP;
+        }
 
         if (GlobalInitOnFirstUse)
         {
@@ -269,8 +323,9 @@ public class TieredPackageCache : PackageCache
     {
         if (FilenameOnlyMode)
         {
-            Cache[Path.GetFileName(package.FilePath)] = package;
-            LastAccessMap[Path.GetFileName(package.FilePath)] = DateTime.Now;
+            var fileName = Path.GetFileName(package.FilePath);
+            Cache[fileName] = package;
+            LastAccessMap[fileName] = DateTime.Now;
         }
         else
         {
@@ -278,6 +333,30 @@ public class TieredPackageCache : PackageCache
             LastAccessMap[package.FilePath] = DateTime.Now;
         }
         CheckCacheFullness();
+    }
+
+    /// <summary>
+    /// When this amount of packages are dropped due to cache limit, a full GC will be performed
+    /// </summary>
+    public int DropsUntilFullGC { get; set; } = 10;
+
+    /// <summary>
+    /// Internal counter for drops when cache size is capped
+    /// </summary>
+    private int _dropsTillFullGC = 10;
+
+    public override void CheckCacheFullness(bool gcOnRelease = false, bool largeGc = false)
+    {
+        if (CacheMaxSize > 0)
+            _dropsTillFullGC--;
+
+        var performFullGC = CacheMaxSize > 0 && _dropsTillFullGC <= 0; // We do less than to ensure edge cases don't occur
+        base.CheckCacheFullness(performFullGC, performFullGC);
+        if (performFullGC)
+        {
+            // Reset the count
+            _dropsTillFullGC = DropsUntilFullGC;
+        }
     }
 
     /// <summary>
