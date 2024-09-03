@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// ReSharper disable InconsistentNaming
+
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 public struct FShaderParameter
@@ -20,6 +17,7 @@ public struct FShaderResourceParameter
     public ushort SamplerIndex;
 }
 
+[StructLayout(LayoutKind.Sequential, Pack = 2)]
 public struct TUniformParameter<TParam> where TParam : unmanaged
 {
     public int Index;
@@ -101,7 +99,29 @@ public struct FHeightFogVertexShaderParameters
     public FShaderParameter FogStartDistance;
 }
 
-public abstract class FMaterialShaderParameters
+public struct FDOFShaderParameters
+{
+    public FShaderParameter PackedParameters;
+    public FShaderParameter MinMaxBlurClamp;
+    public FShaderResourceParameter DOFTexture;
+}
+
+public struct FHBAOShaderParameters
+{
+    public FShaderParameter RadiusToScreen;
+    public FShaderParameter NegInvR2;
+    public FShaderParameter NDotVBias;
+    public FShaderParameter AOMultiplier;
+    public FShaderParameter PowExponent;
+    public FShaderParameter ProjInfo;
+    public FShaderParameter BlurSharpness;
+    public FShaderParameter InvFullResolution;
+    public FShaderParameter InvQuarterResolution;
+    public FShaderParameter FullResOffset;
+    public FShaderParameter QuarterResOffset;
+}
+
+public struct FMaterialVertexShaderParameters
 {
     public FShaderParameter CameraWorldPosition;
     public FShaderParameter ObjectWorldPositionAndRadius;
@@ -109,16 +129,30 @@ public abstract class FMaterialShaderParameters
     public FShaderParameter WindDirectionAndSpeed;
     public FShaderParameter FoliageImpulseDirection;
     public FShaderParameter FoliageNormalizedRotationAxisAndAngle;
-}
-
-public class FMaterialVertexShaderParameters : FMaterialShaderParameters
-{
     public TUniformParameter<FShaderParameter>[] UniformVertexScalarShaderParameters;
     public TUniformParameter<FShaderParameter>[] UniformVertexVectorShaderParameters;
+
+    public void Serialize(SerializingContainer sc)
+    {
+        sc.SerializeUnmanaged(ref CameraWorldPosition);
+        sc.SerializeUnmanaged(ref ObjectWorldPositionAndRadius);
+        sc.SerializeUnmanaged(ref ObjectOrientation);
+        sc.SerializeUnmanaged(ref WindDirectionAndSpeed);
+        sc.SerializeUnmanaged(ref FoliageImpulseDirection);
+        sc.SerializeUnmanaged(ref FoliageNormalizedRotationAxisAndAngle);
+        sc.Serialize(ref UniformVertexScalarShaderParameters, sc.SerializeUnmanaged);
+        sc.Serialize(ref UniformVertexVectorShaderParameters, sc.SerializeUnmanaged);
+    }
 }
 
-public class FMaterialPixelShaderParameters : FMaterialShaderParameters
+public struct FMaterialPixelShaderParameters
 {
+    public FShaderParameter CameraWorldPosition;
+    public FShaderParameter ObjectWorldPositionAndRadius;
+    public FShaderParameter ObjectOrientation;
+    public FShaderParameter WindDirectionAndSpeed;
+    public FShaderParameter FoliageImpulseDirection;
+    public FShaderParameter FoliageNormalizedRotationAxisAndAngle;
     public TUniformParameter<FShaderParameter>[] UniformPixelScalarShaderParameters;
     public TUniformParameter<FShaderParameter>[] UniformPixelVectorShaderParameters;
     public TUniformParameter<FShaderResourceParameter>[] UniformPixel2DShaderResourceParameters;
@@ -140,29 +174,41 @@ public class FMaterialPixelShaderParameters : FMaterialShaderParameters
     public FShaderParameter ScreenDoorFadeSettings;
     public FShaderParameter ScreenDoorFadeSettings2;
     public FShaderResourceParameter ScreenDoorNoiseTexture;
-    //UBOOL UniformPixelScalarShaderParameters is well formed?
-    //UBOOL UniformPixelVectorShaderParameters is well formed?
+    //should these be calculated instead of stored?
+    private int UniformPixelScalarShaderParameters_IsValid;
+    private int UniformPixelVectorShaderParameters_IsValid;
     public FShaderParameter WrapLightingParameters;
-}
-
-public struct FDOFShaderParameters
-{
-    public FShaderParameter PackedParameters;
-    public FShaderParameter MinMaxBlurClamp;
-    public FShaderResourceParameter DOFTexture;
-}
-
-public struct FHBAOShaderParameters
-{
-    public FShaderParameter RadiusToScreen;
-    public FShaderParameter NegInvR2;
-    public FShaderParameter NDotVBias;
-    public FShaderParameter AOMultiplier;
-    public FShaderParameter PowExponent;
-    public FShaderParameter ProjInfo;
-    public FShaderParameter BlurSharpness;
-    public FShaderParameter InvFullResolution;
-    public FShaderParameter InvQuarterResolution;
-    public FShaderParameter FullResOffset;
-    public FShaderParameter QuarterResOffset;
+    public void Serialize(SerializingContainer sc)
+    {
+        sc.SerializeUnmanaged(ref CameraWorldPosition);
+        sc.SerializeUnmanaged(ref ObjectWorldPositionAndRadius);
+        sc.SerializeUnmanaged(ref ObjectOrientation);
+        sc.SerializeUnmanaged(ref WindDirectionAndSpeed);
+        sc.SerializeUnmanaged(ref FoliageImpulseDirection);
+        sc.SerializeUnmanaged(ref FoliageNormalizedRotationAxisAndAngle);
+        sc.Serialize(ref UniformPixelScalarShaderParameters, sc.SerializeUnmanaged);
+        sc.Serialize(ref UniformPixelVectorShaderParameters, sc.SerializeUnmanaged);
+        sc.Serialize(ref UniformPixel2DShaderResourceParameters, sc.SerializeUnmanaged);
+        sc.Serialize(ref UniformPixelCubeShaderResourceParameters, sc.SerializeUnmanaged);
+        sc.SerializeUnmanaged(ref LocalToWorld);
+        sc.SerializeUnmanaged(ref WorldToLocal);
+        sc.SerializeUnmanaged(ref WorldToView);
+        sc.SerializeUnmanaged(ref InvViewProjection);
+        sc.SerializeUnmanaged(ref ViewProjection);
+        sc.SerializeUnmanaged(ref SceneTextureParameters);
+        sc.SerializeUnmanaged(ref TwoSidedSign);
+        sc.SerializeUnmanaged(ref InvGamma);
+        sc.SerializeUnmanaged(ref DecalFarPlaneDistance);
+        sc.SerializeUnmanaged(ref ObjectPostProjectionPosition);
+        sc.SerializeUnmanaged(ref ObjectMacroUVScales);
+        sc.SerializeUnmanaged(ref ObjectNDCPosition);
+        sc.SerializeUnmanaged(ref OcclusionPercentage);
+        sc.SerializeUnmanaged(ref EnableScreenDoorFade);
+        sc.SerializeUnmanaged(ref ScreenDoorFadeSettings);
+        sc.SerializeUnmanaged(ref ScreenDoorFadeSettings2);
+        sc.SerializeUnmanaged(ref ScreenDoorNoiseTexture);
+        sc.Serialize(ref UniformPixelScalarShaderParameters_IsValid);
+        sc.Serialize(ref UniformPixelVectorShaderParameters_IsValid);
+        sc.SerializeUnmanaged(ref WrapLightingParameters);
+    }
 }

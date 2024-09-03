@@ -140,7 +140,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (sc.IsLoading)
                 {
-                    VertexFactoryTypeGuidMap = new UMultiMap<NameReference, Guid>();
+                    VertexFactoryTypeGuidMap = [];
                 }
 
                 int count = VertexFactoryTypeGuidMap.Count;

@@ -1509,7 +1509,7 @@ public partial class BinaryInterpreterWPF
 
         BinInterpNode FShaderParameter(string name)
         {
-            return new BinInterpNode(bin.Position, $"{name}: FShader")
+            return new BinInterpNode(bin.Position, $"{name}: FShaderParameter")
             {
                 Items =
                 {
@@ -1523,7 +1523,7 @@ public partial class BinaryInterpreterWPF
 
         BinInterpNode FShaderResourceParameter(string name)
         {
-            return new BinInterpNode(bin.Position, $"{name}: FShaderResource")
+            return new BinInterpNode(bin.Position, $"{name}: FShaderResourceParameter")
             {
                 Items =
                 {

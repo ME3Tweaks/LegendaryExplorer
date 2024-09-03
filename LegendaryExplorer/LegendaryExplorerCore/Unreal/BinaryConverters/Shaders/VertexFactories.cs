@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+
+// ReSharper disable InconsistentNaming
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 
@@ -15,7 +12,9 @@ public struct FVertexFactoryParameterRef
     public void Serialize(SerializingContainer sc)
     {
         sc.Serialize(ref VertexFactoryType);
+        var offsetWriter = sc.SerializeDefferedFileOffset();
         FVertexFactoryShaderParameters.Serialize(sc, VertexFactoryType.Name, ref Parameters);
+        offsetWriter.SetPosition(sc);
     }
 }
 
@@ -58,7 +57,9 @@ public class FLocalVertexFactoryShaderParameters : FVertexFactoryShaderParameter
     public FShaderParameter WorldToLocal;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref LocalToWorld);
+        sc.SerializeUnmanaged(ref LocalToWorldRotDeterminantFlip);
+        sc.SerializeUnmanaged(ref WorldToLocal);
     }
 }
 
@@ -73,7 +74,14 @@ public class FFluidTessellationVertexFactoryShaderParameters : FLocalVertexFacto
     public FShaderParameter SplineParameters;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref GridSize);
+        sc.SerializeUnmanaged(ref TessellationParameters);
+        sc.SerializeUnmanaged(ref Heightmap);
+        sc.SerializeUnmanaged(ref TessellationFactors1);
+        sc.SerializeUnmanaged(ref TessellationFactors2);
+        sc.SerializeUnmanaged(ref TexcoordScaleBias);
+        sc.SerializeUnmanaged(ref SplineParameters);
     }
 }
 
@@ -83,7 +91,8 @@ public class FFoliageVertexFactoryShaderParameters : FVertexFactoryShaderParamet
     public FShaderParameter NumVerticesPerInstance;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref InvNumVerticesPerInstance);
+        sc.SerializeUnmanaged(ref NumVerticesPerInstance);
     }
 }
 
@@ -94,7 +103,10 @@ public class FGPUSkinDecalVertexFactoryShaderParameters : FGPUSkinVertexFactoryS
     public FShaderParameter DecalLocation;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref BoneToDecalRow0);
+        sc.SerializeUnmanaged(ref BoneToDecalRow1);
+        sc.SerializeUnmanaged(ref DecalLocation);
     }
 }
 
@@ -110,7 +122,14 @@ public class FGPUSkinVertexFactoryShaderParameters : FVertexFactoryShaderParamet
     public FShaderParameter WoundEllipse1;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref LocalToWorld);
+        sc.SerializeUnmanaged(ref WorldToLocal);
+        sc.SerializeUnmanaged(ref BoneMatrices);
+        sc.SerializeUnmanaged(ref MaxBoneInfluences);
+        sc.SerializeUnmanaged(ref MeshOrigin);
+        sc.SerializeUnmanaged(ref MeshExtension);
+        sc.SerializeUnmanaged(ref WoundEllipse0);
+        sc.SerializeUnmanaged(ref WoundEllipse1);
     }
 }
 
@@ -120,7 +139,9 @@ public class FInstancedStaticMeshVertexFactoryShaderParameters : FLocalVertexFac
     public FShaderParameter InstancingParameters;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref InstancedViewTranslation);
+        sc.SerializeUnmanaged(ref InstancingParameters);
     }
 }
 
@@ -131,7 +152,9 @@ public class FLensFlareVertexFactoryShaderParameters : FVertexFactoryShaderParam
     public FShaderParameter LocalToWorld;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref CameraRight);
+        sc.SerializeUnmanaged(ref CameraUp);
+        sc.SerializeUnmanaged(ref LocalToWorld);
     }
 }
 
@@ -146,7 +169,14 @@ public class FLocalDecalVertexFactoryShaderParameters : FLocalVertexFactoryShade
     public FShaderParameter DecalBlendInterval;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref DecalMatrix);
+        sc.SerializeUnmanaged(ref DecalLocation);
+        sc.SerializeUnmanaged(ref DecalOffset);
+        sc.SerializeUnmanaged(ref DecalLocalBinormal);
+        sc.SerializeUnmanaged(ref DecalLocalTangent);
+        sc.SerializeUnmanaged(ref DecalLocalNormal);
+        sc.SerializeUnmanaged(ref DecalBlendInterval);
     }
 }
 
@@ -156,7 +186,9 @@ public class FGPUSkinVertexFactoryApexShaderParameters : FLocalVertexFactoryShad
     public FShaderParameter ApexDummy;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref BoneMatrices);
+        sc.SerializeUnmanaged(ref ApexDummy);
     }
 }
 
@@ -169,7 +201,11 @@ public class FParticleBeamTrailVertexFactoryShaderParameters : FVertexFactorySha
     public FShaderParameter LocalToWorld;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref CameraWorldPosition);
+        sc.SerializeUnmanaged(ref CameraRight);
+        sc.SerializeUnmanaged(ref CameraUp);
+        sc.SerializeUnmanaged(ref ScreenAlignment);
+        sc.SerializeUnmanaged(ref LocalToWorld);
     }
 }
 
@@ -180,7 +216,9 @@ public class FParticleInstancedMeshVertexFactoryShaderParameters : FVertexFactor
     public FShaderParameter InstancedPreViewTranslation;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref InvNumVerticesPerInstance);
+        sc.SerializeUnmanaged(ref NumVerticesPerInstance);
+        sc.SerializeUnmanaged(ref InstancedPreViewTranslation);
     }
 }
 
@@ -199,7 +237,17 @@ public class FParticleVertexFactoryShaderParameters : FVertexFactoryShaderParame
     public FShaderParameter NormalsCylinderUnitDirection;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref CameraWorldPosition);
+        sc.SerializeUnmanaged(ref CameraRight);
+        sc.SerializeUnmanaged(ref CameraUp);
+        sc.SerializeUnmanaged(ref ScreenAlignment);
+        sc.SerializeUnmanaged(ref LocalToWorld);
+        sc.SerializeUnmanaged(ref AxisRotationVectorSourceIndex);
+        sc.SerializeUnmanaged(ref AxisRotationVectors);
+        sc.SerializeUnmanaged(ref ParticleUpRightResultScalars);
+        sc.SerializeUnmanaged(ref NormalsType);
+        sc.SerializeUnmanaged(ref NormalsSphereCenter);
+        sc.SerializeUnmanaged(ref NormalsCylinderUnitDirection);
     }
 }
 
@@ -221,7 +269,21 @@ public class FSplineMeshVertexFactoryShaderParameters : FLocalVertexFactoryShade
     public FShaderParameter MeshRangeZ;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref SplineStartPos);
+        sc.SerializeUnmanaged(ref SplineStartTangent);
+        sc.SerializeUnmanaged(ref SplineStartRoll);
+        sc.SerializeUnmanaged(ref SplineStartScale);
+        sc.SerializeUnmanaged(ref SplineStartOffset);
+        sc.SerializeUnmanaged(ref SplineEndPos);
+        sc.SerializeUnmanaged(ref SplineEndTangent);
+        sc.SerializeUnmanaged(ref SplineEndRoll);
+        sc.SerializeUnmanaged(ref SplineEndScale);
+        sc.SerializeUnmanaged(ref SplineEndOffset);
+        sc.SerializeUnmanaged(ref SplineXDir);
+        sc.SerializeUnmanaged(ref SmoothInterpRollScale);
+        sc.SerializeUnmanaged(ref MeshMinZ);
+        sc.SerializeUnmanaged(ref MeshRangeZ);
     }
 }
 
@@ -234,7 +296,12 @@ public class FTerrainDecalVertexFactoryShaderParameters : FTerrainVertexFactoryS
     public FShaderParameter DecalLocalTangent;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        base.Serialize(sc);
+        sc.SerializeUnmanaged(ref DecalMatrix);
+        sc.SerializeUnmanaged(ref DecalLocation);
+        sc.SerializeUnmanaged(ref DecalOffset);
+        sc.SerializeUnmanaged(ref DecalLocalBinormal);
+        sc.SerializeUnmanaged(ref DecalLocalTangent);
     }
 }
 
@@ -252,6 +319,15 @@ public class FTerrainVertexFactoryShaderParameters : FVertexFactoryShaderParamet
     public FShaderParameter TessInterpDistanceValues;
     protected override void Serialize(SerializingContainer sc)
     {
-        throw new NotImplementedException();
+        sc.SerializeUnmanaged(ref LocalToWorld);
+        sc.SerializeUnmanaged(ref WorldToLocal);
+        sc.SerializeUnmanaged(ref LocalToView);
+        sc.SerializeUnmanaged(ref TerrainLightmapCoordinateScaleBias);
+        sc.SerializeUnmanaged(ref TessellationInterpolation);
+        sc.SerializeUnmanaged(ref InvMaxTesselationLevel_ZScale);
+        sc.SerializeUnmanaged(ref InvTerrainSize_SectionBase);
+        sc.SerializeUnmanaged(ref Unused);
+        sc.SerializeUnmanaged(ref TessellationDistanceScale);
+        sc.SerializeUnmanaged(ref TessInterpDistanceValues);
     }
 }

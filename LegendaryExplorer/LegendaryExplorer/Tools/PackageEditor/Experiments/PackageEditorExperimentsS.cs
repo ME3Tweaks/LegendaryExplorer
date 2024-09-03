@@ -2219,22 +2219,18 @@ import java.util.*;"
             ObjectBinary bin = ObjectBinary.From(export) ?? export.GetBinaryData();
             byte[] original = export.Data;
 
-            export.WriteProperties(props);
+            export.WritePropertiesAndBinary(props, bin);
 
-            EndianReader ms = new EndianReader(new MemoryStream()) { Endian = export.FileRef.Endian };
-            ms.Writer.Write(export.Data, 0, export.propsEnd());
-            bin.WriteTo(ms.Writer, export.FileRef, export.DataOffset);
-
-            byte[] changed = ms.ToArray();
+            var changed = export.DataReadOnly;
             //export.Data = changed;
-            if (original.SequenceEqual(changed))
+            if (changed.SequenceEqual(original))
             {
                 MessageBox.Show("reserialized identically!");
             }
             else
             {
-                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), original);
-                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), changed);
+                //File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "original.bin"), original);
+                //File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "new.bin"), changed);
                 if (original.Length != changed.Length)
                 {
                     MessageBox.Show($"Differences detected: Lengths are not the same. Original {original.Length}, Reserialized {changed.Length}");
