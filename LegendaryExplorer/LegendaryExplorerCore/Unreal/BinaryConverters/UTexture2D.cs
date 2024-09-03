@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class UTexture : ObjectBinary
     {
-        public byte[] Thumbnail; // Not ME3 or LE3
+        public byte[] SourceArt; // Not ME3 or LE3
 
         protected override void Serialize(SerializingContainer sc)
         {
@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 int dummy = 0;
                 sc.Serialize(ref dummy);
                 sc.Serialize(ref dummy);
-                sc.Serialize(ref Thumbnail);
+                sc.Serialize(ref SourceArt);
                 sc.SerializeFileOffset();
             }
         }
@@ -31,11 +31,27 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
+    public class UTextureRenderTarget2D : UTexture
+    {
+        // This is here just to make sure it's different
+        protected override void Serialize(SerializingContainer sc)
+        {
+            base.Serialize(sc);
+        }
+    }
+
     public class UTexture2D : UTexture
     {
         public List<Texture2DMipMap> Mips;
         public int Unk1;
         public Guid TextureGuid;
+
+        // UDK only follows
+        public List<Texture2DMipMap> CachedPVRTCMips;
+        public int CachedFlashMipsMaxResolution;
+        public List<Texture2DMipMap> CachedATITCMips;
+        public int[] CachedFlashMipsBulkData;
+        public List<Texture2DMipMap> CachedETCMips;
 
         protected override void Serialize(SerializingContainer sc)
         {
@@ -53,12 +69,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (sc.Game == MEGame.UDK)
             {
-                var zeros = new byte[32];
-                sc.Serialize(ref zeros, 32);
+                // These appear to be mips or something of different format, maybe for different platforms
+                sc.Serialize(ref CachedPVRTCMips, sc.Serialize);
+                sc.Serialize(ref CachedFlashMipsMaxResolution);
+                sc.Serialize(ref CachedATITCMips, sc.Serialize);
+                sc.SerializeBulkData(ref CachedFlashMipsBulkData, sc.Serialize);
+                sc.Serialize(ref CachedETCMips, sc.Serialize);
             }
             if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
-                int dummy = 0;
+                int dummy = 0; // Bioware specific
                 sc.Serialize(ref dummy);
             }
         }
@@ -173,7 +193,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (IsSaving && mip.IsLocallyStored)
             {
                 // This code is not accurate as the start offset may be 0 if the export is new and doesn't have a DataOffset yet.
-                SerializeFileOffset();
+                mip.DataOffset = SerializeFileOffset(); // 08/31/2024 - Update the data offset when serializing out
             }
             else
             {

@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -17,7 +18,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame, PropertyCollection newProps)
         {
-            if (export.propsEnd() == export.DataSize)
+            // 08/29/2024 - Don't use this check on textures, as games may have exports with zero properties (like zero face cubes or broken textures in ME1)
+            // The binary format still needs changed for target game. We probably should maintain a list of classes that have binary formats
+            // change that this could trigger on if there were no properties and no binary data in the source game.
+            if (export.propsEnd() == export.DataSize && !export.IsA("Texture"))
             {
                 return Array.Empty<byte>();
             }

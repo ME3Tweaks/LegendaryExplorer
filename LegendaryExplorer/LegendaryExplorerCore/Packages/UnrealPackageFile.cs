@@ -65,8 +65,8 @@ namespace LegendaryExplorerCore.Packages
     {
         public const uint packageTagLittleEndian = 0x9E2A83C1; //Default, PC
         public const uint packageTagBigEndian = 0xC1832A9E;
-        public string FilePath { get; }
-        public string FileNameNoExtension { get; }
+        public string FilePath { get; protected set; }
+        public string FileNameNoExtension { get; protected set; }
         public bool IsModified { get; protected set; }
         public int FullHeaderSize { get; protected set; }
         public UnrealFlags.EPackageFlags Flags { get; protected set; }
@@ -328,7 +328,7 @@ namespace LegendaryExplorerCore.Packages
                 throw new Exception("Cannot add an export entry from another package file");
 
             // Useful for breaking when a duplicate is being added
-            //if (FindExport(exportEntry.InstancedFullPath) != null)
+            //if (FindExport(exportEntry.InstancedFullPath, exportEntry.ClassName) != null)
             //    Debugger.Break(); // Found duplicate.
 
             exportEntry.DataChanged = true;
@@ -876,6 +876,19 @@ namespace LegendaryExplorerCore.Packages
             return tlks;
         }
 
+        /// <summary>
+        /// Sets the filepath for this package. This will set the <see cref="FileNameNoExtension"/> property as well. Only use this if you know what you are doing; this can break a lot of things.
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void SetInternalFilepath(string filePath)
+        {
+            FilePath = filePath;
+            if (filePath is not null)
+            {
+                FileNameNoExtension = Path.GetFileNameWithoutExtension(filePath);
+            }
+        }
+
         #region packageHandler stuff
 
         private readonly List<IPackageUser> _users = new();
@@ -1069,11 +1082,7 @@ namespace LegendaryExplorerCore.Packages
 
         protected UnrealPackageFile(string filePath)
         {
-            FilePath = filePath;
-            if (filePath is not null)
-            {
-                FileNameNoExtension = Path.GetFileNameWithoutExtension(filePath);
-            }
+            SetInternalFilepath(filePath);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -205,7 +205,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 Serialize(ref mres.TextureLookups, Serialize);
-                Serialize(ref mres.unkUint1);
+                Serialize(ref mres.DummyDroppedFallbackComponents);
 
                 // TERRAIN MATERIAL RESOURCE SPECIFIC ============================================
                 // If we are porting a terrain, these are NOT used in it's CachedMaterials!

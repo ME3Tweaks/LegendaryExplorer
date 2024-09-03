@@ -303,10 +303,12 @@ public partial class BinaryInterpreterWPF
                     }
                 }
 
+                // UDK: Seems to be 0x20 of blank filler bytes? Both in SM3 and SM5. Maybe byte aligning struct size?
+
                 bin.JumpTo(shaderMapEndOffset - dataOffset);
             }
 
-            if (CurrentLoadedExport.Game is MEGame.ME3 or MEGame.UDK && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
+            if (CurrentLoadedExport.Game is MEGame.ME3 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.Xenon)
             {
                 int numShaderCachePayloads = bin.ReadInt32();
                 var shaderCachePayloads = new BinInterpNode(bin.Position - 4, $"Shader Cache Payloads, {numShaderCachePayloads} items");

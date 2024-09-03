@@ -754,6 +754,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case "ShadowMapTexture2D":
                         case "TextureFlipBook":
                         case "TerrainWeightMapTexture":
+                        case "TextureCube":
+                        case "TextureRenderTarget2D":
                             subNodes.AddRange(StartTextureBinaryScan(data, binarystart));
                             break;
                         case "ShadowMap1D":

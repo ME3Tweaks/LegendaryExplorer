@@ -1477,12 +1477,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="unsafeLoad">If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</param>
         /// <param name="localDirFiles">Files in the local directory. These will be checked last</param>
         /// <param name="gameRootOverride">The root path of the game. If null, the default path will be used</param>
+        /// <param name="instancedFullPathOverride">Allows overriding the instanced full path for lookup when resolving this import - can be useful if you need to test an import that has it's IFP changed and would not resolve otherwise</param>
         /// <returns></returns>
         public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", bool unsafeLoad = false,
             IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, PackageCache, IMEPackage> fileResolver = null,
-            Func<ExportEntry, bool> unsafeLoadDelegate = null)
+            Func<ExportEntry, bool> unsafeLoadDelegate = null, string instancedFullPathOverride = null)
         {
-            var entryFullPath = entry.InstancedFullPath;
+            var entryFullPath = instancedFullPathOverride ?? entry.InstancedFullPath;
             cache ??= new PackageCache();
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{

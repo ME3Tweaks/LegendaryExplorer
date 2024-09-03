@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,16 +16,16 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 namespace LegendaryExplorerCore.UDK
 {
     /// <summary>
-    /// Ports materials from ME1 (2008) into UDK so the materials can be used in-editor. Other games don't have the necessary information for this
+    /// Ports materials from a game into UDK so the materials can be used in-editor. Full expression information must be available in the source data for this to be useful; UDK cannot compile shaders without it.
     /// </summary>
     public static class UDKMaterialPort
     {
-        public static void PortMaterialsIntoUDK(MEGame game, string inputPath)
+        public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null, string gameRootOverride = null)
         {
-            if (UDKDirectory.UDKGamePath == null)
+            if (UDKDirectory.UDKGamePath == null && gameRootOverride == null)
                 return;
 
-            var basePath = Path.Combine(UDKDirectory.SharedPath, $"{game}MaterialPort");
+            var basePath = Path.Combine(UDKDirectory.GetSharedPath(gameRootOverride), folderNameOverride ?? $"{game}MaterialPort");
             Directory.CreateDirectory(basePath);
 
             // Clear existing files
@@ -52,14 +51,15 @@ namespace LegendaryExplorerCore.UDK
             files.Remove(Path.Combine(inputPath, "EditorResources.upk"));
 
             PackageCache cache = new PackageCache();
-            Parallel.ForEach(files.Where(x=>x.RepresentsPackageFilePath()), file =>
+            //foreach(var file in files)
+            Parallel.ForEach(files.Where(x => x.RepresentsPackageFilePath()), file =>
             {
                 //if (!file.Contains("BIOG_V_Z", StringComparison.OrdinalIgnoreCase))
                 //    continue;
 
                 var isSafeFile = EntryImporter.IsSafeToImportFrom(file, game, file);
                 var quickSourceP = MEPackageHandler.UnsafePartialLoad(file, x => false);
-                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsTexture()));
+                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsA("Texture"))); // Don't use .IsTexture() as it does not include cubemaps
                 if (quickPortItems)
                 {
                     using var sourceP = MEPackageHandler.OpenMEPackage(file);
@@ -107,10 +107,16 @@ namespace LegendaryExplorerCore.UDK
                                     continue; // Skip it.
                             }
 
-                            EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false});
+                            EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false });
                         }
 
                         CorrectExpressions(destP);
+
+                        foreach (var tex in destP.Exports.Where(x => x.IsTexture()))
+                        {
+                            tex.RemoveProperty("TextureFileCacheName");
+                            tex.RemoveProperty("TextureFileCacheGuid");
+                        }
                         if (destP.Exports.Count > 0)
                         {
                             destP.Save();
@@ -142,6 +148,7 @@ namespace LegendaryExplorerCore.UDK
                                 destP = MEPackageHandler.CreateAndOpenPackage(destFile, MEGame.UDK);
                             }
 
+                            // Brings over a lot of stuff we don't want in UDK
                             forcedPortItem.RemoveProperty("PhysMaterial");
 
                             IEntry testRoot = forcedPortItem;
@@ -157,6 +164,13 @@ namespace LegendaryExplorerCore.UDK
                             var portedE = (ported as ExportEntry);
                             portedE.ExportFlags &= ~UnrealFlags.EExportFlags.ForcedExport;
                             CorrectExpressions(destP);
+
+                            foreach (var tex in destP.Exports.Where(x => x.IsTexture()))
+                            {
+                                tex.RemoveProperty("TextureFileCacheName");
+                                tex.RemoveProperty("TextureFileCacheGuid");
+                            }
+
                             if (destP.Exports.Count > 0)
                             {
                                 destP.Save();
@@ -169,7 +183,8 @@ namespace LegendaryExplorerCore.UDK
                         }
                     }
                 }
-            });
+            }
+            ); // Parallel
 
             var testFiles = Directory.GetFiles(basePath);
             foreach (var tf in testFiles)
@@ -192,7 +207,7 @@ namespace LegendaryExplorerCore.UDK
                     if (GlobalUnrealObjectInfo.IsAKnownNativeClass(imp.InstancedFullPath, MEGame.UDK))
                         continue;
 
-                    var resolved = EntryImporter.ResolveImport(imp, cache, unsafeLoad: true);
+                    var resolved = EntryImporter.ResolveImport(imp, cache, unsafeLoad: true, gameRootOverride: gameRootOverride);
                     if (resolved == null)
                     {
                         Debug.WriteLine($"ERROR: IMPORT FAILED TO RESOLVE: {imp.InstancedFullPath} IN: {tf}");
