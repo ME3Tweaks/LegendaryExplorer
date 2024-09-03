@@ -132,6 +132,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     continue;
                 }
 
+                if (exp.Game == MEGame.UDK && exp.Parent is ImportEntry)
+                {
+                    item.AddBlockingError("UDK does not support exports under imports in non-cooked packages - UDK will crash loading this package file!", exp);
+                }
+
                 var prefix = localizationDelegate(LECLocalizationShim.string_interp_warningGenericExportPrefix, relativePath ?? fName, exp.UIndex, exp.ObjectName.Name, exp.ClassName);
                 try
                 {
@@ -252,6 +257,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 else if (imp.idxLink == imp.UIndex)
                 {
                     item.AddBlockingError(localizationDelegate(LECLocalizationShim.string_interp_fatalImportCircularReference, relativePath ?? fName, imp.UIndex), imp);
+                }
+
+                if (imp.Game == MEGame.UDK && imp.Parent is ExportEntry)
+                {
+                    item.AddBlockingError("UDK does not support imports under exports in non-cooked packages - UDK will crash loading this package file!", imp);
                 }
 
                 // Values check
