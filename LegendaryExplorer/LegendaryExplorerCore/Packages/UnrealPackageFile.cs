@@ -530,6 +530,10 @@ namespace LegendaryExplorerCore.Packages
             //if (importEntry.InstancedFullPath == "BIOC_Materials")
             //    Debugger.Break();
 
+            // Useful for breaking when a duplicate is being added
+            //if (FindImport(importEntry.InstancedFullPath, importEntry.ClassName) != null)
+            //    Debugger.Break(); // Found duplicate.
+
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
             importEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the import has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
