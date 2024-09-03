@@ -39,6 +39,7 @@ namespace LegendaryExplorerCore.Packages
         /// Creates an import that would represent the specified export if it was to be placed in the specified fakeDestPackage.
         /// </summary>
         /// <param name="sourceExport">Export to convert. The link in the dest package must exist or be the root.</param>
+        /// <param name="parentIdx">idxLink in DESTINATION package it will attach to</param>
         /// <param name="fakeDestPackage">Package to associate this object with. The import is not installed to the import table.</param>
         public ImportEntry(ExportEntry sourceExport, int parentIdx, IMEPackage fakeDestPackage)
         {

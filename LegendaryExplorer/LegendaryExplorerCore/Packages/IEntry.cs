@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.Packages
         /// <returns>Package this entry will be nested under in memory</returns>
         internal static string GetLinker(IEntry entry)
         {
-            if (entry.idxLink == 0)
+            if (entry.Parent == null)
             {
                 if (entry.ClassName == "Package")
                 {

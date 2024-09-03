@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -59,6 +60,15 @@ namespace LegendaryExplorerCore.UDK
 
                 var isSafeFile = EntryImporter.IsSafeToImportFrom(file, game, file);
                 var quickSourceP = MEPackageHandler.UnsafePartialLoad(file, x => false);
+                if (quickSourceP.FileNameNoExtension.CaseInsensitiveEquals("EngineDebugMaterials"))
+                    return; // Do not port
+                if (quickSourceP.FileNameNoExtension.CaseInsensitiveEquals("EngineMaterials"))
+                    return; // Do not port
+                if (quickSourceP.FileNameNoExtension.CaseInsensitiveEquals("EngineVolumetrics"))
+                    return; // Do not port
+                if (quickSourceP.FileNameNoExtension.CaseInsensitiveEquals("Engine_MI_Shaders"))
+                    return; // Do not port
+
                 var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsA("Texture"))); // Don't use .IsTexture() as it does not include cubemaps
                 if (quickPortItems)
                 {
@@ -68,7 +78,7 @@ namespace LegendaryExplorerCore.UDK
 
                     var nonForcedPortItems = sourceP.Exports.Where(x =>
                         !x.IsForcedExport &&
-                        x.ClassName is "Material" or "Texture2D" or "TextureFlipBook" or "TextureCube").ToList();
+                        (x.IsA("Material") || x.IsA("Texture"))).ToList();
                     if (nonForcedPortItems.Count > 0)
                     {
                         Debug.WriteLine($"Porting {file} to UDK");
@@ -174,6 +184,14 @@ namespace LegendaryExplorerCore.UDK
                             if (destP.Exports.Count > 0)
                             {
                                 destP.Save();
+
+                                // Validation
+                                var rcp = new ReferenceCheckPackage();
+                                EntryChecker.CheckReferences(rcp, destP, LECLocalizationShim.NonLocalizedStringConverter);
+                                foreach (var v in rcp.GetSignificantIssues())
+                                {
+                                    Debug.WriteLine($"{v.Entry?.InstancedFullPath} {v.Message}");
+                                }
                             }
                             else
                             {

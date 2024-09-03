@@ -78,7 +78,7 @@ namespace LegendaryExplorerCore.Packages
                 {
                     if (File.Exists(packagePath))
                     {
-                        Debug.WriteLine($@"PackageCache {guid} load: {packagePath} - custom open method: {(openPackageMethod != null)}");
+                        //Debug.WriteLine($@"PackageCache {guid} load: {packagePath} - custom open method: {(openPackageMethod != null)}");
                         package = openPackageMethod?.Invoke(packagePath) ?? MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
                         InsertIntoCache(package);
                         return package;
