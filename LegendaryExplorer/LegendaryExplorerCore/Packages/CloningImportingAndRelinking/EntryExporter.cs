@@ -16,6 +16,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
+            // Does entry already exist in destination package?
+            var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath, sourceExport.ClassName);
+            if (newEntry != null)
+            {
+                portedEntry = newEntry;
+                return issues;
+            }
+
             // We will want to cache files in memory to greatly speed this up
             var newCache = cache == null;
             cache ??= new PackageCache();
@@ -55,7 +63,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             var lParent = PortParents(sourceExport, targetPackage, cache: cache);
 
             // Test the entry was not ported in already, such as from a Parent reference
-            var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
+            newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath, sourceExport.ClassName);
             if (newEntry == null)
             {
                 var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true,
@@ -209,13 +217,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // Unsure how this will work if it tries to bring over things as we port INTO linker package
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, PortImportsMemorySafe = true, Cache = cache }, out parent);
                     }
-                    var entriesAC = target.ExportCount;
-                    if (entriesAC - entriesBC > parentCount)
-                    {
-                        // We ported in too many things!!
-                        Debug.WriteLine("We appear to have ported too many things!!");
-                        // Debugger.Break();
-                    }
+                    //var entriesAC = target.ExportCount;
+                    //if (entriesAC - entriesBC > parentCount)
+                    //{
+                    //    // We ported in too many things!!
+                    //    Debug.WriteLine("We appear to have ported too many things!!");
+                    //    // Debugger.Break();
+                    //}
                 }
                 else
                 {
