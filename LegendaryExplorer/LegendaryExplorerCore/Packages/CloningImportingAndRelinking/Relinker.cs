@@ -963,6 +963,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         //{
                         //Parent is import
                         parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
+
+                        if (parent != null)
+                        {
+                            // The destination IFP may have changed
+                            // We should check again if it exists at this destination IFP or we will add a duplicate
+                            var newIFP = parent.InstancedFullPath + '.' + sourceExport.ObjectName.Instanced;
+                            existingEntry = FindExistingEntry(newIFP, relinkingExport, sourceExport, rop);
+                            if (existingEntry != null)
+                            {
+                                // Relink to existing object
+                                uIndex = existingEntry.UIndex;
+                                return null;
+                            }
+                        }
                         //}
                     }
 
