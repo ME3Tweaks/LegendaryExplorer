@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Textures;
@@ -258,7 +255,9 @@ namespace LegendaryExplorerCore.UDK
 
         private static void AssignStaticLighting(MEPackage mePackage, UDKPackage udkPackage, LightingImportSetup setup)
         {
-            // LIst of models that we have updated so we can skip a secondary update
+            LECLog.Information($"Importing static lighting for {mePackage.FileNameNoExtension} from {udkPackage.FilePath}");
+
+            // List of models that we have updated so we can skip a secondary update
             List<ExportEntry> updatedModels = new List<ExportEntry>();
             var meToUdkRemapping = new Dictionary<ExportEntry, ExportEntry>();
 
