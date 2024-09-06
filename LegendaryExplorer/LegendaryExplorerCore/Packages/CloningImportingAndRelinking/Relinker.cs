@@ -921,21 +921,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // is referenced multiple times and gets relinked in as a different object. We only do material interface
             // because it's fairly easy to swap; others could probably be implemented here and in ImportExport().
             // To allow all items to substitute, use the ROP's RelinkAllowDifferingClassesInRelink item.
-            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
-
-            if (existingEntry != null)
-            {
-                if (!existingEntry.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) && !rop.RelinkAllowDifferingClassesInRelink)
-                {
-                    // Allow substituting materials. This prevents a lot of other bugs versus allowing anything to 
-                    // be substituted since we can control it here.
-                    if (!existingEntry.IsA("MaterialInterface") || !sourceExport.IsA("MaterialInterface"))
-                    {
-                        // One of the objects is not a material interface and we aren't allowing any class substitutions during relink
-                        existingEntry = null;
-                    }
-                }
-            }
+            IEntry existingEntry = FindExistingEntry(instancedFullPath, relinkingExport, sourceExport, rop);
 
             if (existingEntry != null)
             {
@@ -1011,6 +997,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Shared code for finding existing entry in package, using lookup rules
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private static IEntry FindExistingEntry(string instancedFullPath, ExportEntry relinkingExport, ExportEntry sourceExport, RelinkerOptionsPackage rop)
+        {
+            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
+
+            if (existingEntry != null)
+            {
+                if (!existingEntry.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) && !rop.RelinkAllowDifferingClassesInRelink)
+                {
+                    // Allow substituting materials. This prevents a lot of other bugs versus allowing anything to 
+                    // be substituted since we can control it here.
+                    if (!existingEntry.IsA("MaterialInterface") || !sourceExport.IsA("MaterialInterface"))
+                    {
+                        // One of the objects is not a material interface and we aren't allowing any class substitutions during relink
+                        existingEntry = null;
+                    }
+                }
+            }
+            return existingEntry;
         }
 
         private static void RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport, RelinkerOptionsPackage rop)
