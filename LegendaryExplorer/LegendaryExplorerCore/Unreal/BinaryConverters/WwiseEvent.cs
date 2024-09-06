@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Toolkit.HighPerformance;
 using UIndex = System.Int32;
@@ -32,7 +33,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                throw new Exception($"WwiseEvent is not a valid class for {sc.Game}!");
+                // 09/04/2024 - Change to debug text as this messes with UDKify - WwiseEvent indirect references may be temporarily ported
+                // in due to RBSetup, but the temp package will clear the ref and when reformed the reference will be lost
+                Debug.WriteLine($"WwiseEvent is not a valid class for {sc.Game}!");
+                //throw new Exception($"WwiseEvent is not a valid class for {sc.Game}!");
             }
         }
 
