@@ -36,9 +36,17 @@ namespace LegendaryExplorerCore.Packages
         public static IMEPackage ResynthesizePackage(IMEPackage package, PackageCache cache)
         {
             var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(package.FilePath, package.Game);
-            (newPackage as MEPackage).setFlags((package as MEPackage).Flags);
+            newPackage.setFlags(package.Flags);
+
+            if (package.Game.IsMEGame())
+            {
             (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
+            }
+
+            if (newPackage.LECLTagData != null)
+            {
             newPackage.LECLTagData.Copy(package.LECLTagData);
+            }
             // I considered using EntryTree but it doesn't seem very suited for reordering. 
             // Too confusing for me <_>
 
