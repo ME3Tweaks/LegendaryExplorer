@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorerCore.Packages
@@ -75,6 +76,13 @@ namespace LegendaryExplorerCore.Packages
                         return entry.InstancedFullPath; // Edge case; this should not occur after resynthesis of a package
                 }
 
+#if DEBUG
+                if (entry is ImportEntry)
+                {
+                    Debug.WriteLine("THIS IS AN INVALID IMPORT - ROOT IMPORTS MUST BE FOR PACKAGES!");
+                    Debugger.Break();
+                }
+#endif
                 // It's part of the package file itself.
                 return entry.FileRef.FileNameNoExtension;
             }
