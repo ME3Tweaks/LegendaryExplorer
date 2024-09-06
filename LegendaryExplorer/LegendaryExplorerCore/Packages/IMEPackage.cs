@@ -339,5 +339,12 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="filePath">New FilePath to set. FilePatNoExtension will be extracted from this and set accordingly.</param>
         void SetInternalFilepath(string filePath);
+
+        /// <summary>
+        /// Sets the package summary flags for this package. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.
+        /// </summary>
+        /// <param name="newFlags">Flags to set</param>
+        public void setFlags(EPackageFlags newFlags);
+
     }
 }
