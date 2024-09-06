@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.Packages;
@@ -21,10 +18,25 @@ namespace LegendaryExplorerCore.UDK
     /// </summary>
     public static class UDKMaterialPort
     {
-        public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null, string gameRootOverride = null)
+        /// <summary>
+        /// If asset should be ported - should be used in conjunction with ForcedExport checks.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        private static bool ShouldPortAsset(ExportEntry x)
+        {
+            return (x.IsA("Material") ||
+                    x.IsA("Texture") ||
+                    x.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant"));
+        }
+
+        public static void PortMaterialsIntoUDK(MEGame game, string inputPath, string folderNameOverride = null, string gameRootOverride = null, Func<ExportEntry, bool> shouldPortDelegate = null)
         {
             if (UDKDirectory.UDKGamePath == null && gameRootOverride == null)
                 return;
+
+            shouldPortDelegate ??= ShouldPortAsset;
+
 
             var basePath = Path.Combine(UDKDirectory.GetSharedPath(gameRootOverride), folderNameOverride ?? $"{game}MaterialPort");
             Directory.CreateDirectory(basePath);
@@ -53,7 +65,7 @@ namespace LegendaryExplorerCore.UDK
 
             PackageCache cache = new PackageCache();
             //foreach(var file in files)
-            Parallel.ForEach(files.Where(x => x.RepresentsPackageFilePath()), file =>
+            Parallel.ForEach(files.Where(x => x.RepresentsPackageFilePath()),new ParallelOptions() {MaxDegreeOfParallelism = 8}, file =>
             {
                 //if (!file.Contains("BIOG_V_Z", StringComparison.OrdinalIgnoreCase))
                 //    continue;
@@ -69,16 +81,14 @@ namespace LegendaryExplorerCore.UDK
                 if (quickSourceP.FileNameNoExtension.CaseInsensitiveEquals("Engine_MI_Shaders"))
                     return; // Do not port
 
-                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsA("Texture"))); // Don't use .IsTexture() as it does not include cubemaps
+                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsA("Texture") || x.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant"))); // Don't use .IsTexture() as it does not include cubemaps
                 if (quickPortItems)
                 {
                     using var sourceP = MEPackageHandler.OpenMEPackage(file);
 
                     #region Not-Forced Export (Goes in this package)
 
-                    var nonForcedPortItems = sourceP.Exports.Where(x =>
-                        !x.IsForcedExport &&
-                        (x.IsA("Material") || x.IsA("Texture"))).ToList();
+                    var nonForcedPortItems = sourceP.Exports.Where(x=> !x.IsForcedExport && shouldPortDelegate(x)).ToList();
                     if (nonForcedPortItems.Count > 0)
                     {
                         Debug.WriteLine($"Porting {file} to UDK");
@@ -116,6 +126,11 @@ namespace LegendaryExplorerCore.UDK
                                 if (!canPort)
                                     continue; // Skip it.
                             }
+                            else if (mat.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant"))
+                            {
+                                mat.RemoveProperty("bHasStaticPermutationResource");
+                                mat.WriteBinary([]); // Remove binary.
+                            }
 
                             EntryExporter.ExportExportToPackage(mat, destP, out var ported, cache, new RelinkerOptionsPackage(cache) { ImportExportDependencies = true, CheckImportsWhenExportingToPackage = false });
                         }
@@ -142,7 +157,7 @@ namespace LegendaryExplorerCore.UDK
 
                     if (isSafeFile)
                     {
-                        var forcedPortItems = sourceP.Exports.Where(x => x.IsForcedExport && (x.IsA("Material") || x.IsTexture())).ToList();
+                        var forcedPortItems = sourceP.Exports.Where(x => x.IsForcedExport && shouldPortDelegate(x)).ToList();
                         foreach (var forcedPortItem in forcedPortItems)
                         {
                             // This is VERY slow
@@ -184,14 +199,6 @@ namespace LegendaryExplorerCore.UDK
                             if (destP.Exports.Count > 0)
                             {
                                 destP.Save();
-
-                                // Validation
-                                var rcp = new ReferenceCheckPackage();
-                                EntryChecker.CheckReferences(rcp, destP, LECLocalizationShim.NonLocalizedStringConverter);
-                                foreach (var v in rcp.GetSignificantIssues())
-                                {
-                                    Debug.WriteLine($"{v.Entry?.InstancedFullPath} {v.Message}");
-                                }
                             }
                             else
                             {
@@ -230,6 +237,13 @@ namespace LegendaryExplorerCore.UDK
                     {
                         Debug.WriteLine($"ERROR: IMPORT FAILED TO RESOLVE: {imp.InstancedFullPath} IN: {tf}");
                     }
+                }
+
+                var item = new ReferenceCheckPackage();
+                EntryChecker.CheckReferences(item, package, LECLocalizationShim.NonLocalizedStringConverter);
+                foreach (var v in item.GetSignificantIssues())
+                {
+                    Debug.WriteLine($"{v.Entry?.InstancedFullPath} {v.Message}");
                 }
             }
 
