@@ -25,18 +25,18 @@ public partial class BinaryInterpreterWPF
 
             if (CurrentLoadedExport.Game == MEGame.UDK)
             {
-                subnodes.Add(new BinInterpNode(bin.Position, $"UDK Unknown: {bin.ReadInt32()}"));
+                subnodes.Add(new BinInterpNode(bin.Position, $"Shader Cache Priority: {bin.ReadInt32()}"));
             }
 
             if (CurrentLoadedExport.Game.IsLEGame())
             {
                 subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
-                    { Length = 1 });
+                { Length = 1 });
             }
             else
             {
                 subnodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
-                    { Length = 1 });
+                { Length = 1 });
             }
 
             int mapCount = Pcc.Game is MEGame.ME3 || Pcc.Game.IsLEGame() ? 2 : 1;
@@ -73,9 +73,9 @@ public partial class BinaryInterpreterWPF
                 embeddedShaderCount.Items.Add(shaderNode);
 
                 shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}")
-                    { Length = 8 });
+                { Length = 8 });
                 shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}")
-                    { Length = 16 });
+                { Length = 16 });
                 if (Pcc.Game == MEGame.UDK)
                 {
                     shaderNode.Items.Add(MakeSHANode(bin, "Shader source SHA", out _));
@@ -83,47 +83,37 @@ public partial class BinaryInterpreterWPF
 
                 int shaderEndOffset = bin.ReadInt32();
                 shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader End Offset: {shaderEndOffset}")
-                    { Length = 4 });
+                { Length = 4 });
 
                 if (CurrentLoadedExport.Game == MEGame.UDK)
                 {
-                    // UDK 2015 SM3 cache has what appears to be a count followed by...
-                    // two pairs of ushorts?
+                    // UDK seems to serialize some sort of history on shaders, probably to speed up recompilation.
 
                     int udkCount = bin.ReadInt32();
-                    var udkCountNode = new BinInterpNode(bin.Position - 4, $"Some UDK count: {udkCount}");
+                    var udkCountNode = new BinInterpNode(bin.Position - 4, $"UDK Serializations (versioning data): {udkCount}");
                     shaderNode.Items.Add(udkCountNode);
 
                     for (int j = 0; j < udkCount; j++)
                     {
-                        udkCountNode.Items.Add(MakeUInt16Node(bin, $"UDK Count[{j}]"));
+                        udkCountNode.Items.Add(MakeUInt16Node(bin, $"Serialization[{j}]"));
                     }
+                }
 
-                    shaderNode.Items.Add(MakeUInt16Node(bin, $"UDK Unknown Post Count Thing"));
+                if (CurrentLoadedExport.Game.IsLEGame())
+                {
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}") { Length = 1 });
                 }
                 else
                 {
-                    if (CurrentLoadedExport.Game.IsLEGame())
-                    {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                                $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
-                            { Length = 1 });
-                    }
-                    else
-                    {
-                        shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                                $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
-                            { Length = 1 });
-                    }
-
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                            $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
-                        { Length = 1 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}") { Length = 1 });
                 }
+
+                shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Frequency: {(EShaderFrequency)bin.ReadByte()}") { Length = 1 });
+
 
                 int shaderSize = bin.ReadInt32();
                 shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}")
-                    { Length = 4 });
+                { Length = 4 });
 
                 shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") { Length = shaderSize });
                 bin.Skip(shaderSize);
@@ -131,12 +121,12 @@ public partial class BinaryInterpreterWPF
                 shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
                 shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
-                    { Length = 16 });
+                { Length = 16 });
 
                 string shaderType;
                 shaderNode.Items.Add(new BinInterpNode(bin.Position,
                         $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}")
-                    { Length = 8 });
+                { Length = 8 });
 
                 shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
@@ -184,7 +174,7 @@ public partial class BinaryInterpreterWPF
                         var unparsedShaderParams =
                             new BinInterpNode(bin.Position,
                                     $"Unparsed Shader Parameters ({shaderEndOffset - dataOffset - bin.Position} bytes)")
-                                { Length = (shaderEndOffset - dataOffset) - (int)bin.Position };
+                            { Length = (shaderEndOffset - dataOffset) - (int)bin.Position };
                         shaderNode.Items.Add(unparsedShaderParams);
                     }
                 }
@@ -979,7 +969,7 @@ public partial class BinaryInterpreterWPF
                     break;
                 case "FModShadowMeshPixelShader":
                     node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
-                    node.Items.Add(FShaderParameter("AttenAllowed")); 
+                    node.Items.Add(FShaderParameter("AttenAllowed"));
                     break;
                 case "FFluidSimulatePixelShader":
                     node.Items.Add(FShaderParameter("CellSize"));
@@ -2292,9 +2282,9 @@ public partial class BinaryInterpreterWPF
                 try
                 {
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 8, $"Shader Type: {shaderName.Instanced}")
-                        { Length = 8 });
+                    { Length = 8 });
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader GUID {bin.ReadGuid()}")
-                        { Length = 16 });
+                    { Length = 16 });
                     if (Pcc.Game == MEGame.UDK)
                     {
                         shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
@@ -2309,22 +2299,22 @@ public partial class BinaryInterpreterWPF
                     {
                         shaderNode.Items.Add(
                             new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadByte()}")
-                                { Length = 1 });
+                            { Length = 1 });
                     }
                     else
                     {
                         shaderNode.Items.Add(
                             new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadByte()}")
-                                { Length = 1 });
+                            { Length = 1 });
                     }
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position,
                             $"Frequency: {(EShaderFrequency)bin.ReadByte()}")
-                        { Length = 1 });
+                    { Length = 1 });
 
                     int shaderSize = bin.ReadInt32();
                     shaderNode.Items.Add(new BinInterpNode(bin.Position - 4, $"Shader File Size: {shaderSize}")
-                        { Length = 4 });
+                    { Length = 4 });
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, "Shader File") { Length = shaderSize });
                     bin.Skip(shaderSize);
@@ -2332,7 +2322,7 @@ public partial class BinaryInterpreterWPF
                     shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
                     shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
-                        { Length = 16 });
+                    { Length = 16 });
 
                     shaderNode.Items.Add(
                         new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
@@ -2342,7 +2332,7 @@ public partial class BinaryInterpreterWPF
                     shaderNode.Items.Add(
                         new BinInterpNode(bin.Position,
                                 $"Unknown shader bytes ({shaderEndOffset - (dataOffset + bin.Position)} bytes)")
-                            { Length = (int)(shaderEndOffset - (dataOffset + bin.Position)) });
+                        { Length = (int)(shaderEndOffset - (dataOffset + bin.Position)) });
 
                     embeddedShaderCount.Items.Add(shaderNode);
 
@@ -2564,5 +2554,6 @@ public partial class BinaryInterpreterWPF
     {
         Vertex = 0,
         Pixel = 1,
+        PixelUDK = 3, // This is a hack
     }
 }
