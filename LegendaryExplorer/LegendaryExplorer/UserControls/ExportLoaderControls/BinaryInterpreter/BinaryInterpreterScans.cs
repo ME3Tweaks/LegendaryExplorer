@@ -6169,5 +6169,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
+        private static BinInterpNode MakeSHANode(EndianReader bin, string name, out string sha)
+        {
+            sha = Encoding.ASCII.GetString(bin.ReadBytes(20));
+            return new BinInterpNode(bin.Position, $"{name}: {sha}") { Length = 20 };
+        }
+
     }
 }

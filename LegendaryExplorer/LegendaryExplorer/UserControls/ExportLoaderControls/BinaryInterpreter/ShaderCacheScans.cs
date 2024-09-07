@@ -78,8 +78,7 @@ public partial class BinaryInterpreterWPF
                     { Length = 16 });
                 if (Pcc.Game == MEGame.UDK)
                 {
-                    shaderNode.Items.Add(MakeGuidNode(bin, "2nd Guid?"));
-                    shaderNode.Items.Add(MakeUInt32Node(bin, "unk?"));
+                    shaderNode.Items.Add(MakeSHANode(bin, "Shader source SHA", out _));
                 }
 
                 int shaderEndOffset = bin.ReadInt32();
@@ -343,7 +342,7 @@ public partial class BinaryInterpreterWPF
     private BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType, out Exception exception)
     {
         exception = null;
-        if (CurrentLoadedExport.Game is not MEGame.LE3)
+        if (CurrentLoadedExport.Game is not MEGame.LE3 or MEGame.UDK)
         {
             return null;
         }
