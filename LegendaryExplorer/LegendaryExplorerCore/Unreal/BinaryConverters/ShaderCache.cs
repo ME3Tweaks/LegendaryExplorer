@@ -63,7 +63,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (!IsGlobalShaderCache)
             {
                 if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
+                if (sc.Game == MEGame.UDK)
+                {
+                    // Just default to 0, we aren't going to use this in ME
+                    int shaderCachePriority = 0;
+                    sc.Serialize(ref shaderCachePriority);
+                }
+                
                 byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
+                if (sc.Game == MEGame.UDK)
+                {
+                    // We do not support SM3 in UDK
+                    // Serialize as SM5
+                    platform = 4; // UDK SM5 is '4'
+                }
                 sc.Serialize(ref platform);
             }
             else
@@ -86,7 +99,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     gscsc.Serialize(ref licensee);
                 }
 
-                byte platform = 5; // LE only
+                // We only support editing this in LE
+                byte platform = 5;
+                if (sc.Game == MEGame.UDK)
+                {
+                    // Also technically UDK, not sure this would ever be useful
+                    // Serialize as SM5
+                    platform = 4; // UDK SM5 is '4'
+                }
                 sc.Serialize(ref platform);
             }
 

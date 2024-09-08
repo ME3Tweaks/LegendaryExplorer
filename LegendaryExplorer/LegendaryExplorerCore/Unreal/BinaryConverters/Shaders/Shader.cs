@@ -1,6 +1,7 @@
 ﻿using System;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Packages;
 
 // ReSharper disable InconsistentNaming
 
@@ -12,6 +13,7 @@ public abstract class Shader
     {
         Vertex = 0,
         Pixel = 1,
+        PixelUDK = 3 // This is a hack
     }
 
     public NameReference ShaderType;
@@ -22,7 +24,8 @@ public abstract class Shader
     public int InstructionCount;
     public byte Platform; // LE is 5, OT is 0. However, LE also has a few 2 and 3 for SM2 and SM3 shaders. So we must store this info.
     public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
-
+    public ushort[] UDKSerializations; // UDK only
+    public byte[] UDKSourceSHA; // UDK only - SHA of source code for shader (HLSL?)
     public virtual Shader Clone() => SharedClone();
 
     protected Shader SharedClone()
@@ -40,6 +43,10 @@ public abstract class Shader
     internal virtual DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
         var defferedWriter = sc.SerializeDefferedFileOffset();
+        if (sc.Game == MEGame.UDK)
+        {
+            sc.Serialize(ref UDKSerializations);
+        }
         sc.Serialize(ref Platform);
         sc.Serialize(ref Frequency);
         sc.Serialize(ref ShaderByteCode);
@@ -68,8 +75,11 @@ public class UnparsedShader : Shader
     {
         bool preSerializesParams = ShaderType.Name is "FBinkYCrCbToRGBNoPixelAlphaPixelShader" or "FBinkYCrCbAToRGBAPixelShader";
         int endOffset = 0;
-        var defferedFileOffsetWriter = new DefferedFileOffsetWriter(sc.ms.Position);
-        sc.Serialize(ref endOffset);
+        var defferedFileOffsetWriter = sc.SerializeDefferedFileOffset();
+        if (sc.Game == MEGame.UDK)
+        {
+            sc.Serialize(ref UDKSerializations);
+        }
         sc.Serialize(ref Platform);
         sc.Serialize(ref Frequency);
         if (preSerializesParams)
