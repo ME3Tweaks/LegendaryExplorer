@@ -26,6 +26,7 @@ public abstract class Shader
     public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
     public ushort[] UDKSerializations; // UDK only
     public byte[] UDKSourceSHA; // UDK only - SHA of source code for shader (HLSL?)
+    public byte[] UDKShaderSHA; // UDK only - SHA of shader (bytecode?) for shader. Maybe previous data or something.
     public virtual Shader Clone() => SharedClone();
 
     protected Shader SharedClone()
@@ -42,6 +43,11 @@ public abstract class Shader
 
     internal virtual DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
+        if (sc.Game == MEGame.UDK)
+        {
+            sc.Serialize(ref UDKSourceSHA, 0x14);
+        }
+
         var defferedWriter = sc.SerializeDefferedFileOffset();
         if (sc.Game == MEGame.UDK)
         {
@@ -53,6 +59,10 @@ public abstract class Shader
         sc.Serialize(ref ParameterMapCRC);
         sc.Serialize(ref Guid);
         sc.Serialize(ref ShaderType);
+        if (sc.Game == MEGame.UDK)
+        {
+            sc.Serialize(ref UDKShaderSHA, 0x14);
+        }
         sc.Serialize(ref InstructionCount);
         return defferedWriter;
     }
@@ -73,6 +83,11 @@ public class UnparsedShader : Shader
 
     internal override DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
+        if (sc.Game == MEGame.UDK)
+        {
+            sc.Serialize(ref UDKSourceSHA, 0x14);
+        }
+
         bool preSerializesParams = ShaderType.Name is "FBinkYCrCbToRGBNoPixelAlphaPixelShader" or "FBinkYCrCbAToRGBAPixelShader";
         var defferedFileOffsetWriter = sc.SerializeDefferedFileOffset();
         if (sc.Game == MEGame.UDK)
@@ -97,6 +112,10 @@ public class UnparsedShader : Shader
         sc.Serialize(ref ParameterMapCRC);
         sc.Serialize(ref Guid);
         sc.Serialize(ref ShaderType);
+        if (sc.Game == MEGame.UDK)
+        {
+            sc.Serialize(ref UDKShaderSHA, 0x14);
+        }
         sc.Serialize(ref InstructionCount);
         if (!preSerializesParams)
         {

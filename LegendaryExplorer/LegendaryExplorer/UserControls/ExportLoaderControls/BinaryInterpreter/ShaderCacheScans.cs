@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -124,9 +125,12 @@ public partial class BinaryInterpreterWPF
                 { Length = 16 });
 
                 string shaderType;
-                shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                        $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}")
-                { Length = 8 });
+                shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}") { Length = 8 });
+
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    shaderNode.Items.Add(MakeSHANode(bin, "Shader SHA", out _));
+                }
 
                 shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
@@ -2324,11 +2328,11 @@ public partial class BinaryInterpreterWPF
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
-                    { Length = 16 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}") { Length = 16 });
 
                     shaderNode.Items.Add(
                         new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
