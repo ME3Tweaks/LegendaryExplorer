@@ -282,6 +282,11 @@ public partial class BinaryInterpreterWPF
                             Items = ReadList(expressionCount, x => ReadMaterialUniformExpression(bin))
                         });
                     }
+
+                    if (Pcc.Game == MEGame.UDK)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"UDK Unknown 0x1C bytes: {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()}") { Length = 0x1C });
+                    }
                     if (Pcc.Game.IsLEGame())
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadInt32()}") { Length = 4 });
@@ -291,8 +296,6 @@ public partial class BinaryInterpreterWPF
                         nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadInt32()}") { Length = 4 });
                     }
                 }
-
-                // UDK: Seems to be 0x20 of blank filler bytes? Both in SM3 and SM5. Maybe byte aligning struct size?
 
                 bin.JumpTo(shaderMapEndOffset - dataOffset);
             }

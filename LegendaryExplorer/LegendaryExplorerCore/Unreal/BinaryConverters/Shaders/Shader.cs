@@ -74,7 +74,6 @@ public class UnparsedShader : Shader
     internal override DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
         bool preSerializesParams = ShaderType.Name is "FBinkYCrCbToRGBNoPixelAlphaPixelShader" or "FBinkYCrCbAToRGBAPixelShader";
-        int endOffset = 0;
         var defferedFileOffsetWriter = sc.SerializeDefferedFileOffset();
         if (sc.Game == MEGame.UDK)
         {
@@ -202,7 +201,7 @@ public class UnparsedShader : Shader
                         VertexFactoryType = null;
                         break;
                 }
-                unkBytes = sc.ms.ReadToBuffer(endOffset - sc.FileOffset);
+                unkBytes = sc.ms.ReadToBuffer(defferedFileOffsetWriter.SerializedOffset - sc.FileOffset);
             }
             else
             {

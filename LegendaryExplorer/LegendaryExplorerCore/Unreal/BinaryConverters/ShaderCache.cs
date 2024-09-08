@@ -194,14 +194,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                if (sc.Game != MEGame.ME1)
+                if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
                 {
                     sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
                 }
 
                 sc.Serialize(ref MaterialShaderMaps, sc.Serialize, sc.Serialize);
 
-                if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1))
+                if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1 or MEGame.UDK))
                 {
                     int dummy = 0;
                     sc.Serialize(ref dummy);
@@ -431,12 +431,35 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Serialize(ref msm.UniformVertexVectorExpressions, Serialize);
                 Serialize(ref msm.UniformVertexScalarExpressions, Serialize);
             }
+
+            if (Game == MEGame.UDK)
+            {
+                // UDK has 0x1C bytes of unknown data here, seems like it's always 0? 
+                if (IsLoading)
+                {
+                    ms.Skip(0x1C);
+                }
+                else
+                {
+                    ms.Writer.WriteZeros(0x1C);
+                }
+            }
+
             if (Game is not MEGame.ME1)
             {
                 int platform = Game.IsLEGame() ? 5 : 0;
-                Serialize(ref platform);
+                if (Game == MEGame.UDK)
+                {
+                    platform = 4; // SM5
+                    Serialize(ref platform);
+                }
+                else
+                {
+                    Serialize(ref platform);
+                }
             }
 
+            
             if (IsSaving)
             {
                 long endOffset = ms.Position;
