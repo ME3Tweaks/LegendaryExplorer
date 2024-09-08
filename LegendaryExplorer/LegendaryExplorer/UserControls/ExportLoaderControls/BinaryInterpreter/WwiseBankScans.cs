@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using ME3Tweaks.Wwiser.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
@@ -22,21 +23,20 @@ public partial class BinaryInterpreterWPF
         var id = bin.ReadUInt32();
         bin.Skip(-4);
         var item = new WwiseItem(id, name, bin.Position);
-        WwiseIdMap.TryAdd(id, item);
+        WwiseIdMap.Add(id, item);
         var node = MakeUInt32Node(bin, name);
         return node;
     }
 
     private BinInterpNode MakeWwiseIdRefNode(EndianReader bin, string name)
     {
+        var pos = bin.Position;
         var id = bin.ReadUInt32();
-        bin.Skip(-4);
+        var node = new BinInterpNode(pos, $"{name}: {id}") { Length = 4 };
         if(WwiseIdMap.TryGetValue(id, out var item))
         {
-            name += $" (${item.Name})";
+            node.Header += $" (Ref to {item.Name})";
         }
-
-        var node = MakeUInt32Node(bin, name);
         return node;
     }
 
@@ -75,8 +75,8 @@ public partial class BinaryInterpreterWPF
             return subnodes;
         }
 
-        uint version;
-        bool useFeedback;
+        uint version = 0;
+        bool useFeedback = false;
 
         while (bin.Position < bin.Length)
         {
@@ -93,9 +93,16 @@ public partial class BinaryInterpreterWPF
                 case "BKHD":
                     (version, useFeedback) = Scan_WwiseBank_BKHD(chunkNode, bin, size);
                     break;
+                case "DIDX":
+                    Scan_WwiseBank_DIDX(chunkNode, bin, size);
+                    break;
+
+                case "STID":
+                    Scan_WwiseBank_STID(chunkNode, bin);
+                    break;
             }
 
-            // Just in case we don't parse full chunk
+            // Just in case we don't parse chunk in full - jump to next chunk
             bin.JumpTo(start + size + 8);
         }
         return subnodes;
@@ -149,6 +156,42 @@ public partial class BinaryInterpreterWPF
             root.Items.Add(new BinInterpNode(bin.Position, "Padding") { Length = (int)paddingSize });
         }
         return (version, useFeedback);
+    }
+
+    private void Scan_WwiseBank_DIDX(BinInterpNode root, EndianReader bin, int size)
+    {
+        var count = size / 12;
+        root.Header += $", {count} items";
+        for (int i = 0; i < count; i++)
+        {
+
+            var itemNode = MakeWwiseIdNode(bin, $"{i}");
+            itemNode.Length = 12;
+            bin.Skip(-4);
+            itemNode.Items.Add(MakeUInt32Node(bin, "Id"));
+            itemNode.Items.Add(MakeUInt32Node(bin, "Offset"));
+            itemNode.Items.Add(MakeUInt32Node(bin, "Size"));
+            root.Items.Add(itemNode);
+        }
+    }
+
+    private void Scan_WwiseBank_STID(BinInterpNode root, EndianReader bin)
+    {
+        root.Items.Add(MakeUInt32EnumNode<AKBKStringType>(bin, "StringType"));
+        root.Items.Add(MakeArrayNode(bin, "BankHashHeaders", i =>
+        {
+            var start = bin.Position;
+            var bhhRoot = new BinInterpNode(start, $"{i}");
+            bhhRoot.Items.Add(MakeWwiseIdRefNode(bin, "Id"));
+            var stringPos = bin.Position;
+            var stringLength = bin.ReadByte();
+            var stringVal = bin.ReadStringASCII(stringLength);
+            var fileName = new BinInterpNode(stringPos, $"FileName: {stringVal}") { Length = stringLength + 1 };
+            bhhRoot.Header += $": {stringVal}";
+            bhhRoot.Items.Add(fileName);
+            bhhRoot.Length = 4 + 1 + stringLength;
+            return bhhRoot;
+        }));
     }
 
     private List<ITreeItem> Scan_WwiseBankOld(byte[] data)
