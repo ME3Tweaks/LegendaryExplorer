@@ -14,7 +14,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 namespace LegendaryExplorerCore.UDK
 {
     /// <summary>
-    /// Ports materials from a game into UDK so the materials can be used in-editor. Full expression information must be available in the source data for this to be useful; UDK cannot compile shaders without it.
+    /// Ports assets from a game into UDK so the materials can be used in-editor. Full expression information must be available in the source data for this to be useful; UDK cannot compile shaders without it.
     /// </summary>
     public static class UDKMaterialPort
     {
@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.UDK
                 if (quickSourceP.FileNameNoExtension.CaseInsensitiveEquals("Engine_MI_Shaders"))
                     return; // Do not port
 
-                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && (x.IsA("Material") || x.IsA("Texture") || x.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant"))); // Don't use .IsTexture() as it does not include cubemaps
+                var quickPortItems = quickSourceP.Exports.Any(x => (!x.IsForcedExport || isSafeFile) && shouldPortDelegate(x)); 
                 if (quickPortItems)
                 {
                     using var sourceP = MEPackageHandler.OpenMEPackage(file);
