@@ -7,21 +7,15 @@ using System.Numerics;
 using System.Text;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Tools.TlkManagerNS;
-using LegendaryExplorer.UnrealExtensions;
-using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
-using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -41,6 +35,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 str = bin.BaseStream.ReadStringLatin1Null(strLen);
             }
+            return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
+        }
+
+        private BinInterpNode MakeStringUTF8Node(EndianReader bin, string nodeName)
+        {
+            int pos = (int)bin.Position;
+            int strLen = bin.ReadInt32();
+            string str = bin.BaseStream.ReadStringUtf8(strLen);
             return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
         }
 

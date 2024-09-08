@@ -5,9 +5,9 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using ME3Tweaks.Wwiser.Model;
+using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
@@ -96,9 +96,17 @@ public partial class BinaryInterpreterWPF
                 case "DIDX":
                     Scan_WwiseBank_DIDX(chunkNode, bin, size);
                     break;
-
+                case "HIRC":
+                    Scan_WwiseBank_HIRC(chunkNode, bin, version);
+                    break;
                 case "STID":
                     Scan_WwiseBank_STID(chunkNode, bin);
+                    break;
+                case "PLAT":
+                    Scan_WwiseBank_PLAT(chunkNode, bin);
+                    break;
+                case "INIT":
+                    Scan_WwiseBank_INIT(chunkNode, bin);
                     break;
             }
 
@@ -175,13 +183,48 @@ public partial class BinaryInterpreterWPF
         }
     }
 
+    private void Scan_WwiseBank_HIRC(BinInterpNode root, EndianReader bin, uint version)
+    {
+        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version), IsExpanded: true));
+    }
+
+    private BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version)
+    {
+        var start = bin.Position;
+        var root = new BinInterpNode(bin.Position, $"{index}: ");
+
+        var type = HircSmartType.DeserializeStatic(bin.BaseStream, version);
+
+        if(version <= 48)
+        {
+            root.Items.Add(new BinInterpNode(bin.Position - 4, $"Type: {type}") { Length = 4 });
+        }
+        else
+        {
+            root.Items.Add(new BinInterpNode(bin.Position - 1, $"Type: {type}") { Length = 1 });
+        }
+
+        var fullSize = bin.ReadInt32() + (version <= 48 ? 8 : 5);
+
+        bin.Skip(-4);
+        root.Items.Add(MakeUInt32Node(bin, "Size"));
+
+        root.Items.Add(MakeWwiseIdNode(bin, "ID"));
+
+        root.Header += $"{type}";
+        root.Length = fullSize;
+
+        // Just in case we don't parse item in full - jump to next item
+        bin.JumpTo(start + fullSize);
+        return root;
+    }
+
     private void Scan_WwiseBank_STID(BinInterpNode root, EndianReader bin)
     {
         root.Items.Add(MakeUInt32EnumNode<AKBKStringType>(bin, "StringType"));
         root.Items.Add(MakeArrayNode(bin, "BankHashHeaders", i =>
         {
-            var start = bin.Position;
-            var bhhRoot = new BinInterpNode(start, $"{i}");
+            var bhhRoot = new BinInterpNode(bin.Position, $"{i}");
             bhhRoot.Items.Add(MakeWwiseIdRefNode(bin, "Id"));
             var stringPos = bin.Position;
             var stringLength = bin.ReadByte();
@@ -191,6 +234,23 @@ public partial class BinaryInterpreterWPF
             bhhRoot.Items.Add(fileName);
             bhhRoot.Length = 4 + 1 + stringLength;
             return bhhRoot;
+        }));
+    }
+
+    private void Scan_WwiseBank_PLAT(BinInterpNode root, EndianReader bin)
+    {
+        root.Items.Add(MakeStringUTF8Node(bin, "CustomPlatformName"));
+    }
+
+    private void Scan_WwiseBank_INIT(BinInterpNode root, EndianReader bin)
+    {
+        root.Items.Add(MakeArrayNode(bin, "Plugins", i =>
+        {
+            var plugin = new BinInterpNode(bin.Position, $"{i}");
+            // TODO: This is a pretty complex enum. 2 enums && together
+            plugin.Items.Add(MakeUInt32Node(bin, "PluginID"));
+            plugin.Items.Add(MakeStringUTF8Node(bin, "DLLName"));
+            return plugin;
         }));
     }
 
