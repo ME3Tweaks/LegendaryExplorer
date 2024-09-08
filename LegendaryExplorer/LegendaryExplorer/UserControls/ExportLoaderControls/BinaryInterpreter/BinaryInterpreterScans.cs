@@ -20,6 +20,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {

@@ -38,6 +38,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WwiseTools_DotNet6", "submo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WwiseParserLib", "submodules\WwiseParser\WwiseParserLib\WwiseParserLib.csproj", "{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodules", "submodules", "{947C0083-A3FF-4CEC-912C-BB65A11C6EEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wwiser.NET", "Wwiser.NET", "{1F845EFA-0145-46AD-86FE-84C7DAAA5842}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinarySerializer", "BinarySerializer", "{A261A72E-2BED-47D4-8401-0238526543AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinarySerializer", "submodules\Wwiser.NET\BinarySerializer\BinarySerializer\BinarySerializer.csproj", "{222CFF83-9ECD-4198-89F3-977A7B53924C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Tweaks.Wwiser", "submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj", "{591473D5-22A7-48E8-ADAC-921332DAC7C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -135,11 +145,33 @@ Global
 		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureRelease|x64.Build.0 = Release|x64
 		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureTest|x64.ActiveCfg = Debug|x64
 		{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}.WinAzureTest|x64.Build.0 = Debug|x64
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.Debug|x64.Build.0 = Debug|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.Release|x64.ActiveCfg = Release|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.Release|x64.Build.0 = Release|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.WinAzureRelease|x64.ActiveCfg = Debug|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.WinAzureRelease|x64.Build.0 = Debug|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.WinAzureTest|x64.ActiveCfg = Debug|Any CPU
+		{222CFF83-9ECD-4198-89F3-977A7B53924C}.WinAzureTest|x64.Build.0 = Debug|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.Debug|x64.Build.0 = Debug|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.Release|x64.ActiveCfg = Release|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.Release|x64.Build.0 = Release|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureRelease|x64.ActiveCfg = Debug|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureRelease|x64.Build.0 = Debug|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureTest|x64.ActiveCfg = Debug|Any CPU
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureTest|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9CF2BAC3-D8BD-40B2-91B2-883CB1B869E6}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1F845EFA-0145-46AD-86FE-84C7DAAA5842} = {947C0083-A3FF-4CEC-912C-BB65A11C6EEC}
+		{A261A72E-2BED-47D4-8401-0238526543AB} = {1F845EFA-0145-46AD-86FE-84C7DAAA5842}
+		{222CFF83-9ECD-4198-89F3-977A7B53924C} = {A261A72E-2BED-47D4-8401-0238526543AB}
+		{591473D5-22A7-48E8-ADAC-921332DAC7C8} = {1F845EFA-0145-46AD-86FE-84C7DAAA5842}
 	EndGlobalSection
 EndGlobal
