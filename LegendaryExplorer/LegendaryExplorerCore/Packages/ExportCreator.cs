@@ -10,6 +10,31 @@ namespace LegendaryExplorerCore.Packages
 {
     public static class ExportCreator
     {
+        // This is technically not an export, but it's next to the method that makes sense for it to be next to
+        /// <summary>
+        /// Creates a package import, if it doesn't already exist as an export.
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <param name="packageName"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static ImportEntry CreatePackageImport(IMEPackage pcc, NameReference packageName, IEntry parent = null)
+        {
+            var testName = parent != null ? NameReference.FromInstancedString($"{parent.InstancedFullPath}.{packageName.Instanced}") : packageName;
+            var testEntry = pcc.FindImport(testName, "Package");
+            if (testEntry != null)
+                return testEntry;
+
+            var imp = new ImportEntry(pcc, parent, packageName)
+            {
+                ClassName = "Package",
+                PackageFile = "Core",
+            };
+
+            pcc.AddImport(imp);
+            return imp;
+        }
+
         /// <summary>
         /// Creates a package export, if it doesn't already exist as an export.
         /// </summary>
