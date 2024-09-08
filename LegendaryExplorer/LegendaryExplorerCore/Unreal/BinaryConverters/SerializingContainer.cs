@@ -30,12 +30,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     internal readonly ref struct DefferedFileOffsetWriter
     {
         private readonly long WritePos;
-
+        /// <summary>
+        /// Offset that was read when this value was loaded
+        /// </summary>
+        public readonly int SerializedOffset;
         public DefferedFileOffsetWriter(SerializingContainer sc)
         {
             WritePos = sc.ms.Position;
-            int placeholder = 0;
-            sc.Serialize(ref placeholder);
+            SerializedOffset = 0;
+            sc.Serialize(ref SerializedOffset);
         }
 
         internal DefferedFileOffsetWriter(long writePos)

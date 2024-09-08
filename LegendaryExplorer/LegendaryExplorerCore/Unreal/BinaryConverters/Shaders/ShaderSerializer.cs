@@ -22,12 +22,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Guid id = default;
             Serialize(ref shaderType);
             Serialize(ref id);
+            
             if (Game is not MEGame.LE3)
             {
                 shader = new UnparsedShader
                 {
                     ShaderType = shaderType,
-                    Guid = id
+                    Guid = id,
                 };
                 shader.Serialize(this);
                 return;

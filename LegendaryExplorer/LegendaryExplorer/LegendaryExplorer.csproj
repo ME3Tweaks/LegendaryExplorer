@@ -104,6 +104,8 @@
 		<ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
 		<ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
 		<ProjectReference Include="..\submodules\WwiseParser\WwiseParserLib\WwiseParserLib.csproj" />
+		<ProjectReference Include="..\submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj" />
+		<ProjectReference Include="..\submodules\Wwiser.NET\BinarySerializer\BinarySerializer\BinarySerializer.csproj" />
 		<ProjectReference Include="..\submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj" />
 		<ProjectReference Include="..\WaveFormRendererLib\WaveFormRendererLib.csproj" />
 		<ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
