@@ -1378,7 +1378,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             try
             {
-                var bin = new EndianReader(CurrentLoadedExport.GetReadOnlyBinaryStream()) { Endian = CurrentLoadedExport.FileRef.Endian };
+                var bin = new EndianReader(CurrentLoadedExport.GetReadOnlyDataStream()) { Endian = CurrentLoadedExport.FileRef.Endian };
 
                 string nodeString;
                 subnodes.Add(new BinInterpNode(bin.Position, "Stack")

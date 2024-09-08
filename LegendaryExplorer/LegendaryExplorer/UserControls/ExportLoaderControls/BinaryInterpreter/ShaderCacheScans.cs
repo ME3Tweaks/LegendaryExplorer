@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -124,9 +125,12 @@ public partial class BinaryInterpreterWPF
                 { Length = 16 });
 
                 string shaderType;
-                shaderNode.Items.Add(new BinInterpNode(bin.Position,
-                        $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}")
-                { Length = 8 });
+                shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader Type: {shaderType = bin.ReadNameReference(Pcc)}") { Length = 8 });
+
+                if (Pcc.Game == MEGame.UDK)
+                {
+                    shaderNode.Items.Add(MakeSHANode(bin, "Shader SHA", out _));
+                }
 
                 shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
@@ -282,6 +286,11 @@ public partial class BinaryInterpreterWPF
                             Items = ReadList(expressionCount, x => ReadMaterialUniformExpression(bin))
                         });
                     }
+
+                    if (Pcc.Game == MEGame.UDK)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"UDK Unknown 0x1C bytes: {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()} {bin.ReadInt32()}") { Length = 0x1C });
+                    }
                     if (Pcc.Game.IsLEGame())
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformLE)bin.ReadInt32()}") { Length = 4 });
@@ -291,8 +300,6 @@ public partial class BinaryInterpreterWPF
                         nodes.Add(new BinInterpNode(bin.Position, $"Platform: {(EShaderPlatformOT)bin.ReadInt32()}") { Length = 4 });
                     }
                 }
-
-                // UDK: Seems to be 0x20 of blank filler bytes? Both in SM3 and SM5. Maybe byte aligning struct size?
 
                 bin.JumpTo(shaderMapEndOffset - dataOffset);
             }
@@ -2321,11 +2328,11 @@ public partial class BinaryInterpreterWPF
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "ParameterMap CRC"));
 
-                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}")
-                    { Length = 16 });
+                    shaderNode.Items.Add(new BinInterpNode(bin.Position, $"Shader End GUID: {bin.ReadGuid()}") { Length = 16 });
 
                     shaderNode.Items.Add(
                         new BinInterpNode(bin.Position, $"Shader Type: {bin.ReadNameReference(Pcc)}") { Length = 8 });
+
 
                     shaderNode.Items.Add(MakeInt32Node(bin, "Number of Instructions"));
 
