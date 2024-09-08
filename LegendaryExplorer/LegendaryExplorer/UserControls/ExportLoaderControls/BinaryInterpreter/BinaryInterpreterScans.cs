@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.TlkManagerNS;
@@ -6172,9 +6173,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static BinInterpNode MakeSHANode(EndianReader bin, string name, out string sha)
         {
-            sha = Encoding.ASCII.GetString(bin.ReadBytes(20));
+            var shaBytes = bin.ReadBytes(20);
+            StringBuilder sb = new StringBuilder();
+            foreach (var b in shaBytes)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+
+            sha = sb.ToString();
             return new BinInterpNode(bin.Position, $"{name}: {sha}") { Length = 20 };
         }
-
     }
 }
