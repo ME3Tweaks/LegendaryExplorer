@@ -372,22 +372,31 @@ public class FGFxVertexShader : Shader
     }
 }
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FResolveVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FReconstructHDRVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FLDRExtractVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FMotionBlurVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FBinkVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FOneColorVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FGammaCorrectionVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FNULLPixelShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FHorizonBasedAOVertexShader : Shader;
 
 public class FModShadowVolumeVertexShader : Shader;
