@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using LegendaryExplorerCore.Packages;
 
 // ReSharper disable InconsistentNaming
 
@@ -120,6 +121,7 @@ public class FGPUSkinVertexFactoryShaderParameters : FVertexFactoryShaderParamet
     public FShaderParameter MeshExtension;
     public FShaderParameter WoundEllipse0;
     public FShaderParameter WoundEllipse1;
+
     protected override void Serialize(SerializingContainer sc)
     {
         sc.SerializeUnmanaged(ref LocalToWorld);
@@ -128,8 +130,14 @@ public class FGPUSkinVertexFactoryShaderParameters : FVertexFactoryShaderParamet
         sc.SerializeUnmanaged(ref MaxBoneInfluences);
         sc.SerializeUnmanaged(ref MeshOrigin);
         sc.SerializeUnmanaged(ref MeshExtension);
-        sc.SerializeUnmanaged(ref WoundEllipse0);
-        sc.SerializeUnmanaged(ref WoundEllipse1);
+
+        // TODO: Verify this.
+        // Not in LE2 - Serialization of Decal subclass at 0x7ff7c627a160 does not show this
+        if (sc.Game != MEGame.LE2)
+        {
+            sc.SerializeUnmanaged(ref WoundEllipse0);
+            sc.SerializeUnmanaged(ref WoundEllipse1);
+        }
     }
 }
 
