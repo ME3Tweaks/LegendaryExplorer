@@ -497,7 +497,7 @@ public partial class BinaryInterpreterWPF
                     {
                         if (CurrentLoadedExport.Game == MEGame.LE2)
                         {
-                            node.Items.Add(FShaderResourceParameter($"TextureImage", i));
+                            node.Items.Add(FShaderResourceParameterIndexed($"TextureImage", i));
                         }
                         else if (CurrentLoadedExport.Game == MEGame.LE3)
                         {
@@ -607,7 +607,7 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("HDRParameters"));
                     node.Items.Add(FShaderParameter("CalibrationParameters"));
                     break;
-                case "FSimpleElementPixelShader":
+                case "FSimpleElementPixelShader": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("Texture"));
                     node.Items.Add(FShaderParameter("TextureComponentReplicate"));
                     node.Items.Add(FShaderParameter("TextureComponentReplicateAlpha"));
@@ -770,8 +770,14 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("NoiseTextureOffset"));
                     node.Items.Add(FShaderParameter("FilmGrain_Scale"));
                     node.Items.Add(FShaderResourceParameter("smpFilmicLUT"));
-                    node.Items.Add(FShaderParameter("ScreenUVScaleBias"));
-                    node.Items.Add(FShaderParameter("HighPrecisionGamma"));
+
+                    // Not present in LE2 - 7ff7c63e15b0
+                    if (CurrentLoadedExport.Game == MEGame.LE3)
+                    {
+                        node.Items.Add(FShaderParameter("ScreenUVScaleBias"));
+                        node.Items.Add(FShaderParameter("HighPrecisionGamma"));
+                    }
+
                     break;
                 case "FUberPostProcessVertexShader":
                     node.Items.Add(FShaderParameter("SceneCoordinate1ScaleBias"));
@@ -1177,8 +1183,8 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("cmatrix"));
                     node.Items.Add(FShaderParameter("alpha_mult"));
                     break;
-                case "FBinkGpuShaderHDRNoAlpha":
-                case "FBinkGpuShaderHDR":
+                case "FBinkGpuShaderHDRNoAlpha": // Verified LE2
+                case "FBinkGpuShaderHDR": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("YTex"));
                     node.Items.Add(FShaderResourceParameter("CrCbTex"));
                     node.Items.Add(FShaderResourceParameter("ATex"));
@@ -1187,10 +1193,10 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("hdr"));
                     node.Items.Add(FShaderParameter("ctcp"));
                     break;
-                case "FBinkYCrCbAToRGBAPixelShader":
+                case "FBinkYCrCbAToRGBAPixelShader": // Verified LE2. SErialization method seems to show it << parameters before shader?
                     node.Items.Add(FShaderResourceParameter("tex3"));
                     break;
-                case "FBinkYCrCbToRGBNoPixelAlphaPixelShader":
+                case "FBinkYCrCbToRGBNoPixelAlphaPixelShader": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("tex0"));
                     node.Items.Add(FShaderResourceParameter("tex1"));
                     node.Items.Add(FShaderResourceParameter("tex2"));
@@ -1318,7 +1324,7 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("IndividualVelocityScale"));
                     node.Items.Add(FShaderParameter("ObjectVelocity"));
                     break;
-                case "FVelocityVertexShader":
+                case "FVelocityVertexShader": // LE2 Verified, but did not see vertex factory serialization 
                     node.Items.Add(FVertexFactoryParameterRef());
                     node.Items.Add(FMaterialVertexShaderParameters("MaterialParameters"));
                     node.Items.Add(FShaderParameter("PrevViewProjectionMatrix"));
@@ -1516,6 +1522,24 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("ScreenToLight"));
                     node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
                     break;
+                case "FUberPostProcessBlendPixelShader1001": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1010": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1100": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0110": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0011": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1111": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0101": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1000": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1011": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1101": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0111": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0010": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1110": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0100": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0001": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0000": // LE2 - Not in LE3
+                    FDOFAndBloomBlendPixelShader();
+                    break;
                 default:
                     Debugger.Break();
                     node = null;
@@ -1544,7 +1568,13 @@ public partial class BinaryInterpreterWPF
             };
         }
 
-        BinInterpNode FShaderResourceParameter(string name, int? loopIndexForOneBasedIndexSuffix = null)
+        BinInterpNode FShaderResourceParameter(string name)
+        {
+            return FShaderResourceParameterIndexed(name, -1);
+        }
+
+
+        BinInterpNode FShaderResourceParameterIndexed(string name, int loopIndexForOneBasedIndexSuffix)
         {
             if (loopIndexForOneBasedIndexSuffix is > 0)
             {
@@ -1897,7 +1927,7 @@ public partial class BinaryInterpreterWPF
             };
         }
 
-        BinInterpNode FDOFShaderParameters(string name)
+        BinInterpNode FDOFShaderParameters(string name) // Verified LE2
         {
             return new BinInterpNode(bin.Position, $"{name}: FDOFShaderParameters")
             {
@@ -2096,8 +2126,13 @@ public partial class BinaryInterpreterWPF
             node.Items.Add(FShaderResourceParameter("BlurredImage"));
             node.Items.Add(FShaderResourceParameter("DOFBlurredNear"));
             node.Items.Add(FShaderResourceParameter("DOFBlurredFar"));
-            node.Items.Add(FShaderResourceParameter("BlurredImageSeperateBloom"));
+            node.Items.Add(FShaderResourceParameter("BlurredImageSeperateBloom")); // Spelled 'BlurredImageSeperateBloom' in decomp
             node.Items.Add(FShaderParameter("BloomTintAndScreenBlendThreshold"));
+            if (CurrentLoadedExport.Game == MEGame.LE2)
+            {
+                // LE2 7ff7c62126e7
+                node.Items.Add(FShaderResourceParameter("SeparateTranslucencyTexture"));
+            }
             node.Items.Add(FShaderParameter("InputTextureSize"));
             node.Items.Add(FShaderParameter("DOFKernelParams"));
         }
