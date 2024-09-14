@@ -186,7 +186,7 @@ internal struct ResizeableBitArray
 
     private static int NumIntsNeeded(int numBits)
     {
-        return unchecked((int)((uint)(numBits - 1 + (1 << 5)) >> 5));
+        return unchecked((numBits - 1 + (1 << 5)) >>> 5);
     }
 
     //Returns the index of the last 1 in the array, or -1 if all 0s
@@ -203,13 +203,14 @@ internal struct ResizeableBitArray
         }
         Span<int> span = Data.AsSpanUnsafe(0, intIndex + 1);
         //may be possible to vectorize?
-        while (intIndex --> 0)
+        while (intIndex >= 0)
         {
             int lzc = BitOperations.LeadingZeroCount(unchecked((uint)span[intIndex]));
             if (lzc < BITS_PER_INT)
             {
                 return intIndex * BITS_PER_INT + (BITS_PER_INT - 1 - lzc);
             }
+            intIndex--;
         }
         return -1;
     }
