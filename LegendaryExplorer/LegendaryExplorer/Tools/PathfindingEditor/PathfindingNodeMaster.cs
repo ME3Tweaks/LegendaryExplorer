@@ -181,7 +181,7 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             return -1;
         }
 
-        protected PointF[] get3DBrushShape()
+        protected IEnumerable<PointF[]> get3DBrushShape()
         {
             try
             {
@@ -220,7 +220,6 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     return null;
                 }
                 ExportEntry brush = export.FileRef.GetUExport(brushComponent.Value);
-                var graphVertices = new List<PointF>();
                 PropertyCollection brushProps = brush.GetProperties();
                 var brushAggGeom = brushProps.GetProp<StructProperty>("BrushAggGeom");
                 if (brushAggGeom == null)
@@ -228,48 +227,74 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     return null;
                 }
                 var convexList = brushAggGeom.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
-
+                if (convexList.Count is 0)
+                {
+                    return null;
+                }
+                var polys = new List<PointF[]>(convexList.Count);
                 foreach (StructProperty convexElem in convexList)
                 {
-                    var brushVertices = new List<Vector3>();
-                    //Vertices
                     var verticiesList = convexElem.GetProp<ArrayProperty<StructProperty>>("VertexData");
-                    foreach (StructProperty vertex in verticiesList)
+                    var verts = new PointF[verticiesList.Count];
+                    //Vertices
+                    for (int i = 0; i < verticiesList.Count; i++)
                     {
-                        brushVertices.Add(new Vector3
+                        StructProperty vertex = verticiesList[i];
+                        verts[i] = new PointF
                         {
                             X = vertex.GetProp<FloatProperty>("X") * xScalar,
                             Y = vertex.GetProp<FloatProperty>("Y") * yScalar,
-                            Z = vertex.GetProp<FloatProperty>("Z")
-                        });
+                        };
                     }
-
-                    //FaceTris
-                    var faceTriData = convexElem.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
-                    float prevX = float.MinValue;
-                    float prevY = float.MinValue;
-                    foreach (IntProperty triPoint in faceTriData)
+                    //2D convex hull algorithm from https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+                    int n = verts.Length;
+                    if (n <= 3)
                     {
-                        Vector3 vertex = brushVertices[triPoint];
-                        if (vertex.X == prevX && vertex.Y == prevY)
-                        {
-                            continue; //Z is on the difference
-                        }
-
-                        float x = vertex.X;
-                        float y = vertex.Y;
-
-                        prevX = x;
-                        prevY = y;
-                        var graphPoint = new PointF(x, y);
-                        graphVertices.Add(graphPoint);
+                        polys.Add(verts);
+                        continue;
                     }
+                    // Sort points lexicographically
+                    Array.Sort(verts, new PointFLexicalComparer());
+                    int k = 0;
+                    var hullVerts = new PointF[n * 2];
+
+                    // Build lower hull
+                    for (int i = 0; i < n; ++i)
+                    {
+                        while (k >= 2 && Cross(hullVerts[k - 2], hullVerts[k - 1], verts[i]) <= 0) --k;
+                        hullVerts[k++] = verts[i];
+                    }
+
+                    // Build upper hull
+                    for (int i = n - 1, t = k + 1; i > 0; --i)
+                    {
+                        while (k >= t && Cross(hullVerts[k - 2], hullVerts[k - 1], verts[i - 1]) <= 0) --k;
+                        hullVerts[k++] = verts[i - 1];
+                    }
+
+                    var hullPoints = new PointF[k];
+                    Array.Copy(hullVerts, hullPoints, k);
+                    polys.Add(hullPoints);
                 }
-                return graphVertices.ToArray();
+                return polys;
+
+                float Cross(PointF p1, PointF p2, PointF p3)
+                {
+                    return (p2.X - p1.X) * (p3.Y - p1.Y) - (p2.Y - p1.Y) * (p3.X - p1.X);
+                }
             }
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        private struct PointFLexicalComparer : IComparer<PointF>
+        {
+            public int Compare(PointF x, PointF y)
+            {
+                int xComparison = x.X.CompareTo(y.X);
+                return xComparison != 0 ? xComparison : x.Y.CompareTo(y.Y);
             }
         }
 
