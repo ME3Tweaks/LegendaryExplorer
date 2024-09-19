@@ -14,7 +14,6 @@ internal struct USparseArray<T> : IEnumerable<T>
     private struct ElementOrFreeListLink
     {
         public T Element;
-        public int PrevFreeIndex;
         public int NextFreeIndex;
     }
 
@@ -57,10 +56,6 @@ internal struct USparseArray<T> : IEnumerable<T>
             index = FirstFreeIndex;
             FirstFreeIndex = GetData(FirstFreeIndex).NextFreeIndex;
             --NumFreeIndices;
-            if (NumFreeIndices > 0)
-            {
-                GetData(FirstFreeIndex).PrevFreeIndex = -1;
-            }
         }
         else
         {
@@ -75,45 +70,6 @@ internal struct USparseArray<T> : IEnumerable<T>
     {
         AddUninitialized(out int index) = element;
         return index;
-    }
-
-    private ref T InsertUninitialized(int index)
-    {
-        if (index >= Data.Count)
-        {
-            EnsureCapacity(index + 1);
-        }
-        else
-        {
-            Guard.IsFalse(IsAllocated(index));
-        }
-
-        --NumFreeIndices;
-        ref var insertData = ref GetData(index);
-        int prevFreeIndex = insertData.PrevFreeIndex;
-        int nextFreeIndex = insertData.NextFreeIndex;
-        if (prevFreeIndex != -1)
-        {
-            GetData(prevFreeIndex).NextFreeIndex = nextFreeIndex;
-        }
-        else
-        {
-            FirstFreeIndex = nextFreeIndex;
-        }
-        if (nextFreeIndex != -1)
-        {
-            GetData(nextFreeIndex).PrevFreeIndex = prevFreeIndex;
-        }
-
-        return ref AllocateIndex(index);
-    }
-
-    //will expand array if index >= Count
-    public void Insert(int index, T element)
-    {
-        Guard.IsGreaterThanOrEqualTo(index, 0);
-            
-        InsertUninitialized(index) = element;
     }
 
     //The entire range must be allocated elements, no free slots!
@@ -134,12 +90,7 @@ internal struct USparseArray<T> : IEnumerable<T>
         {
             Guard.IsTrue(IsAllocated(index));
 
-            if (NumFreeIndices > 0)
-            {
-                GetData(FirstFreeIndex).PrevFreeIndex = index;
-            }
             ref var data = ref GetData(index);
-            data.PrevFreeIndex = -1;
             data.NextFreeIndex = NumFreeIndices > 0 ? FirstFreeIndex : -1;
             FirstFreeIndex = index;
             AllocationFlags[index] = false;
@@ -176,12 +127,7 @@ internal struct USparseArray<T> : IEnumerable<T>
             while (freeIndex < capacity)
             {
                 ref var data = ref GetData(freeIndex);
-                data.PrevFreeIndex = -1;
                 data.NextFreeIndex = NumFreeIndices > 0 ? FirstFreeIndex : -1;
-                if (NumFreeIndices > 0)
-                {
-                    GetData(FirstFreeIndex).PrevFreeIndex = freeIndex;
-                }
                 FirstFreeIndex = freeIndex;
                 ++NumFreeIndices;
                 ++freeIndex;
@@ -196,32 +142,23 @@ internal struct USparseArray<T> : IEnumerable<T>
 
         if (firstIndexToRemove < MaxIndex)
         {
-            int freeIndex = FirstFreeIndex;
-            while (freeIndex != -1)
+            if (NumFreeIndices > 0)
             {
-                var data = GetData(freeIndex);
-                if (freeIndex >= firstIndexToRemove)
+                // Look for elements in the free list that are in the memory to be freed.
+                ref int previousNextFreeIndex = ref FirstFreeIndex;
+                for (int FreeIndex = FirstFreeIndex;
+                     FreeIndex != -1;
+                     FreeIndex = previousNextFreeIndex)
                 {
-                    int prevFreeIndex = data.PrevFreeIndex;
-                    int nextFreeIndex = data.NextFreeIndex;
-                    if (nextFreeIndex != -1)
+                    if (FreeIndex >= firstIndexToRemove)
                     {
-                        GetData(nextFreeIndex).PrevFreeIndex = prevFreeIndex;
-                    }
-                    if (prevFreeIndex != -1)
-                    {
-                        GetData(prevFreeIndex).NextFreeIndex = nextFreeIndex;
+                        previousNextFreeIndex = GetData(FreeIndex).NextFreeIndex;
+                        --NumFreeIndices;
                     }
                     else
                     {
-                        FirstFreeIndex = nextFreeIndex;
+                        previousNextFreeIndex = ref GetData(FreeIndex).NextFreeIndex;
                     }
-                    --NumFreeIndices;
-                    freeIndex = nextFreeIndex;
-                }
-                else
-                {
-                    freeIndex = data.NextFreeIndex;
                 }
             }
 

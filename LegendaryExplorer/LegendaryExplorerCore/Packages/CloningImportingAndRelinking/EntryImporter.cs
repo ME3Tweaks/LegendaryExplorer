@@ -128,11 +128,24 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceExport, link, destPcc);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+
+                            // 09/07/2024 - If using a custom link, the IFP could have changed; we should determine if this import already exists first
+                            newEntry = destPcc.FindEntry(testImport.InstancedFullPath, testImport.ClassName); // 12/09/2023 - Change from FindExport to FindEntry
+                            if (newEntry == null)
                             {
-                                destPcc.AddImport(testImport);
-                                newEntry = testImport;
-                                // Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                // Try to resolve the import
+                                if (EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache,
+                                        fileResolver: rop.DestinationCustomImportFileResolver))
+                                {
+                                    destPcc.AddImport(testImport);
+                                    newEntry = testImport;
+                                    // Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                }
+                            }
+                            else
+                            {
+                                // Already exists in package
+                                // Do nothing
                             }
                         }
 
@@ -322,6 +335,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // These variables are used for debugging as it is semi-difficult to trace execution of this method. 
             bool checkedDonor = false;
             var originalIFP = sourceExport.InstancedFullPath; // Can change if ObjectRedirector is followed
+            if (originalIFP == "BioT_MPMoon.Materials.CliffBlend_INST")
+            {
+
+            }
 #endif
             //if (sourceExport.InstancedFullPath == "BioVFX_Z_TEXTURES.Generic.Biotic_Current_2")
             //    Debugger.Break();

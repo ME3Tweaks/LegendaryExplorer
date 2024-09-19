@@ -83,6 +83,8 @@ namespace LegendaryExplorerCore.UDK
         {
             var assetInfo = GenerateAssetsPackage(pcc, assetsOutputPath, decookedMaterialsFolder);
 
+            MELoadedFiles.InvalidateCaches();
+
             var packageCache = new PackageCache();
 
             var terrains = new List<ExportEntry>();
@@ -143,12 +145,16 @@ namespace LegendaryExplorerCore.UDK
                 assetInfo.LevelExport.WriteBinary(level);
             }
 
+
+            // Package reform - fixes up imports and dumps trash out of package
             string resultFilePath = Path.Combine(mapOutputPath ?? UDKDirectory.MapsPath, $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}.udk");
             MEPackageHandler.CreateEmptyLevel(resultFilePath, MEGame.UDK);
             using (IMEPackage udkPackage2 = MEPackageHandler.OpenUDKPackage(resultFilePath))
             {
                 var finalLevelExport = udkPackage2.Exports.First(exp => exp.ClassName == "Level");
                 var levelBin = ObjectBinary.From<Level>(finalLevelExport);
+
+                udkPackage2.Save();
                 foreach (ExportEntry actor in assetInfo.StaticMeshActors)
                 {
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor,
@@ -563,7 +569,7 @@ namespace LegendaryExplorerCore.UDK
                     var debugprops = smc.GetProperties();
                     var sm = debugprops.GetProp<ObjectProperty>("StaticMesh")?.ResolveToEntry(assetInfo.SourcePackage);
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, smc, assetInfo.TempPackage,
-                                                         sma, true, new RelinkerOptionsPackage(cache), out IEntry result);
+                                                         sma, true, new RelinkerOptionsPackage(cache) { PortExportsAsImportsWhenPossible = true }, out IEntry result);
                     ((ExportEntry)result).Archetype = staticMeshComponentArchetype;
                     var props = new PropertyCollection
                             {
@@ -629,6 +635,10 @@ namespace LegendaryExplorerCore.UDK
             List<ExportEntry> staticMeshes = pcc.Exports.Where(exp => exp.ClassName.CaseInsensitiveEquals("StaticMesh")).ToList();
             foreach (ExportEntry mesh in staticMeshes)
             {
+                if (mesh.ObjectName == "Rock_Bunch_01")
+                {
+
+                }
                 if (pcc.Game.IsLEGame() && mesh.IsForcedExport)
                 {
                     // Attempt to link up to ported content.
@@ -821,28 +831,41 @@ namespace LegendaryExplorerCore.UDK
 
                         static ExportEntry ImportTexture(ExportEntry texport, IMEPackage meshPackage, PackageCache packageCache)
                         {
-                            if (meshPackage.FindExport(texport.ObjectName.Instanced) is ExportEntry existingTexture)
+                            // If texture is local it will be at the root of the package
+                            if (meshPackage.FindEntry(texport.ObjectName.Instanced) is ExportEntry existingTexture)
                             {
                                 return existingTexture;
                             }
+
+                            // EntryExporter.ExportExportToPackage(texport, meshPackage, out var ent, packageCache, new RelinkerOptionsPackage(packageCache) { PortExportsAsImportsWhenPossible = true});
                             EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, texport, meshPackage, null, false, new RelinkerOptionsPackage(packageCache), out IEntry ent);
-                            var importedExport = (ExportEntry)ent;
-                            PropertyCollection properties = importedExport.GetProperties();
-                            properties.RemoveNamedProperty("TextureFileCacheName");
-                            properties.RemoveNamedProperty("TFCFileGuid");
-                            properties.RemoveNamedProperty("LODGroup");
-                            if (texport.GetProperty<EnumProperty>("Format") is { Value.Name: "PF_BC7" })
+                            // If imported texture is already in decooked game it should be an import... technically
+                            if (ent is ExportEntry importedExport)
                             {
-                                var convertedImage = new Texture2D(texport).ToImage(PixelFormat.DXT1);
-                                properties.AddOrReplaceProp(new EnumProperty("PF_DXT1", "EPixelFormat", MEGame.UDK, "Format"));
-                                properties.AddOrReplaceProp(new EnumProperty("TC_NormalMap", "TextureCompressionSettings", MEGame.UDK, "CompressionSettings"));
-                                new Texture2D(importedExport) { TextureFormat = "PF_DXT1" }.Replace(convertedImage, properties, isPackageStored: true);
+                                PropertyCollection properties = importedExport.GetProperties();
+                                properties.RemoveNamedProperty("TextureFileCacheName");
+                                properties.RemoveNamedProperty("TFCFileGuid");
+                                properties.RemoveNamedProperty("LODGroup");
+                                if (texport.GetProperty<EnumProperty>("Format") is { Value.Name: "PF_BC7" })
+                                {
+                                    var convertedImage = new Texture2D(texport).ToImage(PixelFormat.DXT1);
+                                    properties.AddOrReplaceProp(new EnumProperty("PF_DXT1", "EPixelFormat", MEGame.UDK,
+                                        "Format"));
+                                    properties.AddOrReplaceProp(new EnumProperty("TC_NormalMap",
+                                        "TextureCompressionSettings", MEGame.UDK, "CompressionSettings"));
+                                    new Texture2D(importedExport) { TextureFormat = "PF_DXT1" }.Replace(convertedImage,
+                                        properties, isPackageStored: true);
+                                }
+                                else
+                                {
+                                    importedExport.WriteProperties(properties);
+                                }
+
+                                //// Move to package root
+                                //importedExport.idxLink = 0;
                             }
-                            else
-                            {
-                                importedExport.WriteProperties(properties);
-                            }
-                            return importedExport;
+
+                            return (ExportEntry) ent;
                         }
 
                         if (diff == null)
@@ -1061,7 +1084,7 @@ namespace LegendaryExplorerCore.UDK
             var cache = new PackageCache();
             foreach (var exp in meshPackage.Exports.Where(IsAsset))
             {
-                EntryExporter.ExportExportToPackage(exp, package, out _, cache);
+                EntryExporter.ExportExportToPackage(exp, package, out _, cache, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache, PortExportsAsImportsWhenPossible = true});
             }
 
             return package;

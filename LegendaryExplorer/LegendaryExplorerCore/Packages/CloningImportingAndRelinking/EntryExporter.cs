@@ -44,9 +44,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         // port it in
                         //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
-                        var parent = PortParents(mapping.Value, targetPackage);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true,
-                        customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache }, out _);
+                        var parent = PortParents(mapping.Value, targetPackage, customROP: customROP);
+                        customROP.CrossPackageMap.Clear(); // Do not persist this value, we do not want double relink
+                        var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true,
+                            customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache }, out _);
                         issues.AddRange(relinkResults1);
                     }
                     else
@@ -127,7 +128,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="target"></param>
         /// <param name="importAsImport">If the parents should be imported as an import instead of an export if they don't exist. This should only be used if you're porting in an import and creating its parents.</param>
         /// <returns></returns>
-        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null)
+        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null, RelinkerOptionsPackage customROP = null)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
             if (packagename != null)
@@ -161,7 +162,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (parentPackage == null)
                     {
                         // Create parent package
-                        parentPackage = ExportCreator.CreatePackageExport(target, entry.FileRef.FileNameNoExtension);
+                        if (entry.FileRef.Game == MEGame.UDK)
+                        {
+                            // Root packages should be imports
+                            // Not sure on this one... This could cause issues on nested packages
+                            parentPackage = ExportCreator.CreatePackageImport(target, entry.FileRef.FileNameNoExtension);
+                        }
+                        else
+                        {
+                            parentPackage = ExportCreator.CreatePackageExport(target, entry.FileRef.FileNameNoExtension);
+                        }
                     }
 
                     parentStack.Push(parentPackage);
@@ -208,7 +218,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                         else
                         {
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, new RelinkerOptionsPackage() { ImportExportDependencies = false, Cache = cache }, out parent);
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = false, Cache = cache }, out parent);
                         }
                     }
                     else

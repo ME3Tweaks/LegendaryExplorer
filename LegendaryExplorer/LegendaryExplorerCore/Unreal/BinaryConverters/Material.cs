@@ -585,11 +585,39 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public class TerrainWeightParameter : IEquatable<TerrainWeightParameter>
+        {
+            public NameReference ParameterName;
+            public int WeightmapIndex;
+            public bool bOverride; //ignored in equality checks
+            public Guid ExpressionGUID;
+
+            public bool Equals(TerrainWeightParameter other)
+            {
+                if (other is null) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return ParameterName.Equals(other.ParameterName) && WeightmapIndex == other.WeightmapIndex && bOverride == other.bOverride && ExpressionGUID.Equals(other.ExpressionGUID);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is null) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((TerrainWeightParameter)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ParameterName, WeightmapIndex, bOverride, ExpressionGUID);
+            }
+        }
+
         public Guid BaseMaterialId;
         public StaticSwitchParameter[] StaticSwitchParameters;
         public StaticComponentMaskParameter[] StaticComponentMaskParameters;
         public NormalParameter[] NormalParameters;//ME3
-
+        public TerrainWeightParameter[] TerrainWeightParameters; // UDK
         #region IEquatable
 
         public bool Equals(StaticParameterSet other)
@@ -678,7 +706,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 BaseMaterialId = guid,
                 StaticSwitchParameters = [],
                 StaticComponentMaskParameters = [],
-                NormalParameters = []
+                NormalParameters = [],
+                TerrainWeightParameters = [], // UDK
             };
         }
 
@@ -1080,10 +1109,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (Game >= MEGame.ME3)
             {
                 Serialize(ref paramSet.NormalParameters, Serialize);
+                if (Game == MEGame.UDK)
+                {
+                    Serialize(ref paramSet.TerrainWeightParameters, Serialize);
+                }
             }
             else if (IsLoading)
             {
                 paramSet.NormalParameters = [];
+                paramSet.TerrainWeightParameters = [];
             }
         }
         public void Serialize(ref StaticParameterSet.StaticSwitchParameter param)
@@ -1119,6 +1153,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             Serialize(ref param.ParameterName);
             Serialize(ref param.CompressionSettings);
+            Serialize(ref param.bOverride);
+            Serialize(ref param.ExpressionGUID);
+        }
+        public void Serialize(ref StaticParameterSet.TerrainWeightParameter param)
+        {
+            if (IsLoading)
+            {
+                param = new StaticParameterSet.TerrainWeightParameter();
+            }
+            Serialize(ref param.ParameterName);
+            Serialize(ref param.WeightmapIndex);
             Serialize(ref param.bOverride);
             Serialize(ref param.ExpressionGUID);
         }

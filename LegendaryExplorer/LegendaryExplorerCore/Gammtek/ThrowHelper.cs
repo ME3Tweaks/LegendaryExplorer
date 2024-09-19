@@ -40,7 +40,7 @@ namespace LegendaryExplorerCore.Gammtek
             throw new ArgumentException(message, paramName);
         }
 
-        public static void ThrowIfNotInBounds(int index, int length, [CallerArgumentExpression("index")] string paramName = null)
+        public static void ThrowIfNotInBounds(int index, int length, [CallerArgumentExpression(nameof(index))] string paramName = null)
         {
             if (unchecked((uint)index >= (uint)length))
             {
