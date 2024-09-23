@@ -4,18 +4,26 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using ME3Tweaks.Wwiser.Formats;
 using ME3Tweaks.Wwiser.Model;
 using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
+using ME3Tweaks.Wwiser.Model.ParameterNode;
+using ME3Tweaks.Wwiser.Model.ParameterNode.Positioning;
+using ME3Tweaks.Wwiser.Model.RTPC;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.AccumType;
+using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.CurveScaling;
+using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.ParameterId;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.PriorityOverrideFlags;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.MediaInformation;
-using ME3Tweaks.Wwiser.Model.ParameterNode;
-using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PositioningChunk;
-using ME3Tweaks.Wwiser.Model.ParameterNode.Positioning;
-using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PathMode;
+using static ME3Tweaks.Wwiser.Model.ParameterNode.AdvSettingsParams;
 using static ME3Tweaks.Wwiser.Model.ParameterNode.AuxParams;
+using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PathMode;
+using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PositioningChunk;
+using static ME3Tweaks.Wwiser.Model.RTPC.RtpcType;
+using static ME3Tweaks.Wwiser.Model.State.SyncType;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -40,7 +48,7 @@ public partial class BinaryInterpreterWPF
         var pos = bin.Position;
         var id = bin.ReadUInt32();
         var node = new BinInterpNode(pos, $"{name}: {id}") { Length = 4 };
-        if(WwiseIdMap.TryGetValue(id, out var item))
+        if (WwiseIdMap.TryGetValue(id, out var item))
         {
             node.Header += $" (Ref to {item.Name})";
         }
@@ -57,7 +65,7 @@ public partial class BinaryInterpreterWPF
         Span<byte> span = stackalloc byte[4];
         var read = bin.BaseStream.Read(span);
         uint value = BitConverter.ToUInt32(span);
-        if(value > 0x10000000)
+        if (value > 0x10000000)
         {
             // float
             var f = BitConverter.ToSingle(span);
@@ -68,6 +76,18 @@ public partial class BinaryInterpreterWPF
             // int
             node.Header += value.ToString();
         }
+        return node;
+    }
+
+    private BinInterpNode MakeWwiseVarCountNode(EndianReader bin, string name)
+    {
+        var node = new BinInterpNode(bin.Position, $"{name}: ");
+        var pos = bin.Position;
+
+        var value = VarCount.ReadResizingUint(bin.BaseStream);
+        node.Length = (int)(bin.Position - pos);
+        node.Header += value.ToString();
+
         return node;
     }
 
@@ -136,7 +156,7 @@ public partial class BinaryInterpreterWPF
                     Scan_WwiseBank_DIDX(chunkNode, bin, size);
                     break;
                 case "HIRC":
-                    Scan_WwiseBank_HIRC(chunkNode, bin, version);
+                    Scan_WwiseBank_HIRC(chunkNode, bin, version, useFeedback);
                     break;
                 case "STID":
                     Scan_WwiseBank_STID(chunkNode, bin);
@@ -222,12 +242,12 @@ public partial class BinaryInterpreterWPF
         }
     }
 
-    private void Scan_WwiseBank_HIRC(BinInterpNode root, EndianReader bin, uint version)
+    private void Scan_WwiseBank_HIRC(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
     {
-        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version), IsExpanded: true));
+        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version, useFeedback), IsExpanded: true));
     }
 
-    private BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version)
+    private BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version, bool useFeedback)
     {
         var start = bin.Position;
         var root = new BinInterpNode(bin.Position, $"{index}: ");
@@ -257,7 +277,7 @@ public partial class BinaryInterpreterWPF
         {
             case HircType.Sound:
                 Scan_HIRC_BankSourceData(root, bin, version);
-                Scan_HIRC_NodeBaseParams(root, bin, version);
+                Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
                 if(version <= 56)
                 {
                     root.Items.Add(MakeInt16Node(bin, "Loop"));
@@ -320,7 +340,7 @@ public partial class BinaryInterpreterWPF
         
     }
 
-    private void Scan_HIRC_NodeBaseParams(BinInterpNode root, EndianReader bin, uint version)
+    private void Scan_HIRC_NodeBaseParams(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
     {
         root.Items.Add(MakeBoolByteNode(bin, "IsOverrideParentFX"));
         var fxCount = bin.ReadByte();
@@ -384,12 +404,13 @@ public partial class BinaryInterpreterWPF
         if (version <= 56) root.Items.Add(MakeSByteNode(bin, "DistOffset"));
 
         Scan_HIRC_InitialParams(root, bin, version);
-
         if(version <= 52) root.Items.Add(MakeWwiseIdRefNode(bin, "StateGroupId"));
-
         Scan_HIRC_Positioning(root, bin, version);
-
         if (version > 65) Scan_HIRC_AuxParams(root, bin, version);
+        Scan_HIRC_AdvSettingsParams(root, bin, version);
+        Scan_HIRC_State(root, bin, version);
+        Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
+        if(version < 126 && useFeedback) Scan_HIRC_FeedbackInfo(root, bin, version);
     }
 
     private void Scan_HIRC_InitialParams(BinInterpNode root, EndianReader bin, uint version)
@@ -652,6 +673,201 @@ public partial class BinaryInterpreterWPF
         }
 
         root.Items.Add(aNode);
+    }
+
+    private void Scan_HIRC_AdvSettingsParams(BinInterpNode root, EndianReader bin, uint version)
+    {
+        var aNode = new BinInterpNode(bin.Position, "AdvancedSettingsParams");
+
+        if (version > 89)
+        {
+            aNode.Items.Add(MakeByteEnumNode<AdvFlags>(bin, "AdvFlags"));
+        }
+
+        aNode.Items.Add(MakeByteEnumNode<VirtualQueueBehavior>(bin, "VirtualQueueBehavior"));
+
+        if (version <= 89)
+        {
+            aNode.Items.Add(MakeBoolByteNode(bin, "KillNewest"));
+            if (version > 53) aNode.Items.Add(MakeBoolByteNode(bin, "UseVirtualBehavior"));
+        }
+
+        aNode.Items.Add(MakeUInt16Node(bin, "MaxNumInstance"));
+
+        if (version is <= 89 and > 53) aNode.Items.Add(MakeBoolByteNode(bin, "IsGlobalLimit"));
+        aNode.Items.Add(MakeByteEnumNode<BelowThresholdBehavior>(bin, "BelowThresholdBehavior"));
+
+        if (version <= 89)
+        {
+            aNode.Items.Add(MakeBoolByteNode(bin, "IsMaxNumInstOverrideParent"));
+            aNode.Items.Add(MakeBoolByteNode(bin, "IsVVoicesOptOverrideParent"));
+            if (version > 72)
+            {
+                aNode.Items.Add(MakeBoolByteNode(bin, "OverrideHdrEnvelope"));
+                aNode.Items.Add(MakeBoolByteNode(bin, "OverrideAnalysis"));
+                aNode.Items.Add(MakeBoolByteNode(bin, "NormalizeLoudness"));
+                aNode.Items.Add(MakeBoolByteNode(bin, "EnableEnvelope"));
+            }
+        }
+        else
+        {
+            aNode.Items.Add(MakeByteEnumNode<AdvOverrides>(bin, "AdvOverrides"));
+        }
+        root.Items.Add(aNode);
+    }
+
+    private void Scan_HIRC_State(BinInterpNode root, EndianReader bin, uint version)
+    {
+        var sNode = new BinInterpNode(bin.Position, "State");
+
+        if(version <= 52)
+        {
+            ReadStateGroup(sNode, bin, version);
+
+        }
+        else
+        {
+            var countPos = bin.Position;
+            var propsCount = VarCount.ReadResizingUint(bin.BaseStream);
+            bin.JumpTo(countPos);
+            sNode.Items.Add(MakeWwiseVarCountNode(bin, "StatePropsCount"));
+
+            if(propsCount > 0)
+            {
+                var props = new BinInterpNode(bin.Position, "PropertyInfo") { IsExpanded = true };
+                for (var i = 0;i < propsCount; i++)
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
+
+                    item.Items.Add(MakeWwiseVarCountNode(bin, "PropertyId"));
+                    var accumType = (AccumTypeInner)bin.ReadByte();
+                    if (version <= 125) accumType += 1;
+                    item.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+                    if (version > 126) item.Items.Add(MakeBoolByteNode(bin, "InDb"));
+
+                    props.Items.Add(item);
+                }
+
+                sNode.Items.Add(props);
+            }
+
+            countPos = bin.Position;
+            var groupsCount = VarCount.ReadResizingUint(bin.BaseStream);
+            bin.JumpTo(countPos);
+            sNode.Items.Add(MakeWwiseVarCountNode(bin, "StateGroupsCount"));
+
+            if(groupsCount > 0)
+            {
+                var groups = new BinInterpNode(bin.Position, "GroupChunks") { IsExpanded = true };
+                for (var i = 0; i < propsCount; i++)
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
+
+                    item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
+                    ReadStateGroup(item, bin, version);
+                    groups.Items.Add(item);
+                }
+
+                sNode.Items.Add(groups);
+            }
+        }
+
+        root.Items.Add(sNode);
+
+        void ReadStateGroup(BinInterpNode root, EndianReader bin, uint version)
+        {
+            root.Items.Add(MakeByteEnumNode<SyncTypeInner>(bin, "SyncType"));
+            var countPos = bin.Position;
+            var stateCount = ReadStateCount();
+            var length = (int)(bin.Position - countPos);
+            bin.JumpTo(countPos);
+            root.Items.Add(new BinInterpNode(bin.Position, $"StateCount: {ReadStateCount()}") { Length = length });
+            var states = new BinInterpNode(bin.Position, "States") { IsExpanded = true };
+            for (var i = 0; i < stateCount; i++)
+            {
+                var state = new BinInterpNode(bin.Position, $"{i}");
+                state.Items.Add(MakeWwiseIdNode(bin, "State"));
+                if (version <= 120) state.Items.Add(MakeWwiseIdRefNode(bin, "StateId"));
+                if (version <= 52) state.Items.Add(MakeBoolByteNode(bin, "IsCustom"));
+                if (version <= 145) state.Items.Add(MakeWwiseIdRefNode(bin, "StateInstanceId"));
+
+                // bunch of stuff goes right here except its only higher wwise versions! score!
+                states.Items.Add(state);
+            }
+            root.Items.Add(states);
+        }
+
+        uint ReadStateCount()
+        {
+            if (version > 122)
+            {
+                return VarCount.ReadResizingUint(bin.BaseStream);
+            }
+            else if (version is > 36 and <= 52)
+            {
+                return bin.ReadUInt16();
+            }
+            else
+            {
+                return bin.ReadUInt32();
+            }
+        }
+    }
+
+    private void Scan_HIRC_RTPCParameterNodeBase(BinInterpNode root, EndianReader bin, uint version)
+    {
+        root.Items.Add(MakeArrayNodeInt16Count(bin, "RTPCs", i =>
+        {
+            var rtpc = new BinInterpNode(bin.Position, $"RTPC {i}");
+
+            rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
+            rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+            rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
+            var rtpcType = bin.ReadByte();
+            if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
+            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
+            var accumType = (AccumTypeInner)bin.ReadByte();
+            if (version <= 125) accumType += 1;
+            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+            if(version <= 89) rtpc.Items.Add(MakeUInt32EnumNode<RtpcParameterId>(bin, "ParameterId"));
+            else if(version <= 113) rtpc.Items.Add(MakeByteEnumNode<RtpcParameterId>(bin, "ParameterId"));
+            else
+            {
+                var pos = bin.Position;
+                var parameterId = (RtpcParameterId)VarCount.ReadResizingUint(bin.BaseStream);
+                bin.JumpTo(pos);
+                var node = MakeWwiseVarCountNode(bin, $"ParameterId");
+                node.Header += $" ({Enum.GetName(parameterId)})";
+                rtpc.Items.Add(node);
+            }
+            rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RtpcCurveId"));
+            rtpc.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
+            rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", i =>
+            {
+                var gItem = new BinInterpNode(bin.Position, $"Graph Item {i}");
+                gItem.Items.Add(MakeFloatNode(bin, "From"));
+                gItem.Items.Add(MakeFloatNode(bin, "To"));
+                gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                return gItem;
+            }));
+
+            return rtpc;
+        }));
+    }
+
+    private void Scan_HIRC_FeedbackInfo(BinInterpNode root, EndianReader bin, uint version)
+    {
+        root.Items.Add(MakeWwiseIdRefNode(bin, "BusId"));
+        bin.Skip(-4);
+        if(bin.ReadUInt32() != 0)
+        {
+            root.Items.Add(MakeFloatNode(bin, "FeedbackVolume"));
+            root.Items.Add(MakeFloatNode(bin, "FeedbackModifierMin"));
+            root.Items.Add(MakeFloatNode(bin, "FeedbackModifierMax"));
+            root.Items.Add(MakeFloatNode(bin, "FeedbackLPF"));
+            root.Items.Add(MakeFloatNode(bin, "FeedbackLPFModifierMin"));
+            root.Items.Add(MakeFloatNode(bin, "FeedbackLPFModifierMax"));
+        }
     }
 
     private void Scan_WwiseBank_STID(BinInterpNode root, EndianReader bin)

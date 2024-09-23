@@ -1050,7 +1050,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
                     }
-                    if (bitve.ArrayAddAlgoritm != BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+                    if (bitve.ArrayAddAlgorithm != BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
                     {
                         SupportedEditorSetElements.Add(AddArrayElement_Button);
                         SupportedEditorSetElements.Add(EditorSet_Separator_LeftsideArray);
@@ -1365,7 +1365,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNode bitvi)
             {
-                switch (bitvi.ArrayAddAlgoritm)
+                switch (bitvi.ArrayAddAlgorithm)
                 {
                     case BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes:
                         BinInterpNode container = bitvi;
