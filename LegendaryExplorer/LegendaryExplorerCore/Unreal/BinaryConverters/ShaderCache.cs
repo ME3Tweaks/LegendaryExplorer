@@ -374,10 +374,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 foreach ((NameReference type, ShaderReference shaderReference) in source)
                 {
-                    var newShaderGuid = Guid.NewGuid();
-                    if (!guidMap.TryAdd(shaderReference.Id, newShaderGuid))
+                    if (!guidMap.TryGetValue(shaderReference.Id, out Guid newShaderGuid))
                     {
-                        newShaderGuid = shaderReference.Id;
+                        newShaderGuid = Guid.NewGuid();
+                        guidMap.Add(shaderReference.Id, newShaderGuid);
                     }
                     dest.Add(type, new ShaderReference { Id = newShaderGuid, ShaderType = shaderReference.ShaderType });
                 }
