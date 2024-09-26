@@ -864,7 +864,7 @@ namespace LegendaryExplorerCore.Kismet
         }
 
         /// <summary>
-        /// 
+        /// Creates a SeqCond_CompareInt action in the given sequence with the given objects, if any
         /// </summary>
         /// <param name="seq"></param>
         /// <param name="int1"></param>
@@ -1101,6 +1101,51 @@ namespace LegendaryExplorerCore.Kismet
             fObj.WriteProperty(new IntProperty(value ? 1 : 0, "bValue"));
 
             return fObj;
+        }
+
+        /// <summary>
+        /// Creates a new SeqVar_ScopedNamed with the given value in the given sequence
+        /// </summary>
+        /// <param name="sequence">Sequence this object will be placed into</param>
+        /// <param name="expectedTypeClassName">The expected variable type class name</param>
+        /// <param name="varName">The name of the variable to find</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>   
+        public static ExportEntry CreateScopeNamed(ExportEntry sequence, string expectedTypeClassName, NameReference varName, PackageCache cache = null)
+        {
+            var fObj = SequenceObjectCreator.CreateSequenceObject(sequence.FileRef, "SeqVar_ScopedNamed", cache);
+            KismetHelper.AddObjectToSequence(fObj, sequence);
+
+            var expectedType = EntryImporter.EnsureClassIsInFile(sequence.FileRef, expectedTypeClassName, new RelinkerOptionsPackage(cache));
+
+            fObj.WriteProperty(new ObjectProperty(expectedType, "ExpectedType"));
+            fObj.WriteProperty(new NameProperty(varName, "FindVarName"));
+            fObj.WriteProperty(new BoolProperty(true, "bStatusIsOK")); // Not entirely sure what this is for
+
+            return fObj;
+        }
+
+        /// <summary>
+        /// Creates a SeqCond_CompareFloat action in the given sequence with the given objects, if any
+        /// </summary>
+        /// <param name="seq">Sequence to place this object into</param>
+        /// <param name="float1">Optional float object to assign to the A variable pin</param>
+        /// <param name="float2">Optional float object to assign to the B variable pin</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateCompareFloat(ExportEntry seq, ExportEntry float1 = null, ExportEntry float2 = null, PackageCache cache = null)
+        {
+            var comp = CreateSequenceObject(seq.FileRef, "SeqCond_CompareFloat", cache);
+            KismetHelper.AddObjectToSequence(comp, seq);
+            if (float1 != null)
+            {
+                KismetHelper.CreateVariableLink(comp, "A", float1);
+            }
+            if (float1 != null)
+            {
+                KismetHelper.CreateVariableLink(comp, "B", float2);
+            }
+            return comp;
         }
     }
 }
