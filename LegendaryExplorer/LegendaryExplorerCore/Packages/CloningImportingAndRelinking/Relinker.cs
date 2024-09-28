@@ -1017,7 +1017,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Shared code for finding existing entry in package, using lookup rules
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         private static IEntry FindExistingEntry(string instancedFullPath, ExportEntry relinkingExport, ExportEntry sourceExport, RelinkerOptionsPackage rop)
         {
             IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
@@ -1026,11 +1025,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (!existingEntry.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) && !rop.RelinkAllowDifferingClassesInRelink)
                 {
+                    bool allowSub = false;
+                    // Allow substituting BioSWF -> GFxMovieInfo when porting out of ME1
+                    if (existingEntry.Game > MEGame.ME1 && sourceExport.Game == MEGame.ME1 && existingEntry.IsA("GFxMovieInfo") && sourceExport.IsA("BioSWF"))
+                    {
+                        allowSub = true;
+                    }
                     // Allow substituting materials. This prevents a lot of other bugs versus allowing anything to 
                     // be substituted since we can control it here.
-                    if (!existingEntry.IsA("MaterialInterface") || !sourceExport.IsA("MaterialInterface"))
+                    else if (existingEntry.IsA("MaterialInterface") && sourceExport.IsA("MaterialInterface"))
                     {
-                        // One of the objects is not a material interface and we aren't allowing any class substitutions during relink
+                        allowSub = true;
+                    }
+
+                    if (!allowSub)
+                    {
                         existingEntry = null;
                     }
                 }
