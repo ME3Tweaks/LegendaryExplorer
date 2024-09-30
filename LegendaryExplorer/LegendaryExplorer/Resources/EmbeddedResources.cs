@@ -41,6 +41,8 @@ namespace LegendaryExplorer.Resources
         public static string StandardShader => GetResourceString("LegendaryExplorer.Resources.StandardShader.hlsl");
 
         public static string TextureShader => GetResourceString("LegendaryExplorer.Resources.TextureShader.hlsl");
+        public static string LEDefaultUnlitPixelShader => GetResourceString("LegendaryExplorer.Resources.LE3DefaultUnlitPS.hlsl");
+        public static string LEDefaultUnlitVertexShader => GetResourceString("LegendaryExplorer.Resources.LE3DefaultUnlitVS.hlsl");
 
         private static IHighlightingDefinition _hlslSyntaxDefinition;
         public static IHighlightingDefinition HlslSyntaxDefinition

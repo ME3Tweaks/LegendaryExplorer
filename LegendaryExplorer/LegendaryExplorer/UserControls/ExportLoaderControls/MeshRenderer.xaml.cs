@@ -39,15 +39,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class MeshRenderer : ExportLoaderControl, ISceneRenderContextConfigurable
     {
-        private static readonly string[] parsableClasses = { "SkeletalMesh", "StaticMesh", "FracturedStaticMesh", "BioSocketSupermodel", "ModelComponent", "Model" };
+        private static readonly string[] parsableClasses = ["SkeletalMesh", "StaticMesh", "FracturedStaticMesh", "BioSocketSupermodel", "ModelComponent", "Model"];
 
         #region 3D
 
         public MeshRenderContext MeshContext { get; }
 
         private bool _rotating = Settings.Meshplorer_ViewRotating;
-        private bool _wireframe;
-        private bool _solid = true;
+        private bool _renderWireframe;
+        private bool _renderSolid = true;
+        private bool _renderGameShader;
         private bool _firstperson;
 
         public bool Rotating
@@ -63,16 +64,34 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public bool Wireframe
+        public bool RenderWireframe
         {
-            get => _wireframe;
-            set => SetProperty(ref _wireframe, value);
+            get => _renderWireframe;
+            set => SetProperty(ref _renderWireframe, value);
         }
 
-        public bool Solid
+        public bool RenderGameShader
         {
-            get => _solid;
-            set => SetProperty(ref _solid, value);
+            get => _renderGameShader;
+            set
+            {
+                if (SetProperty(ref _renderGameShader, value) && _renderGameShader)
+                {
+                    RenderSolid = false;
+                }
+            }
+        }
+
+        public bool RenderSolid
+        {
+            get => _renderSolid;
+            set
+            {
+                if (SetProperty(ref _renderSolid, value) && _renderSolid)
+                {
+                    RenderGameShader = false;
+                }
+            }
         }
 
         public bool FirstPerson
@@ -204,7 +223,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
         #endregion
 
-        private ModelPreview Preview;
+        private ModelPreview<WorldVertex> LEXPreview;
+        private ModelPreview<LEVertex> GameShaderPreview;
 
         /// <summary>
         /// Value is true after _Loaded is called. False after _Unloaded (which if in tab control, is called when different tab is selected)
@@ -215,28 +235,30 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void SceneContext_RenderScene(object sender, EventArgs e)
         {
-            if (Preview != null && Preview.LODs.Count > 0)
+            if (CurrentLOD < 0) { CurrentLOD = 0; }
+            if (RenderSolid && LEXPreview is not null && CurrentLOD < LEXPreview.LODs.Count)
             {
-                if (CurrentLOD < 0) { CurrentLOD = 0; }
-                if (Solid && CurrentLOD < Preview.LODs.Count)
-                {
-                    MeshContext.Wireframe = false;
-                    Preview.Render(MeshContext, CurrentLOD, Matrix4x4.Identity);
-                }
-                if (Wireframe)
-                {
-                    MeshContext.Wireframe = true;
-                    var ViewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
-                    MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
-                    MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, Preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
-                }
-                if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
-                {
-                    MeshContext.Wireframe = true;
-                    var ViewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
-                    MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
-                    MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, ViewConstants, STMCollisionMesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
-                }
+                MeshContext.Wireframe = false;
+                LEXPreview.Render(MeshContext, CurrentLOD, Matrix4x4.Identity);
+            }
+            if (RenderGameShader && GameShaderPreview != null && CurrentLOD < GameShaderPreview.LODs.Count)
+            {
+                MeshContext.Wireframe = false;
+                GameShaderPreview.Render(MeshContext, CurrentLOD, Matrix4x4.Identity);
+            }
+            if (RenderWireframe && LEXPreview is not null && CurrentLOD < LEXPreview.LODs.Count)
+            {
+                MeshContext.Wireframe = true;
+                var viewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
+                MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, viewConstants, LEXPreview.LODs[CurrentLOD].Mesh, [null]);
+            }
+            if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
+            {
+                MeshContext.Wireframe = true;
+                var viewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
+                MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, viewConstants, STMCollisionMesh, [null]);
             }
         }
 
@@ -244,9 +266,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLOD >= 0)
             {
-                if (Preview != null && Preview.LODs.Count > 0)
+                if (GameShaderPreview != null && GameShaderPreview.LODs.Count > 0)
                 {
-                    WorldMesh m = Preview.LODs[CurrentLOD].Mesh;
+                    var m = GameShaderPreview.LODs[CurrentLOD].Mesh;
+                    MeshContext.Camera.Position = m.AABBCenter;
+                    MeshContext.Camera.Pitch = -MathF.PI / 7.0f;
+                    if (MeshContext.Camera.FirstPerson)
+                    {
+                        MeshContext.Camera.Position -= MeshContext.Camera.CameraForward * MeshContext.Camera.FocusDepth;
+                    }
+                }
+                else if (LEXPreview != null && LEXPreview.LODs.Count > 0)
+                {
+                    var m = LEXPreview.LODs[CurrentLOD].Mesh;
                     MeshContext.Camera.Position = m.AABBCenter;
                     MeshContext.Camera.Pitch = -MathF.PI / 7.0f;
                     if (MeshContext.Camera.FirstPerson)
@@ -530,7 +562,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedExport = exportEntry;
             CurrentLOD = 0;
 
-            Func<ModelPreview.PreloadedModelData> loadMesh = null;
+            Func<PreloadedModelData> loadMesh = null;
             var assetCache = new PackageCache();
 
             if (exportEntry.ClassName is "StaticMeshComponent")
@@ -566,11 +598,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         meshObject.SetMaterials(OverlayMaterials, true);
                         OverlayMaterials = null;
                     }
-                    var pmd = new ModelPreview.PreloadedModelData
+                    var pmd = new PreloadedModelData
                     {
                         meshObject = meshObject,
                         sections = new List<ModelPreviewSection>(),
-                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>()
+                        texturePreviewMaterials = new List<PreloadedTextureData>()
                     };
                     IMEPackage meshFile = meshObject.Export.FileRef;
                     if (meshFile.Game != MEGame.UDK)
@@ -612,11 +644,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     BusyText = "Fetching assets";
                     IsBusy = true;
                     var meshObject = ObjectBinary.From<SkeletalMesh>(CurrentLoadedExport);
-                    var pmd = new ModelPreview.PreloadedModelData
+                    var pmd = new PreloadedModelData
                     {
                         meshObject = meshObject,
                         sections = new List<ModelPreviewSection>(),
-                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>()
+                        texturePreviewMaterials = new List<PreloadedTextureData>()
                     };
                     IMEPackage package = meshObject.Export.FileRef;
                     if (package.Game != MEGame.UDK)
@@ -652,11 +684,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 IsBrush = true;
                 loadMesh = () =>
                 {
-                    var pmd = new ModelPreview.PreloadedModelData
+                    var pmd = new PreloadedModelData
                     {
                         meshObject = CurrentLoadedExport.GetProperty<StructProperty>("BrushAggGeom"),
                         sections = new List<ModelPreviewSection>(),
-                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
+                        texturePreviewMaterials = new List<PreloadedTextureData>(),
                     };
                     return pmd;
                 };
@@ -671,11 +703,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 loadMesh = () =>
                 {
                     var modelComp = ObjectBinary.From<ModelComponent>(CurrentLoadedExport);
-                    var pmd = new ModelPreview.PreloadedModelData
+                    var pmd = new PreloadedModelData
                     {
                         meshObject = modelComp,
                         sections = new List<ModelPreviewSection>(),
-                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
+                        texturePreviewMaterials = new List<PreloadedTextureData>(),
                     };
 
                     foreach (var element in modelComp.Elements)
@@ -716,11 +748,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     BusyProgressIndeterminate = true;
                     IsBusy = true;
                     var modelComp = ObjectBinary.From<Model>(CurrentLoadedExport);
-                    var pmd = new ModelPreview.PreloadedModelData
+                    var pmd = new PreloadedModelData
                     {
                         meshObject = modelComp,
                         sections = new List<ModelPreviewSection>(),
-                        texturePreviewMaterials = new List<ModelPreview.PreloadedTextureData>(),
+                        texturePreviewMaterials = new List<PreloadedTextureData>(),
                     };
                     foreach (var mcExp in modelComp.Export.FileRef.Exports.Where(x =>
                         x.ClassName == "ModelComponent" && !x.IsDefaultObject))
@@ -770,49 +802,57 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         //in the time since the previous task was started, the export has been unloaded
                         return;
                     }
-                    if (prevTask.Result is ModelPreview.PreloadedModelData pmd)
+                    if (prevTask.Result is PreloadedModelData pmd)
                     {
                         Action loadPreviewAction = () =>
                         {
+                            LEXPreview?.Dispose();
+                            GameShaderPreview?.Dispose();
+                            LEXPreview = null;
+                            GameShaderPreview = null;
+                            STMCollisionMesh?.Dispose();
+                            STMCollisionMesh = null;
                             switch (pmd.meshObject)
                             {
                                 case StaticMesh statM:
                                     STMCollisionMesh = GetMeshFromAggGeom(statM.GetCollisionMeshProperty(Pcc));
-                                    Preview = new ModelPreview(MeshContext.Device, statM, CurrentLOD, MeshContext.TextureCache, assetCache, pmd);
+                                    GameShaderPreview = new ModelPreview<LEVertex>(MeshContext.Device, statM, CurrentLOD, MeshContext.TextureCache, assetCache, pmd);
+                                    LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, statM, CurrentLOD, MeshContext.TextureCache, assetCache, pmd);
                                     MeshContext.Camera.FocusDepth = statM.Bounds.SphereRadius * 1.2f;
                                     break;
                                 case SkeletalMesh skm:
-                                    Preview = new ModelPreview(MeshContext.Device, skm, MeshContext.TextureCache, assetCache, pmd);
+                                    GameShaderPreview = new ModelPreview<LEVertex>(MeshContext.Device, skm, MeshContext.TextureCache, assetCache, pmd);
+                                    LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, skm, MeshContext.TextureCache, assetCache, pmd);
                                     MeshContext.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
                                     break;
                                 case StructProperty structProp: //BrushComponent
-                                    Preview = new ModelPreview(MeshContext.Device, GetMeshFromAggGeom(structProp), MeshContext.TextureCache, assetCache, pmd);
-                                    MeshContext.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
+                                    LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, GetMeshFromAggGeom(structProp), MeshContext.TextureCache, assetCache, pmd);
+                                    MeshContext.Camera.FocusDepth = LEXPreview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                     break;
                                 case ModelComponent mc:
-                                    Preview = new ModelPreview(MeshContext.Device, GetMeshFromModelComponent(mc), MeshContext.TextureCache, assetCache, pmd);
+                                    LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, GetMeshFromModelComponent(mc), MeshContext.TextureCache, assetCache, pmd);
                                     //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                     break;
                                 case Model m:
                                     var sections = new List<ModelPreviewSection>();
-                                    WorldMesh mesh = GetMeshFromModelSubcomponents(m, sections);
+                                    Mesh<WorldVertex> mesh = GetMeshFromModelSubcomponents(m, sections);
                                     pmd.sections = sections;
                                     if (mesh.Vertices.Any())
                                     {
                                         MeshContext.Camera.Position = mesh.Vertices[0].Position;
                                     }
 
-                                    Preview = new ModelPreview(MeshContext.Device, mesh, MeshContext.TextureCache, assetCache, pmd);
+                                    LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, mesh, MeshContext.TextureCache, assetCache, pmd);
                                     //SceneViewer.Context.Camera.FocusDepth = Preview.LODs[0].Mesh.AABBHalfSize.Length() * 1.2f;
                                     break;
                             }
                             assetCache.Dispose();
                             LODPicker.ClearEx();
-                            if (Preview is not null)
+                            if (LEXPreview is not null)
                             {
-                                for (int l = 0; l < Preview.LODs.Count; l++)
+                                for (int i = 0; i < LEXPreview.LODs.Count; i++)
                                 {
-                                    LODPicker.Add($"LOD{l}");
+                                    LODPicker.Add($"LOD{i}");
                                 }
                             }
                             CenterView();
@@ -1011,7 +1051,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
         }
 
-        private static void AddMaterialBackgroundThreadTextures(List<ModelPreview.PreloadedTextureData> texturePreviewMaterials, ExportEntry entry, PackageCache assetCache)
+        private static void AddMaterialBackgroundThreadTextures(List<PreloadedTextureData> texturePreviewMaterials, ExportEntry entry, PackageCache assetCache)
         {
             var matinst = new MaterialInstanceConstant(entry, assetCache);
             if (texturePreviewMaterials.Any(x => x.MaterialExport.InstancedFullPath == entry.InstancedFullPath))
@@ -1030,7 +1070,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var extAsset = EntryImporter.ResolveImport(import, assetCache);
                     if (extAsset != null) //Apparently some assets are cubemaps, we don't want these.
                     {
-                        var preloadedTextureData = new ModelPreview.PreloadedTextureData();
+                        var preloadedTextureData = new PreloadedTextureData();
                         //Debug.WriteLine("Preloading ext texture " + extAsset.ObjectName + " for material " + entry.ObjectName);
                         var t2d = new Texture2D(extAsset);
                         preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip(), t2d.Export.Game, true, out var usedMip);
@@ -1041,7 +1081,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else
                 {
-                    var preloadedTextureData = new ModelPreview.PreloadedTextureData();
+                    var preloadedTextureData = new PreloadedTextureData();
                     var t2d = new Texture2D(tex as ExportEntry);
                     //Debug.WriteLine("Preloading local texture " + tex.ObjectName + " for material " + entry.ObjectName);
                     preloadedTextureData.decompressedTextureData = t2d.GetImageBytesForMip(t2d.GetTopMip(), t2d.Export.Game, true, out var usedMip);
@@ -1163,9 +1203,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             IsStaticMesh = false;
             IsModel = false;
             CurrentLoadedExport = null;
+            STMCollisionMesh?.Dispose();
             STMCollisionMesh = null;
-            Preview?.Materials.Clear();
-            Preview?.Dispose();
+            LEXPreview?.Dispose();
+            LEXPreview = null;
+            GameShaderPreview?.Dispose();
+            GameShaderPreview = null;
         }
 
         public override void PopOut()
@@ -1186,14 +1229,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 tc.SelectionChanged -= MeshRendererWPF_HostingTabSelectionChanged;
             }
-            Preview?.Dispose();
-            if (SceneViewer != null)
+            STMCollisionMesh?.Dispose();
+            STMCollisionMesh = null;
+            LEXPreview?.Dispose();
+            LEXPreview = null;
+            GameShaderPreview?.Dispose();
+            GameShaderPreview = null;
+            if (SceneViewer is { Context: not null })
             {
-                if (SceneViewer.Context != null)
-                {
-                    MeshContext.RenderScene -= SceneContext_RenderScene;
-                    MeshContext.UpdateScene -= SceneContext_UpdateScene;
-                }
+                MeshContext.RenderScene -= SceneContext_RenderScene;
+                MeshContext.UpdateScene -= SceneContext_UpdateScene;
             }
             CurrentLoadedExport = null;
             SceneViewer = null;

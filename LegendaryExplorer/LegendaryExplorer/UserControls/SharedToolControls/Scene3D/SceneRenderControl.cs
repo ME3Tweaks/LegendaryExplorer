@@ -12,6 +12,7 @@ using SharpDX.Direct3D;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -277,7 +278,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 {
                     Context.CreateResources();
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
                     Content = Image = new ImageAwesome
                     {

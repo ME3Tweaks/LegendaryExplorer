@@ -65,6 +65,8 @@
 		<Page Remove="Tools\PlotEditor\SFXGame\biodefine\**" />
 		<Page Remove="UserControls\SharedToolControls\DirectX\**" />
 		<None Remove="Resources\Images\LEX_Splash_Nightly.png" />
+		<None Remove="Resources\LE3DefaultUnlitPS.hlsl" />
+		<None Remove="Resources\LE3DefaultUnlitVS.hlsl" />
 		<None Remove="Tools\PackageEditor\ExportIcons\icon_texturecube.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_cnd.png" />
@@ -98,6 +100,8 @@
 		<Resource Include="Tools\PlotDatabase\PlotTypeIcons\icon_bool.png" />
 		<!-- Kismet font being an EmbeddedResource instead of a Resource like the other fonts is intentional, do not change it!-->
 		<EmbeddedResource Include="Resources\Fonts\KismetFont.ttf" />
+		<EmbeddedResource Include="Resources\LE3DefaultUnlitPS.hlsl" />
+		<EmbeddedResource Include="Resources\LE3DefaultUnlitVS.hlsl" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\SharedProjects\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj" />
@@ -144,6 +148,7 @@
 		<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
 		<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+		<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
 		<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.6" />

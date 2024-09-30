@@ -993,7 +993,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         case NodeType.ArrayLeafObject:
                         case NodeType.StructLeafObject:
-                            if (dataOffset != 0)
+                            if (dataOffset >= 0)
                             {
                                 Value_TextBox.Text = EndianReader.ToInt32(CurrentLoadedExport.DataReadOnly, dataOffset, CurrentLoadedExport.FileRef.Endian).ToString();
                                 SupportedEditorSetElements.Add(Value_TextBox);
