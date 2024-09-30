@@ -7,21 +7,15 @@ using System.Numerics;
 using System.Text;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Tools.TlkManagerNS;
-using LegendaryExplorer.UnrealExtensions;
-using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
-using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -41,6 +35,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 str = bin.BaseStream.ReadStringLatin1Null(strLen);
             }
+            return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
+        }
+
+        private BinInterpNode MakeStringUTF8Node(EndianReader bin, string nodeName)
+        {
+            int pos = (int)bin.Position;
+            int strLen = bin.ReadInt32();
+            string str = bin.BaseStream.ReadStringUtf8(strLen);
             return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
         }
 
@@ -1358,7 +1360,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int extraObjsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ExtraReferencedObjects: {extraObjsCount = bin.ReadInt32()}")
                 {
-                    ArrayAddAlgoritm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
+                    ArrayAddAlgorithm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
                     Items = ReadList(extraObjsCount, i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}", NodeType.ArrayLeafObject))
                 });
 
@@ -4410,12 +4412,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 BinInterpNode levelActorsNode;
                 subnodes.Add(levelActorsNode = new BinInterpNode(bin.Position, $"Level Actors: ({actorsCount = bin.ReadInt32()})", NodeType.StructLeafInt)
                 {
-                    ArrayAddAlgoritm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
+                    ArrayAddAlgorithm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
                     IsExpanded = true
                 });
                 levelActorsNode.Items = ReadList(actorsCount, i => new BinInterpNode(bin.Position, $"{i}: {entryRefString(bin)}", NodeType.ArrayLeafObject)
                 {
-                    ArrayAddAlgoritm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
+                    ArrayAddAlgorithm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
                     Parent = levelActorsNode,
                 });
 
@@ -4793,6 +4795,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
 
+        private static BinInterpNode MakeSByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadSByte()}") { Length = 1 };
+
         private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
 
         private BinInterpNode MakeNameNode(EndianReader bin, string name, out NameReference nameRef) =>
@@ -4931,7 +4935,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 IsExpanded = IsExpanded,
                 Items = ReadList(count, selector),
-                ArrayAddAlgoritm = arrayAddAlgo
+                ArrayAddAlgorithm = arrayAddAlgo,
+                Length = 4
+            };
+        }
+
+        private static BinInterpNode MakeArrayNodeInt16Count(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+                                           BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+        {
+            int count;
+            return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt16()})")
+            {
+                IsExpanded = IsExpanded,
+                Items = ReadList(count, selector),
+                ArrayAddAlgorithm = arrayAddAlgo,
+                Length = 2
             };
         }
 
@@ -4943,7 +4961,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 IsExpanded = IsExpanded,
                 Items = ReadList(count, selector),
-                ArrayAddAlgoritm = arrayAddAlgo
+                ArrayAddAlgorithm = arrayAddAlgo,
+                Length = 1
             };
         }
 

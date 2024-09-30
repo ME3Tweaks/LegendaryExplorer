@@ -43,7 +43,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public int Length { get; set; }
         public BinaryInterpreterWPF.NodeType Tag { get; set; }
-        public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
+        public ArrayPropertyChildAddAlgorithm ArrayAddAlgorithm;
 
         protected bool _isExpanded;
         public virtual bool IsExpanded
