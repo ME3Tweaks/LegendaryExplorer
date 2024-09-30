@@ -221,7 +221,7 @@ namespace LegendaryExplorerCore.UDK
             {
                 // Already in the file
                 textureUIndex = existing.UIndex;
-                Debug.WriteLine($"Lightmap already in file: {existing.InstancedFullPath}");
+                // Debug.WriteLine($"Lightmap already in file: {existing.InstancedFullPath}");
                 return;
             }
 
