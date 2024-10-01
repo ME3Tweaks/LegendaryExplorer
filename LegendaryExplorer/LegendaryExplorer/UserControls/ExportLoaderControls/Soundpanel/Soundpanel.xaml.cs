@@ -616,14 +616,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 return;
                             }
 
-                            var soundTracks = referencedSndeChunk.GetAllSubChunks().OfType<SoundEventSoundTracksFour>().FirstOrDefault();
+                            var soundTracks = referencedSndeChunk.GetAllSubChunks().OfType<SoundEventSoundTracksFour>().FirstOrDefault()?.SoundTracks;
+                            soundTracks ??= referencedSndeChunk.GetAllSubChunks().OfType<SoundEventSoundTracks>().FirstOrDefault()?.SoundTracks; // ISACT generated soundtracks
                             if (soundTracks == null)
                             {
                                 ExportInformationList.Add("Could not find sound track about this sound in the streaming data ICB");
                                 return;
                             }
 
-                            foreach (var soundTrack in soundTracks.SoundTracks)
+                            foreach (var soundTrack in soundTracks)
                             {
                                 var isbIndex = soundTrack.BufferIndex & 0xFFFF;
                                 var sampChunk = ibp.ISBBank.GetAllBankChunks().OfType<ISACTListBankChunk>().FirstOrDefault(x => x.ObjectType == "samp" && x.GetAllSubChunks().Any(a => a is IntBankChunk { ChunkName: "indx" } ac && ac.Value == isbIndex));
