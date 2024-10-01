@@ -284,6 +284,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             // Create an add activation to sequence
             var activation = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqEvent_SequenceActivated");
             activation.idxLink = SelectedSequence.UIndex;
+            activation.WriteProperty(new StrProperty(inputLabel, "InputLabel"));
+
             // Reindex if necessary
             var expCount = Pcc.Exports.Count(x => x.InstancedFullPath == activation.InstancedFullPath);
             if (expCount > 1)
