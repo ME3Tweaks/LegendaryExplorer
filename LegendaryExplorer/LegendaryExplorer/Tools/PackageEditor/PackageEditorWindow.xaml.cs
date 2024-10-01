@@ -2543,8 +2543,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 if (result.Contains('.'))
                 {
-                    MessageBox.Show("Names cannot contain the . character");
+                    var sContinue = MessageBox.Show("Names should not contain the '.' unless they are referencing a memory path of an object - these names will break significant amounts of tooling. Do you want to continue to add this name?", ". character breaks LEX", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                    if (sContinue == MessageBoxResult.No)
+                    {
                     return;
+                }
                 }
                 int idx = Pcc.FindNameOrAdd(result);
                 if (CurrentView == CurrentViewMode.Names)
