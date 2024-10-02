@@ -1166,8 +1166,9 @@ namespace LegendaryExplorerCore.Packages
         /// Clones this export. If you don't supply a new index, it will remain the same - ENSURE YOU CHANGE IT OR YOU'LL WASTE TIME DEBUGGING THE GAME!!
         /// </summary>
         /// <param name="newIndex"></param>
+        /// <param name="newParentUIndex"></param>
         /// <returns></returns>
-        public ExportEntry Clone(int newIndex = -1)
+        public ExportEntry Clone(int newIndex = -1, int newParentUIndex = int.MaxValue)
         {
             var clone = (ExportEntry)MemberwiseClone();
 
@@ -1182,6 +1183,10 @@ namespace LegendaryExplorerCore.Packages
             }
             clone.HeaderOffset = 0;
             clone._commonHeaderFields._dataOffset = 0;
+            if (newParentUIndex != int.MaxValue)
+            {
+                clone._commonHeaderFields._idxLink = newParentUIndex;
+            }
             if (newIndex >= 0)
             {
                 clone._commonHeaderFields._indexValue = newIndex;
@@ -1203,14 +1208,14 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        IEntry IEntry.Clone(bool incrementIndex)
+        IEntry IEntry.Clone(bool incrementIndex, int newParentUIndex)
         {
             if (incrementIndex)
             {
-                return Clone(_fileRef.GetNextIndexForInstancedName(this));
+                return Clone(_fileRef.GetNextIndexForInstancedName(this), newParentUIndex);
             }
 
-            return Clone();
+            return Clone(newParentUIndex: newParentUIndex);
         }
 
         //only for temporary use! Do not add the export returned by this to the file

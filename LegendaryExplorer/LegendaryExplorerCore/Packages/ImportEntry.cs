@@ -385,24 +385,28 @@ namespace LegendaryExplorerCore.Packages
         }
         public bool IsClass => ClassName == "Class";
 
-        public ImportEntry Clone(int newIndex = -1)
+        public ImportEntry Clone(int newIndex = -1, int newParentUIndex = int.MaxValue)
         {
             ImportEntry newImport = (ImportEntry)MemberwiseClone();
             if (newIndex >= 0)
             {
                 _header.ObjectNameIndex = newIndex;
             }
+            if (newParentUIndex != int.MaxValue)
+            {
+                _header.Link = newParentUIndex;
+            }
             return newImport;
         }
 
-        IEntry IEntry.Clone(bool incrementIndex)
+        IEntry IEntry.Clone(bool incrementIndex, int newParentUIndex)
         {
             if (incrementIndex)
             {
-                return Clone(FileRef.GetNextIndexForInstancedName(this));
+                return Clone(FileRef.GetNextIndexForInstancedName(this), newParentUIndex);
             }
 
-            return Clone();
+            return Clone(newParentUIndex: newParentUIndex);
         }
 
         /// <summary>
