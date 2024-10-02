@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Input;
 using LegendaryExplorer.Misc;
@@ -51,42 +52,72 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        [StructLayout(LayoutKind.Explicit, Size = 16 * 47)]
+        [StructLayout(LayoutKind.Explicit, Size = 16 * 41)]
         public struct LEDefaultUnlitPSGlobals
         {
-            [FieldOffset(16 * 0)] public Matrix4x4 InvViewProjectionMatrix;
-            [FieldOffset(16 * 4)] public Vector3 CameraWorldPos;
-            [FieldOffset(16 * 5)] public Vector4 ObjectWorldPositionAndRadius;
-            [FieldOffset(16 * 6)] public Vector3 ObjectOrientation;
-            [FieldOffset(16 * 7)] public Vector3 ObjectPostProjectionPosition;
-            [FieldOffset(16 * 8)] public Vector3 ObjectNDCPosition;
-            [FieldOffset(16 * 9)] public Vector4 ObjectMacroUVScales;
-            [FieldOffset(16 * 10)] public Vector3 FoliageImpulseDirection;
-            [FieldOffset(16 * 11)] public Vector4 FoliageNormalizedRotationAxisAndAngle;
-            [FieldOffset(16 * 12)] public Vector4 WindDirectionAndSpeed;
-            [FieldOffset(16 * 13)] public Vector4 WrapLightingParameters;
+            [FieldOffset(16 * 0)] public float4x4 InvViewProjectionMatrix;
+            [FieldOffset(16 * 4)] public float3 CameraWorldPos;
+            [FieldOffset(16 * 5)] public float4 ObjectWorldPositionAndRadius;
+            [FieldOffset(16 * 6)] public float3 ObjectOrientation;
+            [FieldOffset(16 * 7)] public float3 ObjectPostProjectionPosition;
+            [FieldOffset(16 * 8)] public float3 ObjectNDCPosition;
+            [FieldOffset(16 * 9)] public float4 ObjectMacroUVScales;
+            [FieldOffset(16 * 10)] public float3 FoliageImpulseDirection;
+            [FieldOffset(16 * 11)] public float4 FoliageNormalizedRotationAxisAndAngle;
+            [FieldOffset(16 * 12)] public float4 WindDirectionAndSpeed;
+            [FieldOffset(16 * 13)] public float4 WrapLightingParameters;
             [FieldOffset(16 * 14)] public bool bEnableDistanceShadowFading;
-            [FieldOffset(16 * 14 + 4)] public Vector2 DistanceFadeParameters;
-            [FieldOffset(16 * 15)] public Matrix3x3 LocalToWorldMatrix;
-            [FieldOffset(16 * 18)] public Matrix3x3 WorldToLocalMatrix;
-            [FieldOffset(16 * 21)] public Matrix3x3 WorldToViewMatrix;
-            [FieldOffset(16 * 24)] public Vector4 UniformPixelVector_0;
-            [FieldOffset(16 * 25)] public Matrix4x4 LocalToWorld;
-            [FieldOffset(16 * 29)] public Matrix4x4 PreviousLocalToWorld;
+            [FieldOffset(16 * 14 + 4)] public float2 DistanceFadeParameters;
+            [FieldOffset(16 * 15)] public float3x3 LocalToWorldMatrix;
+            [FieldOffset(16 * 18)] public float3x3 WorldToLocalMatrix;
+            [FieldOffset(16 * 21)] public float3x3 WorldToViewMatrix;
+            [FieldOffset(16 * 24)] public float4 UniformPixelVector_0;
+            [FieldOffset(16 * 25)] public float4x4 LocalToWorld;
+            [FieldOffset(16 * 29)] public float4x4 PreviousLocalToWorld;
             [FieldOffset(16 * 33)] public float LocalToWorldRotDeterminantFlip;
-            [FieldOffset(16 * 34)] public Matrix3x3 WorldToLocal;
-            [FieldOffset(16 * 37)] public Vector4 LightmapCoordinateScaleBias;
-            [FieldOffset(16 * 38)] public Vector4 ShadowmapCoordinateScaleBias;
-            [FieldOffset(16 * 39)] public float MotionBlurMask;
-            [FieldOffset(16 * 40)] public Vector4 LightColorAndFalloffExponent;
-            [FieldOffset(16 * 41)] public Vector3 SpotDirection;
-            [FieldOffset(16 * 42)] public Vector2 SpotAngles;
-            [FieldOffset(16 * 43)] public Vector3 DistanceFieldParameters;
-            [FieldOffset(16 * 44)] public Vector3 UpperSkyColor;
-            [FieldOffset(16 * 45)] public Vector3 LowerSkyColor;
-            [FieldOffset(16 * 45 + 12)] public float CharacterMask;
-            [FieldOffset(16 * 46)] public Vector4 AmbientColorAndSkyFactor;
+            [FieldOffset(16 * 34)] public float3x3 WorldToLocal;
+            [FieldOffset(16 * 37)] public float4 LightmapCoordinateScaleBias;
+            [FieldOffset(16 * 38)] public float4 ShadowmapCoordinateScaleBias;
+            [FieldOffset(16 * 39)] public float3 LightColor;
+            [FieldOffset(16 * 40)] public float3 DistanceFieldParameters;
+            [FieldOffset(16 * 40 + 12)] public bool bReceiveDynamicShadows;
         }
+        // [StructLayout(LayoutKind.Explicit, Size = 16 * 47)]
+        // public struct LEDefaultUnlitPSGlobals
+        // {
+        //     [FieldOffset(16 * 0)] public Matrix4x4 InvViewProjectionMatrix;
+        //     [FieldOffset(16 * 4)] public Vector3 CameraWorldPos;
+        //     [FieldOffset(16 * 5)] public Vector4 ObjectWorldPositionAndRadius;
+        //     [FieldOffset(16 * 6)] public Vector3 ObjectOrientation;
+        //     [FieldOffset(16 * 7)] public Vector3 ObjectPostProjectionPosition;
+        //     [FieldOffset(16 * 8)] public Vector3 ObjectNDCPosition;
+        //     [FieldOffset(16 * 9)] public Vector4 ObjectMacroUVScales;
+        //     [FieldOffset(16 * 10)] public Vector3 FoliageImpulseDirection;
+        //     [FieldOffset(16 * 11)] public Vector4 FoliageNormalizedRotationAxisAndAngle;
+        //     [FieldOffset(16 * 12)] public Vector4 WindDirectionAndSpeed;
+        //     [FieldOffset(16 * 13)] public Vector4 WrapLightingParameters;
+        //     [FieldOffset(16 * 14)] public bool bEnableDistanceShadowFading;
+        //     [FieldOffset(16 * 14 + 4)] public Vector2 DistanceFadeParameters;
+        //     [FieldOffset(16 * 15)] public Matrix3x3 LocalToWorldMatrix;
+        //     [FieldOffset(16 * 18)] public Matrix3x3 WorldToLocalMatrix;
+        //     [FieldOffset(16 * 21)] public Matrix3x3 WorldToViewMatrix;
+        //     [FieldOffset(16 * 24)] public Vector4 UniformPixelVector_0;
+        //     [FieldOffset(16 * 25)] public Matrix4x4 LocalToWorld;
+        //     [FieldOffset(16 * 29)] public Matrix4x4 PreviousLocalToWorld;
+        //     [FieldOffset(16 * 33)] public float LocalToWorldRotDeterminantFlip;
+        //     [FieldOffset(16 * 34)] public Matrix3x3 WorldToLocal;
+        //     [FieldOffset(16 * 37)] public Vector4 LightmapCoordinateScaleBias;
+        //     [FieldOffset(16 * 38)] public Vector4 ShadowmapCoordinateScaleBias;
+        //     [FieldOffset(16 * 39)] public float MotionBlurMask;
+        //     [FieldOffset(16 * 40)] public Vector4 LightColorAndFalloffExponent;
+        //     [FieldOffset(16 * 41)] public Vector3 SpotDirection;
+        //     [FieldOffset(16 * 42)] public Vector2 SpotAngles;
+        //     [FieldOffset(16 * 43)] public Vector3 DistanceFieldParameters;
+        //     [FieldOffset(16 * 44)] public Vector3 UpperSkyColor;
+        //     [FieldOffset(16 * 45)] public Vector3 LowerSkyColor;
+        //     [FieldOffset(16 * 45 + 12)] public float CharacterMask;
+        //     [FieldOffset(16 * 46)] public Vector4 AmbientColorAndSkyFactor;
+        // }
 
         [StructLayout(LayoutKind.Explicit, Size = 16 * 46)]
         public struct LEDefaultUnlitVSGlobals
@@ -132,9 +163,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         private Texture2D DefaultTexture;
         private Texture2D DefaultDiff;
         private Texture2D DefaultNorm;
+        private Texture2D WhiteTex;
         public ShaderResourceView DefaultTextureView { get; private set; }
         public ShaderResourceView DefaultDiffTexView { get; private set; }
         public ShaderResourceView DefaultNormTexView { get; private set; }
+        public ShaderResourceView WhiteTexView { get; private set; }
         private RasterizerState FillRasterizerState;
         private RasterizerState WireframeRasterizerState;
         public SamplerState SampleState { get; private set; }
@@ -165,6 +198,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public event EventHandler<float> UpdateScene;
         public event EventHandler RenderScene;
+
+        private readonly Dictionary<RenderTargetBlendDescription, BlendState> BlendStateCache = [];
 
         public MeshRenderContext()
         {
@@ -247,6 +282,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             };
             SampleState = new SamplerState(Device, ssd);
             ImmediateContext.PixelShader.SetSampler(0, SampleState);
+            ImmediateContext.PixelShader.SetSampler(1, SampleState);
+            ImmediateContext.PixelShader.SetSampler(2, SampleState);
 
             // Load the default texture
             DefaultTexture = this.LoadFile(Path.Combine(AppDirectories.ExecFolder, "Default.png"));
@@ -260,6 +297,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             DefaultDiffTexView = new ShaderResourceView(Device, DefaultDiff);
             DefaultNorm = this.LoadFile(Path.Combine(AppDirectories.ExecFolder, "DefaultNormal.png"));
             DefaultNormTexView = new ShaderResourceView(Device, DefaultNorm);
+
+            WhiteTex = new Texture2D(Device, new Texture2DDescription{ Width = 1, Height = 1, MipLevels = 1, ArraySize = 1, Format = Format.R8G8B8A8_UNorm, SampleDescription = new SampleDescription(1, 0), BindFlags = BindFlags.ShaderResource});
+            int white = int.MaxValue;
+            Device.ImmediateContext.UpdateSubresource(ref white, WhiteTex, rowPitch: 8);
+            WhiteTexView = new ShaderResourceView(Device, WhiteTex);
 
             LEEffect = new(Device, EmbeddedResources.LEDefaultUnlitPixelShader, "main", EmbeddedResources.LEDefaultUnlitVertexShader, "main");
 
@@ -311,14 +353,39 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             DefaultTextureView?.Dispose();
             DefaultDiffTexView?.Dispose();
             DefaultNormTexView?.Dispose();
+            WhiteTexView?.Dispose();
             DefaultTexture?.Dispose();
             DefaultDiff?.Dispose();
             DefaultNorm?.Dispose();
+            WhiteTex?.Dispose();
             SampleState?.Dispose();
             DefaultEffect?.Dispose();
             FillRasterizerState?.Dispose();
             WireframeRasterizerState?.Dispose();
+            foreach (BlendState blendState in BlendStateCache.Values)
+            {
+                blendState.Dispose();
+            }
+            BlendStateCache.Clear();
             base.DisposeResources();
+        }
+
+        public BlendState GetCachedBlendState(RenderTargetBlendDescription renderTargetBlendDesc)
+        {
+            if (!BlendStateCache.TryGetValue(renderTargetBlendDesc, out BlendState blendState))
+            {
+                blendState = new BlendState(Device, new BlendStateDescription
+                {
+                    AlphaToCoverageEnable = false,
+                    IndependentBlendEnable = true,
+                    RenderTarget =
+                    {
+                        [0] = renderTargetBlendDesc
+                    }
+                });
+                BlendStateCache.Add(renderTargetBlendDesc, blendState);
+            }
+            return blendState;
         }
 
         public override bool MouseDown(MouseButtons button, int x, int y)

@@ -1,4 +1,4 @@
-﻿// ---- Created with 3Dmigoto v1.3.16 on Sun Sep 22 15:05:23 2024
+﻿// ---- Created with 3Dmigoto v1.3.16 on Tue Oct  1 17:09:58 2024
 
 cbuffer _Globals : register(b0)
 {
@@ -25,12 +25,7 @@ cbuffer _Globals : register(b0)
     float3x3 WorldToLocal : packoffset(c34);
     float4 LightmapCoordinateScaleBias : packoffset(c37);
     float4 ShadowmapCoordinateScaleBias : packoffset(c38);
-    float4 LightDirectionAndbDirectional : packoffset(c39);
-    float4 LightPositionAndInvRadius : packoffset(c40);
-    float4 LightMapScale[2] : packoffset(c41);
-    float3 ApproxFogColor : packoffset(c43);
-    float3 FogVolumeBoxMin : packoffset(c44);
-    float3 FogVolumeBoxMax : packoffset(c45);
+    float3 LightDirection : packoffset(c39);
 }
 
 cbuffer VSOffsetConstants : register(b1)
@@ -56,12 +51,13 @@ void main(
   out float4 o1 : TEXCOORD11,
   out float4 o2 : COLOR0,
   out float4 o3 : TEXCOORD0,
-  out float4 o4 : TEXCOORD5,
-  out float4 o5 : TEXCOORD6,
-  out float3 o6 : TEXCOORD7,
-  out float4 o7 : SV_Position0)
+  out float4 o4 : TEXCOORD4,
+  out float4 o5 : TEXCOORD5,
+  out float4 o6 : TEXCOORD6,
+  out float4 o7 : TEXCOORD7,
+  out float4 o8 : SV_Position0)
 {
-    float4 r0, r1, r2, r3, r4;
+    float4 r0, r1, r2, r3, r4, r5;
     uint4 bitmask, uiDest;
     float4 fDest;
 
@@ -92,26 +88,29 @@ void main(
     o2.xyzw = float4(0, 0, 0, 0);
     o3.xy = v4.xy;
     o3.zw = float2(0, 0);
+    r3.xyz = LightDirection.yyy * WorldToLocal._m01_m11_m21;
+    r3.xyz = WorldToLocal._m00_m10_m20 * LightDirection.xxx + r3.xyz;
+    r3.xyz = WorldToLocal._m02_m12_m22 * LightDirection.zzz + r3.xyz;
+    o4.y = dot(r0.xyz, r3.xyz);
+    o4.z = dot(r1.xyz, r3.xyz);
+    o4.x = dot(r2.xyz, r3.xyz);
+    o5.xyzw = float4(0, 0, 0, 0);
     r3.xyzw = LocalToWorld._m01_m11_m21_m31 * v0.yyyy;
     r3.xyzw = LocalToWorld._m00_m10_m20_m30 * v0.xxxx + r3.xyzw;
     r3.xyzw = LocalToWorld._m02_m12_m22_m32 * v0.zzzz + r3.xyzw;
     r3.xyzw = LocalToWorld._m03_m13_m23_m33 * v0.wwww + r3.xyzw;
-    r4.xyzw = ViewProjectionMatrix._m01_m11_m21_m31 * r3.yyyy;
-    r4.xyzw = ViewProjectionMatrix._m00_m10_m20_m30 * r3.xxxx + r4.xyzw;
-    r4.xyzw = ViewProjectionMatrix._m02_m12_m22_m32 * r3.zzzz + r4.xyzw;
-    r4.xyzw = ViewProjectionMatrix._m03_m13_m23_m33 * r3.wwww + r4.xyzw;
-    r3.xyz = -r3.xyz * CameraPosition.www + CameraPosition.xyz;
-    o4.xyzw = r4.xyzw;
-    o7.xyzw = r4.xyzw;
-    r4.xyz = WorldToLocal._m01_m11_m21 * r3.yyy;
-    r3.xyw = WorldToLocal._m00_m10_m20 * r3.xxx + r4.xyz;
-    r3.xyz = WorldToLocal._m02_m12_m22 * r3.zzz + r3.xyw;
-    o5.z = dot(r1.xyz, r3.xyz);
-    o6.z = dot(r1.xyz, WorldToLocal._m02_m12_m22);
-    o5.y = dot(r0.xyz, r3.xyz);
-    o6.y = dot(r0.xyz, WorldToLocal._m02_m12_m22);
-    o5.x = dot(r2.xyz, r3.xyz);
-    o6.x = dot(r2.xyz, WorldToLocal._m02_m12_m22);
-    o5.w = 1;
+    r4.xyz = -r3.xyz * CameraPosition.www + CameraPosition.xyz;
+    r5.xyz = WorldToLocal._m01_m11_m21 * r4.yyy;
+    r4.xyw = WorldToLocal._m00_m10_m20 * r4.xxx + r5.xyz;
+    r4.xyz = WorldToLocal._m02_m12_m22 * r4.zzz + r4.xyw;
+    o6.x = dot(r2.xyz, r4.xyz);
+    o6.w = 1;
+    o6.y = dot(r0.xyz, r4.xyz);
+    o6.z = dot(r1.xyz, r4.xyz);
+    o7.xyzw = r3.xyzw;
+    r0.xyzw = ViewProjectionMatrix._m01_m11_m21_m31 * r3.yyyy;
+    r0.xyzw = ViewProjectionMatrix._m00_m10_m20_m30 * r3.xxxx + r0.xyzw;
+    r0.xyzw = ViewProjectionMatrix._m02_m12_m22_m32 * r3.zzzz + r0.xyzw;
+    o8.xyzw = ViewProjectionMatrix._m03_m13_m23_m33 * r3.wwww + r0.xyzw;
     return;
 }

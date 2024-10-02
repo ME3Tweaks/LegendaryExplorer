@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -8,8 +9,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public ExportEntry Export;
-        public List<IEntry> Textures = new();
+        public readonly ExportEntry Export;
+        public readonly List<IEntry> Textures = [];
+        public EBlendMode BlendMode;
 
         //public List<TextureParam> Textures = new List<TextureParam>();
 
@@ -29,6 +31,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             if (export.ClassName == "Material")
             {
+                Enum.TryParse(export.GetProperty<EnumProperty>("BlendMode", assetCache)?.Value ?? "BLEND_Opaque", out BlendMode);
                 var parsedMaterial = ObjectBinary.From<Material>(export);
                 foreach (int v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {

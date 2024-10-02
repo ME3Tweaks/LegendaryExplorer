@@ -27,12 +27,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public void RenderObject(DeviceContext context, ConstantBufferData constantData, Mesh<TVertex> mesh, int indexstart, int indexcount, params ShaderResourceView[] textures)
         {
-            RenderObject(context, constantData, constantData, default, mesh, indexstart, indexcount, textures);
+            RenderObject(context, constantData, constantData, default, default, mesh, indexstart, indexcount, textures);
         }
 
         public void RenderObject(DeviceContext context, ConstantBufferData constantData, Mesh<TVertex> mesh, params ShaderResourceView[] textures)
         {
-            RenderObject(context, constantData, constantData, default, mesh, textures);
+            RenderObject(context, constantData, constantData, default, default, mesh, textures);
         }
     }
 
@@ -43,6 +43,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         private readonly SharpDX.Direct3D11.Buffer VertexShaderGlobals;
         private readonly SharpDX.Direct3D11.Buffer VertexShaderConstants;
         private readonly SharpDX.Direct3D11.Buffer PixelShaderGlobals;
+        private readonly SharpDX.Direct3D11.Buffer PixelShaderConstants;
         private readonly InputLayout InputLayout;
 
         public Effect(SharpDX.Direct3D11.Device device, string psCode, string psEntrypoint, string vsCode, string vsEntrypoint)
@@ -62,6 +63,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             VertexShaderGlobals = new SharpDX.Direct3D11.Buffer(device, Utilities.SizeOf<TVertCBuffer>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             VertexShaderConstants = new SharpDX.Direct3D11.Buffer(device, Utilities.SizeOf<LEVSConstants>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             PixelShaderGlobals = new SharpDX.Direct3D11.Buffer(device, Utilities.SizeOf<TPixelCBuffer>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+            PixelShaderConstants = new SharpDX.Direct3D11.Buffer(device, Utilities.SizeOf<LEPSConstants>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
             // Create input layout. This tells the input-assembler stage how to map items from our vertex structures into vertices for the vertex shader.
             // It is validated against the vertex shader bytecode because it needs to match properly.
@@ -73,22 +75,27 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// Sets the context Input Layout, Pixel Shader, and Vertex Shader in preperation for drawing with this effect.
         /// </summary>
         /// <param name="context"></param>
-        public void PrepDraw(DeviceContext context)
+        /// <param name="blendState"></param>
+        public void PrepDraw(DeviceContext context, BlendState blendState)
         {
+            context.OutputMerger.SetBlendState(blendState);
             context.InputAssembler.InputLayout = InputLayout;
             context.VertexShader.Set(VertexShader);
             context.VertexShader.SetConstantBuffer(0, VertexShaderGlobals);
             context.VertexShader.SetConstantBuffer(1, VertexShaderConstants);
             context.PixelShader.Set(PixelShader);
             context.PixelShader.SetConstantBuffer(0, PixelShaderGlobals);
+            context.PixelShader.SetConstantBuffer(1, VertexShaderConstants);
+            context.PixelShader.SetConstantBuffer(2, PixelShaderConstants);
         }
 
-        public void RenderObject(DeviceContext context, TVertCBuffer vsConstantData, TPixelCBuffer psConstantData, LEVSConstants vsSharedConstants, Mesh<TVertex> mesh, int indexstart, int indexcount, params ShaderResourceView[] textures)
+        public void RenderObject(DeviceContext context, TVertCBuffer vsConstantData, TPixelCBuffer psConstantData, LEVSConstants vsSharedConstants, LEPSConstants psSharedConstants, Mesh<TVertex> mesh, int indexstart, int indexcount, params ShaderResourceView[] textures)
         {
             // Push new data into the shaders' constant buffer
             context.UpdateSubresource(ref vsConstantData, VertexShaderGlobals);
             context.UpdateSubresource(ref vsSharedConstants, VertexShaderConstants);
             context.UpdateSubresource(ref psConstantData, PixelShaderGlobals);
+            context.UpdateSubresource(ref psSharedConstants, PixelShaderConstants);
 
             // Setup buffers for rendering
             context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, TVertex.VertexLength, 0));
@@ -104,9 +111,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             context.DrawIndexed(indexcount, indexstart, 0);
         }
 
-        public void RenderObject(DeviceContext context, TVertCBuffer vsConstantData, TPixelCBuffer psConstantData, LEVSConstants vsSharedConstants, Mesh<TVertex> mesh, params ShaderResourceView[] textures)
+        public void RenderObject(DeviceContext context, TVertCBuffer vsConstantData, TPixelCBuffer psConstantData, LEVSConstants vsSharedConstants, LEPSConstants psSharedConstants, Mesh<TVertex> mesh, params ShaderResourceView[] textures)
         {
-            RenderObject(context, vsConstantData, psConstantData, vsSharedConstants, mesh, 0, mesh.Triangles.Count * 3, textures);
+            RenderObject(context, vsConstantData, psConstantData, vsSharedConstants, psSharedConstants, mesh, 0, mesh.Triangles.Count * 3, textures);
         }
 
         public void Dispose()
@@ -117,6 +124,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             VertexShaderGlobals.Dispose();
             VertexShaderConstants.Dispose();
             PixelShaderGlobals.Dispose();
+            PixelShaderConstants.Dispose();
         }
     }
 
@@ -126,5 +134,13 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         [FieldOffset(16 * 0)] public float4x4 ViewProjectionMatrix;
         [FieldOffset(16 * 4)] public float4 CameraPosition;
         [FieldOffset(16 * 5)] public float4 PreViewTranslation;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct LEPSConstants
+    {
+        [FieldOffset(16 * 0)] public float4 ScreenPositionScaleBias;
+        [FieldOffset(16 * 1)] public float4 MinZ_MaxZRatio;
+        [FieldOffset(16 * 2)] public float4 DynamicScale;
     }
 }

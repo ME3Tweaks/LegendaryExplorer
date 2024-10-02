@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +12,9 @@ using SharpDX.Direct3D11;
 using StaticMesh = LegendaryExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
 using SharpDX;
 using Vector2 = System.Numerics.Vector2;
@@ -169,12 +172,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public string DiffuseTextureFullName = "";
         public readonly string NormalTextureFullName = "";
 
+        public RenderTargetBlendDescription BlendDescription;
+
         /// <summary>
         /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         /// <param name="assetCache"></param>
+        /// <param name="preloadedTextures"></param>
         public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, assetCache, preloadedTextures)
         {
             string matPackage = null;
@@ -194,6 +200,104 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     break;
                 }
             }
+            
+            switch (mat.BlendMode)
+            {
+                case EBlendMode.BLEND_Opaque:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.One,
+                        DestinationBlend = BlendOption.Zero,
+                        SourceAlphaBlend = BlendOption.One,
+                        DestinationAlphaBlend = BlendOption.Zero,
+                        IsBlendEnabled = false
+                    });
+                    break;
+                case EBlendMode.BLEND_Masked:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.One,
+                        DestinationBlend = BlendOption.Zero,
+                        SourceAlphaBlend = BlendOption.One,
+                        DestinationAlphaBlend = BlendOption.Zero,
+                        IsBlendEnabled = false
+                    });
+                    break;
+                case EBlendMode.BLEND_Translucent:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.SourceAlpha,
+                        DestinationBlend = BlendOption.InverseSourceAlpha,
+                        SourceAlphaBlend = BlendOption.One,
+                        DestinationAlphaBlend = BlendOption.Zero,
+                        IsBlendEnabled = false
+                    });
+                    break;
+                case EBlendMode.BLEND_Additive:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.One,
+                        DestinationBlend = BlendOption.One,
+                        SourceAlphaBlend = BlendOption.Zero,
+                        DestinationAlphaBlend = BlendOption.One,
+                        IsBlendEnabled = true
+                    });
+                    break;
+                case EBlendMode.BLEND_Modulate:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.DestinationColor,
+                        DestinationBlend = BlendOption.Zero,
+                        SourceAlphaBlend = BlendOption.Zero,
+                        DestinationAlphaBlend = BlendOption.One,
+                        IsBlendEnabled = true
+                    });
+                    break;
+                case EBlendMode.BLEND_SoftMasked:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.SourceAlpha,
+                        DestinationBlend = BlendOption.InverseSourceAlpha,
+                        SourceAlphaBlend = BlendOption.Zero,
+                        DestinationAlphaBlend = BlendOption.InverseSourceAlpha,
+                        IsBlendEnabled = true
+                    });
+                    break;
+                case EBlendMode.BLEND_AlphaComposite:
+                    BlendDescription = (new RenderTargetBlendDescription
+                    {
+                        RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                        BlendOperation = BlendOperation.Add,
+                        AlphaBlendOperation = BlendOperation.Add,
+                        SourceBlend = BlendOption.One,
+                        DestinationBlend = BlendOption.InverseSourceAlpha,
+                        SourceAlphaBlend = BlendOption.One,
+                        DestinationAlphaBlend = BlendOption.InverseSourceAlpha,
+                        IsBlendEnabled = false
+                    });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             return;
 
             void FindDiffuse()
@@ -255,14 +359,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
         public override void RenderSection<Vertex>(ModelPreviewLOD<Vertex> lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context)
         {
+            SceneCamera camera = context.Camera;
             switch (lod.Mesh)
             {
                 case Mesh<WorldVertex> worldVertMesh:
                 {
-                    context.DefaultEffect.PrepDraw(context.ImmediateContext);
+                    context.DefaultEffect.PrepDraw(context.ImmediateContext, context.AlphaBlendState);
                     var worldConstants = new MeshRenderContext.WorldConstants(
-                        Matrix4x4.Transpose(context.Camera.ProjectionMatrix),
-                        Matrix4x4.Transpose(context.Camera.ViewMatrix),
+                        Matrix4x4.Transpose(camera.ProjectionMatrix),
+                        Matrix4x4.Transpose(camera.ViewMatrix),
                         Matrix4x4.Transpose(transform),
                         context.CurrentTextureViewFlags);
 
@@ -280,27 +385,45 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
                 case Mesh<LEVertex> leVertMesh:
                 {
-                    context.LEEffect.PrepDraw(context.ImmediateContext);
+                    context.LEEffect.PrepDraw(context.ImmediateContext, context.GetCachedBlendState(BlendDescription));
 
-                    Matrix4x4 viewMatrix = context.Camera.ViewMatrix;
-                    LEVSConstants vsConstants = new LEVSConstants
+                    Matrix4x4 viewMatrix = camera.ViewMatrix;
+                    var vsConstants = new LEVSConstants
                     {
-                        ViewProjectionMatrix = viewMatrix * context.Camera.ProjectionMatrix,
-                        CameraPosition = new Vector4(context.Camera.Position, 1),
+                        ViewProjectionMatrix = viewMatrix * camera.ProjectionMatrix,
+                        CameraPosition = new Vector4(camera.Position, 1),
                         PreViewTranslation = Vector4.Zero,
                     };
-                    MeshRenderContext.LEDefaultUnlitVSGlobals vsGlobals = new MeshRenderContext.LEDefaultUnlitVSGlobals
+                    float depthMul = camera.ProjectionMatrix[2, 2];
+                    float depthAdd = camera.ProjectionMatrix[3, 2];
+                    if (false) //TODO: check if Z is inverted, if so this should be true
+                    {
+                        depthMul = 1f - depthMul;
+                        depthAdd = -depthAdd;
+                    }
+                    var psConstants = new LEPSConstants
+                    {
+                        ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
+                        MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
+                        DynamicScale = Vector4.One,
+                    };
+
+                    //TODO: these are shader specific, need a different system to generalize
+                    var vsGlobals = new MeshRenderContext.LEDefaultUnlitVSGlobals
                     {
                         LocalToWorld = Matrix4x4.Identity,
                         WorldToLocal = Matrix3x3.Identity,
-                        LocalToWorldRotDeterminantFlip = 1
+                        LocalToWorldRotDeterminantFlip = 1,
+                        LightDirectionAndbDirectional = new Vector4(-0.0f, -0.0f, -1f, 0),
                     };
-                    MeshRenderContext.LEDefaultUnlitPSGlobals psGlobals = new MeshRenderContext.LEDefaultUnlitPSGlobals
+                    var psGlobals = new MeshRenderContext.LEDefaultUnlitPSGlobals
                     {
                         UniformPixelVector_0 = Vector4.UnitW,
                         WorldToViewMatrix = new Matrix3x3(viewMatrix.M11, viewMatrix.M12, viewMatrix.M13, viewMatrix.M21, viewMatrix.M22, viewMatrix.M23, viewMatrix.M31, viewMatrix.M32, viewMatrix.M33),
-                        AmbientColorAndSkyFactor = new Vector4(1, 1, 1, 0),
-                        CharacterMask = 1
+                        // AmbientColorAndSkyFactor = new Vector4(1, 1, 1, 0),
+                        // CharacterMask = 1
+                        LightColor = new Vector3(1, 1, 1),
+                        bReceiveDynamicShadows = true
                     };
 
                     Textures.TryGetValue(DiffuseTextureFullName, out PreviewTextureCache.PreviewTextureEntry diffTexture);
@@ -308,7 +431,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     Textures.TryGetValue(NormalTextureFullName, out PreviewTextureCache.PreviewTextureEntry normTexture);
                     ShaderResourceView normTextureView = normTexture?.TextureView ?? context.DefaultNormTexView;
 
-                    context.LEEffect.RenderObject(context.ImmediateContext, vsGlobals, psGlobals, vsConstants, leVertMesh, (int)s.StartIndex, (int)s.TriangleCount * 3, normTextureView, diffTextureView);
+                    context.LEEffect.RenderObject(context.ImmediateContext, vsGlobals, psGlobals, vsConstants, psConstants, leVertMesh, (int)s.StartIndex, (int)s.TriangleCount * 3, context.WhiteTexView, normTextureView, diffTextureView);
                     break;
                 }
             }

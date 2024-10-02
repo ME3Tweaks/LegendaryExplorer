@@ -250,14 +250,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 MeshContext.Wireframe = true;
                 var viewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
-                MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext, MeshContext.AlphaBlendState);
                 MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, viewConstants, LEXPreview.LODs[CurrentLOD].Mesh, [null]);
             }
             if (IsStaticMesh && ShowCollisionMesh && STMCollisionMesh != null)
             {
                 MeshContext.Wireframe = true;
                 var viewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
-                MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext);
+                MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext, MeshContext.AlphaBlendState);
                 MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, viewConstants, STMCollisionMesh, [null]);
             }
         }

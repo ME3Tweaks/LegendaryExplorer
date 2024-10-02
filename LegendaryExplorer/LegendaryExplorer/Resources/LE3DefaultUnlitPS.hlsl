@@ -1,4 +1,4 @@
-﻿// ---- Created with 3Dmigoto v1.3.16 on Fri Sep 20 17:39:59 2024
+﻿// ---- Created with 3Dmigoto v1.3.16 on Tue Oct  1 17:10:39 2024
 
 cbuffer _Globals : register(b0)
 {
@@ -25,21 +25,31 @@ cbuffer _Globals : register(b0)
     float3x3 WorldToLocal : packoffset(c34);
     float4 LightmapCoordinateScaleBias : packoffset(c37);
     float4 ShadowmapCoordinateScaleBias : packoffset(c38);
-    float MotionBlurMask : packoffset(c39) = { 0 };
-    float4 LightColorAndFalloffExponent : packoffset(c40);
-    float3 SpotDirection : packoffset(c41);
-    float2 SpotAngles : packoffset(c42);
-    float3 DistanceFieldParameters : packoffset(c43);
-    float3 UpperSkyColor : packoffset(c44);
-    float3 LowerSkyColor : packoffset(c45);
-    float CharacterMask : packoffset(c45.w) = { 0 };
-    float4 AmbientColorAndSkyFactor : packoffset(c46);
+    float3 LightColor : packoffset(c39);
+    float3 DistanceFieldParameters : packoffset(c40);
+    bool bReceiveDynamicShadows : packoffset(c40.w);
 }
 
-SamplerState Texture2D_0Sampler_s : register(s0);
-SamplerState Texture2D_1Sampler_s : register(s1);
-Texture2D<float4> Texture2D_0 : register(t0);
-Texture2D<float4> Texture2D_1 : register(t1);
+cbuffer VSOffsetConstants : register(b1)
+{
+    float4x4 ViewProjectionMatrix : packoffset(c0);
+    float4 CameraPosition : packoffset(c4);
+    float4 PreViewTranslation : packoffset(c5);
+}
+
+cbuffer PSOffsetConstants : register(b2)
+{
+    float4 ScreenPositionScaleBias : packoffset(c0);
+    float4 MinZ_MaxZRatio : packoffset(c1);
+    float4 DynamicScale : packoffset(c2);
+}
+
+SamplerState LightAttenuationTextureSampler_s : register(s0);
+SamplerState Texture2D_0Sampler_s : register(s1);
+SamplerState Texture2D_1Sampler_s : register(s2);
+Texture2D<float4> LightAttenuationTexture : register(t0);
+Texture2D<float4> Texture2D_0 : register(t1);
+Texture2D<float4> Texture2D_1 : register(t2);
 
 
 // 3Dmigoto declarations
@@ -51,54 +61,73 @@ void main(
   float4 v1 : TEXCOORD11,
   float4 v2 : COLOR0,
   float4 v3 : TEXCOORD0,
-  float4 v4 : TEXCOORD5,
-  float4 v5 : TEXCOORD6,
-  float3 v6 : TEXCOORD7,
-  uint v7 : SV_IsFrontFace0,
-  out float4 o0 : SV_Target0,
-  out float4 o2 : SV_Target2)
+  float4 v4 : TEXCOORD4,
+  float4 v5 : TEXCOORD5,
+  float4 v6 : TEXCOORD6,
+  float4 v7 : TEXCOORD7,
+  uint v8 : SV_IsFrontFace0,
+  out float4 o0 : SV_Target0)
 {
-    float4 r0, r1, r2, r3;
+    float4 r0, r1, r2, r3, r4, r5;
     uint4 bitmask, uiDest;
     float4 fDest;
 
-    r0.xyz = float3(1, 1, 1) + -UniformPixelVector_0.xyz;
-    r1.xyz = Texture2D_1.Sample(Texture2D_1Sampler_s, v3.xy).xyz;
-    r0.xyz = r1.xyz * r0.xyz;
-    o0.xyz = r0.xyz * AmbientColorAndSkyFactor.xyz + UniformPixelVector_0.xyz;
-    o0.w = 1;
-    r0.xyz = Texture2D_0.Sample(Texture2D_0Sampler_s, v3.xy).xyz;
-    r0.xyz = r0.xyz * float3(2, 2, 2) + float3(-1, -1, -1);
-    r0.w = dot(r0.xyz, r0.xyz);
-    r0.w = rsqrt(r0.w);
-    r0.xyz = r0.xyz * r0.www;
-    r0.w = dot(v1.xyz, v1.xyz);
-    r0.w = rsqrt(r0.w);
-    r1.xyz = v1.xyz * r0.www;
-    r0.w = dot(v0.xyz, v0.xyz);
-    r0.w = rsqrt(r0.w);
-    r2.xyz = v0.xyz * r0.www;
-    r3.xyz = r2.yzx * r1.zxy;
-    r3.xyz = r1.yzx * r2.zxy + -r3.xyz;
-    r3.xyz = v1.www * r3.xyz;
-    r0.w = dot(r3.xyz, r0.xyz);
-    r3.xyz = WorldToViewMatrix._m01_m11_m21 * r3.zzz;
-    r3.xyz = WorldToViewMatrix._m00_m10_m20 * r2.zzz + r3.xyz;
-    r1.w = dot(r2.xyz, r0.xyz);
-    r0.x = dot(r1.xyz, r0.xyz);
-    r1.xyz = WorldToViewMatrix._m02_m12_m22 * r1.zzz + r3.xyz;
-    r0.yzw = WorldToViewMatrix._m01_m11_m21 * r0.www;
-    r0.yzw = WorldToViewMatrix._m00_m10_m20 * r1.www + r0.yzw;
-    r0.xyz = WorldToViewMatrix._m02_m12_m22 * r0.xxx + r0.yzw;
-    r0.z = dot(r0.xyz, r0.xyz);
-    r0.z = rsqrt(r0.z);
-    r0.xy = r0.xy * r0.zz;
-    o2.xy = r0.xy * float2(0.5, 0.5) + float2(0.5, 0.5);
-    r0.x = dot(r1.xyz, r1.xyz);
+    r0.x = dot(v6.xyz, v6.xyz);
     r0.x = rsqrt(r0.x);
-    r0.xy = r1.xy * r0.xx;
-    r0.xy = r0.xy * float2(0.5, 0.5) + float2(0.5, 0.5);
-    r0.z = cmp(CharacterMask < 1);
-    o2.zw = r0.zz ? r0.xy : float2(1.#INF, 1.#INF);
+    r0.xyz = v6.xyz * r0.xxx;
+    r0.w = dot(v4.xyz, v4.xyz);
+    r0.w = rsqrt(r0.w);
+    r1.xyz = v4.xyz * r0.www;
+    r2.xyz = Texture2D_0.Sample(Texture2D_0Sampler_s, v3.xy).xyz;
+    r2.xyz = r2.xyz * float3(2, 2, 2) + float3(-1, -1, -1);
+    r0.w = dot(r2.xyz, r2.xyz);
+    r0.w = rsqrt(r0.w);
+    r2.xyz = r2.xyz * r0.www;
+    r0.w = dot(r2.xyz, r0.xyz);
+    r3.xyz = r2.xyz * r0.www;
+    r0.xyz = r3.xyz * float3(2, 2, 2) + -r0.xyz;
+    if (bReceiveDynamicShadows != 0)
+    {
+        r3.xyz = ViewProjectionMatrix._m01_m11_m31 * v7.yyy;
+        r3.xyz = ViewProjectionMatrix._m00_m10_m30 * v7.xxx + r3.xyz;
+        r3.xyz = ViewProjectionMatrix._m02_m12_m32 * v7.zzz + r3.xyz;
+        r3.xyz = ViewProjectionMatrix._m03_m13_m33 * v7.www + r3.xyz;
+        r3.xy = r3.xy / r3.zz;
+        r3.xy = r3.xy * ScreenPositionScaleBias.xy + ScreenPositionScaleBias.wz;
+        r3.xyzw = LightAttenuationTexture.Sample(LightAttenuationTextureSampler_s, r3.xy).xyzw;
+        if (bEnableDistanceShadowFading != 0)
+        {
+            r0.w = dot(v7.xyz, v7.xyz);
+            r0.w = sqrt(r0.w);
+            r0.w = DistanceFadeParameters.x + -r0.w;
+            r0.w = saturate(DistanceFadeParameters.y * r0.w);
+            r0.w = r0.w * r0.w;
+            r1.w = -1 + r3.w;
+            r4.xyz = r0.www * r1.www + float3(1, 1, 1);
+        }
+        else
+        {
+            r4.xyz = float3(1, 1, 1);
+        }
+        r3.xyz = r4.xyz * r3.xyz;
+    }
+    else
+    {
+        r3.xyz = float3(1, 1, 1);
+    }
+    r4.xyz = float3(1, 1, 1) + -UniformPixelVector_0.xyz;
+    r5.xyz = Texture2D_1.Sample(Texture2D_1Sampler_s, v3.xy).xyz;
+    r4.xyz = r5.xyz * r4.xyz;
+    r0.w = saturate(dot(r2.xyz, r1.xyz));
+    r0.x = saturate(dot(r0.xyz, r1.xyz));
+    r0.xw = max(float2(9.99999975e-05, 9.99999975e-05), r0.xw);
+    r0.x = log2(r0.x);
+    r0.x = 15 * r0.x;
+    r0.x = exp2(r0.x);
+    r0.xyz = r0.xxx * r5.xyz;
+    r0.xyz = r4.xyz * r0.www + r0.xyz;
+    r0.xyz = r0.xyz * r3.xyz;
+    o0.xyz = LightColor.xyz * r0.xyz;
+    o0.w = 1;
     return;
 }
