@@ -7,6 +7,7 @@ using System.Diagnostics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -1036,6 +1037,30 @@ namespace LegendaryExplorerCore.Kismet
 
             links.Add(sp);
             node.WriteProperty(links);
+        }
+
+        /// <summary>
+        /// Removes an object from a sequence, optionally trashing it and its children.
+        /// </summary>
+        /// <param name="node">Node to remove</param>
+        /// <param name="trash">If the object should be trashed.</param>
+        public static void RemoveFromSequence(ExportEntry node, bool trash)
+        {
+            RemoveAllLinks(node);
+            var seq = GetParentSequence(node);
+            var seqObjs = seq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            var arrayObj = seqObjs?.FirstOrDefault(x => x.Value == node.UIndex);
+            if (arrayObj != null)
+            {
+                seqObjs.Remove(arrayObj);
+                seq.WriteProperty(seqObjs);
+            }
+
+            if (trash)
+            {
+                //Trash
+                EntryPruner.TrashEntryAndDescendants(node);
+            }
         }
     }
 }
