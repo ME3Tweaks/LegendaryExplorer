@@ -418,9 +418,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(CaseStatement node)
         {
-            EmitComments(node.StartPos);
             Nest nest = Nests.Peek();
-            nest.CaseJumpPlaceholder?.End();
+            if (nest.CaseJumpPlaceholder is not null)
+            {
+                //We cannot emit comments before the first case (the vm assumes there will be a case after the switch statement).
+                //If CaseJumpPlaceholder is not null, this isn't the first case
+                EmitComments(node.StartPos);
+                nest.CaseJumpPlaceholder.End();
+            }
             WriteOpCode(OpCodes.Case);
             nest.CaseJumpPlaceholder = WriteJumpPlaceholder(JumpType.Case);
             Emit(AddConversion(nest.SwitchType, node.Value));
