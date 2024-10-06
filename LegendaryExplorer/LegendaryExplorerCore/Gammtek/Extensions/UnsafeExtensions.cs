@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace LegendaryExplorerCore.Gammtek.Extensions
 {
-    internal static unsafe class UnsafeExtensions
+    public static unsafe class UnsafeExtensions
     {
         public static Span<byte> AsBytes<T>(this ref T val) where T : unmanaged
         {
