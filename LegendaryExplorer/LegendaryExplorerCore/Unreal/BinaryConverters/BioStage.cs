@@ -9,13 +9,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int length;
         public UMultiMap<NameReference, PropertyCollection> CameraList; //PropertyCollection is struct of type BioStageCamera, which contains nothing that needs relinking //TODO: Make this a UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (!sc.Game.IsGame3())
             {
                 if (sc.IsLoading)
                 {
-                    CameraList = new();
+                    CameraList = [];
                 }
                 return;
             }
@@ -25,7 +25,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (sc.IsLoading)
                 {
-                    CameraList = new();
+                    CameraList = [];
                 }
                 return;
             }
@@ -69,7 +69,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                CameraList = new ()
+                CameraList = []
             };
         }
 

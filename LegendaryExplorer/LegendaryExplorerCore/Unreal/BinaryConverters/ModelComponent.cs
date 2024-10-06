@@ -13,11 +13,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort ComponentIndex;
         public ushort[] Nodes;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref Model);
             sc.Serialize(ref ZoneIndex);
-            sc.Serialize(ref Elements, SCExt.Serialize);
+            sc.Serialize(ref Elements, sc.Serialize);
             sc.Serialize(ref ComponentIndex);
             sc.Serialize(ref Nodes);
         }
@@ -27,8 +27,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new()
             {
                 Model = 0,
-                Elements = Array.Empty<ModelElement>(),
-                Nodes = Array.Empty<ushort>()
+                Elements = [],
+                Nodes = []
             };
         }
 
@@ -59,20 +59,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid[] IrrelevantLights;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref ModelElement elem)
+        public void Serialize(ref ModelElement elem)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 elem = new ModelElement();
             }
-            sc.Serialize(ref elem.LightMap);
-            sc.Serialize(ref elem.Component);
-            sc.Serialize(ref elem.Material);
-            sc.Serialize(ref elem.Nodes);
-            sc.Serialize(ref elem.ShadowMaps, Serialize);
-            sc.Serialize(ref elem.IrrelevantLights, SCExt.Serialize);
+            Serialize(ref elem.LightMap);
+            Serialize(ref elem.Component);
+            Serialize(ref elem.Material);
+            Serialize(ref elem.Nodes);
+            Serialize(ref elem.ShadowMaps, Serialize);
+            Serialize(ref elem.IrrelevantLights, Serialize);
         }
     }
 }

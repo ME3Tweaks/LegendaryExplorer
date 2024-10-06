@@ -1,0 +1,32 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System.Runtime.CompilerServices;
+namespace LegendaryExplorerCore.Gammtek;
+
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+
+// =======================================================================
+// Auto-generated: DO NOT MANUALLY EDIT THIS .CS FILE, RUN InlineArrays.tt
+// =======================================================================
+
+<#
+    //ADD NEW SIZES HERE AS NEEDED
+    int[] sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    foreach (int size in sizes){
+#>[InlineArray(<#= size #>)]
+public struct Fixed<#= size #><T>
+{
+    private T _element0;
+
+    public int Length => <#= size #>;
+}
+
+<# } #>
+#pragma warning restore IDE0044
+#pragma warning restore IDE0051

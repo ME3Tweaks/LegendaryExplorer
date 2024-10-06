@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
@@ -35,7 +38,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint unk10; //UDK
         public uint unk11; //UDK
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref Bounds);
             sc.Serialize(ref BodySetup);
@@ -92,7 +95,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref dummy);
                 sc.Serialize(ref dummy);
             }
-            sc.Serialize(ref LODModels, SCExt.Serialize);
+            sc.Serialize(ref LODModels, sc.Serialize);
             if (sc.Game == MEGame.ME1)
             {
                 sc.Serialize(ref unk2);
@@ -136,7 +139,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             if (sc.Game == MEGame.UDK)
             {
                 sc.Serialize(ref unk8);
-                sc.Serialize(ref unkFloats, SCExt.Serialize);
+                sc.Serialize(ref unkFloats, sc.Serialize);
                 sc.Serialize(ref unk9);
                 sc.Serialize(ref unk10);
                 sc.Serialize(ref unk11);
@@ -144,7 +147,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else if (sc.IsLoading)
             {
                 unk8 = 1;
-                unkFloats = Array.Empty<float>();
+                unkFloats = [];
                 unk9 = 1;
             }
         }
@@ -155,10 +158,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 Bounds = new BoxSphereBounds(),
                 BodySetup = 0,
-                kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact(Array.Empty<kDOPCollisionTriangle>(), Array.Empty<Vector3>()),
-                LODModels = Array.Empty<StaticMeshRenderData>(),
+                kDOPTreeME3UDKLE = KDOPTreeBuilder.ToCompact([], []),
+                LODModels = [],
                 HighResSourceMeshName = "",
-                unkFloats = Array.Empty<float>()
+                unkFloats = []
             };
         }
 
@@ -182,6 +185,40 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return rb_BodySetup.GetProperty<StructProperty>("AggGeom");
             }
             return null;
+        }
+
+        /// <summary>
+        /// Returns the list of material uindexes on the top LOD of the mesh. For convenience only.
+        /// </summary>
+        /// <returns></returns>
+        public UIndex[] GetMaterials()
+        {
+            if (LODModels.Length == 0)
+                return [];
+
+            return LODModels[0].Elements.Select(x => x.Material).ToArray();
+        }
+
+        /// <summary>
+        /// Sets the material UIndexes on the top LOD of the mesh. For convenience only. You probably shouldn't use this for actual editing, this is used by LEX mesh preview.
+        /// </summary>
+        /// <param name="overlay">If null values should not be set</param>
+        /// <returns></returns>
+        public void SetMaterials(List<IEntry> materials, bool overlay = false)
+        {
+            if (LODModels.Length == 0)
+                return;
+            if (LODModels[0].Elements.Length != materials.Count)
+                return; // Invalid length
+
+            for (int i = 0; i < materials.Count; i++)
+            {
+                var mat = materials[i];
+                if (mat != null || !overlay)
+                {
+                    LODModels[0].Elements[i].Material = mat?.UIndex ?? 0;
+                }
+            }
         }
     }
 
@@ -223,14 +260,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class kDOP
     {
-        public float[] Min = new float[3];
-        public float[] Max = new float[3];
+        public Fixed3<float> Min;
+        public Fixed3<float> Max;
     }
 
     public class kDOPCompact
     {
-        public byte[] Min = new byte[3];
-        public byte[] Max = new byte[3];
+        public Fixed3<byte> Min;
+        public Fixed3<byte> Max;
     }
 
     public readonly struct kDOPCollisionTriangle
@@ -264,24 +301,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort[] WireframeIndexBuffer; //BulkSerialize
         public MeshEdge[] Edges; //BulkSerialize //not UDK
         public byte[] ShadowTriangleDoubleSided; //not UDK
-        public ushort[] unkBuffer; //UDK
+        public ushort[] AdjacencyIndexBuffer; //UDK
         public uint unk1; //ME1
         public byte[] xmlFile; //ME1 BulkData
     }
 
     public class StaticMeshTriangle
     {
-        public Vector3[] Vertices = new Vector3[3];
+        public Fixed3<Vector3> Vertices;
         public Vector2[,] UVs = new Vector2[3, 8];
-        public SharpDX.Color[] Colors = new SharpDX.Color[3];
+        public Fixed3<SharpDX.Color> Colors;
         public int MaterialIndex;
         public int FragmentIndex; //ME3/UDK
         public uint SmoothingMask;
         public int NumUVs;
         public bool bExplicitNormals; //UDK
-        public Vector3[] TangentX = new Vector3[3]; //ME3/UDK
-        public Vector3[] TangentY = new Vector3[3]; //ME3/UDK
-        public Vector3[] TangentZ = new Vector3[3]; //ME3/UDK
+        public Fixed3<Vector3> TangentX; //ME3/UDK
+        public Fixed3<Vector3> TangentY; //ME3/UDK
+        public Fixed3<Vector3> TangentZ; //ME3/UDK
         public bool bOverrideTangentBasis; //ME3/UDK
     }
 
@@ -355,253 +392,253 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class MeshEdge
     {
-        public int[] Vertices = new int[2];
-        public int[] Faces = new int[2];
+        public Fixed2<int> Vertices;
+        public Fixed2<int> Faces;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref MeshEdge edge)
+        public void Serialize(ref MeshEdge edge)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 edge = new MeshEdge();
             }
 
             for (int i = 0; i < 2; i++)
             {
-                sc.Serialize(ref edge.Vertices[i]);
+                Serialize(ref edge.Vertices[i]);
             }
             for (int i = 0; i < 2; i++)
             {
-                sc.Serialize(ref edge.Faces[i]);
+                Serialize(ref edge.Faces[i]);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref ExtrusionVertexBuffer vBuff)
+        public void Serialize(ref ExtrusionVertexBuffer vBuff)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 vBuff = new ExtrusionVertexBuffer();
             }
 
-            sc.Serialize(ref vBuff.Stride);
-            sc.Serialize(ref vBuff.NumVertices);
+            Serialize(ref vBuff.Stride);
+            Serialize(ref vBuff.NumVertices);
             int elementsize = 4;
-            sc.Serialize(ref elementsize);
-            sc.Serialize(ref vBuff.VertexData, SCExt.Serialize);
+            Serialize(ref elementsize);
+            Serialize(ref vBuff.VertexData, Serialize);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref ColorVertexBuffer buff)
+        public void Serialize(ref ColorVertexBuffer buff)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 buff = new ColorVertexBuffer();
             }
 
-            if (sc.IsSaving)
+            if (IsSaving)
             {
                 buff.Stride = buff.NumVertices > 0 ? 4u : 0u;
             }
-            sc.Serialize(ref buff.Stride);
-            sc.Serialize(ref buff.NumVertices);
+            Serialize(ref buff.Stride);
+            Serialize(ref buff.NumVertices);
             if (buff.NumVertices > 0)
             {
                 int elementsize = 4;
-                sc.Serialize(ref elementsize);
-                sc.Serialize(ref buff.VertexData, Serialize);
+                Serialize(ref elementsize);
+                Serialize(ref buff.VertexData, Serialize);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticMeshVertexBuffer buff)
+        public void Serialize(ref StaticMeshVertexBuffer buff)
         {
             uint elementSize;
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 buff = new StaticMeshVertexBuffer();
             }
             else
             {
                 elementSize = 8u + buff.NumTexCoords * (buff.bUseFullPrecisionUVs ? 8u : 4u);
-                if (sc.Game < MEGame.ME3)
+                if (Game < MEGame.ME3)
                 {
                     elementSize += 4;
                 }
 
                 buff.Stride = elementSize;
             }
-            sc.Serialize(ref buff.NumTexCoords);
-            sc.Serialize(ref buff.Stride);
-            sc.Serialize(ref buff.NumVertices);
-            sc.Serialize(ref buff.bUseFullPrecisionUVs);
-            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
+            Serialize(ref buff.NumTexCoords);
+            Serialize(ref buff.Stride);
+            Serialize(ref buff.NumVertices);
+            Serialize(ref buff.bUseFullPrecisionUVs);
+            if (Game == MEGame.ME3 || Game.IsLEGame())
             {
-                sc.Serialize(ref buff.unk);
+                Serialize(ref buff.unk);
             }
             elementSize = buff.Stride;
-            sc.Serialize(ref elementSize);
+            Serialize(ref elementSize);
             int count = buff.VertexData?.Length ?? 0;
-            sc.Serialize(ref count);
-            if (sc.IsLoading)
+            Serialize(ref count);
+            if (IsLoading)
             {
                 buff.VertexData = new StaticMeshVertexBuffer.StaticMeshFullVertex[count];
             }
 
             for (int i = 0; i < count; i++)
             {
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
                     buff.VertexData[i] = new StaticMeshVertexBuffer.StaticMeshFullVertex();
                 }
-                sc.Serialize(ref buff.VertexData[i].TangentX);
-                sc.Serialize(ref buff.VertexData[i].TangentZ);
-                if (sc.Game < MEGame.ME3)
+                Serialize(ref buff.VertexData[i].TangentX);
+                Serialize(ref buff.VertexData[i].TangentZ);
+                if (Game < MEGame.ME3)
                 {
-                    sc.Serialize(ref buff.VertexData[i].Color);
+                    Serialize(ref buff.VertexData[i].Color);
                 }
 
                 if (buff.bUseFullPrecisionUVs)
                 {
                     if (buff.VertexData[i].FullPrecisionUVs == null)
                     {
-                        buff.VertexData[i].FullPrecisionUVs = sc.IsLoading
+                        buff.VertexData[i].FullPrecisionUVs = IsLoading
                             ? new Vector2[buff.NumTexCoords]
                             //bUseFullPrecisionUVs was changed, copy data from the other one
                             : Array.ConvertAll(buff.VertexData[i].HalfPrecisionUVs, v2dHalf => new Vector2(v2dHalf.X, v2dHalf.Y));
                     }
                     for (int j = 0; j < buff.NumTexCoords; j++)
                     {
-                        sc.Serialize(ref buff.VertexData[i].FullPrecisionUVs[j]);
+                        Serialize(ref buff.VertexData[i].FullPrecisionUVs[j]);
                     }
                 }
                 else
                 {
                     if (buff.VertexData[i].HalfPrecisionUVs == null)
                     {
-                        buff.VertexData[i].HalfPrecisionUVs = sc.IsLoading
+                        buff.VertexData[i].HalfPrecisionUVs = IsLoading
                             ? new Vector2DHalf[buff.NumTexCoords]
                             //bUseFullPrecisionUVs was changed, copy data from the other one
                             : Array.ConvertAll(buff.VertexData[i].FullPrecisionUVs, v2d => new Vector2DHalf(v2d.X, v2d.Y));
                     }
                     for (int j = 0; j < buff.NumTexCoords; j++)
                     {
-                        sc.Serialize(ref buff.VertexData[i].HalfPrecisionUVs[j]);
+                        Serialize(ref buff.VertexData[i].HalfPrecisionUVs[j]);
                     }
                 }
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref PositionVertexBuffer buff)
+        public void Serialize(ref PositionVertexBuffer buff)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 buff = new PositionVertexBuffer();
             }
 
-            sc.Serialize(ref buff.Stride);
-            sc.Serialize(ref buff.NumVertices);
-            if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
+            Serialize(ref buff.Stride);
+            Serialize(ref buff.NumVertices);
+            if (Game == MEGame.ME3 || Game.IsLEGame())
             {
-                sc.Serialize(ref buff.unk);
+                Serialize(ref buff.unk);
             }
             int elementsize = 12;
-            sc.Serialize(ref elementsize);
-            sc.Serialize(ref buff.VertexData);
+            Serialize(ref elementsize);
+            Serialize(ref buff.VertexData);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref FragmentRange fRange)
+        public void Serialize(ref FragmentRange fRange)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                fRange = new FragmentRange(sc.ms.ReadInt32(), sc.ms.ReadInt32());
+                fRange = new FragmentRange(ms.ReadInt32(), ms.ReadInt32());
             }
             else
             {
-                sc.ms.Writer.WriteInt32(fRange.BaseIndex);
-                sc.ms.Writer.WriteInt32(fRange.NumPrimitives);
+                ms.Writer.WriteInt32(fRange.BaseIndex);
+                ms.Writer.WriteInt32(fRange.NumPrimitives);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticMeshElement meshElement)
+        public void Serialize(ref StaticMeshElement meshElement)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 meshElement = new StaticMeshElement();
             }
 
-            sc.Serialize(ref meshElement.Material);
-            sc.Serialize(ref meshElement.EnableCollision);
-            sc.Serialize(ref meshElement.OldEnableCollision);
-            sc.Serialize(ref meshElement.bEnableShadowCasting);
-            sc.Serialize(ref meshElement.FirstIndex);
-            sc.Serialize(ref meshElement.NumTriangles);
-            sc.Serialize(ref meshElement.MinVertexIndex);
-            sc.Serialize(ref meshElement.MaxVertexIndex);
-            sc.Serialize(ref meshElement.MaterialIndex);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref meshElement.Material);
+            Serialize(ref meshElement.EnableCollision);
+            Serialize(ref meshElement.OldEnableCollision);
+            Serialize(ref meshElement.bEnableShadowCasting);
+            Serialize(ref meshElement.FirstIndex);
+            Serialize(ref meshElement.NumTriangles);
+            Serialize(ref meshElement.MinVertexIndex);
+            Serialize(ref meshElement.MaxVertexIndex);
+            Serialize(ref meshElement.MaterialIndex);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref meshElement.Fragments, Serialize);
+                Serialize(ref meshElement.Fragments, Serialize);
                 byte dummy = 0;
-                sc.Serialize(ref dummy);
+                Serialize(ref dummy);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticMeshTriangle tri)
+        public void Serialize(ref StaticMeshTriangle tri)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 tri = new StaticMeshTriangle();
             }
 
             for (int i = 0; i < 3; i++)
             {
-                sc.Serialize(ref tri.Vertices[i]);
+                Serialize(ref tri.Vertices[i]);
             }
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    sc.Serialize(ref tri.UVs[i, j]);
+                    Serialize(ref tri.UVs[i, j]);
                 }
             }
             for (int i = 0; i < 3; i++)
             {
-                sc.Serialize(ref tri.Colors[i]);
+                Serialize(ref tri.Colors[i]);
             }
-            sc.Serialize(ref tri.MaterialIndex);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref tri.MaterialIndex);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref tri.FragmentIndex);
+                Serialize(ref tri.FragmentIndex);
             }
-            sc.Serialize(ref tri.SmoothingMask);
-            sc.Serialize(ref tri.NumUVs);
-            if (sc.Game == MEGame.UDK)
+            Serialize(ref tri.SmoothingMask);
+            Serialize(ref tri.NumUVs);
+            if (Game == MEGame.UDK)
             {
-                sc.Serialize(ref tri.bExplicitNormals);
+                Serialize(ref tri.bExplicitNormals);
             }
-            if (sc.Game >= MEGame.ME3)
+            if (Game >= MEGame.ME3)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    sc.Serialize(ref tri.TangentX[i]);
+                    Serialize(ref tri.TangentX[i]);
                 }
                 for (int i = 0; i < 3; i++)
                 {
-                    sc.Serialize(ref tri.TangentY[i]);
+                    Serialize(ref tri.TangentY[i]);
                 }
                 for (int i = 0; i < 3; i++)
                 {
-                    sc.Serialize(ref tri.TangentZ[i]);
+                    Serialize(ref tri.TangentZ[i]);
                 }
-                sc.Serialize(ref tri.bOverrideTangentBasis);
+                Serialize(ref tri.bOverrideTangentBasis);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticMeshRenderData data)
+        public void Serialize(ref StaticMeshRenderData data)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 data = new StaticMeshRenderData();
             }
 
-            sc.SerializeBulkData(ref data.RawTriangles, Serialize);
-            sc.Serialize(ref data.Elements, Serialize);
-            sc.Serialize(ref data.PositionVertexBuffer);
-            if (sc.IsSaving)
+            SerializeBulkData(ref data.RawTriangles, Serialize);
+            Serialize(ref data.Elements, Serialize);
+            Serialize(ref data.PositionVertexBuffer);
+            if (IsSaving)
             {
-                if (sc.Game >= MEGame.ME3 && data.ColorVertexBuffer == null)
+                if (Game >= MEGame.ME3 && data.ColorVertexBuffer == null)
                 {
                     //this was read in from ME1 or ME2, we need to seperate out the color data
                     data.ColorVertexBuffer = new ColorVertexBuffer
@@ -611,7 +648,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         Stride = 4
                     };
                 }
-                else if (sc.Game < MEGame.ME3 && data.ColorVertexBuffer != null)
+                else if (Game < MEGame.ME3 && data.ColorVertexBuffer != null)
                 {
                     //this was read in from ME3 or UDK, we need to integrate the color data
                     // Why is this written backwards?
@@ -621,17 +658,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     }
                 }
             }
-            sc.Serialize(ref data.VertexBuffer);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref data.VertexBuffer);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref data.ColorVertexBuffer);
+                Serialize(ref data.ColorVertexBuffer);
             }
 
-            if (sc.Game < MEGame.UDK)
+            if (Game < MEGame.UDK)
             {
-                sc.Serialize(ref data.ShadowExtrusionVertexBuffer);
+                Serialize(ref data.ShadowExtrusionVertexBuffer);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 data.ShadowExtrusionVertexBuffer = new ExtrusionVertexBuffer
                 {
@@ -639,134 +676,134 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     VertexData = Array.Empty<float>()
                 };
             }
-            sc.Serialize(ref data.NumVertices);
+            Serialize(ref data.NumVertices);
             int elementSize = 2;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.IndexBuffer);
+            Serialize(ref elementSize);
+            Serialize(ref data.IndexBuffer);
             elementSize = 2;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref data.WireframeIndexBuffer);
-            if (sc.Game != MEGame.UDK)
+            Serialize(ref elementSize);
+            Serialize(ref data.WireframeIndexBuffer);
+            if (Game != MEGame.UDK)
             {
                 elementSize = 16;
-                sc.Serialize(ref elementSize);
-                sc.Serialize(ref data.Edges, Serialize);
-                sc.Serialize(ref data.ShadowTriangleDoubleSided);
+                Serialize(ref elementSize);
+                Serialize(ref data.Edges, Serialize);
+                Serialize(ref data.ShadowTriangleDoubleSided);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
-                data.Edges = Array.Empty<MeshEdge>();
-                data.ShadowTriangleDoubleSided = Array.Empty<byte>();
+                data.Edges = [];
+                data.ShadowTriangleDoubleSided = [];
             }
-            if (sc.Game == MEGame.UDK)
+            if (Game == MEGame.UDK)
             {
-                sc.BulkSerialize(ref data.unkBuffer, SCExt.Serialize, 2);
+                BulkSerialize(ref data.AdjacencyIndexBuffer, Serialize, 2);
             }
-            if (sc.Game == MEGame.ME1)
+            if (Game == MEGame.ME1)
             {
-                sc.Serialize(ref data.unk1);
+                Serialize(ref data.unk1);
 
                 int bulkDataFlags = 0;
-                sc.Serialize(ref bulkDataFlags);
+                Serialize(ref bulkDataFlags);
                 int byteCount = data.xmlFile?.Length ?? 0;
-                sc.Serialize(ref byteCount);
-                sc.Serialize(ref byteCount);
-                sc.SerializeFileOffset();
-                sc.Serialize(ref data.xmlFile, byteCount);
+                Serialize(ref byteCount);
+                Serialize(ref byteCount);
+                SerializeFileOffset();
+                Serialize(ref data.xmlFile, byteCount);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
-                data.xmlFile = Array.Empty<byte>();
+                data.xmlFile = [];
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref kDOPCollisionTriangle kTri)
+        public void Serialize(ref kDOPCollisionTriangle kTri)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                kTri = new kDOPCollisionTriangle(sc.ms.ReadUInt16(), sc.ms.ReadUInt16(), sc.ms.ReadUInt16(), sc.ms.ReadUInt16());
+                kTri = new kDOPCollisionTriangle(ms.ReadUInt16(), ms.ReadUInt16(), ms.ReadUInt16(), ms.ReadUInt16());
             }
             else
             {
-                sc.ms.Writer.WriteUInt16(kTri.Vertex1);
-                sc.ms.Writer.WriteUInt16(kTri.Vertex2);
-                sc.ms.Writer.WriteUInt16(kTri.Vertex3);
-                sc.ms.Writer.WriteUInt16(kTri.MaterialIndex);
+                ms.Writer.WriteUInt16(kTri.Vertex1);
+                ms.Writer.WriteUInt16(kTri.Vertex2);
+                ms.Writer.WriteUInt16(kTri.Vertex3);
+                ms.Writer.WriteUInt16(kTri.MaterialIndex);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref kDOPCompact kDop)
+        public void Serialize(ref kDOPCompact kDop)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 kDop = new kDOPCompact();
             }
 
             for (int i = 0; i < 3; i++)
             {
-                sc.Serialize(ref kDop.Min[i]);
+                Serialize(ref kDop.Min[i]);
             }
             for (int i = 0; i < 3; i++)
             {
-                sc.Serialize(ref kDop.Max[i]);
+                Serialize(ref kDop.Max[i]);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref kDOP kDop)
+        public void Serialize(ref kDOP kDop)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 kDop = new kDOP();
             }
 
             for (int i = 0; i < 3; i++)
             {
-                sc.Serialize(ref kDop.Min[i]);
+                Serialize(ref kDop.Min[i]);
             }
             for (int i = 0; i < 3; i++)
             {
-                sc.Serialize(ref kDop.Max[i]);
+                Serialize(ref kDop.Max[i]);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref kDOPNode kDopNode)
+        public void Serialize(ref kDOPNode kDopNode)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 kDopNode = new kDOPNode();
             }
 
-            sc.Serialize(ref kDopNode.BoundingVolume);
-            sc.Serialize(ref kDopNode.bIsLeaf);
+            Serialize(ref kDopNode.BoundingVolume);
+            Serialize(ref kDopNode.bIsLeaf);
             //depending on bIsLeaf, next two are either LeftNode and RightNode, or NumTriangles and StartIndex.
             //But since it's a union, they share space in memory, so it doesn't matter for serialization purposes
-            sc.Serialize(ref kDopNode.u.LeftNode);
-            sc.Serialize(ref kDopNode.u.RightNode);
+            Serialize(ref kDopNode.u.LeftNode);
+            Serialize(ref kDopNode.u.RightNode);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref kDOPTreeCompact kDopTree)
+        public void Serialize(ref kDOPTreeCompact kDopTree)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 kDopTree = new kDOPTreeCompact();
             }
 
-            sc.Serialize(ref kDopTree.RootBound);
+            Serialize(ref kDopTree.RootBound);
             int elementSize = 6;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref kDopTree.Nodes, Serialize);
+            Serialize(ref elementSize);
+            Serialize(ref kDopTree.Nodes, Serialize);
             elementSize = 8;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref kDopTree.Triangles, Serialize);
+            Serialize(ref elementSize);
+            Serialize(ref kDopTree.Triangles, Serialize);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref kDOPTree kDopTree)
+        public void Serialize(ref kDOPTree kDopTree)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 kDopTree = new kDOPTree();
             }
 
             int elementSize = 32;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref kDopTree.Nodes, Serialize);
+            Serialize(ref elementSize);
+            Serialize(ref kDopTree.Nodes, Serialize);
             elementSize = 8;
-            sc.Serialize(ref elementSize);
-            sc.Serialize(ref kDopTree.Triangles, Serialize);
+            Serialize(ref elementSize);
+            Serialize(ref kDopTree.Triangles, Serialize);
         }
     }
 }

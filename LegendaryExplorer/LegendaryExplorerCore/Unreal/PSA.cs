@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal
 
         private const int version = 1999801;
 
-        protected void Serialize(SerializingContainer2 sc)
+        protected void Serialize(SerializingContainer sc)
         {
             var mainHeader = new ChunkHeader
             {
@@ -32,7 +32,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Bones?.Count ?? 0
             };
             sc.Serialize(ref boneHeader);
-            sc.Serialize(ref Bones, boneHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Bones, boneHeader.DataCount, sc.Serialize);
 
             var infoHeader = new ChunkHeader
             {
@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Infos?.Count ?? 0
             };
             sc.Serialize(ref infoHeader);
-            sc.Serialize(ref Infos, infoHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Infos, infoHeader.DataCount, sc.Serialize);
 
             var keyHeader = new ChunkHeader
             {
@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.Unreal
                 DataCount = Keys?.Count ?? 0
             };
             sc.Serialize(ref keyHeader);
-            sc.Serialize(ref Keys, keyHeader.DataCount, SCExt.Serialize);
+            sc.Serialize(ref Keys, keyHeader.DataCount, sc.Serialize);
         }
 
         public class ChunkHeader
@@ -98,7 +98,7 @@ namespace LegendaryExplorerCore.Unreal
             public float Time;
         }
 
-        public static PSA CreateFrom(AnimSequence animSeq) => CreateFrom(new List<AnimSequence>{ animSeq });
+        public static PSA CreateFrom(AnimSequence animSeq) => CreateFrom([animSeq]);
 
         //All Animsequences MUST have the same BoneLists!
         public static PSA CreateFrom(List<AnimSequence> animSeqs)
@@ -114,9 +114,9 @@ namespace LegendaryExplorerCore.Unreal
             }
             var psa = new PSA
             {
-                Bones = new List<PSABone>(),
-                Infos = new List<PSAAnimInfo>(),
-                Keys = new List<PSAAnimKeys>()
+                Bones = [],
+                Infos = [],
+                Keys = []
             };
 
             int numBones = animSeqs[0].Bones.Count;
@@ -190,15 +190,15 @@ namespace LegendaryExplorerCore.Unreal
                     NumFrames = info.NumRawFrames,
                     SequenceLength = info.TrackTime / info.AnimRate,
                     RateScale = 1,
-                    RawAnimationData = new List<AnimTrack>()
+                    RawAnimationData = []
                 };
 
                 for (int boneIdx = 0; boneIdx < boneCount; boneIdx++)
                 {
                     var track = new AnimTrack
                     {
-                        Positions = new List<Vector3>(),
-                        Rotations = new List<Quaternion>()
+                        Positions = [],
+                        Rotations = []
                     };
 
                     for (int frameIdx = 0; frameIdx < seq.NumFrames; frameIdx++)
@@ -242,14 +242,14 @@ namespace LegendaryExplorerCore.Unreal
         public void ToFile(string filePath)
         {
             using var fs = new FileStream(filePath, FileMode.Create);
-            Serialize(new SerializingContainer2(fs, null));
+            Serialize(new SerializingContainer(fs, null));
         }
 
         public static PSA FromFile(string filePath)
         {
             var psa = new PSA();
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            psa.Serialize(new SerializingContainer2(fs, null, true));
+            psa.Serialize(new SerializingContainer(fs, null, true));
             return psa;
         }
     }
@@ -257,87 +257,87 @@ namespace LegendaryExplorerCore.Unreal
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref PSA.ChunkHeader h)
+        public void Serialize(ref PSA.ChunkHeader h)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 h = new PSA.ChunkHeader();
             }
 
-            sc.SerializeFixedSizeString(ref h.ChunkID, 20);
-            sc.Serialize(ref h.Version);
-            sc.Serialize(ref h.DataSize);
-            sc.Serialize(ref h.DataCount);
+            SerializeFixedSizeString(ref h.ChunkID, 20);
+            Serialize(ref h.Version);
+            Serialize(ref h.DataSize);
+            Serialize(ref h.DataCount);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref PSA.PSABone b)
+        public void Serialize(ref PSA.PSABone b)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 b = new PSA.PSABone();
             }
 
-            sc.SerializeFixedSizeString(ref b.Name, 64);
-            sc.Serialize(ref b.Flags);
-            sc.Serialize(ref b.NumChildren);
-            sc.Serialize(ref b.ParentIndex);
-            sc.Serialize(ref b.Rotation);
-            sc.Serialize(ref b.Position);
-            sc.Serialize(ref b.Length);
-            sc.Serialize(ref b.Size);
+            SerializeFixedSizeString(ref b.Name, 64);
+            Serialize(ref b.Flags);
+            Serialize(ref b.NumChildren);
+            Serialize(ref b.ParentIndex);
+            Serialize(ref b.Rotation);
+            Serialize(ref b.Position);
+            Serialize(ref b.Length);
+            Serialize(ref b.Size);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref PSA.PSAAnimInfo a)
+        public void Serialize(ref PSA.PSAAnimInfo a)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 a = new PSA.PSAAnimInfo();
             }
 
-            sc.SerializeFixedSizeString(ref a.Name, 64);
-            sc.SerializeFixedSizeString(ref a.Group, 64);
-            sc.Serialize(ref a.TotalBones);
-            sc.Serialize(ref a.RootInclude);
-            sc.Serialize(ref a.KeyCompressionStyle);
-            sc.Serialize(ref a.KeyQuotum);
-            sc.Serialize(ref a.KeyReduction);
-            sc.Serialize(ref a.TrackTime);
-            sc.Serialize(ref a.AnimRate);
-            sc.Serialize(ref a.StartBone);
-            sc.Serialize(ref a.FirstRawFrame);
-            sc.Serialize(ref a.NumRawFrames);
+            SerializeFixedSizeString(ref a.Name, 64);
+            SerializeFixedSizeString(ref a.Group, 64);
+            Serialize(ref a.TotalBones);
+            Serialize(ref a.RootInclude);
+            Serialize(ref a.KeyCompressionStyle);
+            Serialize(ref a.KeyQuotum);
+            Serialize(ref a.KeyReduction);
+            Serialize(ref a.TrackTime);
+            Serialize(ref a.AnimRate);
+            Serialize(ref a.StartBone);
+            Serialize(ref a.FirstRawFrame);
+            Serialize(ref a.NumRawFrames);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref PSA.PSAAnimKeys k)
+        public void Serialize(ref PSA.PSAAnimKeys k)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 k = new PSA.PSAAnimKeys();
             }
-            sc.Serialize(ref k.Position);
-            sc.Serialize(ref k.Rotation);
-            sc.Serialize(ref k.Time);
+            Serialize(ref k.Position);
+            Serialize(ref k.Rotation);
+            Serialize(ref k.Time);
         }
 
-        public static void SerializeFixedSizeString(this SerializingContainer2 sc, ref string s, int length)
+        public void SerializeFixedSizeString(ref string s, int length)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                var pos = sc.ms.Position;
-                s = sc.ms.ReadStringASCIINull();
+                var pos = ms.Position;
+                s = ms.ReadStringASCIINull();
 
-                sc.ms.JumpTo(pos + length);
+                ms.JumpTo(pos + length);
             }
             else
             {
                 for (int i = 0; i < length; i++)
                 {
                     if (i < s.Length)
-                        sc.ms.Writer.WriteByte((byte)s[i]);
+                        ms.Writer.WriteByte((byte)s[i]);
                     else
-                        sc.ms.Writer.WriteByte(0);
+                        ms.Writer.WriteByte(0);
                 }
             }
         }

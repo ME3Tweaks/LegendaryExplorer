@@ -48,7 +48,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             var soundbank = await WwiseUtility.Instance.CreateObjectAtPathAsync(export.ObjectName, WwiseObject.ObjectType.SoundBank, "\\Soundbanks\\Default Work Unit");
 
             // Now we inspect the WwiseBank
-            WwiseBank bank = ObjectBinary.From<WwiseBank>(export);
+            var bank = ObjectBinary.From<WwiseBankParsed>(export);
             List<EmbeddedWEMFile> wems = new List<EmbeddedWEMFile>();
             foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
             {

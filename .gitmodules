@@ -4,3 +4,6 @@
 [submodule "LegendaryExplorer/submodules/WwiseParser"]
 	path = LegendaryExplorer/submodules/WwiseParser
 	url = https://github.com/ME3Tweaks/WwiseParser.git
+[submodule "LegendaryExplorer/submodules/Wwiser.NET"]
+	path = LegendaryExplorer/submodules/Wwiser.NET
+	url = https://github.com/ME3Tweaks/Wwiser.NET

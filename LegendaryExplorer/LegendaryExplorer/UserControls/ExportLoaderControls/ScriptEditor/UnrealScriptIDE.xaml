@@ -9,6 +9,7 @@
              xmlns:global="clr-namespace:LegendaryExplorer"
              xmlns:errors="clr-namespace:LegendaryExplorerCore.UnrealScript.Compiling.Errors;assembly=LegendaryExplorerCore"
              xmlns:ide="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE"
+             xmlns:fa5="http://schemas.fontawesome.com/icons/"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{Binding RelativeSource={RelativeSource Self}}" 
@@ -25,16 +26,30 @@
         </xctk:BusyIndicator.ProgressBarStyle>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <!--<ToolBar></ToolBar>-->
+            <ToolBar ToolBarTray.IsLocked="True" Visibility="Collapsed">
+                <Label IsEnabled="False">Text Size:</Label>
+                <Button Name="FontSizeIncrease_Button" ToolTip="Add a new element to the selected array"
+                        Command="{Binding IncreaseFontSizeCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Plus"/>
+                </Button>
+                <Button Name="FontSizeDecrease_Button" ToolTip="Add a new element to the selected array"
+                        Command="{Binding DecreaseFontSizeCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Minus"/>
+                </Button>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Button Content="Theme" Click="ThemePicker_OnClick"/>
+            </ToolBar>
             <ide:UnrealScriptTextEditor x:Name="textEditor" Grid.Row="1" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
-                                        FontFamily="Consolas" ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
-                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped" >
+                                        FontFamily="Consolas" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
+                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
                 <avalonedit:TextEditor.InputBindings>
                     <!-- OemQuestion is the forward slash key -->
                     <KeyBinding Key="OemQuestion" Modifiers="Control" Command="{Binding ToggleCommentCommand}"/>

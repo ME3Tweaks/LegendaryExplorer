@@ -177,7 +177,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var isClass = export.ClassName == "Class";
                 var isState = export.ClassName == "State";
                 var isFunc = export.ClassName == "Function";
-                
+
                 var pcc = export.FileRef;
                 for (int i = pcc.Imports.Count - 1; i >= 0; i--)
                 {
@@ -311,18 +311,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     $"{generationNetObjectCount.Length} counts: {string.Join(", ", generationNetObjectCount)}";
 
                 int packageGuidOffset = _exportFlagsOffset + 8 + generationNetObjectCount.Length * 4;
-                InfoTab_GUID_TextBlock.Text = $"0x{packageGuidOffset:X2} GUID:";
+                InfoTab_GUID_TextBlock.Text = $"0x{packageGuidOffset:X2} Package GUID:";
                 InfoTab_ExportGUID_TextBox.Text = exportEntry.PackageGUID.ToString();
                 if (exportEntry.FileRef.Platform is MEPackage.GamePlatform.Xenon && exportEntry.FileRef.Game is MEGame.ME1)
                 {
                     InfoTab_PackageFlags_TextBlock.Text = "";
-                    InfoTab_PackageFlags_TextBox.Text = "";
+                    InfoTab_PackageFlags_ComboBox.ItemsSource = null;
                 }
                 else
                 {
                     InfoTab_PackageFlags_TextBlock.Text = $"0x{packageGuidOffset + 16:X2} PackageFlags:";
-                    InfoTab_PackageFlags_TextBox.Text = Enums.GetValues<EPackageFlags>().Distinct().ToList()
-                        .Where(flag => exportEntry.PackageFlags.HasFlag(flag)).StringJoin(" ");
+
+                    List<EPackageFlags> packageFlagsList = Enums.GetValues<EPackageFlags>().Distinct().ToList();
+                    string selectedPackageFlags = packageFlagsList.Where(flag => exportEntry.PackageFlags.Has(flag)).StringJoin(" ");
+                    InfoTab_PackageFlags_ComboBox.ItemsSource = packageFlagsList;
+                    InfoTab_PackageFlags_ComboBox.SelectedValue = selectedPackageFlags;
                 }
             }
             catch (Exception e)
@@ -506,6 +509,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             InfoTab_Flags_ComboBox.SelectedItem = null;
             InfoTab_ExportFlags_ComboBox.ItemsSource = null;
             InfoTab_ExportFlags_ComboBox.SelectedItem = null;
+            InfoTab_PackageFlags_ComboBox.ItemsSource = null;
+            InfoTab_PackageFlags_ComboBox.SelectedItem = null;
             InfoTab_ExportDataSize_TextBox.Text = null;
             InfoTab_ExportOffsetHex_TextBox.Text = null;
             InfoTab_ExportOffsetDec_TextBox.Text = null;
@@ -748,7 +753,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         /// <summary>
-        /// Handler for when the flags combobox item changes value
+        /// Handler for when the objectflags combobox item changes value
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -937,7 +942,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
                 else if (entry is ImportEntry imp)
                 {
-                    if (EntryImporter.ResolveImport(imp) is ExportEntry resolved)
+                    if (EntryImporter.ResolveImport(imp, new PackageCache()) is ExportEntry resolved)
                     {
                         var p = new PackageEditorWindow();
                         p.Show();
@@ -945,6 +950,40 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         p.Activate(); //bring to front
                     }
                 }
+            }
+        }
+
+        private void InfoTab_PackageFlags_ComboBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (CurrentLoadedExport != null)
+            {
+                Header_Hexbox.SelectionStart = _exportFlagsOffset + 0x18;
+                Header_Hexbox.SelectionLength = 4;
+            }
+        }
+
+
+        /// <summary>
+        /// Handler for when the packageflags combobox item changes value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void InfoTab_PackageFlags_ComboBox_ItemSelectionChanged(object sender, ItemSelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                EPackageFlags newFlags = 0U;
+                foreach (object flag in InfoTab_PackageFlags_ComboBox.Items)
+                {
+                    if (InfoTab_PackageFlags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) is SelectorItem { IsSelected: true })
+                    {
+                        newFlags |= (EPackageFlags)flag;
+                    }
+                }
+                //Debug.WriteLine(newFlags);
+                headerByteProvider.WriteBytes(_exportFlagsOffset + 0x18, BitConverter.GetBytes((uint)newFlags));
+                Header_Hexbox?.Refresh();
             }
         }
     }

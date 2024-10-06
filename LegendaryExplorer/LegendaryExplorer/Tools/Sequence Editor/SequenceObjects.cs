@@ -458,6 +458,20 @@ namespace LegendaryExplorer.Tools.SequenceObjects
                                 return "Plot Float\n#" + m_nIndex.Value;
                             }
                         }
+
+                        if (export.ClassName == "SeqVar_FloatList")
+                        {
+                            var floatList = export.GetProperty<ArrayProperty<FloatProperty>>("FloatList") ?? new ArrayProperty<FloatProperty>("FloatList");
+                            string text = $"FloatList: {floatList.Count} item (s)";
+                            if (floatList.Count > 0)
+                                text += $"\n0: {floatList[0].Value}";
+                            if (floatList.Count > 1)
+                                text += $"\n1: {floatList[1].Value}";
+                            if (floatList.Count > 2)
+                                text += "\n...";
+
+                            return text;
+                        }
                         if (props.GetProp<FloatProperty>("FloatValue") is FloatProperty floatValue)
                         {
                             return floatValue.Value.ToString();

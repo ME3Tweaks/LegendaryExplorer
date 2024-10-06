@@ -52,7 +52,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
             else if (mOBaseHead is ImportEntry imp)
             {
-                var resolveExp = EntryImporter.ResolveImport(imp);
+                var resolveExp = EntryImporter.ResolveImport(imp, null);
                 return ObjectBinary.From<SkeletalMesh>(resolveExp);
             }
             return null;

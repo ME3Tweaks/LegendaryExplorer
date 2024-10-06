@@ -10,21 +10,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public UMultiMap<NameReference, BioTlkSet> TlkSets; //TODO: Make this a UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (!sc.Game.IsGame1())
             {
                 throw new Exception($"BioTlkFileSet is not a valid class for {sc.Game}!");
             }
-            sc.Serialize(ref TlkSets, SCExt.Serialize, static (SerializingContainer2 sc2, ref BioTlkSet tlkSet) =>
+            sc.Serialize(ref TlkSets, sc.Serialize, (ref BioTlkSet tlkSet) =>
             {
-                if (sc2.IsLoading)
+                if (sc.IsLoading)
                 {
                     tlkSet = new BioTlkSet();
                 }
-                sc2.SerializeConstInt(2);
-                sc2.Serialize(ref tlkSet.Male);
-                sc2.Serialize(ref tlkSet.Female);
+                sc.SerializeConstInt(2);
+                sc.Serialize(ref tlkSet.Male);
+                sc.Serialize(ref tlkSet.Female);
             });
         }
 
@@ -32,7 +32,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                TlkSets = new ()
+                TlkSets = []
             };
         }
 

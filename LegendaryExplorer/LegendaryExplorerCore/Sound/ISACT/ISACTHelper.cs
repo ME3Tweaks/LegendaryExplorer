@@ -266,6 +266,9 @@ namespace LegendaryExplorerCore.Sound.ISACT
                 case "sdtf":
                     chunks.Add(new SoundEventSoundTracksFour(chunkLen, inStream, parent));
                     break;
+                case "sndt":
+                    chunks.Add(new SoundEventSoundTracks(chunkLen, inStream, parent));
+                    break;
                 default:
                     chunks.Add(new BankChunk(chunkName, chunkLen, inStream, parent));
                     break;
@@ -1524,7 +1527,7 @@ public class SoundEventSoundTracksFour : BankChunk
 
     public override string ToChunkDisplay()
     {
-        var str = $"{ChunkName}: SoundTracks Info ({SoundTracks?.Count ?? 0} tracks)";
+        var str = $"{ChunkName}: SoundTracks Four Info ({SoundTracks?.Count ?? 0} tracks)";
         int i = 0;
         foreach (var st in SoundTracks)
         {
@@ -1532,6 +1535,140 @@ public class SoundEventSoundTracksFour : BankChunk
             str += $"\nTrack {i}:";
             str += $"\n\tBuffer Index: {st.BufferIndex}\tPath Index: {st.PathIndex}";
             str += $"\n\tOrder: {st.Order}\tChance: {st.Chance}";
+            str += "\n...";
+        }
+
+        return str;
+    }
+}
+
+public class SoundEventSoundTracks : BankChunk
+{
+    public List<ISACTSoundTrack> SoundTracks;
+    /// <summary>
+    /// The defined name of this chunk.
+    /// </summary>
+    public static readonly string FixedChunkTitle = "sndt";
+    public SoundEventSoundTracks(int dataSize, Stream inStream, BankChunk parent)
+    {
+        Parent = parent;
+        ChunkName = FixedChunkTitle;
+        ChunkDataStartOffset = inStream.Position;
+        SoundTracks = new List<ISACTSoundTrack>();
+        int numEntriesInArray = 4; // BioWare seems to have capped this to 4 slots instead of ISACT's max of 32
+        var numTracksToRead = dataSize / 728; // Struct size of a track is 768 in this chunk
+        for (int i = 0; i < numTracksToRead; i++)
+        {
+            var startPos = inStream.Position;
+            ISACTSoundTrack st = new ISACTSoundTrack();
+            st.BufferIndex = inStream.ReadUInt32();
+            st.PathIndex = inStream.ReadUInt32();
+            st.Order = inStream.ReadUInt32();
+            st.Chance = inStream.ReadUInt32();
+            st.Position = new Vector3(inStream.ReadFloat(), inStream.ReadFloat(), inStream.ReadFloat());
+            st.Orientation = new ISACTOrientation() { Azimuth = inStream.ReadInt32(), Height = inStream.ReadInt32(), Roll = inStream.ReadInt32() };
+            st.Velocity = new Vector3(inStream.ReadFloat(), inStream.ReadFloat(), inStream.ReadFloat());
+            st.MinGain = inStream.ReadFloat();
+            st.MaxGain = inStream.ReadFloat();
+            st.MinPitch = inStream.ReadFloat();
+            st.MaxPitch = inStream.ReadFloat();
+            st.MinDirect = inStream.ReadFloat();
+            st.MaxDirect = inStream.ReadFloat();
+            st.MinDirectHF = inStream.ReadFloat();
+            st.MaxDirectHF = inStream.ReadFloat();
+
+            st.SendEnable = new int[numEntriesInArray];
+            st.MinSend = new float[numEntriesInArray];
+            st.MaxSend = new float[numEntriesInArray];
+            st.MinSendHF = new float[numEntriesInArray];
+            st.MaxSendHF = new float[numEntriesInArray];
+
+            for (int j = 0; j < numEntriesInArray; j++) { st.SendEnable[j] = inStream.ReadInt32(); }
+            inStream.Skip(28 * sizeof(int)); // long in cpp - Remaining bytes are garbage
+            for (int j = 0; j < numEntriesInArray; j++) { st.MinSend[j] = inStream.ReadFloat(); }
+            inStream.Skip(28 * sizeof(float)); // Remaining bytes are garbage
+            for (int j = 0; j < numEntriesInArray; j++) { st.MaxSend[j] = inStream.ReadFloat(); }
+            inStream.Skip(28 * sizeof(float)); // Remaining bytes are garbage
+            for (int j = 0; j < numEntriesInArray; j++) { st.MinSendHF[j] = inStream.ReadFloat(); }
+            inStream.Skip(28 * sizeof(float)); // Remaining bytes are garbage
+            for (int j = 0; j < numEntriesInArray; j++) { st.MaxSendHF[j] = inStream.ReadFloat(); }
+            inStream.Skip(28 * sizeof(float)); // Remaining bytes are garbage
+
+            st.Flags = inStream.ReadUInt32();
+
+            var endPos = inStream.Position;
+            var diff = endPos - startPos;
+            if (diff != 728)
+            {
+
+            }
+            SoundTracks.Add(st);
+        }
+    }
+
+    public SoundEventSoundTracks()
+    {
+    }
+
+    public override void Write(Stream outStream)
+    {
+        outStream.WriteStringASCII(ChunkName);
+        var sizePos = outStream.Position;
+        outStream.WriteInt32(0); // placeholder
+
+        foreach (var st in SoundTracks)
+        {
+            outStream.WriteUInt32(st.BufferIndex);
+            outStream.WriteUInt32(st.PathIndex);
+            outStream.WriteUInt32(st.Order);
+            outStream.WriteUInt32(st.Chance);
+            outStream.WriteFloat(st.Position.X); // Vector
+            outStream.WriteFloat(st.Position.Y);
+            outStream.WriteFloat(st.Position.Z);
+            outStream.WriteInt32(st.Orientation.Azimuth); // ISACTOrientation
+            outStream.WriteInt32(st.Orientation.Height);
+            outStream.WriteInt32(st.Orientation.Roll);
+            outStream.WriteFloat(st.Velocity.X); // Vector
+            outStream.WriteFloat(st.Velocity.Y);
+            outStream.WriteFloat(st.Velocity.Z);
+            outStream.WriteFloat(st.MinGain);
+            outStream.WriteFloat(st.MaxGain);
+            outStream.WriteFloat(st.MinPitch);
+            outStream.WriteFloat(st.MaxPitch);
+            outStream.WriteFloat(st.MinDirect);
+            outStream.WriteFloat(st.MaxDirect);
+            outStream.WriteFloat(st.MinDirectHF);
+            outStream.WriteFloat(st.MaxDirectHF);
+
+            for (int j = 0; j < st.SendEnable.Length; j++) { outStream.WriteInt32(st.SendEnable[j]); }
+            outStream.WriteZeros(28 * sizeof(float));
+            for (int j = 0; j < st.MinSend.Length; j++) { outStream.WriteFloat(st.MinSend[j]); }
+            outStream.WriteZeros(28 * sizeof(float));
+            for (int j = 0; j < st.MaxSend.Length; j++) { outStream.WriteFloat(st.MaxSend[j]); }
+            outStream.WriteZeros(28 * sizeof(float));
+            for (int j = 0; j < st.MinSendHF.Length; j++) { outStream.WriteFloat(st.MinSendHF[j]); }
+            outStream.WriteZeros(28 * sizeof(float));
+            for (int j = 0; j < st.MaxSendHF.Length; j++) { outStream.WriteFloat(st.MaxSendHF[j]); }
+            outStream.WriteZeros(28 * sizeof(float));
+            outStream.WriteUInt32(st.Flags);
+        }
+
+        // Write out the length.
+        var finishPos = outStream.Position;
+        outStream.Position = sizePos;
+        outStream.WriteInt32((int)(finishPos - sizePos - 4)); // -4 to remove the size itself.
+        outStream.Position = finishPos;
+    }
+
+    public override string ToChunkDisplay()
+    {
+        var str = $"{ChunkName}: SoundTracks Info ({SoundTracks?.Count ?? 0} tracks)";
+        int i = 0;
+        foreach (var st in SoundTracks)
+        {
+            i++;
+            str += $"\nTrack {i}:";
+            str += $"\n\tBuffer Index: {st.BufferIndex}";
             str += "\n...";
         }
 

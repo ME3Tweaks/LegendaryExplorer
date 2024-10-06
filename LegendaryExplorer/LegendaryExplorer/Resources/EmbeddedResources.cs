@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 namespace LegendaryExplorer.Resources
 {
@@ -42,5 +41,26 @@ namespace LegendaryExplorer.Resources
         public static string StandardShader => GetResourceString("LegendaryExplorer.Resources.StandardShader.hlsl");
 
         public static string TextureShader => GetResourceString("LegendaryExplorer.Resources.TextureShader.hlsl");
+
+        private static IHighlightingDefinition _hlslSyntaxDefinition;
+        public static IHighlightingDefinition HlslSyntaxDefinition
+        {
+            get
+            {
+                return _hlslSyntaxDefinition ??= LoadHighlightingDefinition();
+
+                static IHighlightingDefinition LoadHighlightingDefinition()
+                {
+                    const string resourceLocation = "LegendaryExplorer.Resources.HLSL.xshd";
+                    using Stream resourceStream = Assembly.GetManifestResourceStream(resourceLocation);
+                    if (resourceStream is null)
+                    {
+                        throw new Exception($"Could not load {resourceLocation}");
+                    }
+                    using var reader = XmlReader.Create(resourceStream);
+                    return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+            }
+        }
     }
 }

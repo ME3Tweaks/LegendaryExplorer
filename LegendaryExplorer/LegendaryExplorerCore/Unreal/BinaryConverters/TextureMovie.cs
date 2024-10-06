@@ -11,11 +11,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int DataOffset;
         public byte[] EmbeddedData;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (!sc.Game.IsGame3())
             {
-                var empty = new byte[0];
+                byte[] empty = [];
                 sc.SerializeBulkData(ref empty);
             }
             sc.Serialize(ref IsExternal);
@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                EmbeddedData = Array.Empty<byte>()
+                EmbeddedData = []
             };
         }
     }

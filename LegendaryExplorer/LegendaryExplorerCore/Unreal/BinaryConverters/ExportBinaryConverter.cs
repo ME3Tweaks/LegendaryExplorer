@@ -7,7 +7,9 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using static LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -16,12 +18,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public static ObjectBinary ConvertPostPropBinary(ExportEntry export, MEGame newGame, PropertyCollection newProps)
         {
-            if (export.propsEnd() == export.DataSize)
+            // 08/29/2024 - Don't use this check on textures, as games may have exports with zero properties (like zero face cubes or broken textures in ME1)
+            // The binary format still needs changed for target game. We probably should maintain a list of classes that have binary formats
+            // change that this could trigger on if there were no properties and no binary data in the source game.
+            if (export.propsEnd() == export.DataSize && !export.IsA("Texture"))
             {
                 return Array.Empty<byte>();
             }
 
-            if (export.IsTexture())
+            if (export.IsTexture() && export.Game != newGame) // 12/24/2023 - Do not try to convert textures if the game isn't changing. It might try to internalize things that don't need to be
             {
                 return ConvertTexture2D(export, newGame);
             }
@@ -204,14 +209,36 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static byte[] ConvertTexture2D(ExportEntry export, MEGame newGame, List<int> offsets = null, StorageTypes newStorageType = StorageTypes.empty)
         {
-            MemoryStream bin = export.GetReadOnlyBinaryStream();
+            MemoryStream bin = null;
+            if (newGame == MEGame.UDK)
+            {
+                var format = export.GetProperty<EnumProperty>("Format");
+                if (format is { Value.Name: "PF_BC7" })
+                {
+                    // UDK doesn't support BC7
+                    var unused = new MemoryStream(); // We don't want to modify source export
+                    var convertedImage = new Texture2D(export).ToImage(PixelFormat.DXT1);
+                    var t2d = new Texture2D(export) { TextureFormat = "PF_DXT1" };
+                    t2d.Replace(convertedImage, export.GetProperties(), isPackageStored: true, outDataOverride: unused);
+                    bin = new MemoryStream();
+                    t2d.SerializeNewData(bin); // This serializes binary data.
+                    bin.SeekBegin();
+                }
+            }
+
+            if (bin == null)
+            {
+                bin = export.GetReadOnlyBinaryStream();
+            }
+
+
             if (bin.Length == 0)
             {
                 return bin.ToArray();
             }
             using var os = MemoryManager.GetMemoryStream();
 
-            if (!export.Game.IsGame3())
+            if (!export.Game.IsGame3() || (export.FileRef.FilePath != null && Path.GetExtension(export.FileRef.FilePath) == ".upk"))
             {
                 bin.Skip(8);
                 bin.Skip(bin.ReadInt32()); // Skip the thumbnail
@@ -267,7 +294,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         if (export.Game != newGame)
                         {
                             storageType &= (StorageTypes)~StorageFlags.externalFile;
-                            
+
                             // Only load mips if we need to.
                             mips ??= Texture2D.GetTexture2DMipInfos(export, export.GetProperty<NameProperty>("TextureFileCacheName")?.Value);
                             texture = Texture2D.GetTextureData(mips[i], export.Game, export.Game != MEGame.UDK ? MEDirectories.GetDefaultGamePath(export.Game) : null, false); //copy in external textures
@@ -354,7 +381,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 int lightMapFlags = 0;
                 if (export.Game >= MEGame.ME3)
                 {
-                    lightMapFlags = bin.ReadInt32();
+                    lightMapFlags = bin.ReadInt32(); // 12/24/2023 Why is this reading??? This is throwing some exceptions reading EOF as it's meant for write not read - Mgamerz
                 }
                 if (newGame >= MEGame.ME3)
                 {

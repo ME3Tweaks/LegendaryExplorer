@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -11,52 +12,74 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class EntryExporter
     {
-        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache globalCache = null, PackageCache pc = null, ObjectInstanceDB targetDb = null)
+        private static List<EntryStringPair> ExportExportToPackageInternal(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry portedEntry, PackageCache cache = null, RelinkerOptionsPackage customROP = null, ObjectInstanceDB targetDb = null)
         {
             List<EntryStringPair> issues = new List<EntryStringPair>();
 
+            // Does entry already exist in destination package?
+            var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath, sourceExport.ClassName);
+            if (newEntry != null)
+            {
+                portedEntry = newEntry;
+                return issues;
+            }
+
             // We will want to cache files in memory to greatly speed this up
-            var newCache = pc == null;
-            pc ??= new PackageCache();
+            var newCache = cache == null;
+            cache ??= new PackageCache();
             Dictionary<ImportEntry, ExportEntry> impToExpMap = new Dictionary<ImportEntry, ExportEntry>();
 
             // Check and resolve all imports upstream in the level
-            var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, globalCache, pc);
-            issues.AddRange(unresolvableImports);
-
-            // Imports are resolvable. We should port in level imports then port in the rest
-            var impToExpMapList = impToExpMap.ToList().OrderBy(x => x.Key.InstancedFullPath.Length); // Shorter names go first... should help ensure parents are generated first... maybe.....
-
-            foreach (var mapping in impToExpMapList)
+            if (customROP == null || customROP.CheckImportsWhenExportingToPackage)
             {
-                if (targetPackage.FindEntry(mapping.Key.InstancedFullPath) == null)
+                var unresolvableImports = RecursiveGetAllLevelImportsAsExports(sourceExport, impToExpMap, cache, customROP);
+                issues.AddRange(unresolvableImports);
+
+                // Imports are resolvable. We should port in level imports then port in the rest
+                var impToExpMapList = impToExpMap.ToList().OrderBy(x => x.Key.InstancedFullPath.Length); // Shorter names go first... should help ensure parents are generated first... maybe.....
+
+                foreach (var mapping in impToExpMapList)
                 {
-                    // port it in
-                    //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
-                    var parent = PortParents(mapping.Value, targetPackage);
-                    var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = pc, TargetGameDonorDB = targetDb }, out _);
-                    issues.AddRange(relinkResults1);
-                }
-                else
-                {
-                    //Debug.WriteLine($"Already exists due to other porting in: {mapping.Key.InstancedFullPath}");
+                    if (targetPackage.FindEntry(mapping.Key.InstancedFullPath) == null)
+                    {
+                        // port it in
+                        //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
+                        var parent = PortParents(mapping.Value, targetPackage, customROP: customROP);
+                        customROP?.CrossPackageMap.Clear(); // Do not persist this value, we do not want double relink
+                        var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true,
+                            customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache }, out _);
+                        issues.AddRange(relinkResults1);
+                    }
+                    else
+                    {
+                        //Debug.WriteLine($"Already exists due to other porting in: {mapping.Key.InstancedFullPath}");
+                    }
                 }
             }
 
+            // Clear cross package map as the ROP will be used again. And you don't want to reuse that.
+            customROP?.CrossPackageMap.Clear();
+
             // Import the original item now
-            var lParent = PortParents(sourceExport, targetPackage);
+            var lParent = PortParents(sourceExport, targetPackage, cache: cache);
 
             // Test the entry was not ported in already, such as from a Parent reference
-            var newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath);
+            newEntry = targetPackage.FindEntry(sourceExport.InstancedFullPath, sourceExport.ClassName);
             if (newEntry == null)
             {
-                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = pc, TargetGameDonorDB = targetDb }, out newEntry);
+                var relinkResults2 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport, targetPackage, lParent, true,
+                    customROP ?? new RelinkerOptionsPackage()
+                    {
+                        ImportExportDependencies = true,
+                        Cache = cache,
+                        TargetGameDonorDB = targetDb
+                    }, out newEntry);
                 issues.AddRange(relinkResults2);
             }
 
             if (newCache)
             {
-                pc.ReleasePackages();
+                cache.ReleasePackages();
             }
 
             portedEntry = newEntry;
@@ -70,13 +93,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="sourceExport"></param>
         /// <param name="targetPackage"></param>
         /// <param name="newEntry"></param>
-        /// <param name="compress"></param>
-        /// <param name="globalCache"></param>
         /// <param name="packageCache"></param>
         /// <returns></returns>
-        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache globalCache = null, PackageCache packageCache = null, ObjectInstanceDB targetDb = null)
+        public static List<EntryStringPair> ExportExportToPackage(ExportEntry sourceExport, IMEPackage targetPackage, out IEntry newEntry, PackageCache packageCache = null, RelinkerOptionsPackage customROP = null)
         {
-            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, globalCache, packageCache, targetDb);
+            var exp = ExportExportToPackageInternal(sourceExport, targetPackage, out var nEntry, packageCache, customROP);
             newEntry = nEntry;
             return exp;
         }
@@ -91,28 +112,32 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="globalCache"></param>
         /// <param name="pc"></param>
         /// <returns></returns>
-        public static List<EntryStringPair> ExportExportToFile(ExportEntry sourceExport, string newPackagePath, out IEntry newEntry, bool? compress = null, PackageCache globalCache = null, PackageCache pc = null)
+        public static List<EntryStringPair> ExportExportToFile(ExportEntry sourceExport, string newPackagePath, out IEntry newEntry, bool? compress = null, PackageCache cache = null)
         {
             MEPackageHandler.CreateAndSavePackage(newPackagePath, sourceExport.Game);
             using var p = MEPackageHandler.OpenMEPackage(newPackagePath);
-            var result = ExportExportToPackage(sourceExport, p, out newEntry, globalCache, pc);
+            var result = ExportExportToPackage(sourceExport, p, out newEntry, cache);
             p.Save();
             return result;
         }
 
         /// <summary>
-        /// Ports in the parents of the source entry into the target package. They should be Package exports. Items that are found in the target already are not ported. The direct parent of the source IEntry is returned, in the target package.
+        /// Ports in the parents of the source entry into the target package. Items that are found in the target already are not ported. The direct parent of the source IEntry is returned, in the target package.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <param name="importAsImport">If the parents should be imported as an import instead of an export if they don't exist. This should only be used if you're porting in an import and creating its parents.</param>
         /// <returns></returns>
-        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false)
+        public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null, RelinkerOptionsPackage customROP = null)
         {
             var packagename = Path.GetFileNameWithoutExtension(source.FileRef.FilePath);
-            if (packagename != null && IsGlobalNonStartupFile(packagename))
+            if (packagename != null)
             {
-                PrepareGlobalFileForPorting(source.FileRef, packagename);
+                if (IsGlobalNonStartupFile(packagename) && !source.FileRef.FileNameNoExtension.CaseInsensitiveEquals(target.FileNameNoExtension))
+                {
+                    // Porting out of file
+                    PrepareGlobalFileForPorting(source.FileRef, packagename);
+                }
             }
 
             Stack<IEntry> parentStack = new Stack<IEntry>();
@@ -123,13 +148,58 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 entry = entry.Parent;
             }
 
+            // If the paths don't match then one of then this is a 'forced export', and we have to have the
+            // root package in the tree. Imports will always require package name at the root,
+            // however exports do not if they are not forced export.
+            bool portingIntoLinkerPackage = false;
+            if (entry.InstancedFullPath != entry.MemoryFullPath)
+            {
+                // Are we porting into a file with a different linker?
+                if (!source.GetLinker().CaseInsensitiveEquals(target.FileNameNoExtension))
+                {
+                    // Porting out of file that uses !ForcedExport
+                    var parentPackage = target.FindEntry(entry.FileRef.FileNameNoExtension, "Package"); // Sure hope nothing indexing
+                    if (parentPackage == null)
+                    {
+                        // Create parent package
+                        if (entry.FileRef.Game == MEGame.UDK)
+                        {
+                            // Root packages should be imports
+                            // Not sure on this one... This could cause issues on nested packages
+                            parentPackage = ExportCreator.CreatePackageImport(target, entry.FileRef.FileNameNoExtension);
+                        }
+                        else
+                        {
+                            parentPackage = ExportCreator.CreatePackageExport(target, entry.FileRef.FileNameNoExtension);
+                        }
+                    }
+
+                    parentStack.Push(parentPackage);
+                }
+                // Target linker is the same
+                // We are porting a forced export object out of linker package into its linker package
+                // Commented out cause I am not really sure how to handle this...
+                /*
+                else
+                {
+                    parentStack.Pop();
+                    portingIntoLinkerPackage = true;
+                }*/
+            }
+
             var parentCount = parentStack.Count;
 
             // Create parents first
             IEntry parent = null;
             foreach (var pEntry in parentStack)
             {
-                var existingEntry = target.FindEntry(pEntry.InstancedFullPath);
+                var ifp = pEntry.InstancedFullPath;
+                if (portingIntoLinkerPackage)
+                {
+                    // Strip off the linker
+                    ifp = pEntry.InstancedFullPath.Substring(pEntry.GetLinker().Length + 1);
+                }
+                var existingEntry = target.FindEntry(ifp);
                 if (existingEntry == null)
                 {
                     var entriesBC = target.ExportCount;
@@ -148,21 +218,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                         else
                         {
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, new RelinkerOptionsPackage() { ImportExportDependencies = false }, out parent);
+                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, false, customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = false, Cache = cache }, out parent);
                         }
                     }
                     else
                     {
                         // Port in with relink... this could get really ugly performance wise
-                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true }, out parent);
+                        // Unsure how this will work if it tries to bring over things as we port INTO linker package
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, pEntry, target, parent, true, new RelinkerOptionsPackage() { ImportExportDependencies = true, PortImportsMemorySafe = true, Cache = cache }, out parent);
                     }
-                    var entriesAC = target.ExportCount;
-                    if (entriesAC - entriesBC > parentCount)
-                    {
-                        // We ported in too many things!!
-                        Debug.WriteLine("We appear to have ported too many things!!");
-                        // Debugger.Break();
-                    }
+                    //var entriesAC = target.ExportCount;
+                    //if (entriesAC - entriesBC > parentCount)
+                    //{
+                    //    // We ported in too many things!!
+                    //    Debug.WriteLine("We appear to have ported too many things!!");
+                    //    // Debugger.Break();
+                    //}
                 }
                 else
                 {
@@ -219,13 +290,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         /// <param name="sourceExport"></param>
         /// <param name="resolutionMap"></param>
-        /// <param name="globalCache">Global cache that will not have it's contents modified. Should contain things like SFXGame, Startup, etc.</param>
         /// <param name="cache">Cache for the local operation, such as the localization files, the upstream level files. This cache will be modified as packages are opened</param>
         /// <returns></returns>
-        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache globalCache, PackageCache cache)
+        private static List<EntryStringPair> RecursiveGetAllLevelImportsAsExports(ExportEntry sourceExport, Dictionary<ImportEntry, ExportEntry> resolutionMap, PackageCache cache, RelinkerOptionsPackage rop = null)
         {
             List<EntryStringPair> unresolvableImports = new List<EntryStringPair>();
             var references = EntryImporter.GetAllReferencesOfExport(sourceExport);
+            // I think orderby ensures shorter names go first. So an import parent of an import will resolve first.
             var importReferences = references.OfType<ImportEntry>().OrderBy(x => x.InstancedFullPath).ToList();
             foreach (var import in importReferences)
             {
@@ -237,10 +308,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     continue; // This texture is straight up missing from the game for some reason
                 if (import.IsAKnownNativeClass())
                     continue; // Known native items can never be imported
-                var resolved = EntryImporter.ResolveImport(import, globalCache, cache);
+                var resolved = EntryImporter.ResolveImport(import, cache);
                 if (resolved == null)
                 {
                     unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} could not be resolved - cannot be safely used"));
+                    continue;
+                }
+
+                if (resolved.FileRef.Localization != MELocalization.None && rop != null && !rop.PortLocalizationImportsMemorySafe)
+                {
+                    unresolvableImports.Add(new EntryStringPair(import, $"Import {import.InstancedFullPath} is for localized content - we will not be porting this as an export. This may require manual adjustment of the LOC file to work."));
                     continue;
                 }
 
@@ -249,7 +326,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (IsLevelFile(sourcePath) || IsGlobalNonStartupFile(sourcePath))
                 {
                     resolutionMap[import] = resolved;
-                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, globalCache, cache);
+                    RecursiveGetAllLevelImportsAsExports(resolved, resolutionMap, cache, rop);
                 }
             }
 

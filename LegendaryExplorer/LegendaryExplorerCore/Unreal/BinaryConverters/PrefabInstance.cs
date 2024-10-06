@@ -9,18 +9,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UMultiMap<UIndex, UIndex> ArchetypeToInstanceMap; //TODO: Make this a UMap
         public UMultiMap<UIndex, int> ObjectMap; //TODO: Make this a UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref ArchetypeToInstanceMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref ObjectMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref ArchetypeToInstanceMap, sc.Serialize, sc.Serialize);
+            sc.Serialize(ref ObjectMap, sc.Serialize, sc.Serialize);
         }
 
         public static PrefabInstance Create()
         {
             return new()
             {
-                ArchetypeToInstanceMap = new(),
-                ObjectMap = new()
+                ArchetypeToInstanceMap = [],
+                ObjectMap = []
             };
         }
         

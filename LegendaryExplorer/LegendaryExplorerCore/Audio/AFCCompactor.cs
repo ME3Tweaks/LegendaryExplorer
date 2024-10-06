@@ -91,7 +91,7 @@ namespace LegendaryExplorerCore.Audio
         /// <summary>
         /// Represents a reference to a piece of audio in an AFC
         /// </summary>
-        [DebuggerDisplay("RA {afcName} @ 0x{audioOffset.ToString(\"X8\")}")]
+        [DebuggerDisplay("RA {AFCName} @ 0x{AudioOffset.ToString(\"X8\")}")]
         public class ReferencedAudio
         {
             /// <summary>The name of the AFC containing this audio</summary>

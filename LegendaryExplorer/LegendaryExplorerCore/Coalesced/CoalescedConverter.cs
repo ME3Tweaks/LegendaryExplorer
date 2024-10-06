@@ -552,7 +552,7 @@ namespace LegendaryExplorerCore.Coalesced
         /// <param name="source">The source input file. Can be null if you are passing in an already-parsed XDocument on the <paramref name="preloadedDoc"/> paremeter</param>
         /// <param name="destination">Where the serialized file will be saved to</param>
         /// <param name="preloadedDoc">A preloaded XDocument object, in the event the document was already loaded by the caller for other purposes. If this value is set, <paramref name="source"/> is not used.</param>
-        public static void ConvertToBin(string source, string destination, XDocument preloadedDoc = null)
+        public static void ConvertToBin(string source, string destination, XDocument preloadedDoc = null, Stream outStream = null)
         {
             var inputPath = Path.IsPathRooted(source) ? source : Path.Combine(GetExePath(), source);
             var outputPath = !string.IsNullOrEmpty(destination) ? destination : Path.ChangeExtension(inputPath, ".bin");
@@ -618,16 +618,20 @@ namespace LegendaryExplorerCore.Coalesced
                 coal.Files.Add(entry);
             }
 
-            using (var output = File.Create(outputPath))
+            bool closeStream = outStream == null;
+            if (outStream == null)
             {
-                if (file.Settings != null)
-                {
-                    coal.OverrideCompileValueTypes = file.Settings.OverrideCompileValueTypes;
-                    coal.CompileTypes = file.Settings.CompileTypes;
-                }
-
-                coal.Serialize(output);
+                outStream = File.Create(outputPath);
             }
+            if (file.Settings != null)
+            {
+                coal.OverrideCompileValueTypes = file.Settings.OverrideCompileValueTypes;
+                coal.CompileTypes = file.Settings.CompileTypes;
+            }
+
+            coal.Serialize(outStream);
+            if (closeStream)
+                outStream.Dispose();
         }
 
         private static string GetExePath()

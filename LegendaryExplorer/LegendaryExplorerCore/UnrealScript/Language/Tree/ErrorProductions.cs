@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
     {
         public readonly Statement InnerStatement;
 
-        public readonly ScriptToken[] ErrorTokens; 
+        public readonly ScriptToken[] ErrorTokens;
 
         public ErrorStatement(Statement innerStatement) : base(ASTNodeType.INVALID, innerStatement.StartPos, innerStatement.EndPos)
         {

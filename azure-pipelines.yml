@@ -15,9 +15,9 @@ variables:
   solution: 'LegendaryExplorer\LegendaryExplorer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'WinAzureRelease'
-  appMajorMin: '6.4'
+  appMajorMin: '6.5'
   appMajor: '6'
-  appMinor: '4'
+  appMinor: '5'
   appPatch: '0'
   netVersion: '8'
   disable.coverage.autogenerate: 'true'
@@ -29,7 +29,7 @@ steps:
 - checkout: self
   clean: true
   persistCredentials: true
-  submodules: true 
+  submodules: recursive 
 # DEBUG for Find Text Transform
 #- task: CmdLine@2
 #  inputs:

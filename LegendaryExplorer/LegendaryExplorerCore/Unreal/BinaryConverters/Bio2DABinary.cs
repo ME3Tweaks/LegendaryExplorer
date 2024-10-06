@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UMultiMap<int, Bio2DACell> Cells; //TODO: Make this a UMap
         public List<NameReference> ColumnNames;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.IsLoading)
             {
@@ -35,7 +35,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int cellIndex = 0;
             //If IsIndexed, the index needs to be read and written, so just use the normal Serialize for ints.
             //If it's not indexed, we don't need to write anything, but the Dictionary still needs to be populated with a value
-            sc.Serialize(ref Cells, IsIndexed ? SCExt.Serialize : (SerializingContainer2 _, ref int idx) => idx = cellIndex++, SCExt.Serialize);
+            sc.Serialize(ref Cells, IsIndexed ? sc.Serialize : (ref int idx) => idx = cellIndex++, sc.Serialize);
             if (!IsIndexed)
             {
                 sc.SerializeConstInt(0);
@@ -68,10 +68,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static Bio2DABinary Create()
         {
-            return new()
+            return new Bio2DABinary
             {
-                Cells = new(),
-                ColumnNames = new List<NameReference>()
+                Cells = [],
+                ColumnNames = []
             };
         }
 
@@ -94,45 +94,45 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //}
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref Bio2DACell cell)
+        public void Serialize(ref Bio2DACell cell)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 cell = new Bio2DACell
                 {
-                    Type = (Bio2DACell.Bio2DADataType)sc.ms.ReadByte()
+                    Type = (Bio2DACell.Bio2DADataType)ms.ReadByte()
                 };
             }
             else
             {
                 if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_NULL) return; // DO NOT SERIALIZE!
-                sc.ms.Writer.WriteByte((byte)cell.Type);
+                ms.Writer.WriteByte((byte)cell.Type);
             }
             switch (cell.Type)
             {
                 case Bio2DACell.Bio2DADataType.TYPE_INT:
                     int intV = cell.IntValue;
-                    sc.Serialize(ref intV);
-                    if (sc.IsLoading)
+                    Serialize(ref intV);
+                    if (IsLoading)
                         cell.IntValue = intV;
                     break;
                 case Bio2DACell.Bio2DADataType.TYPE_NAME:
                     NameReference nameV = cell.NameValue;
-                    sc.Serialize(ref nameV);
-                    if (sc.IsLoading)
+                    Serialize(ref nameV);
+                    if (IsLoading)
                         cell.NameValue = nameV;
                     break;
                 case Bio2DACell.Bio2DADataType.TYPE_FLOAT:
                     float floatV = cell.FloatValue;
-                    sc.Serialize(ref floatV);
-                    if (sc.IsLoading)
+                    Serialize(ref floatV);
+                    if (IsLoading)
                         cell.FloatValue = floatV;
                     break;
                 case Bio2DACell.Bio2DADataType.TYPE_NULL:
                     // THIS CELL TYPE IS NOT SERIALIZED AND IS LEC INTERNAL ONLY (so it cell can be populated)
-                    if (sc.IsLoading)
+                    if (IsLoading)
                         throw new Exception("Malformed 2DA: NULL cell was written at some point in the past!");
                     break;
                 default:

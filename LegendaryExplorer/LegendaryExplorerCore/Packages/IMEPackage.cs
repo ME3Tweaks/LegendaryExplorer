@@ -292,14 +292,16 @@ namespace LegendaryExplorerCore.Packages
         /// Looks for an export with the same instanced name and classname
         /// </summary>
         /// <param name="instancedname"></param>
+        /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
         ExportEntry FindExport(string instancedname, string className);
         /// <summary>
         /// Looks for an import with the same instanced name.
         /// </summary>
         /// <param name="instancedname"></param>
+        /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
-        ImportEntry FindImport(string instancedname);
+        ImportEntry FindImport(string instancedname, string className = null);
         /// <summary>
         /// Looks for an entry with the same instanced path.
         /// </summary>
@@ -312,13 +314,13 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Looks for an entry with the same instanced path and class.
         /// </summary>
-        /// <param name="instancedPath"></param>
-        /// <param name="className"></param>
+        /// <param name="instancedPath"><The instanced full path to find/param>
+        /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
         /// <remarks>Falls back to a linear search if it finds a match on path but not class</remarks>
         IEntry FindEntry(string instancedPath, string className);
         /// <summary>
-        /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.
+        /// Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called. When called often this has a very significant performance impact.
         /// </summary>
         void InvalidateLookupTable();
 
@@ -328,5 +330,21 @@ namespace LegendaryExplorerCore.Packages
         /// If this package was opened from a non-disk source and doesn't have a true filepath (e.g. from SFAR - won't have single file it resided in on disk)
         /// </summary>
         bool IsMemoryPackage { get; set; }
+
+        void AllowLookupTableInvalidation(bool allow);
+    
+        /// <summary>
+        /// Used to override the internal FilePath of the package. This can be used to override using imports for global files when porting out - be extremely careful doing this!
+        /// You can easily break all sorts of things. You probably shouldn't save packages that you set this on when the value is different than the actual one on disk (if any).
+        /// </summary>
+        /// <param name="filePath">New FilePath to set. FilePatNoExtension will be extracted from this and set accordingly.</param>
+        void SetInternalFilepath(string filePath);
+
+        /// <summary>
+        /// Sets the package summary flags for this package. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.
+        /// </summary>
+        /// <param name="newFlags">Flags to set</param>
+        public void setFlags(EPackageFlags newFlags);
+
     }
 }

@@ -198,7 +198,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
         }
 
-        private static bool LoadCustomClassesFromPackage(IMEPackage p)
+        public static bool LoadCustomClassesFromPackage(IMEPackage p)
         {
             var reload = false;
             foreach (var e in p.Exports.Where(x => x.IsClass && x.InheritsFrom("SequenceObject")))

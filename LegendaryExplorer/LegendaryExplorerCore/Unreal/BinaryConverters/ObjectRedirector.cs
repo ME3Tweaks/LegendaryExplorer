@@ -7,7 +7,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class ObjectRedirector : ObjectBinary
     {
         public UIndex DestinationObject;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref DestinationObject);
         }

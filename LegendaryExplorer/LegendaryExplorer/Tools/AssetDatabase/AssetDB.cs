@@ -273,6 +273,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         public List<MatSetting> MatSettings { get; set; } = new();
 
+        public string DisplayString => $"{MaterialName} ({ParentPackage})";
+
         public MaterialRecord(string MaterialName, string ParentPackage, bool IsDLCOnly, IEnumerable<MatSetting> MatSettings)
         {
             this.MaterialName = MaterialName;
@@ -354,6 +356,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         [IgnoredMember] public IEnumerable<IAssetUsage> AssetUsages => Usages;
         public List<MeshUsage> Usages { get; set; } = new();
 
+        public string DisplayString
+        {
+            get
+            {
+                if (IsSkeleton)
+                {
+                    return $"{MeshName} (Skeletal Mesh, Bone Count: {BoneCount})";
+                }
+
+                return MeshName;
+            }
+        }
+
         public MeshRecord(string MeshName, bool IsSkeleton, bool IsModOnly, int BoneCount)
         {
             this.MeshName = MeshName;
@@ -379,6 +394,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             RvrClientEffect,
             BioVFXTemplate
         }
+
+        public string DisplayString => $"{PSName} ({VFXType})";
 
         public string PSName { get; set; }
 

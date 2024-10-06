@@ -1,0 +1,93 @@
+﻿<misc:NotifyPropertyChangedControlBase x:Class="LegendaryExplorer.Tools.LiveLevelEditor.MatEd.MaterialEditorLLE"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:matEd="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.MatEd"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+        xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:controls="clr-namespace:LegendaryExplorer.SharedUI.Controls"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Loaded="MaterialEditor_OnLoaded">
+    <DockPanel>
+        <controls:ListBoxScroll
+            DockPanel.Dock="Left"
+            MinHeight="200"
+            ItemsSource="{Binding Components}"
+            SelectedItem="{Binding SelectedComponent}" />
+        <xctk:WatermarkComboBox Watermark="Material index" ItemsSource="{Binding CurrentComponentMaterials}" DisplayMemberPath="DisplayString" DockPanel.Dock="Top" SelectedItem="{Binding SelectedComponentSlot}"/>
+        <TabControl>
+            <TabItem Header="Material Editor">
+                <DockPanel Margin="3">
+                    <GroupBox DockPanel.Dock="Top" Header="Info">
+                        <DockPanel>
+                            <TextBlock Text="{Binding MatInfo.MaterialExport.InstancedFullPath, ElementName=MEELC, StringFormat='Current loaded material: {0}'}"/>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Operations" DockPanel.Dock="Bottom">
+                        <DockPanel>
+                            <CheckBox DockPanel.Dock ="Left" IsChecked="{Binding AutoUpdateOnChanges}" Content="Auto preview on changes" VerticalAlignment="Center" Margin="5,0"/>
+                            <Button DockPanel.Dock="Right" Content="Preview on Mesh" HorizontalAlignment="Right" Padding="20,5" Command="{Binding PreviewOnMeshCommand}"/>
+                            <Button Content="Save material package" HorizontalAlignment="Right" Padding="10,5" Margin="5,0"  Command="{Binding SaveMaterialPackageCommand}"/>
+                        </DockPanel>
+                    </GroupBox>
+                    <materialEditor:MaterialEditorExportLoader AllowEditingUniformTextures="True" AlwaysLoadData="True"  x:Name="MEELC"/>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Material Changer">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="The material list shows all materials currently loaded in the game."
+                                Margin="15,5,15,5" TextWrapping="Wrap" TextAlignment="Center"/>
+                        <DockPanel Margin="5,0,15,6">
+                            <CheckBox Content="Automatically change in-game when selection changes" IsChecked="{Binding AutoChangeToLoadedMaterial}" DockPanel.Dock="Right" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Button Content="Manually Regenerate Materials List" Command="{Binding RegenMaterialsListCommand}" Margin="0,0,5,0"/>
+                        </DockPanel>
+                    </StackPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="0" Grid.Column="2" >
+                            <DockPanel>
+                                <controls:SearchBox x:Name="materialFilterSearchBox" DockPanel.Dock="Top" WatermarkText="Filter Loaded Materials" TextChanged="MaterialFilterSearchBox_OnTextChanged"/>
+                                <controls:ListBoxScroll
+                                        ItemsSource="{Binding LoadedMaterials}"
+                                        SelectedItem="{Binding SelectedMaterial}"
+                                        sharedUi:Filter.By="{Binding MaterialFilter}" />
+                            </DockPanel>
+                        </Border>
+                        <DockPanel Grid.Column="2" Grid.Row="3">
+                            <Button Content="Set material" Command="{Binding SetMaterialCommand}"/>
+                        </DockPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Shader Editor">
+                <exportLoaderControls:ShaderExportLoader x:Name="ShaderEd"/>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</misc:NotifyPropertyChangedControlBase>

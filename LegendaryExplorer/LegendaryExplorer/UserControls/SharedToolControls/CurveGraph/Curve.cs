@@ -15,6 +15,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         private float leaveTangent;
         private EInterpCurveMode interpMode;
 
+        public Curve Curve;
+
         public float InVal
         {
             get => inVal;
@@ -92,6 +94,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
             CurvePoints = points;
             foreach (var point in points)
             {
+                point.Curve = this;
                 point.PropertyChanged += Point_PropertyChanged;
             }
         }
@@ -123,6 +126,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         public void AddPoint(CurvePoint newPoint, LinkedListNode<CurvePoint> relTo, bool before = true)
         {
+            newPoint.Curve = this;
             newPoint.PropertyChanged += Point_PropertyChanged;
             LinkedListNode<CurvePoint> addedNode;
             if (relTo == null)
@@ -144,7 +148,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
         public Curve()
         {
             Name = "";
-            CurvePoints = new LinkedList<CurvePoint>();
+            CurvePoints = [];
         }
     }
 }

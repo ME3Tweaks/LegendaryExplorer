@@ -1,0 +1,112 @@
+﻿<exportLoaderControls:FileExportLoaderControl
+        x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.ShaderExportLoader"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+        xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
+        xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:materialViewer="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialViewer"
+        mc:Ignorable="d" 
+        Background="{x:Static SystemColors.WindowBrush}"
+        d:DesignHeight="450" d:DesignWidth="800"
+        Loaded="ShaderExportLoader_OnLoaded"
+        d:DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
+        <Grid>
+            <StackPanel Name="OnDemand_Panel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Name="LoadShaders_Button" Content="Load Dissassembled Shaders" HorizontalAlignment="Center" Margin="5" Padding="20" Click="LoadShaders_Button_Click"/>
+            </StackPanel>
+            <DockPanel Name="LoadedContent_Panel">
+                <DockPanel DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Text="{Binding TopInfoText}"/>
+                        <TextBlock Name="TopShaderInfoTextBlock" Text="{Binding TopShaderInfoText}" 
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Create shader map copy" Command="{Binding CreateShadersCopyCommand}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+                        <Button Content="Replace shader" Command="{Binding ReplaceShaderCommand}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+                        <Button Content="Export shader map" Command="{Binding ExportShaderMapCommand}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+                        <Button Content="Search for shader" Command="{Binding SearchForShaderCommand}" Padding="5,4" sharedUi:Bindings.VisibilityToEnabled="True"/>
+
+                        <!-- Scheduled to move out of this control -->
+                        <Button x:Name="replaceLoadedShader_Button" Content="Replace Shader" Command="{Binding ReplaceLoadedShaderCommand, Mode=OneTime}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+                        <Button x:Name="ExportAllShaders_Button" Content="Export Shaders" Command="{Binding ExportAllShadersCommand, Mode=OneTime}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+                        <Button x:Name="ImportAllShaders_Button" Content="Import Shaders" Command="{Binding ImportAllShadersCommand, Mode=OneTime}" Padding="5,4" Margin="0,0,5,0"  sharedUi:Bindings.VisibilityToEnabled="True"/>
+                    </StackPanel>
+
+                </DockPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TreeView x:Name="MeshShaderMaps_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas"
+                              SelectedItemChanged="MeshShaderMaps_TreeView_OnSelectedItemChanged"
+                              VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              ItemsSource="{Binding MeshShaderMaps}" FocusManager.IsFocusScope="True">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type exportLoaderControls:TreeViewMeshShaderMap}"
+                                                      ItemsSource="{Binding Shaders}">
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding VertexFactoryType}" />
+                                    </StackPanel>
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                            <b:ChangePropertyAction PropertyName="IsSelected" Value="true"
+                                                                     TargetObject="{Binding}" />
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                            <DataTemplate DataType="{x:Type exportLoaderControls:TreeViewShader}">
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Description, Mode=OneTime}" />
+                                    </StackPanel>
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                            <b:ChangePropertyAction PropertyName="IsSelected" Value="true"
+                                                                     TargetObject="{Binding}" />
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </StackPanel>
+                            </DataTemplate>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                             Color="LightBlue" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                             Color="Black" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                             Color="LightBlue" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                                             Color="Black" />
+                        </TreeView.Resources>
+                        <b:Interaction.Behaviors>
+                            <peregrineTreeView:TreeSelectionBehavior SelectedItem="{Binding SelectedItem}" />
+                        </b:Interaction.Behaviors>
+                    </TreeView>
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+                    <materialViewer:HlslTextEditor x:Name="shaderTextEditor" Grid.Column="2" Document="{Binding Document}"
+                                           Background="#1F1F1F" Foreground="#CCCCCC" LineNumbersForeground ="#6E7681"
+                                           FontFamily="Consolas"/>
+                    <DockPanel Grid.Column="2" Grid.Row="1">
+                        <Button Content="Compile shader" Command="{Binding CompileShaderCommand}"/>
+                    </DockPanel>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </xctk:BusyIndicator>
+</exportLoaderControls:FileExportLoaderControl>

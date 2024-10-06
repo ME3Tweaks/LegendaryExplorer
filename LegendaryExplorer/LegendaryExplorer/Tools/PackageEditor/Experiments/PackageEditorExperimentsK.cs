@@ -7,8 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.Wordprocessing;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
@@ -23,6 +26,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using static LegendaryExplorer.Tools.ScriptDebugger.DebuggerInterface;
 using Path = System.IO.Path;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -603,7 +607,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //Find all level references
             if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is ExportEntry levelExport)
             {
-                Level level = ObjectBinary.From<Level>(levelExport);
+                LegendaryExplorerCore.Unreal.BinaryConverters.Level level = ObjectBinary.From<LegendaryExplorerCore.Unreal.BinaryConverters.Level>(levelExport);
                 HashSet<int> norefsList = await Task.Run(() => pcc.GetReferencedEntries(false));
                 pewpf.BusyText = "Recooking the Persistant Level";
                 //Get all items in the persistent level not actors
@@ -1145,6 +1149,183 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             catch
             {
                 return; //handle escape on blocks
+            }
+        }
+
+        public static void ReplaceTLKRefs(PackageEditorWindow pewpf, IMEPackage package)
+        {
+            int oldStart = 0;
+            int oldEnd = 0;
+            int newStart = 0;
+
+            string searchFirst = PromptDialog.Prompt(pewpf, "Input First TLK Ref to be replaced:", "Search and Replace TLK Refs",
+                defaultValue: "tlk ref", selectText: true);
+            if (string.IsNullOrEmpty(searchFirst) || !int.TryParse(searchFirst, out oldStart))
+                return;
+
+            string searchLast = PromptDialog.Prompt(pewpf, "Input Last TLK Ref to be replaced:", "Search and Replace TLK Refs",
+                defaultValue: "Leave blank to do a single line", selectText: true);
+            if (!int.TryParse(searchLast, out oldEnd))
+            {
+                oldEnd = oldStart;
+                searchLast = searchFirst;
+            }
+
+
+            string replacestr = PromptDialog.Prompt(pewpf, "Input First TLK Ref to move to:", "Search and Replace TLK Refs",
+                    defaultValue: "tlk ref", selectText: true);
+            if (string.IsNullOrEmpty(replacestr) || !int.TryParse(replacestr, out newStart) || newStart <= 0)
+                return;
+
+            var wdlg = MessageBox.Show(
+                $"This will replace every tlk reference starting with \"{searchFirst}\" ending with \"{searchLast}\"" +
+                $"with a new range starting from \"{replacestr}\".\n" +
+                $"This may break any dialogue if done incorrectly. Please confirm.", "WARNING:",
+                MessageBoxButton.OKCancel);
+            if (wdlg == MessageBoxResult.Cancel)
+                return;
+
+            int rangelength = oldEnd - oldStart;
+            for (int n = 0; n <= rangelength; n++)
+            {
+                
+                var searchtlkref = (oldStart + n).ToString();
+                var replacetlkref = (newStart + n).ToString();
+                //Replace Names
+                for (int i = 0; i < package.Names.Count; i++)
+                {
+                    string name = package.Names[i];
+                    if (name.Contains(searchtlkref))
+                    {
+                        var newName = name.Replace(searchtlkref, replacetlkref);
+                        package.replaceName(i, newName);
+                    }
+                }
+
+                //Replace TLK ref in Conversations
+                foreach (var export in package.Exports.Where(x => x.ClassName == "BioConversation"))
+                {
+                    bool needsWrite = false;
+                    var props = export.GetProperties();
+                    var entries = props.GetProp<ArrayProperty<StructProperty>>("m_EntryList");
+                    if(entries != null)
+                    {
+                        foreach (var e in entries)
+                        {
+                            var tlkref = e.GetProp<StringRefProperty>("srText");
+                            if (tlkref != null && tlkref.Value == oldStart + n)
+                            {
+                                tlkref.Value = newStart + n;
+                                e.Properties.AddOrReplaceProp(tlkref);
+                                needsWrite = true;
+                            }
+                            var matineeref = e.GetProp<StringRefProperty>("nExportID");
+                            if (matineeref != null && matineeref.Value == oldStart + n)
+                            {
+                                matineeref.Value = newStart + n;
+                                e.Properties.AddOrReplaceProp(matineeref);
+                                needsWrite = true;
+                            }
+                        }
+                    }
+                    var replies = props.GetProp<ArrayProperty<StructProperty>>("m_ReplyList");
+                    if(replies != null)
+                    {
+                        foreach (var r in replies)
+                        {
+                            var tlkref = r.GetProp<StringRefProperty>("srText");
+                            if (tlkref != null && tlkref.Value == oldStart + n)
+                            {
+                                tlkref.Value = newStart + n;
+                                r.Properties.AddOrReplaceProp(tlkref);
+                                needsWrite = true;
+                            }
+                            var matineeref = r.GetProp<StringRefProperty>("nExportID");
+                            if (matineeref != null && matineeref.Value == oldStart + n)
+                            {
+                                matineeref.Value = newStart + n;
+                                r.Properties.AddOrReplaceProp(matineeref);
+                                needsWrite = true;
+                            }
+                        }
+                    }
+
+                    if (needsWrite)
+                    {
+                        props.AddOrReplaceProp(entries);
+                        export.WriteProperties(props);
+                    }
+                }
+
+                //Replace in FaceFX
+                foreach (var export in package.Exports.Where(x => x.ClassName == "FaceFXAnimSet"))
+                {
+                    bool needsWrite = false;
+                    FaceFXAnimSet fxa = export.GetBinaryData<FaceFXAnimSet>();
+                    var newNameList = new List<string>();
+                    for (int i = 0; i<fxa.Names.Count; i++)
+                    {
+                        
+                        var name = fxa.Names[i];
+                        bool isFem = false;
+                        
+                        if (name.EndsWith("_F"))
+                            isFem = true;
+                        string nameRef = name.Replace("FXA_", "").Replace("_F", "").Replace("_M", "");
+                        if (nameRef == searchtlkref)
+                        {
+                            name = "FXA_" + replacetlkref + (isFem ? "_F" : "_M");
+                            needsWrite = true;
+                        }
+                        newNameList.Add(name);
+                    }
+                    if(needsWrite)
+                    {
+                        fxa.Names.ReplaceAll(newNameList);
+                    }
+
+                    var eventRefs = export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues");
+                    foreach (var fx in fxa.Lines)
+                    {
+
+                        if(fx.ID == (oldStart + n).ToString())
+                        {
+                            fx.ID = (newStart + n).ToString();
+                            needsWrite = true;
+                            if (eventRefs != null)
+                            {
+                                var wwiseevent = package.GetEntry(eventRefs[fx.Index].Value);
+                                if (wwiseevent != null)
+                                {
+                                    fx.Path = wwiseevent.FullPath;
+                                }
+                            }
+                        }
+                    }
+
+                    if (needsWrite)
+                    {
+                        export.WriteBinary(fxa);
+                    }
+                }
+
+                //Replace in InterpData 
+                foreach (var export in package.Exports.Where(x => x.ClassName == "BioEvtSysTrackVOElements"))
+                {
+                    bool needsWrite = false;
+                    var props = export.GetProperties();
+                    var tlkref = props.GetProp<IntProperty>("m_nStrRefID");
+                    if (tlkref == oldStart + n)
+                    {
+                        tlkref = new IntProperty(newStart + n, "m_nStrRefID");
+                        needsWrite = true;
+                    }
+                    if (needsWrite)
+                    {
+                        props.AddOrReplaceProp(tlkref);
+                        export.WriteProperties(props);
+                    }
+                }
             }
         }
     }

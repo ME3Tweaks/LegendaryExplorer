@@ -40,29 +40,35 @@
     </MenuItem>
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
+        <MenuItem Header="Resynthesize package" Click="ResynthesizePackage_Click"/>
+        <MenuItem Header="Build Preview Level" Click="BuildPreviewLevel_Click"/>
 
         <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Generate text mesh" Click="GenerateTextMesh_Click"/>
+        <MenuItem Header="Extract Text Map to debug console" Click="ExtractTextMap_Click"/>
         <MenuItem Header="Test WwiseSDK on WwiseBank" Click="WwiseBankToProject_Click"/>
         <MenuItem Header="Find externalizable textures" Click="FindExternalizableTextures_Click"/>
         <MenuItem Header="Materialize Model" Click="MaterializeModel_Click"/>
-
-        <MenuItem Header="Make current material a VTest Donor" Click="MakeVTestDonor_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
+        <MenuItem Header="Import static lighting from UDK" Click="ImportStaticLighting_Click"/>
+        <MenuItem Header="Globally adjust UDK level brightness" Click="AdjustUDKLevelBrightness_Click"/>
+        <MenuItem Header="Port ME1 materials into UDK" Click="PortME1MaterialsIntoUDK_Click"/>
         <MenuItem Header="Cram current LE3 BioP full of stuff that will take up lotsa memory" Click="CramLevelFullOfEverything_Click"/>
-        <MenuItem Header="Dump all export uscript to folder" Click="DumpUScriptFromPackage_Click"/>
-        <MenuItem Header="Compile all export uscript from folder" Click="FromPackageUScriptFromFolder_Click"/>
+        <MenuItem Header="GlobalShaderCache research" Click="GlobalShaderCacheResearch_Click"/>
+        <MenuItem Header="Dump material for compile" Click="DumpUScriptFromPackage_Click"/>
+        <MenuItem Header="Dump material for compile" Click="DumpUScriptFromPackage_Click"/>
+        <MenuItem Header="Fix GUIDs on Material Instance Constant expressions" Click="FromPackageUScriptFromFolder_Click"/>
         <MenuItem Header="Test current package binary against LEX serializer" Click="TestCurrentPackageBinary"/>
-        <MenuItem Header="Run MaterialInstanceScreenshot" Click="RunMaterialInstanceScreenshot_Click"/>
         <MenuItem Header="Generate MaterialInstanceConstant from Material" Click="GenerateMaterialInstanceConstant_Click"/>
         <MenuItem Header="Convert Static Light component to non-static" Click="ConvertSLCALightToNonSLCA"/>
         <MenuItem Header="Find bad index location from appErrorF message (doesn't work)" Click="FindAppErrorFLocation_Click"/>
         <MenuItem Header="Organize Particle System Exports" Click="OrganizeParticleSystemExports_Click"/>
         <MenuItem Header="MScanner" Click="MScanner_Click"/>
+        <MenuItem Header="Generate Giga Startup File for SDK Gen" Click="GigaSDKGen_Click"/>
         <!--<MenuItem Header="Make LE1 Mako Map from terrain from UDK file" Click="MakeLE1MakoMap_Click"/>-->
         <MenuItem Header="Import UDK Terrain Collision Data" Click="ImportUDKTerrain_Click"/>
         <MenuItem Header="Export Terrain Collision Data to UDK" Click="ExportTerrainCollisionDataToUDK_Clicked" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Print LE1 Terrains By Size to debug console" Click="PrintTerrainsBySize_Click"/>
         <MenuItem Header="Rebuild selected Material's expressions list" Click="RebuildSelectedMaterialExpressions"/>
-        <MenuItem Header="Test CrossGen class porting" Click="TestCrossGenClassPort_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>
         <MenuItem Header="Map Material IDs" Click="MapMaterialIDs_Click" />
         <MenuItem Header="Check NeverStreams" Click="CheckNeverStream_Click"/>
         <MenuItem Header="Print Texture Formats" Click="PrintTextureFormats_Click"/>
@@ -78,12 +84,10 @@
         <MenuItem Header="Reset vanilla parts of package" Click="ResetVanillaPackagePart_Click"/>
         <MenuItem Header="Extract package textures to PNG" Click="ExtractPackageTextures_Click"/>
         <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
-        <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
         <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
 
         <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
         <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
-        <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
 
         <MenuItem Header="Randomize Terrain Heightmap (SELECT TERRAIN EXPORT FIRST)" Click="RandomizeTerrain_Click"/>
         <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
@@ -93,7 +97,6 @@
         <MenuItem Header="Shift selected ME1 animcutscene position" Click="ShiftME1AnimCutScene"/>
         <MenuItem Header="Validate navpoint chain" Click="ValidateNavpointChain_Clicked"/>
         <MenuItem Header="Tint all normalized average colors in file" Click="TintAllNormalizedAverageColor_Clicked"/>
-        <MenuItem Header="Reindex master level (requires proper AdditionalPackagesToCook)" Click="RebuildLevelNetindexing_Clicked"/>
         <MenuItem Header="Scan folder for files containing objects of a specific name" Click="FindAllFilesWithSpecificName"/>
         <MenuItem Header="Resolve all imports (see debug output)" Click="ResolveAllImports_Clicked"/>
         <MenuItem Header="Shift current selected InterpTrackMove" Click="ShiftInterpTrackMove"/>
@@ -132,6 +135,7 @@
         <MenuItem Header="Compile loose class folder" Click="CompileLooseClassFolder_Click"/>
         <MenuItem Header="Dump Class source code" Click="DumpClassSource_Click"/>
         <MenuItem Header="Regenerate BrushComponent's CachedPhysBrush Data from AggGeom" Click="RegenCachedPhysBrushData_Click"/>
+        <MenuItem Header="JSON serialize" Click="JSONSerialize_Click"/>
     </MenuItem>
     <MenuItem Header="Kinkojiro's 101 ways to cause an aneurysm">
         <MenuItem Header="Transfer game level's art to a different game (ME2 -> ME3 Only)" Click="TransferLevelBetweenGames"/>
@@ -151,6 +155,7 @@
         <MenuItem Header="Trash Compactor" Click="RunTrashCompactor"/>
         <MenuItem Header="Move Scene" Click="ShiftInterpTrackMovePackageWideScene"/>
         <MenuItem Header="Anchor Moves" Click="MakeInterpTrackMovesIntoAnchors"/>
+        <MenuItem Header="Bulk Replace TLK refs" Click="ReplaceAllTlkRefs"/>
     </MenuItem>
     <MenuItem Header="HenBagle's stuff that saved five minutes once">
         <MenuItem Header="Build ME1/LE1 SuperTlk File" Click="BuildME1SuperTLK_Clicked"/>
@@ -161,6 +166,7 @@
         <MenuItem Header="Relink Children Tree and Update Local Functions" ToolTip="Must have UStruct selected (Class, State, Function, Struct, ScriptStruct)" Click="UpdateLocalFunctions_Click"/>
         <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
         <MenuItem Header="Export BioMorphFace to PSK with UModel" Click="ExportBioMorphFace_Click" ToolTip="Must have BioMorphFace selected and UModel installed"/>
+        <MenuItem Header="Replace all wems" Click="ReplaceAllWems_Click"/>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
@@ -187,6 +193,7 @@
         <MenuItem Header="Replace 1D lightMap colors of exports" Click="Replace1DLightMapColorsOfExports_Click" ToolTip="Replaces the colors in the DirectionalSamples of the 1D Lightmap of the StaticMeshComponent of the given export IDs."/>
         <MenuItem Header="Batch replace 1D lightMap colors" Click="BatchReplace1DLightMapColors_Click" ToolTip="Replaces the colors in the DirectionalSamples of the 1D Lightmap of all StaticMeshComponent"/>
         <MenuItem Header="Add ForcedExport flags to descendants" Click="MakeExportsForced_Click" ToolTip="Adds the ForcedExport flag to all descendant exports of the selected export, including itself."/>
+        <MenuItem Header="Remove ForcedExport flags from descendants" Click="MakeExportsNonForced_Click" ToolTip="Removes the ForcedExport flag from all descendant exports of the selected export, including itself."/>
         <MenuItem Header="Collect StaticMeshComponents into StaticMeshCollectionActor" Click="CollectSMCsintoSMCA_Click" ToolTip="Collect all StaticMeshComponents, referenced by StatichMeshActors, and add them into a new StaticMeshCollectionActor"/>
         <MenuItem Header="Add Prefab to Level" Click="AddPrefabToLevel_Click" ToolTip="Creates instances of all the prefab archetypes of a Prefab into the file's persistent level."/>
         <MenuItem Header="Add Streaming Kismet" Click="AddStreamingKismet_Click" ToolTip="Adds a level streaming kismet to either TheWorld or PersistentLevel."/>

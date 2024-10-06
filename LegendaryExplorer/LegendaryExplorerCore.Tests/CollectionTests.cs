@@ -28,16 +28,16 @@ public class CollectionTests
 
         Assert.AreEqual(3, map["A"]);
 
-        Assert.IsTrue(map.MultiFind("A").SequenceEqual(new[] { 3, 1 }));
+        Assert.IsTrue(map.MultiFind("A").SequenceEqual([3, 1]));
 
         Assert.IsFalse(map.TryAddUnique("B", 4));
         Assert.IsTrue(map.TryAddUnique("B", 5));
         Assert.AreEqual(4, map.Count);
 
         //if nothing has been removed from the map, insertion order should be preserved
-        Assert.IsTrue(map.ToArray().SequenceEqual(new KeyValuePair<string, int>[] { new("A", 1), new("B", 4), new("A", 3), new("B", 5) }));
-        Assert.IsTrue(map.Keys.SequenceEqual(new[] { "A", "B" }));
-        Assert.IsTrue(map.Values.SequenceEqual(new[] { 1, 4, 3, 5 }));
+        Assert.IsTrue(map.ToArray().SequenceEqual([ new("A", 1), new("B", 4), new("A", 3), new("B", 5) ]));
+        Assert.IsTrue(map.Keys.SequenceEqual([ "A", "B" ]));
+        Assert.IsTrue(map.Values.SequenceEqual([ 1, 4, 3, 5 ]));
 
         map.Add("C", 3);
         map.Add("C", 3);
@@ -55,6 +55,11 @@ public class CollectionTests
         Assert.IsTrue(map.Remove("B"));
         Assert.IsFalse(map.ContainsKey("B"));
         Assert.AreEqual(4, map.Count);
+
+        Assert.IsTrue(map.Remove("C"));
+        map.Shrink();
+        Assert.IsTrue(map.ContainsKey("A"));
+        Assert.AreEqual(1, map.Count);
 
         map.Empty();
 

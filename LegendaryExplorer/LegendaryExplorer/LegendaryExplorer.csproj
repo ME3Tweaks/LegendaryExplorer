@@ -13,7 +13,7 @@
 		<PreserveCompilationContext>false</PreserveCompilationContext>
 		<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>6.4.0.0</Version>
+		<Version>6.5.0.0</Version>
 		<EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries> <!-- Hot reload is completely broken without this -->
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
@@ -44,6 +44,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Resources\HLSL.xshd" />
 		<None Remove="Resources\Images\bink.jpg" />
 		<None Remove="Resources\Images\GameIcons\UDK_48.ico" />
 		<Compile Remove="Resources\exec\**" />
@@ -70,7 +71,7 @@
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_float.png" />
 		<None Remove="Tools\PlotDatabase\PlotTypeIcons\icon_int.png" />
 		<None Remove="UserControls\SharedToolControls\Scene3D\StandardShader.hlsl" />
-		<Page Update="Tools\AnimationViewer\AnimationViewerWindow2.xaml">
+		<Page Update="Tools\AssetViewer\AssetViewerWindow.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="Tools\LiveLevelEditor\LELiveLevelEditorWindow.xaml">
@@ -103,6 +104,8 @@
 		<ProjectReference Include="..\..\SharedProjects\HexConverterWPF\HexConverterWPF.csproj" />
 		<ProjectReference Include="..\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
 		<ProjectReference Include="..\submodules\WwiseParser\WwiseParserLib\WwiseParserLib.csproj" />
+		<ProjectReference Include="..\submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj" />
+		<ProjectReference Include="..\submodules\Wwiser.NET\BinarySerializer\BinarySerializer\BinarySerializer.csproj" />
 		<ProjectReference Include="..\submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj" />
 		<ProjectReference Include="..\WaveFormRendererLib\WaveFormRendererLib.csproj" />
 		<ProjectReference Include="..\Xceed.Wpf.Toolkit\DotNetProjects.Wpf.Extended.Toolkit.csproj" />
@@ -120,7 +123,7 @@
 		<!--Do not upgrade SingleInstance-->
 		<PackageReference Include="HMBSbige.SingleInstance" Version="[5.0.0]" />
 		<PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
-		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.5.8" />
+		<PackageReference Include="JetBrains.Profiler.SelfApi" Version="2.5.3" />
 		<PackageReference Include="LibVLCSharp.WPF" Version="3.8.5" />
 		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
 		<PackageReference Include="Microsoft.AppCenter" Version="5.0.3" />
@@ -132,6 +135,7 @@
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
 		<PackageReference Include="MSTest.TestAdapter" Version="3.4.0" />
 		<PackageReference Include="NAudio" Version="2.2.1" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 		<PackageReference Include="SharpDX" Version="4.2.0" />
 		<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
 		<PackageReference Include="SharpDX.Desktop" Version="4.2.0">
@@ -148,9 +152,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)'=='WinDebug'">
-		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -196,9 +197,8 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\TextureShader.hlsl" />
-	</ItemGroup>
-	<ItemGroup>
 		<EmbeddedResource Include="Resources\StandardShader.hlsl" />
+		<EmbeddedResource Include="Resources\HLSL.xshd" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -542,6 +542,15 @@
 		<ContentWithTargetPath Include="Libraries\vorbisenc.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>vorbisenc.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Libraries\HLSLDecompiler.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>HLSLDecompiler.dll</TargetPath>
+		</ContentWithTargetPath>
+		<!-- HLSL decompiler-->
+		<ContentWithTargetPath Include="Libraries\d3dcompiler_47.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>d3dcompiler_47.dll</TargetPath>
 		</ContentWithTargetPath>
 	</ItemGroup>
 

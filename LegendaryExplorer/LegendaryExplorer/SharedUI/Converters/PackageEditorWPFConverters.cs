@@ -113,6 +113,10 @@ namespace LegendaryExplorer.SharedUI.Converters
                         return "/Tools/PackageEditor/ExportIcons/icon_sequence.png";
                     case "Material":
                         return "/Tools/PackageEditor/ExportIcons/icon_material.png";
+                    case "MaterialInstanceConstant":
+                        return "/Tools/PackageEditor/ExportIcons/icon_materialinstanceconstant.png";
+                    case "DecalMaterial":
+                        return "/Tools/PackageEditor/ExportIcons/icon_decalmaterial.png";
                     case "State":
                         return "/Tools/PackageEditor/ExportIcons/icon_state.png";
                     case "Bio2DA":

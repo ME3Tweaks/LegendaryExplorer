@@ -10,22 +10,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public UMultiMap<NameReference, Guid> PackageGuidMap; //TODO: Make this a UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref PackageGuidMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref PackageGuidMap, sc.Serialize, sc.Serialize);
         }
 
         public static GuidCache Create()
         {
             return new()
             {
-                PackageGuidMap = new()
+                PackageGuidMap = []
             };
         }
 
         public override List<(NameReference, string)> GetNames(MEGame game)
         {
-            return new List<(NameReference, string)>(PackageGuidMap.Select((kvp, i) => (kvp.Key, $"{nameof(PackageGuidMap)}[{i}]")));
+            return PackageGuidMap.Select((kvp, i) => (kvp.Key, $"{nameof(PackageGuidMap)}[{i}]")).ToList();
         }
     }
 }

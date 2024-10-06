@@ -11,11 +11,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public TerrainPatchBounds[] PatchBounds;
         public LightMap LightMap;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref CollisionVertices);
-            sc.Serialize(ref BVTree, SCExt.Serialize);
-            sc.Serialize(ref PatchBounds, SCExt.Serialize);
+            sc.Serialize(ref BVTree, sc.Serialize);
+            sc.Serialize(ref PatchBounds, sc.Serialize);
             sc.Serialize(ref LightMap);
         }
 
@@ -23,9 +23,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                CollisionVertices = Array.Empty<Vector3>(),
-                BVTree = Array.Empty<TerrainBVNode>(),
-                PatchBounds = Array.Empty<TerrainPatchBounds>(),
+                CollisionVertices = [],
+                BVTree = [],
+                PatchBounds = [],
                 LightMap = new LightMap()
             };
         }
@@ -75,34 +75,34 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float MaxDisplacement;
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref TerrainBVNode node)
+        public void Serialize(ref TerrainBVNode node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new TerrainBVNode();
             }
-            sc.Serialize(ref node.BoundingVolume);
-            sc.Serialize(ref node.bIsLeaf);
-            sc.Serialize(ref node.NodeIndex0);
-            sc.Serialize(ref node.NodeIndex1);
-            sc.Serialize(ref node.NodeIndex2);
-            sc.Serialize(ref node.NodeIndex3);
-            if (sc.Game != MEGame.UDK)
+            Serialize(ref node.BoundingVolume);
+            Serialize(ref node.bIsLeaf);
+            Serialize(ref node.NodeIndex0);
+            Serialize(ref node.NodeIndex1);
+            Serialize(ref node.NodeIndex2);
+            Serialize(ref node.NodeIndex3);
+            if (Game != MEGame.UDK)
             {
-                sc.Serialize(ref node.unk);
+                Serialize(ref node.unk);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref TerrainPatchBounds bounds)
+        public void Serialize(ref TerrainPatchBounds bounds)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 bounds = new TerrainPatchBounds();
             }
-            sc.Serialize(ref bounds.MinHeight);
-            sc.Serialize(ref bounds.MaxHeight);
-            sc.Serialize(ref bounds.MaxDisplacement);
+            Serialize(ref bounds.MinHeight);
+            Serialize(ref bounds.MaxHeight);
+            Serialize(ref bounds.MaxDisplacement);
         }
     }
 }

@@ -47,19 +47,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         }
     }
 
-    public readonly struct SyntaxSpan
-    {
-        public readonly int Offset;
-        public readonly int Length;
-        public readonly EF FormatType;
-
-        public SyntaxSpan(EF formatType, int length, int offset)
-        {
-            FormatType = formatType;
-            Length = length;
-            Offset = offset;
-        }
-    }
+    public readonly record struct SyntaxSpan(EF FormatType, int Length, int Offset);
 
     public class SyntaxInfo : IHighlightingDefinition
     {
@@ -69,9 +57,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public SyntaxInfo(List<int> lineToIndex = null, List<SyntaxSpan> syntaxSpans = null, Dictionary<int, SyntaxSpan> commentSpans = null)
         {
-            LineToIndex = lineToIndex ?? new List<int>();
-            SyntaxSpans = syntaxSpans ?? new List<SyntaxSpan>();
-            CommentSpans = commentSpans ?? new Dictionary<int, SyntaxSpan>();
+            LineToIndex = lineToIndex ?? [];
+            SyntaxSpans = syntaxSpans ?? [];
+            CommentSpans = commentSpans ?? [];
         }
 
         private static readonly Dictionary<EF, Color> Colors = new()
@@ -104,8 +92,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             }
         }
 
-        public static readonly Dictionary<EF, HighlightingColor> HighlightingColors = new ();
-        public static readonly Dictionary<EF, SolidColorBrush> ColorBrushes = new();
+        public static readonly Dictionary<EF, HighlightingColor> HighlightingColors = [];
+        public static readonly Dictionary<EF, SolidColorBrush> ColorBrushes = [];
 
         public string Name => "Unrealscript-Dark";
         public IEnumerable<HighlightingColor> NamedHighlightingColors => HighlightingColors.Values;

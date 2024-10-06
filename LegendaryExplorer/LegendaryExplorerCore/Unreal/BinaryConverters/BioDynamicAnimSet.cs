@@ -8,16 +8,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioDynamicAnimSet : ObjectBinary
     {
         public UMultiMap<NameReference, int> SequenceNamesToUnkMap;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref SequenceNamesToUnkMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref SequenceNamesToUnkMap, sc.Serialize, sc.Serialize);
         }
 
         public static BioDynamicAnimSet Create()
         {
             return new()
             {
-                SequenceNamesToUnkMap = new ()
+                SequenceNamesToUnkMap = []
             };
         }
 

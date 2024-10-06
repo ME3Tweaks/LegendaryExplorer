@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 
@@ -84,6 +85,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public string GamePathOverride { get; set; }
 
         /// <summary>
+        /// Custom resolver that can be used to help find imports in the destination package
+        /// </summary>
+        public Func<string, PackageCache, IMEPackage> DestinationCustomImportFileResolver { get; set; }
+
+        /// <summary>
+        /// Custom resolver that can be used to help find imports in the source package
+        /// </summary>
+        public Func<string, PackageCache, IMEPackage> SourceCustomImportFileResolver { get; set; }
+
+        /// <summary>
+        /// Allows different classnames to exist when relinking and an object is looked up. <br/>
+        /// This can happen in vanilla bioware files (e.g. material and texture with same IFP). <br/>
+        /// Package resynthesis uses this so relink re-uses existing data
+        /// Typically you want this to be false unless you know what you're doing.
+        /// </summary>
+        public bool RelinkAllowDifferingClassesInRelink { get; set; }
+
+        /// <summary>
+        /// If imports that resolve to be in localized files should be imported as exports when <see cref="PortImportsMemorySafe"/> is set to true. This often is undesirable, bringing INT lines into non-localized files.
+        /// </summary>
+        public bool PortLocalizationImportsMemorySafe { get; set; }
+
+        /// <summary>
         /// Invoked when an error occurs during porting. Can be null.
         /// </summary>
         public Action<string> ErrorOccurredCallback;
@@ -105,6 +129,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // 11/20/2023: Initialize an empty package cache
             Cache = cache ?? new PackageCache();
         }
+
+        /// <summary>
+        /// When importing an export that is a donor, and the donor is found, this can be set to override how the donor export is processed into the destination package. Return the newly created export.
+        /// </summary>
+        public Func<IMEPackage, ExportEntry, RelinkerOptionsPackage, IEntry> CustomDonorImporter { get; set; }
+
+        /// <summary>
+        /// USED BY ENTRYEXPORTER - Set to false to disable the import to export resolution. Use if you know you need imports and not exports.
+        /// </summary>
+        public bool CheckImportsWhenExportingToPackage { get; set; } = true;
+
+        /// <summary>
+        /// When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.
+        /// </summary>
+        public bool ForceSamePackageImportRelink { get; set; }
     }
 
     public static class Relinker
@@ -154,15 +193,35 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var functionsToRelink = rop.CrossPackageMap.Keys.OfType<ExportEntry>().Where(x => x.ClassName == "Function").ToList();
                 if (functionsToRelink.Any())
                 {
+                    UnrealScriptOptionsPackage usopSource = new UnrealScriptOptionsPackage()
+                    {
+                        Cache = TieredPackageCache.GetGlobalPackageCache(rop.CrossPackageMap.First().Key.Game).ChainNewCache(), // Cross game source will use its own cache
+                        CustomFileResolver = rop.SourceCustomImportFileResolver,
+                    };
+
+                    UnrealScriptOptionsPackage usopDest = new UnrealScriptOptionsPackage()
+                    {
+                        Cache = rop.Cache,
+                        CustomFileResolver = rop.DestinationCustomImportFileResolver,
+                        GamePathOverride = rop.GamePathOverride
+                    };
+
+
                     //functionsToRelink has exports from potentially multiple files. This creates the minimum number of FileLibs needed
                     var sourceFileLibs = new Dictionary<IMEPackage, FileLib>();
                     bool sourceOK = true;
+
+
+
                     foreach (ExportEntry funcToRelink in functionsToRelink)
                     {
                         if (!sourceFileLibs.ContainsKey(funcToRelink.FileRef))
                         {
                             var sourceLib = new FileLib(funcToRelink.FileRef);
-                            sourceOK &= sourceLib.Initialize(rop.Cache);
+                            // We use different USOP objects depending on what game we are initializing the FileLib for. If a
+                            // class is donated from the target game we use the dest one. If there is no donor, it might be coming cross
+                            // game and we want to use the source game instead.
+                            sourceOK &= sourceLib.Initialize(funcToRelink.FileRef.Game == rop.CrossPackageMap.First().Key.Game ? usopSource : usopDest);
                             if (!sourceOK)
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(funcToRelink, $"{funcToRelink.UIndex} {funcToRelink.InstancedFullPath} function relinking failed. Could not initialize the FileLib! This will likely be unusable. {string.Join("\n", sourceLib.InitializationLog.AllErrors.Select(x => x.Message))}"));
@@ -174,7 +233,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     var destPcc = rop.CrossPackageMap[functionsToRelink[0]].FileRef;
                     FileLib destFL = new FileLib(destPcc);
-                    var destOK = destFL.Initialize(rop.Cache);
+                    var destOK = destFL.Initialize(usopDest);
 
                     if (sourceOK && destOK)
                     {
@@ -188,7 +247,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                                 origBCBIdx = sourcePcc.findName("BIOC_Base");
                                 sourcePcc.replaceName(origBCBIdx, "SFXGame");
 
-                                // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStratgic"AI"
+                                // Todo: Other renamed packages like BIOG_Strategic"AI" -> SFXStrategic"AI"
                             }
 
                             var targetFuncEntry = rop.CrossPackageMap[f];
@@ -202,13 +261,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             // DEBUGGING
                             var debugTargetEntry = rop.CrossPackageMap[f];
 #endif
-                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef]);
+
+                            var sourceInfo = UnrealScriptCompiler.DecompileExport(f, sourceFileLibs[f.FileRef], usopSource);
                             //    var targetFunc = ObjectBinary.From<UFunction>(targetFuncExp);
                             //    targetFunc.ScriptBytes = new byte[0]; // Zero out function
                             //    targetFuncExp.WriteBinary(targetFunc);
 
-                            Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL);
+                            // Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
+
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL, usopDest);
                             if (log.AllErrors.Any())
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(targetFuncExp, $"{targetFuncExp.UIndex} {targetFuncExp.InstancedFullPath} binary relinking failed. Could not recompile function. Errors: {string.Join("\n", log.AllErrors.Select(x => x.Message))}"));
@@ -234,7 +295,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static void Relink(ExportEntry sourceExport, ExportEntry relinkingExport, RelinkerOptionsPackage rop)
         {
             IMEPackage sourcePcc = sourceExport.FileRef;
-
             // Relink header (component map)
             // When porting to a game newer than ME2 might want to just strip this out. As I don't think that engine version uses this anymore
             if (relinkingExport.HasComponentMap && relinkingExport.ComponentMap.Count > 0)
@@ -410,6 +470,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
+        /// <summary>
+        /// Relinks a property collection, from the importingPCC to the relinkingExport.
+        /// </summary>
+        /// <param name="importingPCC"></param>
+        /// <param name="relinkingExport"></param>
+        /// <param name="transplantProps"></param>
+        /// <param name="prefix"></param>
+        /// <param name="rop"></param>
         private static void relinkPropertiesRecursive(IMEPackage importingPCC, ExportEntry relinkingExport, PropertyCollection transplantProps, string prefix, RelinkerOptionsPackage rop)
         {
             foreach (Property prop in transplantProps)
@@ -464,6 +532,100 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
+        /// Relinks a property collection, from the sourcePcc to the destinationPcc. This should only be used standalone, not as part of a full relink operation!
+        /// </summary>
+        /// <param name="sourcePcc">Package file we are relinking from</param>
+        /// <param name="destinationPcc">Destination to relink into. If null, we will not relink - but we will still report if we have object properties.</param>
+        /// <param name="props">The collection to relink</param>
+        /// <param name="rop">Relinker options package to configure relink behavior</param>
+        public static void RelinkPropertyCollection(IMEPackage sourcePcc, IMEPackage destinationPcc, PropertyCollection props, RelinkerOptionsPackage rop, out bool hasObjectProperties)
+        {
+            hasObjectProperties = false;
+            foreach (Property prop in props)
+            {
+                //Debug.WriteLine($"{prefix} Relink recursive on {prop.Name}");
+                if (prop is StructProperty structProperty)
+                {
+                    RelinkPropertyCollection(sourcePcc, destinationPcc, structProperty.Properties, rop, out var hasObjectProperties2);
+                    hasObjectProperties |= hasObjectProperties2;
+                }
+                else if (prop is ArrayProperty<StructProperty> structArrayProp)
+                {
+                    for (int i = 0; i < structArrayProp.Count; i++)
+                    {
+                        StructProperty arrayStructProperty = structArrayProp[i];
+                        RelinkPropertyCollection(sourcePcc, destinationPcc, arrayStructProperty.Properties, rop, out var hasObjectProperties2);
+                        hasObjectProperties |= hasObjectProperties2;
+                    }
+                }
+                else if (prop is ArrayProperty<ObjectProperty> objArrayProp)
+                {
+                    hasObjectProperties = true;
+                    foreach (ObjectProperty objProperty in objArrayProp)
+                    {
+                        int uIndex = objProperty.Value;
+                        var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
+                        objProperty.Value = uIndex;
+                        if (!result)
+                            Debugger.Break();
+                    }
+                }
+                else if (prop is ObjectProperty objectProperty)
+                {
+                    if (objectProperty.Value != 0)
+                    {
+                        // For purposes of object properties if the value is 0 we don't need a relink.
+                        hasObjectProperties = true;
+                    }
+
+                    int uIndex = objectProperty.Value;
+                    var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
+                    objectProperty.Value = uIndex;
+                    if (!result)
+                        Debugger.Break();
+                }
+                else if (prop is DelegateProperty delegateProp)
+                {
+                    if (delegateProp.Value.ContainingObjectUIndex != 0)
+                    {
+                        // For purposes of delegate properties if the value is 0 we don't need a relink.
+                        hasObjectProperties = true;
+                    }
+                    int uIndex = delegateProp.Value.ContainingObjectUIndex;
+                    var result = RelinkSingle(sourcePcc, destinationPcc, ref uIndex, rop);
+                    delegateProp.Value = new ScriptDelegate(uIndex, delegateProp.Value.FunctionName);
+                    if (!result)
+                        Debugger.Break();
+                }
+            }
+        }
+
+        private static bool RelinkSingle(IMEPackage sourcePackage, IMEPackage destPackage, ref int uIndex, RelinkerOptionsPackage rop)
+        {
+            if (destPackage == null)
+                return true; // We are only testing if we have object properties. We do not perform a relink.
+            if (uIndex == 0)
+                return true; // We're fine.
+
+
+            var sourceEntry = sourcePackage.GetEntry(uIndex);
+            // See if it's in the target.
+            var targetEntry = destPackage.FindEntry(sourceEntry.InstancedFullPath, sourceEntry.ClassName);
+            if (targetEntry != null)
+            {
+                uIndex = targetEntry.UIndex;
+                return true;
+            }
+
+            // Must be ported over.
+            var parent = EntryExporter.PortParents(sourceEntry, destPackage, cache: rop.Cache);
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceEntry,
+                destPackage, parent, true, rop, out var newItem);
+            uIndex = newItem.UIndex; // Relinked
+            return true;
+        }
+
+        /// <summary>
         /// Relinks a uIndex that represents an import in the original package - that is, the UIndex is less than zero.
         /// </summary>
         /// <param name="importingPCC"></param>
@@ -481,6 +643,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //Get the original import
                 ImportEntry importFullName = importingPCC.GetImport(n);
+
+                // 12/26/2023 - See if it's already in the file
+                var existingEntry = relinkingExport.FileRef.FindEntry(importFullName.InstancedFullPath, importFullName.ClassName);
+                if (existingEntry != null)
+                {
+                    uIndex = existingEntry.UIndex;
+                    return null; // Relinked import to existing item in the file
+                }
+
                 string originalInstancedFullPath = importFullName.InstancedFullPath; //used to be just FullPath - but some imports are indexed!
                                                                                      //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
@@ -499,7 +670,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     if (candidates?.Any() != true)
                     {
                         // Ruh Roh
-                        Debug.WriteLine($@"No candidates for export substitution of an unsafe import: {originalInstancedFullPath}, we will port this as an import, but it may not work!");
+                        // Debug.WriteLine($@"No candidates for export substitution of an unsafe import: {originalInstancedFullPath}, we will port this as an import, but it may not work!");
                     }
                     else
                     {
@@ -599,16 +770,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
                     ImportEntry testImport = new ImportEntry(relinkingExport.FileRef, importFullName);
-                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache);
+                    var resolved = EntryImporter.ResolveImport(testImport, rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver);
                     if (resolved == null)
                     {
-                        // We failed to resolve the import in the destination
-                        Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Attempting to port export instead");
-                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache);
-                        if (resolvedSource != null)
+                        // We failed to resolve the import in the destination. Does it resolve in the source?
+                        var resolvedSource = EntryImporter.ResolveImport(importFullName, rop.Cache, fileResolver: rop.SourceCustomImportFileResolver);
+                        // If port localizations memory safe is true, we don't bother checking the localization. Otherwise we port only if hte localization is None to prevent bringing in localized content.
+                        if (resolvedSource != null && (rop.PortLocalizationImportsMemorySafe || resolvedSource.FileRef.Localization == MELocalization.None))
                         {
+                            Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Porting as export instead");
                             // Todo: We probably need to support porting in from things like BIOG files due to ForcedExport.
-                            ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
+                            var importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, resolvedSource, testImport.Parent?.UIndex ?? 0, rop);
                             // Debug.WriteLine($@"Memory safe porting: Redirected import {importedExport.InstancedFullPath} to export from {resolvedSource.FileRef.FileNameNoExtension}");
 
                             if (!rop.CrossPackageMap.ContainsKey(importFullName))
@@ -616,6 +788,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             uIndex = importedExport.UIndex;
                             // Debug.WriteLine($"Relink hit: Dynamic CrossImport for {origvalue} {importingPCC.GetEntry(origvalue).InstancedFullPath} -> {uIndex}");
                             return null; // OK
+                        }
+                        else
+                        {
+                            Debug.WriteLine($@"Failed to resolve import in destination package: {testImport.InstancedFullPath}. Not porting as export, will port as import");
                         }
                     }
                 }
@@ -683,7 +859,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             IMEPackage destinationPcc = relinkingExport.FileRef;
-            if (importingPCC == destinationPcc && uIndex < 0)
+            if (!rop.ForceSamePackageImportRelink && importingPCC == destinationPcc && uIndex < 0)
             {
                 return null; //do not relink same-pcc imports.
             }
@@ -739,7 +915,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
             }
 
-            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
+            // 08/22/2024 - Change from only-class matching when allowing differing ROP option was set,
+            // to checking if it's a material interface if not set, since you can (most times) swap these.
+            // This addresses duplicate objects being ported in and then not being relinked if the source object
+            // is referenced multiple times and gets relinked in as a different object. We only do material interface
+            // because it's fairly easy to swap; others could probably be implemented here and in ImportExport().
+            // To allow all items to substitute, use the ROP's RelinkAllowDifferingClassesInRelink item.
+            IEntry existingEntry = FindExistingEntry(instancedFullPath, relinkingExport, sourceExport, rop);
 
             if (existingEntry != null)
             {
@@ -781,14 +963,28 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         //{
                         //Parent is import
                         parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
+
+                        if (parent != null)
+                        {
+                            // The destination IFP may have changed
+                            // We should check again if it exists at this destination IFP or we will add a duplicate
+                            var newIFP = parent.InstancedFullPath + '.' + sourceExport.ObjectName.Instanced;
+                            existingEntry = FindExistingEntry(newIFP, relinkingExport, sourceExport, rop);
+                            if (existingEntry != null)
+                            {
+                                // Relink to existing object
+                                uIndex = existingEntry.UIndex;
+                                return null;
+                            }
+                        }
                         //}
                     }
 
-                    if (rop.PortExportsAsImportsWhenPossible && !relinkingExport.InstancedFullPath.StartsWith(@"TheWorld."))
+                    if (rop.PortExportsAsImportsWhenPossible && !sourceExport.InstancedFullPath.StartsWith(@"TheWorld."))
                     {
                         // Try convert to import
                         var testImport = new ImportEntry(sourceExport, parent?.UIndex ?? 0, relinkingExport.FileRef);
-                        if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                        if (EntryImporter.TryResolveImport(testImport, out var resolve, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                         {
                             relinkingExport.FileRef.AddImport(testImport);
                             uIndex = testImport.UIndex;
@@ -797,7 +993,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         }
                     }
 
-                    ExportEntry importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
+                    var importedExport = EntryImporter.ImportExport(relinkingExport.FileRef, sourceExport, parent?.UIndex ?? 0, rop);
                     if (!importedExport.InstancedFullPath.CaseInsensitiveEquals(sourceExport.InstancedFullPath))
                     {
                         // This needs to be suppressed if we are doing replace export with another
@@ -815,6 +1011,40 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Shared code for finding existing entry in package, using lookup rules
+        /// </summary>
+        /// <returns></returns>
+        private static IEntry FindExistingEntry(string instancedFullPath, ExportEntry relinkingExport, ExportEntry sourceExport, RelinkerOptionsPackage rop)
+        {
+            IEntry existingEntry = relinkingExport.FileRef.FindEntry(instancedFullPath);
+
+            if (existingEntry != null)
+            {
+                if (!existingEntry.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) && !rop.RelinkAllowDifferingClassesInRelink)
+                {
+                    bool allowSub = false;
+                    // Allow substituting BioSWF -> GFxMovieInfo when porting out of ME1
+                    if (existingEntry.Game > MEGame.ME1 && sourceExport.Game == MEGame.ME1 && existingEntry.IsA("GFxMovieInfo") && sourceExport.IsA("BioSWF"))
+                    {
+                        allowSub = true;
+                    }
+                    // Allow substituting materials. This prevents a lot of other bugs versus allowing anything to 
+                    // be substituted since we can control it here.
+                    else if (existingEntry.IsA("MaterialInterface") && sourceExport.IsA("MaterialInterface"))
+                    {
+                        allowSub = true;
+                    }
+
+                    if (!allowSub)
+                    {
+                        existingEntry = null;
+                    }
+                }
+            }
+            return existingEntry;
         }
 
         private static void RelinkUnhoodEntryReference(IEntry entry, long position, byte[] script, ExportEntry sourceExport, ExportEntry destinationExport, RelinkerOptionsPackage rop)
@@ -876,6 +1106,29 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static void RelinkNameReference(string name, long position, byte[] data, ExportEntry destinationExport)
         {
             data.OverwriteRange((int)position, BitConverter.GetBytes(destinationExport.FileRef.FindNameOrAdd(name)));
+        }
+
+        /// <summary>
+        /// Relinks objects to different ones within the same package. Will not generate new exports or imports.
+        /// </summary>
+        /// <param name="package">Package to operate on</param>
+        /// <param name="relinkMap">List of entries that you are repointing to different objects. The remaining objects will have a relink performed to update references automatically.</param>
+        public static void RelinkSamePackage(IMEPackage package, ListenableDictionary<IEntry, IEntry> relinkMap)
+        {
+
+            foreach (var exp in package.Exports)
+            {
+                // Relink to self - this makes it so this export will have relink performed on it for the rest of the map contents
+                relinkMap.TryAdd(exp, exp);
+            }
+
+            foreach (var imp in package.Imports)
+            {
+                // Relink to self - this makes it so this export will have relink performed on it for the rest of the map contents
+                relinkMap.TryAdd(imp, imp);
+            }
+
+            Relinker.RelinkAll(new RelinkerOptionsPackage() { CrossPackageMap = relinkMap, ForceSamePackageImportRelink = true});
         }
     }
 }

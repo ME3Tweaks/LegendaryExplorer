@@ -563,13 +563,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         private readonly List<Class> intrinsicClasses = new();
 
-        public void ValidateIntrinsics()
+        public void ValidateIntrinsics(UnrealScriptOptionsPackage usop)
         {
             foreach (var validationPass in Enums.GetValues<ValidationPass>())
             {
                 foreach (Class cls in intrinsicClasses)
                 {
-                    cls.AcceptVisitor(new ClassValidationVisitor(null, this, validationPass));
+                    cls.AcceptVisitor(new ClassValidationVisitor(null, this, validationPass, usop));
                 }
             }
         }

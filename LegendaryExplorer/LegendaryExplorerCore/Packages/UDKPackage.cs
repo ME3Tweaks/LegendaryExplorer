@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -18,7 +19,7 @@ namespace LegendaryExplorerCore.Packages
         public const int UDKUnrealVersion2015 = 868; // 2015, the primary one
         public const int UDKUnrealVersion2014 = 867; // 2014, some really old ME3 mods ship these files
         public const int UDKUnrealVersion2011 = 812; // 2011, similar in age to ME3 // UDK 7797
-        public const int UDKUnrealVersion2010_09 = 765; 
+        public const int UDKUnrealVersion2010_09 = 765;
         public const int UDKLicenseeVersion = 0; // 2015
 
         public MEGame Game => MEGame.UDK;
@@ -123,6 +124,38 @@ namespace LegendaryExplorerCore.Packages
             //reasonable defaults?
             Flags = EPackageFlags.AllowDownload | EPackageFlags.NoExportsData;
             return;
+        }
+
+        /// <summary>
+        /// Fixes trash so that UDK does not crash when loading the package, as it seems to have special rules.
+        /// </summary>
+        public void FixupTrash()
+        {
+            var trashObj = FindExport(TrashPackageName);
+            if (trashObj == null)
+                return;
+
+            var importTrash = Imports.Where(x => x.idxLink == trashObj.UIndex).ToList();
+            if (importTrash.IsEmpty())
+                return; // Doesn't require fixing
+
+            var newTrashContainer = FindImport("EngineMaterials");
+            if (newTrashContainer == null)
+            {
+                newTrashContainer = new ImportEntry(this, 0, "EngineMaterials"); // Something it will resolve to
+                newTrashContainer.ClassName = "Package";
+                newTrashContainer.PackageFile = "Core";
+                newTrashContainer.PropertyChanged += importChanged;
+                imports.Add(newTrashContainer);
+            }
+
+            foreach (var imp in importTrash)
+            {
+                imp.idxLink = newTrashContainer.UIndex;
+                imp.ClassName = "Material";
+                imp.ObjectName = "DefaultMaterial";
+                imp.PackageFile = "Engine";
+            }
         }
 
         /// <summary>S
@@ -362,8 +395,9 @@ namespace LegendaryExplorerCore.Packages
             //export data
             foreach (ExportEntry e in exports)
             {
-                UpdateUDKOffsets(e, (int)ms.Position);
+                // 08/30/2024 - Move export offset update to BEFORE we updating the offsets in export
                 e.DataOffset = (int)ms.Position;
+                UpdateUDKOffsets(e, (int)ms.Position); // This will reserialize offsets, so it must come after we update the data offset position of export
 
                 ms.WriteFromBuffer(e.Data);
                 //update size and offset in already-written header
@@ -435,31 +469,8 @@ namespace LegendaryExplorerCore.Packages
             //update offsets for pcc-stored mips in Textures
             if (export.IsTexture())
             {
-                int baseOffset = newDataOffset + export.propsEnd();
-                MemoryStream binData = new MemoryStream(export.GetBinaryData());
-                binData.Skip(8);
-                int thumbnailSize = binData.ReadInt32();
-                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
-                binData.Skip(thumbnailSize);
-                for (int i = binData.ReadInt32(); i > 0 && binData.Position < binData.Length; i--)
-                {
-                    var storageFlags = (StorageFlags)binData.ReadInt32();
-                    if (!storageFlags.Has(StorageFlags.externalFile)) //pcc-stored
-                    {
-                        int uncompressedSize = binData.ReadInt32();
-                        int compressedSize = binData.ReadInt32();
-                        binData.WriteInt32(baseOffset + (int)binData.Position + 4);//update offset
-                        binData.Seek((storageFlags == StorageFlags.noFlags ? uncompressedSize : compressedSize) + 8, SeekOrigin.Current); //skip texture and width + height values
-                    }
-                    else
-                    {
-                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
-                    }
-                }
-
-                binData.Skip(40);
-                binData.WriteInt32(baseOffset + (int)binData.Position + 4);
-                export.WriteBinary(binData.ToArray());
+                var bin = (UTexture2D) ObjectBinary.From(export);
+                export.WriteBinary(bin);
             }
         }
     }

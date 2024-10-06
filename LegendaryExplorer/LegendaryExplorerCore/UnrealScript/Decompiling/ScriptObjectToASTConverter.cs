@@ -16,7 +16,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
     internal static class ScriptObjectToASTConverter
     {
-        public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib fileLib, PackageCache packageCache = null)
+
+        public static Class ConvertClass(UClass uClass, bool decompileBytecodeAndDefaults, FileLib fileLib, UnrealScriptOptionsPackage usop)
         {
             ExportEntry uClassExport = uClass.Export;
             IMEPackage pcc = uClassExport.FileRef;
@@ -49,7 +50,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     throw new Exception($"Loop detected in compilation chain of #{uClassExport.UIndex} {uClassExport.InstancedFullPath}");
                 }
-                var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
+                var objBin = fileLib.GetCachedObjectBinary(nextChild, usop);
                 switch (objBin)
                 {
                     case UConst uConst:
@@ -69,16 +70,16 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             replicatedProperties.AddToListAt(uProperty.ReplicationOffset, uProperty.Export.ObjectName.Instanced);
                         }
-                        Vars.Add(ConvertVariable(uProperty, fileLib, packageCache));
+                        Vars.Add(ConvertVariable(uProperty, fileLib, usop));
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uScriptStruct:
-                        Types.Add(ConvertStruct(uScriptStruct, fileLib, packageCache));
+                        Types.Add(ConvertStruct(uScriptStruct, fileLib, usop));
                         nextItem = uScriptStruct.Next;
                         break;
                     case UState uState:
                         nextItem = uState.Next;
-                        States.Add(ConvertState(uState, fileLib, uClass, decompileBytecodeAndDefaults, packageCache));
+                        States.Add(ConvertState(uState, fileLib, usop, uClass, decompileBytecodeAndDefaults));
                         break;
                     default:
                         nextItem = 0;
@@ -87,9 +88,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
             foreach (int uIndex in uClass.LocalFunctionMap.Values)
             {
-                if (pcc.GetEntry(uIndex) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, packageCache) is UFunction uFunction)
+                if (pcc.GetEntry(uIndex) is ExportEntry funcExp && fileLib.GetCachedObjectBinary<UFunction>(funcExp, usop) is UFunction uFunction)
                 {
-                    Funcs.Add(ConvertFunction(uFunction, fileLib, uClass, decompileBytecodeAndDefaults, packageCache));
+                    Funcs.Add(ConvertFunction(uFunction, fileLib, usop, uClass, decompileBytecodeAndDefaults));
                 }
             }
             DefaultPropertiesBlock defaultProperties = null;
@@ -97,7 +98,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var propEntry = pcc.GetEntry(uClass.Defaults);
             if (decompileBytecodeAndDefaults && propEntry is ExportEntry propExport)
             {
-                defaultProperties = ConvertExportProperties(propExport, fileLib, packageCache);
+                defaultProperties = ConvertExportProperties(propExport, fileLib, usop);
                 if (uClass.ScriptBytecodeSize > 0)
                 {
                     replicationBlock = new ByteCodeDecompiler(uClass, uClass, fileLib, replicatedProperties: replicatedProperties).Decompile();
@@ -145,12 +146,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        public static State ConvertState(UState obj, FileLib fileLib, UClass containingClass = null, bool decompileBytecode = true, PackageCache packageCache = null)
+        public static State ConvertState(UState obj, FileLib fileLib, UnrealScriptOptionsPackage usop, UClass containingClass = null, bool decompileBytecode = true)
         {
             if (containingClass is null)
             {
                 var classExport = obj.Export.Parent as ExportEntry;
-                while (classExport is {IsClass: false})
+                while (classExport is { IsClass: false })
                 {
                     classExport = classExport.Parent as ExportEntry;
                 }
@@ -160,7 +161,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     throw new Exception($"Could not get containing class for state {obj.Export.ObjectName}");
                 }
 
-                containingClass = fileLib.GetCachedObjectBinary<UClass>(classExport, packageCache);
+                containingClass = fileLib.GetCachedObjectBinary<UClass>(classExport, usop);
             }
             // TODO: labels
 
@@ -181,13 +182,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     throw new Exception($"Loop detected in compilation chain of #{obj.Export.UIndex} {obj.Export.InstancedFullPath}");
                 }
-                var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
+                var objBin = fileLib.GetCachedObjectBinary(nextChild, usop);
                 if (objBin is not UFunction uFunction)
                 {
                     //todo: State should never have non-function children, so this is indicative of a broken state definition. is there some way to log this?
                     break;
                 }
-                funcs.Add(ConvertFunction(uFunction, fileLib, containingClass, decompileBytecode));
+                funcs.Add(ConvertFunction(uFunction, fileLib, usop, containingClass, decompileBytecode));
                 nextItem = uFunction.Next;
             }
 
@@ -201,7 +202,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
         }
 
-        public static Struct ConvertStruct(UScriptStruct obj, FileLib fileLib, PackageCache packageCache = null)
+        public static Struct ConvertStruct(UScriptStruct obj, FileLib fileLib, UnrealScriptOptionsPackage usop)
         {
             var vars = new List<VariableDeclaration>();
             var types = new List<VariableType>();
@@ -215,15 +216,15 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     throw new Exception($"Loop detected in compilation chain of #{obj.Export.UIndex} {obj.Export.InstancedFullPath}");
                 }
-                var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
+                var objBin = fileLib.GetCachedObjectBinary(nextChild, usop);
                 switch (objBin)
                 {
                     case UProperty uProperty:
-                        vars.Add(ConvertVariable(uProperty, fileLib, packageCache));
+                        vars.Add(ConvertVariable(uProperty, fileLib, usop));
                         nextItem = uProperty.Next;
                         break;
                     case UScriptStruct uStruct:
-                        types.Add(ConvertStruct(uStruct, fileLib, packageCache));
+                        types.Add(ConvertStruct(uStruct, fileLib, usop));
                         nextItem = uStruct.Next;
                         break;
                     default:
@@ -247,7 +248,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 }
                 else if (fileLib.IsInitialized && fileLib.ReadonlySymbolTable is SymbolTable symbols && symbols.TryGetType(structName, out Struct libStruct))
                 {
-                    properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, packageCache));
+                    properties = obj.Defaults.Diff(libStruct.MakeBaseProps(pcc, usop));
                 }
 
                 properties ??= RemoveDefaultValues(obj.Defaults.DeepClone(), pcc.Game);
@@ -389,24 +390,24 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return node;
         }
 
-        public static VariableDeclaration ConvertVariable(UProperty obj, FileLib fileLib, PackageCache packageCache = null)
+        public static VariableDeclaration ConvertVariable(UProperty obj, FileLib fileLib, UnrealScriptOptionsPackage usop)
         {
             int size = obj.ArraySize;
 
-            return new VariableDeclaration(GetPropertyType(obj, fileLib, packageCache), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null)
+            return new VariableDeclaration(GetPropertyType(obj, fileLib, usop), obj.PropertyFlags, obj.Export.ObjectName.Instanced, size, obj.Category != "None" ? obj.Category : null)
             {
                 FilePath = obj.Export.FileRef.FilePath,
                 UIndex = obj.Export.UIndex
             };
         }
 
-        private static VariableType GetPropertyType(UProperty obj, FileLib fileLib, PackageCache packageCache = null)
+        private static VariableType GetPropertyType(UProperty obj, FileLib fileLib, UnrealScriptOptionsPackage usop)
         {
             string typeStr = "UNKNOWN";
             switch (obj)
             {
                 case UArrayProperty arrayProperty:
-                    return new DynamicArrayType(GetPropertyType(fileLib.GetCachedObjectBinary(obj.Export.FileRef.GetUExport(arrayProperty.ElementType), packageCache) as UProperty, fileLib, packageCache));
+                    return new DynamicArrayType(GetPropertyType(fileLib.GetCachedObjectBinary(obj.Export.FileRef.GetUExport(arrayProperty.ElementType), usop) as UProperty, fileLib, usop));
                 case UBioMask4Property:
                     return SymbolTable.BioMask4Type;
                 case UBoolProperty:
@@ -417,7 +418,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         IEntry enumDef = obj.Export.FileRef.GetEntry(byteProperty.Enum);
                         if (enumDef is ExportEntry enumExp)
                         {
-                            return ConvertEnum(fileLib.GetCachedObjectBinary<UEnum>(enumExp, packageCache));
+                            return ConvertEnum(fileLib.GetCachedObjectBinary<UEnum>(enumExp, usop));
                         }
                         typeStr = enumDef.ObjectName.Instanced;
                     }
@@ -492,12 +493,12 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new VariableType(typeStr);
         }
 
-        public static Function ConvertFunction(UFunction obj, FileLib fileLib, UClass containingClass = null, bool decompileBytecode = true, PackageCache packageCache = null)
+        public static Function ConvertFunction(UFunction obj, FileLib fileLib, UnrealScriptOptionsPackage usop, UClass containingClass = null, bool decompileBytecode = true)
         {
             if (containingClass is null)
             {
                 var classExport = obj.Export.Parent as ExportEntry;
-                while (classExport is {IsClass: false})
+                while (classExport is { IsClass: false })
                 {
                     classExport = classExport.Parent as ExportEntry;
                 }
@@ -507,7 +508,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     throw new Exception($"Could not get containing class for function {obj.Export.ObjectName}");
                 }
 
-                containingClass = fileLib.GetCachedObjectBinary<UClass>(classExport, packageCache);
+                containingClass = fileLib.GetCachedObjectBinary<UClass>(classExport, usop);
             }
             VariableDeclaration returnVal = null;
             var nextItem = obj.Children;
@@ -522,17 +523,17 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     throw new Exception($"Loop detected in compilation chain of #{obj.Export.UIndex} {obj.Export.InstancedFullPath}");
                 }
-                var objBin = fileLib.GetCachedObjectBinary(nextChild, packageCache);
+                var objBin = fileLib.GetCachedObjectBinary(nextChild, usop);
                 switch (objBin)
                 {
                     case UProperty uProperty:
                         if (uProperty.PropertyFlags.Has(EPropertyFlags.ReturnParm))
                         {
-                            returnVal = ConvertVariable(uProperty, fileLib, packageCache);
+                            returnVal = ConvertVariable(uProperty, fileLib, usop);
                         }
                         else if (uProperty.PropertyFlags.Has(EPropertyFlags.Parm))
                         {
-                            var convert = ConvertVariable(uProperty, fileLib, packageCache);
+                            var convert = ConvertVariable(uProperty, fileLib, usop);
                             parameters.Add(new FunctionParameter(convert.VarType, convert.Flags, convert.Name, convert.ArrayLength)
                             {
                                 FilePath = pcc.FilePath,
@@ -541,7 +542,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         }
                         else
                         {
-                            locals.Add(ConvertVariable(uProperty, fileLib, packageCache));
+                            locals.Add(ConvertVariable(uProperty, fileLib, usop));
                         }
                         nextItem = uProperty.Next;
                         break;
@@ -577,7 +578,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return func;
         }
 
-        public static DefaultPropertiesBlock ConvertExportProperties(ExportEntry export, FileLib fileLib, PackageCache packageCache = null)
+        public static DefaultPropertiesBlock ConvertExportProperties(ExportEntry export, FileLib fileLib, UnrealScriptOptionsPackage usop)
         {
             bool isInDefaultTree = export.IsInDefaultsTree();
 
@@ -597,7 +598,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     }
                 }
 
-                defaults.AddRange(ConvertProperties(exportEntry.GetProperties(packageCache: packageCache), export, exportEntry.Class.ObjectName.Instanced, false, fileLib, isInDefaultTree));
+                defaults.AddRange(ConvertProperties(exportEntry.GetProperties(packageCache: usop.Cache), export, exportEntry.Class.ObjectName.Instanced, false, fileLib, isInDefaultTree));
                 return defaults;
             }
         }
@@ -697,7 +698,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             return new NoneLiteral();
                         }
-                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) {Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), -1, -1) }, enumProperty.Value.Instanced);
+                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) { Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), -1, -1) }, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:

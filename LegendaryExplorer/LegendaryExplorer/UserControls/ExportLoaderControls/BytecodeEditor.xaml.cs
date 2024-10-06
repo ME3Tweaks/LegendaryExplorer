@@ -119,7 +119,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             BytecodeStart = 0;
             CurrentLoadedExport = exportEntry;
-            ScriptEditor_Hexbox.ByteProvider = new ReadOptimizedByteProvider(CurrentLoadedExport.Data);
+            ScriptEditor_Hexbox.ByteProvider = CurrentLoadedExport.GetByteProvider();
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
             try
             {

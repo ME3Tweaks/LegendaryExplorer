@@ -9,16 +9,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioStateEventMap : ObjectBinary
     {
         public List<BioStateEvent> StateEvents;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref StateEvents, SCExt.Serialize);
+            sc.Serialize(ref StateEvents, sc.Serialize);
         }
 
         public static BioStateEventMap Create()
         {
             return new()
             {
-                StateEvents = new List<BioStateEvent>()
+                StateEvents = []
             };
         }
 
@@ -159,21 +159,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEvent stateEvent)
+        public void Serialize(ref BioStateEvent stateEvent)
         {
-            if (sc.IsLoading) stateEvent = new BioStateEvent();
-            sc.Serialize(ref stateEvent.ID);
-            sc.Serialize(ref stateEvent.InstanceVersion);
-            sc.Serialize(ref stateEvent.Elements, Serialize);
+            if (IsLoading) stateEvent = new BioStateEvent();
+            Serialize(ref stateEvent.ID);
+            Serialize(ref stateEvent.InstanceVersion);
+            Serialize(ref stateEvent.Elements, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElement element)
+        public void Serialize(ref BioStateEventElement element)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                var type = (BioStateEventElementType)sc.ms.ReadInt32();
+                var type = (BioStateEventElementType)ms.ReadInt32();
                 switch (type)
                 {
                     case BioStateEventElementType.Bool:
@@ -209,123 +209,123 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
                 element.Type = type;
             }
-            else sc.ms.Writer.WriteInt32((int)element.Type);
+            else ms.Writer.WriteInt32((int)element.Type);
 
-            sc.Serialize(ref element.InstanceVersion);
+            Serialize(ref element.InstanceVersion);
 
             switch (element)
             {
                 case BioStateEventElementBool elementBool:
-                    sc.Serialize(ref elementBool);
+                    Serialize(ref elementBool);
                     break;
                 case BioStateEventElementConsequence elementConsequence:
-                    sc.Serialize(ref elementConsequence);
+                    Serialize(ref elementConsequence);
                     break;
                 case BioStateEventElementFloat elementFloat:
-                    sc.Serialize(ref elementFloat);
+                    Serialize(ref elementFloat);
                     break;
                 case BioStateEventElementFunction elementFunction:
-                    sc.Serialize(ref elementFunction);
+                    Serialize(ref elementFunction);
                     break;
                 case BioStateEventElementInt elementInt:
-                    sc.Serialize(ref elementInt);
+                    Serialize(ref elementInt);
                     break;
                 case BioStateEventElementLocalBool elementLBool:
-                    sc.Serialize(ref elementLBool);
+                    Serialize(ref elementLBool);
                     break;
                 case BioStateEventElementLocalFloat elementLFloat:
-                    sc.Serialize(ref elementLFloat);
+                    Serialize(ref elementLFloat);
                     break;
                 case BioStateEventElementLocalInt elementLInt:
-                    sc.Serialize(ref elementLInt);
+                    Serialize(ref elementLInt);
                     break;
                 case BioStateEventElementSubstate elementSubstate:
-                    sc.Serialize(ref elementSubstate);
+                    Serialize(ref elementSubstate);
                     break;
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementBool element)
+        public void Serialize(ref BioStateEventElementBool element)
         {
-            sc.Serialize(ref element.GlobalBool);
-            sc.Serialize(ref element.NewState);
-            sc.Serialize(ref element.UseParam);
+            Serialize(ref element.GlobalBool);
+            Serialize(ref element.NewState);
+            Serialize(ref element.UseParam);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementConsequence element)
+        public void Serialize(ref BioStateEventElementConsequence element)
         {
-            sc.Serialize(ref element.Consequence);
+            Serialize(ref element.Consequence);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementFloat element)
+        public void Serialize(ref BioStateEventElementFloat element)
         {
-            if (sc.Game.IsGame2())
+            if (Game.IsGame2())
             {
-                sc.Serialize(ref element.Increment);
-                sc.Serialize(ref element.GlobalFloat);
-                sc.Serialize(ref element.NewValue);
-                sc.Serialize(ref element.UseParam);
+                Serialize(ref element.Increment);
+                Serialize(ref element.GlobalFloat);
+                Serialize(ref element.NewValue);
+                Serialize(ref element.UseParam);
             }
             else
             {
-                sc.Serialize(ref element.GlobalFloat);
-                sc.Serialize(ref element.NewValue);
-                sc.Serialize(ref element.UseParam);
-                sc.Serialize(ref element.Increment);
+                Serialize(ref element.GlobalFloat);
+                Serialize(ref element.NewValue);
+                Serialize(ref element.UseParam);
+                Serialize(ref element.Increment);
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementFunction element)
+        public void Serialize(ref BioStateEventElementFunction element)
         {
-            sc.Serialize(ref element.PackageName);
-            sc.Serialize(ref element.ClassName);
-            sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.Parameter);
+            Serialize(ref element.PackageName);
+            Serialize(ref element.ClassName);
+            Serialize(ref element.FunctionName);
+            Serialize(ref element.Parameter);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementInt element)
+        public void Serialize(ref BioStateEventElementInt element)
         {
-            sc.Serialize(ref element.GlobalInt);
-            sc.Serialize(ref element.NewValue);
-            sc.Serialize(ref element.UseParam);
-            sc.Serialize(ref element.Increment);
+            Serialize(ref element.GlobalInt);
+            Serialize(ref element.NewValue);
+            Serialize(ref element.UseParam);
+            Serialize(ref element.Increment);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalBool element)
+        public void Serialize(ref BioStateEventElementLocalBool element)
         {
-            sc.Serialize(ref element.ObjectTag);
-            sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.ObjectType);
-            sc.Serialize(ref element.UseParam);
-            sc.Serialize(ref element.NewValue);
+            Serialize(ref element.ObjectTag);
+            Serialize(ref element.FunctionName);
+            Serialize(ref element.ObjectType);
+            Serialize(ref element.UseParam);
+            Serialize(ref element.NewValue);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalFloat element)
+        public void Serialize(ref BioStateEventElementLocalFloat element)
         {
-            sc.Serialize(ref element.ObjectTag);
-            sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.ObjectType);
-            sc.Serialize(ref element.UseParam);
-            sc.Serialize(ref element.NewValue);
+            Serialize(ref element.ObjectTag);
+            Serialize(ref element.FunctionName);
+            Serialize(ref element.ObjectType);
+            Serialize(ref element.UseParam);
+            Serialize(ref element.NewValue);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementLocalInt element)
+        public void Serialize(ref BioStateEventElementLocalInt element)
         {
-            sc.Serialize(ref element.ObjectTag);
-            sc.Serialize(ref element.FunctionName);
-            sc.Serialize(ref element.ObjectType);
-            sc.Serialize(ref element.UseParam);
-            sc.Serialize(ref element.NewValue);
+            Serialize(ref element.ObjectTag);
+            Serialize(ref element.FunctionName);
+            Serialize(ref element.ObjectType);
+            Serialize(ref element.UseParam);
+            Serialize(ref element.NewValue);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateEventElementSubstate element)
+        public void Serialize(ref BioStateEventElementSubstate element)
         {
-            sc.Serialize(ref element.GlobalBool);
-            sc.Serialize(ref element.NewState);
-            sc.Serialize(ref element.UseParam);
-            sc.Serialize(ref element.ParentTypeOr);
-            sc.Serialize(ref element.ParentIndex);
-            sc.Serialize(ref element.SiblingIndices, Serialize);
+            Serialize(ref element.GlobalBool);
+            Serialize(ref element.NewState);
+            Serialize(ref element.UseParam);
+            Serialize(ref element.ParentTypeOr);
+            Serialize(ref element.ParentIndex);
+            Serialize(ref element.SiblingIndices, Serialize);
         }
     }
 }

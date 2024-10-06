@@ -8,13 +8,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int[] Samples;
         public Guid LightGuid;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game.IsGame3())
             {
                 sc.SerializeConstInt(4);
             }
-            sc.Serialize(ref Samples, SCExt.Serialize);
+            sc.Serialize(ref Samples, sc.Serialize);
             sc.Serialize(ref LightGuid);
         }
 
@@ -22,7 +22,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                Samples = Array.Empty<int>()
+                Samples = []
             };
         }
     }
