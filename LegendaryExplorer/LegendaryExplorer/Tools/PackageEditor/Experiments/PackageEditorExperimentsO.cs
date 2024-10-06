@@ -2837,6 +2837,53 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             MessageBox.Show("The colors were sucessfully replaced", "Success", MessageBoxButton.OK);
         }
 
+        public static void SetForcedExportFlag(ExportEntry exp, bool set)
+        {
+
+            List<IEntry> entries = exp.GetAllDescendants();
+            entries.Add(exp);
+
+            foreach (IEntry entry in entries)
+            {
+                if (entry is not ExportEntry export) { continue; }
+
+                if (export.ClassName == "ObjectReferencer") { continue; }
+
+                if (set)
+                {
+                    // Set
+                    export.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+                }
+                else
+                {
+                    // Strip
+                    export.ExportFlags &= ~UnrealFlags.EExportFlags.ForcedExport;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the ForcedExport flag to all descendant exports of the selected export, including itself
+        /// </summary>
+        /// <param name="pew">Current PE window</param>
+        public static void MakeExportsNonForced(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null) { return; }
+
+            IMEPackage pcc = pew.Pcc;
+
+            if (pew.SelectedItem == null) { return; }
+
+            if (pew.SelectedItem.Entry is not ExportEntry)
+            {
+                ShowError("The selected entry is not an export");
+                return;
+            }
+
+            SetForcedExportFlag(pew.SelectedItem.Entry as ExportEntry, false);
+            MessageBox.Show("Removed ForcedExport flag in all exports", "Success", MessageBoxButton.OK);
+        }
+
         /// <summary>
         /// Adds the ForcedExport flag to all descendant exports of the selected export, including itself
         /// </summary>
@@ -2855,21 +2902,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            List<IEntry> entries = pew.SelectedItem.Entry.GetAllDescendants();
-            entries.Add(pew.SelectedItem.Entry);
-
-            foreach (IEntry entry in entries)
-            {
-                if (entry is not ExportEntry export) { continue; }
-
-                if (export.ClassName == "ObjectReferencer") { continue; }
-
-                if ((export.ExportFlags & UnrealFlags.EExportFlags.ForcedExport) == 0)
-                {
-                    export.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
-                }
-            }
-
+            SetForcedExportFlag(pew.SelectedItem.Entry as ExportEntry, true);
             MessageBox.Show("Set the ForcedExport flag in all exports", "Success", MessageBoxButton.OK);
         }
 
