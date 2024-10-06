@@ -12,7 +12,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public NameReference Category;
         public UIndex ArraySizeEnum; //If this is not 0, this property is a static array, and the number of copies of this property there should be is equal to the MAX value of the Enum this points to 
         public ushort ReplicationOffset;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ArraySize);
@@ -106,17 +106,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref UnrealFlags.EPropertyFlags flags)
+        public void Serialize(ref UnrealFlags.EPropertyFlags flags)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                flags = (UnrealFlags.EPropertyFlags)sc.ms.ReadUInt64();
+                flags = (UnrealFlags.EPropertyFlags)ms.ReadUInt64();
             }
             else
             {
-                sc.ms.Writer.WriteUInt64((ulong)flags);
+                ms.Writer.WriteUInt64((ulong)flags);
             }
         }
     }

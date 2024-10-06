@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int Id;
         public string Filename;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.IsLoading)
             {
@@ -67,7 +67,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     // There is nothing to write back here - it is loading only
                     if (sc.IsLoading)
                     {
-                        EmbeddedData = Array.Empty<byte>();
+                        EmbeddedData = [];
                     }
                 }
             }
@@ -77,7 +77,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                EmbeddedData = Array.Empty<byte>()
+                EmbeddedData = []
             };
         }
     }

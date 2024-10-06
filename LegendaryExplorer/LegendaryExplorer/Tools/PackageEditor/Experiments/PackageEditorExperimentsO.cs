@@ -1931,7 +1931,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID_EXPERIMENTAL(wwiseBankEntry, null, newWwiseBankName);
 
-            WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
+            WwiseBankParsed wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBankParsed>();
             // Update the bank id
             wwiseBank.ID = newBankID;
 
@@ -1950,7 +1950,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             wwiseBank.ReferencedBanks = new(updatedBanks);
 
             // Gather all the IDs we don't know about yet
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
+            foreach (WwiseBankParsed.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
             {
                 if (hirc.ID != 0 && !idPairs.ContainsKey(hirc.ID))
                 {
@@ -2028,7 +2028,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID_LEGACY(wwiseBankEntry, newWwiseBankName);
 
-            WwiseBank wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBank>();
+            var wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBankParsed>();
             // Update the bank id
             wwiseBank.ID = newBankID;
 
@@ -2050,7 +2050,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // but we check in all of them just in case.
             byte[] bankIDArr = BitConverter.GetBytes(oldBankID);
             byte[] newBankIDArr = BitConverter.GetBytes(newBankID);
-            foreach (WwiseBank.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
+            foreach (WwiseBankParsed.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
             {
                 //if (hirc.Type == HIRCType.Event) // References a WwiseEvent
                 //{
@@ -2837,6 +2837,53 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             MessageBox.Show("The colors were sucessfully replaced", "Success", MessageBoxButton.OK);
         }
 
+        public static void SetForcedExportFlag(ExportEntry exp, bool set)
+        {
+
+            List<IEntry> entries = exp.GetAllDescendants();
+            entries.Add(exp);
+
+            foreach (IEntry entry in entries)
+            {
+                if (entry is not ExportEntry export) { continue; }
+
+                if (export.ClassName == "ObjectReferencer") { continue; }
+
+                if (set)
+                {
+                    // Set
+                    export.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+                }
+                else
+                {
+                    // Strip
+                    export.ExportFlags &= ~UnrealFlags.EExportFlags.ForcedExport;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the ForcedExport flag to all descendant exports of the selected export, including itself
+        /// </summary>
+        /// <param name="pew">Current PE window</param>
+        public static void MakeExportsNonForced(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null) { return; }
+
+            IMEPackage pcc = pew.Pcc;
+
+            if (pew.SelectedItem == null) { return; }
+
+            if (pew.SelectedItem.Entry is not ExportEntry)
+            {
+                ShowError("The selected entry is not an export");
+                return;
+            }
+
+            SetForcedExportFlag(pew.SelectedItem.Entry as ExportEntry, false);
+            MessageBox.Show("Removed ForcedExport flag in all exports", "Success", MessageBoxButton.OK);
+        }
+
         /// <summary>
         /// Adds the ForcedExport flag to all descendant exports of the selected export, including itself
         /// </summary>
@@ -2855,21 +2902,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            List<IEntry> entries = pew.SelectedItem.Entry.GetAllDescendants();
-            entries.Add(pew.SelectedItem.Entry);
-
-            foreach (IEntry entry in entries)
-            {
-                if (entry is not ExportEntry export) { continue; }
-
-                if (export.ClassName == "ObjectReferencer") { continue; }
-
-                if ((export.ExportFlags & UnrealFlags.EExportFlags.ForcedExport) == 0)
-                {
-                    export.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
-                }
-            }
-
+            SetForcedExportFlag(pew.SelectedItem.Entry as ExportEntry, true);
             MessageBox.Show("Set the ForcedExport flag in all exports", "Success", MessageBoxButton.OK);
         }
 
@@ -3083,7 +3116,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         private static Vector3 GetTransformationData(ExportEntry actor, string propName)
         {
             StructProperty prop = actor.GetProperty<StructProperty>(propName);
-
+            PackageCache cache = new PackageCache();
             // Try to get the data from the archetype.
             // Useful in case of prefabs.
             if (prop == null)
@@ -3094,7 +3127,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 if (archetype is ImportEntry entry)
                 {
-                    archetype = EntryImporter.ResolveImport(entry);
+                    archetype = EntryImporter.ResolveImport(entry, cache);
                 }
 
                 prop = ((ExportEntry)archetype).GetProperty<StructProperty>(propName);
@@ -3122,6 +3155,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="pew">Current PE window.</param>
         public static void AddPrefabToLevel(PackageEditorWindow pew)
         {
+            PackageCache cache = new PackageCache();
             if (pew.Pcc == null || pew.SelectedItem?.Entry == null) { return; }
 
             if (pew.SelectedItem.Entry.ClassName is not "Prefab" || !(pew.SelectedItem.Entry is ExportEntry prefab))
@@ -3149,7 +3183,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 // Either cast the archetype or resolve it, so we clone an ExportEntry
                 IEntry entry = pew.Pcc.GetEntry(archRef.Value);
-                ExportEntry archetype = ResolveEntryToExport(entry);
+                ExportEntry archetype = ResolveEntryToExport(entry, cache);
 
                 ExportEntry newExport;
 
@@ -3231,11 +3265,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <returns></returns>
         private static void CopyComponentToProps(IMEPackage pcc, string componentName, ExportEntry parent, PropertyCollection sourceProps, PropertyCollection targetProps)
         {
+            PackageCache cache = new PackageCache();
             ObjectProperty componentRef = sourceProps.GetProp<ObjectProperty>(componentName);
 
             if (componentRef != null)
             {
-                ExportEntry sourceComponent = ResolveEntryToExport(pcc.GetEntry(componentRef.Value));
+                ExportEntry sourceComponent = ResolveEntryToExport(pcc.GetEntry(componentRef.Value), cache);
                 PropertyCollection sourceComponentProps = sourceComponent.GetProperties();
                 ExportEntry newComponent = CreateExport(pcc, sourceComponent.ObjectName, sourceComponent.ClassName, parent, sourceComponentProps,
                     sourceComponent.GetBinaryData(), new byte[8]);
@@ -3277,11 +3312,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="parent">Parent export of the LightComponent.</param>
         private static void AddLightingChannelsToComponent(IMEPackage pcc, ExportEntry parent)
         {
+            PackageCache cache = new PackageCache();
             ObjectProperty componentRef = parent.GetProperties().GetProp<ObjectProperty>("LightComponent");
 
             if (componentRef != null)
             {
-                ExportEntry lightComponent = ResolveEntryToExport(pcc.GetEntry(componentRef.Value));
+                ExportEntry lightComponent = ResolveEntryToExport(pcc.GetEntry(componentRef.Value), cache);
 
                 StructProperty lightingChannels = lightComponent.GetProperty<StructProperty>("LightingChannels")
                     ?? new StructProperty("LightingChannelContainer", new PropertyCollection(), "LightingChannels");

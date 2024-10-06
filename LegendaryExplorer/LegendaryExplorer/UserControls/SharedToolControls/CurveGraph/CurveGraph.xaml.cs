@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Converters;
 using LegendaryExplorer.UserControls.SharedToolControls.Curves;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Unreal;
 using BezierSegment = LegendaryExplorer.UserControls.SharedToolControls.Curves.BezierSegment;
 
@@ -36,6 +37,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
 
         public event RoutedPropertyChangedEventHandler<CurvePoint> SelectedPointChanged;
         public static bool TrackLoading;
+
+        private readonly List<Curve> loadedCurves = [];
+
         public Curve SelectedCurve
         {
             get => (Curve)GetValue(SelectedCurveProperty);
@@ -50,8 +54,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             if (sender is CurveGraph c)
             {
+                var value = (Curve)e.NewValue;
                 TrackLoading = true;
-                c.SelectedPoint = c.SelectedCurve.CurvePoints.FirstOrDefault();
+                if (!c.loadedCurves.Contains(value))
+                {
+                    c.loadedCurves.Clear();
+                    c.loadedCurves.Add(value);
+                }
+                if (c.SelectedPoint?.Curve != value)
+                {
+                    c.SelectedPoint = value.CurvePoints.FirstOrDefault();
+                }
                 TrackLoading = false;
             }
         }
@@ -80,14 +93,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         {
             if (sender is CurveGraph c)
             {
+                var curvePoint = (CurvePoint)e.NewValue;
                 foreach (Anchor a in c.Anchors)
                 {
-                    if (a.Point.Value != e.NewValue as CurvePoint)
+                    if (a.Point.Value != curvePoint)
                     {
                         a.IsSelected = false;
                     }
                 }
-                c.SelectedPointChanged?.Invoke(c, new RoutedPropertyChangedEventArgs<CurvePoint>(e.OldValue as CurvePoint, e.NewValue as CurvePoint));
+                if (curvePoint is not null && c.SelectedCurve != curvePoint.Curve)
+                {
+                    c.SelectedCurve = curvePoint.Curve;
+                }
+                c.SelectedPointChanged?.Invoke(c, new RoutedPropertyChangedEventArgs<CurvePoint>(e.OldValue as CurvePoint, curvePoint));
             }
         }
         public double VerticalScale
@@ -96,8 +114,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             set => SetValue(VerticalScaleProperty, value);
         }
 
-        public List<ExtraCurveGraphLine> ExtraXLines { get; } = new();
-        public List<ExtraCurveGraphLine> ExtraYLines { get; } = new();
+        public List<ExtraCurveGraphLine> ExtraXLines { get; } = [];
+        public List<ExtraCurveGraphLine> ExtraYLines { get; } = [];
 
         // Using a DependencyProperty as the backing store for VerticalScale.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VerticalScaleProperty =
@@ -157,6 +175,29 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             //throw new NotImplementedException();
         }
 
+        public void SetLoadedCurves(IEnumerable<Curve> curves, int selectedIndex = 0)
+        {
+            loadedCurves.ReplaceAll(curves);
+            if (loadedCurves.Count is 0)
+            {
+                SelectedCurve = new Curve();
+            }
+            else
+            {
+                if (selectedIndex < 0 || selectedIndex >= loadedCurves.Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(selectedIndex), selectedIndex, $"Expected {selectedIndex} to be > 0 and < the number of curves.");
+                }
+                SelectedCurve = loadedCurves[selectedIndex];
+            }
+        }
+
+        public void ClearLoadedCurves()
+        {
+            loadedCurves.Clear();
+            SelectedCurve = new Curve();
+        }
+
         public double toLocalX(double x)
         {
             return HorizontalScale * (x - HorizontalOffset);
@@ -183,43 +224,45 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             graph.Children.Clear();
             Anchors.Clear();
 
-            LinkedList<CurvePoint> points = SelectedCurve.CurvePoints;
-
             // Set size and scale of graph
-            if (points.Count > 0 && recomputeView)
+            if (recomputeView && loadedCurves.SelectMany(curve => curve.CurvePoints).Any())
             {
+                (float minTime, float maxTime, float minVal, float maxVal) = loadedCurves.SelectMany(curve => curve.CurvePoints)
+                    .Aggregate((float.MaxValue, float.MinValue, float.MaxValue, float.MinValue), (tuple, point) => (
+                            float.Min(tuple.Item1, point.InVal),
+                            float.Max(tuple.Item2, point.InVal),
+                            float.Min(tuple.Item3, point.OutVal),
+                            float.Max(tuple.Item4, point.OutVal)));
                 if (UseFixedTimeSpan)
                 {
                     UpdateScalingFromFixedTimeSpan();
                 }
                 else
                 {
-                    float timeSpan = points.Last().InVal - points.First().InVal;
+                    float timeSpan = maxTime - minTime;
                     timeSpan = timeSpan > 0 ? timeSpan : 2;
-                    HorizontalOffset = points.First().InVal - (timeSpan * 0.2);
+                    HorizontalOffset = minTime - (timeSpan * 0.2);
                     double hSpan = Math.Ceiling(timeSpan * 1.2);
                     if (hSpan + HorizontalOffset <= timeSpan)
                     {
                         hSpan += 1;
                     }
                     HorizontalScale = graph.ActualWidth / hSpan;
-                    if (HorizontalOffset >= points.First().InVal - (hSpan / 10))
+                    if (HorizontalOffset >= minTime - (hSpan / 10))
                     {
-                        HorizontalOffset = points.First().InVal - (hSpan / 10);
+                        HorizontalOffset = minTime - (hSpan / 10);
                     }
-                    else if (HorizontalOffset + hSpan <= points.Last().InVal + (hSpan / 10))
+                    else if (HorizontalOffset + hSpan <= maxTime + (hSpan / 10))
                     {
                         HorizontalOffset += hSpan / 10;
                     }
                 }
 
-                float max = points.Max(x => x.OutVal);
-                float min = points.Min(x => x.OutVal);
-                float valSpan = max - min;
+                float valSpan = maxVal - minVal;
                 valSpan = valSpan > 0 ? valSpan : 2;
-                VerticalOffset = Math.Round((min - Math.Ceiling(valSpan * 0.1)) * 10) / 10;
+                VerticalOffset = Math.Round((minVal - Math.Ceiling(valSpan * 0.1)) * 10) / 10;
                 double vSpan = Math.Ceiling(valSpan * 1.2);
-                if (vSpan + VerticalOffset <= max)
+                if (vSpan + VerticalOffset <= maxVal)
                 {
                     vSpan += 1;
                 }
@@ -265,7 +308,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
                 });
             }
 
-            RenderCurve(points);
+            foreach (Curve curve in loadedCurves)
+            {
+                RenderCurve(curve);
+            }
 
             TrackLoading = false;
         }
@@ -300,12 +346,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             graph.Children.Add(label);
         }
 
-        internal readonly List<Anchor> Anchors = new();
-        private void RenderCurve(LinkedList<CurvePoint> points)
+        internal readonly List<Anchor> Anchors = [];
+        private void RenderCurve(Curve curve)
         {
             Anchor lastAnchor = null;
 
-            for (LinkedListNode<CurvePoint> node = points.First; node != null; node = node.Next)
+            for (LinkedListNode<CurvePoint> node = curve.CurvePoints.First; node != null; node = node.Next)
             {
                 switch (node.Value.InterpMode)
                 {

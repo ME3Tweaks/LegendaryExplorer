@@ -1,39 +1,137 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class ShaderCache : ObjectBinary
     {
+        public bool IsGlobalShaderCache;
         public UMultiMap<NameReference, uint> ShaderTypeCRCMap; //TODO: Make this a UMap
         public UMultiMap<Guid, Shader> Shaders; //TODO: Make this a UMap
         public UMultiMap<NameReference, uint> VertexFactoryTypeCRCMap; //TODO: Make this a UMap
+        public UMultiMap<NameReference, Guid> VertexFactoryTypeGuidMap; // GlobalShaderCache
         public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        public static ShaderCache ReadGlobalShaderCache(Stream fs, MEGame game)
         {
-            if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
-            byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
-            sc.Serialize(ref platform);
-            sc.Serialize(ref ShaderTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 && sc.IsLoading)
+            ShaderCache sc = new ShaderCache
             {
-                int nameMapCount = sc.ms.ReadInt32();
-                sc.ms.Skip(nameMapCount * 12);
-            }
-            else if (sc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 && sc.IsSaving)
+                IsGlobalShaderCache = true,
+            };
+            var container = new GlobalShaderCacheSerializingContainer(fs, null, true);
+            container.ActualGame = game;
+            sc.Serialize(container);
+
+            // Sanity check
+            //if (fs.Position != fs.Length)
+            //    // We add an extra 0 on the end to make size different. This way it always is different size.
+            //    if (fs.Position != fs.Length - 1 || fs.ReadByte() == 0)
+            //        Debugger.Break(); // Did not fully read!
+            return sc;
+        }
+
+        public class GlobalShaderCacheSerializingContainer(Stream stream, IMEPackage pcc, bool isLoading = false, int offset = 0, PackageCache packageCache = null) : SerializingContainer(stream, pcc, isLoading, offset, packageCache)
+        {
+            // Global shader cache is not in a package. Thus name references are directly written.
+            public override void Serialize(ref NameReference name)
             {
-                sc.ms.Writer.WriteInt32(0);
+                if (IsLoading)
+                {
+                    name = NameReference.FromInstancedString(ms.ReadUnrealString());
+                }
+                else
+                {
+                    ms.Writer.WriteUnrealString(name.Instanced, MEGame.ME3); // Unicode.
+                }
             }
 
-            if (sc.Game == MEGame.ME1)
+            /// <summary>
+            /// Game this container is for. Used for reserialization.
+            /// </summary>
+            public MEGame ActualGame { get; set; }
+        }
+
+        protected override void Serialize(SerializingContainer sc)
+        {
+            if (!IsGlobalShaderCache)
             {
-                sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+                if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
+                if (sc.Game == MEGame.UDK)
+                {
+                    // Just default to 0, we aren't going to use this in ME
+                    int shaderCachePriority = 0;
+                    sc.Serialize(ref shaderCachePriority);
+                }
+                
+                byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
+                if (sc.Game == MEGame.UDK)
+                {
+                    // We do not support SM3 in UDK
+                    // Serialize as SM5
+                    platform = 4; // UDK SM5 is '4'
+                }
+                sc.Serialize(ref platform);
+            }
+            else
+            {
+                if (sc is GlobalShaderCacheSerializingContainer gscsc)
+                {
+                    // Requires special container as it does not have a package.
+                    if (gscsc.IsLoading)
+                    {
+                        gscsc.ms.ReadStringASCII(4); // BMSG
+                    }
+                    else
+                    {
+                        gscsc.ms.Writer.WriteStringASCII("BMSG");
+                    }
+
+                    int version = UnrealPackageFile.UnrealVersion(gscsc.ActualGame);
+                    gscsc.Serialize(ref version);
+                    int licensee = UnrealPackageFile.LicenseeVersion(gscsc.ActualGame);
+                    gscsc.Serialize(ref licensee);
+                }
+
+                // We only support editing this in LE
+                byte platform = 5;
+                if (sc.Game == MEGame.UDK)
+                {
+                    // Also technically UDK, not sure this would ever be useful
+                    // Serialize as SM5
+                    platform = 4; // UDK SM5 is '4'
+                }
+                sc.Serialize(ref platform);
+            }
+
+            sc.Serialize(ref ShaderTypeCRCMap, sc.Serialize, sc.Serialize);
+            if (IsGlobalShaderCache)
+            {
+                int zero = 0;
+                sc.Serialize(ref zero);
+            }
+            else if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
+            {
+                if (sc.IsLoading)
+                {
+                    int nameMapCount = sc.ms.ReadInt32();
+                    sc.ms.Skip(nameMapCount * 12);
+                }
+                else
+                {
+                    sc.ms.Writer.WriteInt32(0);
+                }
+            }
+
+            if (!IsGlobalShaderCache && sc.Game == MEGame.ME1)
+            {
+                sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
             }
 
             if (sc.IsLoading)
@@ -57,26 +155,67 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
 
-            if (sc.Game != MEGame.ME1)
+
+            if (IsGlobalShaderCache)
             {
-                sc.Serialize(ref VertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+                if (sc.IsLoading)
+                {
+                    VertexFactoryTypeGuidMap = [];
+                }
+
+                int count = VertexFactoryTypeGuidMap.Count;
+                sc.Serialize(ref count);
+
+                if (sc.IsLoading)
+                {
+                    int i = 0;
+                    while (i < count)
+                    {
+                        NameReference name = default;
+                        sc.Serialize(ref name);
+                        Guid value = default;
+                        sc.Serialize(ref value);
+                        sc.Serialize(ref name); // duplicate
+                        VertexFactoryTypeGuidMap.Add(name, value);
+                        i++;
+                    }
+                }
+                else
+                {
+                    foreach (var keyMap in VertexFactoryTypeGuidMap)
+                    {
+                        var key = keyMap.Key;
+                        sc.Serialize(ref key);
+                        var value = keyMap.Value;
+                        sc.Serialize(ref value);
+                        sc.Serialize(ref key); // duplicate
+                    }
+                }
             }
-            sc.Serialize(ref MaterialShaderMaps, SCExt.Serialize, SCExt.Serialize);
-            if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1))
+            else
             {
-                int dummy = 0;
-                sc.Serialize(ref dummy);
+                if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
+                {
+                    sc.Serialize(ref VertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
+                }
+
+                sc.Serialize(ref MaterialShaderMaps, sc.Serialize, sc.Serialize);
+
+                if (sc.Game is not (MEGame.ME2 or MEGame.LE2 or MEGame.LE1 or MEGame.UDK))
+                {
+                    int dummy = 0;
+                    sc.Serialize(ref dummy);
+                }
             }
         }
-
         public static ShaderCache Create()
         {
             return new()
             {
-                ShaderTypeCRCMap = new (),
-                Shaders = new (),
-                VertexFactoryTypeCRCMap = new (),
-                MaterialShaderMaps = new ()
+                ShaderTypeCRCMap = [],
+                Shaders = [],
+                VertexFactoryTypeCRCMap = [],
+                MaterialShaderMaps = []
             };
         }
 
@@ -107,62 +246,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             return names;
         }
-    }
 
-    public enum ShaderFrequency : byte
-    {
-        Vertex = 0,
-        Pixel = 1,
-    }
-
-    public class Shader
-    {
-        public NameReference ShaderType;
-        public Guid Guid;
-        public ShaderFrequency Frequency;
-        public byte[] ShaderByteCode;
-        public uint ParameterMapCRC;
-        public int InstructionCount;
-        public byte[] unkBytesPreName; //only exists in some Shaders with a FVertexFactoryParameterRef
-        public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
-        public byte[] unkBytes;
-
-        private string dissassembly;
-        private ShaderInfo info;
-
-        public ShaderInfo ShaderInfo => info ?? DisassembleShader();
-
-        public string ShaderDisassembly
+        /// <summary>
+        /// Writes this binary directly to the given serializing container. Make sure you've set it up correctly!
+        /// </summary>
+        /// <param name="container"></param>
+        public void WriteTo(SerializingContainer container)
         {
-            get {
-                if (dissassembly == null)
-                {
-                    DisassembleShader();
-                }
-                return dissassembly;
-            }
-        }
-
-        private ShaderInfo DisassembleShader()
-        {
-            return info = ShaderReader.DisassembleShader(ShaderByteCode, out dissassembly);
-        }
-
-        public Shader Clone()
-        {
-            var newShader = new Shader
-            {
-                ShaderType = ShaderType,
-                Guid = Guid,
-                Frequency = Frequency,
-                ShaderByteCode = ShaderByteCode.ArrayClone(),
-                ParameterMapCRC = ParameterMapCRC,
-                InstructionCount = InstructionCount,
-                unkBytesPreName = unkBytesPreName?.ArrayClone(),
-                VertexFactoryType = VertexFactoryType,
-                unkBytes = unkBytes.ArrayClone()
-            };
-            return newShader;
+            Serialize(container);
         }
     }
 
@@ -182,7 +273,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public MaterialUniformExpression[] UniformVertexVectorExpressions;
         public MaterialUniformExpression[] UniformVertexScalarExpressions;
 
-        public  List<(NameReference, string)> GetNames(MEGame game)
+        public List<(NameReference, string)> GetNames(MEGame game)
         {
             var names = new List<(NameReference, string)>();
 
@@ -274,7 +365,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 meshShaderMap.Shaders = new UMultiMap<NameReference, ShaderReference>(MeshShaderMaps[i].Shaders.Count);
                 CopyShaderRefs(MeshShaderMaps[i].Shaders, meshShaderMap.Shaders);
             }
-            
+
             shaderCache.MaterialShaderMaps.Add(newMSM.StaticParameters, newMSM);
 
             return guidMap;
@@ -283,12 +374,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 foreach ((NameReference type, ShaderReference shaderReference) in source)
                 {
-                    var newShaderGuid = Guid.NewGuid();
-                    if (!guidMap.TryAdd(shaderReference.Id, newShaderGuid))
+                    if (!guidMap.TryGetValue(shaderReference.Id, out Guid newShaderGuid))
                     {
-                        newShaderGuid = shaderReference.Id;
+                        newShaderGuid = Guid.NewGuid();
+                        guidMap.Add(shaderReference.Id, newShaderGuid);
                     }
-                    dest.Add(type, new ShaderReference{Id = newShaderGuid, ShaderType = shaderReference.ShaderType});
+                    dest.Add(type, new ShaderReference { Id = newShaderGuid, ShaderType = shaderReference.ShaderType });
                 }
             }
         }
@@ -307,227 +398,97 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public uint unk;//ME1
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref Shader shader)
+        public void Serialize(ref MaterialShaderMap msm)
         {
-            if (sc.IsLoading)
-            {
-                shader = new Shader();
-            }
-            sc.Serialize(ref shader.ShaderType);
-            sc.Serialize(ref shader.Guid);
-            int endOffset = 0;
-            long endOffsetPos = sc.ms.Position;
-            sc.Serialize(ref endOffset);
-            byte platform = sc.Game.IsLEGame() ? (byte)5 : (byte)0;
-            sc.Serialize(ref platform);
-            sc.Serialize(ref shader.Frequency);
-            sc.Serialize(ref shader.ShaderByteCode);
-            sc.Serialize(ref shader.ParameterMapCRC);
-            sc.Serialize(ref shader.Guid);//intentional duplicate
-            sc.Serialize(ref shader.ShaderType);//intentional duplicate
-            sc.Serialize(ref shader.InstructionCount);
-            if (sc.IsLoading)
-            {
-                switch (shader.ShaderType.Name)
-                {
-                    case "FFogVolumeApplyVertexShader":
-                    case "FHitMaskVertexShader":
-                    case "FHitProxyVertexShader":
-                    case "FModShadowMeshVertexShader":
-                    case "FSFXWorldNormalVertexShader":
-                    case "FTextureDensityVertexShader":
-                    case "TDepthOnlyVertexShader<0>":
-                    case "TDepthOnlyVertexShader<1>":
-                    case "FVelocityVertexShader":
-                    case "TFogIntegralVertexShader<FConstantDensityPolicy>":
-                    case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
-                    case "TFogIntegralVertexShader<FSphereDensityPolicy>":
-                    case "FShadowDepthVertexShader":
-                    case "TShadowDepthVertexShader<ShadowDepth_OutputDepth>":
-                    case "TShadowDepthVertexShader<ShadowDepth_OutputDepthToColor>":
-                    case "TShadowDepthVertexShader<ShadowDepth_PerspectiveCorrect>":
-                    case "TAOMeshVertexShader<0>":
-                    case "TAOMeshVertexShader<1>":
-                    case "TDistortionMeshVertexShader<FDistortMeshAccumulatePolicy>":
-                    case "TLightMapDensityVertexShader<FNoLightMapPolicy>":
-                    case "TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFNoLightMapPolicyFSphereDensityPolicy":
-                    case "FShadowDepthNoPSVertexShader":
-                        shader.unkBytesPreName = null;
-                        shader.VertexFactoryType = sc.ms.ReadNameReference(sc.Pcc);
-                        break;
-                    case "TLightMapDensityVertexShader<FDirectionalLightMapTexturePolicy>":
-                    case "TLightMapDensityVertexShader<FDummyLightMapTexturePolicy>":
-                    case "TLightMapDensityVertexShader<FSimpleLightMapTexturePolicy>":
-                    case "TLightVertexShaderFDirectionalLightPolicyFNoStaticShadowingPolicy":
-                    case "TLightVertexShaderFDirectionalLightPolicyFShadowVertexBufferPolicy":
-                    case "TLightVertexShaderFPointLightPolicyFNoStaticShadowingPolicy":
-                    case "TLightVertexShaderFPointLightPolicyFShadowVertexBufferPolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFNoStaticShadowingPolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFShadowVertexBufferPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFPointLightLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFNoDensityPolicy":
-                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
-                        shader.unkBytesPreName = sc.ms.ReadBytes(6);
-                        shader.VertexFactoryType = sc.ms.ReadNameReference(sc.Pcc);
-                        break;
-                    case "TLightVertexShaderFDirectionalLightPolicyFShadowTexturePolicy":
-                    case "TLightVertexShaderFDirectionalLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                    case "TLightVertexShaderFPointLightPolicyFShadowTexturePolicy":
-                    case "TLightVertexShaderFPointLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFShadowTexturePolicy":
-                    case "TLightVertexShaderFSpotLightPolicyFSignedDistanceFieldShadowTexturePolicy":
-                    case "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy":
-                        shader.unkBytesPreName = sc.ms.ReadBytes(12);
-                        shader.VertexFactoryType = sc.ms.ReadNameReference(sc.Pcc);
-                        break;
-                    default:
-                        shader.unkBytesPreName = null;
-                        shader.VertexFactoryType = null;
-                        break;
-                }
-                shader.unkBytes = sc.ms.ReadToBuffer(endOffset - sc.FileOffset);
-            }
-            else
-            {
-                if (shader.VertexFactoryType is NameReference vertexFactoryType)
-                {
-                    if (shader.unkBytesPreName is not null)
-                    {
-                        sc.ms.Writer.WriteFromBuffer(shader.unkBytesPreName);
-                    }
-                    sc.ms.Writer.WriteNameReference(vertexFactoryType, sc.Pcc);
-                }
-                sc.ms.Writer.WriteFromBuffer(shader.unkBytes);
-                endOffset = sc.FileOffset;
-                long endPos = sc.ms.Position;
-                sc.ms.JumpTo(endOffsetPos);
-                sc.ms.Writer.WriteInt32(endOffset);
-                sc.ms.JumpTo(endPos);
-            }
-        }
-
-        public static void Serialize(this SerializingContainer2 sc, ref MaterialShaderMap msm)
-        {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 msm = new MaterialShaderMap();
             }
-            if (sc.Game >= MEGame.ME3)
+            if (Game >= MEGame.ME3)
             {
-                uint unrealVersion = UnrealPackageFile.UnrealVersion(sc.Game);
-                uint licenseeVersion = UnrealPackageFile.LicenseeVersion(sc.Game);
-                sc.Serialize(ref unrealVersion);
-                sc.Serialize(ref licenseeVersion);
+                uint unrealVersion = UnrealPackageFile.UnrealVersion(Game);
+                uint licenseeVersion = UnrealPackageFile.LicenseeVersion(Game);
+                Serialize(ref unrealVersion);
+                Serialize(ref licenseeVersion);
             }
-            long endOffsetPos = sc.ms.Position;
+            long endOffsetPos = ms.Position;
             int dummy = 0;
-            sc.Serialize(ref dummy);//file offset of end of MaterialShaderMap
-            sc.Serialize(ref msm.Shaders, Serialize, Serialize);
-            sc.Serialize(ref msm.MeshShaderMaps, Serialize);
-            sc.Serialize(ref msm.ID);
-            sc.Serialize(ref msm.FriendlyName);
-            sc.Serialize(ref msm.StaticParameters);
+            Serialize(ref dummy);//file offset of end of MaterialShaderMap
+            Serialize(ref msm.Shaders, Serialize, Serialize);
+            Serialize(ref msm.MeshShaderMaps, Serialize);
+            Serialize(ref msm.ID);
+            Serialize(ref msm.FriendlyName);
+            Serialize(ref msm.StaticParameters);
 
-            if (sc.Game >= MEGame.ME3)
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref msm.UniformPixelVectorExpressions, Serialize);
-                sc.Serialize(ref msm.UniformPixelScalarExpressions, Serialize);
-                sc.Serialize(ref msm.Uniform2DTextureExpressions, Serialize);
-                sc.Serialize(ref msm.UniformCubeTextureExpressions, Serialize);
-                sc.Serialize(ref msm.UniformVertexVectorExpressions, Serialize);
-                sc.Serialize(ref msm.UniformVertexScalarExpressions, Serialize);
-            }
-            if (sc.Game is not MEGame.ME1)
-            {
-                int platform = sc.Game.IsLEGame() ? 5 : 0;
-                sc.Serialize(ref platform);
+                Serialize(ref msm.UniformPixelVectorExpressions, Serialize);
+                Serialize(ref msm.UniformPixelScalarExpressions, Serialize);
+                Serialize(ref msm.Uniform2DTextureExpressions, Serialize);
+                Serialize(ref msm.UniformCubeTextureExpressions, Serialize);
+                Serialize(ref msm.UniformVertexVectorExpressions, Serialize);
+                Serialize(ref msm.UniformVertexScalarExpressions, Serialize);
             }
 
-            if (sc.IsSaving)
+            if (Game == MEGame.UDK)
             {
-                long endOffset = sc.ms.Position;
-                int endOffsetInFile = sc.FileOffset;
-                sc.ms.JumpTo(endOffsetPos);
-                sc.ms.Writer.WriteInt32(endOffsetInFile);
-                sc.ms.JumpTo(endOffset);
+                // UDK has 0x1C bytes of unknown data here, seems like it's always 0? 
+                if (IsLoading)
+                {
+                    ms.Skip(0x1C);
+                }
+                else
+                {
+                    ms.Writer.WriteZeros(0x1C);
+                }
+            }
+
+            if (Game is not MEGame.ME1)
+            {
+                int platform = Game.IsLEGame() ? 5 : 0;
+                if (Game == MEGame.UDK)
+                {
+                    platform = 4; // SM5
+                    Serialize(ref platform);
+                }
+                else
+                {
+                    Serialize(ref platform);
+                }
+            }
+
+            
+            if (IsSaving)
+            {
+                long endOffset = ms.Position;
+                int endOffsetInFile = FileOffset;
+                ms.JumpTo(endOffsetPos);
+                ms.Writer.WriteInt32(endOffsetInFile);
+                ms.JumpTo(endOffset);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref ShaderReference shaderRef)
+        public void Serialize(ref ShaderReference shaderRef)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 shaderRef = new ShaderReference();
             }
-            sc.Serialize(ref shaderRef.Id);
-            sc.Serialize(ref shaderRef.ShaderType);
+            Serialize(ref shaderRef.Id);
+            Serialize(ref shaderRef.ShaderType);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref MeshShaderMap msm)
+        public void Serialize(ref MeshShaderMap msm)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 msm = new MeshShaderMap();
             }
-            sc.Serialize(ref msm.Shaders, Serialize, Serialize);
-            sc.Serialize(ref msm.VertexFactoryType);
-            if (sc.Game == MEGame.ME1)
+            Serialize(ref msm.Shaders, Serialize, Serialize);
+            Serialize(ref msm.VertexFactoryType);
+            if (Game == MEGame.ME1)
             {
-                sc.Serialize(ref msm.unk);
-            }
-        }
-
-        public static void Serialize(this SerializingContainer2 sc, ref ShaderFrequency sf)
-        {
-            if (sc.IsLoading)
-            {
-                sf = (ShaderFrequency)sc.ms.ReadByte();
-            }
-            else
-            {
-                sc.ms.Writer.WriteByte((byte)sf);
+                Serialize(ref msm.unk);
             }
         }
     }

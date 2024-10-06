@@ -13,6 +13,7 @@
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:liveLevelEditor="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor"
         xmlns:editorPanels="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.EditorPanels"
+        xmlns:matEd="clr-namespace:LegendaryExplorer.Tools.LiveLevelEditor.MatEd"
         mc:Ignorable="d"
         Width="800"
         Height="1000"
@@ -114,6 +115,9 @@
 
                         </Grid>
                     </Grid>
+                </TabItem>
+                <TabItem Name="materialtab" Header="Material" IsEnabled="{Binding SelectedActor, Converter={StaticResource NullEnabledConverter}}">
+                    <matEd:MaterialEditorLLE x:Name="MatEdLLE"/>
                 </TabItem>
                 <!--<TabItem Name="optionsTab" Header="Controls/Options" Visibility="{Binding ReadyToView, Converter={StaticResource BoolToVisibilityConverter}}">
                 </TabItem>-->

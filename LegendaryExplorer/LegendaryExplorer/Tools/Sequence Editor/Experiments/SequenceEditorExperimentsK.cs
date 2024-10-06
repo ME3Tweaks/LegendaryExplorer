@@ -1,12 +1,8 @@
-﻿
-using DocumentFormat.OpenXml.Wordprocessing;
-using LegendaryExplorer.Dialogs;
+﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
-using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +68,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
 
             if (!inLoop)
             {
-                MessageBox.Show($"Variable links updated", "Success", MessageBoxButton.OK);
+                System.Windows.MessageBox.Show($"Variable links updated", "Success", MessageBoxButton.OK);
             }
         }
 
@@ -92,7 +88,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             }
 
             ExportEntry anchorObject = sew.Pcc.GetUExport(sew.SelectedObjects[0].UIndex);
-            if(anchorObject == null || (anchorObject.ClassName != "SeqVar_Object" && anchorObject.ClassName != "BioSeqVar_ObjectFindByTag")) 
+            if (anchorObject == null || (anchorObject.ClassName != "SeqVar_Object" && anchorObject.ClassName != "BioSeqVar_ObjectFindByTag"))
             {
                 ShowError("Selected anchor is not valid.");
                 return;
@@ -138,12 +134,12 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
                 UpdateAnchorVarLink(sew, anchorObject, true, interp);
             }
 
-            MessageBox.Show($"Interps' anchor links were updated", "Success", MessageBoxButton.OK);
+            System.Windows.MessageBox.Show($"Interps' anchor links were updated", "Success", MessageBoxButton.OK);
         }
 
         private static void ShowError(string errMsg)
         {
-            MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
+            System.Windows.MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
         }
 
         private static string promptForActor(string msg, string err)
@@ -152,12 +148,75 @@ namespace LegendaryExplorer.Tools.Sequence_Editor.Experiments
             {
                 if (string.IsNullOrEmpty(actor))
                 {
-                    MessageBox.Show(err, "Warning", MessageBoxButton.OK);
+                    System.Windows.MessageBox.Show(err, "Warning", MessageBoxButton.OK);
                     return null;
                 }
                 return actor;
             }
             return null;
+        }
+
+        public static void convertSeqVarObjToObjByTag(SequenceEditorWPF sew)
+        {
+            if (sew.Pcc == null || sew.SelectedSequence == null) { return; }
+
+            if (sew.SelectedObjects.Count == 0)
+            {
+                ShowError("No Anchor selected.");
+                return;
+            }
+            ExportEntry seqvarobj = sew.Pcc.GetUExport(sew.SelectedObjects[0].UIndex);
+            if (seqvarobj == null || seqvarobj.ClassName != "SeqVar_Object")
+            {
+                ShowError("Not a SeqVar_Object");
+                return;
+            }
+            var existingObjByTags = sew.Pcc.Exports.Where(x => x.ClassName == "BioSeqVar_ObjectFindByTag").ToList();
+            int maxTag = existingObjByTags.Max(b => b.indexValue);
+            var actorRef = seqvarobj.GetProperty<ObjectProperty>("ObjValue");
+            if (actorRef == null)
+                return;
+            var actor = sew.Pcc.GetUExport(actorRef.Value);
+            if (actor == null)
+                return;
+            var tag = actor.GetProperty<NameProperty>("Tag");
+            if (tag == null)
+            {
+                ShowError("Referenced actor does not have a tag.");
+                return;
+            }
+            //check if tag is unique
+            var pl = sew.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+            if (tag.Value == actor.ClassName || pl == null)
+            {
+                ShowError("Referenced actor does not have a unique tag.");
+                return;
+            }
+            LegendaryExplorerCore.Unreal.BinaryConverters.Level levelBin = pl.GetBinaryData<LegendaryExplorerCore.Unreal.BinaryConverters.Level>();
+            var uIndices = levelBin.Actors.Where(uIndex => sew.Pcc.IsUExport(uIndex)).ToList();
+            foreach (var uidx in uIndices)
+            {
+                var a = sew.Pcc.GetUExport(uidx);
+                if (a == null)
+                    continue;
+                var atag = actor.GetProperty<NameProperty>("Tag");
+                if (atag == null)
+                    continue;
+                if (atag == tag)
+                {
+                    ShowError("Referenced actor does not have a unique tag.");
+                    return;
+                }
+            }
+
+            seqvarobj.ObjectName = "BioSeqVar_ObjectFindByTag";
+            seqvarobj.Class = sew.Pcc.GetEntryOrAddImport("SFXGame.BioSeqVar_ObjectFindByTag", "BioSeqVar_ObjectFindByTag");
+            seqvarobj.indexValue = maxTag + 1;
+            var varprops = seqvarobj.GetProperties();
+
+            varprops.Remove(actorRef);
+            varprops.Add(new NameProperty(tag.Value, "m_sObjectTagToFind"));
+            seqvarobj.WriteProperties(varprops);
         }
     }
 }

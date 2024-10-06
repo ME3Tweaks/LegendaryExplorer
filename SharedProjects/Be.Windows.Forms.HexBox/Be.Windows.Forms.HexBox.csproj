@@ -80,4 +80,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.5" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LegendaryExplorer\LegendaryExplorerCore\LegendaryExplorerCore.csproj" />
+  </ItemGroup>
 </Project>

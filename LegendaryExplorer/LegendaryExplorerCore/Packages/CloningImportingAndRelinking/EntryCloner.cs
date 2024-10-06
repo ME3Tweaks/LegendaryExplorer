@@ -10,25 +10,26 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         {
             var objectMap = new ListenableDictionary<IEntry, IEntry>();
             T newRoot = CloneEntry(entry, objectMap, incrementIndex);
-            cloneTreeRecursive(entry, newRoot);
-            Relinker.RelinkAll(new RelinkerOptionsPackage() {CrossPackageMap = objectMap});
-            return newRoot;
-
-            void cloneTreeRecursive(IEntry originalRootNode, IEntry newRootNode)
+            EntryTree tree = entry.FileRef.Tree;
+            var stack = new Stack<(IEntry, IEntry)>();
+            stack.Push((entry, newRoot));
+            while (stack.TryPop(out var pair))
             {
-                foreach (IEntry node in originalRootNode.GetChildren().ToList())
+                (IEntry originalRootNode, IEntry newRootNode) = pair;
+                foreach (IEntry node in tree.GetDirectChildrenOf(originalRootNode.UIndex))
                 {
-                    IEntry newEntry = CloneEntry(node, objectMap, false);
-                    newEntry.Parent = newRootNode;
-                    cloneTreeRecursive(node, newEntry);
+                    IEntry newEntry = CloneEntry(node, objectMap, false, newRootNode.UIndex);
+                    stack.Push((node, newEntry));
                 }
             }
+            Relinker.RelinkAll(new RelinkerOptionsPackage {CrossPackageMap = objectMap});
+            return newRoot;
         }
         
-        public static T CloneEntry<T>(T entry, IDictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true) where T : IEntry
+        public static T CloneEntry<T>(T entry, IDictionary<IEntry, IEntry> objectMap = null, bool incrementIndex = true, int newParentUIndex = int.MaxValue) where T : IEntry
         {
             bool shouldIncrement = incrementIndex && entry is ExportEntry; // Why is this only for exports?
-            IEntry newEntry = entry.Clone(shouldIncrement);
+            IEntry newEntry = entry.Clone(shouldIncrement, newParentUIndex);
 
             switch (newEntry)
             {

@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int unk3;
         public int unk4;
         public int unk5; //not ME1 or ME2
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref unk1);
             sc.Serialize(ref unk2);
@@ -21,6 +21,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static SpeedTreeComponent Create() => new SpeedTreeComponent();
+        public static SpeedTreeComponent Create() => new();
     }
 }

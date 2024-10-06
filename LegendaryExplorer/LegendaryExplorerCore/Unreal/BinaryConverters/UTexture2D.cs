@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class UTexture : ObjectBinary
     {
-        public byte[] Thumbnail; // Not ME3 or LE3
+        public byte[] SourceArt; // Not ME3 or LE3
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            if (!sc.Game.IsGame3())
+            if (!sc.Game.IsGame3() || (sc.Pcc.FilePath != null && Path.GetExtension(sc.Pcc.FilePath) == ".upk"))
             {
                 int dummy = 0;
                 sc.Serialize(ref dummy);
                 sc.Serialize(ref dummy);
-                sc.Serialize(ref Thumbnail);
+                sc.Serialize(ref SourceArt);
                 sc.SerializeFileOffset();
             }
         }
@@ -24,7 +25,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class UTextureCube : UTexture
     {
         // This is here just to make sure it's different
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
+        {
+            base.Serialize(sc);
+        }
+    }
+
+    public class UTextureRenderTarget2D : UTexture
+    {
+        // This is here just to make sure it's different
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
         }
@@ -36,10 +46,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int Unk1;
         public Guid TextureGuid;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        // UDK only follows
+        public List<Texture2DMipMap> CachedPVRTCMips;
+        public int CachedFlashMipsMaxResolution;
+        public List<Texture2DMipMap> CachedATITCMips;
+        public int[] CachedFlashMipsBulkData;
+        public List<Texture2DMipMap> CachedETCMips;
+
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
-            sc.Serialize(ref Mips, SCExt.Serialize);
+            sc.Serialize(ref Mips, sc.Serialize);
             if (sc.Game != MEGame.UDK)
             {
                 sc.Serialize(ref Unk1);
@@ -52,12 +69,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (sc.Game == MEGame.UDK)
             {
-                var zeros = new byte[32];
-                sc.Serialize(ref zeros, 32);
+                // These appear to be mips or something of different format, maybe for different platforms
+                sc.Serialize(ref CachedPVRTCMips, sc.Serialize);
+                sc.Serialize(ref CachedFlashMipsMaxResolution);
+                sc.Serialize(ref CachedATITCMips, sc.Serialize);
+                sc.SerializeBulkData(ref CachedFlashMipsBulkData, sc.Serialize);
+                sc.Serialize(ref CachedETCMips, sc.Serialize);
             }
             if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
             {
-                int dummy = 0;
+                int dummy = 0; // Bioware specific
                 sc.Serialize(ref dummy);
             }
         }
@@ -66,7 +87,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                Mips = new List<Texture2DMipMap>()
+                Mips = []
             };
         }
 
@@ -118,7 +139,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class LightMapTexture2D : UTexture2D
     {
         public ELightMapFlags LightMapFlags;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             if (sc.Game >= MEGame.ME3)
@@ -133,48 +154,58 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                Mips = new List<Texture2DMipMap>()
+                Mips = []
             };
         }
     }
+
+    [Flags]
     public enum ELightMapFlags
     {
         LMF_None,
+
+        /// <summary>
+        /// This lightmap is streamed
+        /// </summary>
         LMF_Streamed,
+
+        /// <summary>
+        /// This is a simple lightmap
+        /// </summary>
         LMF_SimpleLightmap
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref UTexture2D.Texture2DMipMap mip)
+        public void Serialize(ref UTexture2D.Texture2DMipMap mip)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 mip = new UTexture2D.Texture2DMipMap();
-                mip.MipInfoOffsetFromBinStart = (int)sc.ms.Position; // this is used to update the DataOffset later
+                mip.MipInfoOffsetFromBinStart = (int)ms.Position; // this is used to update the DataOffset later
             }
 
             int mipStorageType = (int)mip.StorageType;
-            sc.Serialize(ref mipStorageType);
+            Serialize(ref mipStorageType);
             mip.StorageType = (StorageTypes)mipStorageType;
-            sc.Serialize(ref mip.UncompressedSize);
-            sc.Serialize(ref mip.CompressedSize);
-            if (sc.IsSaving && mip.IsLocallyStored)
+            Serialize(ref mip.UncompressedSize);
+            Serialize(ref mip.CompressedSize);
+            if (IsSaving && mip.IsLocallyStored)
             {
                 // This code is not accurate as the start offset may be 0 if the export is new and doesn't have a DataOffset yet.
-                sc.SerializeFileOffset();
+                mip.DataOffset = SerializeFileOffset(); // 08/31/2024 - Update the data offset when serializing out
             }
             else
             {
-                sc.Serialize(ref mip.DataOffset);
+                Serialize(ref mip.DataOffset);
             }
 
             if (mip.IsLocallyStored)
             {
-                sc.Serialize(ref mip.Mip, mip.CompressedSize);
+                Serialize(ref mip.Mip, mip.CompressedSize);
             }
-            sc.Serialize(ref mip.SizeX);
-            sc.Serialize(ref mip.SizeY);
+            Serialize(ref mip.SizeX);
+            Serialize(ref mip.SizeY);
         }
     }
 }

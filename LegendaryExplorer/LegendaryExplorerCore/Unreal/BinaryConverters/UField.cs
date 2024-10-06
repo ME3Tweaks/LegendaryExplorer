@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public UIndex SuperClass; //actually a member of UStruct in UDK
         public UIndex Next;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game is not MEGame.UDK)
             {

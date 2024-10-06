@@ -1,71 +1,60 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
-    public interface ITreeItem
-    {
-        bool IsSelected { get; set; }
-        bool IsExpanded { get; set; }
-        void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport);
-    }
 
-    public class BinInterpNode : NotifyPropertyChangedBase, ITreeItem
+    [DebuggerDisplay("BIN {Header}")]
+    public class BinInterpNode() : NotifyPropertyChangedBase, ITreeItem
     {
-        public enum ArrayPropertyChildAddAlgorithm
+        public enum ArrayPropertyChildAddAlgorithm : byte
         {
             None,
             FourBytes
+        }
+
+        public string Header { get; set; }
+        public ITreeItem Parent { get; set; }
+
+        private List<ITreeItem> _items = [];
+        /// <summary>
+        /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
+        /// </summary>
+        public List<ITreeItem> Items
+        {
+            get => _items;
+            set => SetProperty(ref _items, value);
         }
 
         /// <summary>
         /// Used to cache the UIndex of object refs
         /// </summary>
         public int UIndexValue { get; set; }
+        public int Offset { get; set; } = -1;
 
-        public string Header { get; set; }
-        public string Name { get; set; }
-        public object Tag { get; set; }
-        public BinInterpNode Parent;
-        public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
+        public int Length { get; set; }
+        public BinaryInterpreterWPF.NodeType Tag { get; set; }
+        public ArrayPropertyChildAddAlgorithm ArrayAddAlgorithm;
 
-        public bool IsExpanded { get; set; }
-
-        /// <summary>
-        /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
-        /// </summary>
-        public List<ITreeItem> Items { get; set; }
-        public BinInterpNode()
+        protected bool _isExpanded;
+        public virtual bool IsExpanded
         {
-            Items = new List<ITreeItem>();
+            get => _isExpanded;
+            set => SetProperty(ref _isExpanded, value);
         }
 
         public BinInterpNode(string header) : this()
         {
             Header = header;
-        }
-
-        /// <summary>
-        /// Gets the data offset of this node.
-        /// </summary>
-        /// <returns></returns>
-        public int GetOffset()
-        {
-            if (Name != null && Name.StartsWith("_"))
-            {
-                if (int.TryParse(Name.Substring(1), out var dataOffset)) // remove _
-                {
-                    return dataOffset;
-                }
-            }
-
-            return 0;
         }
 
         /// <summary>
@@ -85,23 +74,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Header = pos >= 0 ? $"0x{pos:X8}: {text}" : text;
             if (pos >= 0)
             {
-                Name = $"_{pos}";
+                Offset = (int)pos;
             }
             Tag = nodeType;
         }
 
-        public long GetPos()
+        public int GetPos()
         {
-            if (!string.IsNullOrEmpty(Name) && long.TryParse(Name.Substring(1), out var pos)) return pos;
+            if (Offset >= 0) return Offset;
             return 0;
         }
 
         public int GetObjectRefValue(ExportEntry export)
         {
             if (UIndexValue != 0) return UIndexValue; //cached
-            if (Tag is BinaryInterpreterWPF.NodeType type && (type == BinaryInterpreterWPF.NodeType.ArrayLeafObject || type == BinaryInterpreterWPF.NodeType.ObjectProperty || type == BinaryInterpreterWPF.NodeType.StructLeafObject))
+            if (Tag is BinaryInterpreterWPF.NodeType.ArrayLeafObject or BinaryInterpreterWPF.NodeType.ObjectProperty or BinaryInterpreterWPF.NodeType.StructLeafObject)
             {
-                UIndexValue = EndianReader.ToInt32(export.DataReadOnly, (int)GetPos(), export.FileRef.Endian);
+                UIndexValue = EndianReader.ToInt32(export.DataReadOnly, GetPos(), export.FileRef.Endian);
             }
             return UIndexValue;
         }
@@ -123,9 +112,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     indent += "| ";
                 }
                 //if (Parent != null && Parent == )
-                if (Name != null)
+                if (Offset != null)
                 {
-                    str.Write(Name.TrimStart('_') + ": " + Header);// + " "  " (" + PropertyType + ")");
+                    str.Write(Offset + ": " + Header);// + " "  " (" + PropertyType + ")");
                 }
                 else
                 {
@@ -175,7 +164,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 // operations will be added to the queue after all of the parent expansions.
                 if (value)
                 {
-                    var ancestorsToExpand = new Stack<BinInterpNode>();
+                    var ancestorsToExpand = new Stack<ITreeItem>();
 
                     var parent = Parent;
                     while (parent != null)
@@ -217,7 +206,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var unused = DispatcherHelper.ProcessQueueAsync();
             }
         }
+    }
 
-        public int Length { get; set; }
+    public class BinInterpNodeLazy : BinInterpNode
+    {
+        private Func<int, List<ITreeItem>> _getChildrenCallback;
+
+        public BinInterpNodeLazy(long pos, string text, Func<int, List<ITreeItem>> getChildrenCallback) : base(pos, text)
+        {
+            _getChildrenCallback = getChildrenCallback;
+            Items.Add(new BinInterpNode());
+        }
+
+        public override bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                if (SetProperty(ref _isExpanded, value) && value)
+                {
+                    if (_getChildrenCallback is not null)
+                    {
+                        Items = _getChildrenCallback(Offset);
+                        _getChildrenCallback = null;
+                    }
+                }
+            }
+        }
     }
 }

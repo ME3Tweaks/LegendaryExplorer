@@ -132,6 +132,38 @@ namespace LegendaryExplorerCore.Coalesced.Config
                         break;
                     case CoalesceParseAction.Remove: // Type 4
                         {
+                            bool shouldAddEntry = game != MEGame.LE1; // LE1 only has basegame config so never add it
+                            if (targetSection.TryGetValue(incomingProperty.Name, out var values))
+                            {
+                                for (int i = values.Count - 1; i >= 0; i--)
+                                {
+                                    if (values[i].Value == prop.Value)
+                                    {
+                                        if (values[i].ParseAction == CoalesceParseAction.Remove)
+                                        {
+                                            LECLog.Debug($@"ConfigMerge::MergeEntry - Not adding duplicate subtraction {incomingProperty.Name}->{prop.Value} on {targetSection.Name}", shouldLog: DebugConfigMerge);
+                                            shouldAddEntry = false;
+                                            break;
+                                        }
+                                        if (values[i].ParseAction is CoalesceParseAction.Add or CoalesceParseAction.AddUnique or CoalesceParseAction.New)
+                                        {
+                                            LECLog.Debug($@"ConfigMerge::MergeEntry - Removing value {incomingProperty.Name}->{prop.Value} from {targetSection.Name}", shouldLog: DebugConfigMerge);
+                                            hasChanged = true;
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+                            if (shouldAddEntry)
+                            {
+                                LECLog.Debug($@"ConfigMerge::MergeEntry - Adding subtraction value {incomingProperty.Name}->{prop.Value} from {targetSection.Name}", shouldLog: DebugConfigMerge);
+                                targetSection.AddEntry(new CoalesceProperty(incomingProperty.Name, new CoalesceValue(prop.Value, CoalesceParseAction.Remove))); // Add property removal to resulting file
+                                hasChanged = true;
+                            }
+
+                            // OLD CODE 
+                            /*
+                            bool shouldAddEntry = game != MEGame.LE1; // LE1 only has basegame config so never add it
                             if (targetSection.TryGetValue(incomingProperty.Name, out var values))
                             {
                                 for (int i = values.Count - 1; i >= 0; i--)
@@ -142,10 +174,18 @@ namespace LegendaryExplorerCore.Coalesced.Config
                                             shouldLog: DebugConfigMerge);
                                         values.RemoveAt(i); // Remove this value
                                         hasChanged = true;
+                                        shouldAddEntry = false;
                                     }
                                 }
                             }
+
+                            if (shouldAddEntry)
+                            {
+                                LECLog.Debug($@"ConfigMerge::MergeEntry - Adding subtraction value {incomingProperty.Name}->{prop.Value} from {targetSection.Name}", shouldLog: DebugConfigMerge);
+                                targetSection.AddEntry(new CoalesceProperty(incomingProperty.Name, new CoalesceValue(prop.Value, CoalesceParseAction.Remove))); // Add property removal to resulting file
+                            }*/
                         }
+
                         break;
                     default:
                         LECLog.Warning($@"MERGE TYPE NOT IMPLEMENTED: {prop.ParseAction}");

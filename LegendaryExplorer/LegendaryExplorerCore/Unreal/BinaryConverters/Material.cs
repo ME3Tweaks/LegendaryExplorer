@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -13,14 +16,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public MaterialResource SM3MaterialResource;
         public MaterialResource SM2MaterialResource;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
+            if (sc.Game == MEGame.UDK)
+            {
+                int numResources = 1;
+                sc.Serialize(ref numResources);
+            }
             sc.Serialize(ref SM3MaterialResource);
             if (sc.Game != MEGame.UDK)
             {
+                if (sc.IsSaving && SM2MaterialResource == null)
+                {
+                    // Can happen when converting UDK -> ME
+                    SM2MaterialResource = MaterialResource.Create();
+                }
                 sc.Serialize(ref SM2MaterialResource);
             }
         }
+
+
 
         public static Material Create()
         {
@@ -52,6 +67,32 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 SM2MaterialResource.ForEachUIndex(game, action, "SM2MaterialResource.");
             }
         }
+
+        public void JsonSerialize(Stream outStream)
+        {
+            if (Export?.FileRef is null)
+            {
+                throw new Exception($"Cannot serialize to JSON a {nameof(Material)} that was not constructed from an {nameof(ExportEntry)}.");
+            }
+            JsonSerializer.Serialize(outStream, this, LEXJSONState.CreateSerializerOptions(Export.FileRef, options: new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new MaterialResource.MaterialResourceJsonConverter()
+                }
+            }));
+        }
+
+        public static Material JsonDeserialize(Stream inStream, IMEPackage pcc, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        {
+            return JsonSerializer.Deserialize<Material>(inStream, LEXJSONState.CreateSerializerOptions(pcc, missingObjectResolver, new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new MaterialResource.MaterialResourceJsonConverter()
+                }
+            }));
+        }
     }
     public class MaterialInstance : ObjectBinary
     {
@@ -59,7 +100,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public StaticParameterSet SM3StaticParameterSet; //Not SM3 in LE... not sure what to call the variable though
         public MaterialResource SM2StaticPermutationResource;
         public StaticParameterSet SM2StaticParameterSet;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref SM3StaticPermutationResource);
             sc.Serialize(ref SM3StaticParameterSet);
@@ -124,27 +165,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int MaxTextureDependencyLength;
         public Guid ID;
         public uint NumUserTexCoords;
-        public UIndex[] UniformExpressionTextures; //serialized for ME3, but will be set here for ME1 and ME2 as well
-        //begin Not ME3
+        public UIndex[] UniformExpressionTextures; //serialized for ME3/LE, but will be set here for ME1 and ME2 as well
+        //begin ME1/ME2
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
         public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
         public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
-        //end Not ME3
+        //end ME1/ME2
         public bool bUsesSceneColor;
         public bool bUsesSceneDepth;
-        //begin ME3
+        //begin >= ME3
         public bool bUsesDynamicParameter;
         public bool bUsesLightmapUVs;
         public bool bUsesMaterialVertexPositionOffset;
         public bool unkBool1;
-        //end ME3
+        //end >= ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
-        public uint unkUint1;
-        public uint udkUnk2;
-        public uint udkUnk3;
-        public uint udkUnk4;
+        public uint DummyDroppedFallbackComponents;
         //begin ME1
         public ME1MaterialUniformExpressionsElement[] Me1MaterialUniformExpressionsList;
         public int unk1;
@@ -153,8 +191,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             get => unkList?.Length ?? 0;
             set => Array.Resize(ref unkList, value);
         }
+
+        // UDK ONLY ----------------
+        public uint BlendModeOverrideValue;
+        public bool bIsMaskOverrideValue; // BOOL
+        public bool bIsBlendModeOverrided; // BOOL
+        // END UDK ONLY ============
+
         public int unkInt2;
         public (int, float, int)[] unkList;
+
+        
         //end ME1
 
         public static MaterialResource Create()
@@ -314,6 +361,129 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
         }
+
+        internal class MaterialResourceJsonConverter : JsonConverter<MaterialResource>
+        {
+            public override MaterialResource Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (!options.TryGetState(out LEXJSONState state))
+                {
+                    throw new JsonException($"Could not retrieve {nameof(LEXJSONState)} for this serialization!");
+                }
+                MaterialResource mat = Create();
+                reader.Expect(JsonTokenType.StartObject);
+
+                mat.CompileErrors = [.. reader.ReadList(nameof(CompileErrors), (ref Utf8JsonReader reader) => reader.GetString())];
+                reader.ExpectPropertyName(nameof(TextureDependencyLengthMap));
+                reader.Read();
+                reader.Expect(JsonTokenType.StartObject);
+                while (reader.Read())
+                {
+                    if (reader.TokenType is JsonTokenType.EndObject)
+                    {
+                        break;
+                    }
+                    reader.Expect(JsonTokenType.PropertyName);
+                    int key = state.PathToUIndex(reader.GetString());
+                    reader.Read();
+                    int val = reader.GetInt32();
+                    mat.TextureDependencyLengthMap.Add(key, val);
+                }
+                reader.ReadNumProp(out mat.MaxTextureDependencyLength, nameof(MaxTextureDependencyLength));
+                mat.ID = reader.ReadGuidProp(nameof(ID));
+                reader.ReadNumProp(out mat.NumUserTexCoords, nameof(NumUserTexCoords));
+                mat.UniformExpressionTextures = [.. reader.ReadList(nameof(UniformExpressionTextures), state.ReadEntryValue)];
+                mat.bUsesSceneColor = reader.ReadBoolProp(nameof(bUsesSceneColor));
+                mat.bUsesSceneDepth = reader.ReadBoolProp(nameof(bUsesSceneDepth));
+                mat.bUsesDynamicParameter = reader.ReadBoolProp(nameof(bUsesDynamicParameter));
+                mat.bUsesLightmapUVs = reader.ReadBoolProp(nameof(bUsesLightmapUVs));
+                mat.bUsesMaterialVertexPositionOffset = reader.ReadBoolProp(nameof(bUsesMaterialVertexPositionOffset));
+                mat.unkBool1 = reader.ReadBoolProp(nameof(unkBool1));
+                reader.ReadNumProp(out mat.UsingTransforms, nameof(UsingTransforms));
+                mat.TextureLookups = reader.ReadList(nameof(TextureLookups), static (ref Utf8JsonReader reader) =>
+                {
+                    reader.Expect(JsonTokenType.StartObject);
+                    var lookup = new TextureLookup();
+                    reader.ReadNumProp(out lookup.TexCoordIndex, nameof(TextureLookup.TexCoordIndex));
+                    reader.ReadNumProp(out lookup.TextureIndex, nameof(TextureLookup.TextureIndex));
+                    reader.ReadNumProp(out lookup.UScale, nameof(TextureLookup.UScale));
+                    reader.ReadNumProp(out lookup.VScale, nameof(TextureLookup.VScale));
+                    reader.ReadNumProp(out lookup.Unk, nameof(TextureLookup.Unk));
+                    reader.Read();
+                    reader.Expect(JsonTokenType.EndObject);
+                    return lookup;
+                }).ToArray();
+
+                reader.ReadNumProp(out mat.DummyDroppedFallbackComponents, nameof(DummyDroppedFallbackComponents));
+                reader.ReadNumProp(out mat.BlendModeOverrideValue, nameof(BlendModeOverrideValue));
+                mat.bIsBlendModeOverrided = reader.ReadBoolProp(nameof(bIsBlendModeOverrided));
+                mat.bIsMaskOverrideValue = reader.ReadBoolProp(nameof(bIsMaskOverrideValue));
+
+                reader.Read();
+                reader.Expect(JsonTokenType.EndObject);
+                return mat;
+            }
+
+            public override void Write(Utf8JsonWriter writer, MaterialResource value, JsonSerializerOptions options)
+            {
+                if (!options.TryGetState(out LEXJSONState state))
+                {
+                    throw new JsonException($"Could not retrieve {nameof(LEXJSONState)} for this serialization!");
+                }
+                if (state.Pcc.Game <= MEGame.ME2)
+                {
+                    throw new JsonException("ME1/ME2 MaterialResources cannot be serialized to JSON");
+                }
+                writer.WriteStartObject();
+
+                writer.WriteStartArray(nameof(CompileErrors));
+                foreach (string error in value.CompileErrors)
+                {
+                    writer.WriteStringValue(error);
+                }
+                writer.WriteEndArray();
+                writer.WriteStartObject(nameof(TextureDependencyLengthMap));
+                foreach ((UIndex key, int val) in value.TextureDependencyLengthMap)
+                {
+                    writer.WriteNumber(state.UIndexToPath(key), val);
+                }
+                writer.WriteEndObject();
+                writer.WriteNumber(nameof(MaxTextureDependencyLength), value.MaxTextureDependencyLength);
+                writer.WriteString(nameof(ID), value.ID);
+                writer.WriteNumber(nameof(NumUserTexCoords), value.NumUserTexCoords);
+                writer.WriteStartArray(nameof(UniformExpressionTextures));
+                foreach (UIndex texUidx in value.UniformExpressionTextures)
+                {
+                    writer.WriteStringValue(state.UIndexToPath(texUidx));
+                }
+                writer.WriteEndArray();
+                writer.WriteBoolean(nameof(bUsesSceneColor), value.bUsesSceneColor);
+                writer.WriteBoolean(nameof(bUsesSceneDepth), value.bUsesSceneDepth);
+                writer.WriteBoolean(nameof(bUsesDynamicParameter), value.bUsesDynamicParameter);
+                writer.WriteBoolean(nameof(bUsesLightmapUVs), value.bUsesLightmapUVs);
+                writer.WriteBoolean(nameof(bUsesMaterialVertexPositionOffset), value.bUsesMaterialVertexPositionOffset);
+                writer.WriteBoolean(nameof(unkBool1), value.unkBool1);
+                writer.WriteNumber(nameof(UsingTransforms), value.UsingTransforms);
+                writer.WriteStartArray(nameof(TextureLookups));
+                foreach (TextureLookup texLookup in value.TextureLookups)
+                {
+                    writer.WriteStartObject();
+                    writer.WriteNumber(nameof(TextureLookup.TexCoordIndex), texLookup.TexCoordIndex);
+                    writer.WriteNumber(nameof(TextureLookup.TextureIndex), texLookup.TextureIndex);
+                    writer.WriteNumber(nameof(TextureLookup.UScale), texLookup.UScale);
+                    writer.WriteNumber(nameof(TextureLookup.VScale), texLookup.VScale);
+                    writer.WriteNumber(nameof(TextureLookup.Unk), texLookup.Unk);
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
+                writer.WriteNumber(nameof(DummyDroppedFallbackComponents), value.DummyDroppedFallbackComponents);
+                writer.WriteNumber(nameof(BlendModeOverrideValue), value.BlendModeOverrideValue);
+                writer.WriteBoolean(nameof(bIsBlendModeOverrided), value.bIsBlendModeOverrided);
+                writer.WriteBoolean(nameof(bIsMaskOverrideValue), value.bIsMaskOverrideValue);
+
+                writer.WriteEndObject();
+            }
+        }
     }
 
     public class ME1MaterialUniformExpressionsElement
@@ -415,11 +585,39 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public class TerrainWeightParameter : IEquatable<TerrainWeightParameter>
+        {
+            public NameReference ParameterName;
+            public int WeightmapIndex;
+            public bool bOverride; //ignored in equality checks
+            public Guid ExpressionGUID;
+
+            public bool Equals(TerrainWeightParameter other)
+            {
+                if (other is null) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return ParameterName.Equals(other.ParameterName) && WeightmapIndex == other.WeightmapIndex && bOverride == other.bOverride && ExpressionGUID.Equals(other.ExpressionGUID);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is null) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((TerrainWeightParameter)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ParameterName, WeightmapIndex, bOverride, ExpressionGUID);
+            }
+        }
+
         public Guid BaseMaterialId;
         public StaticSwitchParameter[] StaticSwitchParameters;
         public StaticComponentMaskParameter[] StaticComponentMaskParameters;
         public NormalParameter[] NormalParameters;//ME3
-
+        public TerrainWeightParameter[] TerrainWeightParameters; // UDK
         #region IEquatable
 
         public bool Equals(StaticParameterSet other)
@@ -508,7 +706,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 BaseMaterialId = guid,
                 StaticSwitchParameters = [],
                 StaticComponentMaskParameters = [],
-                NormalParameters = []
+                NormalParameters = [],
+                TerrainWeightParameters = [], // UDK
             };
         }
 
@@ -535,7 +734,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public NameReference ExpressionType;
 
-        public virtual void Serialize(SerializingContainer2 sc)
+        public virtual void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref ExpressionType);
         }
@@ -545,7 +744,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return [];
         }
 
-        public static MaterialUniformExpression Create(SerializingContainer2 sc)
+        public static MaterialUniformExpression Create(SerializingContainer sc)
         {
             NameReference expressionType = sc.ms.ReadNameReference(sc.Pcc);
             sc.ms.Skip(-8);//ExpressionType will be read again during serialization, so back the stream up.
@@ -601,7 +800,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
     {
         public MaterialUniformExpression X;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             if (sc.IsLoading)
@@ -616,7 +815,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public int Index;
         public UIndex TextureIndex;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref Index);
@@ -627,7 +826,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialUniformExpressionSine : MaterialUniformExpressionUnaryOp
     {
         public bool bIsCosine;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref bIsCosine);
@@ -640,7 +839,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public MaterialUniformExpression A;
         public MaterialUniformExpression B;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             if (sc.IsLoading)
@@ -670,7 +869,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialUniformExpressionAppendVector : MaterialUniformExpressionBinaryOp
     {
         public uint NumComponentsA;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref NumComponentsA);
@@ -680,7 +879,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialUniformExpressionFoldedMath : MaterialUniformExpressionBinaryOp
     {
         public byte Op; //EFoldedMathOperation
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref Op);
@@ -692,7 +891,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public MaterialUniformExpression Input;
         public MaterialUniformExpression Min;
         public MaterialUniformExpression Max;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             if (sc.IsLoading)
@@ -720,7 +919,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float B;
         public float A;
         public byte ValueType;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref R);
@@ -735,7 +934,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialUniformExpressionTexture : MaterialUniformExpression
     {
         public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref TextureIndex);
@@ -745,7 +944,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class MaterialUniformExpressionTextureParameter : MaterialUniformExpressionTexture
     {
         public NameReference ParameterName;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref ExpressionType);
             sc.Serialize(ref ParameterName);
@@ -757,7 +956,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public NameReference ParameterName;
         public float DefaultValue;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ParameterName);
@@ -772,7 +971,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float DefaultG;
         public float DefaultB;
         public float DefaultA;
-        public override void Serialize(SerializingContainer2 sc)
+        public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ParameterName);
@@ -784,190 +983,204 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     }
     #endregion
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref MaterialResource mres)
+        public void Serialize(ref MaterialResource mres)
         {
-            if (sc.IsLoading && mres == null)
+            if (IsLoading && mres == null)
             {
                 mres = new MaterialResource();
             }
-            sc.Serialize(ref mres.CompileErrors, SCExt.Serialize);
-            sc.Serialize(ref mres.TextureDependencyLengthMap, Serialize, Serialize);
-            sc.Serialize(ref mres.MaxTextureDependencyLength);
-            sc.Serialize(ref mres.ID);
-            sc.Serialize(ref mres.NumUserTexCoords);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref mres.CompileErrors, Serialize);
+            Serialize(ref mres.TextureDependencyLengthMap, Serialize, Serialize);
+            Serialize(ref mres.MaxTextureDependencyLength);
+            Serialize(ref mres.ID);
+            Serialize(ref mres.NumUserTexCoords);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref mres.UniformExpressionTextures, Serialize);
+                Serialize(ref mres.UniformExpressionTextures, Serialize);
             }
             else
             {
-                sc.Serialize(ref mres.UniformPixelVectorExpressions, Serialize);
-                sc.Serialize(ref mres.UniformPixelScalarExpressions, Serialize);
-                sc.Serialize(ref mres.Uniform2DTextureExpressions, Serialize);
-                sc.Serialize(ref mres.UniformCubeTextureExpressions, Serialize);
+                Serialize(ref mres.UniformPixelVectorExpressions, Serialize);
+                Serialize(ref mres.UniformPixelScalarExpressions, Serialize);
+                Serialize(ref mres.Uniform2DTextureExpressions, Serialize);
+                Serialize(ref mres.UniformCubeTextureExpressions, Serialize);
 
-                if (sc.IsLoading)
+                if (IsLoading)
                 {
                     mres.UniformExpressionTextures = mres.Uniform2DTextureExpressions.Select(texExpr => texExpr.TextureIndex).ToArray();
                 }
             }
-            sc.Serialize(ref mres.bUsesSceneColor);
-            sc.Serialize(ref mres.bUsesSceneDepth);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref mres.bUsesSceneColor);
+            Serialize(ref mres.bUsesSceneDepth);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref mres.bUsesDynamicParameter);
-                sc.Serialize(ref mres.bUsesLightmapUVs);
-                sc.Serialize(ref mres.bUsesMaterialVertexPositionOffset);
-                if (sc.Game == MEGame.ME3 || sc.Game.IsLEGame())
+                Serialize(ref mres.bUsesDynamicParameter);
+                Serialize(ref mres.bUsesLightmapUVs);
+                Serialize(ref mres.bUsesMaterialVertexPositionOffset);
+                if (Game == MEGame.ME3 || Game.IsLEGame())
                 {
-                    sc.Serialize(ref mres.unkBool1);
+                    Serialize(ref mres.unkBool1);
                 }
             }
-            sc.Serialize(ref mres.UsingTransforms);
-            if (sc.Game == MEGame.ME1)
+            Serialize(ref mres.UsingTransforms);
+            if (Game == MEGame.ME1)
             {
-                sc.Serialize(ref mres.Me1MaterialUniformExpressionsList, Serialize);
+                Serialize(ref mres.Me1MaterialUniformExpressionsList, Serialize);
             }
             else
             {
-                sc.Serialize(ref mres.TextureLookups, Serialize);
-                sc.Serialize(ref mres.unkUint1);
-                
-                
-                // If we are porting a terrain, these are NOT used in it's CachedMaterials!
-                // This will break porting from UDK
-                if (sc.Game == MEGame.UDK) // These are not used in Terrain Cached Materials!
+                Serialize(ref mres.TextureLookups, Serialize);
+                Serialize(ref mres.DummyDroppedFallbackComponents);
+
+                // Not used in TerrainMaterialResource (use that specific class instead)
+                if (Game == MEGame.UDK)
                 {
-                    sc.Serialize(ref mres.udkUnk2);
-                    sc.Serialize(ref mres.udkUnk3);
-                    sc.Serialize(ref mres.udkUnk4);
+                    Serialize(ref mres.BlendModeOverrideValue);
+                    Serialize(ref mres.bIsBlendModeOverrided);
+                    Serialize(ref mres.bIsMaskOverrideValue);
                 }
             }
-            if (sc.Game == MEGame.ME1)
+            if (Game == MEGame.ME1)
             {
-                sc.Serialize(ref mres.unk1);
+                Serialize(ref mres.unk1);
                 int tmp = mres.unkCount;
-                sc.Serialize(ref tmp);
+                Serialize(ref tmp);
                 mres.unkCount = tmp; //will create mr.unkList of unkCount size
-                sc.Serialize(ref mres.unkInt2);
+                Serialize(ref mres.unkInt2);
                 for (int i = 0; i < mres.unkCount; i++)
                 {
-                    sc.Serialize(ref mres.unkList[i].Item1);
-                    sc.Serialize(ref mres.unkList[i].Item2);
-                    sc.Serialize(ref mres.unkList[i].Item3);
+                    Serialize(ref mres.unkList[i].Item1);
+                    Serialize(ref mres.unkList[i].Item2);
+                    Serialize(ref mres.unkList[i].Item3);
                 }
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref MaterialResource.TextureLookup tLookup)
+        public void Serialize(ref MaterialResource.TextureLookup tLookup)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 tLookup = new MaterialResource.TextureLookup();
             }
-            sc.Serialize(ref tLookup.TexCoordIndex);
-            sc.Serialize(ref tLookup.TextureIndex);
-            sc.Serialize(ref tLookup.UScale);
-            if (sc.IsLoading && sc.Game == MEGame.ME1)
+            Serialize(ref tLookup.TexCoordIndex);
+            Serialize(ref tLookup.TextureIndex);
+            Serialize(ref tLookup.UScale);
+            if (IsLoading && Game == MEGame.ME1)
             {
                 tLookup.VScale = tLookup.UScale;
             }
 
-            if (sc.Game != MEGame.ME1)
+            if (Game != MEGame.ME1)
             {
-                sc.Serialize(ref tLookup.VScale);
+                Serialize(ref tLookup.VScale);
             }
 
-            if (sc.Game.IsLEGame())
+            if (Game.IsLEGame())
             {
-                sc.Serialize(ref tLookup.Unk);
+                Serialize(ref tLookup.Unk);
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref MaterialUniformExpression matExp)
+        public void Serialize(ref MaterialUniformExpression matExp)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                matExp = MaterialUniformExpression.Create(sc);
+                matExp = MaterialUniformExpression.Create(this);
             }
-            matExp.Serialize(sc);
+            matExp.Serialize(this);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref MaterialUniformExpressionTexture matExp)
+        public void Serialize(ref MaterialUniformExpressionTexture matExp)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                matExp = (MaterialUniformExpressionTexture)MaterialUniformExpression.Create(sc);
+                matExp = (MaterialUniformExpressionTexture)MaterialUniformExpression.Create(this);
             }
-            matExp.Serialize(sc);
+            matExp.Serialize(this);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticParameterSet paramSet)
+        public void Serialize(ref StaticParameterSet paramSet)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 paramSet = new StaticParameterSet();
             }
-            sc.Serialize(ref paramSet.BaseMaterialId);
-            sc.Serialize(ref paramSet.StaticSwitchParameters, Serialize);
-            sc.Serialize(ref paramSet.StaticComponentMaskParameters, Serialize);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref paramSet.BaseMaterialId);
+            Serialize(ref paramSet.StaticSwitchParameters, Serialize);
+            Serialize(ref paramSet.StaticComponentMaskParameters, Serialize);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref paramSet.NormalParameters, Serialize);
+                Serialize(ref paramSet.NormalParameters, Serialize);
+                if (Game == MEGame.UDK)
+                {
+                    Serialize(ref paramSet.TerrainWeightParameters, Serialize);
+                }
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 paramSet.NormalParameters = [];
+                paramSet.TerrainWeightParameters = [];
             }
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticParameterSet.StaticSwitchParameter param)
+        public void Serialize(ref StaticParameterSet.StaticSwitchParameter param)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 param = new StaticParameterSet.StaticSwitchParameter();
             }
-            sc.Serialize(ref param.ParameterName);
-            sc.Serialize(ref param.Value);
-            sc.Serialize(ref param.bOverride);
-            sc.Serialize(ref param.ExpressionGUID);
+            Serialize(ref param.ParameterName);
+            Serialize(ref param.Value);
+            Serialize(ref param.bOverride);
+            Serialize(ref param.ExpressionGUID);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticParameterSet.StaticComponentMaskParameter param)
+        public void Serialize(ref StaticParameterSet.StaticComponentMaskParameter param)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 param = new StaticParameterSet.StaticComponentMaskParameter();
             }
-            sc.Serialize(ref param.ParameterName);
-            sc.Serialize(ref param.R);
-            sc.Serialize(ref param.G);
-            sc.Serialize(ref param.B);
-            sc.Serialize(ref param.A);
-            sc.Serialize(ref param.bOverride);
-            sc.Serialize(ref param.ExpressionGUID);
+            Serialize(ref param.ParameterName);
+            Serialize(ref param.R);
+            Serialize(ref param.G);
+            Serialize(ref param.B);
+            Serialize(ref param.A);
+            Serialize(ref param.bOverride);
+            Serialize(ref param.ExpressionGUID);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref StaticParameterSet.NormalParameter param)
+        public void Serialize(ref StaticParameterSet.NormalParameter param)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 param = new StaticParameterSet.NormalParameter();
             }
-            sc.Serialize(ref param.ParameterName);
-            sc.Serialize(ref param.CompressionSettings);
-            sc.Serialize(ref param.bOverride);
-            sc.Serialize(ref param.ExpressionGUID);
+            Serialize(ref param.ParameterName);
+            Serialize(ref param.CompressionSettings);
+            Serialize(ref param.bOverride);
+            Serialize(ref param.ExpressionGUID);
         }
-        public static void Serialize(this SerializingContainer2 sc, ref ME1MaterialUniformExpressionsElement elem)
+        public void Serialize(ref StaticParameterSet.TerrainWeightParameter param)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
+            {
+                param = new StaticParameterSet.TerrainWeightParameter();
+            }
+            Serialize(ref param.ParameterName);
+            Serialize(ref param.WeightmapIndex);
+            Serialize(ref param.bOverride);
+            Serialize(ref param.ExpressionGUID);
+        }
+        public void Serialize(ref ME1MaterialUniformExpressionsElement elem)
+        {
+            if (IsLoading)
             {
                 elem = new ME1MaterialUniformExpressionsElement();
             }
-            sc.Serialize(ref elem.UniformPixelVectorExpressions, Serialize);
-            sc.Serialize(ref elem.UniformPixelScalarExpressions, Serialize);
-            sc.Serialize(ref elem.Uniform2DTextureExpressions, Serialize);
-            sc.Serialize(ref elem.UniformCubeTextureExpressions, Serialize);
-            sc.Serialize(ref elem.unk2);
-            sc.Serialize(ref elem.unk3);
-            sc.Serialize(ref elem.unk4);
-            sc.Serialize(ref elem.unk5);
+            Serialize(ref elem.UniformPixelVectorExpressions, Serialize);
+            Serialize(ref elem.UniformPixelScalarExpressions, Serialize);
+            Serialize(ref elem.Uniform2DTextureExpressions, Serialize);
+            Serialize(ref elem.UniformCubeTextureExpressions, Serialize);
+            Serialize(ref elem.unk2);
+            Serialize(ref elem.unk3);
+            Serialize(ref elem.unk4);
+            Serialize(ref elem.unk5);
         }
     }
 }

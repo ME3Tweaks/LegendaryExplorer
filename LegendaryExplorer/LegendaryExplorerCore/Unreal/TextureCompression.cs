@@ -93,9 +93,9 @@ namespace LegendaryExplorerCore.Unreal
 
         const int SizeOfChunk = 16;
 
-        public static byte[] CompressTexture(byte[] inputData, StorageTypes type)
+        public static byte[] CompressTexture(byte[] inputData, StorageTypes destType)
         {
-            int maxBlockSize = type is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
+            int maxBlockSize = destType is StorageTypes.extOodle or StorageTypes.pccOodle ? maxBlockSizeOodle : maxBlockSizeOT;
             using MemoryStream ouputStream = MemoryManager.GetMemoryStream(inputData.Length);
             uint compressedSize = 0;
             int dataBlockLeft = inputData.Length;
@@ -119,7 +119,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 ref CompressionChunkBlock block = ref blocks[b];
                 ReadOnlySpan<byte> uncompressedSpan = inputData.AsSpan(block.UncompressedOffset, block.UncompressedSize);
-                switch (type)
+                switch (destType)
                 {
                     case StorageTypes.extLZO:
                     case StorageTypes.pccLZO:

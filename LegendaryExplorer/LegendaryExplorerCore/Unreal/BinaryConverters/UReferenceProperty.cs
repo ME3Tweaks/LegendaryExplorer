@@ -9,7 +9,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public bool IsEnum => Enum != 0;
 
         public UIndex Enum;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref Enum);
@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class UObjectProperty : UProperty
     {
         public UIndex ObjectRef;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ObjectRef);
@@ -68,7 +68,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class UClassProperty : UObjectProperty
     {
         public UIndex ClassRef;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ClassRef);
@@ -103,7 +103,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class UArrayProperty : UProperty
     {
         public UIndex ElementType;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ElementType);
@@ -127,7 +127,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class UStructProperty : UProperty
     {
         public UIndex Struct;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref Struct);
@@ -163,7 +163,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public UIndex KeyType;
         public UIndex ValueType;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref KeyType);
@@ -189,7 +189,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public UIndex Function;
         public UIndex Delegate;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref Function);

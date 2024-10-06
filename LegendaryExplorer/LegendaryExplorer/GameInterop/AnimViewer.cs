@@ -64,15 +64,18 @@ namespace LegendaryExplorer.GameInterop
                 catch
                 {
                     MessageBox.Show($"Error loading {animSourceFilePath} #{animSequenceUIndex}");
+                    return;
                 }
             }
 
-            string tempFilePath = Path.Combine(MEDirectories.GetCookedPath(pcc.Game), $"{saveAsName}.pcc");
-            pcc.Save(tempFilePath);
-
-            // Only ME3 needs this
-            if (pcc.Game == MEGame.ME3)
+            if (game.IsLEGame())
             {
+                InteropHelper.SendFileToGame(pcc, saveAsName);
+            }
+            else
+            {
+                string tempFilePath = Path.Combine(MEDirectories.GetCookedPath(pcc.Game), $"{saveAsName}.pcc");
+                pcc.Save(tempFilePath);
                 InteropHelper.TryPadFile(tempFilePath, 10_485_760);
             }
         }
@@ -88,21 +91,25 @@ namespace LegendaryExplorer.GameInterop
         {
             var interopTarget = GameController.GetInteropTargetForGame(game);
             var tempMapName = mapName ?? GameController.TempMapName;
-            string tempDir = MEDirectories.GetCookedPath(game);
-            string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.pcc");
 
-            //pcc.Save(tempFilePath); // This eventually needs reinstated!!
-
-            // LE games don't need this
-            if (game is MEGame.ME3 && shouldPad)
+            if (game is MEGame.ME3)
             {
-                if (!InteropHelper.TryPadFile(tempFilePath))
+                string tempDir = MEDirectories.GetCookedPath(game);
+                string tempFilePath = Path.Combine(tempDir, $"{tempMapName}.pcc");
+                string animViewerBaseFilePath = Path.Combine(AppDirectories.ExecFolder, "ME3AnimViewer.pcc");
+
+                using IMEPackage animViewerBase = MEPackageHandler.OpenMEPackage(animViewerBaseFilePath);
+                animViewerBase.Save(tempFilePath);
+                if (shouldPad)
                 {
-                    //if file was too big to pad, hotloading is impossible 
-                    canHotLoad = false;
+                    if (!InteropHelper.TryPadFile(tempFilePath))
+                    {
+                        //if file was too big to pad, hotloading is impossible 
+                        canHotLoad = false;
+                    }
                 }
             }
-
+            
             if (interopTarget.TryGetProcess(out var gameProcess) && (canHotLoad || game.IsLEGame()))
             {
                 if (game.IsLEGame())

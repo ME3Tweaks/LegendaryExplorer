@@ -17,6 +17,7 @@ using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
+    // USED BY LEX, I THINK
     /// <summary>
     /// Options that change how porting is done
     /// </summary>
@@ -119,7 +120,40 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (sourceEntry is ExportEntry sourceExport)
                 {
                     //importing an export (check if it exists first, if it does, just link to it)
-                    newEntry = destPcc.FindExport(sourceEntry.InstancedFullPath) ?? ImportExport(destPcc, sourceExport, link, rop);
+                    newEntry = destPcc.FindEntry(sourceEntry.InstancedFullPath); // 12/09/2023 - Change from FindExport to FindEntry
+                    if (newEntry == null)
+                    {
+                        // 12/09/2023 - Add ability to convert directly to import
+                        if (rop.PortExportsAsImportsWhenPossible)
+                        {
+                            // Try convert to import
+                            var testImport = new ImportEntry(sourceExport, link, destPcc);
+
+                            // 09/07/2024 - If using a custom link, the IFP could have changed; we should determine if this import already exists first
+                            newEntry = destPcc.FindEntry(testImport.InstancedFullPath, testImport.ClassName); // 12/09/2023 - Change from FindExport to FindEntry
+                            if (newEntry == null)
+                            {
+                                // Try to resolve the import
+                                if (EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache,
+                                        fileResolver: rop.DestinationCustomImportFileResolver))
+                                {
+                                    destPcc.AddImport(testImport);
+                                    newEntry = testImport;
+                                    // Debug.WriteLine($"Redirected importable export {superclass.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                }
+                            }
+                            else
+                            {
+                                // Already exists in package
+                                // Do nothing
+                            }
+                        }
+
+                        if (newEntry == null)
+                        {
+                            newEntry = ImportExport(destPcc, sourceExport, link, rop);
+                        }
+                    }
                 }
                 else
                 {
@@ -286,31 +320,26 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
         }
 
-        // CROSSGEN-V HACKS!
-        public static List<string> NonDonorItems = [];
-
-        // TODO: FIND WAY TO HANDLE DUPLICATE NAMED OBJECTS IN GAMES
-        // 1: Identify badly named objects
-        // 2: Probably have to find some hack or warning for entry lookups when these paths are encountered.
-        // Note: The following list is not complete for ME1.
-        private static readonly string[] badlyNamedME1Assets =
-        [
-            "BIOA_JUG80_T.JUG80_SAIL",
-            "BIOA_ICE60_T.checker",
-        ];
-        // END CROSSGEN-V HACKS
-
         /// <summary>
-        /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries().
+        /// Imports an export from another package file. Does not perform a relink, if you want to relink, use ImportAndRelinkEntries(). This returns IEntry, as it may return an ImportEntry if the export is found in a higher tier file and ROP options for imports are set.
         /// </summary>
         /// <param name="destPackage">Package to import to</param>
         /// <param name="sourceExport">Export object from the other package to import</param>
         /// <param name="link">Local parent node UIndex</param>
         /// <param name="rop">Options for relinking</param>
         /// <returns></returns>
-        public static ExportEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
+        public static IEntry ImportExport(IMEPackage destPackage, ExportEntry sourceExport, int link, RelinkerOptionsPackage rop)
         {
             //Debug.WriteLine($"Importing {sourceExport.InstancedFullPath}");
+#if DEBUG
+            // These variables are used for debugging as it is semi-difficult to trace execution of this method. 
+            bool checkedDonor = false;
+            var originalIFP = sourceExport.InstancedFullPath; // Can change if ObjectRedirector is followed
+            if (originalIFP == "BioT_MPMoon.Materials.CliffBlend_INST")
+            {
+
+            }
+#endif
             //if (sourceExport.InstancedFullPath == "BioVFX_Z_TEXTURES.Generic.Biotic_Current_2")
             //    Debugger.Break();
             // CROSSGEN - WILL NEED HEAVY REWORK IF THIS IS TO BE MERGED TO BETA
@@ -336,17 +365,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                 }
                 bool usingDonor = false;
+                bool usingRedirectedObject = false;
                 if (donorFiles != null && donorFiles.Any())
                 {
                     // See if any packages are open in our cache that already contain this asset
                     IMEPackage donorPackage = null;
                     bool isCached = false;
-
-                    if (badlyNamedME1Assets.Contains(ifp))
-                    {
-                        // Force use to use a donor without the cache
-                        rop.Cache?.ReleasePackages(); // Drop the cache so we have to look in the list of packages
-                    }
 
                     foreach (var df in donorFiles)
                     {
@@ -377,8 +401,28 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.Cache.TryGetCachedPackage(dfp, false, out donorPackage))
                         {
                             var seIFP = ifp;
-                            var testExp = donorPackage.FindExport(seIFP);
-                            if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
+                            var testExp = donorPackage.FindExport(seIFP, sourceExport.ClassName);
+
+                            if (testExp == null)
+                                testExp = donorPackage.FindExport(seIFP); // Try without specific class.
+
+                            // 07/20/2024 - support using object redirector for cleaner custom object insertion
+                            if (testExp.ClassName.CaseInsensitiveEquals("ObjectRedirector"))
+                            {
+                                // Follow redirect to different object.
+                                var redir = ObjectBinary.From<ObjectRedirector>(testExp);
+                                testExp = testExp.FileRef.GetUExport(redir.DestinationObject);
+                                usingRedirectedObject = true;
+                            }
+
+                            // If IFP is the same but class changed the lookup earlier failed. We should retry here (used at least in Crossgen)
+                            if (destPackage.FindExport(seIFP, testExp.ClassName) is {} existingExport)
+                            {
+                                // Export already in destination package
+                                return existingExport;
+                            }
+
+                            if (testExp.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) || (sourceExport.ClassName.CaseInsensitiveEquals("BioSWF") && testExp.ClassName.CaseInsensitiveEquals("GFxMovieInfo")) || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
                                 sourceExport = testExp;
                                 isCached = true;
@@ -391,11 +435,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             if (testExp.ClassName != sourceExport.ClassName)
                             {
                                 // have to manually try to find the export...
-                                var properDonor = donorPackage.Exports.FirstOrDefault(x => x.InstancedFullPath == seIFP && x.ClassName == sourceExport.ClassName);
+                                var properDonor = donorPackage.FindExport(seIFP, sourceExport.ClassName);
 
                                 if (properDonor == null)
                                 {
-                                    if (sourceExport.ClassName != "Model" && sourceExport.ClassName != "Brush")
+                                    if (!sourceExport.ClassName.CaseInsensitiveEquals("Model") && !sourceExport.ClassName.CaseInsensitiveEquals("Brush"))
                                         Debug.WriteLine($"CLASSES DIFFER FOR DONORS, CAN'T FIND SUITABLE REPLACEMENT: {sourceExport.ClassName} vs {testExp.ClassName} for {testExp.InstancedFullPath}");
                                 }
                                 else
@@ -416,7 +460,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]);
                         if (rop.Cache.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
-                            var testExp = donorPackage.FindExport(ifp);
+                            var testExp = donorPackage.FindExport(ifp, sourceExport.ClassName);
+                            if (testExp == null)
+                                testExp = donorPackage.FindExport(ifp); // Try without specific class, perhaps it changed across games.
+
+                            // 07/20/2024 - support using object redirector for cleaner custom object insertion
+                            if (testExp.ClassName.CaseInsensitiveEquals("ObjectRedirector"))
+                            {
+                                // Follow redirect to different object.
+                                var redir = ObjectBinary.From<ObjectRedirector>(testExp);
+                                testExp = testExp.FileRef.GetUExport(redir.DestinationObject);
+                                usingRedirectedObject = true;
+                            }
+
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant")) // Use GFxMovieInfo Donors for BioSWF export
                             {
                                 sourceExport = testExp;
@@ -450,11 +506,25 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     {
                         var entryStr = $"{sourceExport.ClassName} {sourceExport.InstancedFullPath}";
                         Debug.WriteLine($@"Not ported using donor: {sourceExport.InstancedFullPath} ({sourceExport.ClassName})");
-                        if (!NonDonorItems.Contains(entryStr))
-                        {
-                            NonDonorItems.Add(entryStr);
-                        }
                     }
+                }
+
+                // Check if a redirected object was used
+
+                // Test if redirected object is already in the package
+                // Would be nice if this could be done as import. But that'd break a lot of stuff.
+                if (usingRedirectedObject && usingDonor)
+                {
+                    if (destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName) != null)
+                        return destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName);
+                }
+
+                // 07/20/2024 - Add custom way to handle donor importing for users of LEC
+                if (usingDonor && rop.CustomDonorImporter != null)
+                {
+                    var result = rop.CustomDonorImporter(destPackage, sourceExport, rop);
+                    if (result != null)
+                        return result;
                 }
             }
 
@@ -513,11 +583,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ////for unsupported classes, this will just copy over the binary
             ////sometimes converting binary requires altering the properties as well
             ObjectBinary binaryData = ExportBinaryConverter.ConvertPostPropBinary(sourceExport, destPackage.Game, props);
-
             //Set class.
 
-            if (sourceExport.ObjectName == @"Default__BioStartLocationMP")
-                Debugger.Break();
+            //if (sourceExport.ObjectName == @"SFXPower_EMPGrenade")
+            //    Debugger.Break();
             IEntry classValue = null;
             switch (sourceExport.Class)
             {
@@ -540,12 +609,30 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         if (rop.PortExportsAsImportsWhenPossible)
                         {
                             // Try convert to import
+
                             var testImport = new ImportEntry(sourceClassExport, classParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath, testImport.ClassName);
+                            if (existingImport != null)
                             {
-                                destPackage.AddImport(testImport);
-                                classValue = testImport;
-                                // Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                // Do not add a duplicate. Use the existing import
+                                classValue = existingImport;
+                            }
+
+                            if (classValue == null)
+                            {
+                                existingImport = destPackage.FindImport(testImport.InstancedFullPath, testImport.ClassName);
+                                if (existingImport != null)
+                                {
+                                    // Do not add a duplicate. Use the existing import
+                                    classValue = existingImport; // we don't break here so if any further logic is added it executes
+                                }
+
+                                if (classValue == null && EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
+                                {
+                                    destPackage.AddImport(testImport);
+                                    classValue = testImport;
+                                    // Debug.WriteLine($"Redirected importable export {classValue.InstancedFullPath} to import from {resolved.FileRef.FilePath}");
+                                }
                             }
                         }
 
@@ -578,7 +665,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceSuperClassExport, superClassParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath);
+                            if (existingImport != null)
+                            {
+                                // Do not add a duplicate. Use the existing import
+                                superclass = existingImport;
+                            }
+                            if (superclass == null && EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 superclass = testImport;
@@ -616,7 +709,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         {
                             // Try convert to import
                             var testImport = new ImportEntry(sourceArchetypeExport, archetypeParent?.UIndex ?? 0, destPackage);
-                            if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                            var existingImport = destPackage.FindImport(testImport.InstancedFullPath);
+                            if (existingImport != null)
+                            {
+                                // Do not add a duplicate. Use the existing import
+                                archetype = existingImport;
+                            }
+                            if (archetype == null && EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                             {
                                 destPackage.AddImport(testImport);
                                 archetype = testImport;
@@ -645,13 +744,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 rop.CrossPackageMap[sourceExport] = newExport;
             }
-
             return newExport;
         }
 
         internal static void ApplyCrossGamePropertyFixes(ExportEntry sourceExport, IMEPackage destPackage, PropertyCollection props)
         {
-            // 06/25/2022 - Support corrections to allow more sucessful porting
+            // 06/25/2022 - Support corrections to allow more successful porting
             // Mgamerz
 
             // Doesn't go backwards for OT since they use different Wwise versions
@@ -699,6 +797,31 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 locationProp.Name = destPackage.Game.IsGame3() ? "location" : "Location";
             }
+
+            if (destPackage.Game == MEGame.UDK)
+            {
+                var format = props.GetProp<EnumProperty>("Format");
+                if (format != null)
+                {
+                    if (format.Value.Name == "PF_NormalMap_HQ") // Technically also LQ
+                    {
+                        // NormalMap_HQ does not exist in games higher than 1/2
+                        // NormalMap_HQ is ATI2 which later became BC5
+                        props.AddOrReplaceProp(new EnumProperty("PF_BC5", "EPixelFormat", MEGame.UDK, "Format"));
+                    }
+                    else if (format.Value.Name == "PF_BC7")
+                    {
+                        // UDK doesn't support BC7
+                        // Don't remove these properties as they are needed to load data out of a TFC
+                        //props.RemoveNamedProperty("TextureFileCacheName");
+                        //props.RemoveNamedProperty("TFCFileGuid");
+                        props.RemoveNamedProperty("LODGroup");
+                        props.AddOrReplaceProp(new EnumProperty("PF_DXT1", "EPixelFormat", MEGame.UDK, "Format"));
+                        props.AddOrReplaceProp(new EnumProperty("TC_NormalMap", "TextureCompressionSettings", MEGame.UDK, "CompressionSettings"));
+                        // Texture data is converted in ConvertPostPropBinary()
+                    }
+                }
+            }
         }
 
         private static bool CanDonateObject(ExportEntry export)
@@ -733,7 +856,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //int start = incomingExport.GetPropertyStart();
                 // 06/08/2024 - When copying data over we should keep the pre-props binary instead of just writing zeros
-                res.Writer.Write(incomingExport.DataReadOnly.Slice(0,incomingExport.GetPropertyStart()));
+                res.Writer.Write(incomingExport.DataReadOnly.Slice(0, incomingExport.GetPropertyStart()));
                 //res.Writer.Write(new byte[start], 0, start);
             }
 
@@ -742,6 +865,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             try
             {
                 PropertyCollection props = incomingExport.GetProperties();
+                ApplyCrossGamePropertyFixes(incomingExport, targetExport.FileRef, props);
                 ObjectBinary binary = ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game, props);
                 props.WriteTo(res.Writer, targetExport.FileRef);
                 res.Writer.WriteFromBuffer(binary.ToBytes(targetExport.FileRef));
@@ -865,7 +989,14 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     // Try convert to import
                     var testImport = new ImportEntry(foundMatchingExport, parent?.UIndex ?? 0, destinationPCC);
-                    if (EntryImporter.TryResolveImport(testImport, out var resolved, localCache: rop.Cache))
+                    var existingImport = destinationPCC.FindImport(testImport.InstancedFullPath);
+                    if (existingImport != null)
+                    {
+                        // Do not add a duplicate. Use the existing import
+                        return existingImport;
+                    }
+
+                    if (EntryImporter.TryResolveImport(testImport, out var resolved, cache: rop.Cache, fileResolver: rop.DestinationCustomImportFileResolver))
                     {
                         destinationPCC.AddImport(testImport);
                         // Debug.WriteLine($"Redirected importable export {importFullNameInstanced} to import from {resolved.FileRef.FilePath}");
@@ -994,7 +1125,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 if (matchingSourceExport.Class != null)
                 {
                     pf = matchingSourceExport.Class.GetRootName(); // This is correct 'most' times but not always
-                    // Try to determine what file the class is defined out of
+                                                                   // Try to determine what file the class is defined out of
                     if (pf != "Engine" && pf != "Core" && pf != "SFXGame" && pf != "BIOC_Base")
                     {
                         Debug.WriteLine($@"Converting export to import in global file, unknown base class root {pf} for {matchingSourceExport.InstancedFullPath}. We are going to convert it to 'Core'");
@@ -1090,9 +1221,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         ];
 
         private static readonly string[] le2FilesSafeToImportFrom =
-        [
-            "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
-        ];
+        {
+            "Core.pcc", "Engine.pcc", "IPDrv.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"
+        };
 
         private static readonly string[] le2FilesSafeToImportFromPostLoad =
         [
@@ -1106,7 +1237,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         [
             //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
             // Note: You must use MELoadedFiles for Startup.pcc as it exists in METR Patch and is not used by game! (and is also wrong file)
-            "Core.pcc", "Engine.pcc", "Startup.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc",
+            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "IPDrv.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup.pcc",
         ];
 
         private static readonly string[] le3FilesSafeToImportFromPostLoad =
@@ -1248,6 +1379,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             else if (game.IsGame2() || game.IsGame3())
             {
                 // DO NOT ADD BIOG
+                if (postLoadTest.StartsWith("BIOP_MP")) // 12/11/2023 - LE3R - Do not allow usage of BIO_COMMON as it breaks MP power porting when using MP Common package
+                    return false; // These should not use the BIO_COMMON package in accordance with CommonPackage system
+
                 if (postLoadTest.StartsWith("BioA_", StringComparison.InvariantCultureIgnoreCase) ||
                     postLoadTest.StartsWith("BioD_", StringComparison.InvariantCultureIgnoreCase) ||
                     postLoadTest.StartsWith("BioS_", StringComparison.InvariantCultureIgnoreCase) ||
@@ -1337,30 +1471,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         }
 
         /// <summary>
-        /// Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.
-        /// </summary>
-        /// <param name="entry">The import to resolve</param>
-        /// <param name="localCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
-        /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
-        /// <returns>The resolved export, or null if the referenced import could not be found</returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache localCache = null, string localization = "INT")
-        {
-            return ResolveImport(entry, null, localCache, localization);
-        }
-
-        /// <summary>
         /// Returns true if a import can be resolved using the LEC resolver code. This is not 100% accurate to the game. The passed in package cache may have empty (no data) loaded packages
         /// inserted into it!
         /// </summary>
-        /// <param name="entry"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
-        /// <param name="globalCache"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
-        /// <param name="lookupCache"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
-        /// <param name="localization"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
-        /// <param name="localDirFiles"><inheritdoc cref="ResolveImport(ImportEntry, PackageCache, PackageCache, string, bool, IEnumerable{string}, string)"/></param>
+        /// <param name="entry"></param>
+        /// <param name="cache"></param>
+        /// <param name="localization"></param>
+        /// <param name="localDirFiles">Used to improve performance by not having to enumerate local files and testing their existence</param>
         /// <returns></returns>
-        public static bool CanResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", IEnumerable<string> localDirFiles = null)
+        public static bool CanResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", IEnumerable<string> localDirFiles = null)
         {
-            var exp = ResolveImport(entry, globalCache, lookupCache, localization, true, localDirFiles);
+            var exp = ResolveImport(entry, cache, localization, true, localDirFiles);
             return exp != null;
         }
 
@@ -1368,16 +1489,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.
         /// </summary>
         /// <param name="entry">The import to resolve</param>
-        /// <param name="globalCache">Package cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</param>
-        /// <param name="lookupCache">Package cache if you wish to keep packages held open, for example if you're resolving many imports</param>
+        /// <param name="cache">Package cache that is used to improve performnace by not having to open all packages from disk. A <see cref="TieredPackageCache"/> is preferred.</param>
         /// <param name="localization">Three letter localization code, all upper case. Defaults to INT.</param>
         /// <param name="unsafeLoad">If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</param>
         /// <param name="localDirFiles">Files in the local directory. These will be checked last</param>
         /// <param name="gameRootOverride">The root path of the game. If null, the default path will be used</param>
+        /// <param name="instancedFullPathOverride">Allows overriding the instanced full path for lookup when resolving this import - can be useful if you need to test an import that has it's IFP changed and would not resolve otherwise</param>
         /// <returns></returns>
-        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache globalCache, PackageCache lookupCache, string localization = "INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, string gameRootOverride = null)
+        public static ExportEntry ResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", bool unsafeLoad = false,
+            IEnumerable<string> localDirFiles = null, string gameRootOverride = null, Func<string, PackageCache, IMEPackage> fileResolver = null,
+            Func<ExportEntry, bool> unsafeLoadDelegate = null, string instancedFullPathOverride = null)
         {
-            var entryFullPath = entry.InstancedFullPath;
+            var entryFullPath = instancedFullPathOverride ?? entry.InstancedFullPath;
+            cache ??= new PackageCache();
             //if (entry.ObjectName == "HMM_EYE_MASTER_OVRD_MAT")
             //{
 
@@ -1391,6 +1515,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             foreach (var fileName in filesToCheck)
             {
+                // 12/07/2023 - Mgamerz
+                // Allow custom resolver for imports so you can force which
+                // package will be inspected. This allows you to resolve
+                // package lookups outside of game
+                var customResolvedPackage = fileResolver?.Invoke(fileName, cache);
+                if (customResolvedPackage != null)
+                {
+                    var export = FindExportInPackage(customResolvedPackage, fileName, entryFullPath);
+                    if (export != null)
+                    {
+                        return export;
+                    }
+
+                    // Custom resolver didn't find it in its package. Do not use the default.
+                    continue;
+                }
+
                 if (gameFiles.TryGetValue(fileName, out var fullgamepath))
                 {
                     var export = containsImportedExport(fullgamepath);
@@ -1423,8 +1564,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 if (unsafeLoad)
                 {
-                    // Load no export data - we only care about the table data
-                    return MEPackageHandler.UnsafePartialLoad(packagePath, x => false);
+                    if (unsafeLoadDelegate != null)
+                    {
+                        return MEPackageHandler.UnsafePartialLoad(packagePath, unsafeLoadDelegate);
+                    }
+                    else
+                    {
+                        // Load no export data - we only care about the table data
+                        return MEPackageHandler.UnsafePartialLoad(packagePath, x => false);
+                    }
                 }
                 else
                 {
@@ -1437,49 +1585,57 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             {
                 //Debug.WriteLine($"Checking file {packagePath} for {entryFullPath}");
                 IMEPackage package = null;
-                if (globalCache != null)
-                {
-                    package = globalCache.GetCachedPackage(packagePath, false);
-                }
 
-                package ??= lookupCache != null ? lookupCache.GetCachedPackage(packagePath, openPackageMethod: openPackageMethod) : openPackageMethod(packagePath);
+                package = cache.GetCachedPackage(packagePath, openPackageMethod: openPackageMethod) ?? openPackageMethod(packagePath);
 
                 if (package == null)
                     Debugger.Break();
 
-                var packName = Path.GetFileNameWithoutExtension(packagePath);
-                var packageParts = entryFullPath.Split('.').ToList();
-
-                // Coded a bit weird for optimization on allocations
-                string forcedExportPath = null;
-                if (packageParts.Count > 1 && packName == packageParts[0]) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
-                {
-                    packageParts.RemoveAt(0);
-                    forcedExportPath = string.Join(".", packageParts);
-                }
-                else if (packName == packageParts[0])
-                {
-                    //it's literally the file itself (an imported package like SFXGame)
-                    return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
-                }
-
-                if (forcedExportPath != null)
-                {
-                    // We will try both with stripped header and non-stripped
-                    // ForcedExport does not use package name as root (e.g. does not use 'SFXGame')
-                    // Non-ForcedExport are native to the package (e.g. does use 'SFXGame')
-                    var clippedExport = package.FindExport(forcedExportPath);
-                    if (clippedExport != null)
-                    {
-                        if (clippedExport.IsForcedExport)
-                        {
-                            return null; // This import should not resolve! ForcedExport cannot use the packagename as the root of the import.
-                        }
-                        return clippedExport; // The export is not marked ForcedExport so this is fine to resolve
-                    }
-                }
-                return package.FindExport(entryFullPath);
+                return FindExportInPackage(package, packagePath, entryFullPath);
             }
+        }
+
+        /// <summary>
+        /// Finds an export in a package based on its full path. This can change depending on if it's forced export or not.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagePath"></param>
+        /// <param name="entryFullPath"></param>
+        /// <returns></returns>
+        private static ExportEntry FindExportInPackage(IMEPackage package, string packagePath, string entryFullPath)
+        {
+            var packName = Path.GetFileNameWithoutExtension(packagePath);
+            var packageParts = entryFullPath.Split('.').ToList();
+
+            // Coded a bit weird for optimization on allocations
+            string forcedExportPath = null;
+            if (packageParts.Count > 1 && packName.CaseInsensitiveEquals(packageParts[0])) // Remove 'SFXGame' from 'SFXGame.BioSeqAct...'
+            {
+                packageParts.RemoveAt(0);
+                forcedExportPath = string.Join(".", packageParts);
+            }
+            else if (packName.CaseInsensitiveEquals(packageParts[0]))
+            {
+                //it's literally the file itself (an imported package like SFXGame)
+                return package.Exports.FirstOrDefault(x => x.idxLink == 0); //this will be at top of the tree
+            }
+
+            if (forcedExportPath != null)
+            {
+                // We will try both with stripped header and non-stripped
+                // ForcedExport does not use package name as root (e.g. does not use 'SFXGame')
+                // Non-ForcedExport are native to the package (e.g. does use 'SFXGame')
+                var clippedExport = package.FindExport(forcedExportPath);
+                if (clippedExport != null)
+                {
+                    if (clippedExport.IsForcedExport)
+                    {
+                        return null; // This import should not resolve! ForcedExport cannot use the packagename as the root of the import.
+                    }
+                    return clippedExport; // The export is not marked ForcedExport so this is fine to resolve
+                }
+            }
+            return package.FindExport(entryFullPath);
         }
 
         /// <summary>
@@ -1506,48 +1662,17 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             List<string> filesToCheck = new List<string>();
 
-            // 06/12/2022 - Disabled this code since we have a more definitive list of files safe to import from.
-            // This just added dupes to the list and worked under assumption that you could import from a SeekFreePackage like
-            // SFXPawn_Banshee - which was false, it must have been dynamic loaded
-
-            //string upkOrPcc = package.Game == MEGame.ME1 ? ".upk" : ".pcc";
-            // Check if there is package that has this name. This works for things like resolving SFXPawn_Banshee
-            //if (entry != null)
-            //{
-            //    bool addPackageFile = gameFiles.TryGetValue(entry.ObjectName + upkOrPcc, out var efxPath) && !filesToCheck.Contains(efxPath);
-
-            //    // Let's see if there is same-named top level package folder file. This will resolve class imports from SFXGame, Engine, etc.
-            //    IEntry p = entry.Parent;
-            //    if (p != null)
-            //    {
-            //        while (p.Parent != null)
-            //        {
-            //            p = p.Parent;
-            //        }
-
-            //        if (p.ClassName == "Package")
-            //        {
-            //            if (gameFiles.TryGetValue($"{p.ObjectName}{upkOrPcc}", out var efPath) && !filesToCheck.Contains(efxPath))
-            //            {
-            //                filesToCheck.Add(Path.GetFileName(efPath));
-            //            }
-            //            else if (package.Game == MEGame.ME1)
-            //            {
-            //                if (gameFiles.TryGetValue(p.ObjectName + ".u", out var path) && !filesToCheck.Contains(efxPath))
-            //                {
-            //                    filesToCheck.Add(Path.GetFileName(path));
-            //                }
-            //            }
-            //        }
-            //    }
-            //    if (addPackageFile)
-            //    {
-            //        filesToCheck.Add(Path.GetFileName(efxPath));
-            //    }
-            //}
 
             //add related files that will be loaded at the same time (eg. for BioD_Nor_310, check BioD_Nor_310_LOC_INT, BioD_Nor, and BioP_Nor)
             filesToCheck.AddRange(GetPossibleAssociatedFiles(package, localization));
+
+            // 08/19/2024 - ME1, UDK use source-style lookups.
+            if (entry.Game is MEGame.ME1 or MEGame.UDK)
+            {
+                // Source-style lookups
+                // Add root level package
+                filesToCheck.Add(entry.GetRootName() + ".upk");
+            }
 
             //add base definition files that are always loaded (Core, Engine, etc.)
             foreach (var fileName in FilesSafeToImportFrom(package.Game))
@@ -1559,13 +1684,27 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             // Add post-load files if we determine our local file is a post-load
-            if (package.FilePath != null && (package.LECLTagData != null && package.LECLTagData.IsPostLoadFile) || IsPostLoadFile(package.FilePath, package.Game))
+            if (package.FilePath != null)
             {
-                foreach (var fileName in FilesSafeToImportFromPostLoad(package.Game))
+                bool isPostLoad;
+                if (package.LECLTagData != null && package.LECLTagData.IsPostLoadFile.HasValue)
                 {
-                    if (gameFiles.TryGetValue(fileName, out var efPath))
+                    // Take LECL Data version
+                    isPostLoad = package.LECLTagData.IsPostLoadFile.Value;
+                }
+                else
+                {
+                    isPostLoad = IsPostLoadFile(package.FilePath, package.Game);
+                }
+
+                if (isPostLoad)
+                {
+                    foreach (var fileName in FilesSafeToImportFromPostLoad(package.Game))
                     {
-                        filesToCheck.Add(Path.GetFileName(efPath));
+                        if (gameFiles.TryGetValue(fileName, out var efPath))
+                        {
+                            filesToCheck.Add(Path.GetFileName(efPath));
+                        }
                     }
                 }
             }
@@ -1689,9 +1828,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //check to see class is already in file
+
+            //This saves us retrieving and comparing the ClassName string for each import.
+            //Export can use IsClass because that's just a simple int comparison
+            int classNameIdx = pcc.findName("Class");
             foreach (ImportEntry import in pcc.Imports)
             {
-                if (import.IsClass && import.ObjectName == className)
+                if (import.idxClassName == classNameIdx && import.ObjectName == className)
                 {
                     return import;
                 }
@@ -2025,9 +2168,22 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="unsafeLoad"></param>
         /// <param name="localDirFiles"></param>
         /// <returns></returns>
-        public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache globalCache = null, PackageCache localCache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null)
+        public static bool TryResolveImport(ImportEntry importEntry, out ExportEntry export, PackageCache cache = null, string localization = @"INT", bool unsafeLoad = false, IEnumerable<string> localDirFiles = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
-            export = ResolveImport(importEntry, globalCache, localCache, localization, unsafeLoad, localDirFiles);
+            if (importEntry.idxLink == 0 && importEntry.ClassName != "Package")
+            {
+                // Unless it's a root package you cannot import root level objects 
+                // as they would be rooted in a different package
+                export = null;
+                return false;
+            }
+            if (importEntry.InstancedFullPath.StartsWith("TheWorld."))
+            {
+                // Do not resolve anything under the world as an import, ever
+                export = null;
+                return false;
+            }
+            export = ResolveImport(importEntry, cache, localization, unsafeLoad, localDirFiles, fileResolver: fileResolver);
             return export != null;
         }
 

@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.Collections;
 
 namespace LegendaryExplorerCore.Shaders
@@ -208,7 +209,7 @@ namespace LegendaryExplorerCore.Shaders
                     return null;
                 }
 
-                var sc = new SerializingContainer2(fs, shaderCachePackage, true);
+                var sc = new SerializingContainer(fs, shaderCachePackage, true);
                 sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
 
                 int count = fs.ReadInt32();
@@ -275,7 +276,7 @@ namespace LegendaryExplorerCore.Shaders
                 //read just the header of the package, then read the name list
                 using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
-                var sc = new SerializingContainer2(fs, shaderCachePackage, true);
+                var sc = new SerializingContainer(fs, shaderCachePackage, true);
                 sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
 
                 int count = fs.ReadInt32();
@@ -329,10 +330,10 @@ namespace LegendaryExplorerCore.Shaders
                 //read just the header of the package, then read the name list
                 using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
-                var sc = new SerializingContainer2(fs, shaderCachePackage, true);
+                var sc = new SerializingContainer(fs, shaderCachePackage, true);
 
                 sc.ms.JumpTo(OffsetOfShaderTypeCRCMap[(int)game]);
-                sc.Serialize(ref shaderTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref shaderTypeCRCMap, sc.Serialize, sc.Serialize);
 
                 Dictionary<Guid, int> offsets = ShaderOffsets(game); //0x1E
 
@@ -349,7 +350,7 @@ namespace LegendaryExplorerCore.Shaders
                     sc.Serialize(ref shaders[i++]);
                 }
                 sc.ms.JumpTo(OffsetOfVertexFactoryTypeCRCMap[(int)game]);
-                sc.Serialize(ref vertexFactoryTypeCRCMap, SCExt.Serialize, SCExt.Serialize);
+                sc.Serialize(ref vertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
                 return shaders;
             }
             return null;

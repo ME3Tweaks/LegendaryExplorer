@@ -11,7 +11,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public EFunctionFlags FunctionFlags;
         public ushort ReplicationOffset; //ME1/2/UDK
         public NameReference FriendlyName; //ME1/2/UDK
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref NativeIndex);
@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Children = 0,
                 ScriptBytecodeSize = 2,
                 ScriptStorageSize = 2,
-                ScriptBytes = new byte[] { 0xB, 0x53 },
+                ScriptBytes = [0xB, 0x53],
                 FriendlyName = "None"
             };
         }
@@ -58,17 +58,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref EFunctionFlags flags)
+        public void Serialize(ref EFunctionFlags flags)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                flags = (EFunctionFlags)sc.ms.ReadUInt32();
+                flags = (EFunctionFlags)ms.ReadUInt32();
             }
             else
             {
-                sc.ms.Writer.WriteUInt32((uint)flags);
+                ms.Writer.WriteUInt32((uint)flags);
             }
         }
     }

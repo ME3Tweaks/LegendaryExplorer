@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -31,7 +32,7 @@ namespace LegendaryExplorerCore.Packages
         /// If this file is marked as only being used post save file load (e.g. after BIO_COMMON for example). This allows it to access more files for importing.
         /// </summary>
         [JsonProperty("ispostload")] // DO NOT CHANGE
-        public bool IsPostLoadFile { get; set; }
+        public bool? IsPostLoadFile { get; set; }
 
         /// <summary>
         /// Data that is not known by this LECLData class - it may mean that this package was saved with
@@ -50,9 +51,21 @@ namespace LegendaryExplorerCore.Packages
 
             // IF ADDING DATA TO THIS CLASS ENSURE YOU ADD IT BELOW OR IT WILL NOT SERIALIZE IN SOME CASES
             if (ImportHintFiles.Count > 0) return true;
-            if (IsPostLoadFile) return true;
+            if (IsPostLoadFile.HasValue) return true;
 
             return false;
+        }
+
+        /// <summary>
+        /// Copies the data from one LECLTagData to this one.
+        /// </summary>
+        /// <param name="other"></param>
+        public void Copy(LECLData other)
+        {
+            ImportHintFiles.ReplaceAll(other.ImportHintFiles);
+            IsPostLoadFile = other.IsPostLoadFile;
+            WasSavedWithLEC = other.WasSavedWithLEC;
+            WasSavedWithMEM = other.WasSavedWithMEM;
         }
     }
 }

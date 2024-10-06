@@ -17,16 +17,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioInert : ObjectBinary
     {
         public NameEntryGuidPair[] NameEntryGuidPairs;//? Speculative name
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref NameEntryGuidPairs, SCExt.Serialize);
+            sc.Serialize(ref NameEntryGuidPairs, sc.Serialize);
         }
 
         public static BioInert Create()
         {
             return new()
             {
-                NameEntryGuidPairs = Array.Empty<NameEntryGuidPair>()
+                NameEntryGuidPairs = []
             };
         }
 
@@ -49,20 +49,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref NameEntryGuidPair negp)
+        public void Serialize(ref NameEntryGuidPair negp)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 negp = new NameEntryGuidPair();
             }
-            sc.Serialize(ref negp.Name);
-            if (sc.Game == MEGame.LE1)
+            Serialize(ref negp.Name);
+            if (Game == MEGame.LE1)
             {
-                sc.Serialize(ref negp.Entry);
+                Serialize(ref negp.Entry);
             }
-            sc.Serialize(ref negp.GUID);
+            Serialize(ref negp.GUID);
         }
     }
 }

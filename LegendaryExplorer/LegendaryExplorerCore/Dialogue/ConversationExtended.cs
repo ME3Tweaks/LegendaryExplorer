@@ -731,7 +731,7 @@ namespace LegendaryExplorerCore.Dialogue
                 // TODO: Use a packagecache or something for this?
                 if (Sequence is ImportEntry sequenceImport)
                 {
-                    Sequence = EntryImporter.ResolveImport(sequenceImport);
+                    Sequence = EntryImporter.ResolveImport(sequenceImport, null);
                 }
             }
             else

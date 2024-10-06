@@ -1349,6 +1349,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             };
             // Native properties
 
+
+            // Useful properties to have ('LEX editor only')
+            _classes["SequenceObject"].properties.Add(new KeyValuePair<NameReference, PropertyInfo>("ObjName", new PropertyInfo(PropertyType.StrProperty))); // Useful for readability
+            _classes["SequenceFrame"].properties.Add(new KeyValuePair<NameReference, PropertyInfo>("SizeX", new PropertyInfo(PropertyType.IntProperty))); // Useful for organization
+            _classes["SequenceFrame"].properties.Add(new KeyValuePair<NameReference, PropertyInfo>("SizeY", new PropertyInfo(PropertyType.IntProperty))); // Useful for organization
         }
 
     }

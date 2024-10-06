@@ -6,7 +6,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public LightMap LightMap;
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game >= MEGame.ME3)
             {

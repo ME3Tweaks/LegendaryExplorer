@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using LegendaryExplorerCore.Misc;
 
 namespace Be.Windows.Forms
 {

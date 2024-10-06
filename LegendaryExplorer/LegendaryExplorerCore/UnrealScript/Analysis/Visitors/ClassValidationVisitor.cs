@@ -29,9 +29,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public ValidationPass Pass;
 
-        public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols)
+        private UnrealScriptOptionsPackage USOP;
+
+        public static void RunAllPasses(ASTNode node, MessageLog log, SymbolTable symbols, UnrealScriptOptionsPackage usop)
         {
-            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration);
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassRegistration, usop);
             node.AcceptVisitor(validator);
             validator.Pass = ValidationPass.TypesAndFunctionNamesAndStateNames;
             node.AcceptVisitor(validator);
@@ -41,12 +43,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             node.AcceptVisitor(validator);
         }
 
-        public ClassValidationVisitor(MessageLog log, SymbolTable symbols, ValidationPass pass)
+        public ClassValidationVisitor(MessageLog log, SymbolTable symbols, ValidationPass pass, UnrealScriptOptionsPackage usop)
         {
             Log = log ?? new MessageLog();
             Symbols = symbols;
             Success = true;
             Pass = pass;
+            USOP = usop;
         }
 
         private bool Error(string msg, int start = -1, int end = -1)
@@ -61,186 +64,187 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             switch (Pass)
             {
                 case ValidationPass.ClassRegistration:
-                {
-                    // TODO: allow duplicate names as long as its in different packages!
-                    if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
                     {
-                        //ADD CLASSNAME TO SYMBOLS BEFORE VALIDATION pass!
-                        //if (!Symbols.TryAddType(node))
-                        //{
-                        //    return Error($"A class named '{node.Name}' already exists!", node.StartPos, node.EndPos);
-                        //}
-
-                        if (Symbols.TryGetType(node.Parent.Name, out Class parentClass))
+                        // TODO: allow duplicate names as long as its in different packages!
+                        if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
                         {
-                            Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.TextLength);
-                            node.Parent = parentClass;
+                            //ADD CLASSNAME TO SYMBOLS BEFORE VALIDATION pass!
+                            //if (!Symbols.TryAddType(node))
+                            //{
+                            //    return Error($"A class named '{node.Name}' already exists!", node.StartPos, node.EndPos);
+                            //}
 
-                            if (parentClass == node)
+                            if (Symbols.TryGetType(node.Parent.Name, out Class parentClass))
+                            {
+                                Log.Tokens?.AddDefinitionLink(parentClass, node.Parent.StartPos, node.Parent.TextLength);
+                                node.Parent = parentClass;
+
+                                if (parentClass == node)
+                                {
+                                    return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
+                                }
+                            }
+                            else
+                            {
+                                return Error($"No class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
+                            }
+
+
+                            if (node._outerClass != null)
+                            {
+                                if (Symbols.TryGetType(node._outerClass.Name, out Class outerClass))
+                                {
+                                    Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.TextLength);
+                                    node._outerClass = outerClass;
+                                }
+                                else
+                                {
+                                    return Error($"No class named '{node._outerClass.Name}' found!", node._outerClass.StartPos, node._outerClass.EndPos);
+                                }
+                            }
+
+                            for (int i = 0; i < node.Interfaces.Count; i++)
+                            {
+                                VariableType interfaceStub = node.Interfaces[i];
+                                if (Symbols.TryGetType(interfaceStub.Name, out Class @interface))
+                                {
+                                    Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.TextLength);
+
+                                    if (!node.IsNative && @interface.IsNative)
+                                    {
+                                        return Error($"Only a native class can implement a native interface!", interfaceStub.StartPos, interfaceStub.EndPos);
+                                    }
+                                    node.Interfaces[i] = @interface;
+                                }
+                                else
+                                {
+                                    return Error($"No class named '{interfaceStub.Name}' found!", interfaceStub.StartPos, interfaceStub.EndPos);
+                                }
+                            }
+
+                            //specifier validation
+                            if (string.Equals(node.ConfigName, "inherit", StringComparison.OrdinalIgnoreCase) && !((Class)node.Parent).Flags.Has(EClassFlags.Config))
+                            {
+                                return Error($"Cannot inherit config filename from parent class ({node.Parent.Name}) which is not marked as config!", node.StartPos);
+                            }
+                            //TODO:propagate/check inheritable class flags from parent and implemented interfaces
+                            if (node.IsNative && !((Class)node.Parent).IsNative)
+                            {
+                                return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
+                            }
+                        }
+                        return Success;
+                    }
+                case ValidationPass.TypesAndFunctionNamesAndStateNames:
+                    {
+                        if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
+                        {
+                            Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString(), createScopesIfNeccesary: true);
+                            Symbols.PushScope(node.Name);
+                        }
+
+                        //register all the types this class declares
+                        foreach (VariableType type in node.TypeDeclarations)
+                        {
+                            type.Outer = node;
+                            Success &= type.AcceptVisitor(this);
+                        }
+
+                        //register all the function names (do this here so that delegates will resolve correctly)
+                        foreach (Function func in node.Functions)
+                        {
+                            func.Outer = node;
+                            Success &= func.AcceptVisitor(this);
+                        }
+
+                        //register all state names (do this here so that states can extend states that are declared later in the class)
+                        foreach (State state in node.States)
+                        {
+                            state.Outer = node;
+                            Success &= state.AcceptVisitor(this);
+                        }
+
+                        Symbols.RevertToObjectStack();//pops scope until we're in the 'object' scope
+
+                        return Success;
+                    }
+                case ValidationPass.ClassAndStructMembersAndFunctionParams:
+                    {
+                        if (node.Name != "Object")
+                        {
+                            //do this check for a second time now that all classes have been properly linked up
+                            if (((Class)node.Parent).SameAsOrSubClassOf(node))
                             {
                                 return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
                             }
-                        }
-                        else
-                        {
-                            return Error($"No class named '{node.Parent.Name}' found!", node.Parent.StartPos, node.Parent.EndPos);
-                        }
-
-                        if (node._outerClass != null)
-                        {
-                            if (Symbols.TryGetType(node._outerClass.Name, out Class outerClass))
+                            if (!((Class)node.OuterClass).SameAsOrSubClassOf(((Class)node.Parent).OuterClass.Name))
                             {
-                                Log.Tokens?.AddDefinitionLink(outerClass, node._outerClass.StartPos, node._outerClass.TextLength);
-                                node._outerClass = outerClass;
+                                return Error("Outer class must be a sub-class of the parents outer class!", node.StartPos);
                             }
-                            else
+
+                            if (node._outerClass is not null && node.SameAsOrSubClassOf("Actor") && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
                             {
-                                return Error($"No class named '{node._outerClass.Name}' found!", node._outerClass.StartPos, node._outerClass.EndPos);
+                                return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
                             }
-                        }
 
-                        for (int i = 0; i < node.Interfaces.Count; i++)
-                        {
-                            VariableType interfaceStub = node.Interfaces[i];
-                            if (Symbols.TryGetType(interfaceStub.Name, out Class @interface))
+                            if (node.SameAsOrSubClassOf("Interface"))
                             {
-                                Log.Tokens?.AddDefinitionLink(@interface, interfaceStub.StartPos, interfaceStub.TextLength);
-
-                                if (!node.IsNative && @interface.IsNative)
-                                {
-                                    return Error($"Only a native class can implement a native interface!", interfaceStub.StartPos, interfaceStub.EndPos);
-                                }
-                                node.Interfaces[i] = @interface;
+                                node.Flags |= EClassFlags.Interface;
+                                node.PropertyType = EPropertyType.Interface;
                             }
-                            else
+                            Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
+                            Symbols.PushScope(node.Name);
+                        }
+
+                        //second pass over structs to resolve their members
+                        foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
+                        {
+                            Success &= type.AcceptVisitor(this);
+                        }
+
+                        //resolve instance variables
+                        foreach (VariableDeclaration decl in node.VariableDeclarations)
+                        {
+                            decl.Outer = node;
+                            Success &= decl.AcceptVisitor(this);
+
+                            if (node.Name != "Object" && Symbols.SymbolExistsInParentScopes(decl.Name))
                             {
-                                return Error($"No class named '{interfaceStub.Name}' found!", interfaceStub.StartPos, interfaceStub.EndPos);
+                                Log.LogWarning($"A symbol named '{decl.Name}' exists in a parent class. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
                             }
                         }
 
-                        //specifier validation
-                        if (string.Equals(node.ConfigName, "inherit", StringComparison.OrdinalIgnoreCase) && !((Class)node.Parent).Flags.Has(EClassFlags.Config))
+                        //Add fake class members to shadow the ones in Object. This allows Class and Outer to be implicitly typed correctly
+                        if (node.Name != "Object")
                         {
-                            return Error($"Cannot inherit config filename from parent class ({node.Parent.Name}) which is not marked as config!", node.StartPos);
-                        }
-                        //TODO:propagate/check inheritable class flags from parent and implemented interfaces
-                        if (node.IsNative && !((Class)node.Parent).IsNative)
-                        {
-                            return Error($"A native class cannot inherit from a non-native class!", node.StartPos);
-                        }
-                    }
-                    return Success;
-                }
-                case ValidationPass.TypesAndFunctionNamesAndStateNames:
-                {
-                    if (node.Name != "Object")//validating Object is a special case, as it is the base class for all classes
-                    {
-                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString(), createScopesIfNeccesary: true);
-                        Symbols.PushScope(node.Name);
-                    }
-
-                    //register all the types this class declares
-                    foreach (VariableType type in node.TypeDeclarations)
-                    {
-                        type.Outer = node;
-                        Success &= type.AcceptVisitor(this);
-                    }
-
-                    //register all the function names (do this here so that delegates will resolve correctly)
-                    foreach (Function func in node.Functions)
-                    {
-                        func.Outer = node;
-                        Success &= func.AcceptVisitor(this);
-                    }
-
-                    //register all state names (do this here so that states can extend states that are declared later in the class)
-                    foreach (State state in node.States)
-                    {
-                        state.Outer = node;
-                        Success &= state.AcceptVisitor(this);
-                    }
-
-                    Symbols.RevertToObjectStack();//pops scope until we're in the 'object' scope
-
-                    return Success;
-                }
-                case ValidationPass.ClassAndStructMembersAndFunctionParams:
-                {
-                    if (node.Name != "Object")
-                    {
-                        //do this check for a second time now that all classes have been properly linked up
-                        if (((Class)node.Parent).SameAsOrSubClassOf(node))
-                        {
-                            return Error($"Extending from '{node.Parent.Name}' causes circular extension!", node.StartPos);
-                        }
-                        if (!((Class)node.OuterClass).SameAsOrSubClassOf(((Class)node.Parent).OuterClass.Name))
-                        {
-                            return Error("Outer class must be a sub-class of the parents outer class!", node.StartPos);
+                            Symbols.TryGetType("Object", out Class objectClass);
+                            Symbols.AddSymbol("Class", new VariableDeclaration(new ClassType(node), EPropertyFlags.Const | EPropertyFlags.Native | EPropertyFlags.EditConst, "Class")
+                            {
+                                Outer = objectClass
+                            });
+                            Symbols.AddSymbol("Outer", new VariableDeclaration(node.OuterClass, EPropertyFlags.Const | EPropertyFlags.Native | EPropertyFlags.EditConst, "Outer")
+                            {
+                                Outer = objectClass
+                            });
                         }
 
-                        if (node._outerClass is not null && node.SameAsOrSubClassOf("Actor") && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
+                        //second pass over functions to resolve parameters 
+                        foreach (Function func in node.Functions)
                         {
-                            return Error("Classes extending 'Actor' can not be inner classes!", node.OuterClass.StartPos, node.OuterClass.EndPos);
+                            Success &= func.AcceptVisitor(this);
                         }
 
-                        if (node.SameAsOrSubClassOf("Interface"))
+                        //second pass over states to resolve 
+                        foreach (State state in node.States)
                         {
-                            node.Flags |= EClassFlags.Interface;
-                            node.PropertyType = EPropertyType.Interface;
+                            Success &= state.AcceptVisitor(this);
                         }
-                        Symbols.GoDirectlyToStack(((Class)node.Parent).GetInheritanceString());
-                        Symbols.PushScope(node.Name); 
+
+                        Symbols.RevertToObjectStack();//pops scope until we're in the 'object' scope
+
+                        node.Declaration = node;
+                        return Success;
                     }
-
-                    //second pass over structs to resolve their members
-                    foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
-                    {
-                        Success &= type.AcceptVisitor(this);
-                    }
-
-                    //resolve instance variables
-                    foreach (VariableDeclaration decl in node.VariableDeclarations)
-                    {
-                        decl.Outer = node;
-                        Success &= decl.AcceptVisitor(this);
-
-                        if (node.Name != "Object" && Symbols.SymbolExistsInParentScopes(decl.Name))
-                        {
-                            Log.LogWarning($"A symbol named '{decl.Name}' exists in a parent class. Are you sure you want to shadow it?", decl.StartPos, decl.EndPos);
-                        }
-                    }
-
-                    //Add fake class members to shadow the ones in Object. This allows Class and Outer to be implicitly typed correctly
-                    if (node.Name != "Object")
-                    {
-                        Symbols.TryGetType("Object", out Class objectClass);
-                        Symbols.AddSymbol("Class", new VariableDeclaration(new ClassType(node), EPropertyFlags.Const | EPropertyFlags.Native | EPropertyFlags.EditConst, "Class")
-                        {
-                            Outer = objectClass
-                        });
-                        Symbols.AddSymbol("Outer", new VariableDeclaration(node.OuterClass, EPropertyFlags.Const | EPropertyFlags.Native | EPropertyFlags.EditConst, "Outer")
-                        {
-                            Outer = objectClass
-                        });
-                    }
-
-                    //second pass over functions to resolve parameters 
-                    foreach (Function func in node.Functions)
-                    {
-                        Success &= func.AcceptVisitor(this);
-                    }
-
-                    //second pass over states to resolve 
-                    foreach (State state in node.States)
-                    {
-                        Success &= state.AcceptVisitor(this);
-                    }
-
-                    Symbols.RevertToObjectStack();//pops scope until we're in the 'object' scope
-
-                    node.Declaration = node;
-                    return Success;
-                }
                 case ValidationPass.BodyPass:
                 {
                     if (node.Parent is Class parentClass)
@@ -275,37 +279,37 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         }
                     }
 
-                    //third pass over structs to check for circular inheritance chains
-                    foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
-                    {
-                        Success &= type.AcceptVisitor(this);
-                    }
-
-                    //third pass over functions to check overriding rules
-                    foreach (Function func in node.Functions)
-                    {
-                        Success &= func.AcceptVisitor(this);
-                    }
-
-                    //third pass over states to check function overrides 
-                    State autoState = null;
-                    foreach (State state in node.States)
-                    {
-                        Success &= state.AcceptVisitor(this);
-
-                        if (state.Flags.Has(EStateFlags.Auto))
+                        //third pass over structs to check for circular inheritance chains
+                        foreach (Struct type in node.TypeDeclarations.OfType<Struct>())
                         {
-                            if (autoState is null)
+                            Success &= type.AcceptVisitor(this);
+                        }
+
+                        //third pass over functions to check overriding rules
+                        foreach (Function func in node.Functions)
+                        {
+                            Success &= func.AcceptVisitor(this);
+                        }
+
+                        //third pass over states to check function overrides 
+                        State autoState = null;
+                        foreach (State state in node.States)
+                        {
+                            Success &= state.AcceptVisitor(this);
+
+                            if (state.Flags.Has(EStateFlags.Auto))
                             {
-                                autoState = state;
-                            }
-                            else
-                            {
-                                Log.LogWarning($"Another state in this class ({autoState.Name}) has already been declared 'auto'!\n" +
-                                               $"Only one state can be the initial state of an object.", state.StartPos, state.EndPos);
+                                if (autoState is null)
+                                {
+                                    autoState = state;
+                                }
+                                else
+                                {
+                                    Log.LogWarning($"Another state in this class ({autoState.Name}) has already been declared 'auto'!\n" +
+                                                   $"Only one state can be the initial state of an object.", state.StartPos, state.EndPos);
+                                }
                             }
                         }
-                    }
 
                     //second pass to resolve EPropertyFlags.NeedCtorLink for Struct Properties
                     foreach (VariableDeclaration decl in node.VariableDeclarations)
@@ -333,8 +337,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         }
                     }
 
-                    return Success;
-                }
+                        return Success;
+                    }
                 default:
                     return Success;
             }
@@ -367,39 +371,39 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             switch (node.VarType)
                             {
                                 case Struct or Enumeration:
-                                {
-                                    int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos);
-                                    if (idx >= 0)
                                     {
-                                        ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
-                                        if (node.VarType is Struct)
+                                        int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos);
+                                        if (idx >= 0)
                                         {
-                                            typeNameToken.SyntaxType = EF.Struct;
+                                            ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
+                                            if (node.VarType is Struct)
+                                            {
+                                                typeNameToken.SyntaxType = EF.Struct;
+                                            }
+                                            else if (node.VarType is Enumeration)
+                                            {
+                                                typeNameToken.SyntaxType = EF.Enum;
+                                            }
                                         }
-                                        else if (node.VarType is Enumeration)
-                                        {
-                                            typeNameToken.SyntaxType = EF.Enum;
-                                        }
+                                        break;
                                     }
-                                    break;
-                                }
-                                case DynamicArrayType { ElementType: Struct or Enumeration} dynArrType:
-                                {
-                                    int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos) + 2;
-                                    if (idx >= 0)
+                                case DynamicArrayType { ElementType: Struct or Enumeration } dynArrType:
                                     {
-                                        ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
-                                        if (dynArrType.ElementType is Struct)
+                                        int idx = Log.Tokens.GetIndexOfTokenAtOffset(typeStub.StartPos) + 2;
+                                        if (idx >= 0)
                                         {
-                                            typeNameToken.SyntaxType = EF.Struct;
+                                            ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
+                                            if (dynArrType.ElementType is Struct)
+                                            {
+                                                typeNameToken.SyntaxType = EF.Struct;
+                                            }
+                                            else if (dynArrType.ElementType is Enumeration)
+                                            {
+                                                typeNameToken.SyntaxType = EF.Enum;
+                                            }
                                         }
-                                        else if (dynArrType.ElementType is Enumeration)
-                                        {
-                                            typeNameToken.SyntaxType = EF.Enum;
-                                        }
+                                        break;
                                     }
-                                    break;
-                                }
                             }
                         }
                     }
@@ -567,7 +571,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 {
                     Success &= typeDeclaration.AcceptVisitor(this);
                 }
-                
+
                 foreach (VariableDeclaration decl in node.VariableDeclarations)
                 {
                     decl.Outer = node;
@@ -720,7 +724,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         Log.LogWarning($"A symbol named '{param.Name}' exists in a parent scope. Are you sure you want to shadow it?", param.StartPos, param.EndPos);
                     }
                 }
-                
+
                 Symbols.PopScope();
 
                 if (Success == false)
@@ -812,7 +816,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             if (node.Outer is State)
                             {
                                 //Contrary to what the unrealscript docs say, states can apparently have functions with the same name as a class function, but with different number of params.
-                                superFunc = null; 
+                                superFunc = null;
                             }
                             else
                             {
@@ -831,7 +835,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         node.SuperFunction = superFunc;
                     }
                 }
-                
+
                 if (superFunc is null && node.Outer is State && node.Flags.Has(EFunctionFlags.Net))
                 {
                     return Error("If a state function has the Net flag, it must override a class function", node.StartPos, node.EndPos);
@@ -904,7 +908,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         node.Parent = null;
                     }
                 }
-                
+
                 string parentScope = node.Parent is not null ? $"{NodeUtils.GetContainingClass(node.Parent)?.GetInheritanceString()}.{node.Parent.Name}" : null;
                 Symbols.PushScope(node.Name, parentScope);
 

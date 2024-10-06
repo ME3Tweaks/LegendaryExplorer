@@ -2,6 +2,7 @@
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Unreal.Classes
 {
@@ -18,13 +19,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
         //    public string Desc;
         //}
 
-        public MaterialInstanceConstant(ExportEntry export, PackageCache assetCache = null)
+        public MaterialInstanceConstant(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
         {
             Export = export;
-            ReadMaterial(export, assetCache);
+            ReadMaterial(export, assetCache, resolveImports);
         }
 
-        private void ReadMaterial(ExportEntry export, PackageCache assetCache = null)
+        private void ReadMaterial(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
         {
             if (export.ClassName == "Material")
             {
@@ -41,26 +42,33 @@ namespace LegendaryExplorerCore.Unreal.Classes
             else if (export.ClassName == "RvrEffectsMaterialUser")
             {
                 var props = export.GetProperties();
-                if (export.GetProperty<ObjectProperty>("m_pBaseMaterial") is ObjectProperty baseProp)
+                if (props.GetProp<ObjectProperty>("m_pBaseMaterial") is ObjectProperty baseProp)
                 {
                     // This is an instance... maybe?
                     if (baseProp.Value > 0)
                     {
                         // Local export
-                        ReadMaterial(export.FileRef.GetUExport(baseProp.Value));
+                        ReadMaterial(export.FileRef.GetUExport(baseProp.Value), assetCache, resolveImports);
                     }
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(baseProp.Value);
-                        var externalEntry = EntryImporter.ResolveImport(ie, null, assetCache);
-                        if (externalEntry != null)
+                        if (resolveImports)
                         {
-                            ReadMaterial(externalEntry);
+                            var externalEntry = EntryImporter.ResolveImport(ie, assetCache);
+                            if (externalEntry != null)
+                            {
+                                ReadMaterial(externalEntry);
+                            }
+                        }
+                        else
+                        {
+                            Textures.Add(ie);
                         }
                     }
                 }
             }
-            else if (export.ClassName == "MaterialInstanceConstant")
+            else if (export.IsA("MaterialInstanceConstant"))
             {
                 //Read Local
                 if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
@@ -100,10 +108,17 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     else
                     {
                         ImportEntry ie = export.FileRef.GetImport(parentObjProp.Value);
-                        var externalEntry = EntryImporter.ResolveImport(ie, null, assetCache); 
-                        if (externalEntry != null)
+                        if (resolveImports)
                         {
-                            ReadMaterial(externalEntry);
+                            var externalEntry = EntryImporter.ResolveImport(ie, assetCache);
+                            if (externalEntry != null)
+                            {
+                                ReadMaterial(externalEntry);
+                            }
+                        }
+                        else
+                        {
+                            Textures.Add(ie);
                         }
                     }
                 }

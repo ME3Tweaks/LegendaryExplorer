@@ -47,7 +47,9 @@ using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using GongSolutions.Wpf.DragDrop;
-using LegendaryExplorerCore.Unreal.Collections;
+using LegendaryExplorer.Tools.AssetViewer;
+using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Tools.ObjectReferenceViewer;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -71,7 +73,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         [
             "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream", "BioTlkFile",
             "World", "Package", "StaticMesh", "SkeletalMesh", "Sequence", "Material", "Function", "Class", "State",
-            "TextureCube", "Bio2DA", "Bio2DANumberedRows"
+            "TextureCube", "Bio2DA", "Bio2DANumberedRows", "DecalMaterial", "MaterialInstanceConstant"
         ];
 
         //Objects in this collection are displayed on the left list view (names, imports, exports)
@@ -195,6 +197,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand MultiCloneCommand { get; set; }
         public ICommand MultiCloneTreeCommand { get; set; }
         public ICommand FindEntryViaOffsetCommand { get; set; }
+        public ICommand FindEntryViaBadIndexCommand { get; set; }
         public ICommand ResolveImportsTreeViewCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
@@ -204,6 +207,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
         public ICommand FindNameUsagesCommand { get; set; }
+        public ICommand ViewInAssetViewerCommand { get; set; }
         public ICommand RebuildStreamingLevelsCommand { get; set; }
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
@@ -243,11 +247,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CalculateExportMD5Command { get; set; }
         public ICommand CreateClassCommand { get; set; }
         public ICommand CreatePackageExportCommand { get; set; }
+        public ICommand CreateObjectRedirectorCommand { get; set; }
         public ICommand CreateObjectReferencerCommand { get; set; }
         public ICommand CreateTextureCommand { get; set; }
         public ICommand DeleteEntryCommand { get; set; }
         public ICommand ExportAllPropsCommand { get; set; }
         public ICommand ApplyBulkPropEditsCommand { get; set; }
+        public ICommand ViewReferenceGraphCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -263,6 +269,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             MultiCloneCommand = new GenericCommand(CloneEntryMultiple, EntryIsSelected);
             MultiCloneTreeCommand = new GenericCommand(CloneTreeMultiple, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
+            FindEntryViaBadIndexCommand = new GenericCommand(FindEntryViaBadIndex, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             CheckForBrokenMaterialsCommand = new GenericCommand(CheckForBrokenMaterials, IsLoadedPackageME);
@@ -271,6 +278,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
             FindNameUsagesCommand = new GenericCommand(FindNameUsages, NameIsSelected);
+            ViewInAssetViewerCommand = new GenericCommand(ViewInAssetViewer, CanViewInAssetViewer);
             RebuildStreamingLevelsCommand = new GenericCommand(RebuildStreamingLevels, PackageIsLoaded);
             ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFilePrompt, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
@@ -323,12 +331,138 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
             CreateClassCommand = new GenericCommand(CreateClass, IsLoadedPackageME);
             CreatePackageExportCommand = new GenericCommand(CreatePackageExport, IsLoadedPackageME);
+            CreateObjectRedirectorCommand = new GenericCommand(CreateObjectRedirector, ExportIsSelected);
             CreateObjectReferencerCommand = new GenericCommand(CreateObjectReferencer, IsLoadedPackageME);
             CreateTextureCommand = new GenericCommand(CreateTexture, IsLoadedPackageME);
             DeleteEntryCommand = new GenericCommand(DeleteEntry, EntryIsSelected);
 
             ExportAllPropsCommand = new GenericCommand(ExportAllProps, PackageIsLoaded);
             ApplyBulkPropEditsCommand = new GenericCommand(ApplyBulkPropEdits, PackageIsLoaded);
+            ViewReferenceGraphCommand = new GenericCommand(ViewReferenceGraph, EntryIsSelected);
+        }
+
+        private void FindEntryViaBadIndex()
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+
+            string input = "Enter the bad export/import index that is listed in the output of Debug Logger.";
+            string result = PromptDialog.Prompt(this, input, "Enter bad index");
+            if (result != null)
+            {
+                try
+                {
+                    int badIndex = int.Parse(result);
+
+                    var decomp = Pcc.SaveToStream(false);
+                    bool found = false;
+                    while (decomp.Position <= decomp.Length - 4)
+                    {
+                        var readVal = decomp.ReadInt32();
+                        decomp.Position -= 3;
+                        if (readVal == badIndex)
+                        {
+                            found = true;
+                            decomp.Position--; // Go back one more
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        GotoEntryViaOffset((int)decomp.Position);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Did not find any instance of the number {badIndex} in the uncompressed package file.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+
+        private void GotoEntryViaOffset(int offset)
+        {
+            //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
+            for (int i = 0; i < Pcc.ImportCount; i++)
+            {
+                ImportEntry imp = Pcc.Imports[i];
+                if (offset >= imp.HeaderOffset && offset < imp.HeaderOffset + ImportEntry.HeaderLength)
+                {
+                    GoToNumber(imp.UIndex);
+                    Metadata_Tab.IsSelected = true;
+                    MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + ImportEntry.HeaderLength - offset);
+                    return;
+                }
+            }
+
+            foreach (ExportEntry exp in Pcc.Exports)
+            {
+                //header
+                if (offset >= exp.HeaderOffset && offset < exp.HeaderOffset + exp.HeaderLength)
+                {
+                    GoToNumber(exp.UIndex);
+                    Metadata_Tab.IsSelected = true;
+                    MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.HeaderLength - offset);
+                    return;
+                }
+
+                //data
+                if (offset >= exp.DataOffset && offset < exp.DataOffset + exp.DataSize)
+                {
+                    GoToNumber(exp.UIndex);
+                    int inExportDataOffset = exp.DataOffset + exp.DataSize - offset;
+                    int propsEnd = exp.propsEnd();
+
+                    if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
+                        BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
+                    {
+                        BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                        BinaryInterpreter_Tab.IsSelected = true;
+                    }
+                    else
+                    {
+                        InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                        Interpreter_Tab.IsSelected = true;
+                    }
+
+                    return;
+                }
+            }
+
+            MessageBox.Show($"No entry or header containing offset 0x{offset:X8} was found.");
+        }
+
+        private void ViewReferenceGraph()
+        {
+            if (TryGetSelectedEntry(out var entry))
+            {
+                var orv = new ObjectReferenceViewerWindow(entry, GetEntryDoubleClickAction());
+                orv.Show();
+            }
+        }
+
+        private void ViewInAssetViewer()
+        {
+            if (TryGetSelectedExport(out var currentExport) && AssetViewerWindow.SupportsAsset(currentExport))
+            {
+                AssetViewerWindow.PreviewAsset(currentExport);
+            }
+        }
+
+        private bool CanViewInAssetViewer()
+        {
+            if (Pcc != null && Pcc.Game.IsLEGame() && TryGetSelectedExport(out var currentExport) && GameController.TryGetMEProcess(currentExport.Game, out _) && AssetViewerWindow.SupportsAsset(currentExport))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void CreateTexture()
@@ -359,7 +493,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             Task.Run(() =>
             {
                 string src = File.ReadAllText(fileName);
-                return UnrealScriptCompiler.CompileBulkPropertiesFile(src, Pcc);
+                return UnrealScriptCompiler.CompileBulkPropertiesFile(src, Pcc, new UnrealScriptOptionsPackage());
 
             }).ContinueWithOnUIThread(prevTask =>
             {
@@ -388,7 +522,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             SetBusy("Decompiling all properties");
             Task.Run(() =>
             {
-                string src = UnrealScriptCompiler.DecompileBulkProps(Pcc, out MessageLog log);
+                string src = UnrealScriptCompiler.DecompileBulkProps(Pcc, out MessageLog log, new UnrealScriptOptionsPackage());
                 if (src is null || log.HasErrors)
                 {
                     return log;
@@ -465,8 +599,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var errors = new List<EntryStringPair>();
 
                 var fileLib = new FileLib(Pcc);
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = new PackageCache() };
                 using var packageCache = new PackageCache();
-                if (fileLib.Initialize(packageCache))
+                if (fileLib.Initialize(usop))
                 {
                     foreach (ExportEntry export in Pcc.Exports)
                     {
@@ -475,13 +610,13 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         {
                             if (export.IsClass)
                             {
-                                (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, packageCache);
+                                (_, string source) = UnrealScriptCompiler.DecompileExport(export, fileLib, usop);
                                 var log = new MessageLog();
 
                                 var (ast, _) = UnrealScriptCompiler.CompileOutlineAST(source, "Class", log, Pcc.Game);
                                 if (!log.HasErrors)
                                 {
-                                    UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged);
+                                    UnrealScriptCompiler.CompileNewClassAST(Pcc, (Class)ast, log, fileLib, out bool vfTableChanged, usop);
                                     if (vfTableChanged)
                                     {
                                         log.LogError("Virtual function table needs to be updated!");
@@ -587,6 +722,20 @@ namespace LegendaryExplorer.Tools.PackageEditor
             GoToNumber(package.UIndex);
         }
 
+        private void CreateObjectRedirector()
+        {
+#if DEBUG
+            if (TryGetSelectedExport(out var exp))
+            {
+                var objRe = ExportCreator.CreateExport(exp.FileRef, exp.ObjectName, "ObjectRedirector", indexed: false);
+                var objReBin = ObjectRedirector.Create();
+                objReBin.DestinationObject = exp.UIndex;
+                objRe.WriteBinary(objReBin);
+                GoToEntry(objRe.InstancedFullPath);
+            }
+#endif
+        }
+
         private void CreateClass()
         {
             IEntry parent = null;
@@ -640,14 +789,15 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 return;
             }
 
+            UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
             var fileLib = new FileLib(Pcc);
-            if (!fileLib.Initialize())
+            if (!fileLib.Initialize(usop))
             {
                 var dlg = new ListDialog(fileLib.InitializationLog.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not build script database for this file!", this);
                 dlg.Show();
                 return;
             }
-            (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, parent: parent);
+            (_, MessageLog log) = UnrealScriptCompiler.CompileClass(Pcc, $"class {className};", fileLib, usop, parent: parent);
             if (log.HasErrors)
             {
                 var dlg = new ListDialog(log.AllErrors.Select(msg => msg.ToString()), "Script Error", "Could not create class!", this);
@@ -691,7 +841,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         }
                         else
                         {
-                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, null, cache);
+                            var resolvedExp = EntryImporter.ResolveImport(impTV.Entry as ImportEntry, cache);
                             if (resolvedExp == null)
                             {
                                 unresolvableImports.Add(new EntryStringPair(impTV.Entry, $"Unresolvable import: {impTV.Entry.InstancedFullPath}"));
@@ -710,8 +860,17 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     IsBusy = false;
                     if (unresolvableImports.Exception == null)
                     {
-                        ListDialog ld = new ListDialog(unresolvableImports.Result, "Found unresolved imports", "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.", this) { DoubleClickEntryHandler = GetEntryDoubleClickAction() };
+                        if (unresolvableImports.Result.Count == 0)
+                        {
+                            MessageBox.Show("All imports resolved using Legendary Explorer's import resolution algorithm. This does not match how it works in the game and may not be accurate.");
+                        }
+                        else
+                        {
+                            ListDialog ld = new ListDialog(unresolvableImports.Result, "Found unresolved imports",
+                                "The following imports failed to resolve. This may be due to improperly named files (an issue in LEX, not in the game), or they may be incorrectly named.",
+                                this) { DoubleClickEntryHandler = GetEntryDoubleClickAction() };
                         ld.Show();
+                    }
                     }
                 });
             }
@@ -807,7 +966,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 BusyText = "Attempting to find source of import...";
                 IsBusy = true;
-                Task.Run(() => EntryImporter.ResolveImport(curImport)).ContinueWithOnUIThread(prevTask =>
+                Task.Run(() => EntryImporter.ResolveImport(curImport, new PackageCache())).ContinueWithOnUIThread(prevTask =>
                 {
                     IsBusy = false;
                     if (prevTask.Result is ExportEntry res)
@@ -2386,6 +2545,14 @@ namespace LegendaryExplorer.Tools.PackageEditor
             string result = PromptDialog.Prompt(this, input, "Enter new name");
             if (!string.IsNullOrEmpty(result))
             {
+                if (result.Contains('.'))
+                {
+                    var sContinue = MessageBox.Show("Names should not contain the '.' unless they are referencing a memory path of an object - these names will break significant amounts of tooling. Do you want to continue to add this name?", ". character breaks LEX", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                    if (sContinue == MessageBoxResult.No)
+                    {
+                    return;
+                }
+                }
                 int idx = Pcc.FindNameOrAdd(result);
                 if (CurrentView == CurrentViewMode.Names)
                 {
@@ -2610,56 +2777,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 try
                 {
                     int offsetDec = int.Parse(result, NumberStyles.HexNumber);
-
-                    //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
-                    for (int i = 0; i < Pcc.ImportCount; i++)
-                    {
-                        ImportEntry imp = Pcc.Imports[i];
-                        if (offsetDec >= imp.HeaderOffset && offsetDec < imp.HeaderOffset + ImportEntry.HeaderLength)
-                        {
-                            GoToNumber(imp.UIndex);
-                            Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + ImportEntry.HeaderLength - offsetDec);
-                            return;
-                        }
+                    GotoEntryViaOffset(offsetDec);
                     }
-
-                    foreach (ExportEntry exp in Pcc.Exports)
-                    {
-                        //header
-                        if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.HeaderLength)
-                        {
-                            GoToNumber(exp.UIndex);
-                            Metadata_Tab.IsSelected = true;
-                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.HeaderLength - offsetDec);
-                            return;
-                        }
-
-                        //data
-                        if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
-                        {
-                            GoToNumber(exp.UIndex);
-                            int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
-                            int propsEnd = exp.propsEnd();
-
-                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd &&
-                                BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
-                            {
-                                BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                                BinaryInterpreter_Tab.IsSelected = true;
-                            }
-                            else
-                            {
-                                InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
-                                Interpreter_Tab.IsSelected = true;
-                            }
-
-                            return;
-                        }
-                    }
-
-                    MessageBox.Show($"No entry or header containing offset 0x{result} was found.");
-                }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error: " + ex.Message);
@@ -2861,6 +2980,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[MeshRendererTab_MeshRenderer] = MeshRenderer_Tab;
             ExportLoaders[JPEXLauncherTab_JPEXLauncher] = JPEXLauncher_Tab;
             ExportLoaders[TlkEditorTab_TlkEditor] = TlkEditor_Tab;
+            ExportLoaders[MaterialEditorTab_MaterialEditorExportLoader] = MaterialEditor_Tab;
             ExportLoaders[MaterialViewerTab_MaterialExportLoader] = MaterialViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
@@ -3838,6 +3958,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 var rop = new RelinkerOptionsPackage
                 {
                     IsCrossGame = sourceEntry.Game != targetItem.Game && sourceEntry.Game != MEGame.UDK,
+                    Cache = new PackageCache(),
                     TargetGameDonorDB = objectDB,
                     ImportExportDependencies = portingOption.PortingOptionChosen is EntryImporter.PortingOption.CloneAllDependencies
                         or EntryImporter.PortingOption.ReplaceSingularWithRelink,
@@ -4226,8 +4347,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             switch (myValue)
             {
                 case "SequenceEditor":
-                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
-                    seqEditor.LoadFile(Pcc.FilePath);
+                    var seqEditor = new Sequence_Editor.SequenceEditorWPF(Pcc);
                     seqEditor.Show();
                     break;
                 case "FaceFXEditor":

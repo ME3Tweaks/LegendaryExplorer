@@ -199,13 +199,13 @@ namespace LegendaryExplorerCore.Textures
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(textureMap.Game, includeTFCs: true, gameRootOverride: infoPackage.GamePath);
 
             // add TFCs from the directory we're compacting so we can pull data out
-            foreach (var basePathTFC in Directory.GetFiles(infoPackage.BaseCompactionPath, "*.tfc",
-                SearchOption.AllDirectories))
+            foreach (var basePathTFC in Directory.GetFiles(infoPackage.BaseCompactionPath, "*.tfc", SearchOption.AllDirectories))
             {
                 gameFiles[Path.GetFileName(basePathTFC)] = basePathTFC;
             }
 
             // Packages are not updated in this step so if something goes wrong it doesn't blow up the files
+            progressDelegate?.Invoke("Building TFC files", 0, 0);
             foreach (var v in textureMap.CalculatedMap)
             {
                 var entries = v.GetAllTextureEntries().ToList();
@@ -225,9 +225,10 @@ namespace LegendaryExplorerCore.Textures
                             var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
                             var destTFCPath = Path.Combine(infoPackage.StagingPath, $"{destTFCInfo.TFCName}.tfc");
                             using var outStream = File.Open(destTFCPath, FileMode.Append, FileAccess.Write);
-                            using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
+
                             for (int i = 0; i < texInfo.CompressedMipInfos.Count; i++)
                             {
+                                using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
                                 var mipInfo = texInfo.CompressedMipInfos[i];
                                 destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
                                 inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
@@ -245,6 +246,7 @@ namespace LegendaryExplorerCore.Textures
                                 }
                                 else
                                 {
+                                    Debug.WriteLine($@"Copying texture data to TFC: {entry.InstancedFullPath}, mip {i}, offset: {outStream.Position:X8}");
                                     inStream.CopyToEx(outStream, mipInfo.CompressedSize);
                                     destTFCInfo.MipCompressedSizeMap[i] = mipInfo.CompressedSize;
                                 }
@@ -303,7 +305,8 @@ namespace LegendaryExplorerCore.Textures
                             continue;
                         }
 
-                        var t2d = ObjectBinary.From<UTexture2D>(exportToUpdate);
+                        // Ensure you use .From() and not the typed version so it properly serializes back.
+                        var t2d = (UTexture2D) ObjectBinary.From(exportToUpdate);
                         t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty); // Remove empty mips
 
                         // Update offset
@@ -330,6 +333,13 @@ namespace LegendaryExplorerCore.Textures
                         {
                             Debug.WriteLine($"CRC not found in map 0x{tu.CRC:X8}, {tu.ExportPath} in {tu.TFCName}");
                         }
+
+                        if (!tu.HasExternalReferences)
+                        {
+                            // Remove external reference properties
+                            exportToUpdate.RemoveProperty("TFCFileGuid");
+                            exportToUpdate.RemoveProperty("TextureFileCacheName");
+                        }
                     }
 
                     if (package.IsModified)
@@ -340,28 +350,38 @@ namespace LegendaryExplorerCore.Textures
             }
 
             var dlcFolderDir = Directory.GetFileSystemEntries(infoPackage.BaseCompactionPath, infoPackage.DLCName, SearchOption.AllDirectories).FirstOrDefault();
-            if (dlcFolderDir == null && Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
+            if (dlcFolderDir == null || Path.GetFileName(infoPackage.BaseCompactionPath) == infoPackage.DLCName)
                 dlcFolderDir = infoPackage.BaseCompactionPath;
             if (dlcFolderDir != null)
             {
+                string destPath = null;
+                if (Path.GetFileName(dlcFolderDir) == infoPackage.Game.CookedDirName())
+                {
+                    destPath = dlcFolderDir;
+                }
+                else
+                {
+                    destPath = Path.Combine(dlcFolderDir, infoPackage.Game.CookedDirName());
+                }
+
                 // Delete all existing TFCs
-                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories);
+                var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories).Where(x => !x.StartsWith(infoPackage.StagingPath));
                 foreach (var tfc in tfcsToDelete)
                 {
                     File.Delete(tfc);
                 }
 
-                var destPath = Path.Combine(dlcFolderDir, infoPackage.Game.CookedDirName());
                 foreach (var tfc in compactor.GetAllTFCs())
                 {
                     var tfcSource = Path.Combine(infoPackage.StagingPath, $"{tfc.TFCName}.tfc");
                     File.Move(tfcSource, Path.Combine(destPath, Path.GetFileName(tfcSource)));
                 }
 
+
                 if (compactor.infoPackage.UseIndexing)
                 {
                     // Stub TFC
-                    File.WriteAllBytes(Path.Combine(destPath, $"Textures_{compactor.infoPackage.DLCName}.tfc"), Guid.NewGuid().ToByteArray());
+                    File.WriteAllBytes(Path.Combine(destPath, $"{infoPackage.TFCType}_{compactor.infoPackage.DLCName}.tfc"), Guid.NewGuid().ToByteArray());
                 }
             }
         }

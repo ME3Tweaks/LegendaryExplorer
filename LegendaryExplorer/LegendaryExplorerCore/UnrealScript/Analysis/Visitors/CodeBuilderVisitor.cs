@@ -748,7 +748,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
             }
 
-            return true; 
+            return true;
         }
 
         public bool VisitNode(DefaultPropertiesBlock node)
@@ -801,7 +801,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         }
 
         public bool VisitNode(DoUntilLoop node)
-        { 
+        {
             // do { /n contents /n } until(condition);
             AppendToNewLine(DO, EF.Keyword);
             Space();
@@ -1311,7 +1311,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             else if (node.Function.IsSuper)
             {
                 Append(SUPER, EF.Keyword);
-                if (node.Function.SuperSpecifier is {} superSpecifier)
+                if (node.Function.SuperSpecifier is { } superSpecifier)
                 {
                     Append("(");
                     Append(superSpecifier.Name, EF.Class);

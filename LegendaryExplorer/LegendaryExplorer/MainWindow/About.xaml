@@ -99,6 +99,7 @@
                         4rterius      <LineBreak/>
                         HenBagle      <LineBreak/>
                         Exkywor       <LineBreak/>
+                        Nanuke        <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
@@ -122,7 +123,7 @@
                         Piccolo Team - Piccolo Graphics Framework       <LineBreak/>
                         bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
-                        Aquadran - Mass Effect Modder (Textures)       <LineBreak/>
+                        Aquadran - Mass Effect Modder (Textures)        <LineBreak/>
                         d00t - LE Coalesced Tool                        <LineBreak/>
                         gabbyh - ME Head Morph Exporter                 <LineBreak/>
                         VGMStream - Audio decoding                      <LineBreak/>
@@ -133,6 +134,9 @@
                         BioWare - MELE Plot Databases                   <LineBreak/>
                         gabbyh - ME Head Morph Exporter                 <LineBreak/>
                         TheBenefactor - Technical information           <LineBreak/>
+                        DarkStarSword - Migoto HLSLDecompiler           <LineBreak/>
+                        bo3b - Migoto HLSLDecompiler                    <LineBreak/>
+                        Chiri - Migoto HLSLDecompiler                   <LineBreak/>                        
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>

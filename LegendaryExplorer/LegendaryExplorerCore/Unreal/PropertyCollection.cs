@@ -10,6 +10,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
 
@@ -340,10 +341,10 @@ namespace LegendaryExplorerCore.Unreal
             {
                 IMEPackage pcc = export.FileRef;
                 //strip transients unless this is a class definition
-                bool stripTransients = parsingEntry is not {ClassName: "Class" or "ScriptStruct"};
+                bool stripTransients = parsingEntry is not { ClassName: "Class" or "ScriptStruct" };
 
                 MEGame structValueLookupGame = pcc.Game;
-                
+
                 // This should be done already...
                 //GlobalUnrealObjectInfo.EnsureLoaded(pcc.Game);
                 switch (pcc.Game)
@@ -366,7 +367,7 @@ namespace LegendaryExplorerCore.Unreal
                         return props;
                 }
 
-                defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, packageCache, false);
+                defaultProps = GlobalUnrealObjectInfo.getDefaultStructValue(structValueLookupGame, structType, stripTransients, parsingEntry?.FileRef, packageCache, false);
                 if (defaultProps == null)
                 {
                     int startPos = (int)stream.Position;
@@ -658,7 +659,7 @@ namespace LegendaryExplorerCore.Unreal
         /// <returns>A deep copy of the <see cref="PropertyCollection"/></returns>
         public PropertyCollection DeepClone()
         {
-            var clone = new PropertyCollection {EndOffset = EndOffset, IsImmutable = IsImmutable};
+            var clone = new PropertyCollection { EndOffset = EndOffset, IsImmutable = IsImmutable };
             for (int i = 0; i < Count; i++)
             {
                 clone.Add(this[i].DeepClone());
@@ -704,7 +705,7 @@ namespace LegendaryExplorerCore.Unreal
                 }
                 else if (!thisProp.Equivalent(otherProp))
                 {
-                    if (structDiff && thisProp is StructProperty {IsImmutable: false} thisStruct && otherProp is StructProperty otherStruct)
+                    if (structDiff && thisProp is StructProperty { IsImmutable: false } thisStruct && otherProp is StructProperty otherStruct)
                     {
                         diff.Add(new StructProperty(thisStruct.StructType, thisStruct.Properties.Diff(otherStruct.Properties), thisStruct.Name, thisStruct.IsImmutable));
                     }
@@ -1000,7 +1001,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         ///<inheritdoc/>
-        public override IntProperty DeepClone() => (IntProperty) MemberwiseClone();
+        public override IntProperty DeepClone() => (IntProperty)MemberwiseClone();
         ///<inheritdoc/>
         public override bool Equivalent(Property other) => other is IntProperty intProperty && base.Equivalent(intProperty) && intProperty.Value == Value;
 
@@ -1089,7 +1090,7 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         ///<inheritdoc/>
-        public override FloatProperty DeepClone() => (FloatProperty) MemberwiseClone();
+        public override FloatProperty DeepClone() => (FloatProperty)MemberwiseClone();
         ///<inheritdoc/>
         public override bool Equivalent(Property other) => other is FloatProperty floatProperty && base.Equivalent(floatProperty) && floatProperty.Value == Value;
 
@@ -1131,6 +1132,40 @@ namespace LegendaryExplorerCore.Unreal
         /// <param name="package">The package to look up the UIndex in</param>
         /// <returns>An IEntry, or null if <see cref="Value"/> is 0 or outside the range of valid UIndexes</returns>
         public IEntry ResolveToEntry(IMEPackage package) => package.GetEntry(Value);
+
+        /// <summary>
+        /// Resolves this property to an export. If the object is an import, it will attempt to resolve it from another package.
+        /// </summary>
+        /// <param name="package">Package this property resides in</param>
+        /// <param name="cache">Cache to use if resolving an import</param>
+        /// <returns></returns>
+        public ExportEntry ResolveToExport(IMEPackage package, PackageCache cache)
+        {
+            var entry = ResolveToEntry(package);
+            if (entry is ExportEntry exp)
+            {
+                return exp;
+            }
+            if (entry is ImportEntry imp)
+            {
+                return EntryImporter.ResolveImport(imp, cache);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Attempts to resolve this object property to an export, returning true if success, false otherwise. This resolves imports to exports.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="cache"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public bool TryResolveExport(IMEPackage package, PackageCache cache, out ExportEntry exp)
+        {
+            exp = ResolveToExport(package, cache);
+            return exp != null;
+        }
 
         ///<inheritdoc/>
         public override PropertyType PropType => PropertyType.ObjectProperty;

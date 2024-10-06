@@ -779,7 +779,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             interpProps.AddOrReplaceProp(new BoolProperty(true, "bRewindOnPlay"));
             // Add Conversation variable link
             ArrayProperty<StructProperty> variableLinks = interpProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
-            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(pcc.Game, "SeqVarLink", true);
+            PropertyCollection props = GlobalUnrealObjectInfo.getDefaultStructValue(pcc.Game, "SeqVarLink", true, pcc);
             props.AddOrReplaceProp(new StrProperty("Conversation", "LinkDesc"));
             int index = pcc.FindImport("Engine.SeqVar_Object").UIndex;
             props.AddOrReplaceProp(new ObjectProperty(index, "ExpectedType"));

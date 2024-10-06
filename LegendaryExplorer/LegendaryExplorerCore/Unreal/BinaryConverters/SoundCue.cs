@@ -9,16 +9,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public UMultiMap<UIndex, Point> EditorData; //Worthless info, but it didn't get cooked out //TODO: Replace with UMap
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref EditorData, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref EditorData, sc.Serialize, sc.Serialize);
         }
 
         public static SoundCue Create()
         {
             return new()
             {
-                EditorData = new()
+                EditorData = []
             };
         }
         
@@ -28,18 +28,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref Point p)
+        public void Serialize(ref Point p)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                p = new Point(sc.ms.ReadInt32(), sc.ms.ReadInt32());
+                p = new Point(ms.ReadInt32(), ms.ReadInt32());
             }
             else
             {
-                sc.ms.Writer.WriteInt32(p.X);
-                sc.ms.Writer.WriteInt32(p.Y);
+                ms.Writer.WriteInt32(p.X);
+                ms.Writer.WriteInt32(p.Y);
             }
         }
     }

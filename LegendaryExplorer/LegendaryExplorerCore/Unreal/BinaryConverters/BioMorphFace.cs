@@ -6,11 +6,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioMorphFace : ObjectBinary
     {
         public Vector3[][] LODs;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref LODs, (SerializingContainer2 sc2, ref Vector3[] lod) =>
+            sc.Serialize(ref LODs, (ref Vector3[] lod) =>
             {
-                sc2.BulkSerialize(ref lod, SCExt.Serialize, 12);
+                sc.BulkSerialize(ref lod, sc.Serialize, 12);
             });
         }
 
@@ -18,7 +18,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                LODs = Array.Empty<Vector3[]>()
+                LODs = []
             };
         }
     }

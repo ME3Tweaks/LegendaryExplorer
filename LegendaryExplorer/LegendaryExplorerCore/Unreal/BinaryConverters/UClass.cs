@@ -24,7 +24,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UIndex Defaults;
         public UIndex[] VirtualFunctionTable;//ME3
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ClassFlags);
@@ -37,20 +37,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ClassConfigName);
             if (sc.Game < MEGame.ME3 && sc.Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
-                sc.Serialize(ref unkNameList1, SCExt.Serialize);
+                sc.Serialize(ref unkNameList1, sc.Serialize);
             }
-            sc.Serialize(ref ComponentNameToDefaultObjectMap, SCExt.Serialize, SCExt.Serialize);
-            sc.Serialize(ref Interfaces, SCExt.Serialize);
+            sc.Serialize(ref ComponentNameToDefaultObjectMap, sc.Serialize, sc.Serialize);
+            sc.Serialize(ref Interfaces, sc.Serialize);
             if (sc.Game is MEGame.UDK)
             {
-                NameReference[] dummyArray = Array.Empty<NameReference>();
-                sc.Serialize(ref dummyArray, SCExt.Serialize);
-                sc.Serialize(ref dummyArray, SCExt.Serialize);
-                sc.Serialize(ref dummyArray, SCExt.Serialize);
-                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                NameReference[] dummyArray = [];
+                sc.Serialize(ref dummyArray, sc.Serialize);
+                sc.Serialize(ref dummyArray, sc.Serialize);
+                sc.Serialize(ref dummyArray, sc.Serialize);
+                sc.Serialize(ref dummyArray, sc.Serialize);
                 bool dummyBool = false;
                 sc.Serialize(ref dummyBool);
-                sc.Serialize(ref dummyArray, SCExt.Serialize);
+                sc.Serialize(ref dummyArray, sc.Serialize);
                 string dummyString = "";
                 sc.Serialize(ref dummyString);
             }
@@ -64,7 +64,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             else
             {
-                sc.Serialize(ref unkNameList2, SCExt.Serialize);
+                sc.Serialize(ref unkNameList2, sc.Serialize);
                 if (sc.IsLoading)
                 {
                     // 11/22/2021 - Load "None" to make sure when porting cross games this is populated
@@ -80,7 +80,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref Defaults);
             if (sc.Game.IsGame3())
             {
-                sc.Serialize(ref VirtualFunctionTable, SCExt.Serialize);
+                sc.Serialize(ref VirtualFunctionTable, sc.Serialize);
             }
         }
 
@@ -88,16 +88,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                ScriptBytes = Array.Empty<byte>(),
+                ScriptBytes = [],
                 IgnoreMask = (UnrealFlags.EProbeFunctions)ulong.MaxValue,
-                LocalFunctionMap = new(),
+                LocalFunctionMap = [],
                 ClassConfigName = "None",
-                unkNameList1 = Array.Empty<NameReference>(),
-                ComponentNameToDefaultObjectMap = new(),
-                Interfaces = new(),
+                unkNameList1 = [],
+                ComponentNameToDefaultObjectMap = [],
+                Interfaces = [],
                 DLLBindName = "None",
-                unkNameList2 = Array.Empty<NameReference>(),
-                VirtualFunctionTable = Array.Empty<UIndex>()
+                unkNameList2 = [],
+                VirtualFunctionTable = []
             };
         }
 
@@ -171,24 +171,24 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref UnrealFlags.EClassFlags flags)
+        public void Serialize(ref UnrealFlags.EClassFlags flags)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
-                flags = (UnrealFlags.EClassFlags)sc.ms.ReadUInt32();
+                flags = (UnrealFlags.EClassFlags)ms.ReadUInt32();
             }
             else
             {
-                sc.ms.Writer.WriteUInt32((uint)flags);
+                ms.Writer.WriteUInt32((uint)flags);
             }
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref UClass.ImplementedInterface implementedInterface)
+        public void Serialize(ref UClass.ImplementedInterface implementedInterface)
         {
-            sc.Serialize(ref implementedInterface.Class);
-            sc.Serialize(ref implementedInterface.PointerProperty);
+            Serialize(ref implementedInterface.Class);
+            Serialize(ref implementedInterface.PointerProperty);
         }
     }
 }

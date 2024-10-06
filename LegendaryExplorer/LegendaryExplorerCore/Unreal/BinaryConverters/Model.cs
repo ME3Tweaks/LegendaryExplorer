@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Packages;
@@ -29,37 +30,54 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid LightingGuid;//ME3
         public LightmassPrimitiveSettings[] LightmassSettings;//ME3
 
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             sc.Serialize(ref Bounds);
-            sc.BulkSerialize(ref Vectors, SCExt.Serialize, 12);
-            sc.BulkSerialize(ref Points, SCExt.Serialize, 12);
-            sc.BulkSerialize(ref Nodes, SCExt.Serialize, 64);
+            sc.BulkSerialize(ref Vectors, sc.Serialize, 12);
+            sc.BulkSerialize(ref Points, sc.Serialize, 12);
+            sc.BulkSerialize(ref Nodes, sc.Serialize, 64);
             sc.Serialize(ref Self);
-            sc.Serialize(ref Surfs, SCExt.Serialize);
-            sc.BulkSerialize(ref Verts, SCExt.Serialize, sc.Game.IsGame3() ? 16 : 24);
+            sc.Serialize(ref Surfs, sc.Serialize);
+            sc.BulkSerialize(ref Verts, sc.Serialize, sc.Game.IsGame3() ? 16 : 24);
             sc.Serialize(ref NumSharedSides);
-            sc.Serialize(ref Zones, SCExt.Serialize);
+            sc.Serialize(ref Zones, sc.Serialize);
             sc.Serialize(ref Polys);
-            sc.BulkSerialize(ref LeafHulls, SCExt.Serialize, 4);
-            sc.BulkSerialize(ref Leaves, SCExt.Serialize, 4);
+            sc.BulkSerialize(ref LeafHulls, sc.Serialize, 4);
+            sc.BulkSerialize(ref Leaves, sc.Serialize, 4);
             sc.Serialize(ref RootOutside);
             sc.Serialize(ref Linked);
-            sc.BulkSerialize(ref PortalNodes, SCExt.Serialize, 4);
+            sc.BulkSerialize(ref PortalNodes, sc.Serialize, 4);
             if (sc.Game != MEGame.UDK)
             {
-                sc.BulkSerialize(ref ShadowVolume, SCExt.Serialize, 16);
+                sc.BulkSerialize(ref ShadowVolume, sc.Serialize, 16);
             }
             else if (sc.IsLoading)
             {
-                ShadowVolume = Array.Empty<MeshEdge>();
+                ShadowVolume = [];
             }
             sc.Serialize(ref NumVertices);
-            sc.BulkSerialize(ref VertexBuffer, SCExt.Serialize, 36);
+            sc.BulkSerialize(ref VertexBuffer, sc.Serialize, 36);
             if (sc.Game >= MEGame.ME3)
             {
                 sc.Serialize(ref LightingGuid);
-                sc.Serialize(ref LightmassSettings, SCExt.Serialize);
+                if (sc.IsSaving && sc.Game is MEGame.UDK) // We can't lightmass unless it's UDK so no point changing this unless it's UDK.
+                {
+                    // Ensure LightmassSettings struct is big enough 
+                    var lightmassCount = Surfs.Length > 0 ? Surfs.Max(x => x.iLightmassIndex) : 0; //Will +1
+                    LightmassSettings = new LightmassPrimitiveSettings[lightmassCount]; // Index 1 = 2 items in list
+                    for (int i = 0; i < LightmassSettings.Length; i++)
+                    {
+                        LightmassSettings[i] = new LightmassPrimitiveSettings
+                        {
+                            FullyOccludedSamplesFraction = 1,
+                            EmissiveLightFalloffExponent = 2,
+                            EmissiveBoost = 1,
+                            DiffuseBoost = 1,
+                            SpecularBoost = 1
+                        };
+                    }
+                }
+                sc.Serialize(ref LightmassSettings, sc.Serialize);
             }
             else if (sc.IsLoading)
             {
@@ -82,20 +100,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new()
             {
                 Bounds = new BoxSphereBounds(),
-                Vectors = Array.Empty<Vector3>(),
-                Points = Array.Empty<Vector3>(),
-                Nodes = Array.Empty<BspNode>(),
+                Vectors = [],
+                Points = [],
+                Nodes = [],
                 Self = 0,
-                Surfs = Array.Empty<BspSurf>(),
-                Verts = Array.Empty<Vert>(),
-                Zones = Array.Empty<ZoneProperties>(),
+                Surfs = [],
+                Verts = [],
+                Zones = [],
                 Polys = 0,
-                LeafHulls = Array.Empty<int>(),
-                Leaves = Array.Empty<int>(),
-                PortalNodes = Array.Empty<int>(),
-                ShadowVolume = Array.Empty<MeshEdge>(),
-                VertexBuffer = Array.Empty<ModelVertex>(),
-                LightmassSettings = Array.Empty<LightmassPrimitiveSettings>()
+                LeafHulls = [],
+                Leaves = [],
+                PortalNodes = [],
+                ShadowVolume = [],
+                VertexBuffer = [],
+                LightmassSettings = []
             };
         }
 
@@ -180,99 +198,99 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector2 ShadowTexCoord;
     }
 
-    public partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(SerializingContainer2 sc, ref BspNode node)
+        public void Serialize(ref BspNode node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new BspNode();
             }
-            sc.Serialize(ref node.Plane);
-            sc.Serialize(ref node.iVertPool);
-            sc.Serialize(ref node.iSurf);
-            sc.Serialize(ref node.iVertexIndex);
-            sc.Serialize(ref node.ComponentIndex);
-            sc.Serialize(ref node.ComponentNodeIndex);
-            sc.Serialize(ref node.ComponentElementIndex);
-            sc.Serialize(ref node.iBack);
-            sc.Serialize(ref node.iFront);
-            sc.Serialize(ref node.iPlane);
-            sc.Serialize(ref node.iCollisionBound);
-            sc.Serialize(ref node.iZone0);
-            sc.Serialize(ref node.iZone1);
-            sc.Serialize(ref node.NumVertices);
-            sc.Serialize(ref node.NodeFlags);
-            sc.Serialize(ref node.iLeaf0);
-            sc.Serialize(ref node.iLeaf1);
+            Serialize(ref node.Plane);
+            Serialize(ref node.iVertPool);
+            Serialize(ref node.iSurf);
+            Serialize(ref node.iVertexIndex);
+            Serialize(ref node.ComponentIndex);
+            Serialize(ref node.ComponentNodeIndex);
+            Serialize(ref node.ComponentElementIndex);
+            Serialize(ref node.iBack);
+            Serialize(ref node.iFront);
+            Serialize(ref node.iPlane);
+            Serialize(ref node.iCollisionBound);
+            Serialize(ref node.iZone0);
+            Serialize(ref node.iZone1);
+            Serialize(ref node.NumVertices);
+            Serialize(ref node.NodeFlags);
+            Serialize(ref node.iLeaf0);
+            Serialize(ref node.iLeaf1);
         }
-        public static void Serialize(SerializingContainer2 sc, ref BspSurf node)
+        public void Serialize(ref BspSurf node)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 node = new BspSurf();
             }
-            sc.Serialize(ref node.Material);
-            sc.Serialize(ref node.PolyFlags);
-            sc.Serialize(ref node.pBase);
-            sc.Serialize(ref node.vNormal);
-            sc.Serialize(ref node.vTextureU);
-            sc.Serialize(ref node.vTextureV);
-            sc.Serialize(ref node.iBrushPoly);
-            sc.Serialize(ref node.Actor);
-            sc.Serialize(ref node.Plane);
-            sc.Serialize(ref node.ShadowMapScale);
-            sc.Serialize(ref node.LightingChannels);
-            if (sc.Game >= MEGame.ME3)
+            Serialize(ref node.Material);
+            Serialize(ref node.PolyFlags);
+            Serialize(ref node.pBase);
+            Serialize(ref node.vNormal);
+            Serialize(ref node.vTextureU);
+            Serialize(ref node.vTextureV);
+            Serialize(ref node.iBrushPoly);
+            Serialize(ref node.Actor);
+            Serialize(ref node.Plane);
+            Serialize(ref node.ShadowMapScale);
+            Serialize(ref node.LightingChannels);
+            if (Game >= MEGame.ME3)
             {
-                sc.Serialize(ref node.iLightmassIndex);
+                Serialize(ref node.iLightmassIndex);
             }
             else
             {
                 node.iLightmassIndex = 1;
             }
         }
-        public static void Serialize(SerializingContainer2 sc, ref Vert vert)
+        public void Serialize(ref Vert vert)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 vert = new Vert();
             }
-            sc.Serialize(ref vert.pVertex);
-            sc.Serialize(ref vert.iSide);
-            sc.Serialize(ref vert.ShadowTexCoord);
-            if (!sc.Game.IsGame3())
+            Serialize(ref vert.pVertex);
+            Serialize(ref vert.iSide);
+            Serialize(ref vert.ShadowTexCoord);
+            if (!Game.IsGame3())
             {
-                sc.Serialize(ref vert.BackfaceShadowTexCoord);
+                Serialize(ref vert.BackfaceShadowTexCoord);
             }
-            else if (sc.IsLoading)
+            else if (IsLoading)
             {
                 //probably wrong
                 vert.BackfaceShadowTexCoord = new Vector2(vert.ShadowTexCoord.Y, vert.BackfaceShadowTexCoord.X);
             }
         }
-        public static void Serialize(SerializingContainer2 sc, ref ZoneProperties zone)
+        public void Serialize(ref ZoneProperties zone)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 zone = new ZoneProperties();
             }
-            sc.Serialize(ref zone.ZoneActor);
-            sc.Serialize(ref zone.LastRenderTime);
-            sc.Serialize(ref zone.ConnectivityMask);
-            sc.Serialize(ref zone.VisibilityMask);
+            Serialize(ref zone.ZoneActor);
+            Serialize(ref zone.LastRenderTime);
+            Serialize(ref zone.ConnectivityMask);
+            Serialize(ref zone.VisibilityMask);
         }
-        public static void Serialize(SerializingContainer2 sc, ref ModelVertex vert)
+        public void Serialize(ref ModelVertex vert)
         {
-            if (sc.IsLoading)
+            if (IsLoading)
             {
                 vert = new ModelVertex();
             }
-            sc.Serialize(ref vert.Position);
-            sc.Serialize(ref vert.TangentX);
-            sc.Serialize(ref vert.TangentZ);
-            sc.Serialize(ref vert.TexCoord);
-            sc.Serialize(ref vert.ShadowTexCoord);
+            Serialize(ref vert.Position);
+            Serialize(ref vert.TangentX);
+            Serialize(ref vert.TangentZ);
+            Serialize(ref vert.TexCoord);
+            Serialize(ref vert.ShadowTexCoord);
         }
     }
 }

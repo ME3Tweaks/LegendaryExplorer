@@ -417,6 +417,38 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Initializes an empty package file object, not saving it to disk.
+        /// </summary>
+        /// <param name="path">The associated filepath - internal methods use this to do things such as import lookups.</param>
+        /// <param name="game">The game the package is for</param>
+        /// <returns>Blank IMEPackage object</returns>
+        /// <exception cref="ArgumentException">Invalid game package</exception>
+        public static IMEPackage CreateMemoryEmptyPackage(string path, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.UDK:
+                    {
+                        using var p = UDKConstructorDelegate(path); // This might make it in disk?
+                        var memStream = p.SaveToStream(false);
+                        memStream.Position = 0;
+                        return OpenMEPackageFromStream(memStream, path);
+                    }
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
+                default:
+                    {
+                        using var p = MEBlankPackageCreatorDelegate(path, game);
+                        var memStream = p.SaveToStream(false);
+                        memStream.Position = 0;
+                        return OpenMEPackageFromStream(memStream, path);
+                    }
+            }
+        }
+
+        /// <summary>
         /// Generates a new empty level package file.
         /// </summary>
         /// <param name="outpath">Where to save the package</param>
@@ -425,6 +457,34 @@ namespace LegendaryExplorerCore.Packages
         {
             var pcc = CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(outpath), game);
             pcc.WriteToFile(outpath); // You must pass the path here as this file was loaded from memory
+        }
+
+        /// <summary>
+        /// Generates a new empty level package file, not saving it to disk.
+        /// </summary>
+        /// <param name="fileName">Associated filepath for the package, but not where it saves</param>
+        /// <param name="game">What game the package is for</param>
+        public static IMEPackage CreateMemoryEmptyLevel(string fileName, MEGame game)
+        {
+            var memStream = CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(fileName), game);
+            switch (game)
+            {
+                case MEGame.UDK:
+                {
+                    memStream.Position = 0;
+                    return OpenMEPackageFromStream(memStream, fileName);
+                }
+                case MEGame.LELauncher:
+                    throw new ArgumentException("Cannot create a package for LELauncher, it doesn't use packages");
+                case MEGame.Unknown:
+                    throw new ArgumentException("Cannot create a package file for an Unknown game!", nameof(game));
+                default:
+                {
+
+                    memStream.Position = 0;
+                    return OpenMEPackageFromStream(memStream, fileName);
+                }
+            }
         }
 
         /// <summary>
@@ -462,7 +522,10 @@ namespace LegendaryExplorerCore.Packages
             // 01/12/2024 - Indexed level name is assigned properly
             if (indexedLevelName.Number > 0)
             {
-                pcc.FindExport(indexedLevelName.Name).ObjectName = indexedLevelName;
+                if (pcc.FindExport(indexedLevelName.Name) != null) // udk levels don't have this in them that we create
+                {
+                    pcc.FindExport(indexedLevelName.Name).ObjectName = indexedLevelName;
+                }
             }
 
             var packguid = Guid.NewGuid();

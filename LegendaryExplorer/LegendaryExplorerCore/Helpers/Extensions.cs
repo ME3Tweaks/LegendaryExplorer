@@ -216,7 +216,7 @@ namespace LegendaryExplorerCore.Helpers
             return -1;
         }
 
-        public static bool IsEmpty<T>(this ICollection<T> list) => list.Count == 0;
+        public static bool IsEmpty<T>(this ICollection<T> collection) => collection.Count == 0;
 
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
         public static bool Any<T>(this ICollection<T> collection) => collection.Count > 0;
@@ -357,16 +357,6 @@ namespace LegendaryExplorerCore.Helpers
                 dict[key] = list;
             }
             list.Add(value);
-        }
-
-        public static bool TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value)
-        {
-            if (dict.ContainsKey(key))
-            {
-                return false;
-            }
-            dict.Add(key, value);
-            return true;
         }
     }
 

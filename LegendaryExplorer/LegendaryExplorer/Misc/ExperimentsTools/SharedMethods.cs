@@ -48,9 +48,9 @@ namespace LegendaryExplorer.Misc.ExperimentsTools
         /// </summary>
         /// <param name="entry">Entry to resolve.</param>
         /// <returns>Resulting ExportEntry.</returns>
-        public static ExportEntry ResolveEntryToExport(IEntry entry)
+        public static ExportEntry ResolveEntryToExport(IEntry entry, PackageCache cache)
         {
-            if (entry is ImportEntry import) { return EntryImporter.ResolveImport(import); }
+            if (entry is ImportEntry import) { return EntryImporter.ResolveImport(import, cache); }
             else { return (ExportEntry)entry; }
         }
 

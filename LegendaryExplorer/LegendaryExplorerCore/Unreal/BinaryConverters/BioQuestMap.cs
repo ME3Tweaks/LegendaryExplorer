@@ -12,22 +12,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public List<BioStateTaskList> IntTaskEvals;
         public List<BioStateTaskList> FloatTaskEvals;
         
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref Quests, SCExt.Serialize);
-            sc.Serialize(ref TaskEvals, SCExt.Serialize);
-            sc.Serialize(ref IntTaskEvals, SCExt.Serialize);
-            sc.Serialize(ref FloatTaskEvals, SCExt.Serialize);
+            sc.Serialize(ref Quests, sc.Serialize);
+            sc.Serialize(ref TaskEvals, sc.Serialize);
+            sc.Serialize(ref IntTaskEvals, sc.Serialize);
+            sc.Serialize(ref FloatTaskEvals, sc.Serialize);
         }
 
         public static BioQuestMap Create()
         {
             return new()
             {
-                Quests = new List<BioQuest>(),
-                TaskEvals = new List<BioStateTaskList>(),
-                IntTaskEvals = new List<BioStateTaskList>(),
-                FloatTaskEvals = new List<BioStateTaskList>()
+                Quests = [],
+                TaskEvals = [],
+                IntTaskEvals = [],
+                FloatTaskEvals = []
             };
         }
 
@@ -105,68 +105,68 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public static partial class SCExt
+    public partial class SerializingContainer
     {
-        public static void Serialize(this SerializingContainer2 sc, ref BioQuest quest)
+        public void Serialize(ref BioQuest quest)
         {
-            if (sc.IsLoading) quest = new BioQuest();
-            sc.Serialize(ref quest.ID);
-            sc.Serialize(ref quest.InstanceVersion);
-            sc.Serialize(ref quest.IsMission);
-            sc.Serialize(ref quest.Goals, Serialize);
-            sc.Serialize(ref quest.Tasks, Serialize);
-            sc.Serialize(ref quest.PlotItems, Serialize);
+            if (IsLoading) quest = new BioQuest();
+            Serialize(ref quest.ID);
+            Serialize(ref quest.InstanceVersion);
+            Serialize(ref quest.IsMission);
+            Serialize(ref quest.Goals, Serialize);
+            Serialize(ref quest.Tasks, Serialize);
+            Serialize(ref quest.PlotItems, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioQuestGoal goal)
+        public void Serialize(ref BioQuestGoal goal)
         {
-            if (sc.IsLoading) goal = new BioQuestGoal();
-            sc.Serialize(ref goal.InstanceVersion);
-            sc.Serialize(ref goal.Name);
-            sc.Serialize(ref goal.Description);
-            sc.Serialize(ref goal.Conditional);
-            sc.Serialize(ref goal.State);
+            if (IsLoading) goal = new BioQuestGoal();
+            Serialize(ref goal.InstanceVersion);
+            Serialize(ref goal.Name);
+            Serialize(ref goal.Description);
+            Serialize(ref goal.Conditional);
+            Serialize(ref goal.State);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioQuestTask task)
+        public void Serialize(ref BioQuestTask task)
         {
-            if (sc.IsLoading) task = new BioQuestTask();
-            sc.Serialize(ref task.InstanceVersion);
-            sc.Serialize(ref task.QuestCompleteTask);
-            sc.Serialize(ref task.Name);
-            sc.Serialize(ref task.Description);
-            sc.Serialize(ref task.PlotIndices, Serialize);
-            sc.Serialize(ref task.PlanetName);
-            sc.Serialize(ref task.WaypointRef);
+            if (IsLoading) task = new BioQuestTask();
+            Serialize(ref task.InstanceVersion);
+            Serialize(ref task.QuestCompleteTask);
+            Serialize(ref task.Name);
+            Serialize(ref task.Description);
+            Serialize(ref task.PlotIndices, Serialize);
+            Serialize(ref task.PlanetName);
+            Serialize(ref task.WaypointRef);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioQuestPlotItem item)
+        public void Serialize(ref BioQuestPlotItem item)
         {
-            if (sc.IsLoading) item = new BioQuestPlotItem();
-            sc.Serialize(ref item.InstanceVersion);
-            sc.Serialize(ref item.Name);
-            sc.Serialize(ref item.IconIndex);
-            sc.Serialize(ref item.Conditional);
-            sc.Serialize(ref item.State);
-            sc.Serialize(ref item.TargetItems);
+            if (IsLoading) item = new BioQuestPlotItem();
+            Serialize(ref item.InstanceVersion);
+            Serialize(ref item.Name);
+            Serialize(ref item.IconIndex);
+            Serialize(ref item.Conditional);
+            Serialize(ref item.State);
+            Serialize(ref item.TargetItems);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioStateTaskList taskList)
+        public void Serialize(ref BioStateTaskList taskList)
         {
-            if (sc.IsLoading) taskList = new BioStateTaskList();
-            sc.Serialize(ref taskList.ID);
-            sc.Serialize(ref taskList.InstanceVersion);
-            sc.Serialize(ref taskList.TaskEvals, Serialize);
+            if (IsLoading) taskList = new BioStateTaskList();
+            Serialize(ref taskList.ID);
+            Serialize(ref taskList.InstanceVersion);
+            Serialize(ref taskList.TaskEvals, Serialize);
         }
 
-        public static void Serialize(this SerializingContainer2 sc, ref BioTaskEval task)
+        public void Serialize(ref BioTaskEval task)
         {
-            if (sc.IsLoading) task = new BioTaskEval();
-            sc.Serialize(ref task.InstanceVersion);
-            sc.Serialize(ref task.Task);
-            sc.Serialize(ref task.Conditional);
-            sc.Serialize(ref task.State);
-            sc.Serialize(ref task.Quest);
+            if (IsLoading) task = new BioTaskEval();
+            Serialize(ref task.InstanceVersion);
+            Serialize(ref task.Task);
+            Serialize(ref task.Conditional);
+            Serialize(ref task.State);
+            Serialize(ref task.Quest);
         }
     }
 }

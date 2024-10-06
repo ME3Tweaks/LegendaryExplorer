@@ -2,10 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -20,6 +22,9 @@ namespace LegendaryExplorerCore.Packages
     public sealed class ExportEntry :  IEntry
     {
         private readonly IMEPackage _fileRef;
+        /// <summary>
+        /// The package file this export resides in
+        /// </summary>
         public IMEPackage FileRef => _fileRef;
 
         public MEGame Game => _fileRef.Game;
@@ -97,7 +102,7 @@ namespace LegendaryExplorerCore.Packages
             _data = ms.ToArray();
             _commonHeaderFields._dataSize = _data.Length;
         }
-        
+
         /// <summary>
         /// Constructor for generating a new export entry
         /// </summary>
@@ -170,7 +175,7 @@ namespace LegendaryExplorerCore.Packages
             return _data.Slice(0, GetPropertyStart());
         }
 
-        public void SetPrePropBinary(byte[] bytes)
+        public void SetPrePropBinary(byte[] bytes, bool isChangingSize = false)
         {
             if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
             {
@@ -194,17 +199,36 @@ namespace LegendaryExplorerCore.Packages
             }
             else
             {
-                if (bytes.Length != GetPropertyStart())
+                // If its going to change size, do not conduct this check
+                byte[] data;
+
+                if (isChangingSize)
                 {
-                    throw new ArgumentException($"Expected pre-property binary to be {GetPropertyStart()} bytes, not {bytes.Length}!", nameof(bytes));
+                    var dataStream = new MemoryStream();
+                    dataStream.Write(bytes);
+                    var propStart = GetPropertyStart();
+                    dataStream.Write(_data.Slice(propStart, _data.Length - propStart));
+                    data = dataStream.ToArray();
                 }
-                byte[] data = Data;
-                Buffer.BlockCopy(bytes, 0, data, 0, bytes.Length);
+                else
+                {
+                    // Modify in place
+                    if (bytes.Length != GetPropertyStart())
+                    {
+                        throw new ArgumentException(
+                            $"Expected pre-property binary to be {GetPropertyStart()} bytes, not {bytes.Length}!",
+                            nameof(bytes));
+                    }
+
+                    data = Data;
+                    Buffer.BlockCopy(bytes, 0, data, 0, bytes.Length);
+                }
                 Data = data;
             }
         }
-        
+
         public bool IsDefaultObject => _commonHeaderFields._objectFlags.Has(EObjectFlags.ClassDefaultObject);
+        public bool IsArchetype => _commonHeaderFields._objectFlags.Has(EObjectFlags.ArchetypeObject);
 
         /// <summary>
         /// Get generates the header, Set deserializes all the header values from the provided byte array
@@ -277,7 +301,7 @@ namespace LegendaryExplorerCore.Packages
         {
             return GenerateHeader(_fileRef);
         }
-        
+
         public byte[] GenerateHeader(IMEPackage pcc, bool clearComponentMap = false)
         {
             if (pcc.Endian.IsNative && pcc.Game > MEGame.ME2 && _commonHeaderFields._generationNetObjectCountsLength == 0)
@@ -333,7 +357,7 @@ namespace LegendaryExplorerCore.Packages
             if (stream.Endian.IsNative && _fileRef.Game > MEGame.ME2)
             {
                 stream.Read(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref _commonHeaderFields, 1)));
-                
+
                 //rarely true. Only for ForcedExport packages I think?
                 if (_commonHeaderFields._generationNetObjectCountsLength > 0)
                 {
@@ -682,7 +706,47 @@ namespace LegendaryExplorerCore.Packages
         public string FullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? $"{ParentFullPath}.{ObjectNameString}" : ObjectNameString;
 
         public string ParentInstancedFullPath => _fileRef.GetEntry(_commonHeaderFields._idxLink)?.InstancedFullPath ?? "";
-        public string InstancedFullPath => _fileRef.IsEntry(_commonHeaderFields._idxLink) ? ObjectName.AddToPath(ParentInstancedFullPath) : ObjectName.Instanced;
+
+        public string InstancedFullPath
+        {
+            get
+            {
+                var parent = Parent;
+                if (parent is not null)
+                {
+                    int fullLength = ObjectName.GetInstancedLength();
+                    IEntry entry = parent;
+                    do
+                    {
+                        fullLength += 1 + entry.ObjectName.GetInstancedLength();
+                        entry = entry.Parent;
+                    } while (entry is not null);
+                    return string.Create(fullLength, (IEntry)this, static (span, entry) =>
+                    {
+                        int curNameStartIdx = span.Length;
+                        while (true)
+                        {
+                            NameReference curName = entry.ObjectName;
+                            int curNameLength = curName.GetInstancedLength();
+                            curNameStartIdx -= curNameLength;
+                            curName.FormatInstanced(span.Slice(curNameStartIdx, curNameLength));
+                            entry = entry.Parent;
+                            if (entry is not null)
+                            {
+                                curNameStartIdx -= 1;
+                                span[curNameStartIdx] = '.';
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    });
+                }
+                return ObjectName.Instanced;
+            }
+        }
+
         public string MemoryFullPath => IsForcedExport ? InstancedFullPath : $"{FileRef.FileNameNoExtension.StripUnrealLocalization()}.{InstancedFullPath}";
 
         public bool HasParent => _fileRef.IsEntry(_commonHeaderFields._idxLink);
@@ -708,7 +772,7 @@ namespace LegendaryExplorerCore.Packages
             get => _fileRef.GetEntry(_commonHeaderFields._idxSuperClass);
             set => idxSuperClass = value?.UIndex ?? 0;
         }
-        
+
         public bool IsClass => _commonHeaderFields._idxClass == 0;
 
         public IEntry Class
@@ -830,7 +894,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 parsingClass = Class; //class we are defaults of
             }
-            
+
             if (propStartPos == 0)
                 propStartPos = GetPropertyStart();
             var stream = new MemoryStream(_data, false);
@@ -874,7 +938,7 @@ namespace LegendaryExplorerCore.Packages
 
             int start = 0;
 
-            
+
             if (!IsDefaultObject && this.IsA("Component") || (Game == MEGame.UDK && ClassName.EndsWith("Component")))
             {
                 if (Game >= MEGame.ME3 && ClassName == "DominantDirectionalLightComponent" || ClassName == "DominantSpotLightComponent")
@@ -887,7 +951,7 @@ namespace LegendaryExplorerCore.Packages
                 IEntry parent = Parent;
                 while (parent is not null)
                 {
-                    if (parent is ExportEntry {IsDefaultObject: true})
+                    if (parent is ExportEntry { IsDefaultObject: true })
                     {
                         start += 8; //TemplateName
                         break;
@@ -935,8 +999,8 @@ namespace LegendaryExplorerCore.Packages
                 MEGame.UDK => 26,
                 MEGame.ME3 => 30,
                 MEGame.LE1 => 30,
-                MEGame.LE2 => 30, 
-                MEGame.LE3 => 30, 
+                MEGame.LE2 => 30,
+                MEGame.LE3 => 30,
                 MEGame.ME1 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 MEGame.ME2 when _fileRef.Platform == MEPackage.GamePlatform.PS3 => 30,
                 _ => 32
@@ -1033,7 +1097,7 @@ namespace LegendaryExplorerCore.Packages
                     propsEndOffset = pos;
                 }
             }
-            
+
             if (propsEndOffset.Value < 4) throw new Exception("Props end is less than 4!");
             return propsEndOffset.Value;
         }
@@ -1050,6 +1114,8 @@ namespace LegendaryExplorerCore.Packages
             return new MemoryStream(_data, start, _data.Length - start, false);
         }
 
+        public MemoryStream GetReadOnlyDataStream() => new(_data, 0, _data.Length, false);
+
         public void WriteBinary(byte[] binaryData)
         {
             int binStart = propsEnd();
@@ -1059,12 +1125,12 @@ namespace LegendaryExplorerCore.Packages
             Data = m.ToArray();
         }
 
-        public void WriteBinary(ObjectBinary bin)
+        public void WriteBinary(ObjectBinary bin, int? dataOffsetOverride = null)
         {
             MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
             var m = new EndianReader(ms) { Endian = _fileRef.Endian };
             m.Writer.Write(_data, 0, propsEnd());
-            bin.WriteTo(m.Writer, _fileRef, _commonHeaderFields._dataOffset);
+            bin.WriteTo(m.Writer, _fileRef, dataOffsetOverride ?? _commonHeaderFields._dataOffset);
             Data = m.ToArray();
         }
 
@@ -1102,8 +1168,9 @@ namespace LegendaryExplorerCore.Packages
         /// Clones this export. If you don't supply a new index, it will remain the same - ENSURE YOU CHANGE IT OR YOU'LL WASTE TIME DEBUGGING THE GAME!!
         /// </summary>
         /// <param name="newIndex"></param>
+        /// <param name="newParentUIndex"></param>
         /// <returns></returns>
-        public ExportEntry Clone(int newIndex = -1)
+        public ExportEntry Clone(int newIndex = -1, int newParentUIndex = int.MaxValue)
         {
             var clone = (ExportEntry)MemberwiseClone();
 
@@ -1118,6 +1185,10 @@ namespace LegendaryExplorerCore.Packages
             }
             clone.HeaderOffset = 0;
             clone._commonHeaderFields._dataOffset = 0;
+            if (newParentUIndex != int.MaxValue)
+            {
+                clone._commonHeaderFields._idxLink = newParentUIndex;
+            }
             if (newIndex >= 0)
             {
                 clone._commonHeaderFields._indexValue = newIndex;
@@ -1139,14 +1210,14 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        IEntry IEntry.Clone(bool incrementIndex)
+        IEntry IEntry.Clone(bool incrementIndex, int newParentUIndex)
         {
             if (incrementIndex)
             {
-                return Clone(_fileRef.GetNextIndexForInstancedName(this));
+                return Clone(_fileRef.GetNextIndexForInstancedName(this), newParentUIndex);
             }
 
-            return Clone();
+            return Clone(newParentUIndex: newParentUIndex);
         }
 
         //only for temporary use! Do not add the export returned by this to the file
@@ -1198,12 +1269,21 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         public string GetRootName()
         {
+            return GetRoot().InstancedFullPath;
+        }
+
+        /// <summary>
+        /// Gets the top level object by following the idxLink up the chain.
+        /// </summary>
+        /// <returns></returns>
+        public IEntry GetRoot()
+        {
             IEntry current = this;
             while (current.Parent != null)
             {
                 current = current.Parent;
             }
-            return current.InstancedFullPath;
+            return current;
         }
 
         /// <summary>
@@ -1290,5 +1370,12 @@ namespace LegendaryExplorerCore.Packages
             EntryHasPendingChanges = true;
             _fileRef.IsModified = true;
         }
+
+        public string GetLinker()
+        {
+            return IEntry.GetLinker(this);
+        }
+
+        public ReadOptimizedByteProvider GetByteProvider() => new(_data);
     }
 }

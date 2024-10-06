@@ -15,7 +15,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <summary>
         /// The list of arrayproperties on BioWorldInfo to enumerate and remove trashed items from
         /// </summary>
-        private static readonly string[] BWIProperitesToCleanupOnTrash = new string[] { "ClientDestroyedActorContent" }; // Array cause we might add more as we encountered them
+        private static readonly string[] BWIProperitesToCleanupOnTrash = ["ClientDestroyedActorContent"]; // Array cause we might add more as we encountered them
 
         public static void TrashEntriesAndDescendants(IEnumerable<IEntry> itemsToTrash)
         {
@@ -255,8 +255,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                         case DelegateProperty delegateProperty:
                             //script related, so just delete it.
                             // ?? Could this be automatically converted these days?
-                            removedProperties = true;
-                            Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
+                            // 12/09/2023: Change to just port the property as this code was ancient
+                            //removedProperties = true;
+                            //Debug.WriteLine($"Trimmed property {prop.Name} from {typeName}");
+                            newProps.Add(delegateProperty);
                             break;
                         case EnumProperty enumProperty:
                             if (GlobalUnrealObjectInfo.GetEnumValues(newGame, enumProperty.EnumType) is List<NameReference> values)
@@ -370,7 +372,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <param name="sourcePccGame"></param>
         /// <param name="newGame"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         private static Property AttemptArrayStructCorrection(ArrayProperty<StructProperty> arrayOfStructs, MEGame sourcePccGame, MEGame newGame)
         {
             if (sourcePccGame == MEGame.ME3 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
@@ -389,7 +390,70 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                 return newProp;
             }
-            else if (sourcePccGame == MEGame.LE2 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+
+            // This is missing a significant amount of info so the ported info may not be that useful.
+            if (sourcePccGame == MEGame.LE1 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            {
+                // This has potential to be very slow because we have to reference the level index
+
+                // This requires adding a few extra properties. We have no way to fill them in so we just fill it with blank data.
+                ArrayProperty<StructProperty> newProp = new ArrayProperty<StructProperty>("Slots");
+                foreach (var sp in arrayOfStructs)
+                {
+                    var newStruct = new StructProperty(sp.StructType, sp.Properties, sp.Name, sp.IsImmutable);
+
+                    // Get properties we have to correct.
+                    var fireLinks = sp.Properties.GetProp<ArrayProperty<StructProperty>>("FireLinks"); // Needs the struct properties converted?
+                    //var rejectedFireLinks = sp.Properties.GetProp<ArrayProperty<StructProperty>>("RejectedFireLinks"); // Needs the struct properties converted?
+                    var exposedLinks = sp.Properties.GetProp<ArrayProperty<StructProperty>>("ExposedFireLinks"); // Converts to ExposedCoverPackedProperties?
+                    var dangerLinks = sp.Properties.GetProp<ArrayProperty<StructProperty>>("DangerLinks"); // Converts to DangerCoverPackedProperties?
+                    var turnTarget = sp.Properties.GetProp<ArrayProperty<StructProperty>>("TurnTarget"); // Converts to TurnTargetPackedProperties?
+
+                    sp.Properties.Remove(fireLinks);
+                    //sp.Properties.Remove(rejectedFireLinks);
+                    sp.Properties.Remove(exposedLinks);
+                    sp.Properties.Remove(dangerLinks);
+                    sp.Properties.Remove(turnTarget);
+                    sp.Properties.RemoveNamedProperty("m_nBlockedCount"); // This is not present in LE3
+                    sp.Properties.RemoveNamedProperty("ForcedFireLinks"); // This is not present in LE3
+                    sp.Properties.RemoveNamedProperty("CoverDirection"); // This is not present in LE3
+                    sp.Properties.RemoveNamedProperty("ForceCoverDirection"); // This is not present in LE3
+
+                    // FireLinks
+                    var newFireLinks = new ArrayProperty<StructProperty>("FireLinks");
+                    foreach (var fl in fireLinks)
+                    {
+                        // newFireLinks.Add(GenerateLE3FireLink(fl));
+                        // Todo - convert
+                    }
+
+                    var newExposedCoverPackedProperties = new ArrayProperty<IntProperty>("ExposedCoverPackedProperties");
+                    var newDangerCoverPackedProperties = new ArrayProperty<IntProperty>("CoverTurnTargetPackedProperties");
+
+                    sp.Properties.Insert(1, newFireLinks);
+
+                    sp.Properties.Insert(3, newExposedCoverPackedProperties);
+                    sp.Properties.Insert(4, newDangerCoverPackedProperties);
+                    sp.Properties.Insert(5, new ArrayProperty<StructProperty>("SlipTarget")); // We will not have anything to populate this with.
+
+                    newStruct.Properties.Insert(12, new IntProperty(0, "TurnTargetPackedProperties"));  // We will not have anything to populate this with.
+                    newStruct.Properties.Insert(13, new IntProperty(0, "CoverTurnTargetPackedProperties")); // We will not have anything to populate this with.
+
+                    newStruct.Properties.Insert(28, new BoolProperty(false, "bCanCoverTurn_Left")); // Index needs validated
+                    newStruct.Properties.Insert(29, new BoolProperty(false, "bCanCoverTurn_Right"));
+
+                    newStruct.Properties.Insert(36, new BoolProperty(false, "bAllowCoverTurn"));
+                    newStruct.Properties.Insert(39, new BoolProperty(false, "bUnSafeCover"));
+
+
+
+                    newProp.Add(newStruct);
+                }
+
+                return newProp;
+            }
+
+            if (sourcePccGame == MEGame.LE2 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
             {
                 // This has potential to be very slow because we have to reference the level index
 

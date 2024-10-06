@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Dictionary<Label, List<JumpPlaceholder>> LabelJumps = [];
 
-        private Func<IMEPackage, string, IEntry> MissingObjectResolver;
+        private readonly UnrealScriptOptionsPackage USOP;
 
         private readonly Queue<ScriptToken> Comments = [];
 
@@ -85,9 +85,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private readonly Stack<NestedContextFlag> InContext = [null];
 
-        private ByteCodeCompilerVisitor(UStruct target) : base(target.Export.FileRef)
+        private ByteCodeCompilerVisitor(UStruct target, UnrealScriptOptionsPackage usop) : base(target.Export.FileRef)
         {
             Target = target;
+            this.USOP = usop;
             IEntry containingClass = Target.Export;
             while (containingClass.ClassName != "Class")
             {
@@ -97,12 +98,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ContainingClass = containingClass;
         }
 
-        public static void Compile(Function func, UFunction target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        public static void Compile(Function func, UFunction target, UnrealScriptOptionsPackage usop)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
-            {
-                MissingObjectResolver = missingObjectResolver
-            };
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
             bytecodeCompiler.Compile(func);
         }
 
@@ -203,12 +201,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        public static void Compile(State state, UState target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+
+        public static void Compile(State state, UState target, UnrealScriptOptionsPackage usop)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
-            {
-                MissingObjectResolver = missingObjectResolver
-            };
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
             bytecodeCompiler.Compile(state);
         }
 
@@ -273,12 +269,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        public static void Compile(Class cls, UClass target, Func<IMEPackage, string, IEntry> missingObjectResolver = null)
+        public static void Compile(Class cls, UClass target, UnrealScriptOptionsPackage usop)
         {
-            var bytecodeCompiler = new ByteCodeCompilerVisitor(target)
-            {
-                MissingObjectResolver = missingObjectResolver
-            };
+            var bytecodeCompiler = new ByteCodeCompilerVisitor(target, usop);
             bytecodeCompiler.Compile(cls);
         }
 
@@ -652,7 +645,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     returnProp = null;
                     return false;
                 }
-                if (expr is SymbolReference { Node: VariableDeclaration varDecl})
+                if (expr is SymbolReference { Node: VariableDeclaration varDecl })
                 {
                     if (varDecl.Flags.Has(EPropertyFlags.NeedCtorLink) || varDecl.VarType.Size(Game) > 64)
                     {
@@ -663,13 +656,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(expr.StartPos)}: Cannot resolve property for dynamic array sort! Please report this error to LEX devs.");
             }
             else if (expr switch
-                {
-                    DelegateCall delegateCall => delegateCall.DefaultFunction,
-                    FunctionCall functionCall => (Function)functionCall.Function.Node,
-                    InOpReference inOpReference => inOpReference.Operator.Implementer,
-                    PreOpReference preOpReference => preOpReference.Operator.Implementer,
-                    _ => null
-                } is { RetValNeedsDestruction: true } func)
+            {
+                DelegateCall delegateCall => delegateCall.DefaultFunction,
+                FunctionCall functionCall => (Function)functionCall.Function.Node,
+                InOpReference inOpReference => inOpReference.Operator.Implementer,
+                PreOpReference preOpReference => preOpReference.Operator.Implementer,
+                _ => null
+            } is { RetValNeedsDestruction: true } func)
             {
                 returnProp = ResolveReturnValue(func);
                 return true;
@@ -1033,7 +1026,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             else
             {
-                if (node.IsClassContext || hasInnerContext || Game is MEGame.LE1)
+                if (node.IsClassContext || hasInnerContext || Game.IsLEGame())
                 {
                     skip.End();
                 }
@@ -1190,7 +1183,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 if (prim.Cast == ECast.ObjectToInterface)
                 {
                     WriteOpCode(OpCodes.InterfaceCast);
-                    WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc));
+                    WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, USOP));
                 }
                 else
                 {
@@ -1201,12 +1194,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             else if (node.CastType is ClassType clsType)
             {
                 WriteOpCode(OpCodes.Metacast);
-                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc, USOP));
             }
             else
             {
                 WriteOpCode(OpCodes.DynamicCast);
-                WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, USOP));
             }
             Emit(node.CastTarget);
             return true;
@@ -1432,11 +1425,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             WriteOpCode(OpCodes.ObjectConst);
             if (node.Class is ClassType clsType)
             {
-                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc));
+                WriteObjectRef(CompilerUtils.ResolveClass((Class)clsType.ClassLimiter, Pcc, USOP));
             }
             else
             {
-                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}", node.Class.Name) ?? ResolveObject(node.Name.Value, node.Class.Name) ?? MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
+                IEntry entry = ResolveObject($"{ContainingClass.InstancedFullPath}.{node.Name.Value}", node.Class.Name) ?? ResolveObject(node.Name.Value, node.Class.Name) ?? USOP.MissingObjectResolver?.Invoke(Pcc, node.Name.Value);
                 if (entry is null)
                 {
                     throw new Exception($"Line {CompilationUnit.Tokens.LineLookup.GetLineFromCharIndex(node.StartPos)}: Could not find '{node.Name.Value}' in {Pcc.FilePath}!");
@@ -1567,7 +1560,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             resolvedEntry = node switch
             {
-                Class cls => CompilerUtils.ResolveClass(cls, Pcc),
+                Class cls => CompilerUtils.ResolveClass(cls, Pcc, USOP),
                 Struct strct => ResolveStruct(strct),
                 State state => ResolveState(state),
                 Function func => ResolveFunction(func),

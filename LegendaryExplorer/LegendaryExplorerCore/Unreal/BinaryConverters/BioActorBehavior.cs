@@ -5,7 +5,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioActorBehavior : ObjectBinary
     {
         public int unk;
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
             if (sc.Game.IsGame1())
             {
@@ -13,6 +13,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public static BioActorBehavior Create() => new BioActorBehavior();
+        public static BioActorBehavior Create() => new();
     }
 }

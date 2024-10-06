@@ -9,16 +9,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class BioPawn : ObjectBinary
     {
         public UMultiMap<NameReference, UIndex> AnimationMap;//? Speculative name  //TODO: Make this a UMap
-        protected override void Serialize(SerializingContainer2 sc)
+        protected override void Serialize(SerializingContainer sc)
         {
-            sc.Serialize(ref AnimationMap, SCExt.Serialize, SCExt.Serialize);
+            sc.Serialize(ref AnimationMap, sc.Serialize, sc.Serialize);
         }
 
         public static BioPawn Create()
         {
             return new()
             {
-                AnimationMap = new()
+                AnimationMap = []
             };
         }
 

@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.UnrealScript
 {
     public static class UnrealScriptCompiler
     {
-        public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib, PackageCache packageCache = null)
+        public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -31,7 +31,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             try
             {
-                ASTNode astNode = ExportToAstNode(export, lib, packageCache);
+                ASTNode astNode = ExportToAstNode(export, lib, usop);
 
                 if (astNode != null)
                 {
@@ -48,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, $"Could not decompile {export.InstancedFullPath}");
         }
 
-        public static string GetPropertyLiteralValue(Property prop, ExportEntry containingExport, FileLib lib)
+        public static string GetPropertyLiteralValue(Property prop, ExportEntry containingExport, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             Expression literal = ScriptObjectToASTConverter.ConvertToLiteralValue(prop, containingExport, lib);
             return CodeBuilderVisitor.GetOutput(literal);
@@ -56,7 +56,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
         [CanBeNull]
         //Used by M3. Do not delete
-        public static Property CompileProperty(string propName, string valueliteral, ExportEntry containingExport, FileLib lib, MessageLog log, PackageCache packageCache = null)
+        public static Property CompileProperty(string propName, string valueliteral, ExportEntry containingExport, FileLib lib, MessageLog log, UnrealScriptOptionsPackage usop)
         {
             if (!lib.IsInitialized)
             {
@@ -80,13 +80,13 @@ namespace LegendaryExplorerCore.UnrealScript
                     return null;
                 }
                 node.Outer = exportClass;
-                PropertiesBlockParser.Parse(node, containingExport.FileRef, symbolTable, log, containingExport.IsInDefaultsTree());
+                PropertiesBlockParser.Parse(node, containingExport.FileRef, symbolTable, log, containingExport.IsInDefaultsTree(), usop);
                 if (log.HasErrors)
                 {
                     log.LogError("Parse failed!");
                     return null;
                 }
-                PropertyCollection props = ScriptPropertiesCompiler.CompileProps(node, containingExport.FileRef, packageCache);
+                PropertyCollection props = ScriptPropertiesCompiler.CompileProps(node, containingExport.FileRef, usop);
                 return props[0];
             }
             catch (ParseException)
@@ -101,7 +101,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, PackageCache packageCache)
+        public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -109,14 +109,14 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             ASTNode astNode = export.ClassName switch
             {
-                "Class" => ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(packageCache), true, lib, packageCache),
-                "Function" => ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(packageCache), lib, packageCache: packageCache),
-                "State" => ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(packageCache), lib, packageCache: packageCache),
-                "Enum" => ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(packageCache)),
-                "ScriptStruct" => ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(packageCache), lib, packageCache),
-                "Const" => ScriptObjectToASTConverter.ConvertConst(export.GetBinaryData<UConst>(packageCache)),
-                _ when export.ClassName.EndsWith("Property") && ObjectBinary.From(export, packageCache) is UProperty uProp => ScriptObjectToASTConverter.ConvertVariable(uProp, lib, packageCache),
-                _ => ScriptObjectToASTConverter.ConvertExportProperties(export, lib, packageCache)
+                "Class" => ScriptObjectToASTConverter.ConvertClass(export.GetBinaryData<UClass>(usop?.Cache), true, lib, usop),
+                "Function" => ScriptObjectToASTConverter.ConvertFunction(export.GetBinaryData<UFunction>(usop?.Cache), lib, usop),
+                "State" => ScriptObjectToASTConverter.ConvertState(export.GetBinaryData<UState>(usop?.Cache), lib, usop),
+                "Enum" => ScriptObjectToASTConverter.ConvertEnum(export.GetBinaryData<UEnum>(usop?.Cache)),
+                "ScriptStruct" => ScriptObjectToASTConverter.ConvertStruct(export.GetBinaryData<UScriptStruct>(usop?.Cache), lib, usop),
+                "Const" => ScriptObjectToASTConverter.ConvertConst(export.GetBinaryData<UConst>(usop?.Cache)),
+                _ when export.ClassName.EndsWith("Property") && ObjectBinary.From(export, usop?.Cache) is UProperty uProp => ScriptObjectToASTConverter.ConvertVariable(uProp, lib, usop),
+                _ => ScriptObjectToASTConverter.ConvertExportProperties(export, lib, usop)
             };
             return astNode;
         }
@@ -150,7 +150,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        public static MessageLog CompileBulkPropertiesFile(string src, IMEPackage pcc, PackageCache packageCache = null)
+        public static MessageLog CompileBulkPropertiesFile(string src, IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
             var log = new MessageLog();
             TokenStream tokens = Lexer.Lex(src, log);
@@ -159,7 +159,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 return log;
             }
             var lib = new FileLib(pcc);
-            if (!lib.Initialize(packageCache))
+            if (!lib.Initialize(usop))
             {
                 return lib.InitializationLog;
             }
@@ -168,7 +168,7 @@ namespace LegendaryExplorerCore.UnrealScript
             List<Subobject> subobjects;
             try
             {
-                subobjects = PropertiesBlockParser.ParseBulkPropsFile(tokens, pcc, symbols, log, false);
+                subobjects = PropertiesBlockParser.ParseBulkPropsFile(tokens, pcc, symbols, log, false, usop);
             }
             catch (ParseException)
             {
@@ -204,7 +204,7 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 foreach ((Subobject obj, ExportEntry export) in map)
                 {
-                    ScriptPropertiesCompiler.CompilePropertiesForNormalObject(obj.Statements, export, packageCache);
+                    ScriptPropertiesCompiler.CompilePropertiesForNormalObject(obj.Statements, export, usop);
                 }
             }
             catch (Exception e)
@@ -216,10 +216,10 @@ namespace LegendaryExplorerCore.UnrealScript
             return log;
         }
 
-        public static string DecompileBulkProps(IMEPackage pcc, out MessageLog log, PackageCache packageCache = null)
+        public static string DecompileBulkProps(IMEPackage pcc, out MessageLog log, UnrealScriptOptionsPackage usop)
         {
             var fileLib = new FileLib(pcc);
-            if (!fileLib.Initialize(packageCache))
+            if (!fileLib.Initialize(usop))
             {
                 log = fileLib.InitializationLog;
                 return null;
@@ -236,7 +236,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError($"Two exports have the same path and class: {ifp} ({exportClassName})");
                     return null;
                 }
-                ASTNode ast = ExportToAstNode(export, fileLib, packageCache);
+                ASTNode ast = ExportToAstNode(export, fileLib, usop);
                 if (ast is not DefaultPropertiesBlock propsBlock)
                 {
                     log.LogError($"Error decompiling #{export.UIndex} {ifp}");
@@ -252,7 +252,7 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
         //Used by M3. Do not delete
-        public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, PackageCache packageCache = null, string gameRootOverride = null)
+        public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             IMEPackage pcc = classExport.FileRef;
             if (!ReferenceEquals(lib.Pcc, pcc))
@@ -269,7 +269,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 log.LogError("FileLib not initialized!");
                 return log;
             }
-            (ASTNode decompedNode, string classSource) = DecompileExport(classExport, lib, packageCache);
+            (ASTNode decompedNode, string classSource) = DecompileExport(classExport, lib, usop);
             if (decompedNode is null)
             {
                 log.LogError(classSource);
@@ -323,7 +323,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         throw new ArgumentOutOfRangeException(nameof(astNode));
                 }
 
-                classAST = CompileNewClassAST(pcc, cls, log, lib, out _);
+                classAST = CompileNewClassAST(pcc, cls, log, lib, out _, usop);
                 if (classAST is null || log.HasErrors)
                 {
                     log.LogError("Parse failed!");
@@ -342,7 +342,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             try
             {
-                ScriptObjectCompiler.Compile(classAST, pcc, classExport.Parent, classExport.GetBinaryData<UClass>(), packageCache, gameRootOverride: gameRootOverride);
+                ScriptObjectCompiler.Compile(classAST, pcc, classExport.Parent, usop, classExport.GetBinaryData<UClass>());
                 log.LogMessage("Compiled!");
             }
             catch (Exception exception) when (!LegendaryExplorerCoreLib.IsDebug)
@@ -352,7 +352,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return log;
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null, string intendedClassName = null)
+        public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null, string intendedClassName = null)
         {
             if (!ReferenceEquals(lib.Pcc, pcc))
             {
@@ -380,7 +380,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 try
                 {
-                    astNode = CompileNewClassAST(pcc, cls, log, lib, out bool vfTableChanged);
+                    astNode = CompileNewClassAST(pcc, cls, log, lib, out bool vfTableChanged, usop);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -403,7 +403,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, pcc, parent, export?.GetBinaryData<UClass>(), packageCache, gameRootOverride: lib.GameRootPath);
+                    ScriptObjectCompiler.Compile(astNode, pcc, parent, usop, export?.GetBinaryData<UClass>());
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -418,7 +418,7 @@ namespace LegendaryExplorerCore.UnrealScript
         }
 
         //Used by M3. Do not change signature without good cause
-        public static (ASTNode astNode, MessageLog log) CompileFunction(ExportEntry export, string scriptText, FileLib lib)
+        public static (ASTNode astNode, MessageLog log) CompileFunction(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -437,7 +437,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     try
                     {
-                        astNode = CompileNewFunctionBodyAST(parent, func, log, lib);
+                        astNode = CompileNewFunctionBodyAST(parent, func, log, lib, usop);
                         if (log.HasErrors)
                         {
                             log.LogError("Parse failed!");
@@ -463,7 +463,7 @@ namespace LegendaryExplorerCore.UnrealScript
                         }
                         try
                         {
-                            ScriptObjectCompiler.Compile(funcFullAST, export.FileRef, parent, export.GetBinaryData<UFunction>(), gameRootOverride: lib.GameRootPath);
+                            ScriptObjectCompiler.Compile(funcFullAST, export.FileRef, parent, usop, export.GetBinaryData<UFunction>());
                             log.LogMessage("Compiled!");
                             return (astNode, log);
                         }
@@ -479,7 +479,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileState(ExportEntry export, string scriptText, FileLib lib)
+        public static (ASTNode astNode, MessageLog log) CompileState(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -499,7 +499,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError("FileLib not initialized!");
                     return (null, log);
                 }
-                if (export.Parent is not ExportEntry {IsClass: true} parent)
+                if (export.Parent is not ExportEntry { IsClass: true } parent)
                 {
                     log.LogError(export.InstancedFullPath + " does not have a Class Export as a parent!");
                     return (null, log);
@@ -507,7 +507,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 try
                 {
-                    astNode = CompileNewStateBodyAST(parent, state, log, lib);
+                    astNode = CompileNewStateBodyAST(parent, state, log, lib, usop);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -530,7 +530,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UState>(), gameRootOverride: lib.GameRootPath);
+                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, usop, export.GetBinaryData<UState>());
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -544,7 +544,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileEnum(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        public static (ASTNode astNode, MessageLog log) CompileEnum(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -572,7 +572,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 try
                 {
-                    astNode = CompileNewEnumAST(parent, enumeration, log, lib);
+                    astNode = CompileNewEnumAST(parent, enumeration, log, lib, usop);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -595,7 +595,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UEnum>(), packageCache, gameRootOverride: lib.GameRootPath);
+                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, usop, export.GetBinaryData<UEnum>());
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -609,7 +609,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null)
+        public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -641,7 +641,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    astNode = CompileNewStructAST(parent, strct, log, lib);
+                    astNode = CompileNewStructAST(parent, strct, log, lib, usop);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -664,7 +664,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
                 try
                 {
-                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, export.GetBinaryData<UScriptStruct>(), packageCache, gameRootOverride: lib.GameRootPath);
+                    ScriptObjectCompiler.Compile(astNode, export.FileRef, parent, usop, export.GetBinaryData<UScriptStruct>());
                     log.LogMessage("Compiled!");
                     return (astNode, log);
                 }
@@ -678,7 +678,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
-        public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, PackageCache packageCache = null, string gameRootOverride = null)
+        public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -701,7 +701,7 @@ namespace LegendaryExplorerCore.UnrealScript
 
                 try
                 {
-                    astNode = CompileDefaultPropertiesAST(propBlock, log, lib, export);
+                    astNode = CompileDefaultPropertiesAST(propBlock, log, lib, export, usop);
                     if (astNode is null || log.HasErrors)
                     {
                         log.LogError("Parse failed!");
@@ -731,11 +731,11 @@ namespace LegendaryExplorerCore.UnrealScript
                             log.LogError(export.InstancedFullPath + " does not have a Class Export!");
                             return (null, log);
                         }
-                        ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, packageCache, gameRootOverride: gameRootOverride);
+                        ScriptPropertiesCompiler.CompileDefault__Object(propBlock, classExport, ref export, usop);
                     }
                     else
                     {
-                        ScriptPropertiesCompiler.CompilePropertiesForNormalObject(propBlock.Statements, export, packageCache, gameRootOverride);
+                        ScriptPropertiesCompiler.CompilePropertiesForNormalObject(propBlock.Statements, export, usop);
                     }
                     log.LogMessage("Compiled!");
                     return (astNode, log);
@@ -750,7 +750,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
-        public static Class CompileNewClassAST(IMEPackage pcc, Class cls, MessageLog log, FileLib lib, out bool vfTableChanged)
+        public static Class CompileNewClassAST(IMEPackage pcc, Class cls, MessageLog log, FileLib lib, out bool vfTableChanged, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, pcc))
             {
@@ -766,44 +766,43 @@ namespace LegendaryExplorerCore.UnrealScript
             {
                 foreach (Struct existingNativeStruct in existingClass.TypeDeclarations.OfType<Struct>().Where(s => s.IsNative))
                 {
-                    if (cls.TypeDeclarations.FirstOrDefault(t => t.Name == existingNativeStruct.Name) is Struct newStruct 
-                        && !existingNativeStruct.IsNativeCompatibleWith(newStruct, pcc.Game))
+                    if (cls.TypeDeclarations.FirstOrDefault(t => t.Name == existingNativeStruct.Name) is Struct newStruct
+                        && !existingNativeStruct.IsNativeCompatibleWith(newStruct, pcc.Game, usop))
                     {
                         log.LogError($"Cannot modify native struct: {existingNativeStruct.Name}", newStruct.StartPos, newStruct.EndPos);
                     }
                 }
             }
             log.Filter = cls;
-            SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log);
+            SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log, usop);
             log.Filter = null;
             if (symbols is null || log.HasErrors)
             {
                 return null;
             }
-            CompileNewClassASTInternal(pcc, cls, log, symbols, existingClass, ref vfTableChanged);
+            CompileNewClassASTInternal(pcc, cls, log, symbols, existingClass, ref vfTableChanged, usop);
 
             return cls;
         }
 
-        private static void CompileNewClassASTInternal(IMEPackage pcc, Class cls, MessageLog log, SymbolTable symbols, Class existingClass, ref bool vfTableChanged, 
-            Func<IMEPackage, string, IEntry> missingObjectResolver = null, List<string> vtableDonor = null)
+        private static void CompileNewClassASTInternal(IMEPackage pcc, Class cls, MessageLog log, SymbolTable symbols, Class existingClass, ref bool vfTableChanged, UnrealScriptOptionsPackage usop)
         {
             symbols.RevertToObjectStack();
             symbols.GoDirectlyToStack(cls.GetScope());
             foreach (Struct childStruct in cls.TypeDeclarations.OfType<Struct>())
             {
-                PropertiesBlockParser.ParseStructDefaults(childStruct, pcc, symbols, log);
+                PropertiesBlockParser.ParseStructDefaults(childStruct, pcc, symbols, log, usop);
             }
             foreach (Function func in cls.Functions)
             {
-                CodeBodyParser.ParseFunction(func, pcc.Game, symbols, log);
+                CodeBodyParser.ParseFunction(func, pcc.Game, symbols, log, usop);
             }
             foreach (State state in cls.States)
             {
-                CodeBodyParser.ParseState(state, pcc.Game, symbols, log);
+                CodeBodyParser.ParseState(state, pcc.Game, symbols, usop, log);
             }
-            CodeBodyParser.ParseReplicationBlock(cls, pcc.Game, symbols, log);
-            PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log, true, missingObjectResolver);
+            CodeBodyParser.ParseReplicationBlock(cls, pcc.Game, symbols, log, usop);
+            PropertiesBlockParser.Parse(cls.DefaultProperties, pcc, symbols, log, true, usop);
 
             //calculate the virtual function table
             if (pcc.Game.IsGame3())
@@ -811,7 +810,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 var virtualFuncs = cls.Functions.Where(func => func.ShouldBeInVTable).ToList();
                 var funcDict = virtualFuncs.ToDictionary(func => func.Name);
 
-                List<string> parentVirtualFuncNames = vtableDonor ?? ((Class)cls.Parent).VirtualFunctionNames;
+                List<string> parentVirtualFuncNames = usop.GetVTableFromDonor?.Invoke(cls.Name) ?? ((Class)cls.Parent).VirtualFunctionNames;
                 if (parentVirtualFuncNames is null)
                 {
                     parentVirtualFuncNames = GetParentVirtualFuncs((Class)cls.Parent);
@@ -889,7 +888,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        public static Function CompileNewFunctionBodyAST(ExportEntry parentExport, Function func, MessageLog log, FileLib lib)
+        public static Function CompileNewFunctionBodyAST(ExportEntry parentExport, Function func, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
             {
@@ -938,16 +937,16 @@ namespace LegendaryExplorerCore.UnrealScript
             }
 
             func.Outer = (ASTNode)stateOrClass;
-            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams);
+            var validator = new ClassValidationVisitor(log, symbols, ValidationPass.ClassAndStructMembersAndFunctionParams, usop);
             validator.VisitNode(func);
             validator.Pass = ValidationPass.BodyPass;
             validator.VisitNode(func);
 
-            CodeBodyParser.ParseFunction(func, parentExport.Game, symbols, log);
+            CodeBodyParser.ParseFunction(func, parentExport.Game, symbols, log, usop);
             return func;
         }
 
-        public static State CompileNewStateBodyAST(ExportEntry parentExport, State state, MessageLog log, FileLib lib)
+        public static State CompileNewStateBodyAST(ExportEntry parentExport, State state, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
             {
@@ -976,8 +975,8 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
 
                 state.Outer = containingClass;
-                ClassValidationVisitor.RunAllPasses(state, log, symbols);
-                CodeBodyParser.ParseState(state, parentExport.Game, symbols, log);
+                ClassValidationVisitor.RunAllPasses(state, log, symbols, usop);
+                CodeBodyParser.ParseState(state, parentExport.Game, symbols, usop, log);
 
                 return state;
             }
@@ -985,7 +984,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
-        public static Enumeration CompileNewEnumAST(ExportEntry parentExport, Enumeration enumeration, MessageLog log, FileLib lib)
+        public static Enumeration CompileNewEnumAST(ExportEntry parentExport, Enumeration enumeration, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
             {
@@ -1013,7 +1012,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
 
                 enumeration.Outer = containingObject;
-                ClassValidationVisitor.RunAllPasses(enumeration, log, symbols);
+                ClassValidationVisitor.RunAllPasses(enumeration, log, symbols, usop);
 
                 return enumeration;
             }
@@ -1021,7 +1020,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
-        public static VariableDeclaration CompileNewVarDeclAST(ExportEntry parentExport, VariableDeclaration varDecl, MessageLog log, FileLib lib)
+        public static VariableDeclaration CompileNewVarDeclAST(ExportEntry parentExport, VariableDeclaration varDecl, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
             {
@@ -1048,7 +1047,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
 
                 varDecl.Outer = containingObject;
-                ClassValidationVisitor.RunAllPasses(varDecl, log, symbols);
+                ClassValidationVisitor.RunAllPasses(varDecl, log, symbols, usop);
 
                 return varDecl;
             }
@@ -1056,7 +1055,7 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
-        public static Struct CompileNewStructAST(ExportEntry parentExport, Struct strct, MessageLog log, FileLib lib)
+        public static Struct CompileNewStructAST(ExportEntry parentExport, Struct strct, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
             {
@@ -1084,15 +1083,15 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
 
                 strct.Outer = containingObject;
-                ClassValidationVisitor.RunAllPasses(strct, log, symbols);
-                PropertiesBlockParser.ParseStructDefaults(strct, parentExport.FileRef, symbols, log);
+                ClassValidationVisitor.RunAllPasses(strct, log, symbols, usop);
+                PropertiesBlockParser.ParseStructDefaults(strct, parentExport.FileRef, symbols, log, usop);
                 return strct;
             }
 
             return null;
         }
 
-        public static DefaultPropertiesBlock CompileDefaultPropertiesAST(DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib, ExportEntry export)
+        public static DefaultPropertiesBlock CompileDefaultPropertiesAST(DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib, ExportEntry export, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
             {
@@ -1112,7 +1111,7 @@ namespace LegendaryExplorerCore.UnrealScript
                 propsClass.DefaultProperties = propBlock;
                 propBlock.Outer = propsClass;
 
-                PropertiesBlockParser.Parse(propBlock, export.FileRef, symbols, log, export.IsInDefaultsTree());
+                PropertiesBlockParser.Parse(propBlock, export.FileRef, symbols, log, export.IsInDefaultsTree(), usop);
 
                 return propBlock;
             }
@@ -1129,8 +1128,12 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public record LooseClassPackage(string PackageName, List<LooseClass> Classes);
 
-        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, Func<IMEPackage, string, IEntry> missingObjectResolver, 
-            string gameRootPath = null, PackageCache cache = null, Func<string, List<string>> vtableDonorGetter = null)
+        private record CompilationCompletion(UClass UClass, string SuperClassName, Action<UnrealScriptOptionsPackage> Action)
+        {
+            public bool Completed;
+        }
+
+        public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, UnrealScriptOptionsPackage usop)
         {
             using var packageCache = new PackageCache();
             using var fileLib = new FileLib(targetPcc);
@@ -1155,13 +1158,13 @@ namespace LegendaryExplorerCore.UnrealScript
                 looseClass.Log = log;
             }
 
-            if (!fileLib.InternalInitialize(packageCache, gameRootPath, additionalClasses: classASTs))
+            if (!fileLib.InternalInitialize(usop, additionalClasses: classASTs))
             {
                 fileLib.InitializationLog.LogError("Could not initialize FileLib.");
                 return fileLib.InitializationLog;
             }
 
-            var completions = new List<(UClass uClass, Action action)>();
+            var completions = new Dictionary<string, CompilationCompletion>();
             foreach (LooseClassPackage looseClassPackage in looseClasses)
             {
                 ExportEntry classPackage = targetPcc.FindExport(looseClassPackage.PackageName);
@@ -1171,7 +1174,7 @@ namespace LegendaryExplorerCore.UnrealScript
                     log.LogError($"Could not create package '{looseClassPackage.PackageName}', as an existing non-package top-level export of the same name exists.");
                     return log;
                 }
-                classPackage ??= ExportCreator.CreatePackageExport(targetPcc, looseClassPackage.PackageName, cache: cache);
+                classPackage ??= ExportCreator.CreatePackageExport(targetPcc, looseClassPackage.PackageName, cache: usop.Cache);
 
                 bool vfTableChanged = false;
                 SymbolTable symbols = fileLib.ReadonlySymbolTable; //this sign can't stop me because I can't read!
@@ -1179,18 +1182,20 @@ namespace LegendaryExplorerCore.UnrealScript
                 {
                     MessageLog log = looseClass.Log;
                     Class cls = looseClass.ClassAST;
-                    
+
                     try
                     {
-                        CompileNewClassASTInternal(targetPcc, cls, log, symbols, null, ref vfTableChanged, missingObjectResolver, vtableDonorGetter?.Invoke(cls.Name));
+                        CompileNewClassASTInternal(targetPcc, cls, log, symbols, null, ref vfTableChanged, usop);
+
                         if (log.HasErrors)
                         {
                             log.LogError($"'{looseClass.ClassName}' had parse errors");
                             return log;
                         }
+                        string superClassName = (cls.Parent as Class)?.Name;
                         UClass uClass = null;
-                        Action completionAction = ScriptObjectCompiler.CreateClassStub(cls, targetPcc, classPackage, ref uClass, packageCache, fileLib.GameRootPath);
-                        completions.Add(uClass, completionAction);
+                        Action<UnrealScriptOptionsPackage> completionAction = ScriptObjectCompiler.CreateClassStub(cls, targetPcc, classPackage, ref uClass, usop);
+                        completions.Add(looseClass.ClassName, new CompilationCompletion(uClass, superClassName, completionAction));
                     }
                     catch (ParseException)
                     {
@@ -1205,17 +1210,32 @@ namespace LegendaryExplorerCore.UnrealScript
                 }
             }
 
-            foreach ((UClass uClass, Action action) in completions)
+            foreach (CompilationCompletion completion in completions.Values)
             {
                 try
                 {
-                    action();
-                    uClass.Export.WriteBinary(uClass);
+                    if (completion.Completed)
+                    {
+                        continue;
+                    }
+                    FinishCompilation(completion);
+                    void FinishCompilation(CompilationCompletion cc)
+                    {
+                        if (cc.SuperClassName is not null
+                            && completions.TryGetValue(cc.SuperClassName, out CompilationCompletion superCompletion)
+                            && !superCompletion.Completed)
+                        {
+                            FinishCompilation(superCompletion);
+                        }
+                        cc.Action(usop);
+                        cc.UClass.Export.WriteBinary(cc.UClass);
+                        cc.Completed = true;
+                    }
                 }
                 catch (Exception e)
                 {
                     var log = new MessageLog();
-                    log.LogError($"Exception while compiling '{uClass.Export.ObjectName}': {e}");
+                    log.LogError($"Exception while compiling '{completion.UClass.Export.ObjectName}': {e}");
                     return log;
                 }
             }

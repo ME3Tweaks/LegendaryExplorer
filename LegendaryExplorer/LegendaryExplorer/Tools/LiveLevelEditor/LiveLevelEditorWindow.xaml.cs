@@ -81,7 +81,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                 throw new Exception($"{game} does not support Live Level Editor!");
             }
 
-            GameTarget.GameReceiveMessage += GameControllerOnRecieveMessage;
+            GameTarget.GameReceiveMessage += GameControllerOnReceiveMessage;
 
             if (Instance(game) is not null)
             {
@@ -109,11 +109,6 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     gameInstalledReq.UnFullfilledText = "Can't find Mass Effect 2 installation!";
                     gameInstalledReq.ButtonText = "Set ME2 path";
                     break;
-                case MEGame.LE1:
-                    gameInstalledReq.FullfilledText = "Legendary Edition is installed";
-                    gameInstalledReq.UnFullfilledText = "Can't find Legendary Edition installation!";
-                    gameInstalledReq.ButtonText = "Set LE1 path";
-                    break;
             }
         }
 
@@ -121,7 +116,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             DisposeCamPath();
             DataContext = null;
-            GameTarget.GameReceiveMessage -= GameControllerOnRecieveMessage;
+            GameTarget.GameReceiveMessage -= GameControllerOnReceiveMessage;
             Instances.Remove(Game);
         }
 
@@ -258,7 +253,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         }
         #endregion
 
-        private void GameControllerOnRecieveMessage(string msg)
+        private void GameControllerOnReceiveMessage(string msg)
         {
             if (msg == LiveEditHelper.LoaderLoadedMessage)
             {

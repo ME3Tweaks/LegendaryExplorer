@@ -12,7 +12,6 @@ namespace LegendaryExplorer.Dialogs
         public enum InputType
         {
             Text,
-            Password,
             Multiline
         }
 

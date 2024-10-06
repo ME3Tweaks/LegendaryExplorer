@@ -501,7 +501,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
         {
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
-                var bank = spExport.Export.GetBinaryData<WwiseBank>();
+                var bank = spExport.Export.GetBinaryData<WwiseBankParsed>();
                 if (bank.EmbeddedFiles.Count > 0)
                 {
                     if (location == null)
@@ -1037,7 +1037,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             {
                 if (spExport.Export.ClassName == "WwiseBank")
                 {
-                    var bank = spExport.Export.GetBinaryData<WwiseBank>();
+                    var bank = spExport.Export.GetBinaryData<WwiseBankParsed>();
                     if (bank.EmbeddedFiles.Count > 0)
                     {
                         int i = 0;
