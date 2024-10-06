@@ -138,7 +138,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
 
             // Animation area
             // This should be adjusted for each game as each asset will have different origin.
-            var animationFloor = AddStaticMeshActor(package, GetFloorAsset(game), new Point3D(8000, 8000, 0), "AnimationFloor");
+            var animationFloor = AddStaticMeshActor(package, GetFloorAsset(game), GetAnimationFloorPosition(game), "AnimationFloor");
             PathEdUtils.SetDrawScale3D(animationFloor, 20, 20, 1);
 
             BuildKismet(package);
@@ -161,6 +161,20 @@ namespace LegendaryExplorer.Tools.AssetViewer
                 package.Save(MEDirectories.GetCookedPath(game) + @"\BioP_AssetViewerDebug.pcc");
             }
             return package;
+        }
+
+        private static Point3D GetAnimationFloorPosition(MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.LE1:
+                case MEGame.LE3:
+                    return new Point3D(8000, 8000, 0);
+                case MEGame.LE2:
+                    return new Point3D(0, 8000, 0);
+            }
+
+            return new Point3D();
         }
 
         /// <summary>
