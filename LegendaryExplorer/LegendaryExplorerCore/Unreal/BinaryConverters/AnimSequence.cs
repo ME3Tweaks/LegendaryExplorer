@@ -321,10 +321,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         private void CompressAnimationData(MEGame game, AnimationCompressionFormat newRotationCompression)
         {
-            if (RawAnimationData is null)
-            {
-                DecompressAnimationData();
-            }
+            /* SirCxyrtyx 8/12/24: Always decompress, do not use pre-existing RawAnimationData if from a upk.
+             * In same cases, the RawAnimationData is wrong for unknown reasons ¯\_(ツ)_/¯
+             * The compressed data should be regarded as the source of truth
+             */
+            DecompressAnimationData();
 
             keyEncoding = AnimationKeyFormat.AKF_ConstantKeyLerp;
             posCompression = AnimationCompressionFormat.ACF_None;

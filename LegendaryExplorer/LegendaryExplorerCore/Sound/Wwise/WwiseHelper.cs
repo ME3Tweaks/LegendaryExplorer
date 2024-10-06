@@ -54,6 +54,7 @@ namespace LegendaryExplorerCore.Sound.Wwise
                         tlkId = parsed;
                         specifyByGender = wwiseStreamExport.ObjectName.Name.Contains("player_", StringComparison.OrdinalIgnoreCase);
                         isFemaleStream = splits[i + 1] == "f";
+                        break; // assume first int we find is the tlk id
                     }
                 }
                 if (tlkId == 0) return;

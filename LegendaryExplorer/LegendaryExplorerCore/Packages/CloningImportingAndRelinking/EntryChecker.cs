@@ -159,12 +159,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     if (exp.HasComponentMap)
                     {
-                        foreach (var c in exp.ComponentMap)
+                        foreach ((_, int index) in exp.ComponentMap)
                         {
-                            if (c.Value != 0 && !package.IsEntry(c.Value))
+                            int uindex = index + 1;
+                            if (uindex != 0 && !package.IsEntry(uindex))
                             {
                                 // Can components point to 0? I don't think so
-                                item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningComponentMapItemOutsideTables, prefix, c.Value), exp);
+                                item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningComponentMapItemOutsideTables, prefix, uindex), exp);
                             }
                         }
                     }

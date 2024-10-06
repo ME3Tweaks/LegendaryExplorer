@@ -556,6 +556,8 @@ namespace LegendaryExplorerCore.Packages
 
         //me1 and me2 only
         private byte[] _componentMap;
+        
+        //Does not contain UIndexes! The ints in this are indexes into the exports array. +1 to get the UIndex
         public UMultiMap<NameReference, int> ComponentMap
         {
             get

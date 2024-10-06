@@ -285,9 +285,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     var componentMap = exportEntry.ComponentMap;
                     string components = $"ComponentMap: 0x{40:X2} {componentMap.Count} items\n";
                     int pairOffset = 44;
-                    foreach ((NameReference name, int uIndex) in componentMap)
+                    foreach ((NameReference name, int index) in componentMap)
                     {
-                        components += $"0x{pairOffset:X2} {name.Instanced} => {uIndex} {exportEntry.FileRef.GetEntryString(uIndex + 1)}\n"; // +1 because it appears to be 0 based?
+                        components += $"0x{pairOffset:X2} {name.Instanced} => {index} {exportEntry.FileRef.GetEntryString(index + 1)}\n"; // +1 because it appears to be 0 based?
                         pairOffset += 12;
                     }
 

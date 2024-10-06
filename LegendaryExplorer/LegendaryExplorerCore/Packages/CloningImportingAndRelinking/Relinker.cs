@@ -240,11 +240,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             if (relinkingExport.HasComponentMap && relinkingExport.ComponentMap.Count > 0)
             {
                 var newComponentMap = new UMultiMap<NameReference, int>();
-                foreach (var cmk in sourceExport.ComponentMap)
+                foreach ((NameReference componentName, int componentIndex) in sourceExport.ComponentMap)
                 {
                     // 04/07/2024 - Remove temp cross package mapping and have this call skip its internal relink step since this call is already in a relink - Mgamerz
-                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(cmk.Value + 1), relinkingExport.FileRef, relinkingExport, false, rop, out var newComponent);
-                    newComponentMap.Add(cmk.Key, newComponent.UIndex - 1); // TODO: Relink the 
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, sourceExport.FileRef.GetUExport(componentIndex + 1), relinkingExport.FileRef, relinkingExport, false, rop, out var newComponent);
+                    newComponentMap.Add(componentName, newComponent.UIndex - 1); // TODO: Relink the 
                 }
                 relinkingExport.ComponentMap = newComponentMap;
             }

@@ -164,19 +164,23 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             outlinePen = new Pen(GetDefaultShapeColor()); //Can't put this in a class variable becuase it doesn't seem to work for some reason.
             if (polygon)
             {
-                PointF[] polygonShape = get3DBrushShape();
+                var polygonShape = get3DBrushShape();
                 int calculatedHeight = get3DBrushHeight();
                 if (polygonShape != null)
                 {
-                    shape = PPath.CreatePolygon(polygonShape);
-                    var AveragePoint = GetAveragePoint(polygonShape);
-                    val.X = AveragePoint.X - val.Width / 2;
-                    val.Y = AveragePoint.Y - val.Height / 2;
+                    shape = new PPath();
+                    foreach (PointF[] polyPoints in polygonShape)
+                    {
+                        shape.AddPolygon(polyPoints);
+                    }
+                    var averagePoint = GetAveragePoint(shape.PathReference.PathPoints);
+                    val.X = averagePoint.X - val.Width / 2;
+                    val.Y = averagePoint.Y - val.Height / 2;
                     if (calculatedHeight >= 0)
                     {
                         SText brushText = new SText($"Brush total height: {calculatedHeight}");
-                        brushText.X = AveragePoint.X - brushText.Width / 2;
-                        brushText.Y = AveragePoint.Y + 20 - brushText.Height / 2;
+                        brushText.X = averagePoint.X - brushText.Width / 2;
+                        brushText.Y = averagePoint.Y + 20 - brushText.Height / 2;
                         brushText.Pickable = false;
                         brushText.TextAlignment = StringAlignment.Center;
                         shape.AddChild(brushText);

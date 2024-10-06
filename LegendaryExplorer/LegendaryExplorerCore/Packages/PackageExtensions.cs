@@ -434,9 +434,9 @@ namespace LegendaryExplorerCore.Packages
                         }
                         if (exp.HasComponentMap)
                         {
-                            foreach (var kvp in exp.ComponentMap)
+                            foreach ((_, int index) in exp.ComponentMap)
                             {
-                                //theserefs.Add(pcc.GetEntry(kvp.Value));  //THIS IS INCORRECT SHOULD NOT BE ON UINDEX
+                                theserefs.Add(pcc.GetEntry(index + 1));
                             }
                         }
                     }
@@ -742,7 +742,7 @@ namespace LegendaryExplorerCore.Packages
                     {
                         result.AddToListAt(exp, "Header: SuperClass");
                     }
-                    if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value == baseUIndex))
+                    if (exp.HasComponentMap && exp.ComponentMap.Any(kvp => kvp.Value + 1 == baseUIndex))
                     {
                         result.AddToListAt(exp, "Header: ComponentMap");
                     }
