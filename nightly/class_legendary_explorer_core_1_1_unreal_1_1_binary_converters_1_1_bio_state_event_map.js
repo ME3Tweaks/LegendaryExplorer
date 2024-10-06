@@ -12,7 +12,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state
     [ "BioStateEventElementLocalInt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element_local_int.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element_local_int" ],
     [ "BioStateEventElementSubstate", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element_substate.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map_1_1_bio_state_event_element_substate" ],
     [ "BioStateEventElementType", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html#a8fe7f0e4ea804a405a4075f395f9fae2", null ],
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html#ab16329f7aea3fc6aba9690674487a69b", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html#a36710f59ccd7cf409e814c2a300959b6", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html#a4f1a8d737c771b9bdc01fcc9449aac86", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html#a1dc98924495f0e2e9457a327b91ba03c", null ],
     [ "StateEvents", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html#abe450b0bcfc2452e294287dd8d7144ae", null ]

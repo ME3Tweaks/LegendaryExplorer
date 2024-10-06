@@ -10,5 +10,6 @@ var searchData=
   ['varlinkinfo_2ecs_7',['VarLinkInfo.cs',['../_var_link_info_8cs.html',1,'']]],
   ['vectorliteral_2ecs_8',['VectorLiteral.cs',['../_vector_literal_8cs.html',1,'']]],
   ['verboseformatinfo_2ecs_9',['VerboseFormatInfo.cs',['../_verbose_format_info_8cs.html',1,'']]],
-  ['verboseformatinfobase_2ecs_10',['VerboseFormatInfoBase.cs',['../_verbose_format_info_base_8cs.html',1,'']]]
+  ['verboseformatinfobase_2ecs_10',['VerboseFormatInfoBase.cs',['../_verbose_format_info_base_8cs.html',1,'']]],
+  ['vertexfactories_2ecs_11',['VertexFactories.cs',['../_vertex_factories_8cs.html',1,'']]]
 ];

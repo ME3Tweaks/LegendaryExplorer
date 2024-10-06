@@ -14,7 +14,7 @@ var class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions =
     [ "ArrayClone< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a8554532c30cb2bd2aec98aeee5e158ae", null ],
     [ "Clone< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a526bc359c48b337dcf90f2655e88173e", null ],
     [ "IndexOfArray< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#acd21c936e021bb5042f2ad8b91042070", null ],
-    [ "IsEmpty< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ae4d4fd6ee0e5a6fc3bc214ea22433927", null ],
+    [ "IsEmpty< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a074f0d327b672a4d6aba1dbbc5f268b6", null ],
     [ "IsEmpty< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ad2311d358b34e5dbd745985fd1f3c9ec", null ],
     [ "Any< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a01984dc2491972ba2619c7eb7a764ba3", null ],
     [ "HasExactly< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ac1a3efe2ad78b70491433fb0ff55eb5e", null ],

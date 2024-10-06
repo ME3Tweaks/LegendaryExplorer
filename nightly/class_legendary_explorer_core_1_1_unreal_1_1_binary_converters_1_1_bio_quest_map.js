@@ -6,7 +6,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest
     [ "BioQuestTask", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map_1_1_bio_quest_task.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map_1_1_bio_quest_task" ],
     [ "BioStateTaskList", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map_1_1_bio_state_task_list.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map_1_1_bio_state_task_list" ],
     [ "BioTaskEval", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map_1_1_bio_task_eval.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map_1_1_bio_task_eval" ],
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map.html#a532a326a0f8c568bba29d21b8be30312", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map.html#aa00383b089dee44d2267a564237534ba", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map.html#af3567d3d2bc00542281a7a62b3856f49", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map.html#a739fdc46f593f3d6d46ea915e0be2fe9", null ],
     [ "Quests", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_quest_map.html#ac1e0bdddb76d109537d1d41cb8d1be17", null ],

@@ -131,9 +131,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aee8b566beda07d82a9fc826b4d8a6842"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aee8b566beda07d82a9fc826b4d8a6842">CompileFromMemory</a> (Dictionary&lt; string, string &gt; fileMapping)</td></tr>
 <tr class="memdesc:aee8b566beda07d82a9fc826b4d8a6842"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a> file from a mapping of text xml strings   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#aee8b566beda07d82a9fc826b4d8a6842">More...</a><br /></td></tr>
 <tr class="separator:aee8b566beda07d82a9fc826b4d8a6842"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf1b912e49c59a9a547b55aba8c2c9c5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#acf1b912e49c59a9a547b55aba8c2c9c5">ConvertToBin</a> (string source, string destination, XDocument preloadedDoc=null)</td></tr>
-<tr class="memdesc:acf1b912e49c59a9a547b55aba8c2c9c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the source coalesced manifest xml to a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a>   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#acf1b912e49c59a9a547b55aba8c2c9c5">More...</a><br /></td></tr>
-<tr class="separator:acf1b912e49c59a9a547b55aba8c2c9c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43f01c0571065f1f3dce94e776838767"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a43f01c0571065f1f3dce94e776838767">ConvertToBin</a> (string source, string destination, XDocument preloadedDoc=null, Stream outStream=null)</td></tr>
+<tr class="memdesc:a43f01c0571065f1f3dce94e776838767"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the source coalesced manifest xml to a Game3 <a class="el" href="namespace_legendary_explorer_core_1_1_coalesced.html">Coalesced</a>   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a43f01c0571065f1f3dce94e776838767">More...</a><br /></td></tr>
+<tr class="separator:a43f01c0571065f1f3dce94e776838767"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f2ac4ed00e3539a6e02bfab94bcbfed"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a6f2ac4ed00e3539a6e02bfab94bcbfed">IsGame3Coalesced</a> (string sourceFile)</td></tr>
 <tr class="memdesc:a6f2ac4ed00e3539a6e02bfab94bcbfed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if this is a ME3/LE3 coalesced file, false if LE1/LE2   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_coalesced_converter.html#a6f2ac4ed00e3539a6e02bfab94bcbfed">More...</a><br /></td></tr>
 <tr class="separator:a6f2ac4ed00e3539a6e02bfab94bcbfed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -361,8 +361,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="acf1b912e49c59a9a547b55aba8c2c9c5" name="acf1b912e49c59a9a547b55aba8c2c9c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf1b912e49c59a9a547b55aba8c2c9c5">&#9670;&#160;</a></span>ConvertToBin()</h2>
+<a id="a43f01c0571065f1f3dce94e776838767" name="a43f01c0571065f1f3dce94e776838767"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43f01c0571065f1f3dce94e776838767">&#9670;&#160;</a></span>ConvertToBin()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -386,7 +386,13 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">XDocument&#160;</td>
-          <td class="paramname"><em>preloadedDoc</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>preloadedDoc</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Stream&#160;</td>
+          <td class="paramname"><em>outStream</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

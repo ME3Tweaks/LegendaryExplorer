@@ -15,6 +15,7 @@ var namespace_legendary_explorer_core =
     [ "Memory", "namespace_legendary_explorer_core_1_1_memory.html", "namespace_legendary_explorer_core_1_1_memory" ],
     [ "Misc", "namespace_legendary_explorer_core_1_1_misc.html", "namespace_legendary_explorer_core_1_1_misc" ],
     [ "Packages", "namespace_legendary_explorer_core_1_1_packages.html", "namespace_legendary_explorer_core_1_1_packages" ],
+    [ "Pathing", "namespace_legendary_explorer_core_1_1_pathing.html", "namespace_legendary_explorer_core_1_1_pathing" ],
     [ "PlotDatabase", "namespace_legendary_explorer_core_1_1_plot_database.html", "namespace_legendary_explorer_core_1_1_plot_database" ],
     [ "Save", "namespace_legendary_explorer_core_1_1_save.html", "namespace_legendary_explorer_core_1_1_save" ],
     [ "Shaders", "namespace_legendary_explorer_core_1_1_shaders.html", "namespace_legendary_explorer_core_1_1_shaders" ],

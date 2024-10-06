@@ -96,7 +96,6 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_pack
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter Class Reference</div></div>
 </div><!--header-->
@@ -113,9 +112,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a6e18d69e7f9905f379343450b90edfce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedd203bef4a713e71ff87d8d916a4cc7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aedd203bef4a713e71ff87d8d916a4cc7">ReindexExportEntriesWithSamePath</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> entry)</td></tr>
 <tr class="separator:aedd203bef4a713e71ff87d8d916a4cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9808c49ded7225cf8fa0d26e95e31fc6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a9808c49ded7225cf8fa0d26e95e31fc6">ImportExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destPackage, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sourceExport, int link, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
-<tr class="memdesc:a9808c49ded7225cf8fa0d26e95e31fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Imports an export from another package file. Does not perform a relink, if you want to relink, use <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a6e18d69e7f9905f379343450b90edfce">ImportAndRelinkEntries()</a>.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a9808c49ded7225cf8fa0d26e95e31fc6">More...</a><br /></td></tr>
-<tr class="separator:a9808c49ded7225cf8fa0d26e95e31fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca45231f51204a3b2fd1bce6f3a9a3a9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aca45231f51204a3b2fd1bce6f3a9a3a9">ImportExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destPackage, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sourceExport, int link, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
+<tr class="memdesc:aca45231f51204a3b2fd1bce6f3a9a3a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Imports an export from another package file. Does not perform a relink, if you want to relink, use <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a6e18d69e7f9905f379343450b90edfce">ImportAndRelinkEntries()</a>. This returns <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, as it may return an <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> if the export is found in a higher tier file and ROP options for imports are set.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aca45231f51204a3b2fd1bce6f3a9a3a9">More...</a><br /></td></tr>
+<tr class="separator:aca45231f51204a3b2fd1bce6f3a9a3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a318e142bc8abaee6b5f6bceede912e42"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a318e142bc8abaee6b5f6bceede912e42">ReplaceExportDataWithAnother</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> incomingExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> targetExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
 <tr class="separator:a318e142bc8abaee6b5f6bceede912e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6732c0ee1eb1cdd03a28c6c76541f43"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#af6732c0ee1eb1cdd03a28c6c76541f43">GetOrAddCrossImportOrPackage</a> (string importFullNameInstanced, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> sourcePcc, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destinationPCC, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop, int? forcedLink=null)</td></tr>
@@ -160,15 +159,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a5ba8ccfd5938591fccd45c82cd796346"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad95708d94697e430e8f46628f12b687a"><td class="memItemLeft" align="right" valign="top">static byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ad95708d94697e430e8f46628f12b687a">CreateStack</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, int stateNodeUIndex)</td></tr>
 <tr class="separator:ad95708d94697e430e8f46628f12b687a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8da2c01773f5abf45a7a704bdc8eafa7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a8da2c01773f5abf45a7a704bdc8eafa7">ResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> entry, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> localCache=null, string localization=&quot;INT&quot;)</td></tr>
-<tr class="memdesc:a8da2c01773f5abf45a7a704bdc8eafa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a8da2c01773f5abf45a7a704bdc8eafa7">More...</a><br /></td></tr>
-<tr class="separator:a8da2c01773f5abf45a7a704bdc8eafa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa052eccb45023b44a0d0ebc691b37366"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aa052eccb45023b44a0d0ebc691b37366">CanResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> entry, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> globalCache, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> lookupCache, string localization=&quot;INT&quot;, IEnumerable&lt; string &gt; localDirFiles=null)</td></tr>
-<tr class="memdesc:aa052eccb45023b44a0d0ebc691b37366"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if a import can be resolved using the LEC resolver code. This is not 100% accurate to the game. The passed in package cache may have empty (no data) loaded packages inserted into it!   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aa052eccb45023b44a0d0ebc691b37366">More...</a><br /></td></tr>
-<tr class="separator:aa052eccb45023b44a0d0ebc691b37366"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a346b76fe6abaea33223df41a58813334"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a346b76fe6abaea33223df41a58813334">ResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> entry, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> globalCache, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> lookupCache, string localization=&quot;INT&quot;, bool unsafeLoad=false, IEnumerable&lt; string &gt; localDirFiles=null, string gameRootOverride=null)</td></tr>
-<tr class="memdesc:a346b76fe6abaea33223df41a58813334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a346b76fe6abaea33223df41a58813334">More...</a><br /></td></tr>
-<tr class="separator:a346b76fe6abaea33223df41a58813334"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab34af836f642ef3f0b041deda8e749f2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ab34af836f642ef3f0b041deda8e749f2">CanResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> entry, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache, string localization=&quot;INT&quot;, IEnumerable&lt; string &gt; localDirFiles=null)</td></tr>
+<tr class="memdesc:ab34af836f642ef3f0b041deda8e749f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if a import can be resolved using the LEC resolver code. This is not 100% accurate to the game. The passed in package cache may have empty (no data) loaded packages inserted into it!   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ab34af836f642ef3f0b041deda8e749f2">More...</a><br /></td></tr>
+<tr class="separator:ab34af836f642ef3f0b041deda8e749f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a7843a3c82891ef274de593e25888a5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a0a7843a3c82891ef274de593e25888a5">ResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> entry, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache, string localization=&quot;INT&quot;, bool unsafeLoad=false, IEnumerable&lt; string &gt; localDirFiles=null, string gameRootOverride=null, Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt; fileResolver=null, Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt; unsafeLoadDelegate=null, string instancedFullPathOverride=null)</td></tr>
+<tr class="memdesc:a0a7843a3c82891ef274de593e25888a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve the import by looking at associated files that are loaded before this one, and by looking at globally loaded files.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a0a7843a3c82891ef274de593e25888a5">More...</a><br /></td></tr>
+<tr class="separator:a0a7843a3c82891ef274de593e25888a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acacb4fa48592f4f5436919c2898e37dd"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#acacb4fa48592f4f5436919c2898e37dd">GetPossibleImportFiles</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> entry, string localization=@&quot;INT&quot;, string gameRootOverride=null)</td></tr>
 <tr class="memdesc:acacb4fa48592f4f5436919c2898e37dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the list of files that an import entry can potentially reference - this is not the same as the game, but is a user attempt to mimic it (it is unlikely to be 100% accurate)   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#acacb4fa48592f4f5436919c2898e37dd">More...</a><br /></td></tr>
 <tr class="separator:acacb4fa48592f4f5436919c2898e37dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -185,17 +181,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aefec59169d0ae2b1b2a08af444a8177b"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefec59169d0ae2b1b2a08af444a8177b">GetAllReferencesOfExport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, bool includeLink=false)</td></tr>
 <tr class="memdesc:aefec59169d0ae2b1b2a08af444a8177b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a recursive list of things the specified export references   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefec59169d0ae2b1b2a08af444a8177b">More...</a><br /></td></tr>
 <tr class="separator:aefec59169d0ae2b1b2a08af444a8177b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac361ebf5fc5bd2ece30f3730815f3f0d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ac361ebf5fc5bd2ece30f3730815f3f0d">TryResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> importEntry, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> globalCache=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> localCache=null, string localization=@&quot;INT&quot;, bool unsafeLoad=false, IEnumerable&lt; string &gt; localDirFiles=null)</td></tr>
-<tr class="memdesc:ac361ebf5fc5bd2ece30f3730815f3f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve the specified import and returns true or false if it did.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#ac361ebf5fc5bd2ece30f3730815f3f0d">More...</a><br /></td></tr>
-<tr class="separator:ac361ebf5fc5bd2ece30f3730815f3f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a0db6ecd96e962acd14755e1a0a4e37"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a4a0db6ecd96e962acd14755e1a0a4e37">TryResolveImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> importEntry, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null, string localization=@&quot;INT&quot;, bool unsafeLoad=false, IEnumerable&lt; string &gt; localDirFiles=null, Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt; fileResolver=null)</td></tr>
+<tr class="memdesc:a4a0db6ecd96e962acd14755e1a0a4e37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve the specified import and returns true or false if it did.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a4a0db6ecd96e962acd14755e1a0a4e37">More...</a><br /></td></tr>
+<tr class="separator:a4a0db6ecd96e962acd14755e1a0a4e37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54ddafd63c9a266a691a0fc38e8c2f41"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41">ConvertExportToImport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string forcedPackageFile=null)</td></tr>
 <tr class="memdesc:a54ddafd63c9a266a691a0fc38e8c2f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Experimental: Converts an export to an import. Only use if you really know what you're doing!   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a54ddafd63c9a266a691a0fc38e8c2f41">More...</a><br /></td></tr>
 <tr class="separator:a54ddafd63c9a266a691a0fc38e8c2f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:aefb476f2d99c053eb6d6b9acbf15c91c"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aefb476f2d99c053eb6d6b9acbf15c91c">NonDonorItems</a> = []</td></tr>
-<tr class="separator:aefb476f2d99c053eb6d6b9acbf15c91c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a75560b5048fab4f5b4bf138413e3dec3" name="a75560b5048fab4f5b4bf138413e3dec3"></a>
@@ -305,8 +296,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a9808c49ded7225cf8fa0d26e95e31fc6" name="a9808c49ded7225cf8fa0d26e95e31fc6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9808c49ded7225cf8fa0d26e95e31fc6">&#9670;&#160;</a></span>ImportExport()</h2>
+<a id="aca45231f51204a3b2fd1bce6f3a9a3a9" name="aca45231f51204a3b2fd1bce6f3a9a3a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca45231f51204a3b2fd1bce6f3a9a3a9">&#9670;&#160;</a></span>ImportExport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,7 +306,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.ImportExport </td>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.ImportExport </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
           <td class="paramname"><em>destPackage</em>, </td>
@@ -351,7 +342,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Imports an export from another package file. Does not perform a relink, if you want to relink, use <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a6e18d69e7f9905f379343450b90edfce">ImportAndRelinkEntries()</a>.  </p>
+<p>Imports an export from another package file. Does not perform a relink, if you want to relink, use <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a6e18d69e7f9905f379343450b90edfce">ImportAndRelinkEntries()</a>. This returns <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, as it may return an <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> if the export is found in a higher tier file and ROP options for imports are set.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">destPackage</td><td>Package to import to</td></tr>
@@ -1120,61 +1111,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8da2c01773f5abf45a7a704bdc8eafa7" name="a8da2c01773f5abf45a7a704bdc8eafa7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8da2c01773f5abf45a7a704bdc8eafa7">&#9670;&#160;</a></span>ResolveImport() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.ResolveImport </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a>&#160;</td>
-          <td class="paramname"><em>entry</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>localCache</em> = <code>null</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>localization</em> = <code>&quot;INT&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Attempts to resolve the import by looking at associated files that are loaded before this one. This method does not use a global file cache, the passed in cache may have items added to it.  </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">entry</td><td>The import to resolve</td></tr>
-    <tr><td class="paramname">localCache</td><td>Package cache if you wish to keep packages held open, for example if you're resolving many imports</td></tr>
-    <tr><td class="paramname">localization</td><td>Three letter localization code, all upper case. Defaults to INT.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The resolved export, or null if the referenced import could not be found</dd></dl>
-
-</div>
-</div>
-<a id="aa052eccb45023b44a0d0ebc691b37366" name="aa052eccb45023b44a0d0ebc691b37366"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa052eccb45023b44a0d0ebc691b37366">&#9670;&#160;</a></span>CanResolveImport()</h2>
+<a id="ab34af836f642ef3f0b041deda8e749f2" name="ab34af836f642ef3f0b041deda8e749f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab34af836f642ef3f0b041deda8e749f2">&#9670;&#160;</a></span>CanResolveImport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1192,13 +1130,7 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>globalCache</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>lookupCache</em>, </td>
+          <td class="paramname"><em>cache</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1229,10 +1161,9 @@ Static Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">entry</td><td></td></tr>
-    <tr><td class="paramname">globalCache</td><td></td></tr>
-    <tr><td class="paramname">lookupCache</td><td></td></tr>
+    <tr><td class="paramname">cache</td><td></td></tr>
     <tr><td class="paramname">localization</td><td></td></tr>
-    <tr><td class="paramname">localDirFiles</td><td></td></tr>
+    <tr><td class="paramname">localDirFiles</td><td>Used to improve performance by not having to enumerate local files and testing their existence</td></tr>
   </table>
   </dd>
 </dl>
@@ -1240,8 +1171,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a346b76fe6abaea33223df41a58813334" name="a346b76fe6abaea33223df41a58813334"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a346b76fe6abaea33223df41a58813334">&#9670;&#160;</a></span>ResolveImport() <span class="overload">[2/2]</span></h2>
+<a id="a0a7843a3c82891ef274de593e25888a5" name="a0a7843a3c82891ef274de593e25888a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a7843a3c82891ef274de593e25888a5">&#9670;&#160;</a></span>ResolveImport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1259,13 +1190,7 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>globalCache</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>lookupCache</em>, </td>
+          <td class="paramname"><em>cache</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1289,7 +1214,25 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>gameRootOverride</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>gameRootOverride</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;&#160;</td>
+          <td class="paramname"><em>fileResolver</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt;&#160;</td>
+          <td class="paramname"><em>unsafeLoadDelegate</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>instancedFullPathOverride</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1308,12 +1251,12 @@ Static Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">entry</td><td>The import to resolve</td></tr>
-    <tr><td class="paramname">globalCache</td><td>Package cache that contains global files like SFXGame, Startup, etc. The cache will not be modified but can be used to reduce disk I/O.</td></tr>
-    <tr><td class="paramname">lookupCache</td><td>Package cache if you wish to keep packages held open, for example if you're resolving many imports</td></tr>
+    <tr><td class="paramname">cache</td><td>Package cache that is used to improve performnace by not having to open all packages from disk. A <a class="el" href="class_tiered_package_cache.html" title="PackageCache implementation that allows looking for packages in parent caches. Parent caches will not...">TieredPackageCache</a> is preferred.</td></tr>
     <tr><td class="paramname">localization</td><td>Three letter localization code, all upper case. Defaults to INT.</td></tr>
     <tr><td class="paramname">unsafeLoad</td><td>If we are only testing for existence; use unsafe partial load. DO NOT USE THE RESULTING VALUE IF YOU SET THIS TO TRUE</td></tr>
     <tr><td class="paramname">localDirFiles</td><td>Files in the local directory. These will be checked last</td></tr>
     <tr><td class="paramname">gameRootOverride</td><td>The root path of the game. If null, the default path will be used</td></tr>
+    <tr><td class="paramname">instancedFullPathOverride</td><td>Allows overriding the instanced full path for lookup when resolving this import - can be useful if you need to test an import that has it's IFP changed and would not resolve otherwise</td></tr>
   </table>
   </dd>
 </dl>
@@ -1639,8 +1582,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac361ebf5fc5bd2ece30f3730815f3f0d" name="ac361ebf5fc5bd2ece30f3730815f3f0d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac361ebf5fc5bd2ece30f3730815f3f0d">&#9670;&#160;</a></span>TryResolveImport()</h2>
+<a id="a4a0db6ecd96e962acd14755e1a0a4e37" name="a4a0db6ecd96e962acd14755e1a0a4e37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a0db6ecd96e962acd14755e1a0a4e37">&#9670;&#160;</a></span>TryResolveImport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1664,13 +1607,7 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>globalCache</em> = <code>null</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>localCache</em> = <code>null</code>, </td>
+          <td class="paramname"><em>cache</em> = <code>null</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1688,7 +1625,13 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">IEnumerable&lt; string &gt;&#160;</td>
-          <td class="paramname"><em>localDirFiles</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>localDirFiles</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;&#160;</td>
+          <td class="paramname"><em>fileResolver</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1762,29 +1705,6 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="aefb476f2d99c053eb6d6b9acbf15c91c" name="aefb476f2d99c053eb6d6b9acbf15c91c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aefb476f2d99c053eb6d6b9acbf15c91c">&#9670;&#160;</a></span>NonDonorItems</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">List&lt;string&gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.NonDonorItems = []</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

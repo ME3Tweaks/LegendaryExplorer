@@ -210,6 +210,15 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a525e5d22088b4aae25c02ae3d824cd73"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a525e5d22088b4aae25c02ae3d824cd73">FindVariableConnectionsToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; sequenceElements)</td></tr>
 <tr class="memdesc:a525e5d22088b4aae25c02ae3d824cd73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds sequence objects with variable connections that come to this node   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a525e5d22088b4aae25c02ae3d824cd73">More...</a><br /></td></tr>
 <tr class="separator:a525e5d22088b4aae25c02ae3d824cd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0165f371fc31008d7037db04937bc166"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166">InsertActionAfter</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> originalNode, string outlinkName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> mitmNode, int mitmInputIdx, string mitmOutlinkName)</td></tr>
+<tr class="memdesc:a0165f371fc31008d7037db04937bc166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts an object between another in a kismet graph. The object being inserted should not have any outlinks on the outlink name specified   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166">More...</a><br /></td></tr>
+<tr class="separator:a0165f371fc31008d7037db04937bc166"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a55406297c62d8019f10670cf0c54f7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0a55406297c62d8019f10670cf0c54f7">AddVariableLink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, string linkDesc, string expectedTypeClass, bool writable=false, string propertyName=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
+<tr class="memdesc:a0a55406297c62d8019f10670cf0c54f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new variable link terminal to a kismet node. Does not check it exists already.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0a55406297c62d8019f10670cf0c54f7">More...</a><br /></td></tr>
+<tr class="separator:a0a55406297c62d8019f10670cf0c54f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a9653bf6ebc11de59ed128302088871"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871">RemoveFromSequence</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, bool trash)</td></tr>
+<tr class="memdesc:a3a9653bf6ebc11de59ed128302088871"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an object from a sequence, optionally trashing it and its children.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871">More...</a><br /></td></tr>
+<tr class="separator:a3a9653bf6ebc11de59ed128302088871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to perform common sequence editing operations  </p>
@@ -1817,6 +1826,189 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>List of any sequence objects that link to this node</dd></dl>
+
+</div>
+</div>
+<a id="a0165f371fc31008d7037db04937bc166" name="a0165f371fc31008d7037db04937bc166"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0165f371fc31008d7037db04937bc166">&#9670;&#160;</a></span>InsertActionAfter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.InsertActionAfter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>originalNode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>outlinkName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>mitmNode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mitmInputIdx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>mitmOutlinkName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inserts an object between another in a kismet graph. The object being inserted should not have any outlinks on the outlink name specified  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">originalNode</td><td>The original starting node</td></tr>
+    <tr><td class="paramname">outlinkName</td><td>The output link we will insert a MITM on</td></tr>
+    <tr><td class="paramname">mitmNode</td><td>The node we will link original node to, and then replace the outlinks of with the ones from the original node</td></tr>
+    <tr><td class="paramname">mitmInputIdx</td><td>What input to hook up the MITM to</td></tr>
+    <tr><td class="paramname">mitmOutlinkName</td><td>What output to copy the originalNode's outlinks onto</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0a55406297c62d8019f10670cf0c54f7" name="a0a55406297c62d8019f10670cf0c54f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a55406297c62d8019f10670cf0c54f7">&#9670;&#160;</a></span>AddVariableLink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.AddVariableLink </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>linkDesc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>expectedTypeClass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>writable</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>propertyName</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds a new variable link terminal to a kismet node. Does not check it exists already.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Node to modify</td></tr>
+    <tr><td class="paramname">linkDesc</td><td>The link description</td></tr>
+    <tr><td class="paramname">expectedTypeClass</td><td>The expected object class type</td></tr>
+    <tr><td class="paramname">writable</td><td>If the link writes to connected objects</td></tr>
+    <tr><td class="paramname">propertyName</td><td>The name of the property to map linked items to in the node</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3a9653bf6ebc11de59ed128302088871" name="a3a9653bf6ebc11de59ed128302088871"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a9653bf6ebc11de59ed128302088871">&#9670;&#160;</a></span>RemoveFromSequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.RemoveFromSequence </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>trash</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Removes an object from a sequence, optionally trashing it and its children.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Node to remove</td></tr>
+    <tr><td class="paramname">trash</td><td>If the object should be trashed.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

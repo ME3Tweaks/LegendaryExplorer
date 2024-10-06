@@ -2,8 +2,10 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_entry =
 [
     [ "GenerateHeader", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ae740cdd2ef447ff65e8516bc9fe0b25e", null ],
     [ "SetHeaderValuesFromByteArray", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a449e50c763c7eb04995f7d2c08012e26", null ],
-    [ "Clone", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#acc39f0e605747ca8c917f6d1c468b834", null ],
+    [ "Clone", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab10d51108e837022e0f63d8060c6dee2", null ],
     [ "GetRootName", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab4925354e9f61937552d1887fa031f3b", null ],
+    [ "GetRoot", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a8f31872d24304fdf3249c202addf5139", null ],
+    [ "GetLinker", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab8eef0096d4959d685809996a6097720", null ],
     [ "EntryHasPendingChanges", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a79450b61ec52f683a6bd6a4dfcd052b8", null ],
     [ "HeaderChanged", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#acf277d661ac0bcb55557db4d194e87b2", null ],
     [ "indexValue", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a22d18469312a1a3d35768416d2058d5d", null ],

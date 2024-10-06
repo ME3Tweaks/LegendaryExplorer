@@ -108,9 +108,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:af4b6cb5a75eacc744f0ad9c722bd88f5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#af4b6cb5a75eacc744f0ad9c722bd88f5">InvalidateCaches</a> ()</td></tr>
 <tr class="memdesc:af4b6cb5a75eacc744f0ad9c722bd88f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the cache of loaded files for all games   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#af4b6cb5a75eacc744f0ad9c722bd88f5">More...</a><br /></td></tr>
 <tr class="separator:af4b6cb5a75eacc744f0ad9c722bd88f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe16721ace0c1d18c1d961657f7868a7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#abe16721ace0c1d18c1d961657f7868a7">GetFilesLoadedInGame</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceReload=false, bool includeTFCs=false, bool includeAFCs=false, string gameRootOverride=null, bool forceUseCached=false)</td></tr>
-<tr class="memdesc:abe16721ace0c1d18c1d961657f7868a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#abe16721ace0c1d18c1d961657f7868a7">More...</a><br /></td></tr>
-<tr class="separator:abe16721ace0c1d18c1d961657f7868a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a131479e35c0c9d7268fe6634aff8f801"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html">CaseInsensitiveDictionary</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a131479e35c0c9d7268fe6634aff8f801">GetFilesLoadedInGame</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceReload=false, bool includeTFCs=false, bool includeAFCs=false, string gameRootOverride=null, bool forceUseCached=false, string[] additionalExtensions=null, bool includeModDLC=true)</td></tr>
+<tr class="memdesc:a131479e35c0c9d7268fe6634aff8f801"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path. This data may be cached; to reload it, set the forceReload flag to true   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a131479e35c0c9d7268fe6634aff8f801">More...</a><br /></td></tr>
+<tr class="separator:a131479e35c0c9d7268fe6634aff8f801"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dcefccfb34423e71734218589eaac07"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a1dcefccfb34423e71734218589eaac07">TryGetHighestMountedFile</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, out string filePath)</td></tr>
 <tr class="separator:a1dcefccfb34423e71734218589eaac07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5eeaa0c2c325f89e931052ec414a7d56"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a5eeaa0c2c325f89e931052ec414a7d56">TryGetHighestMountedFile</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, string fileName, out string filePath)</td></tr>
@@ -185,8 +185,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abe16721ace0c1d18c1d961657f7868a7" name="abe16721ace0c1d18c1d961657f7868a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe16721ace0c1d18c1d961657f7868a7">&#9670;&#160;</a></span>GetFilesLoadedInGame()</h2>
+<a id="a131479e35c0c9d7268fe6634aff8f801" name="a131479e35c0c9d7268fe6634aff8f801"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a131479e35c0c9d7268fe6634aff8f801">&#9670;&#160;</a></span>GetFilesLoadedInGame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -228,7 +228,19 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>forceUseCached</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>forceUseCached</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string[]&#160;</td>
+          <td class="paramname"><em>additionalExtensions</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>includeModDLC</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -252,6 +264,8 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">includeAFCs</td><td>If true, files with the .afc extension will be included</td></tr>
     <tr><td class="paramname">gameRootOverride</td><td>Optional: override game path root</td></tr>
     <tr><td class="paramname">forceUseCached</td><td>Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</td></tr>
+    <tr><td class="paramname">additionalExtensions</td><td>Optional: Additional file extensions to include, besides .tfc and .afc. Null or empty array will not include any additional extensions</td></tr>
+    <tr><td class="paramname">includeModDLC</td><td>Optional: If false, DLC folders that are not from the vanilla game will be skipped.</td></tr>
   </table>
   </dd>
 </dl>
@@ -384,7 +398,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets a list of all loaded files in the given game.  </p>
-<p >How does this differ from <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#abe16721ace0c1d18c1d961657f7868a7" title="Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path....">GetFilesLoadedInGame</a>.Values.ToList()? GetFilesLoadedInGame handles edge cases and caching slightly better. I'm pretty sure M3 uses this one. </p>
+<p >How does this differ from <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html#a131479e35c0c9d7268fe6634aff8f801" title="Gets a dictionary of all loaded files in the given game. Key is the filename, value is file path....">GetFilesLoadedInGame</a>.Values.ToList()? GetFilesLoadedInGame handles edge cases and caching slightly better. I'm pretty sure M3 uses this one. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">gamePath</td><td>Game root path. If null, default from <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_directories.html" title="Static methods to get game directory information from an MEGame enum">MEDirectories</a> will be used</td></tr>

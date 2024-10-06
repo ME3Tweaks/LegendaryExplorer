@@ -34,5 +34,8 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "CloneObject", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a21f2a545fa1d771dd9265905c15a6995", null ],
     [ "CloneSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2e751ce658788eb8c2889c8ebfc8ea55", null ],
     [ "FindOutputConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acfe42576ba246a2e351642f532b5c35b", null ],
-    [ "FindVariableConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a525e5d22088b4aae25c02ae3d824cd73", null ]
+    [ "FindVariableConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a525e5d22088b4aae25c02ae3d824cd73", null ],
+    [ "InsertActionAfter", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166", null ],
+    [ "AddVariableLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0a55406297c62d8019f10670cf0c54f7", null ],
+    [ "RemoveFromSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871", null ]
 ];

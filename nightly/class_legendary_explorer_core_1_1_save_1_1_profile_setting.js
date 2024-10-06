@@ -1,7 +1,7 @@
 var class_legendary_explorer_core_1_1_save_1_1_profile_setting =
 [
     [ "EProfileSettingType", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52", null ],
-    [ "Serialize", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a53ed50d4fa4060572770af94e44a7566", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#af2dcb80814022d08af3eb89addeff62a", null ],
     [ "Deserialize", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a7cc37de3e87b43c431e5e286faee4674", null ],
     [ "IdType", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#ad15cb825d68fbd0eb5eb47f9ea9da0c8", null ],
     [ "Id", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#aafe0f3502d82ca98bc0cdc722e2b1b40", null ],

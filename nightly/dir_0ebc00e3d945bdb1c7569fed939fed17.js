@@ -9,5 +9,6 @@ var dir_0ebc00e3d945bdb1c7569fed939fed17 =
     [ "Utilities", "dir_b03b3138f123e881380e47278bd6541d.html", "dir_b03b3138f123e881380e47278bd6541d" ],
     [ "FileLib.cs", "_file_lib_8cs.html", "_file_lib_8cs" ],
     [ "UnrealScriptCompiler.cs", "_unreal_script_compiler_8cs.html", "_unreal_script_compiler_8cs" ],
-    [ "UnrealScriptLookup.cs", "_unreal_script_lookup_8cs.html", "_unreal_script_lookup_8cs" ]
+    [ "UnrealScriptLookup.cs", "_unreal_script_lookup_8cs.html", "_unreal_script_lookup_8cs" ],
+    [ "UnrealScriptOptionsPackage.cs", "_unreal_script_options_package_8cs.html", "_unreal_script_options_package_8cs" ]
 ];

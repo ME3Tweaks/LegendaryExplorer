@@ -15,6 +15,7 @@ var dir_fcbaed6291bc34708fd86da8b1325ec6 =
     [ "CMath.cs", "_c_math_8cs.html", "_c_math_8cs" ],
     [ "Enum.cs", "_enum_8cs.html", "_enum_8cs" ],
     [ "GammtekUtilities.cs", "_gammtek_utilities_8cs.html", "_gammtek_utilities_8cs" ],
+    [ "InlineArrays.cs", "_inline_arrays_8cs.html", "_inline_arrays_8cs" ],
     [ "ThrowHelper.cs", "_throw_helper_8cs.html", "_throw_helper_8cs" ],
     [ "TypeSwitch.cs", "_type_switch_8cs.html", "_type_switch_8cs" ]
 ];

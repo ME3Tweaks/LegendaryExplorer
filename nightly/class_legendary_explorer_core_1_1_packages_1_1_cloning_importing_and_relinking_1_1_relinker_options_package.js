@@ -13,5 +13,12 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "PortImportsMemorySafe", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ab48095c65a1d92e0d4b77f6cc50cd599", null ],
     [ "PortExportsAsImportsWhenPossible", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#abf30d4147fe777038ff299fcc9a142e2", null ],
     [ "ImportChildrenOfPackages", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a4d350d29f297f621179c325571163855", null ],
-    [ "GamePathOverride", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a621b8217b47b772eec2cc7271ccd826c", null ]
+    [ "GamePathOverride", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a621b8217b47b772eec2cc7271ccd826c", null ],
+    [ "DestinationCustomImportFileResolver", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#aa956019cb52b2e3751d9e7e1ccf2e4a0", null ],
+    [ "SourceCustomImportFileResolver", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a1693d096e60469faec1bcdf062b9b7b8", null ],
+    [ "RelinkAllowDifferingClassesInRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3c6b8c8884a8e61e3e850558be44a086", null ],
+    [ "PortLocalizationImportsMemorySafe", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3f8c3bd0d11b6b88747bf5fdfac780db", null ],
+    [ "CustomDonorImporter", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a2f47c5d66bb4b8f96b4326b5fc698a77", null ],
+    [ "CheckImportsWhenExportingToPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8e77b33bc07d335d0d54c75c6c51d91a", null ],
+    [ "ForceSamePackageImportRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1", null ]
 ];

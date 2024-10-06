@@ -27,5 +27,6 @@ var _i_s_a_c_t_helper_8cs =
     [ "ISACTOrientation", "class_i_s_a_c_t_orientation.html", "class_i_s_a_c_t_orientation" ],
     [ "ISACTSoundTrack", "class_i_s_a_c_t_sound_track.html", "class_i_s_a_c_t_sound_track" ],
     [ "SoundEventSoundTracksFour", "class_sound_event_sound_tracks_four.html", "class_sound_event_sound_tracks_four" ],
+    [ "SoundEventSoundTracks", "class_sound_event_sound_tracks.html", "class_sound_event_sound_tracks" ],
     [ "ISACTBankType", "_i_s_a_c_t_helper_8cs.html#a1d306bb280144056b87e695f2b641217", null ]
 ];

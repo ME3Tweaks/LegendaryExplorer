@@ -117,11 +117,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae740cdd2ef447ff65e8516bc9fe0b25e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a449e50c763c7eb04995f7d2c08012e26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a449e50c763c7eb04995f7d2c08012e26">SetHeaderValuesFromByteArray</a> (byte[] value)</td></tr>
 <tr class="separator:a449e50c763c7eb04995f7d2c08012e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc39f0e605747ca8c917f6d1c468b834"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#acc39f0e605747ca8c917f6d1c468b834">Clone</a> (bool incrementIndex)</td></tr>
-<tr class="separator:acc39f0e605747ca8c917f6d1c468b834"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab10d51108e837022e0f63d8060c6dee2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab10d51108e837022e0f63d8060c6dee2">Clone</a> (bool incrementIndex, int newParentUIndex)</td></tr>
+<tr class="separator:ab10d51108e837022e0f63d8060c6dee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4925354e9f61937552d1887fa031f3b"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab4925354e9f61937552d1887fa031f3b">GetRootName</a> ()</td></tr>
-<tr class="memdesc:ab4925354e9f61937552d1887fa031f3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab4925354e9f61937552d1887fa031f3b">More...</a><br /></td></tr>
+<tr class="memdesc:ab4925354e9f61937552d1887fa031f3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name of the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab4925354e9f61937552d1887fa031f3b">More...</a><br /></td></tr>
 <tr class="separator:ab4925354e9f61937552d1887fa031f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f31872d24304fdf3249c202addf5139"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a8f31872d24304fdf3249c202addf5139">GetRoot</a> ()</td></tr>
+<tr class="memdesc:a8f31872d24304fdf3249c202addf5139"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a8f31872d24304fdf3249c202addf5139">More...</a><br /></td></tr>
+<tr class="separator:a8f31872d24304fdf3249c202addf5139"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8eef0096d4959d685809996a6097720"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab8eef0096d4959d685809996a6097720">GetLinker</a> ()</td></tr>
+<tr class="memdesc:ab8eef0096d4959d685809996a6097720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get package file this entry will be nested under in memory. Parent chain should be preferably exports   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#ab8eef0096d4959d685809996a6097720">More...</a><br /></td></tr>
+<tr class="separator:ab8eef0096d4959d685809996a6097720"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -147,8 +153,10 @@ Properties</h2></td></tr>
 <tr class="memitem:a0f39f0f5a755b46f1a910185a376e702"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a0f39f0f5a755b46f1a910185a376e702">FullPath</a><code> [get]</code></td></tr>
 <tr class="separator:a0f39f0f5a755b46f1a910185a376e702"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a295c6333b8f3f7f3b6a5c4d21d95c5aa"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a295c6333b8f3f7f3b6a5c4d21d95c5aa">InstancedFullPath</a><code> [get]</code></td></tr>
+<tr class="memdesc:a295c6333b8f3f7f3b6a5c4d21d95c5aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">InstancedFullPath - Dot separated object hierarchy, within the local package file. Does not take exports lacking ForcedExport into account.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a295c6333b8f3f7f3b6a5c4d21d95c5aa">More...</a><br /></td></tr>
 <tr class="separator:a295c6333b8f3f7f3b6a5c4d21d95c5aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a303bfd035ad9a2c22100a36b7d77fce0"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a303bfd035ad9a2c22100a36b7d77fce0">MemoryFullPath</a><code> [get]</code></td></tr>
+<tr class="memdesc:a303bfd035ad9a2c22100a36b7d77fce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">MemoryFullPath - The path as the object will appear in game-memory, taking ForceExport into account.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a303bfd035ad9a2c22100a36b7d77fce0">More...</a><br /></td></tr>
 <tr class="separator:a303bfd035ad9a2c22100a36b7d77fce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9975ad7806a16909bad6b5c9d394e3c0"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html#a9975ad7806a16909bad6b5c9d394e3c0">ObjectNameString</a><code> [get, set]</code></td></tr>
 <tr class="separator:a9975ad7806a16909bad6b5c9d394e3c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -207,8 +215,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="acc39f0e605747ca8c917f6d1c468b834" name="acc39f0e605747ca8c917f6d1c468b834"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc39f0e605747ca8c917f6d1c468b834">&#9670;&#160;</a></span>Clone()</h2>
+<a id="ab10d51108e837022e0f63d8060c6dee2" name="ab10d51108e837022e0f63d8060c6dee2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab10d51108e837022e0f63d8060c6dee2">&#9670;&#160;</a></span>Clone()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,8 +225,18 @@ Properties</h2></td></tr>
           <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Packages.IEntry.Clone </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>incrementIndex</em></td><td>)</td>
+          <td class="paramname"><em>incrementIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>newParentUIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -240,10 +258,54 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.  </p>
+<p>Gets the name of the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.  </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Implemented in <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a87f5047ebded7789e5fbc3520f39826a">LegendaryExplorerCore.Packages.ExportEntry</a>, and <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a89af6364144b4fa9f96b6ed276bee8d2">LegendaryExplorerCore.Packages.ImportEntry</a>.</p>
+
+</div>
+</div>
+<a id="a8f31872d24304fdf3249c202addf5139" name="a8f31872d24304fdf3249c202addf5139"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f31872d24304fdf3249c202addf5139">&#9670;&#160;</a></span>GetRoot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Packages.IEntry.GetRoot </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the top level object by following the idxLink up the chain. Typically this is the file that will contain the export (unless it is a ForcedExport) if it's an import, or the original package before forcing the export into the file.  </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a878fd5cb2d2834f8c32e3ebf4f62ca34">LegendaryExplorerCore.Packages.ExportEntry</a>, and <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a46e58b29583e74fe37f413e1eb89c110">LegendaryExplorerCore.Packages.ImportEntry</a>.</p>
+
+</div>
+</div>
+<a id="ab8eef0096d4959d685809996a6097720" name="ab8eef0096d4959d685809996a6097720"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8eef0096d4959d685809996a6097720">&#9670;&#160;</a></span>GetLinker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string LegendaryExplorerCore.Packages.IEntry.GetLinker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get package file this entry will be nested under in memory. Parent chain should be preferably exports  </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a4c58a9bc1950e7ed3f53ff01c31fac38">LegendaryExplorerCore.Packages.ExportEntry</a>, and <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a68ca1f997c58c60b4bfdd2f79dba277d">LegendaryExplorerCore.Packages.ImportEntry</a>.</p>
 
 </div>
 </div>
@@ -510,6 +572,8 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>InstancedFullPath - Dot separated object hierarchy, within the local package file. Does not take exports lacking ForcedExport into account.  </p>
+
 <p>Implemented in <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#afca7ccae53512b57592f10c02cc9735f">LegendaryExplorerCore.Packages.ExportEntry</a>, and <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a323b9177e7e8a87d94e9cc87ee2f818a">LegendaryExplorerCore.Packages.ImportEntry</a>.</p>
 
 </div>
@@ -533,6 +597,8 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>MemoryFullPath - The path as the object will appear in game-memory, taking ForceExport into account.  </p>
 
 <p>Implemented in <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ad64d7af4e4a5c632e52a64d9c47d4009">LegendaryExplorerCore.Packages.ExportEntry</a>, and <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html#a60539de47282b3ede851e8c7c1874dc7">LegendaryExplorerCore.Packages.ImportEntry</a>.</p>
 

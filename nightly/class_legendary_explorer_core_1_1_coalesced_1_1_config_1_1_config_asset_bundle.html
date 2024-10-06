@@ -115,9 +115,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a96cfc9879ac5b18bcea0fa9b1803c885"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#a96cfc9879ac5b18bcea0fa9b1803c885">CommitAssets</a> (string outPath, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> loc)</td></tr>
 <tr class="memdesc:a96cfc9879ac5b18bcea0fa9b1803c885"><td class="mdescLeft">&#160;</td><td class="mdescRight">Commits this bundle to the specified single config file   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#a96cfc9879ac5b18bcea0fa9b1803c885">More...</a><br /></td></tr>
 <tr class="separator:a96cfc9879ac5b18bcea0fa9b1803c885"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab653b9a3d4cc907e7b4d090364172e28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#ab653b9a3d4cc907e7b4d090364172e28">CommitDLCAssets</a> (string outPath=null)</td></tr>
-<tr class="memdesc:ab653b9a3d4cc907e7b4d090364172e28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Commits this bundle to the same folder it was loaded from   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#ab653b9a3d4cc907e7b4d090364172e28">More...</a><br /></td></tr>
-<tr class="separator:ab653b9a3d4cc907e7b4d090364172e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf52ee7c2f13e2c3be519fafa2145509"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#acf52ee7c2f13e2c3be519fafa2145509">CommitDLCAssets</a> (string outPath=null, string dlcName=null)</td></tr>
+<tr class="memdesc:acf52ee7c2f13e2c3be519fafa2145509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Commits this bundle to the same folder it was loaded from   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#acf52ee7c2f13e2c3be519fafa2145509">More...</a><br /></td></tr>
+<tr class="separator:acf52ee7c2f13e2c3be519fafa2145509"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03d64f8be4eb97eace1a8d98507a35b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#af03d64f8be4eb97eace1a8d98507a35b">MergeInto</a> (<a class="el" href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html">ConfigAssetBundle</a> destBundle)</td></tr>
 <tr class="memdesc:af03d64f8be4eb97eace1a8d98507a35b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merges this bundle into the specified one, applying the changes.   <a href="class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html#af03d64f8be4eb97eace1a8d98507a35b">More...</a><br /></td></tr>
 <tr class="separator:af03d64f8be4eb97eace1a8d98507a35b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -402,11 +402,18 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Commits this bundle to the specified single config file  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">outPath</td><td>Where to write the single output file to</td></tr>
+    <tr><td class="paramname">loc</td><td>LE1/LE2 only: What localization this is for. This is important for error messages being written out via debug logger from within native code. For other games, this is not used, and can be set to None.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="ab653b9a3d4cc907e7b4d090364172e28" name="ab653b9a3d4cc907e7b4d090364172e28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab653b9a3d4cc907e7b4d090364172e28">&#9670;&#160;</a></span>CommitDLCAssets()</h2>
+<a id="acf52ee7c2f13e2c3be519fafa2145509" name="acf52ee7c2f13e2c3be519fafa2145509"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf52ee7c2f13e2c3be519fafa2145509">&#9670;&#160;</a></span>CommitDLCAssets()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -418,8 +425,18 @@ Properties</h2></td></tr>
           <td class="memname">void LegendaryExplorerCore.Coalesced.Config.ConfigAssetBundle.CommitDLCAssets </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>outPath</em> = <code>null</code></td><td>)</td>
+          <td class="paramname"><em>outPath</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>dlcName</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

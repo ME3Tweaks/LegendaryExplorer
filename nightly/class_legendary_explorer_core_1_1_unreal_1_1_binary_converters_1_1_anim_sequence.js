@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence =
 [
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#af119679e375761ae27444d17069fde1e", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#af9547b82cc393dbbcaf877c4c74b8362", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a3da6032d2d57e67059de48eb450013b7", null ],
     [ "UpdateProps", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a59cc94aeac7d0e986eea80ab66a25e0f", null ],
     [ "DecompressAnimationData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a336ee7adabb968f2a593f073ae1c0d1d", null ],

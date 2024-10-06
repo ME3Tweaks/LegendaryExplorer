@@ -109,6 +109,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aef815b6f7029a0b68aa048a127df5a98"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#aef815b6f7029a0b68aa048a127df5a98">Relink</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sourceExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> relinkingExport, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop)</td></tr>
 <tr class="memdesc:aef815b6f7029a0b68aa048a127df5a98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relinks an export to a new export, likely in another package.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#aef815b6f7029a0b68aa048a127df5a98">More...</a><br /></td></tr>
 <tr class="separator:aef815b6f7029a0b68aa048a127df5a98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16170d117664cd14b0383c25f9b970aa"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a16170d117664cd14b0383c25f9b970aa">RelinkPropertyCollection</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> sourcePcc, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destinationPcc, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop, out bool hasObjectProperties)</td></tr>
+<tr class="memdesc:a16170d117664cd14b0383c25f9b970aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relinks a property collection, from the sourcePcc to the destinationPcc. This should only be used standalone, not as part of a full relink operation!   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a16170d117664cd14b0383c25f9b970aa">More...</a><br /></td></tr>
+<tr class="separator:a16170d117664cd14b0383c25f9b970aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93bf7b6e52abc283ee7827fbcb9129f8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a93bf7b6e52abc283ee7827fbcb9129f8">RelinkSamePackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html">ListenableDictionary</a>&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; relinkMap)</td></tr>
+<tr class="memdesc:a93bf7b6e52abc283ee7827fbcb9129f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relinks objects to different ones within the same package. Will not generate new exports or imports.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a93bf7b6e52abc283ee7827fbcb9129f8">More...</a><br /></td></tr>
+<tr class="separator:a93bf7b6e52abc283ee7827fbcb9129f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3c40cf2f46354f9f3b1ca09d6bd5ef54" name="a3c40cf2f46354f9f3b1ca09d6bd5ef54"></a>
@@ -185,6 +191,116 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">sourceExport</td><td>The source export that was ported, containing the original data</td></tr>
     <tr><td class="paramname">relinkingExport</td><td>The export that will be updated with new references</td></tr>
     <tr><td class="paramname">rop</td><td>Option package for relinking</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a16170d117664cd14b0383c25f9b970aa" name="a16170d117664cd14b0383c25f9b970aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16170d117664cd14b0383c25f9b970aa">&#9670;&#160;</a></span>RelinkPropertyCollection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Packages.CloningImportingAndRelinking.Relinker.RelinkPropertyCollection </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>sourcePcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>destinationPcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td>
+          <td class="paramname"><em>props</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a>&#160;</td>
+          <td class="paramname"><em>rop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out bool&#160;</td>
+          <td class="paramname"><em>hasObjectProperties</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Relinks a property collection, from the sourcePcc to the destinationPcc. This should only be used standalone, not as part of a full relink operation!  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sourcePcc</td><td>Package file we are relinking from</td></tr>
+    <tr><td class="paramname">destinationPcc</td><td>Destination to relink into. If null, we will not relink - but we will still report if we have object properties.</td></tr>
+    <tr><td class="paramname">props</td><td>The collection to relink</td></tr>
+    <tr><td class="paramname">rop</td><td><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html">Relinker</a> options package to configure relink behavior</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a93bf7b6e52abc283ee7827fbcb9129f8" name="a93bf7b6e52abc283ee7827fbcb9129f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93bf7b6e52abc283ee7827fbcb9129f8">&#9670;&#160;</a></span>RelinkSamePackage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Packages.CloningImportingAndRelinking.Relinker.RelinkSamePackage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html">ListenableDictionary</a>&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>relinkMap</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Relinks objects to different ones within the same package. Will not generate new exports or imports.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td>Package to operate on</td></tr>
+    <tr><td class="paramname">relinkMap</td><td>List of entries that you are repointing to different objects. The remaining objects will have a relink performed to update references automatically.</td></tr>
   </table>
   </dd>
 </dl>

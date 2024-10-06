@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['nolongeropenintools_0',['NoLongerOpenInTools',['../interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a533fea21c616fde6e573c9eb8b82aec6',1,'LegendaryExplorerCore.Packages.IMEPackage.NoLongerOpenInTools()'],['../class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#aa7eaf191ac4d65ecd91e2badf47a78b6',1,'LegendaryExplorerCore.Packages.UnrealPackageFile.NoLongerOpenInTools()']]],
-  ['nolongerused_1',['NoLongerUsed',['../interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af53706e7e91c68dc29673eb829e39d07',1,'LegendaryExplorerCore.Packages.IMEPackage.NoLongerUsed()'],['../class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#ab19cea8b557fcc0f46446f7fc837279f',1,'LegendaryExplorerCore.Packages.UnrealPackageFile.NoLongerUsed()']]]
+  ['lengthchanged_0',['LengthChanged',['../interface_legendary_explorer_core_1_1_misc_1_1_i_byte_provider.html#a9dd59baa4ca21b89da9e005661359d99',1,'LegendaryExplorerCore.Misc.IByteProvider.LengthChanged()'],['../class_legendary_explorer_core_1_1_misc_1_1_read_optimized_byte_provider.html#aa8909d2242996c172a8d943f1c725cf1',1,'LegendaryExplorerCore.Misc.ReadOptimizedByteProvider.LengthChanged()']]]
 ];

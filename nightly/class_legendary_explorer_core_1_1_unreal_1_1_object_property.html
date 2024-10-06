@@ -121,6 +121,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4902918c5e428b8d1d10f3164271e6ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a4902918c5e428b8d1d10f3164271e6ac">ResolveToEntry</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
 <tr class="memdesc:a4902918c5e428b8d1d10f3164271e6ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves this object property to its corresponding IEntry from <em>package</em> .   <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a4902918c5e428b8d1d10f3164271e6ac">More...</a><br /></td></tr>
 <tr class="separator:a4902918c5e428b8d1d10f3164271e6ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf173604791389006b47a74531ff0992"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#adf173604791389006b47a74531ff0992">ResolveToExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache)</td></tr>
+<tr class="memdesc:adf173604791389006b47a74531ff0992"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolves this property to an export. If the object is an import, it will attempt to resolve it from another package.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#adf173604791389006b47a74531ff0992">More...</a><br /></td></tr>
+<tr class="separator:adf173604791389006b47a74531ff0992"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8250195a8c51ed33537b6bfce71fe64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#ae8250195a8c51ed33537b6bfce71fe64">TryResolveExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> exp)</td></tr>
+<tr class="memdesc:ae8250195a8c51ed33537b6bfce71fe64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to resolve this object property to an export, returning true if success, false otherwise. This resolves imports to exports.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#ae8250195a8c51ed33537b6bfce71fe64">More...</a><br /></td></tr>
+<tr class="separator:ae8250195a8c51ed33537b6bfce71fe64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9508001ea288fb6662c3e85368a7dd67"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a9508001ea288fb6662c3e85368a7dd67">ObjectProperty</a> (int val, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>? name=null)</td></tr>
 <tr class="memdesc:a9508001ea288fb6662c3e85368a7dd67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html" title="Property containing a UIndex">ObjectProperty</a>   <a href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a9508001ea288fb6662c3e85368a7dd67">More...</a><br /></td></tr>
 <tr class="separator:a9508001ea288fb6662c3e85368a7dd67"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -318,6 +324,105 @@ Events</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An IEntry, or null if <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_object_property.html#a823ce1ca72484911247a5b60ee19898c" title="The UIndex this property contains">Value</a> is 0 or outside the range of valid UIndexes</dd></dl>
+
+</div>
+</div>
+<a id="adf173604791389006b47a74531ff0992" name="adf173604791389006b47a74531ff0992"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf173604791389006b47a74531ff0992">&#9670;&#160;</a></span>ResolveToExport()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Unreal.ObjectProperty.ResolveToExport </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Resolves this property to an export. If the object is an import, it will attempt to resolve it from another package.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td>Package this property resides in</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use if resolving an import</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="ae8250195a8c51ed33537b6bfce71fe64" name="ae8250195a8c51ed33537b6bfce71fe64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8250195a8c51ed33537b6bfce71fe64">&#9670;&#160;</a></span>TryResolveExport()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Unreal.ObjectProperty.TryResolveExport </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>exp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Attempts to resolve this object property to an export, returning true if success, false otherwise. This resolves imports to exports.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td></td></tr>
+    <tr><td class="paramname">cache</td><td></td></tr>
+    <tr><td class="paramname">exp</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 <p>inheritdoc/&gt; </p>
 
 </div>

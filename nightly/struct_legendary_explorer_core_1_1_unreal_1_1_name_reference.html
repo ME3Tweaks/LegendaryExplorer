@@ -113,9 +113,17 @@ Inheritance diagram for LegendaryExplorerCore.Unreal.NameReference:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a848f054c2692afcb92b20876466d9559"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a848f054c2692afcb92b20876466d9559">NameReference</a> (string name, int number=0)</td></tr>
 <tr class="separator:a848f054c2692afcb92b20876466d9559"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eda8864abe372369e47ffa5986a7b07"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a9eda8864abe372369e47ffa5986a7b07">GetInstancedLength</a> ()</td></tr>
+<tr class="separator:a9eda8864abe372369e47ffa5986a7b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1402df757f26b45cfd0b7bbb1f630a62"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a1402df757f26b45cfd0b7bbb1f630a62">EqualsInstancedString</a> (ReadOnlySpan&lt; char &gt; instancedString)</td></tr>
+<tr class="memdesc:a1402df757f26b45cfd0b7bbb1f630a62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares this name reference to an instanced string.   <a href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a1402df757f26b45cfd0b7bbb1f630a62">More...</a><br /></td></tr>
+<tr class="separator:a1402df757f26b45cfd0b7bbb1f630a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a999cb1fd271e1d78a0dbc8ddff756b08"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a999cb1fd271e1d78a0dbc8ddff756b08">AddToPath</a> (string parentPath)</td></tr>
 <tr class="memdesc:a999cb1fd271e1d78a0dbc8ddff756b08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds instanced name to end of <em>parentPath</em> , after a '.'   <a href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a999cb1fd271e1d78a0dbc8ddff756b08">More...</a><br /></td></tr>
 <tr class="separator:a999cb1fd271e1d78a0dbc8ddff756b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bbdd6afc4238f19e40c313bfae460cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a0bbdd6afc4238f19e40c313bfae460cf">FormatInstanced</a> (Span&lt; char &gt; span)</td></tr>
+<tr class="memdesc:a0bbdd6afc4238f19e40c313bfae460cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the instanced string onto the provided span. SPAN MUST BE THE EXACT LENGTH NEEDED! Use <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a9eda8864abe372369e47ffa5986a7b07">GetInstancedLength</a> to get the correct length.   <a href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a0bbdd6afc4238f19e40c313bfae460cf">More...</a><br /></td></tr>
+<tr class="separator:a0bbdd6afc4238f19e40c313bfae460cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0234cc4465319e89b589f11170b52803"><td class="memItemLeft" align="right" valign="top">override string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a0234cc4465319e89b589f11170b52803">ToString</a> ()</td></tr>
 <tr class="separator:a0234cc4465319e89b589f11170b52803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a353949f8728ac6e2a5262f3b9ea25818"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a353949f8728ac6e2a5262f3b9ea25818">Equals</a> (<a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> other)</td></tr>
@@ -210,6 +218,66 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9eda8864abe372369e47ffa5986a7b07" name="a9eda8864abe372369e47ffa5986a7b07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eda8864abe372369e47ffa5986a7b07">&#9670;&#160;</a></span>GetInstancedLength()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LegendaryExplorerCore.Unreal.NameReference.GetInstancedLength </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1402df757f26b45cfd0b7bbb1f630a62" name="a1402df757f26b45cfd0b7bbb1f630a62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1402df757f26b45cfd0b7bbb1f630a62">&#9670;&#160;</a></span>EqualsInstancedString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Unreal.NameReference.EqualsInstancedString </td>
+          <td>(</td>
+          <td class="paramtype">ReadOnlySpan&lt; char &gt;&#160;</td>
+          <td class="paramname"><em>instancedString</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compares this name reference to an instanced string.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">instancedString</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a id="a999cb1fd271e1d78a0dbc8ddff756b08" name="a999cb1fd271e1d78a0dbc8ddff756b08"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a999cb1fd271e1d78a0dbc8ddff756b08">&#9670;&#160;</a></span>AddToPath()</h2>
 
@@ -242,6 +310,40 @@ Properties</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a0bbdd6afc4238f19e40c313bfae460cf" name="a0bbdd6afc4238f19e40c313bfae460cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bbdd6afc4238f19e40c313bfae460cf">&#9670;&#160;</a></span>FormatInstanced()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Unreal.NameReference.FormatInstanced </td>
+          <td>(</td>
+          <td class="paramtype">Span&lt; char &gt;&#160;</td>
+          <td class="paramname"><em>span</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Formats the instanced string onto the provided span. SPAN MUST BE THE EXACT LENGTH NEEDED! Use <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a9eda8864abe372369e47ffa5986a7b07">GetInstancedLength</a> to get the correct length.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">span</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

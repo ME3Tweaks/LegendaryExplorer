@@ -117,6 +117,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ab518571d8109bafa48e018046a532882"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#ab518571d8109bafa48e018046a532882">RequestASIInstallation</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, int ASIid, int version=0)</td></tr>
 <tr class="memdesc:ab518571d8109bafa48e018046a532882"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instructs Mod Manager to install the specified ASI group ASI loader to the specified game.   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#ab518571d8109bafa48e018046a532882">More...</a><br /></td></tr>
 <tr class="separator:ab518571d8109bafa48e018046a532882"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17dbc5b506a46a2283537f78166a463c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#a17dbc5b506a46a2283537f78166a463c">RequestModInstallation</a> (string moddescPath)</td></tr>
+<tr class="memdesc:a17dbc5b506a46a2283537f78166a463c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instructs Mod Manager to install the specified mod, based on the path of the moddesc.ini file.   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#a17dbc5b506a46a2283537f78166a463c">More...</a><br /></td></tr>
+<tr class="separator:a17dbc5b506a46a2283537f78166a463c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a512842928075a766e41c213f32a5f868" name="a512842928075a766e41c213f32a5f868"></a>
@@ -284,6 +287,41 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">game</td><td>Game to request installation for. In Mod Manager, this will select the default game target (which is what LEC uses, unless the user specifies otherwise)</td></tr>
     <tr><td class="paramname">ASIid</td><td>The updategroup of the ASI to install for.</td></tr>
     <tr><td class="paramname">version</td><td>The version of the ASI to install for. Can be used to hardcode against a known working version. Setting a value of 0 will install the latest from the ASI manifest.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if request was made, false otherwise</dd></dl>
+
+</div>
+</div>
+<a id="a17dbc5b506a46a2283537f78166a463c" name="a17dbc5b506a46a2283537f78166a463c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17dbc5b506a46a2283537f78166a463c">&#9670;&#160;</a></span>RequestModInstallation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool LegendaryExplorerCore.Misc.ME3Tweaks.ModManagerIntegration.RequestModInstallation </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>moddescPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Instructs Mod Manager to install the specified mod, based on the path of the moddesc.ini file.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">moddescPath</td><td>Full path to a valid moddesc.ini file. The mod will be loaded in Mod Manager and then installed.</td></tr>
   </table>
   </dd>
 </dl>

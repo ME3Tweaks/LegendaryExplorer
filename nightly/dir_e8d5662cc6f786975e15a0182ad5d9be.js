@@ -12,6 +12,7 @@ var dir_e8d5662cc6f786975e15a0182ad5d9be =
     [ "CommonStructs.cs", "_common_structs_8cs.html", "_common_structs_8cs" ],
     [ "DLCPackage.cs", "_d_l_c_package_8cs.html", "_d_l_c_package_8cs" ],
     [ "DLCPackage2.cs", "_d_l_c_package2_8cs.html", null ],
+    [ "LEXJSONState.cs", "_l_e_x_j_s_o_n_state_8cs.html", "_l_e_x_j_s_o_n_state_8cs" ],
     [ "ME3ConditionalsCompiler.cs", "_m_e3_conditionals_compiler_8cs.html", "_m_e3_conditionals_compiler_8cs" ],
     [ "ME3Enums.cs", "_m_e3_enums_8cs.html", "_m_e3_enums_8cs" ],
     [ "NameReference.cs", "_name_reference_8cs.html", "_name_reference_8cs" ],

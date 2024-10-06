@@ -6,6 +6,6 @@ var _model_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Vert", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_vert.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_vert" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ZoneProperties", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_zone_properties" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ModelVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_vertex.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_vertex" ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
     [ "UIndex", "_model_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ]
 ];

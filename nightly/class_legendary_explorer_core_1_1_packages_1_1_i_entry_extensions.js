@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions =
 [
+    [ "GetReferenceTree", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a13a6caeaad51587bed4afab6362bc9c5", null ],
     [ "IsTrash", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a1625333f8fe1abb38ce4ea33c7c2ccd5", null ],
     [ "IsTexture", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a9756eea6568f94e7c0cb092d153d65f3", null ],
     [ "IsPartOfClassDefinition", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a6d759a3440dd864ae1d2b9fbd7899420", null ],

@@ -11,7 +11,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_me
     [ "WireframeIndexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#aae7f86c200094788f8d65a7b7af88345", null ],
     [ "Edges", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#a3d1bc0971b855f10b49a5e9774c33644", null ],
     [ "ShadowTriangleDoubleSided", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#ab924b7651b37fefa376881ea726f2e38", null ],
-    [ "unkBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#aaa3227387ba08403f8378050a82ae965", null ],
+    [ "AdjacencyIndexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#adaa23ebdaeb8e59bf3e2c742d07ca103", null ],
     [ "unk1", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#aa63cdd5af53d4d9e1c3cf6bad8beca2c", null ],
     [ "xmlFile", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#a944ab1370d1b114ab661388e77878ffd", null ]
 ];

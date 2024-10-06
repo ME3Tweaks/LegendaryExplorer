@@ -9,7 +9,7 @@ var _face_f_x_asset_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeParentLink", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parent_link.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parent_link" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parameter.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parameter" ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
     [ "FxNodeType", "_face_f_x_asset_8cs.html#ab2a04ada20d8590017678003c3ec596a", null ],
     [ "FxInputOperation", "_face_f_x_asset_8cs.html#aa54ec64d7c3bc07e9e1f8a5970fd765a", null ],
     [ "FxLinkFunction", "_face_f_x_asset_8cs.html#a6152604e89aac714df2701be3c920357", null ],

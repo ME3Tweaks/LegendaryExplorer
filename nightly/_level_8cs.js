@@ -10,6 +10,7 @@ var _level_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedConvexData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedConvexDataElement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedPerTriData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_per_tri_data.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_per_tri_data" ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.FPrecomputedVolumeDistanceField", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_f_precomputed_volume_distance_field.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_f_precomputed_volume_distance_field" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
     [ "UIndex", "_level_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ]
 ];

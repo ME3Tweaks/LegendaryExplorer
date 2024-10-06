@@ -1,7 +1,10 @@
 var struct_legendary_explorer_core_1_1_unreal_1_1_name_reference =
 [
     [ "NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a848f054c2692afcb92b20876466d9559", null ],
+    [ "GetInstancedLength", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a9eda8864abe372369e47ffa5986a7b07", null ],
+    [ "EqualsInstancedString", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a1402df757f26b45cfd0b7bbb1f630a62", null ],
     [ "AddToPath", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a999cb1fd271e1d78a0dbc8ddff756b08", null ],
+    [ "FormatInstanced", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a0bbdd6afc4238f19e40c313bfae460cf", null ],
     [ "operator NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a56e840b5f87321dcfafcdc9f3f4cba3a", null ],
     [ "operator string", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a52668d8e36c8a22059d207fbc4844c35", null ],
     [ "ToString", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a0234cc4465319e89b589f11170b52803", null ],

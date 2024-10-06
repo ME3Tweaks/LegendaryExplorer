@@ -193,9 +193,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a153bb9be40d4aefc6cf633f9ea2b8667"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a153bb9be40d4aefc6cf633f9ea2b8667">FindExport</a> (string instancedname, string className)</td></tr>
 <tr class="memdesc:a153bb9be40d4aefc6cf633f9ea2b8667"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an export with the same instanced name and classname   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a153bb9be40d4aefc6cf633f9ea2b8667">More...</a><br /></td></tr>
 <tr class="separator:a153bb9be40d4aefc6cf633f9ea2b8667"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6473b9c9d9b44320d3146f927487903e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a6473b9c9d9b44320d3146f927487903e">FindImport</a> (string instancedname)</td></tr>
-<tr class="memdesc:a6473b9c9d9b44320d3146f927487903e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an import with the same instanced name.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a6473b9c9d9b44320d3146f927487903e">More...</a><br /></td></tr>
-<tr class="separator:a6473b9c9d9b44320d3146f927487903e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dc12262ccf827f0dde91bbd084bf448"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a7dc12262ccf827f0dde91bbd084bf448">FindImport</a> (string instancedname, string className=null)</td></tr>
+<tr class="memdesc:a7dc12262ccf827f0dde91bbd084bf448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an import with the same instanced name.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a7dc12262ccf827f0dde91bbd084bf448">More...</a><br /></td></tr>
+<tr class="separator:a7dc12262ccf827f0dde91bbd084bf448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fc08d45e84c76fffc0287982237c772"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5fc08d45e84c76fffc0287982237c772">FindEntry</a> (string instancedPath)</td></tr>
 <tr class="memdesc:a5fc08d45e84c76fffc0287982237c772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an entry with the same instanced path.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5fc08d45e84c76fffc0287982237c772">More...</a><br /></td></tr>
 <tr class="separator:a5fc08d45e84c76fffc0287982237c772"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,8 +203,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae42e7fafd3ff3907ee4d8f51ee3e81cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for an entry with the same instanced path and class.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ae42e7fafd3ff3907ee4d8f51ee3e81cc">More...</a><br /></td></tr>
 <tr class="separator:ae42e7fafd3ff3907ee4d8f51ee3e81cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4be736ca9bbe81c69b9194f07001c91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad4be736ca9bbe81c69b9194f07001c91">InvalidateLookupTable</a> ()</td></tr>
-<tr class="memdesc:ad4be736ca9bbe81c69b9194f07001c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad4be736ca9bbe81c69b9194f07001c91">More...</a><br /></td></tr>
+<tr class="memdesc:ad4be736ca9bbe81c69b9194f07001c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called. When called often this has a very significant performance impact.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#ad4be736ca9bbe81c69b9194f07001c91">More...</a><br /></td></tr>
 <tr class="separator:ad4be736ca9bbe81c69b9194f07001c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2391c3a60f600b09cbde9890668ea50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af2391c3a60f600b09cbde9890668ea50">AllowLookupTableInvalidation</a> (bool allow)</td></tr>
+<tr class="separator:af2391c3a60f600b09cbde9890668ea50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b8962449faa8936b72c5fe220f84236"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5b8962449faa8936b72c5fe220f84236">SetInternalFilepath</a> (string filePath)</td></tr>
+<tr class="memdesc:a5b8962449faa8936b72c5fe220f84236"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to override the internal FilePath of the package. This can be used to override using imports for global files when porting out - be extremely careful doing this! You can easily break all sorts of things. You probably shouldn't save packages that you set this on when the value is different than the actual one on disk (if any).   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5b8962449faa8936b72c5fe220f84236">More...</a><br /></td></tr>
+<tr class="separator:a5b8962449faa8936b72c5fe220f84236"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47d611e43f88c51ccf9c74753ee20f6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a47d611e43f88c51ccf9c74753ee20f6f">setFlags</a> (EPackageFlags newFlags)</td></tr>
+<tr class="memdesc:a47d611e43f88c51ccf9c74753ee20f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the package summary flags for this package. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.   <a href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a47d611e43f88c51ccf9c74753ee20f6f">More...</a><br /></td></tr>
+<tr class="separator:a47d611e43f88c51ccf9c74753ee20f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -1039,6 +1047,7 @@ Events</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">instancedname</td><td></td></tr>
+    <tr><td class="paramname">className</td><td>Optional class name that has to match. If an object is found with a different class, it will return null instead.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1046,8 +1055,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="a6473b9c9d9b44320d3146f927487903e" name="a6473b9c9d9b44320d3146f927487903e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6473b9c9d9b44320d3146f927487903e">&#9670;&#160;</a></span>FindImport()</h2>
+<a id="a7dc12262ccf827f0dde91bbd084bf448" name="a7dc12262ccf827f0dde91bbd084bf448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dc12262ccf827f0dde91bbd084bf448">&#9670;&#160;</a></span>FindImport()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1056,8 +1065,18 @@ Events</h2></td></tr>
           <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_import_entry.html">ImportEntry</a> LegendaryExplorerCore.Packages.IMEPackage.FindImport </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>instancedname</em></td><td>)</td>
+          <td class="paramname"><em>instancedname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>className</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1066,6 +1085,7 @@ Events</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">instancedname</td><td></td></tr>
+    <tr><td class="paramname">className</td><td>Optional class name that has to match. If an object is found with a different class, it will return null instead.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1130,13 +1150,18 @@ Events</h2></td></tr>
 <p>Looks for an entry with the same instanced path and class.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instancedPath</td><td></td></tr>
-    <tr><td class="paramname">className</td><td></td></tr>
+    <tr><td class="paramname">instancedPath</td><td>&lt;The instanced full path to find/param&gt; <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">className</td><td>Optional class name that has to match. If an object is found with a different class, it will return null instead.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
-<p >Falls back to a linear search if it finds a match on path but not class</p>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Falls back to a linear search if it finds a match on path but not class</p>
 
 </div>
 </div>
@@ -1155,7 +1180,77 @@ Events</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called.  </p>
+<p>Invalidates the entry lookup table, causing it to be rebuilt next time FindEntry, FindExport, or FindImport is called. When called often this has a very significant performance impact.  </p>
+
+</div>
+</div>
+<a id="af2391c3a60f600b09cbde9890668ea50" name="af2391c3a60f600b09cbde9890668ea50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2391c3a60f600b09cbde9890668ea50">&#9670;&#160;</a></span>AllowLookupTableInvalidation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Packages.IMEPackage.AllowLookupTableInvalidation </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>allow</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5b8962449faa8936b72c5fe220f84236" name="a5b8962449faa8936b72c5fe220f84236"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b8962449faa8936b72c5fe220f84236">&#9670;&#160;</a></span>SetInternalFilepath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Packages.IMEPackage.SetInternalFilepath </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filePath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Used to override the internal FilePath of the package. This can be used to override using imports for global files when porting out - be extremely careful doing this! You can easily break all sorts of things. You probably shouldn't save packages that you set this on when the value is different than the actual one on disk (if any).  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td>New FilePath to set. FilePatNoExtension will be extracted from this and set accordingly.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a47d611e43f88c51ccf9c74753ee20f6f" name="a47d611e43f88c51ccf9c74753ee20f6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47d611e43f88c51ccf9c74753ee20f6f">&#9670;&#160;</a></span>setFlags()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LegendaryExplorerCore.Packages.IMEPackage.setFlags </td>
+          <td>(</td>
+          <td class="paramtype">EPackageFlags&#160;</td>
+          <td class="paramname"><em>newFlags</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the package summary flags for this package. DO NOT USE THIS UNLESS YOU ABSOLUTELY KNOW WHAT YOU ARE DOING.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newFlags</td><td>Flags to set</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

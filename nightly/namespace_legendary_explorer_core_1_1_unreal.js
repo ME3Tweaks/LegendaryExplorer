@@ -21,6 +21,8 @@ var namespace_legendary_explorer_core_1_1_unreal =
     [ "FloatProperty", "class_legendary_explorer_core_1_1_unreal_1_1_float_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_float_property" ],
     [ "ImmutableByteArrayProperty", "class_legendary_explorer_core_1_1_unreal_1_1_immutable_byte_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_immutable_byte_array_property" ],
     [ "IntProperty", "class_legendary_explorer_core_1_1_unreal_1_1_int_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_int_property" ],
+    [ "LEXJSONExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_l_e_x_j_s_o_n_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_l_e_x_j_s_o_n_extensions" ],
+    [ "LEXJSONState", "class_legendary_explorer_core_1_1_unreal_1_1_l_e_x_j_s_o_n_state.html", "class_legendary_explorer_core_1_1_unreal_1_1_l_e_x_j_s_o_n_state" ],
     [ "ME3ConditionalsCompiler", "class_legendary_explorer_core_1_1_unreal_1_1_m_e3_conditionals_compiler.html", "class_legendary_explorer_core_1_1_unreal_1_1_m_e3_conditionals_compiler" ],
     [ "NameProperty", "class_legendary_explorer_core_1_1_unreal_1_1_name_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_name_property" ],
     [ "NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference" ],

@@ -16,6 +16,7 @@ var dir_099f5db2eb2e797c115034d844f5b234 =
     [ "Misc", "dir_c603bb43c356135df7d76e972192bce2.html", "dir_c603bb43c356135df7d76e972192bce2" ],
     [ "obj", "dir_d6253b7bfeaab565cec7dd09435dd7f0.html", "dir_d6253b7bfeaab565cec7dd09435dd7f0" ],
     [ "Packages", "dir_82ab3c85838ac9ef77cc37e315a591fd.html", "dir_82ab3c85838ac9ef77cc37e315a591fd" ],
+    [ "Pathing", "dir_9f86ad9ca419a04eafae722f2ec1c1f7.html", "dir_9f86ad9ca419a04eafae722f2ec1c1f7" ],
     [ "PlotDatabase", "dir_f48af66ef1bef296acd33911ae513106.html", "dir_f48af66ef1bef296acd33911ae513106" ],
     [ "Save", "dir_98bf619af6835392524fc6506fdd72ad.html", "dir_98bf619af6835392524fc6506fdd72ad" ],
     [ "Shaders", "dir_7bfe9d5a638d2b2105ac7708553759fc.html", "dir_7bfe9d5a638d2b2105ac7708553759fc" ],

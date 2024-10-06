@@ -155,6 +155,29 @@ Properties</h2></td></tr>
 <tr class="memitem:a621b8217b47b772eec2cc7271ccd826c"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a621b8217b47b772eec2cc7271ccd826c">GamePathOverride</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a621b8217b47b772eec2cc7271ccd826c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The path to the root of the game for this relinker option - this is only used if you are overriding the default path of the game, so this is used mostly with ME3Tweaks Mod Manager   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a621b8217b47b772eec2cc7271ccd826c">More...</a><br /></td></tr>
 <tr class="separator:a621b8217b47b772eec2cc7271ccd826c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa956019cb52b2e3751d9e7e1ccf2e4a0"><td class="memItemLeft" align="right" valign="top">Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#aa956019cb52b2e3751d9e7e1ccf2e4a0">DestinationCustomImportFileResolver</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:aa956019cb52b2e3751d9e7e1ccf2e4a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Custom resolver that can be used to help find imports in the destination package   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#aa956019cb52b2e3751d9e7e1ccf2e4a0">More...</a><br /></td></tr>
+<tr class="separator:aa956019cb52b2e3751d9e7e1ccf2e4a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1693d096e60469faec1bcdf062b9b7b8"><td class="memItemLeft" align="right" valign="top">Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a1693d096e60469faec1bcdf062b9b7b8">SourceCustomImportFileResolver</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a1693d096e60469faec1bcdf062b9b7b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Custom resolver that can be used to help find imports in the source package   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a1693d096e60469faec1bcdf062b9b7b8">More...</a><br /></td></tr>
+<tr class="separator:a1693d096e60469faec1bcdf062b9b7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c6b8c8884a8e61e3e850558be44a086"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3c6b8c8884a8e61e3e850558be44a086">RelinkAllowDifferingClassesInRelink</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a3c6b8c8884a8e61e3e850558be44a086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows different classnames to exist when relinking and an object is looked up. <br  />
+ This can happen in vanilla bioware files (e.g. material and texture with same IFP). <br  />
+ Package resynthesis uses this so relink re-uses existing data Typically you want this to be false unless you know what you're doing.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3c6b8c8884a8e61e3e850558be44a086">More...</a><br /></td></tr>
+<tr class="separator:a3c6b8c8884a8e61e3e850558be44a086"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f8c3bd0d11b6b88747bf5fdfac780db"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3f8c3bd0d11b6b88747bf5fdfac780db">PortLocalizationImportsMemorySafe</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a3f8c3bd0d11b6b88747bf5fdfac780db"><td class="mdescLeft">&#160;</td><td class="mdescRight">If imports that resolve to be in localized files should be imported as exports when <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ab48095c65a1d92e0d4b77f6cc50cd599" title="When porting imports across files, resolve import in target first. If import fails to resolve,...">PortImportsMemorySafe</a> is set to true. This often is undesirable, bringing INT lines into non-localized files.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3f8c3bd0d11b6b88747bf5fdfac780db">More...</a><br /></td></tr>
+<tr class="separator:a3f8c3bd0d11b6b88747bf5fdfac780db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f47c5d66bb4b8f96b4326b5fc698a77"><td class="memItemLeft" align="right" valign="top">Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a2f47c5d66bb4b8f96b4326b5fc698a77">CustomDonorImporter</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a2f47c5d66bb4b8f96b4326b5fc698a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">When importing an export that is a donor, and the donor is found, this can be set to override how the donor export is processed into the destination package. Return the newly created export.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a2f47c5d66bb4b8f96b4326b5fc698a77">More...</a><br /></td></tr>
+<tr class="separator:a2f47c5d66bb4b8f96b4326b5fc698a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e77b33bc07d335d0d54c75c6c51d91a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8e77b33bc07d335d0d54c75c6c51d91a">CheckImportsWhenExportingToPackage</a> = true<code> [get, set]</code></td></tr>
+<tr class="memdesc:a8e77b33bc07d335d0d54c75c6c51d91a"><td class="mdescLeft">&#160;</td><td class="mdescRight">USED BY ENTRYEXPORTER - Set to false to disable the import to export resolution. Use if you know you need imports and not exports.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8e77b33bc07d335d0d54c75c6c51d91a">More...</a><br /></td></tr>
+<tr class="separator:a8e77b33bc07d335d0d54c75c6c51d91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac70d15e39a474e67cd935dbb3ecabdf1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1">ForceSamePackageImportRelink</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ac70d15e39a474e67cd935dbb3ecabdf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1">More...</a><br /></td></tr>
+<tr class="separator:ac70d15e39a474e67cd935dbb3ecabdf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures.  </p>
@@ -485,6 +508,176 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The path to the root of the game for this relinker option - this is only used if you are overriding the default path of the game, so this is used mostly with ME3Tweaks Mod Manager  </p>
+
+</div>
+</div>
+<a id="aa956019cb52b2e3751d9e7e1ccf2e4a0" name="aa956019cb52b2e3751d9e7e1ccf2e4a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa956019cb52b2e3751d9e7e1ccf2e4a0">&#9670;&#160;</a></span>DestinationCustomImportFileResolver</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Func&lt;string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.DestinationCustomImportFileResolver</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Custom resolver that can be used to help find imports in the destination package  </p>
+
+</div>
+</div>
+<a id="a1693d096e60469faec1bcdf062b9b7b8" name="a1693d096e60469faec1bcdf062b9b7b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1693d096e60469faec1bcdf062b9b7b8">&#9670;&#160;</a></span>SourceCustomImportFileResolver</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Func&lt;string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.SourceCustomImportFileResolver</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Custom resolver that can be used to help find imports in the source package  </p>
+
+</div>
+</div>
+<a id="a3c6b8c8884a8e61e3e850558be44a086" name="a3c6b8c8884a8e61e3e850558be44a086"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c6b8c8884a8e61e3e850558be44a086">&#9670;&#160;</a></span>RelinkAllowDifferingClassesInRelink</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.RelinkAllowDifferingClassesInRelink</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Allows different classnames to exist when relinking and an object is looked up. <br  />
+ This can happen in vanilla bioware files (e.g. material and texture with same IFP). <br  />
+ Package resynthesis uses this so relink re-uses existing data Typically you want this to be false unless you know what you're doing.  </p>
+
+</div>
+</div>
+<a id="a3f8c3bd0d11b6b88747bf5fdfac780db" name="a3f8c3bd0d11b6b88747bf5fdfac780db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f8c3bd0d11b6b88747bf5fdfac780db">&#9670;&#160;</a></span>PortLocalizationImportsMemorySafe</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.PortLocalizationImportsMemorySafe</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If imports that resolve to be in localized files should be imported as exports when <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ab48095c65a1d92e0d4b77f6cc50cd599" title="When porting imports across files, resolve import in target first. If import fails to resolve,...">PortImportsMemorySafe</a> is set to true. This often is undesirable, bringing INT lines into non-localized files.  </p>
+
+</div>
+</div>
+<a id="a2f47c5d66bb4b8f96b4326b5fc698a77" name="a2f47c5d66bb4b8f96b4326b5fc698a77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f47c5d66bb4b8f96b4326b5fc698a77">&#9670;&#160;</a></span>CustomDonorImporter</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Func&lt;<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&gt; LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.CustomDonorImporter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When importing an export that is a donor, and the donor is found, this can be set to override how the donor export is processed into the destination package. Return the newly created export.  </p>
+
+</div>
+</div>
+<a id="a8e77b33bc07d335d0d54c75c6c51d91a" name="a8e77b33bc07d335d0d54c75c6c51d91a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e77b33bc07d335d0d54c75c6c51d91a">&#9670;&#160;</a></span>CheckImportsWhenExportingToPackage</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.CheckImportsWhenExportingToPackage = true</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>USED BY ENTRYEXPORTER - Set to false to disable the import to export resolution. Use if you know you need imports and not exports.  </p>
+
+</div>
+</div>
+<a id="ac70d15e39a474e67cd935dbb3ecabdf1" name="ac70d15e39a474e67cd935dbb3ecabdf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac70d15e39a474e67cd935dbb3ecabdf1">&#9670;&#160;</a></span>ForceSamePackageImportRelink</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.ForceSamePackageImportRelink</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.  </p>
 
 </div>
 </div>

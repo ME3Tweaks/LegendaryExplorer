@@ -18,7 +18,7 @@ var _static_mesh_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ColorVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_color_vertex_buffer.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_color_vertex_buffer" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ExtrusionVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_extrusion_vertex_buffer.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_extrusion_vertex_buffer" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MeshEdge", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_edge.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_edge" ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
     [ "Vector2", "_static_mesh_8cs.html#a321920980945bba9f0a4760f3cccba57", null ],
     [ "Vector3", "_static_mesh_8cs.html#a922227c9abfa5db280320c37d74a647d", null ],
     [ "UIndex", "_static_mesh_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ]

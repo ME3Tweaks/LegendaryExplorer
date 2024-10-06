@@ -106,9 +106,9 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a28a321bbb40716f6c57db9e363f1b6bd"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a28a321bbb40716f6c57db9e363f1b6bd">GetTocableFiles</a> (string path)</td></tr>
-<tr class="memdesc:a28a321bbb40716f6c57db9e363f1b6bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the files in a given directory that match the pattern of a TOCable file   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a28a321bbb40716f6c57db9e363f1b6bd">More...</a><br /></td></tr>
-<tr class="separator:a28a321bbb40716f6c57db9e363f1b6bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afed48390b87cef93169db7b1f743f041"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt; FileInfo &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#afed48390b87cef93169db7b1f743f041">GetTocableFiles</a> (string path)</td></tr>
+<tr class="memdesc:afed48390b87cef93169db7b1f743f041"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the files in a given directory that match the pattern of a TOCable file   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#afed48390b87cef93169db7b1f743f041">More...</a><br /></td></tr>
+<tr class="separator:afed48390b87cef93169db7b1f743f041"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44bf5b0e67c82ddadbdd5e528073809d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a44bf5b0e67c82ddadbdd5e528073809d">IsTOCableFolder</a> (string directory, bool isLE2LE3)</td></tr>
 <tr class="memdesc:a44bf5b0e67c82ddadbdd5e528073809d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether or not a folder should be TOCable   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a44bf5b0e67c82ddadbdd5e528073809d">More...</a><br /></td></tr>
 <tr class="separator:a44bf5b0e67c82ddadbdd5e528073809d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,24 +121,24 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a66228c9092a85b616fefd3583fa3a2aa"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a66228c9092a85b616fefd3583fa3a2aa">CreateDLCTOCForDirectory</a> (string directory, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a66228c9092a85b616fefd3583fa3a2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the binary for a TOC file for a specified DLC directory root   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a66228c9092a85b616fefd3583fa3a2aa">More...</a><br /></td></tr>
 <tr class="separator:a66228c9092a85b616fefd3583fa3a2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6468525481d004e0156bc7e88849c4f0"><td class="memItemLeft" align="right" valign="top">static List&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a6468525481d004e0156bc7e88849c4f0">GetLE1Files</a> (List&lt; string &gt; basegameFiles, string biogameDirectory)</td></tr>
-<tr class="memdesc:a6468525481d004e0156bc7e88849c4f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses LE1 DLC Autoload files and creates a list of files with correct DLC overrides. Only one instance of a specific filename will be output by this method   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a6468525481d004e0156bc7e88849c4f0">More...</a><br /></td></tr>
-<tr class="separator:a6468525481d004e0156bc7e88849c4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37837dbd87c25ad59ff30e1cbffd6eaa"><td class="memItemLeft" align="right" valign="top">static List&lt; FileInfo &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a37837dbd87c25ad59ff30e1cbffd6eaa">GetLE1Files</a> (List&lt; FileInfo &gt; basegameFiles, string biogameDirectory)</td></tr>
+<tr class="memdesc:a37837dbd87c25ad59ff30e1cbffd6eaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses LE1 DLC Autoload files and creates a list of files with correct DLC overrides. Only one instance of a specific filename will be output by this method   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a37837dbd87c25ad59ff30e1cbffd6eaa">More...</a><br /></td></tr>
+<tr class="separator:a37837dbd87c25ad59ff30e1cbffd6eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6802b5ba93c5d077cba4f18be8204c0c"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a6802b5ba93c5d077cba4f18be8204c0c">CreateTOCForEntries</a> (List&lt;(string relativeFilename, int size)&gt; filesystemInfo)</td></tr>
 <tr class="memdesc:a6802b5ba93c5d077cba4f18be8204c0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the binary for a TOC file for a specified list of filenames and sizes. The filenames should already be in the format that will be used in the TOC itself.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a6802b5ba93c5d077cba4f18be8204c0c">More...</a><br /></td></tr>
 <tr class="separator:a6802b5ba93c5d077cba4f18be8204c0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a2fc02b82e169a3daa8896987a8ca96f5"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a2fc02b82e169a3daa8896987a8ca96f5">TOCableFilePatterns</a> = { &quot;*.pcc&quot;, &quot;*.afc&quot;, &quot;*.bik&quot;, &quot;*.bin&quot;, &quot;*.tlk&quot;, &quot;*.cnd&quot;, &quot;*.upk&quot;, &quot;*.tfc&quot;, &quot;*.isb&quot;, &quot;*.usf&quot;, &quot;*.ini&quot;, &quot;*.txt&quot;, &quot;*.dlc&quot; }</td></tr>
-<tr class="memdesc:a2fc02b82e169a3daa8896987a8ca96f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">File extensions that are supported by the game in TOC files   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a2fc02b82e169a3daa8896987a8ca96f5">More...</a><br /></td></tr>
-<tr class="separator:a2fc02b82e169a3daa8896987a8ca96f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31c3a39f3a50dddc6cc1173d3858cb5b"><td class="memItemLeft" align="right" valign="top">static readonly string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a31c3a39f3a50dddc6cc1173d3858cb5b">TOCableExtensions</a></td></tr>
+<tr class="memdesc:a31c3a39f3a50dddc6cc1173d3858cb5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">File extensions that are supported by this TOC implementation   <a href="class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html#a31c3a39f3a50dddc6cc1173d3858cb5b">More...</a><br /></td></tr>
+<tr class="separator:a31c3a39f3a50dddc6cc1173d3858cb5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Class for generating TOC files  </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a28a321bbb40716f6c57db9e363f1b6bd" name="a28a321bbb40716f6c57db9e363f1b6bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28a321bbb40716f6c57db9e363f1b6bd">&#9670;&#160;</a></span>GetTocableFiles()</h2>
+<a id="afed48390b87cef93169db7b1f743f041" name="afed48390b87cef93169db7b1f743f041"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afed48390b87cef93169db7b1f743f041">&#9670;&#160;</a></span>GetTocableFiles()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,7 +147,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static IEnumerable&lt; string &gt; LegendaryExplorerCore.Unreal.TOCCreator.GetTocableFiles </td>
+          <td class="memname">static IEnumerable&lt; FileInfo &gt; LegendaryExplorerCore.Unreal.TOCCreator.GetTocableFiles </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
@@ -363,8 +363,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6468525481d004e0156bc7e88849c4f0" name="a6468525481d004e0156bc7e88849c4f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6468525481d004e0156bc7e88849c4f0">&#9670;&#160;</a></span>GetLE1Files()</h2>
+<a id="a37837dbd87c25ad59ff30e1cbffd6eaa" name="a37837dbd87c25ad59ff30e1cbffd6eaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37837dbd87c25ad59ff30e1cbffd6eaa">&#9670;&#160;</a></span>GetLE1Files()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -373,9 +373,9 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static List&lt; string &gt; LegendaryExplorerCore.Unreal.TOCCreator.GetLE1Files </td>
+          <td class="memname">static List&lt; FileInfo &gt; LegendaryExplorerCore.Unreal.TOCCreator.GetLE1Files </td>
           <td>(</td>
-          <td class="paramtype">List&lt; string &gt;&#160;</td>
+          <td class="paramtype">List&lt; FileInfo &gt;&#160;</td>
           <td class="paramname"><em>basegameFiles</em>, </td>
         </tr>
         <tr>
@@ -445,8 +445,8 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a2fc02b82e169a3daa8896987a8ca96f5" name="a2fc02b82e169a3daa8896987a8ca96f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2fc02b82e169a3daa8896987a8ca96f5">&#9670;&#160;</a></span>TOCableFilePatterns</h2>
+<a id="a31c3a39f3a50dddc6cc1173d3858cb5b" name="a31c3a39f3a50dddc6cc1173d3858cb5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31c3a39f3a50dddc6cc1173d3858cb5b">&#9670;&#160;</a></span>TOCableExtensions</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -455,7 +455,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">readonly string [] LegendaryExplorerCore.Unreal.TOCCreator.TOCableFilePatterns = { &quot;*.pcc&quot;, &quot;*.afc&quot;, &quot;*.bik&quot;, &quot;*.bin&quot;, &quot;*.tlk&quot;, &quot;*.cnd&quot;, &quot;*.upk&quot;, &quot;*.tfc&quot;, &quot;*.isb&quot;, &quot;*.usf&quot;, &quot;*.ini&quot;, &quot;*.txt&quot;, &quot;*.dlc&quot; }</td>
+          <td class="memname">readonly string [] LegendaryExplorerCore.Unreal.TOCCreator.TOCableExtensions</td>
         </tr>
       </table>
   </td>
@@ -464,8 +464,10 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>File extensions that are supported by the game in TOC files  </p>
+<b>Initial value:</b><div class="fragment"><div class="line">= [<span class="stringliteral">&quot;.pcc&quot;</span>, <span class="stringliteral">&quot;.afc&quot;</span>, <span class="stringliteral">&quot;.bik&quot;</span>, <span class="stringliteral">&quot;.bin&quot;</span>, <span class="stringliteral">&quot;.tlk&quot;</span>, <span class="stringliteral">&quot;.cnd&quot;</span>, <span class="stringliteral">&quot;.upk&quot;</span>, <span class="stringliteral">&quot;.tfc&quot;</span>, <span class="stringliteral">&quot;.isb&quot;</span>, <span class="stringliteral">&quot;.usf&quot;</span>, <span class="stringliteral">&quot;.ini&quot;</span>, <span class="stringliteral">&quot;.txt&quot;</span>, <span class="stringliteral">&quot;.dlc&quot;</span></div>
+<div class="line">        ]</div>
+</div><!-- fragment -->
+<p>File extensions that are supported by this TOC implementation  </p>
 
 </div>
 </div>

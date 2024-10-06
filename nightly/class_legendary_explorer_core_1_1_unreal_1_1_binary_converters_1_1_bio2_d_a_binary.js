@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio2_d_a_binary =
 [
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio2_d_a_binary.html#a4d66b3b8217537a7bb15195da598fe24", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio2_d_a_binary.html#a24c39b6fa680d46aba4f25c5efa4a697", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio2_d_a_binary.html#a6725b65ff8cecc88188de26f8647cb4e", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio2_d_a_binary.html#a2aa5ee4f26ad109c4dd3c5a6f7cffe1a", null ],
     [ "IsIndexed", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio2_d_a_binary.html#a56231d78886d2b5d71c37bdce8982e73", null ],

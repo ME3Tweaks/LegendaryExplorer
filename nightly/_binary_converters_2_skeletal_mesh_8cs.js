@@ -10,6 +10,6 @@ var _binary_converters_2_skeletal_mesh_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMeshVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh_vertex_buffer.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh_vertex_buffer" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.PerPolyBoneCollisionData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_per_poly_bone_collision_data.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_per_poly_bone_collision_data" ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SCExt", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_c_ext" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
     [ "UIndex", "_binary_converters_2_skeletal_mesh_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ]
 ];

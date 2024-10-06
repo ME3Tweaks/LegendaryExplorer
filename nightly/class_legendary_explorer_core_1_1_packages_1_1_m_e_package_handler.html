@@ -143,9 +143,15 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a70980eb595e1524364210a29a35159a1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1">CreateAndOpenPackage</a> (string packagePath, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool forceLoadFromDisk=false)</td></tr>
 <tr class="memdesc:a70980eb595e1524364210a29a35159a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new package on disk, and then opens and returns it.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a70980eb595e1524364210a29a35159a1">More...</a><br /></td></tr>
 <tr class="separator:a70980eb595e1524364210a29a35159a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8a07b2fbab54ca4a5305201cd735b47"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ad8a07b2fbab54ca4a5305201cd735b47">CreateMemoryEmptyPackage</a> (string path, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:ad8a07b2fbab54ca4a5305201cd735b47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an empty package file object, not saving it to disk.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#ad8a07b2fbab54ca4a5305201cd735b47">More...</a><br /></td></tr>
+<tr class="separator:ad8a07b2fbab54ca4a5305201cd735b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2631b772bd54bd50bd7293e3e01bc5e1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2631b772bd54bd50bd7293e3e01bc5e1">CreateEmptyLevel</a> (string outpath, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a2631b772bd54bd50bd7293e3e01bc5e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new empty level package file.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a2631b772bd54bd50bd7293e3e01bc5e1">More...</a><br /></td></tr>
 <tr class="separator:a2631b772bd54bd50bd7293e3e01bc5e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37afdfd05e67174cafe823151745ba7d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a37afdfd05e67174cafe823151745ba7d">CreateMemoryEmptyLevel</a> (string fileName, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
+<tr class="memdesc:a37afdfd05e67174cafe823151745ba7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new empty level package file, not saving it to disk.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a37afdfd05e67174cafe823151745ba7d">More...</a><br /></td></tr>
+<tr class="separator:a37afdfd05e67174cafe823151745ba7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80dd00b7bc5e18307072aaf8fabe2b64"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a80dd00b7bc5e18307072aaf8fabe2b64">CreateEmptyLevelStream</a> (string levelPackageName, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="memdesc:a80dd00b7bc5e18307072aaf8fabe2b64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an empty level package and serializes it to a stream, ready for writing to disk or loading as a package.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a80dd00b7bc5e18307072aaf8fabe2b64">More...</a><br /></td></tr>
 <tr class="separator:a80dd00b7bc5e18307072aaf8fabe2b64"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -786,6 +792,58 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ad8a07b2fbab54ca4a5305201cd735b47" name="ad8a07b2fbab54ca4a5305201cd735b47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8a07b2fbab54ca4a5305201cd735b47">&#9670;&#160;</a></span>CreateMemoryEmptyPackage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> LegendaryExplorerCore.Packages.MEPackageHandler.CreateMemoryEmptyPackage </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initializes an empty package file object, not saving it to disk.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The associated filepath - internal methods use this to do things such as import lookups.</td></tr>
+    <tr><td class="paramname">game</td><td>The game the package is for</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Blank <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> object</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">ArgumentException</td><td>Invalid game package</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a2631b772bd54bd50bd7293e3e01bc5e1" name="a2631b772bd54bd50bd7293e3e01bc5e1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2631b772bd54bd50bd7293e3e01bc5e1">&#9670;&#160;</a></span>CreateEmptyLevel()</h2>
 
@@ -824,6 +882,51 @@ Static Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">outpath</td><td>Where to save the package</td></tr>
+    <tr><td class="paramname">game</td><td>What game the package is for</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a37afdfd05e67174cafe823151745ba7d" name="a37afdfd05e67174cafe823151745ba7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37afdfd05e67174cafe823151745ba7d">&#9670;&#160;</a></span>CreateMemoryEmptyLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> LegendaryExplorerCore.Packages.MEPackageHandler.CreateMemoryEmptyLevel </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>fileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a new empty level package file, not saving it to disk.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fileName</td><td>Associated filepath for the package, but not where it saves</td></tr>
     <tr><td class="paramname">game</td><td>What game the package is for</td></tr>
   </table>
   </dd>

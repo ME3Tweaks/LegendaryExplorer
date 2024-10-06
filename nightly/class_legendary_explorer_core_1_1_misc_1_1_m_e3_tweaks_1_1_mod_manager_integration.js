@@ -4,5 +4,6 @@ var class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integ
     [ "GetModManagerExecutableLocation", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#ae7216fd1f800e5bab50dd81ccee54b39", null ],
     [ "GetDonorOutputPath", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#aaa2072a0accf8fffb16b703b360fd721", null ],
     [ "RequestBinkInstallation", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#aa54551a69eb2dc94bbc3a148f5785b9a", null ],
-    [ "RequestASIInstallation", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#ab518571d8109bafa48e018046a532882", null ]
+    [ "RequestASIInstallation", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#ab518571d8109bafa48e018046a532882", null ],
+    [ "RequestModInstallation", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_mod_manager_integration.html#a17dbc5b506a46a2283537f78166a463c", null ]
 ];

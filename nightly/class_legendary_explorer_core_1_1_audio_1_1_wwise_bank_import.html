@@ -105,15 +105,18 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_audi
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3839c14ec80a1a1aeea128451fd94055"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a3839c14ec80a1a1aeea128451fd94055">ImportBank</a> (string bankPath, bool useWwiseObjectNames, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string wwiseLanguage=null)</td></tr>
-<tr class="memdesc:a3839c14ec80a1a1aeea128451fd94055"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a3839c14ec80a1a1aeea128451fd94055">More...</a><br /></td></tr>
-<tr class="separator:a3839c14ec80a1a1aeea128451fd94055"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d4b8b48bb246ac3a9ecd408b2d7f5cf"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a2d4b8b48bb246ac3a9ecd408b2d7f5cf">ImportBank</a> (string bankPath, bool useWwiseObjectNames, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string wwiseLanguage=null, XDocument preloadedInfoDoc=null, string bankPackageName=null, string bankStreamingAudioPackageName=null)</td></tr>
+<tr class="memdesc:a2d4b8b48bb246ac3a9ecd408b2d7f5cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a2d4b8b48bb246ac3a9ecd408b2d7f5cf">More...</a><br /></td></tr>
+<tr class="separator:a2d4b8b48bb246ac3a9ecd408b2d7f5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe97f340e72a6322a5f900b72f1c5af3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#afe97f340e72a6322a5f900b72f1c5af3">GetMELocalizationFromWwiseLocalization</a> (string value)</td></tr>
+<tr class="memdesc:afe97f340e72a6322a5f900b72f1c5af3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the MELocalization from the Wwise <a class="el" href="namespace_legendary_explorer_core_1_1_localization.html">Localization</a> used by standard templates. If you don't use a standard template, oh well!   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#afe97f340e72a6322a5f900b72f1c5af3">More...</a><br /></td></tr>
+<tr class="separator:afe97f340e72a6322a5f900b72f1c5af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Handles importing a .bnk file into a package file and setting up relevant data  </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3839c14ec80a1a1aeea128451fd94055" name="a3839c14ec80a1a1aeea128451fd94055"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3839c14ec80a1a1aeea128451fd94055">&#9670;&#160;</a></span>ImportBank()</h2>
+<a id="a2d4b8b48bb246ac3a9ecd408b2d7f5cf" name="a2d4b8b48bb246ac3a9ecd408b2d7f5cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d4b8b48bb246ac3a9ecd408b2d7f5cf">&#9670;&#160;</a></span>ImportBank()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -143,7 +146,25 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>wwiseLanguage</em> = <code>null</code>&#160;</td>
+          <td class="paramname"><em>wwiseLanguage</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">XDocument&#160;</td>
+          <td class="paramname"><em>preloadedInfoDoc</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>bankPackageName</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>bankStreamingAudioPackageName</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -168,6 +189,41 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String error message, or null if successful.</dd></dl>
+
+</div>
+</div>
+<a id="afe97f340e72a6322a5f900b72f1c5af3" name="afe97f340e72a6322a5f900b72f1c5af3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe97f340e72a6322a5f900b72f1c5af3">&#9670;&#160;</a></span>GetMELocalizationFromWwiseLocalization()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a> LegendaryExplorerCore.Audio.WwiseBankImport.GetMELocalizationFromWwiseLocalization </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the MELocalization from the Wwise <a class="el" href="namespace_legendary_explorer_core_1_1_localization.html">Localization</a> used by standard templates. If you don't use a standard template, oh well!  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

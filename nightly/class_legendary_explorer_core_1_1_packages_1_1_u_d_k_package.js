@@ -2,6 +2,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package =
 [
     [ "getHeader", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#aab9d0f2c6c56cf9a72493cd1681136cc", null ],
     [ "RegisterSaver", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a36a47b48013227dc7fb8375f217ec3c9", null ],
+    [ "FixupTrash", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a07f02ddf22fe1ffddb08c7be1878bf99", null ],
     [ "SaveToStream", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#a7e0bb79cb47650bdd6eac56b7aadd903", null ],
     [ "UDKUnrealVersion2015", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#acad9f7b771538b0239a2a28f42ec1915", null ],
     [ "UDKUnrealVersion2014", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html#accfe758e292f644fb4b9415b56076b5e", null ],

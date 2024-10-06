@@ -102,12 +102,17 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_u_d_
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a86ef3ca57eed5c925675d5e916a3ad9b"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html#a86ef3ca57eed5c925675d5e916a3ad9b">GenerateUDKFileForLevel</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc)</td></tr>
-<tr class="separator:a86ef3ca57eed5c925675d5e916a3ad9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6c2c45703778540a5427c264b81c9c5"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html#ab6c2c45703778540a5427c264b81c9c5">GenerateUDKFileForLevel</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string mapOutputPath=null, string assetsOutputPath=null, string decookedMaterialsFolder=null)</td></tr>
+<tr class="separator:ab6c2c45703778540a5427c264b81c9c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6786d21e48de7f2c96aadda401da5ae6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html#a6786d21e48de7f2c96aadda401da5ae6">PortNonLinkerReferencesAsImports</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> exp)</td></tr>
+<tr class="separator:a6786d21e48de7f2c96aadda401da5ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6215733d2c2c30c2e339de2340cad64"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html#af6215733d2c2c30c2e339de2340cad64">ConvertImportsToExportsUnderLinker</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> localCache)</td></tr>
+<tr class="memdesc:af6215733d2c2c30c2e339de2340cad64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts imports under the linker to exports; these will be imports nested under packages that are not ForcedExport (as <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> doesn't support this)   <a href="class_legendary_explorer_core_1_1_u_d_k_1_1_convert_to_u_d_k.html#af6215733d2c2c30c2e339de2340cad64">More...</a><br /></td></tr>
+<tr class="separator:af6215733d2c2c30c2e339de2340cad64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a86ef3ca57eed5c925675d5e916a3ad9b" name="a86ef3ca57eed5c925675d5e916a3ad9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86ef3ca57eed5c925675d5e916a3ad9b">&#9670;&#160;</a></span>GenerateUDKFileForLevel()</h2>
+<a id="ab6c2c45703778540a5427c264b81c9c5" name="ab6c2c45703778540a5427c264b81c9c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6c2c45703778540a5427c264b81c9c5">&#9670;&#160;</a></span>GenerateUDKFileForLevel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -119,8 +124,30 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">static string LegendaryExplorerCore.UDK.ConvertToUDK.GenerateUDKFileForLevel </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
-          <td class="paramname"><em>pcc</em></td><td>)</td>
+          <td class="paramname"><em>pcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>mapOutputPath</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>assetsOutputPath</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>decookedMaterialsFolder</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -129,6 +156,87 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6786d21e48de7f2c96aadda401da5ae6" name="a6786d21e48de7f2c96aadda401da5ae6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6786d21e48de7f2c96aadda401da5ae6">&#9670;&#160;</a></span>PortNonLinkerReferencesAsImports()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.UDK.ConvertToUDK.PortNonLinkerReferencesAsImports </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>exp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af6215733d2c2c30c2e339de2340cad64" name="af6215733d2c2c30c2e339de2340cad64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6215733d2c2c30c2e339de2340cad64">&#9670;&#160;</a></span>ConvertImportsToExportsUnderLinker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.UDK.ConvertToUDK.ConvertImportsToExportsUnderLinker </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>localCache</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Converts imports under the linker to exports; these will be imports nested under packages that are not ForcedExport (as <a class="el" href="namespace_legendary_explorer_core_1_1_u_d_k.html">UDK</a> doesn't support this)  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td></td></tr>
+    <tr><td class="paramname">localCache</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

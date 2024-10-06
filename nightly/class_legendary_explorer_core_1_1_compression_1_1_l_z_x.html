@@ -102,13 +102,16 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_comp
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ad53a196c65869dc2b8e6bbede7b7131e"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html#ad53a196c65869dc2b8e6bbede7b7131e">Decompress</a> (ReadOnlySpan&lt; byte &gt; src, uint srcLen, byte[] dst, uint dstLen=0)</td></tr>
-<tr class="memdesc:ad53a196c65869dc2b8e6bbede7b7131e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompresses <a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html">LZX</a> data. The return value will be 0 if the data decompressed OK   <a href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html#ad53a196c65869dc2b8e6bbede7b7131e">More...</a><br /></td></tr>
-<tr class="separator:ad53a196c65869dc2b8e6bbede7b7131e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a951ddea73def056446ac3c7c52ec1ab5"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html#a951ddea73def056446ac3c7c52ec1ab5">Decompress</a> (ReadOnlySpan&lt; byte &gt; src, uint srcLen, Span&lt; byte &gt; dest, uint dstLen=0)</td></tr>
+<tr class="memdesc:a951ddea73def056446ac3c7c52ec1ab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompresses <a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html">LZX</a> data. The return value will be 0 if the data decompressed OK   <a href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html#a951ddea73def056446ac3c7c52ec1ab5">More...</a><br /></td></tr>
+<tr class="separator:a951ddea73def056446ac3c7c52ec1ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a278cd17dc190461e21f08dee955e8eec"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html#a278cd17dc190461e21f08dee955e8eec">Decompress</a> (ReadOnlySpan&lt; byte &gt; src, Span&lt; byte &gt; dest)</td></tr>
+<tr class="memdesc:a278cd17dc190461e21f08dee955e8eec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompresses <a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html">LZX</a> data. The return value will be 0 if the data decompressed OK   <a href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html#a278cd17dc190461e21f08dee955e8eec">More...</a><br /></td></tr>
+<tr class="separator:a278cd17dc190461e21f08dee955e8eec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad53a196c65869dc2b8e6bbede7b7131e" name="ad53a196c65869dc2b8e6bbede7b7131e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad53a196c65869dc2b8e6bbede7b7131e">&#9670;&#160;</a></span>Decompress()</h2>
+<a id="a951ddea73def056446ac3c7c52ec1ab5" name="a951ddea73def056446ac3c7c52ec1ab5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a951ddea73def056446ac3c7c52ec1ab5">&#9670;&#160;</a></span>Decompress() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -131,8 +134,8 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">byte[]&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
+          <td class="paramtype">Span&lt; byte &gt;&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -158,8 +161,54 @@ Static Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">src</td><td></td></tr>
     <tr><td class="paramname">srcLen</td><td></td></tr>
-    <tr><td class="paramname">dst</td><td></td></tr>
+    <tr><td class="paramname">dest</td><td></td></tr>
     <tr><td class="paramname">dstLen</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a278cd17dc190461e21f08dee955e8eec" name="a278cd17dc190461e21f08dee955e8eec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a278cd17dc190461e21f08dee955e8eec">&#9670;&#160;</a></span>Decompress() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int LegendaryExplorerCore.Compression.LZX.Decompress </td>
+          <td>(</td>
+          <td class="paramtype">ReadOnlySpan&lt; byte &gt;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Span&lt; byte &gt;&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Decompresses <a class="el" href="class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html">LZX</a> data. The return value will be 0 if the data decompressed OK  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">src</td><td></td></tr>
+    <tr><td class="paramname">dest</td><td></td></tr>
   </table>
   </dd>
 </dl>

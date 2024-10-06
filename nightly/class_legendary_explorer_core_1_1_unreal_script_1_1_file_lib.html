@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 </div><!--header-->
 <div class="contents">
 
-<p>Contains a symbol table for an IMEPackage that is used for compilation and decompilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a>. Must be initialized before use (with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6" title="Initializes the FileLib. This can potentially take a few seconds.">Initialize</a> or <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d" title="Initializes the FileLib asynchronously.">InitializeAsync</a>). Once initialized, use <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aec4b0747b3423f9ca6d83e0bc136f5b7" title="Re-Initializes the FileLib to reflect changes made to the IMEPackage since Initialization....">ReInitializeFile</a> to update the symbol table to reflect changes made to the IMEPackage. A <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.   
+<p>Contains a symbol table for an IMEPackage that is used for compilation and decompilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a>. Must be initialized before use (with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab8fdf17aa4716fa9c7793a834319a7f7" title="Initializes the FileLib. This can potentially take a few seconds.">Initialize</a> or <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a291789006b48cd70441b1122a3f289dd" title="Initializes the FileLib asynchronously.">InitializeAsync</a>). Once initialized, use <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a3326352e3ac92e941c7695a5f793cc40" title="Re-Initializes the FileLib to reflect changes made to the IMEPackage since Initialization....">ReInitializeFile</a> to update the symbol table to reflect changes made to the IMEPackage. A <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.   
  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for LegendaryExplorerCore.UnrealScript.FileLib:</div>
@@ -121,18 +121,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa1e822370590329c89a344d389eb66a5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aa1e822370590329c89a344d389eb66a5">FileLib</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, bool useAutoReinitialization=false)</td></tr>
 <tr class="memdesc:aa1e822370590329c89a344d389eb66a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> for an IMEPackage.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aa1e822370590329c89a344d389eb66a5">More...</a><br /></td></tr>
 <tr class="separator:aa1e822370590329c89a344d389eb66a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03d07f7318fe0c70f69e2ac5a9a0913d"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d">InitializeAsync</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null, bool canUseBinaryCache=true)</td></tr>
-<tr class="memdesc:a03d07f7318fe0c70f69e2ac5a9a0913d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> asynchronously.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d">More...</a><br /></td></tr>
-<tr class="separator:a03d07f7318fe0c70f69e2ac5a9a0913d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7fef497ffdd9579cdb14773740811d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">Initialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string gameRootPath=null, bool canUseBinaryCache=true)</td></tr>
-<tr class="memdesc:ab7fef497ffdd9579cdb14773740811d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. This can potentially take a few seconds.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6">More...</a><br /></td></tr>
-<tr class="separator:ab7fef497ffdd9579cdb14773740811d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a291789006b48cd70441b1122a3f289dd"><td class="memItemLeft" align="right" valign="top">async Task&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a291789006b48cd70441b1122a3f289dd">InitializeAsync</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop, bool canUseBinaryCache=true)</td></tr>
+<tr class="memdesc:a291789006b48cd70441b1122a3f289dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> asynchronously.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a291789006b48cd70441b1122a3f289dd">More...</a><br /></td></tr>
+<tr class="separator:a291789006b48cd70441b1122a3f289dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8fdf17aa4716fa9c7793a834319a7f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab8fdf17aa4716fa9c7793a834319a7f7">Initialize</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop, bool canUseBinaryCache=true)</td></tr>
+<tr class="memdesc:ab8fdf17aa4716fa9c7793a834319a7f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. This can potentially take a few seconds.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab8fdf17aa4716fa9c7793a834319a7f7">More...</a><br /></td></tr>
+<tr class="separator:ab8fdf17aa4716fa9c7793a834319a7f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91eeb7aa39b24ec19703c70db39bf5ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a91eeb7aa39b24ec19703c70db39bf5ba">Dispose</a> ()</td></tr>
 <tr class="memdesc:a91eeb7aa39b24ec19703c70db39bf5ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disposes this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. Non-critical, nothing will leak if this isn't disposed.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a91eeb7aa39b24ec19703c70db39bf5ba">More...</a><br /></td></tr>
 <tr class="separator:a91eeb7aa39b24ec19703c70db39bf5ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec4b0747b3423f9ca6d83e0bc136f5b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aec4b0747b3423f9ca6d83e0bc136f5b7">ReInitializeFile</a> ()</td></tr>
-<tr class="memdesc:aec4b0747b3423f9ca6d83e0bc136f5b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> to reflect changes made to the IMEPackage since Initialization. If this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is used for multiple compilation operations, this method should be called between each one. (There are some situations where it may not be strictly neccesary to re-initialize between compilations, but you should only do that if you understand the compiler well enough to have figured out what those situations are.)   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aec4b0747b3423f9ca6d83e0bc136f5b7">More...</a><br /></td></tr>
-<tr class="separator:aec4b0747b3423f9ca6d83e0bc136f5b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3326352e3ac92e941c7695a5f793cc40"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a3326352e3ac92e941c7695a5f793cc40">ReInitializeFile</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a3326352e3ac92e941c7695a5f793cc40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> to reflect changes made to the IMEPackage since Initialization. If this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is used for multiple compilation operations, this method should be called between each one. (There are some situations where it may not be strictly necessary to re-initialize between compilations, but you should only do that if you understand the compiler well enough to have figured out what those situations are.)   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a3326352e3ac92e941c7695a5f793cc40">More...</a><br /></td></tr>
+<tr class="separator:a3326352e3ac92e941c7695a5f793cc40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29650a5944ccf57d414e97bc19689a9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_weak_package_user.html#a29650a5944ccf57d414e97bc19689a9e">HandleUpdate</a> (List&lt; <a class="el" href="struct_legendary_explorer_core_1_1_packages_1_1_package_update.html">PackageUpdate</a> &gt; updates)</td></tr>
 <tr class="separator:a29650a5944ccf57d414e97bc19689a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -157,7 +157,7 @@ Properties</h2></td></tr>
 <tr class="memdesc:ac65ab2633786c3f845e98e89581700cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">If this is false, the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> cannot be used.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb">More...</a><br /></td></tr>
 <tr class="separator:ac65ab2633786c3f845e98e89581700cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1264046bd77342f245fb676718309cc5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a1264046bd77342f245fb676718309cc5">HadInitializationError</a><code> [get]</code></td></tr>
-<tr class="memdesc:a1264046bd77342f245fb676718309cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if initialization failed. Can, in combination wtih <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>, be used to distinguish between a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> that hasn't been initialized, and one that failed to initialize.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a1264046bd77342f245fb676718309cc5">More...</a><br /></td></tr>
+<tr class="memdesc:a1264046bd77342f245fb676718309cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if initialization failed. Can, in combination with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>, be used to distinguish between a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> that hasn't been initialized, and one that failed to initialize.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a1264046bd77342f245fb676718309cc5">More...</a><br /></td></tr>
 <tr class="separator:a1264046bd77342f245fb676718309cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad81c3d1b678cb849a25551a09288f05d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad81c3d1b678cb849a25551a09288f05d">Pcc</a><code> [get]</code></td></tr>
 <tr class="memdesc:ad81c3d1b678cb849a25551a09288f05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The IMEPackage that this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is associated with.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ad81c3d1b678cb849a25551a09288f05d">More...</a><br /></td></tr>
@@ -171,7 +171,7 @@ Events</h2></td></tr>
 <tr class="separator:a523356a6442ff2bce6e37fd520527766"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Contains a symbol table for an IMEPackage that is used for compilation and decompilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a>. Must be initialized before use (with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab7fef497ffdd9579cdb14773740811d6" title="Initializes the FileLib. This can potentially take a few seconds.">Initialize</a> or <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a03d07f7318fe0c70f69e2ac5a9a0913d" title="Initializes the FileLib asynchronously.">InitializeAsync</a>). Once initialized, use <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aec4b0747b3423f9ca6d83e0bc136f5b7" title="Re-Initializes the FileLib to reflect changes made to the IMEPackage since Initialization....">ReInitializeFile</a> to update the symbol table to reflect changes made to the IMEPackage. A <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.  </p>
+<div class="textblock"><p >Contains a symbol table for an IMEPackage that is used for compilation and decompilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a>. Must be initialized before use (with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ab8fdf17aa4716fa9c7793a834319a7f7" title="Initializes the FileLib. This can potentially take a few seconds.">Initialize</a> or <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a291789006b48cd70441b1122a3f289dd" title="Initializes the FileLib asynchronously.">InitializeAsync</a>). Once initialized, use <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a3326352e3ac92e941c7695a5f793cc40" title="Re-Initializes the FileLib to reflect changes made to the IMEPackage since Initialization....">ReInitializeFile</a> to update the symbol table to reflect changes made to the IMEPackage. A <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> can only be used in the compilation or decompilation of objects in the same IMEPackage that is was created for.  </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa1e822370590329c89a344d389eb66a5" name="aa1e822370590329c89a344d389eb66a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa1e822370590329c89a344d389eb66a5">&#9670;&#160;</a></span>FileLib()</h2>
@@ -211,7 +211,7 @@ Events</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pcc</td><td>The IMEPackage this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is for.</td></tr>
-    <tr><td class="paramname">useAutoReinitialization</td><td>Optional: Use the IWeakPackageUser package change notification system to automatically call <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#aec4b0747b3423f9ca6d83e0bc136f5b7" title="Re-Initializes the FileLib to reflect changes made to the IMEPackage since Initialization....">ReInitializeFile</a>. Should only be used in the context of a UI compiler. If in doubt, leave it false.</td></tr>
+    <tr><td class="paramname">useAutoReinitialization</td><td>Optional: Use the IWeakPackageUser package change notification system to automatically call <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#a3326352e3ac92e941c7695a5f793cc40" title="Re-Initializes the FileLib to reflect changes made to the IMEPackage since Initialization....">ReInitializeFile</a>. Should only be used in the context of a UI compiler. If in doubt, leave it false.</td></tr>
   </table>
   </dd>
 </dl>
@@ -219,8 +219,8 @@ Events</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a03d07f7318fe0c70f69e2ac5a9a0913d" name="a03d07f7318fe0c70f69e2ac5a9a0913d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03d07f7318fe0c70f69e2ac5a9a0913d">&#9670;&#160;</a></span>InitializeAsync()</h2>
+<a id="a291789006b48cd70441b1122a3f289dd" name="a291789006b48cd70441b1122a3f289dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a291789006b48cd70441b1122a3f289dd">&#9670;&#160;</a></span>InitializeAsync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,14 +231,8 @@ Events</h2></td></tr>
         <tr>
           <td class="memname">async Task&lt; bool &gt; LegendaryExplorerCore.UnrealScript.FileLib.InitializeAsync </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>packageCache</em> = <code>null</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>gameRootPath</em> = <code>null</code>, </td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a>&#160;</td>
+          <td class="paramname"><em>usop</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -264,8 +258,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="ab7fef497ffdd9579cdb14773740811d6" name="ab7fef497ffdd9579cdb14773740811d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7fef497ffdd9579cdb14773740811d6">&#9670;&#160;</a></span>Initialize()</h2>
+<a id="ab8fdf17aa4716fa9c7793a834319a7f7" name="ab8fdf17aa4716fa9c7793a834319a7f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8fdf17aa4716fa9c7793a834319a7f7">&#9670;&#160;</a></span>Initialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,14 +267,8 @@ Events</h2></td></tr>
         <tr>
           <td class="memname">bool LegendaryExplorerCore.UnrealScript.FileLib.Initialize </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>packageCache</em> = <code>null</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>gameRootPath</em> = <code>null</code>, </td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a>&#160;</td>
+          <td class="paramname"><em>usop</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -299,8 +287,7 @@ Events</h2></td></tr>
 <p>Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>. This can potentially take a few seconds.  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">packageCache</td><td>Optional: A PackageCache that will be used during initialization.</td></tr>
-    <tr><td class="paramname">gameRootPath</td><td>Optional: Use a custom path to look up core files.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package that is used internally to change behavior of the LEC <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> system.</td></tr>
     <tr><td class="paramname">canUseBinaryCache</td><td>Optional: Cache ObjectBinarys during initialization. Defaults to <code>true</code>. Caching speeds up initialization and any decompilation operations using this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a>, at the cost of greater memory usage.</td></tr>
   </table>
   </dd>
@@ -413,8 +400,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="aec4b0747b3423f9ca6d83e0bc136f5b7" name="aec4b0747b3423f9ca6d83e0bc136f5b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec4b0747b3423f9ca6d83e0bc136f5b7">&#9670;&#160;</a></span>ReInitializeFile()</h2>
+<a id="a3326352e3ac92e941c7695a5f793cc40" name="a3326352e3ac92e941c7695a5f793cc40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3326352e3ac92e941c7695a5f793cc40">&#9670;&#160;</a></span>ReInitializeFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -425,7 +412,8 @@ Events</h2></td></tr>
         <tr>
           <td class="memname">bool LegendaryExplorerCore.UnrealScript.FileLib.ReInitializeFile </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a>&#160;</td>
+          <td class="paramname"><em>usop</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -436,8 +424,8 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Re-Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> to reflect changes made to the IMEPackage since Initialization. If this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is used for multiple compilation operations, this method should be called between each one. (There are some situations where it may not be strictly neccesary to re-initialize between compilations, but you should only do that if you understand the compiler well enough to have figured out what those situations are.)  </p>
-<dl class="section return"><dt>Returns</dt><dd>A bool indicating whether initialization was succesful. This value will also be in <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>.</dd></dl>
+<p>Re-Initializes the <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> to reflect changes made to the IMEPackage since Initialization. If this <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> is used for multiple compilation operations, this method should be called between each one. (There are some situations where it may not be strictly necessary to re-initialize between compilations, but you should only do that if you understand the compiler well enough to have figured out what those situations are.)  </p>
+<dl class="section return"><dt>Returns</dt><dd>A bool indicating whether initialization was successful. This value will also be in <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>.</dd></dl>
 
 </div>
 </div>
@@ -503,7 +491,7 @@ Events</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>True if initialization failed. Can, in combination wtih <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>, be used to distinguish between a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> that hasn't been initialized, and one that failed to initialize.  </p>
+<p>True if initialization failed. Can, in combination with <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html#ac65ab2633786c3f845e98e89581700cb" title="If this is false, the FileLib cannot be used.">IsInitialized</a>, be used to distinguish between a <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html" title="Contains a symbol table for an IMEPackage that is used for compilation and decompilation of UnrealScr...">FileLib</a> that hasn't been initialized, and one that failed to initialize.  </p>
 
 </div>
 </div>
