@@ -18,7 +18,7 @@ variables:
   appMajorMin: '6.4'
   appMajor: '6'
   appMinor: '4'
-  appPatch: '0'
+  appPatch: '1'
   netVersion: '8'
   disable.coverage.autogenerate: 'true'
   doxygenUrl: "https://www.doxygen.nl/files/doxygen-1.9.5.windows.x64.bin.zip"
