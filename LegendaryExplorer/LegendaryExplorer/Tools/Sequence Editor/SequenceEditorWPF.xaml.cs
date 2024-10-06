@@ -2497,6 +2497,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     else if (PackageQueuedForLoad != null)
                     {
                         LoadFile(PackageQueuedForLoad.FilePath, () => RegisterPackage(PackageQueuedForLoad));
+                        PackageQueuedForLoad.Dispose(); // Drop the package handler ref so we can GC
                         PackageQueuedForLoad = null;
                     }
 
