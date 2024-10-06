@@ -57,7 +57,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "THeightFogPixelShader<1>":
                     shader = new THeightFogPixelShader();
                     break;
-                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityManualPCF":
+                case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityManualPCF": // Verified LE2
                 case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityFetch4PCF":
                 case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFHighQualityHwPCF":
                 case "TBranchingPCFModProjectionPixelShaderFSpotLightPolicyFMediumQualityManualPCF":

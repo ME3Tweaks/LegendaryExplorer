@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal.Collections;
 using Microsoft.Toolkit.HighPerformance;
 using UIndex = System.Int32;
@@ -101,14 +102,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 sc.Serialize(ref PylonListStart);
                 sc.Serialize(ref PylonListEnd);
             }
-            if (sc.Game.IsGame3()) // Gated by licensee version
+
+            if (sc.Game.IsGame3() || sc.Game == MEGame.UDK) // Gated by licensee version
             {
                 sc.Serialize(ref CrossLevelCoverGuidRefs, sc.Serialize);
                 sc.Serialize(ref CoverLinkRefs, sc.Serialize);
                 sc.Serialize(ref CoverIndexPairs, sc.Serialize);
-                sc.Serialize(ref CrossLevelNavGuidRefs, sc.Serialize);
-                sc.Serialize(ref NavRefs, sc.Serialize);
-                sc.Serialize(ref NavRefIndicies, sc.Serialize);
+                if (sc.Game != MEGame.UDK)
+                {
+                    // BioWare specific
+                    sc.Serialize(ref CrossLevelNavGuidRefs, sc.Serialize);
+                    sc.Serialize(ref NavRefs, sc.Serialize);
+                    sc.Serialize(ref NavRefIndicies, sc.Serialize);
+                }
             }
             else if (sc.IsLoading)
             {
@@ -122,13 +128,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 NavRefIndicies = [];
             }
             sc.Serialize(ref CrossLevelActors, sc.Serialize);
-            if (sc.Game == MEGame.UDK)
-            {
-                int dummy = 0;
-                sc.Serialize(ref dummy);
-                sc.Serialize(ref dummy);
-                sc.Serialize(ref dummy);
-            }
 
             if (sc.Game.IsGame1())
             {
@@ -319,8 +318,34 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public byte[] CachedPerTriData; //BulkSerialized
     }
 
+    public class FPrecomputedVolumeDistanceField
+    {
+        public float VolumeMaxDistance;
+        public Box VolumeBox;
+        public int VolumeSizeX;
+        public int VolumeSizeY;
+        public int VolumeSizeZ;
+        public Color[] Data;
+        public int UDKUnknown; // Might not be part of this; always seems to be 0
+    }
+
     public partial class SerializingContainer
     {
+        public void Serialize(ref FPrecomputedVolumeDistanceField vdf)
+        {
+            if (IsLoading)
+            {
+                vdf = new FPrecomputedVolumeDistanceField();
+            }
+            Serialize(ref vdf.VolumeMaxDistance);
+            Serialize(ref vdf.VolumeBox);
+            Serialize(ref vdf.VolumeSizeX);
+            Serialize(ref vdf.VolumeSizeY);
+            Serialize(ref vdf.VolumeSizeZ);
+            Serialize(ref vdf.Data, Serialize);
+            Serialize(ref vdf.UDKUnknown);
+        }
+
         public void Serialize(ref URL url)
         {
             if (IsLoading)

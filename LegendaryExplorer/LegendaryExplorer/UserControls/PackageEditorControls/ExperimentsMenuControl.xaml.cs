@@ -1446,6 +1446,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsO.MakeExportsForced(GetPEWindow());
         }
 
+        private void MakeExportsNonForced_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.MakeExportsNonForced(GetPEWindow());
+        }
+
         private void CollectSMCsintoSMCA_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.CollectSMCsintoSMCA(GetPEWindow());

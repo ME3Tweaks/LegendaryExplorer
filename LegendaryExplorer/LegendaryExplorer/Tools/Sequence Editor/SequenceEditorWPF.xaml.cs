@@ -284,6 +284,8 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             // Create an add activation to sequence
             var activation = SequenceObjectCreator.CreateSequenceObject(Pcc, "SeqEvent_SequenceActivated");
             activation.idxLink = SelectedSequence.UIndex;
+            activation.WriteProperty(new StrProperty(inputLabel, "InputLabel"));
+
             // Reindex if necessary
             var expCount = Pcc.Exports.Count(x => x.InstancedFullPath == activation.InstancedFullPath);
             if (expCount > 1)
@@ -2495,6 +2497,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     else if (PackageQueuedForLoad != null)
                     {
                         LoadFile(PackageQueuedForLoad.FilePath, () => RegisterPackage(PackageQueuedForLoad));
+                        PackageQueuedForLoad.Dispose(); // Drop the package handler ref so we can GC
                         PackageQueuedForLoad = null;
                     }
 
@@ -2819,42 +2822,48 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                     stringVarLink.LinkedNodes.Add(newSeqObj);
 
                     VarLinkInfo linkToAttachTo = null;
-                    if (sVar.Export.IsA("SeqVar_String"))
+                    var typeName = sVar.Export.ClassName;
+                    var game = sVar.Export.Game;
+
+                    // Use expected type
+                    if (typeName is "SeqVar_External" or "SeqVar_ScopedNamed")
+                    {
+                        // Just default to object if we can't find the type
+                        typeName = sVar.Export.GetProperty<ObjectProperty>("ExpectedType")?.ResolveToEntry(sVar.Export.FileRef)?.ObjectName.Name ?? "SeqVar_Object";
+                    }
+
+
+                    if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_String", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "String");
                     }
-                    else if (sVar.Export.IsA("SeqVar_Float"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_Float", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Float");
                     }
-                    else if (sVar.Export.IsA("SeqVar_Bool"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_Bool", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Bool");
                     }
-                    else if (sVar.Export.IsA("SeqVar_Object"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_Object", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
                     }
-                    else if (sVar.Export.IsA("SeqVar_Int"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_Int", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Int");
                     }
-                    else if (sVar.Export.IsA("SeqVar_Name"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_Name", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Name");
                     }
-                    else if (sVar.Export.IsA("SeqVar_Vector"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_Vector", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Vector");
                     }
-                    else if (sVar.Export.IsA("SeqVar_ObjectList"))
+                    else if (GlobalUnrealObjectInfo.IsA(typeName,"SeqVar_ObjectList", game))
                     {
                         linkToAttachTo = varLinks.First(x => x.LinkDesc == "Obj List");
-                    }
-                    else if (sVar.Export.IsA("SeqVar_External"))
-                    {
-                        // Just use Object
-                        linkToAttachTo = varLinks.First(x => x.LinkDesc == "Object");
                     }
 
                     if (linkToAttachTo == null)

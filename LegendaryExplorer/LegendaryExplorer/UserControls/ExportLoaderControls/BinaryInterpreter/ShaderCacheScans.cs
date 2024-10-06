@@ -350,22 +350,22 @@ public partial class BinaryInterpreterWPF
         {
             switch (shaderType)
             {
-                case "FGFxPixelShaderSDRGFx_PS_CxformMultiply2Texture":
-                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudMultiplyTexture":
-                case "FGFxPixelShaderSDRGFx_PS_CxformGouraud":
-                case "FGFxPixelShaderSDRGFx_PS_TextTexture":
-                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudMultiplyNoAddAlpha":
-                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudMultiply":
-                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudNoAddAlpha":
-                case "FGFxPixelShaderSDRGFx_PS_Cxform2Texture":
-                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudTexture":
-                case "FGFxPixelShaderSDRGFx_PS_TextTextureSRGBMultiply":
-                case "FGFxPixelShaderSDRGFx_PS_TextTextureSRGB":
-                case "FGFxPixelShaderSDRGFx_PS_TextTextureColorMultiply":
-                case "FGFxPixelShaderSDRGFx_PS_TextTextureColor":
-                case "FGFxPixelShaderSDRGFx_PS_CxformTextureMultiply":
-                case "FGFxPixelShaderSDRGFx_PS_CxformTexture":
-                case "FGFxPixelShaderSDRGFx_PS_SolidColor":
+                case "FGFxPixelShaderSDRGFx_PS_CxformMultiply2Texture": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudMultiplyTexture": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformGouraud": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_TextTexture": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudMultiplyNoAddAlpha": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudMultiply": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudNoAddAlpha": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_Cxform2Texture": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformGouraudTexture": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_TextTextureSRGBMultiply":  // Verified NOT PRESENT IN LE2 ============================
+                case "FGFxPixelShaderSDRGFx_PS_TextTextureSRGB": // Verified NOT PRESENT IN LE2 ============================
+                case "FGFxPixelShaderSDRGFx_PS_TextTextureColorMultiply": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_TextTextureColor": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformTextureMultiply": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_CxformTexture": // Verified LE2
+                case "FGFxPixelShaderSDRGFx_PS_SolidColor": // Verified LE2
                     for (int i = 0; i < 4; i++)
                     {
                         node.Items.Add(FShaderResourceParameter($"TextureParams[{i}]"));
@@ -374,9 +374,14 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("ColorScale"));
                     node.Items.Add(FShaderParameter("ColorBias"));
                     node.Items.Add(FShaderParameter("InverseGamma"));
+                    if (CurrentLoadedExport.Game == MEGame.LE2)
+                    {
+                        // Constructor at 7ff7c696ddb0
+                        node.Items.Add(FShaderParameter("HDRBrightnessScale"));
+                    }
                     break;
-                case "THeightFogPixelShader<4>":
-                case "THeightFogPixelShader<1>":
+                case "THeightFogPixelShader<4>": // Verified LE2
+                case "THeightFogPixelShader<1>": // Verified LE2
                     node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
                     node.Items.Add(FShaderParameter("FogDistanceScale"));
                     node.Items.Add(FShaderParameter("FogExtinctionDistance"));
@@ -405,18 +410,30 @@ public partial class BinaryInterpreterWPF
                 case "FGFxVertexShader<GFx_VS_XY16iCF32_NoTex>":
                 case "FGFxVertexShader<GFx_VS_XY16iCF32>":
                 case "FGFxVertexShader<GFx_VS_XY16iC32>":
-                    node.Items.Add(FShaderParameter("Transform"));
-                    node.Items.Add(FShaderParameter("TextureMatrixParams[0]"));
-                    node.Items.Add(FShaderParameter("TextureMatrixParams[1]"));
+                    node.Items.Add(FShaderParameter("Transform")); // Verified LE2
+
+                    // LE2 has different parameter names but same number
+                    if (CurrentLoadedExport.Game == MEGame.LE2)
+                    {
+                        // Verified LE2 - 0x7ff7c696e15 FGFxVertexShaderTemplate constructor
+                        node.Items.Add(FShaderParameter("TextureMatrix"));
+                        node.Items.Add(FShaderParameter("TextureMatrix2"));
+                    }
+                    else if (CurrentLoadedExport.Game == MEGame.LE3)
+                    {
+                        node.Items.Add(FShaderParameter("TextureMatrixParams[0]"));
+                        node.Items.Add(FShaderParameter("TextureMatrixParams[1]"));
+                    }
+
                     break;
-                case "FResolveVertexShader":
-                case "FReconstructHDRVertexShader":
-                case "FLDRExtractVertexShader":
-                case "FMotionBlurVertexShader":
-                case "FBinkVertexShader":
-                case "FOneColorVertexShader":
-                case "FGammaCorrectionVertexShader":
-                case "FNULLPixelShader":
+                case "FResolveVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FReconstructHDRVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FLDRExtractVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FMotionBlurVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FBinkVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FOneColorVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FGammaCorrectionVertexShader": // Verified: LE2 - Uses FShader::Serialize
+                case "FNULLPixelShader": // Verified: LE2 - Uses FShader::Serialize
                 case "FHorizonBasedAOVertexShader":
                 case "FModShadowVolumeVertexShader":
                 case "FOcclusionQueryVertexShader<0>":
@@ -443,11 +460,11 @@ public partial class BinaryInterpreterWPF
                     FBranchingPCFModProjectionPixelShader();
                     //FDirectionalLightPolicy::ModShadowPixelParamsType has no params
                     break;
-                case "FResolveSingleSamplePixelShader":
+                case "FResolveSingleSamplePixelShader": // Verified: LE2
                     node.Items.Add(FShaderResourceParameter("UnresolvedSurface"));
                     node.Items.Add(FShaderParameter("SingleSampleIndex"));
                     break;
-                case "FResolveDepthPixelShader":
+                case "FResolveDepthPixelShader": // Verified: LE2
                     node.Items.Add(FShaderResourceParameter("UnresolvedSurface"));
                     break;
                 case "TModShadowVolumePixelShaderFPointLightPolicy":
@@ -460,25 +477,33 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("ColorScale"));
                     node.Items.Add(FShaderParameter("OverlayColor"));
                     break;
-                case "FGFxPixelShaderHDRGFx_PS_CxformMultiply2Texture":
-                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudMultiplyTexture":
-                case "FGFxPixelShaderHDRGFx_PS_CxformGouraud":
-                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudMultiplyNoAddAlpha":
-                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudNoAddAlpha":
-                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudMultiply":
-                case "FGFxPixelShaderHDRGFx_PS_Cxform2Texture":
-                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudTexture":
-                case "FGFxPixelShaderHDRGFx_PS_CxformTexture":
-                case "FGFxPixelShaderHDRGFx_PS_TextTextureSRGBMultiply":
-                case "FGFxPixelShaderHDRGFx_PS_CxformTextureMultiply":
-                case "FGFxPixelShaderHDRGFx_PS_TextTextureSRGB":
-                case "FGFxPixelShaderHDRGFx_PS_TextTextureColorMultiply":
-                case "FGFxPixelShaderHDRGFx_PS_TextTextureColor":
-                case "FGFxPixelShaderHDRGFx_PS_TextTexture":
-                case "FGFxPixelShaderHDRGFx_PS_SolidColor":
+                case "FGFxPixelShaderHDRGFx_PS_CxformMultiply2Texture": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudMultiplyTexture": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformGouraud": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudMultiplyNoAddAlpha": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudNoAddAlpha": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudMultiply": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_Cxform2Texture": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformGouraudTexture": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_CxformTexture": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_TextTextureSRGBMultiply": // Verified NOT PRESENT IN LE2 --------------------------
+                case "FGFxPixelShaderHDRGFx_PS_CxformTextureMultiply": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_TextTextureSRGB": // Verified NOT PRESENT IN LE2 ----------------------------------
+                case "FGFxPixelShaderHDRGFx_PS_TextTextureColorMultiply":  // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_TextTextureColor": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_TextTexture": // Verified LE2
+                case "FGFxPixelShaderHDRGFx_PS_SolidColor": // Verified LE2
                     for (int i = 0; i < 4; i++)
                     {
-                        node.Items.Add(FShaderResourceParameter($"TextureParams[{i}]"));
+                        if (CurrentLoadedExport.Game == MEGame.LE2)
+                        {
+                            node.Items.Add(FShaderResourceParameterIndexed($"TextureImage", i));
+                        }
+                        else if (CurrentLoadedExport.Game == MEGame.LE3)
+                        {
+                            // Todo: Review this parameter name
+                            node.Items.Add(FShaderResourceParameter($"TextureParams[{i}]"));
+                        }
                     }
                     node.Items.Add(FShaderParameter("ConstantColor"));
                     node.Items.Add(FShaderParameter("ColorScale"));
@@ -509,7 +534,7 @@ public partial class BinaryInterpreterWPF
                     FBranchingPCFModProjectionPixelShader();
                     FPointLightPolicy_ModShadowPixelParamsType();
                     break;
-                case "FTexturedCalibrationBoxHDRPixelShader":
+                case "FTexturedCalibrationBoxHDRPixelShader": // Verified LE2 7ff7c6567d70
                     node.Items.Add(FShaderParameter("CalibrationParameters"));
                     node.Items.Add(FShaderResourceParameter("SourceTexture"));
                     break;
@@ -527,62 +552,62 @@ public partial class BinaryInterpreterWPF
                 case "FDownsampleDepthVertexShader":
                     node.Items.Add(FShaderParameter("HalfSceneColorTexelSize"));
                     break;
-                case "FAmbientOcclusionVertexShader":
+                case "FAmbientOcclusionVertexShader": // Verified LE2
                     node.Items.Add(FShaderParameter("ScreenToView"));
                     break;
-                case "FCalibrationBoxHDRPixelShader":
+                case "FCalibrationBoxHDRPixelShader": // Verified LE2
                     node.Items.Add(FShaderParameter("CalibrationParameters"));
                     break;
-                case "TFilterVertexShader<16>":
-                case "TFilterVertexShader<15>":
-                case "TFilterVertexShader<14>":
-                case "TFilterVertexShader<13>":
-                case "TFilterVertexShader<12>":
-                case "TFilterVertexShader<11>":
-                case "TFilterVertexShader<10>":
-                case "TFilterVertexShader<9>":
-                case "TFilterVertexShader<8>":
-                case "TFilterVertexShader<7>":
-                case "TFilterVertexShader<6>":
-                case "TFilterVertexShader<5>":
-                case "TFilterVertexShader<4>":
-                case "TFilterVertexShader<3>":
-                case "TFilterVertexShader<2>":
-                case "TFilterVertexShader<1>":
-                case "TDOFAndBloomGatherVertexShader<MAX_FILTER_SAMPLES>":
-                case "TDOFAndBloomGatherVertexShader<NumFPFilterSamples>":
-                case "TDOFAndBloomGatherVertexShader<1>":
+                case "TFilterVertexShader<16>": // Verified LE2
+                case "TFilterVertexShader<15>": // Verified LE2
+                case "TFilterVertexShader<14>": // Verified LE2
+                case "TFilterVertexShader<13>": // Verified LE2
+                case "TFilterVertexShader<12>": // Verified LE2
+                case "TFilterVertexShader<11>": // Verified LE2
+                case "TFilterVertexShader<10>": // Verified LE2
+                case "TFilterVertexShader<9>": // Verified LE2
+                case "TFilterVertexShader<8>": // Verified LE2
+                case "TFilterVertexShader<7>": // Verified LE2
+                case "TFilterVertexShader<6>": // Verified LE2
+                case "TFilterVertexShader<5>": // Verified LE2
+                case "TFilterVertexShader<4>": // Verified LE2
+                case "TFilterVertexShader<3>": // Verified LE2
+                case "TFilterVertexShader<2>": // Verified LE2
+                case "TFilterVertexShader<1>": // Verified LE2
+                case "TDOFAndBloomGatherVertexShader<MAX_FILTER_SAMPLES>": // Verified LE2
+                case "TDOFAndBloomGatherVertexShader<NumFPFilterSamples>": // Verified LE2
+                case "TDOFAndBloomGatherVertexShader<1>": // Verified LE2
                     node.Items.Add(FShaderParameter("SampleOffsets"));
                     break;
                 case "FShaderComplexityAccumulatePixelShader":
                     node.Items.Add(FShaderParameter("NormalizedComplexity"));
                     break;
                 case "FDistortionApplyScreenVertexShader":
-                case "FSimpleElementVertexShader":
+                case "FSimpleElementVertexShader": // Verified LE2
                     node.Items.Add(FShaderParameter("Transform"));
                     break;
-                case "FDownsampleLightShaftsVertexShader":
+                case "FDownsampleLightShaftsVertexShader": // Verified LE2
                     node.Items.Add(FShaderParameter("ScreenToWorld"));
                     break;
-                case "FRadialBlurVertexShader":
+                case "FRadialBlurVertexShader": // Verified LE2
                     node.Items.Add(FShaderParameter("WorldCenterPos"));
                     break;
-                case "FOneColorPixelShader":
-                    node.Items.Add(FShaderParameter("Color"));
+                case "FOneColorPixelShader": // Verified LE2
+                    node.Items.Add(FShaderParameter("DrawColor"));
                     break;
-                case "FDOFAndBloomBlendVertexShader":
+                case "FDOFAndBloomBlendVertexShader": // Verified LE2
                     node.Items.Add(FShaderParameter("SceneCoordinateScaleBias"));
                     break;
-                case "FHistoryUpdateVertexShader":
+                case "FHistoryUpdateVertexShader": // Verified LE2
                     node.Items.Add(FShaderParameter("ScreenToWorldOffset"));
                     break;
-                case "FReconstructHDRPixelShader<FALSE>":
-                case "FReconstructHDRPixelShader<TRUE>":
+                case "FReconstructHDRPixelShader<FALSE>": // Verified LE2
+                case "FReconstructHDRPixelShader<TRUE>": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("SourceTexture"));
                     node.Items.Add(FShaderParameter("HDRParameters"));
                     node.Items.Add(FShaderParameter("CalibrationParameters"));
                     break;
-                case "FSimpleElementPixelShader":
+                case "FSimpleElementPixelShader": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("Texture"));
                     node.Items.Add(FShaderParameter("TextureComponentReplicate"));
                     node.Items.Add(FShaderParameter("TextureComponentReplicateAlpha"));
@@ -745,8 +770,14 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("NoiseTextureOffset"));
                     node.Items.Add(FShaderParameter("FilmGrain_Scale"));
                     node.Items.Add(FShaderResourceParameter("smpFilmicLUT"));
-                    node.Items.Add(FShaderParameter("ScreenUVScaleBias"));
-                    node.Items.Add(FShaderParameter("HighPrecisionGamma"));
+
+                    // Not present in LE2 - 7ff7c63e15b0
+                    if (CurrentLoadedExport.Game == MEGame.LE3)
+                    {
+                        node.Items.Add(FShaderParameter("ScreenUVScaleBias"));
+                        node.Items.Add(FShaderParameter("HighPrecisionGamma"));
+                    }
+
                     break;
                 case "FUberPostProcessVertexShader":
                     node.Items.Add(FShaderParameter("SceneCoordinate1ScaleBias"));
@@ -795,10 +826,10 @@ public partial class BinaryInterpreterWPF
                 case "TModShadowProjectionPixelShaderFSpotLightPolicyF16SampleManualPCF":
                 case "TModShadowProjectionPixelShaderFSpotLightPolicyF16SampleFetch4PCF":
                 case "TModShadowProjectionPixelShaderFSpotLightPolicyF16SampleHwPCF":
-                case "TModShadowProjectionPixelShaderFSpotLightPolicyF4SampleManualPCF":
-                case "TModShadowProjectionPixelShaderFSpotLightPolicyF4SampleHwPCF":
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF4SampleManualPCF":  // Verified LE2
+                case "TModShadowProjectionPixelShaderFSpotLightPolicyF4SampleHwPCF": // Verified LE2
                     TModShadowProjectionPixelShader();
-                    FSpotLightPolicy_ModShadowPixelParamsType();
+                    FSpotLightPolicy_ModShadowPixelParamsType(); // Verified LE2
                     break;
                 case "FFluidApplyPixelShader":
                     node.Items.Add(FShaderResourceParameter("FluidHeightTexture"));
@@ -946,19 +977,19 @@ public partial class BinaryInterpreterWPF
                     FSHLightLightMapPolicy_PixelParametersType();
                     TBasePassPixelShader();
                     break;
-                case "FLUTBlenderPixelShader<1>":
-                case "FLUTBlenderPixelShader<2>":
-                case "FLUTBlenderPixelShader<3>":
-                case "FLUTBlenderPixelShader<4>":
-                case "FLUTBlenderPixelShader<5>":
-                    int blendCount = shaderType[^2] - 48;
+                case "FLUTBlenderPixelShader<1>": // Verified LE2
+                case "FLUTBlenderPixelShader<2>": // Verified LE2
+                case "FLUTBlenderPixelShader<3>": // Verified LE2
+                case "FLUTBlenderPixelShader<4>": // Verified LE2
+                case "FLUTBlenderPixelShader<5>": // Verified LE2
+                    int blendCount = shaderType[^2] - 48; // ASCII value 48 is CHAR 0, 49 is CHAR 1... etc
                     for (int i = 1; i <= blendCount; i++)
                     {
                         node.Items.Add(FShaderResourceParameter($"Texture{i}"));
                     }
                     node.Items.Add(FShaderParameter("Weights"));
-                    node.Items.Add(FGammaShaderParameters("GammaParameters"));
-                    node.Items.Add(FColorRemapShaderParameters("MaterialParameters"));
+                    node.Items.Add(FGammaShaderParameters("GammaParameters")); // Verified LE2
+                    node.Items.Add(FColorRemapShaderParameters("MaterialParameters")); // Verified LE2
                     break;
                 case "FFluidNormalPixelShader":
                     node.Items.Add(FShaderParameter("CellSize"));
@@ -1074,7 +1105,7 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("DepthBias"));
                     node.Items.Add(FShaderParameter("bClampToNearPlane"));
                     break;
-                case "FSimpleElementMaskedGammaPixelShader":
+                case "FSimpleElementMaskedGammaPixelShader": // Verified: LE2
                     FSimpleElementGammaPixelShader();
                     node.Items.Add(FShaderParameter("ClipRef"));
                     break;
@@ -1152,8 +1183,8 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("cmatrix"));
                     node.Items.Add(FShaderParameter("alpha_mult"));
                     break;
-                case "FBinkGpuShaderHDRNoAlpha":
-                case "FBinkGpuShaderHDR":
+                case "FBinkGpuShaderHDRNoAlpha": // Verified LE2
+                case "FBinkGpuShaderHDR": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("YTex"));
                     node.Items.Add(FShaderResourceParameter("CrCbTex"));
                     node.Items.Add(FShaderResourceParameter("ATex"));
@@ -1162,10 +1193,10 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("hdr"));
                     node.Items.Add(FShaderParameter("ctcp"));
                     break;
-                case "FBinkYCrCbAToRGBAPixelShader":
+                case "FBinkYCrCbAToRGBAPixelShader": // Verified LE2. SErialization method seems to show it << parameters before shader?
                     node.Items.Add(FShaderResourceParameter("tex3"));
                     break;
-                case "FBinkYCrCbToRGBNoPixelAlphaPixelShader":
+                case "FBinkYCrCbToRGBNoPixelAlphaPixelShader": // Verified LE2
                     node.Items.Add(FShaderResourceParameter("tex0"));
                     node.Items.Add(FShaderResourceParameter("tex1"));
                     node.Items.Add(FShaderResourceParameter("tex2"));
@@ -1293,7 +1324,7 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("IndividualVelocityScale"));
                     node.Items.Add(FShaderParameter("ObjectVelocity"));
                     break;
-                case "FVelocityVertexShader":
+                case "FVelocityVertexShader": // LE2 Verified, but did not see vertex factory serialization 
                     node.Items.Add(FVertexFactoryParameterRef());
                     node.Items.Add(FMaterialVertexShaderParameters("MaterialParameters"));
                     node.Items.Add(FShaderParameter("PrevViewProjectionMatrix"));
@@ -1491,6 +1522,24 @@ public partial class BinaryInterpreterWPF
                     node.Items.Add(FShaderParameter("ScreenToLight"));
                     node.Items.Add(FMaterialPixelShaderParameters("MaterialParameters"));
                     break;
+                case "FUberPostProcessBlendPixelShader1001": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1010": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1100": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0110": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0011": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1111": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0101": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1000": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1011": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1101": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0111": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0010": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader1110": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0100": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0001": // LE2 - Not in LE3
+                case "FUberPostProcessBlendPixelShader0000": // LE2 - Not in LE3
+                    FDOFAndBloomBlendPixelShader();
+                    break;
                 default:
                     Debugger.Break();
                     node = null;
@@ -1521,7 +1570,18 @@ public partial class BinaryInterpreterWPF
 
         BinInterpNode FShaderResourceParameter(string name)
         {
-            return new BinInterpNode(bin.Position, $"{name}: FShaderResourceParameter")
+            return FShaderResourceParameterIndexed(name, -1);
+        }
+
+
+        BinInterpNode FShaderResourceParameterIndexed(string name, int loopIndexForOneBasedIndexSuffix)
+        {
+            if (loopIndexForOneBasedIndexSuffix is > 0)
+            {
+                name += (loopIndexForOneBasedIndexSuffix + 1); // Textures -> Textures2 if index value is 1, but just Textures if value is 0.
+            }
+            var header = $"{name}: FShaderResourceParameter";
+            return new BinInterpNode(bin.Position, header)
             {
                 Items =
                 {
@@ -1548,7 +1608,7 @@ public partial class BinaryInterpreterWPF
             return vertexFactoryParameterRef;
         }
 
-        BinInterpNode FSceneTextureShaderParameters(string name)
+        BinInterpNode FSceneTextureShaderParameters(string name) // Verified LE2
         {
             return new BinInterpNode(bin.Position, $"{name}: FSceneTextureShaderParameters")
             {
@@ -1802,7 +1862,7 @@ public partial class BinaryInterpreterWPF
             return Array.Empty<BinInterpNode>();
         }
 
-        BinInterpNode FGammaShaderParameters(string name)
+        BinInterpNode FGammaShaderParameters(string name) // Verified: LE2
         {
             return new BinInterpNode(bin.Position, $"{name}: FGammaShaderParameters")
             {
@@ -1816,7 +1876,7 @@ public partial class BinaryInterpreterWPF
             };
         }
 
-        BinInterpNode FColorRemapShaderParameters(string name)
+        BinInterpNode FColorRemapShaderParameters(string name) // Verified: LE2
         {
             return new BinInterpNode(bin.Position, $"{name}: FColorRemapShaderParameters")
             {
@@ -1867,7 +1927,7 @@ public partial class BinaryInterpreterWPF
             };
         }
 
-        BinInterpNode FDOFShaderParameters(string name)
+        BinInterpNode FDOFShaderParameters(string name) // Verified LE2
         {
             return new BinInterpNode(bin.Position, $"{name}: FDOFShaderParameters")
             {
@@ -2001,7 +2061,7 @@ public partial class BinaryInterpreterWPF
             node.Items.Add(FShaderParameter("ScreenToWorld"));
         }
 
-        void FSpotLightPolicy_ModShadowPixelParamsType()
+        void FSpotLightPolicy_ModShadowPixelParamsType() // Verified LE2
         {
             node.Items.Add(FShaderParameter("LightPositionParam"));
             node.Items.Add(FShaderParameter("FalloffParameters"));
@@ -2066,23 +2126,32 @@ public partial class BinaryInterpreterWPF
             node.Items.Add(FShaderResourceParameter("BlurredImage"));
             node.Items.Add(FShaderResourceParameter("DOFBlurredNear"));
             node.Items.Add(FShaderResourceParameter("DOFBlurredFar"));
-            node.Items.Add(FShaderResourceParameter("BlurredImageSeperateBloom"));
+            node.Items.Add(FShaderResourceParameter("BlurredImageSeperateBloom")); // Spelled 'BlurredImageSeperateBloom' in decomp
             node.Items.Add(FShaderParameter("BloomTintAndScreenBlendThreshold"));
+            if (CurrentLoadedExport.Game == MEGame.LE2)
+            {
+                // LE2 7ff7c62126e7
+                node.Items.Add(FShaderResourceParameter("SeparateTranslucencyTexture"));
+            }
             node.Items.Add(FShaderParameter("InputTextureSize"));
             node.Items.Add(FShaderParameter("DOFKernelParams"));
         }
 
         BinInterpNode FMotionBlurShaderParameters(string name)
         {
+            // Verified LE2
+            // 7ff7c65d91a0 LE2
+            // 7ff74ac66b50 LE3
+
             var binInterpNode = new BinInterpNode(bin.Position, $"{name}: FMotionBlurShaderParameters");
             binInterpNode.Items.Add(FShaderResourceParameter("LowResSceneBuffer"));
             binInterpNode.Items.Add(FShaderResourceParameter("VelocityBuffer"));
             binInterpNode.Items.Add(FShaderParameter("ScreenToWorld"));
-            binInterpNode.Items.Add(FShaderParameter("PrevViewProj"));
+            binInterpNode.Items.Add(FShaderParameter("PrevViewProjMatrix"));
             binInterpNode.Items.Add(FShaderParameter("StaticVelocityParameters"));
             binInterpNode.Items.Add(FShaderParameter("DynamicVelocityParameters"));
-            binInterpNode.Items.Add(FShaderParameter("RenderTargetClamp"));
-            binInterpNode.Items.Add(FShaderParameter("MotionBlurMaskScale"));
+            binInterpNode.Items.Add(FShaderParameter("RenderTargetClampParameter"));
+            binInterpNode.Items.Add(FShaderParameter("MotionBlurMaskScaleAndBias"));
             binInterpNode.Items.Add(FShaderParameter("StepOffsetsOpaque"));
             binInterpNode.Items.Add(FShaderParameter("StepWeightsOpaque"));
             binInterpNode.Items.Add(FShaderParameter("StepOffsetsTranslucent"));
@@ -2102,8 +2171,8 @@ public partial class BinaryInterpreterWPF
 
         void TModShadowProjectionPixelShader()
         {
-            node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters"));
-            node.Items.Add(FShaderParameter("ScreenToShadowMatrix"));
+            node.Items.Add(FSceneTextureShaderParameters("SceneTextureParameters")); // Verified LE2
+            node.Items.Add(FShaderParameter("ScreenToShadowMatrix")); // Rest are also Verified LE2
             node.Items.Add(FShaderResourceParameter("ShadowDepthTexture"));
             node.Items.Add(FShaderResourceParameter("ShadowDepthTextureComparisonSampler"));
             node.Items.Add(FShaderParameter("SampleOffsets"));

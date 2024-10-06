@@ -246,16 +246,21 @@ public class FGFxPixelShader : Shader
     public FShaderParameter ColorScale;
     public FShaderParameter ColorBias;
     public FShaderParameter InverseGamma;
-
+    public FShaderParameter HDRBrightnessScale; // LE2
     internal override DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
         var defferedOffsetWriter = base.Serialize(sc);
 
-        sc.SerializeUnmanaged(ref TextureParams);
+        sc.SerializeUnmanaged(ref TextureParams); // TextureImage /2 /3 /4
         sc.SerializeUnmanaged(ref ConstantColor);
         sc.SerializeUnmanaged(ref ColorScale);
         sc.SerializeUnmanaged(ref ColorBias);
         sc.SerializeUnmanaged(ref InverseGamma);
+
+        if (sc.Game == MEGame.LE2)
+        {
+            sc.SerializeUnmanaged(ref HDRBrightnessScale);
+        }
 
         return defferedOffsetWriter;
     }
@@ -372,22 +377,31 @@ public class FGFxVertexShader : Shader
     }
 }
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FResolveVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FReconstructHDRVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FLDRExtractVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FMotionBlurVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FBinkVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FOneColorVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FGammaCorrectionVertexShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FNULLPixelShader : Shader;
 
+// Verified: LE2 - Uses FShader::Serialize
 public class FHorizonBasedAOVertexShader : Shader;
 
 public class FModShadowVolumeVertexShader : Shader;
