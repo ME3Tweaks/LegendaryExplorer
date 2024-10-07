@@ -53,5 +53,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateSetLocation", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a631defd38736a561f16c4d0380c309eb", null ],
     [ "CreateName", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a7bdb081eb904254d1b8324ec206142b4", null ],
     [ "CreateSequence", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5972ae62657db45333b83e9ebd0d93d3", null ],
-    [ "CreateAttachToEvent", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ad0ef4d5a4b09469ccb694b76007b536c", null ]
+    [ "CreateAttachToEvent", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ad0ef4d5a4b09469ccb694b76007b536c", null ],
+    [ "CreateSetActive", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa8f52fe24ac1ca64b3853c1da253c1cf", null ]
 ];

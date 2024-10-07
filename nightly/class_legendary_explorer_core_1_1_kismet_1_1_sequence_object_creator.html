@@ -266,6 +266,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0ef4d5a4b09469ccb694b76007b536c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ad0ef4d5a4b09469ccb694b76007b536c">CreateAttachToEvent</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> attachee=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seqEvent=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
 <tr class="memdesc:ad0ef4d5a4b09469ccb694b76007b536c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a BioSeqEvt_OnPlayerActivate action in the given sequence, with the given linked objects, if specified   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ad0ef4d5a4b09469ccb694b76007b536c">More...</a><br /></td></tr>
 <tr class="separator:ad0ef4d5a4b09469ccb694b76007b536c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8f52fe24ac1ca64b3853c1da253c1cf"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa8f52fe24ac1ca64b3853c1da253c1cf">CreateSetActive</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> pawn=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> activeBool=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
+<tr class="memdesc:aa8f52fe24ac1ca64b3853c1da253c1cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a BioSeqAct_SetActive action in the given sequence, with the given linked objects, if specified   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa8f52fe24ac1ca64b3853c1da253c1cf">More...</a><br /></td></tr>
+<tr class="separator:aa8f52fe24ac1ca64b3853c1da253c1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to handle sequence variable creation  </p>
@@ -3162,6 +3165,66 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">sequence</td><td>Sequence to place this object into as a child</td></tr>
     <tr><td class="paramname">attachee</td><td>Optional: Actor object to attach to the item on the event pin</td></tr>
     <tr><td class="paramname">seqEvent</td><td>Optional: The event to attach the attachee to</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
+
+</div>
+</div>
+<a id="aa8f52fe24ac1ca64b3853c1da253c1cf" name="aa8f52fe24ac1ca64b3853c1da253c1cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8f52fe24ac1ca64b3853c1da253c1cf">&#9670;&#160;</a></span>CreateSetActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreateSetActive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>pawn</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>activeBool</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a BioSeqAct_SetActive action in the given sequence, with the given linked objects, if specified  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence to place this object into as a child</td></tr>
+    <tr><td class="paramname">pawn</td><td>Optional: Actor object to attach to the item on the target pin</td></tr>
+    <tr><td class="paramname">activeBool</td><td>Optional: The bool value to attach to the Active pin</td></tr>
     <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
   </table>
   </dd>
