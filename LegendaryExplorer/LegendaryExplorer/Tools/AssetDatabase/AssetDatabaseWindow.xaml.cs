@@ -1067,7 +1067,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     package = MEPackageHandler.OpenMEPackage(filePath);
                 }
-                exportEntry = package.GetUExport(uindex);
+                if(package.TryGetUExport(uindex, out var goodExport)) exportEntry = goodExport;
             }
 
             switch (tool)
