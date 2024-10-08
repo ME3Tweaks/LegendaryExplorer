@@ -1050,19 +1050,24 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
 
             IMEPackage package = null;
-            if (Path.GetFileName(filePath) == "Default.sfar")
+            ExportEntry exportEntry = null;
+            if(tool != "CndEd") // don't try to OpenMEPackage on a .cnd file
             {
-                // Must open sfar
-                DLCPackage dlp = new DLCPackage(filePath);
-                var dlpFile = dlp.FindFileEntry(realFilename);
-                if (dlpFile != -1)
+                if (Path.GetFileName(filePath) == "Default.sfar")
                 {
-                    package = MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(dlpFile), realFilename);
+                    // Must open sfar
+                    DLCPackage dlp = new DLCPackage(filePath);
+                    var dlpFile = dlp.FindFileEntry(realFilename);
+                    if (dlpFile != -1)
+                    {
+                        package = MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(dlpFile), realFilename);
+                    }
                 }
-            }
-            else
-            {
-                package = MEPackageHandler.OpenMEPackage(filePath);
+                else
+                {
+                    package = MEPackageHandler.OpenMEPackage(filePath);
+                }
+                exportEntry = package.GetUExport(uindex);
             }
 
             switch (tool)
@@ -1097,15 +1102,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     break;
                 case "SeqEd":
-                    var SeqEd = new Sequence_Editor.SequenceEditorWPF(package);
-                    SeqEd.Show();
-                    if (uindex != 0)
+                    if (exportEntry is not null)
                     {
-                        SeqEd.LoadFileAndGoTo(filePath, uindex);
+                        var SeqEd = new Sequence_Editor.SequenceEditorWPF(exportEntry);
+                        SeqEd.Show();
                     }
                     else
                     {
-                        SeqEd.LoadFile(filePath);
+                        var SeqEd = new Sequence_Editor.SequenceEditorWPF(package);
+                        SeqEd.Show();
                     }
                     break;
                 case "SoundExplorer":
