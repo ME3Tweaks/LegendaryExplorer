@@ -1046,6 +1046,9 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="trash">If the object should be trashed.</param>
         public static void RemoveFromSequence(ExportEntry node, bool trash)
         {
+            if (node == null)
+                return; // May have already been removed.
+
             RemoveAllLinks(node);
             var seq = GetParentSequence(node);
             var seqObjs = seq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
