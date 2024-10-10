@@ -5065,7 +5065,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         var value = bin.Skip(-4).ReadInt32();
                         if (value != 0 && Pcc.GetEntry(value) is ExportEntry matExport)
                         {
-                            foreach (IEntry texture in new MaterialInstanceConstant(matExport, cache).Textures)
+                            foreach (IEntry texture in MaterialInstanceConstant.GetTextures(matExport, cache))
                             {
                                 matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
                             }
@@ -5856,7 +5856,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         {
                             if (Pcc.GetEntry(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
                             {
-                                foreach (IEntry texture in new MaterialInstanceConstant(matExport, resolveImports: false).Textures)
+                                foreach (IEntry texture in MaterialInstanceConstant.GetTextures(matExport, resolveImports: false))
                                 {
                                     matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {matExport.FileRef.GetEntryString(texture.UIndex)}"));
                                 }

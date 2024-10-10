@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Classes;
@@ -18,7 +16,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <summary>
         /// Stores a texture and load state in the cache.
         /// </summary>
-        public class PreviewTextureEntry : IDisposable
+        public class TextureEntry : IDisposable
         {
             /// <summary>
             /// Texture export for this cache entry
@@ -43,7 +41,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             /// <summary>
             /// Creates a new cache entry for the given texture.
             /// </summary>
-            public PreviewTextureEntry(ExportEntry export)
+            public TextureEntry(ExportEntry export)
             {
                 MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}", new WeakReference(this));
                 InstanceFullPath = export.InstancedFullPath;
@@ -91,7 +89,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         public void Dispose()
         {
-            foreach (PreviewTextureEntry e in AssetCache)
+            foreach (TextureEntry e in AssetCache)
             {
                 e.Dispose();
             }
@@ -101,7 +99,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <summary>
         /// Stores loaded textures by their full name.
         /// </summary>
-        public ObservableCollectionExtended<PreviewTextureEntry> AssetCache { get; } = new();
+        public ObservableCollectionExtended<TextureEntry> AssetCache { get; } = new();
 
         /// <summary>
         /// Queues a texture for eventual loading.
@@ -137,9 +135,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <summary>
         /// Queues a texture for eventual loading.
         /// </summary>
-        public PreviewTextureEntry LoadTexture(ExportEntry export, Texture2DMipInfo preloadedMipInfo = null, byte[] decompressedTextureData = null)
+        public TextureEntry LoadTexture(ExportEntry export, Texture2DMipInfo preloadedMipInfo = null, byte[] decompressedTextureData = null)
         {
-            foreach (PreviewTextureEntry e in AssetCache)
+            foreach (TextureEntry e in AssetCache)
             {
                 // Same full paths are assumed to be identical. Leaving this here in case this needs changing for some reason.
                 if (/*e.TextureExport.FileRef.FilePath == export.FileRef.FilePath && */e.InstanceFullPath == export.InstancedFullPath)
@@ -148,7 +146,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     return e;
                 }
             }
-            var entry = new PreviewTextureEntry(export);
+            var entry = new TextureEntry(export);
             var metex = new LegendaryExplorerCore.Unreal.Classes.Texture2D(export);
             try
             {

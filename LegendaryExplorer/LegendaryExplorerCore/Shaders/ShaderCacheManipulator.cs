@@ -93,9 +93,9 @@ namespace LegendaryExplorerCore.Shaders
             //get corresponding MaterialShaderMap for each StaticParameterSet
             foreach ((StaticParameterSet key, MaterialShaderMap msm) in localCache.MaterialShaderMaps)
             {
-                if (staticParamSets.Contains(key) && !tempCache.MaterialShaderMaps.ContainsKey(key))
+                if (staticParamSets.Contains(key))
                 {
-                    tempCache.MaterialShaderMaps.Add(key, msm);
+                    tempCache.MaterialShaderMaps.TryAdd(key, msm);
                 }
             }
 
@@ -118,9 +118,9 @@ namespace LegendaryExplorerCore.Shaders
             }
             foreach ((Guid key, Shader shader) in localCache.Shaders)
             {
-                if (shaderGuids.Contains(key) && !tempCache.Shaders.ContainsKey(key))
+                if (shaderGuids.Contains(key))
                 {
-                    tempCache.Shaders.Add(key, shader);
+                    tempCache.Shaders.TryAdd(key, shader);
                 }
             }
 
@@ -146,18 +146,12 @@ namespace LegendaryExplorerCore.Shaders
 
             foreach ((StaticParameterSet key, MaterialShaderMap materialShaderMap) in shadersToAdd.MaterialShaderMaps)
             {
-                if (!destCache.MaterialShaderMaps.ContainsKey(key))
-                {
-                    destCache.MaterialShaderMaps.Add(key, materialShaderMap);
-                }
+                destCache.MaterialShaderMaps.TryAdd(key, materialShaderMap);
             }
 
             foreach ((Guid key, Shader shader) in shadersToAdd.Shaders)
             {
-                if (!destCache.Shaders.ContainsKey(key))
-                {
-                    destCache.Shaders.Add(key, shader);
-                }
+                destCache.Shaders.TryAdd(key, shader);
             }
 
             destCacheExport.WriteBinary(destCache);
@@ -370,6 +364,58 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             return null; // Not found
+        }
+
+        //if MaterialInstanceConstant, bHasStaticPermutationResource _must_ be true!
+        public static (MaterialShaderMap, Shader[]) GetMaterialShaderMapAndShaders(ExportEntry material, params string[] shaderTypes)
+        {
+            StaticParameterSet sps = material.ClassName switch
+            {
+                "Material" => (StaticParameterSet)ObjectBinary.From<Material>(material).SM3MaterialResource.ID,
+                _ => ObjectBinary.From<MaterialInstance>(material).SM3StaticParameterSet
+            };
+            var shaders = new Shader[shaderTypes.Length];
+            if (material.FileRef.FindExport("SeekFreeShaderCache", "ShaderCache") is { } seekFreeShaderCacheExport)
+            {
+                var seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+                if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
+                {
+                    foreach (MeshShaderMap meshShaderMap in msm.MeshShaderMaps)
+                    {
+                        if (meshShaderMap.VertexFactoryType.Name == "FLocalVertexFactory")
+                        {
+                            for (int i = 0; i < shaderTypes.Length; i++)
+                            {
+                                if (meshShaderMap.Shaders.TryGetValue(shaderTypes[i], out ShaderReference shaderRef))
+                                {
+                                    shaders[i] = seekFreeShaderCache.Shaders[shaderRef.Id];
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    return (msm, shaders);
+                }
+            }
+
+            var shaderGuids = new Guid[shaderTypes.Length];
+            MaterialShaderMap materialShaderMap = RefShaderCacheReader.GetMaterialShaderMap(material.Game, sps, out _);
+            foreach (MeshShaderMap meshShaderMap in materialShaderMap.MeshShaderMaps)
+            {
+                if (meshShaderMap.VertexFactoryType.Name == "FLocalVertexFactory")
+                {
+                    for (int i = 0; i < shaderTypes.Length; i++)
+                    {
+                        if (meshShaderMap.Shaders.TryGetValue(shaderTypes[i], out ShaderReference shaderRef))
+                        {
+                            shaderGuids[i] = shaderRef.Id;
+                        }
+                    }
+                    RefShaderCacheReader.GetShaders(material.Game, shaderGuids, out _, out _)?.CopyTo(shaders, 0);
+                    break;
+                }
+            }
+            return (materialShaderMap, shaders);
         }
     }
 }

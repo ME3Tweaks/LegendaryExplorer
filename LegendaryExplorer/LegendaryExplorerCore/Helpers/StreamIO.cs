@@ -24,8 +24,10 @@ using System;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Memory;
 
@@ -91,16 +93,14 @@ namespace LegendaryExplorerCore.Helpers
 
         public static Guid ReadGuid(this Stream stream)
         {
-            Span<byte> guidBytes = stackalloc byte[16];
-            stream.Read(guidBytes);
-            return new Guid(guidBytes);
+            Unsafe.SkipInit(out Guid guid);
+            stream.Read(guid.AsBytes());
+            return guid;
         }
 
         public static void WriteGuid(this Stream stream, Guid value)
         {
-            Span<byte> data = stackalloc byte[16];
-            MemoryMarshal.Write(data, in value);
-            stream.Write(data);
+            stream.Write(value.AsBytes());
         }
 
         public static void WriteToFile(this MemoryStream stream, string outfile)
@@ -389,10 +389,10 @@ namespace LegendaryExplorerCore.Helpers
 
         public static int ReadInt32(this Stream stream)
         {
-            Span<byte> buffer = stackalloc byte[sizeof(int)];
-            if (stream.Read(buffer) != sizeof(int))
+            Unsafe.SkipInit(out int val);
+            if (stream.Read(val.AsBytes()) != sizeof(int))
                 ThrowEndOfStreamException();
-            return BitConverter.ToInt32(buffer);
+            return val;
         }
 
         public static void WriteInt32(this Stream stream, int data)

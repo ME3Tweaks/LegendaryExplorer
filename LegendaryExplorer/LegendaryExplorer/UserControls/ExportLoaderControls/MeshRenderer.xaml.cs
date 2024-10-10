@@ -70,6 +70,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             set => SetProperty(ref _renderWireframe, value);
         }
 
+        private bool _canUseGameShaders;
+        public bool CanUseGameShaders
+        {
+            get => _canUseGameShaders;
+            set => SetProperty(ref _canUseGameShaders, value);
+        }
+
         public bool RenderGameShader
         {
             get => _renderGameShader;
@@ -561,6 +568,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             alreadyLoadedImportMaterials.Clear();
             CurrentLoadedExport = exportEntry;
             CurrentLOD = 0;
+            CanUseGameShaders = exportEntry.Game is MEGame.LE3;
 
             Func<PreloadedModelData> loadMesh = null;
             var assetCache = new PackageCache();
@@ -1053,11 +1061,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static void AddMaterialBackgroundThreadTextures(List<PreloadedTextureData> texturePreviewMaterials, ExportEntry entry, PackageCache assetCache)
         {
-            var matinst = new MaterialInstanceConstant(entry, assetCache);
             if (texturePreviewMaterials.Any(x => x.MaterialExport.InstancedFullPath == entry.InstancedFullPath))
                 return; //already cached
             Debug.WriteLine("Loading material assets for " + entry.InstancedFullPath);
-            foreach (var tex in matinst.Textures)
+            foreach (var tex in MaterialInstanceConstant.GetTextures(entry, assetCache))
             {
                 Debug.WriteLine("Preloading " + tex.InstancedFullPath);
                 if (tex.ClassName == "TextureCube" || tex.ClassName.StartsWith("TextureRender"))

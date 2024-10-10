@@ -394,7 +394,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (isNewSurface || _shouldRender)
             {
                 // Debug.WriteLine("_shouldRender");
-                Context.Update((float)Stopwatch.Elapsed.TotalSeconds);
+                Context.Update((float)Stopwatch.Elapsed.Ticks / TimeSpan.TicksPerSecond);
                 Stopwatch.Restart();
                 bool capturing = false;
                 if (CaptureNextFrame && RenderDoc.IsRenderDocAttached())

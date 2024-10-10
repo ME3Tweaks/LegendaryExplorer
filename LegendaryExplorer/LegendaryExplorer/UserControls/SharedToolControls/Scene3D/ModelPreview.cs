@@ -90,59 +90,64 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// <summary>
     /// Classes that inherit from ModelPreviewMaterial are responsible for rendering sections of meshes.
     /// </summary>
-    public abstract class ModelPreviewMaterial : IDisposable
+    public abstract class ModelPreviewMaterial<Vertex> : IDisposable where Vertex : IVertexBase
     {
         /// <summary>
-        /// Creates a ModelPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
+        /// Creates a ModelPreviewMaterial that renders as close to what the given <see cref="MaterialRenderProxy"/> looks like as possible. 
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         /// <param name="assetCache"></param>
-        protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null)
+        protected ModelPreviewMaterial(PreviewTextureCache texcache, MaterialRenderProxy mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null)
         {
             if (mat == null) return;
+            Material = mat;
             Properties.Add("Name", mat.Export.ObjectName);
             foreach (var textureEntry in mat.Textures)
             {
-                if (!Textures.ContainsKey(textureEntry.FullPath) && textureEntry.ClassName == "Texture2D")  //Apparently some assets are cubemaps, we don't want these.
+                if (!Textures.TryGetValue(textureEntry.FullPath, out PreviewTextureCache.TextureEntry texture))
                 {
                     if (preloadedTextures != null)
                     {
-                        var preloadedInfo = preloadedTextures.FirstOrDefault(x => x.MaterialExport == mat.Export && x.Mip.Export.ObjectName.Name == textureEntry.ObjectName.Name); //i don't like matching on object name but its export vs import here.
+                        var preloadedInfo = preloadedTextures.FirstOrDefault(x =>
+                            x.MaterialExport == mat.Export && x.Mip.Export.ObjectName.Name == textureEntry.ObjectName.Name); //i don't like matching on object name but its export vs import here.
+
                         if (preloadedInfo != null)
                         {
-                            Textures.Add(textureEntry.FullPath, texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData));
+                            texture = texcache.LoadTexture(preloadedInfo.Mip.Export, preloadedInfo.Mip, preloadedInfo.decompressedTextureData);
                         }
                         else
                         {
                             Debug.WriteLine("Preloading error");
                         }
-                        //if (textureEntry is ExportEntry texPort && preloadedMipInfo.Export != texPort) throw new Exception();
-                        continue; //Don't further parse
                     }
-
-                    if (textureEntry is ImportEntry import)
+                    else if (textureEntry is ImportEntry import)
                     {
                         var extAsset = EntryImporter.ResolveImport(import, assetCache);
                         if (extAsset != null)
                         {
-                            Textures.Add(textureEntry.FullPath, texcache.LoadTexture(extAsset));
+                            texture = texcache.LoadTexture(extAsset);
                         }
                     }
                     else
                     {
-                        Textures.Add(textureEntry.FullPath, texcache.LoadTexture(textureEntry as ExportEntry));
+                        texture = texcache.LoadTexture(textureEntry as ExportEntry);
+                    }
+                    if (texture is not null)
+                    {
+                        Textures.Add(textureEntry.FullPath, texture);
                     }
                 }
             }
         }
+        protected readonly MaterialRenderProxy Material;
 
         /// <summary>
         /// A Dictionary of string properties. Useful because some materials have properties that others don't.
         /// </summary>
         public readonly Dictionary<string, string> Properties = new();
 
-        public readonly Dictionary<string, PreviewTextureCache.PreviewTextureEntry> Textures = new();
+        public Dictionary<string, PreviewTextureCache.TextureEntry> Textures => Material.TextureMap;
 
         /// <summary>
         /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/>. 
@@ -151,7 +156,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
         /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public abstract void RenderSection<Vertex>(ModelPreviewLOD<Vertex> lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context) where Vertex : IVertexBase;
+        public abstract void RenderSection(ModelPreviewLOD<Vertex> lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context);
 
         /// <summary>
         /// Disposes any outstanding resources.
@@ -161,18 +166,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         }
     }
 
-    /// <summary>
-    /// A material with only a diffuse texture.
-    /// </summary>
-    public class TexturedPreviewMaterial : ModelPreviewMaterial
+    public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
     {
         /// <summary>
         /// The full name of the diffuse texture property.
         /// </summary>
         public string DiffuseTextureFullName = "";
-        public readonly string NormalTextureFullName = "";
-
-        public RenderTargetBlendDescription BlendDescription;
 
         /// <summary>
         /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="MaterialInstanceConstant"/> looks like as possible. 
@@ -180,27 +179,108 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
         /// <param name="assetCache"></param>
-        /// <param name="preloadedTextures"></param>
-        public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialInstanceConstant mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, assetCache, preloadedTextures)
+        public TexturedPreviewMaterial(PreviewTextureCache texcache, MaterialRenderProxy mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, assetCache, preloadedTextures)
         {
             string matPackage = null;
             if (mat.Export.Parent != null)
             {
                 matPackage = mat.Export.Parent.FullPath.ToLower();
             }
-            FindDiffuse();
+            foreach (var textureEntry in mat.Textures)
+            {
+                var texObjectName = textureEntry.FullPath.ToLower();
+                if ((matPackage == null || texObjectName.StartsWith(matPackage)) && texObjectName.Contains("diff"))
+                {
+                    // we have found the diffuse texture!
+                    DiffuseTextureFullName = textureEntry.FullPath;
+                    Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    return;
+                }
+            }
+
+            foreach (var textureEntry in mat.Textures)
+            {
+                var texObjectName = textureEntry.ObjectName.Name.ToLower();
+                if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
+                {
+                    // we have found the diffuse texture!
+                    DiffuseTextureFullName = textureEntry.FullPath;
+                    Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    return;
+                }
+            }
             foreach (var texparam in mat.Textures)
             {
                 var texObjectName = texparam.ObjectName.Name.ToLower();
-                if (texObjectName.Contains("norm"))
+
+                if (texObjectName.Contains("detail"))
                 {
-                    //Anything is better than nothing I suppose
-                    NormalTextureFullName = texparam.FullPath;
-                    Debug.WriteLine("Normal texture of new material <" + Properties["Name"] + "> is " + NormalTextureFullName);
-                    break;
+                    // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
+                    DiffuseTextureFullName = texparam.FullPath;
+                    Debug.WriteLine("Diffuse (Detail) texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
+                    return;
                 }
             }
-            
+            foreach (var texparam in mat.Textures)
+            {
+                var texObjectName = texparam.ObjectName.Name.ToLower();
+                if (!texObjectName.Contains("norm") && !texObjectName.Contains("opac"))
+                {
+                    //Anything is better than nothing I suppose
+                    DiffuseTextureFullName = texparam.FullPath;
+                    Debug.WriteLine("Using first found texture (last resort)  of new material <" + Properties["Name"] + "> as diffuse: " + DiffuseTextureFullName);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/>. 
+        /// </summary>
+        /// <param name="lod">The LOD to render.</param>
+        /// <param name="s">Which faces to render.</param>
+        /// <param name="transform">The model transformation to be applied to the vertices.</param>
+        /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
+        public override void RenderSection(ModelPreviewLOD<WorldVertex> lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context)
+        {
+            SceneCamera camera = context.Camera;
+            context.DefaultEffect.PrepDraw(context.ImmediateContext, context.AlphaBlendState);
+            var worldConstants = new MeshRenderContext.WorldConstants(
+                Matrix4x4.Transpose(camera.ProjectionMatrix),
+                Matrix4x4.Transpose(camera.ViewMatrix),
+                Matrix4x4.Transpose(transform),
+                context.CurrentTextureViewFlags);
+
+            Textures.TryGetValue(DiffuseTextureFullName, out PreviewTextureCache.TextureEntry diffTexture);
+            ShaderResourceView diffTextureView = diffTexture?.TextureView ?? context.DefaultTextureView;
+
+            context.DefaultEffect.RenderObject(
+                context.ImmediateContext,
+                worldConstants,
+                lod.Mesh,
+                (int)s.StartIndex,
+                (int)s.TriangleCount * 3,
+                diffTextureView);
+        }
+    }
+
+    /// <summary>
+    /// A material with only a diffuse texture.
+    /// </summary>
+    file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
+    {
+        private readonly RenderTargetBlendDescription BlendDescription;
+
+
+        /// <summary>
+        /// Creates a TexturedPreviewMaterial that renders as close to what the given <see cref="MaterialRenderProxy"/> looks like as possible. 
+        /// </summary>
+        /// <param name="texcache">The texture cache to request textures from.</param>
+        /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
+        /// <param name="assetCache"></param>
+        /// <param name="preloadedTextures"></param>
+        public LEShaderPreviewMaterial(PreviewTextureCache texcache, MaterialRenderProxy mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null) : base(texcache, mat, assetCache, preloadedTextures)
+        {
             switch (mat.BlendMode)
             {
                 case EBlendMode.BLEND_Opaque:
@@ -297,144 +377,48 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            return;
-
-            void FindDiffuse()
-            {
-                foreach (var textureEntry in mat.Textures)
-                {
-                    var texObjectName = textureEntry.FullPath.ToLower();
-                    if ((matPackage == null || texObjectName.StartsWith(matPackage)) && texObjectName.Contains("diff"))
-                    {
-                        // we have found the diffuse texture!
-                        DiffuseTextureFullName = textureEntry.FullPath;
-                        Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
-                        return;
-                    }
-                }
-                foreach (var textureEntry in mat.Textures)
-                {
-                    var texObjectName = textureEntry.ObjectName.Name.ToLower();
-                    if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
-                    {
-                        // we have found the diffuse texture!
-                        DiffuseTextureFullName = textureEntry.FullPath;
-                        Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
-                        return;
-                    }
-                }
-                foreach (var texparam in mat.Textures)
-                {
-                    var texObjectName = texparam.ObjectName.Name.ToLower();
-
-                    if (texObjectName.Contains("detail"))
-                    {
-                        // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
-                        DiffuseTextureFullName = texparam.FullPath;
-                        Debug.WriteLine("Diffuse (Detail) texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
-                        return;
-                    }
-                }
-                foreach (var texparam in mat.Textures)
-                {
-                    var texObjectName = texparam.ObjectName.Name.ToLower();
-                    if (!texObjectName.Contains("norm") && !texObjectName.Contains("opac"))
-                    {
-                        //Anything is better than nothing I suppose
-                        DiffuseTextureFullName = texparam.FullPath;
-                        Debug.WriteLine("Using first found texture (last resort)  of new material <" + Properties["Name"] + "> as diffuse: " + DiffuseTextureFullName);
-                        return;
-                    }
-                }
-            }
         }
 
         /// <summary>
-        /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/>. 
+        /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD{LEVertex}"/>. 
         /// </summary>
         /// <param name="lod">The LOD to render.</param>
         /// <param name="s">Which faces to render.</param>
         /// <param name="transform">The model transformation to be applied to the vertices.</param>
-        /// <param name="view">The SceneRenderControl that the given LOD should be rendered into.</param>
-        public override void RenderSection<Vertex>(ModelPreviewLOD<Vertex> lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context)
+        /// <param name="context"></param>
+        public override void RenderSection(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, Matrix4x4 transform, MeshRenderContext context)
         {
             SceneCamera camera = context.Camera;
-            switch (lod.Mesh)
+
+            LEEffect effect = context.LEEffect;
+            PixelShader ps = context.GetCachedPixelShader(Material.PixelShader.Guid, Material.PixelShader.ShaderByteCode);
+            (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(Material.VertexShader.Guid, Material.VertexShader.ShaderByteCode);
+            effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
+
+            Matrix4x4 viewMatrix = camera.ViewMatrix;
+            var vsConstants = new LEVSConstants
             {
-                case Mesh<WorldVertex> worldVertMesh:
-                {
-                    context.DefaultEffect.PrepDraw(context.ImmediateContext, context.AlphaBlendState);
-                    var worldConstants = new MeshRenderContext.WorldConstants(
-                        Matrix4x4.Transpose(camera.ProjectionMatrix),
-                        Matrix4x4.Transpose(camera.ViewMatrix),
-                        Matrix4x4.Transpose(transform),
-                        context.CurrentTextureViewFlags);
-
-                    Textures.TryGetValue(DiffuseTextureFullName, out PreviewTextureCache.PreviewTextureEntry diffTexture);
-                    ShaderResourceView diffTextureView = diffTexture?.TextureView ?? context.DefaultTextureView;
-
-                    context.DefaultEffect.RenderObject(
-                        context.ImmediateContext,
-                        worldConstants,
-                        worldVertMesh,
-                        (int)s.StartIndex,
-                        (int)s.TriangleCount * 3,
-                        diffTextureView);
-                    break;
-                }
-                case Mesh<LEVertex> leVertMesh:
-                {
-                    context.LEEffect.PrepDraw(context.ImmediateContext, context.GetCachedBlendState(BlendDescription));
-
-                    Matrix4x4 viewMatrix = camera.ViewMatrix;
-                    var vsConstants = new LEVSConstants
-                    {
-                        ViewProjectionMatrix = viewMatrix * camera.ProjectionMatrix,
-                        CameraPosition = new Vector4(camera.Position, 1),
-                        PreViewTranslation = Vector4.Zero,
-                    };
-                    float depthMul = camera.ProjectionMatrix[2, 2];
-                    float depthAdd = camera.ProjectionMatrix[3, 2];
-                    if (false) //TODO: check if Z is inverted, if so this should be true
-                    {
-                        depthMul = 1f - depthMul;
-                        depthAdd = -depthAdd;
-                    }
-                    var psConstants = new LEPSConstants
-                    {
-                        ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
-                        MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
-                        DynamicScale = Vector4.One,
-                    };
-
-                    //TODO: these are shader specific, need a different system to generalize
-                    var vsGlobals = new MeshRenderContext.LEDefaultUnlitVSGlobals
-                    {
-                        LocalToWorld = Matrix4x4.Identity,
-                        WorldToLocal = Matrix3x3.Identity,
-                        LocalToWorldRotDeterminantFlip = 1,
-                        LightDirectionAndbDirectional = new Vector4(-0.0f, -0.0f, -1f, 0),
-                    };
-                    var psGlobals = new MeshRenderContext.LEDefaultUnlitPSGlobals
-                    {
-                        UniformPixelVector_0 = Vector4.UnitW,
-                        WorldToViewMatrix = new Matrix3x3(viewMatrix.M11, viewMatrix.M12, viewMatrix.M13, viewMatrix.M21, viewMatrix.M22, viewMatrix.M23, viewMatrix.M31, viewMatrix.M32, viewMatrix.M33),
-                        // AmbientColorAndSkyFactor = new Vector4(1, 1, 1, 0),
-                        // CharacterMask = 1
-                        LightColor = new Vector3(1, 1, 1),
-                        bReceiveDynamicShadows = true
-                    };
-
-                    Textures.TryGetValue(DiffuseTextureFullName, out PreviewTextureCache.PreviewTextureEntry diffTexture);
-                    ShaderResourceView diffTextureView = diffTexture?.TextureView ?? context.DefaultDiffTexView;
-                    Textures.TryGetValue(NormalTextureFullName, out PreviewTextureCache.PreviewTextureEntry normTexture);
-                    ShaderResourceView normTextureView = normTexture?.TextureView ?? context.DefaultNormTexView;
-
-                    context.LEEffect.RenderObject(context.ImmediateContext, vsGlobals, psGlobals, vsConstants, psConstants, leVertMesh, (int)s.StartIndex, (int)s.TriangleCount * 3, context.WhiteTexView, normTextureView, diffTextureView);
-                    break;
-                }
+                ViewProjectionMatrix = viewMatrix * camera.ProjectionMatrix,
+                CameraPosition = new Vector4(camera.Position, 1),
+                PreViewTranslation = Vector4.Zero,
+            };
+            float depthMul = camera.ProjectionMatrix[2, 2];
+            float depthAdd = camera.ProjectionMatrix[3, 2];
+            if (false) //TODO: check if Z is inverted, if so this should be true
+            {
+                depthMul = 1f - depthMul;
+                depthAdd = -depthAdd;
             }
+            var psConstants = new LEPSConstants
+            {
+                ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
+                MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
+                DynamicScale = Vector4.One,
+            };
+
+            Material.UpdateShaderParams(effect.VertexShaderConstantBuffer, effect.PixelShaderConstantBuffer, context, lod.Mesh);
+
+            effect.RenderObject(context.ImmediateContext, vsConstants, psConstants, lod.Mesh, (int)s.StartIndex, (int)s.TriangleCount * 3);
         }
     }
 
@@ -451,7 +435,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <summary>
         /// Stores materials for this preview, stored by material name.
         /// </summary>
-        public Dictionary<string, ModelPreviewMaterial> Materials { get; } = [];
+        public Dictionary<string, ModelPreviewMaterial<TVertex>> Materials { get; } = [];
 
         /// <summary>
         /// Creates a preview of a generic untextured mesh
@@ -466,10 +450,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 sections = preloadedData.sections;
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
-                foreach (var mat in uniqueMaterials)
+                foreach (ExportEntry mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
-                    AddMaterial(mat.ObjectName.Name, material);
+                    AddMaterial(mat.ObjectName.Name, texcache, new MaterialRenderProxy(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
                 }
             }
             LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections));
@@ -541,55 +524,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
             }
 
-            /*
-            if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
-            {
-                // Hey, we have indices all set up for us. How considerate.
-                for (int i = 0; i < m.Mesh.IdxBuf.Indexes.Count; i += 3)
-                {
-                    triangles.Add(new Triangle(m.Mesh.IdxBuf.Indexes[i], m.Mesh.IdxBuf.Indexes[i + 1], m.Mesh.IdxBuf.Indexes[i + 2]));
-                }
-            }
-            else
-            {
-                // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
-                for (int i = 0; i < m.Mesh.RawTris.RawTriangles.Count; i++)
-                {
-                    triangles.Add(new Triangle((uint)m.Mesh.RawTris.RawTriangles[i].v0, (uint)m.Mesh.RawTris.RawTriangles[i].v1, (uint)m.Mesh.RawTris.RawTriangles[i].v2));
-                }
-            }*/
-
-            //OLD CODE
-            /* if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
-                        {
-                            // Hey, we have indices all set up for us. How considerate.
-                            for (int i = 0; i < m.Mesh.IdxBuf.Indexes.Count; i += 3)
-                            {
-                                triangles.Add(new Triangle(m.Mesh.IdxBuf.Indexes[i], m.Mesh.IdxBuf.Indexes[i + 1], m.Mesh.IdxBuf.Indexes[i + 2]));
-                            }
-                        }
-                        else
-                        {
-                            // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
-                            for (int i = 0; i < m.Mesh.RawTris.RawTriangles.Count; i++)
-                            {
-                                triangles.Add(new Triangle((uint)m.Mesh.RawTris.RawTriangles[i].v0, (uint)m.Mesh.RawTris.RawTriangles[i].v1, (uint)m.Mesh.RawTris.RawTriangles[i].v2));
-                            }
-                        }*/
-
-            // STEP 2: MATERIALS
-            //foreach (var v in lodModel.Elements)
-
-            //foreach (Unreal.Classes.MaterialInstanceConstant mat in m.Mesh.Mat.MatInst)
-            //{
-            //    ModelPreviewMaterial material;
-            //    // TODO: pick what material class best fits based on what properties the 
-            //    // MaterialInstanceConstant mat has.
-            //    // For now, just use the default material.
-            //    material = new TexturedPreviewMaterial(texcache, mat);
-            //    AddMaterial(material.Properties["Name"], material);
-            //}
-
             // STEP 3: SECTIONS
             var sections = preloadedData?.sections;
             var assetLookupPackagesToDispose = new List<IMEPackage>();
@@ -598,39 +532,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             if (sections == null)
             {
                 throw new Exception("Sections was null, comment indicated this code should not have been reachable");
-                //sections = new List<ModelPreviewSection>();
-                //foreach (var section in lodModel.Elements)
-                //{
-                //    if (section.Material.value > 0)
-                //    {
-                //        // TODO: pick what material class best fits based on what properties the 
-                //        // MaterialInstanceConstant mat has.
-                //        // For now, just use the default material.
-                //        ExportEntry entry = m.Export.FileRef.GetUExport(section.Material.value);
-                //        ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(entry), assetCache);
-                //        AddMaterial(material.Properties["Name"], material);
-                //    }
-                //    else if (section.Material.value < 0)
-                //    {
-                //        var extMaterialExport = FindExternalAsset(m.Export.FileRef.GetImport(section.Material.value), texcache.AssetCache.Select(x => x.TextureExport).ToList(), assetLookupPackagesToDispose);
-                //        if (extMaterialExport != null)
-                //        {
-                //            // TODO: pick what material class best fits based on what properties the 
-                //            // MaterialInstanceConstant mat has.
-                //            // For now, just use the default material.
-                //            ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(extMaterialExport), assetCache);
-                //            AddMaterial(material.Properties["Name"], material);
-                //        }
-                //        else
-                //        {
-
-                //            Debug.WriteLine("Could not find import material from section.");
-                //            Debug.WriteLine("Import material: " + m.Export.FileRef.GetEntryString(section.Material.value));
-                //        }
-                //    }
-
-                //    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
-                //}
             }
             else
             {
@@ -639,8 +540,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat), assetCache, preloadedData.texturePreviewMaterials);
-                    AddMaterial(mat.ObjectName.Name, material);
+                    AddMaterial(mat.ObjectName.Name, texcache, new MaterialRenderProxy(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
                 }
             }
 
@@ -648,25 +548,25 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 package?.Dispose(); //Release
             }
-            //List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-            //foreach (var section in lodModel.Elements)
-            //{
-            //    sections.Add(new ModelPreviewSection(m.Export.FileRef.getObjectName(section.Material.value), section.FirstIndex, section.NumTriangles));
-            //}
             LODs.Add(new ModelPreviewLOD<TVertex>(new Mesh<TVertex>(Device, triangles, vertices), sections));
         }
 
         /// <summary>
-        /// Adds a <see cref="ModelPreviewMaterial"/> to this model, or adds another reference of any conflicting material.
+        /// Adds a <see cref="ModelPreviewMaterial{Vertex}"/> to this model, or adds another reference of any conflicting material.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="material"></param>
-        private void AddMaterial(string name, ModelPreviewMaterial material)
+        private void AddMaterial(string name, PreviewTextureCache texcache, MaterialRenderProxy mat, PackageCache assetCache, List<PreloadedTextureData> preloadedTextures = null)
         {
-            if (!Materials.TryAdd(name, material))
+            if (!Materials.ContainsKey(name))
             {
-                material.Dispose(); // We'll use the existing version of the duplicate, so this one is no longer needed.
-                AddMaterial(name + "_duplicate", Materials[name]);
+                switch (Materials)
+                {
+                    case Dictionary<string, ModelPreviewMaterial<WorldVertex>> worldVertMats:
+                        worldVertMats.Add(name, new TexturedPreviewMaterial(texcache, mat, assetCache, preloadedTextures));
+                        break;
+                    case Dictionary<string, ModelPreviewMaterial<LEVertex>> leVertMats:
+                        leVertMats.Add(name, new LEShaderPreviewMaterial(texcache, mat, assetCache, preloadedTextures));
+                        break;
+                }
             }
         }
 
@@ -683,10 +583,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 foreach (int materialUIndex in m.Materials)
                 {
-                    MaterialInstanceConstant mat = null;
+                    MaterialRenderProxy mat = null;
                     if (materialUIndex > 0)
                     {
-                        mat = new MaterialInstanceConstant(m.Export.FileRef.GetUExport(materialUIndex));
+                        mat = new MaterialRenderProxy(m.Export.FileRef.GetUExport(materialUIndex), assetCache);
                     }
                     else if (materialUIndex < 0)
                     {
@@ -695,17 +595,16 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                         var externalAsset = EntryImporter.ResolveImport(matImport, assetCache);
                         if (externalAsset != null)
                         {
-                            mat = new MaterialInstanceConstant(externalAsset);
+                            mat = new MaterialRenderProxy(externalAsset, assetCache);
                         }
                     }
 
                     if (mat != null)
                     {
                         // TODO: pick what material class best fits based on what properties the 
-                        // MaterialInstanceConstant mat has.
+                        // MaterialRenderProxy mat has.
                         // For now, just use the default material.
-                        ModelPreviewMaterial material = new TexturedPreviewMaterial(texcache, mat, assetCache);
-                        AddMaterial(material.Properties["Name"], material);
+                        AddMaterial(mat.Export.ObjectName, texcache, mat, assetCache);
                     }
                 }
             }
@@ -716,8 +615,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 var uniqueMaterials = preloadedData.texturePreviewMaterials.Select(x => x.MaterialExport).Distinct();
                 foreach (var mat in uniqueMaterials)
                 {
-                    var material = new TexturedPreviewMaterial(texcache, new MaterialInstanceConstant(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
-                    AddMaterial(mat.ObjectName.Name, material);
+                    AddMaterial(mat.ObjectName.Name, texcache, new MaterialRenderProxy(mat, assetCache), assetCache, preloadedData.texturePreviewMaterials);
                 }
             }
 
@@ -760,80 +658,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        ///// <summary>
-        ///// Creates a preview of the given <see cref="SkeletalMesh"/>.
-        ///// </summary>
-        ///// <param name="Device">The Direct3D device to use for buffer creation.</param>
-        ///// <param name="m">The mesh to generate a preview for.</param>
-        ///// <param name="texcache">The texture cache for loading textures.</param>
-        //public ModelPreview(Device Device, LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh m, PreviewTextureCache texcache)
-        //{
-        //    // STEP 1: MATERIALS
-        //    for (int i = 0; i < m.Materials.Count; i++)
-        //    {
-        //        MaterialInstanceConstant mat = m.MatInsts[i];
-        //        if (mat == null && m.Materials[i] < 0)
-        //        {
-        //            // The material instance is an import!
-        //            ImportEntry matImport = m.Export.FileRef.GetImport(m.Materials[i]);
-        //            var externalAsset = FindExternalAsset(matImport, texcache.cache.Select(x => x.TextureExport).ToList());
-        //            if (externalAsset != null)
-        //            {
-        //                mat = new MaterialInstanceConstant(externalAsset);
-        //            }
-        //        }
-
-        //        if (mat != null)
-        //        {
-        //            ModelPreviewMaterial material;
-        //            // TODO: pick what material class best fits based on what properties the 
-        //            // MaterialInstanceConstant mat has.
-        //            // For now, just use the default material.
-        //            material = new TexturedPreviewMaterial(texcache, mat);
-        //            AddMaterial(material.Properties["Name"], material);
-        //        }
-        //    }
-
-        //    // STEP 2: LODS
-        //    foreach (LegendaryExplorerCore.Unreal.Classes.SkeletalMesh.LODModelStruct lodmodel in m.LODModels)
-        //    {
-        //        // Vertices
-        //        List<Vertex> vertices = new List<Vertex>();
-        //        if (m.Export.Game == MEGame.ME1)
-        //        {
-        //            foreach (LegendaryExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
-        //            {
-        //                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(vertex.UFullPrecision, vertex.VFullPrecision)));
-        //            }
-        //        }
-        //        else
-        //        {
-        //            foreach (LegendaryExplorerCore.Unreal.Classes.SkeletalMesh.GPUSkinVertexStruct vertex in lodmodel.VertexBufferGPUSkin.Vertices)
-        //            {
-        //                // NOTE: note the switched Y and Z coordinates. Unreal seems to think that Z is up.
-        //                vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
-        //            }
-        //        }
-        //        // Triangles
-        //        List<Triangle> triangles = new List<Triangle>();
-        //        for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i += 3)
-        //        {
-        //            triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
-        //        }
-        //        WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
-        //        // Sections
-        //        List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
-        //        foreach (LegendaryExplorerCore.Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
-        //        {
-        //            if (section.MaterialIndex < Materials.Count)
-        //            {
-        //                sections.Add(new ModelPreviewSection(Materials.Keys.ElementAt(section.MaterialIndex), (uint)section.BaseIndex, (uint)section.NumTriangles));
-        //            }
-        //        }
-        //        LODs.Add(new ModelPreviewLOD(mesh, sections));
-        //    }
-        //}
-
         /// <summary>
         /// Renders the ModelPreview at the specified level of detail.
         /// </summary>
@@ -844,7 +668,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             foreach (ModelPreviewSection section in LODs[lod].Sections)
             {
-                if (Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial material))
+                if (Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial<TVertex> material))
                 {
                     material.RenderSection(LODs[lod], section, transform, view);
                 }
@@ -856,7 +680,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// </summary>
         public void Dispose()
         {
-            foreach (ModelPreviewMaterial mat in Materials.Values)
+            foreach (ModelPreviewMaterial<TVertex> mat in Materials.Values)
             {
                 mat.Dispose();
             }

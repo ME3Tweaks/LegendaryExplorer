@@ -33,7 +33,8 @@
             <StatusBar DockPanel.Dock="Bottom">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Name="Shader_Checkbox" IsChecked="{Binding RenderGameShader}"  Content="In-Game Shader"  VerticalAlignment="Center"  Margin="2,0"/>
+                        <CheckBox Name="Shader_Checkbox" IsChecked="{Binding RenderGameShader}"  Content="In-Game Shader"  VerticalAlignment="Center"  Margin="2,0"
+                                  Visibility="{Binding CanUseGameShaders, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <CheckBox Name="Solid_Checkbox" IsChecked="{Binding RenderSolid}"  Content="Solid"  VerticalAlignment="Center"  Margin="2,0"/>
                         <CheckBox Name="Wireframe_Checkbox" IsChecked="{Binding RenderWireframe}" Content="Wireframe"  VerticalAlignment="Center" Margin="2,0"/>
                         <CheckBox Name="FirstPerson_Checkbox" IsChecked="{Binding FirstPerson}"  Content="FirstPerson"  VerticalAlignment="Center" Margin="2,0"/>

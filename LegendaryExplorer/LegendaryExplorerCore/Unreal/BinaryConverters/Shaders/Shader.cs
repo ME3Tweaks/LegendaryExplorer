@@ -24,9 +24,6 @@ public abstract class Shader
     public int InstructionCount;
     public byte Platform; // LE is 5, OT is 0. However, LE also has a few 2 and 3 for SM2 and SM3 shaders. So we must store this info.
     public NameReference? VertexFactoryType; //only exists in Shaders with a FVertexFactoryParameterRef
-    public ushort[] UDKSerializations; // UDK only
-    public byte[] UDKSourceSHA; // UDK only - SHA of source code for shader (HLSL?)
-    public byte[] UDKShaderSHA; // UDK only - SHA of shader (bytecode?) for shader. Maybe previous data or something.
     public virtual Shader Clone() => SharedClone();
 
     protected Shader SharedClone()
@@ -43,26 +40,13 @@ public abstract class Shader
 
     internal virtual DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
-        if (sc.Game == MEGame.UDK)
-        {
-            sc.Serialize(ref UDKSourceSHA, 0x14);
-        }
-
         var defferedWriter = sc.SerializeDefferedFileOffset();
-        if (sc.Game == MEGame.UDK)
-        {
-            sc.Serialize(ref UDKSerializations);
-        }
         sc.Serialize(ref Platform);
         sc.Serialize(ref Frequency);
         sc.Serialize(ref ShaderByteCode);
         sc.Serialize(ref ParameterMapCRC);
         sc.Serialize(ref Guid);
         sc.Serialize(ref ShaderType);
-        if (sc.Game == MEGame.UDK)
-        {
-            sc.Serialize(ref UDKShaderSHA, 0x14);
-        }
         sc.Serialize(ref InstructionCount);
         return defferedWriter;
     }
@@ -72,6 +56,9 @@ public class UnparsedShader : Shader
 {
     private byte[] unkBytesPreName; //only exists in some Shaders with a FVertexFactoryParameterRef
     private byte[] unkBytes;
+    public ushort[] UDKSerializations; // UDK only
+    public byte[] UDKSourceSHA; // UDK only - SHA of source code for shader (HLSL?)
+    public byte[] UDKShaderSHA; // UDK only - SHA of shader (bytecode?) for shader. Maybe previous data or something.
 
     public override Shader Clone()
     {

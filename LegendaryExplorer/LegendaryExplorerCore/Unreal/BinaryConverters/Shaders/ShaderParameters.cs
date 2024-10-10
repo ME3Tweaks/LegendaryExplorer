@@ -9,7 +9,7 @@ public struct FShaderParameter
     public ushort NumBytes;
     public ushort BufferIndex;
 
-    public readonly bool ShouldWrite()
+    public readonly bool IsBound()
     {
         //if BufferIndex > 0, this param is in a shared constant buffer which is handled seperately
         return NumBytes > 0 && BufferIndex == 0;
@@ -22,7 +22,7 @@ public struct FShaderResourceParameter
     public ushort NumResources;
     public ushort SamplerIndex;
 
-    public readonly bool ShouldWrite()
+    public readonly bool IsBound()
     {
         return NumResources > 0;
     }

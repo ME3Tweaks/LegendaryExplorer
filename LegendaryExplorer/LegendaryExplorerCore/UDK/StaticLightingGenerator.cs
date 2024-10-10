@@ -811,10 +811,9 @@ namespace LegendaryExplorerCore.UDK
                             }
                         }
 
-                        List<IEntry> textures = new MaterialInstanceConstant(matExp, packageCache).Textures;
                         ExportEntry diff = null;
                         ExportEntry norm = null;
-                        foreach (IEntry texEntry in textures)
+                        foreach (IEntry texEntry in MaterialInstanceConstant.GetTextures(matExp, packageCache))
                         {
                             if (texEntry is ExportEntry texport)
                             {
