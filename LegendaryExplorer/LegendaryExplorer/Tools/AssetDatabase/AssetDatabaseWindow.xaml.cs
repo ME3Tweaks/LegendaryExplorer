@@ -1144,6 +1144,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     break;
             }
+            // We dispose of package here so it loses the package handler reference, since we don't open it in a using block.
+            package?.Dispose();
         }
 
         /// <summary>
