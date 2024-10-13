@@ -160,46 +160,44 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 sc.Serialize(ref bkhdUnks[i]);
             }
-
-            // Old weird code.
-            /*
-            if (Version is 38 || //strangely formatted Wwisebank, unused maybe? We're going to ignore it.
-                sc.Game is MEGame.LE2 && Version is 44) //temporary hack. Todo: WwiseBank parsing should be refactored to parse based on Version, not game
-            {
-                if (sc.IsLoading)
-                {
-                    var amountRead = (sc.ms.Position - dataSizePos - 12);
-                    var amountRemaining = dataSize - amountRead;
-                    ME2STMGFallback = sc.ms.ReadBytes((int)amountRemaining);
-                }
-                else
-                {
-                    // Commented out
-                    //sc.ms.Writer.WriteFromBuffer(ME2STMGFallback);
-                    //var endPos = sc.ms.Position;
-                    //sc.ms.JumpTo(dataSizePos);
-                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    //sc.ms.JumpTo(endPos);
-                }
-            }
-            else
-            {
+            
+            //if (Version is 38 || //strangely formatted Wwisebank, unused maybe? We're going to ignore it.
+            //    sc.Game is MEGame.LE2 && Version is 44) //temporary hack. Todo: WwiseBank parsing should be refactored to parse based on Version, not game
+            //{
+            //    if (sc.IsLoading)
+            //    {
+            //        var amountRead = (sc.ms.Position - dataSizePos - 12);
+            //        var amountRemaining = dataSize - amountRead;
+            //        ME2STMGFallback = sc.ms.ReadBytes((int)amountRemaining);
+            //    }
+            //    else
+            //    {
+            //        // Commented out
+            //        //sc.ms.Writer.WriteFromBuffer(ME2STMGFallback);
+            //        //var endPos = sc.ms.Position;
+            //        //sc.ms.JumpTo(dataSizePos);
+            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+            //        //sc.ms.JumpTo(endPos);
+            //    }
+            //}
+            //else
+            //{
                 if (sc.IsLoading)
                 {
                     ReadChunks(sc);
                 }
-                else
-                {
-                    // Commented out
-                    //WriteChunks(sc);
-                    //var endPos = sc.ms.Position;
-                    //sc.ms.JumpTo(dataSizePos);
-                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-                    //sc.ms.JumpTo(endPos);
-                }
-            }*/
+            //    else
+            //    {
+            //        // Commented out
+            //        //WriteChunks(sc);
+            //        //var endPos = sc.ms.Position;
+            //        //sc.ms.JumpTo(dataSizePos);
+            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+            //        //sc.ms.JumpTo(endPos);
+            //    }
+            //}
         }
 
 

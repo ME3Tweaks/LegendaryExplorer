@@ -1309,5 +1309,28 @@ namespace LegendaryExplorerCore.Kismet
             }
             return attachToEvent;
         }
+
+        /// <summary>
+        /// Creates a BioSeqAct_SetActive action in the given sequence, with the given linked objects, if specified
+        /// </summary>
+        /// <param name="sequence">Sequence to place this object into as a child</param>
+        /// <param name="pawn">Optional: Actor object to attach to the item on the target pin</param>
+        /// <param name="activeBool">Optional: The bool value to attach to the Active pin</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSetActive(ExportEntry sequence, ExportEntry pawn = null, ExportEntry activeBool = null, PackageCache cache = null)
+        {
+            var setActive = CreateSequenceObject(sequence.FileRef, "BioSeqAct_SetActive", cache);
+            KismetHelper.AddObjectToSequence(setActive, sequence);
+            if (pawn != null)
+            {
+                KismetHelper.CreateVariableLink(setActive, "Target", pawn);
+            }
+            if (activeBool != null)
+            {
+                KismetHelper.CreateVariableLink(setActive, "Active", activeBool);
+            }
+            return setActive;
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         // port it in
                         //Debug.WriteLine($"Porting in: {mapping.Key.InstancedFullPath}");
                         var parent = PortParents(mapping.Value, targetPackage, customROP: customROP);
-                        customROP.CrossPackageMap.Clear(); // Do not persist this value, we do not want double relink
+                        customROP?.CrossPackageMap.Clear(); // Do not persist this value, we do not want double relink
                         var relinkResults1 = EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies, mapping.Value, targetPackage, parent, true,
                             customROP ?? new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache }, out _);
                         issues.AddRange(relinkResults1);
