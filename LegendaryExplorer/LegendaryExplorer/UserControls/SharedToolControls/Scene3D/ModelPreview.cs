@@ -6,13 +6,13 @@ using System.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System.Numerics;
+using LegendaryExplorerCore.Gammtek;
 using SharpDX.Direct3D11;
 using StaticMesh = LegendaryExplorerCore.Unreal.BinaryConverters.StaticMesh;
 using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
-using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
@@ -398,12 +398,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             var material = (MaterialRenderProxy)Material;
             LEEffect effect = context.LEEffect;
             PixelShader ps = context.GetCachedPixelShader(material.PixelShader.Guid, material.PixelShader.ShaderByteCode);
-            int numTexCoords = 1;
-            if (mesh.Vertices.Count > 0)
-            {
-                numTexCoords = mesh.Vertices[0].NumTexCoords;
-            }
-            (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.VertexShader.Guid, material.VertexShader.ShaderByteCode, numTexCoords);
+            (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.VertexShader.Guid, material.VertexShader.ShaderByteCode);
             effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
 
             Matrix4x4 viewMatrix = camera.ViewMatrix;
@@ -492,17 +487,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 var position = lodModel.PositionVertexBuffer.VertexData[i];
                 var vertex = vertexBuffer.VertexData[i];
-                Vector2[] uvs;
+                Fixed4<Vector4> uvs = default;
                 if (vertexBuffer.bUseFullPrecisionUVs)
                 {
-                    uvs = vertex.FullPrecisionUVs;
+                    for (int j = 0; j < uvs.Length && j < vertex.FullPrecisionUVs.Length; j++)
+                    {
+                        uvs[j] = new Vector4(vertex.FullPrecisionUVs[j], 0, 0);
+                    }
                 }
                 else
                 {
-                    uvs = new Vector2[vertex.HalfPrecisionUVs.Length];
-                    for (int j = 0; j < uvs.Length; j++)
+                    for (int j = 0; j < uvs.Length && j < vertex.HalfPrecisionUVs.Length; j++)
                     {
-                        uvs[j] = vertex.HalfPrecisionUVs[j];
+                        uvs[j] = new Vector4(vertex.HalfPrecisionUVs[j], 0, 0);
                     }
                 }
                 vertices.Add((TVertex)TVertex.Create(new Vector3(-position.X, position.Z, position.Y), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ, uvs));
@@ -645,18 +642,21 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 // Vertices
                 var vertices = new List<TVertex>(m.Export.Game == MEGame.ME1 ? lodmodel.ME1VertexBufferGPUSkin.Length : lodmodel.VertexBufferGPUSkin.VertexData.Length);
+                Fixed4<Vector4> uvs = default;
                 if (m.Export.Game == MEGame.ME1)
                 {
                     foreach (SoftSkinVertex vertex in lodmodel.ME1VertexBufferGPUSkin)
                     {
-                        vertices.Add((TVertex)TVertex.Create(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ, [vertex.UV]));
+                        uvs[0] = new Vector4(vertex.UV, 0, 0);
+                        vertices.Add((TVertex)TVertex.Create(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ, uvs));
                     }
                 }
                 else
                 {
                     foreach (GPUSkinVertex vertex in lodmodel.VertexBufferGPUSkin.VertexData)
                     {
-                        vertices.Add((TVertex)TVertex.Create(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ, [vertex.UV]));
+                        uvs[0] = new Vector4(vertex.UV, 0, 0);
+                        vertices.Add((TVertex)TVertex.Create(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ, uvs));
                     }
                 }
                 // Triangles

@@ -111,7 +111,9 @@ namespace LegendaryExplorerCore.Shaders
                 lock (offsetDict)
                 {
                     if (offsetDict.Count > 0) return;
-                    using FileStream fs = File.OpenRead(filePath);
+                    //do not change the filestream creation options without testing what effect it has on the runtime of this method
+                    //default File.OpenRead is 10x slower than this. (keep in mind OS file caching when testing)
+                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 100, FileOptions.SequentialScan);
                     fs.JumpTo(offsetOfShaderCacheOffset);
                     int binaryOffset = fs.ReadInt32() + 12;
                     fs.JumpTo(binaryOffset);
@@ -320,12 +322,12 @@ namespace LegendaryExplorerCore.Shaders
                 int i = 0;
                 foreach (Guid shaderGuid in shaderGuids)
                 {
-                    if (!offsets.TryGetValue(shaderGuid, out int offset))
+                    if (offsets.TryGetValue(shaderGuid, out int offset))
                     {
-                        return null;
+                        sc.ms.JumpTo(offset - 0x1E); //offset is to the bytecode, not the start of the shader structure.
+                        sc.Serialize(ref shaders[i]);
                     }
-                    sc.ms.JumpTo(offset - 0x1E); //offset is to the bytecode, not the start of the shader structure.
-                    sc.Serialize(ref shaders[i++]);
+                    ++i;
                 }
                 sc.ms.JumpTo(OffsetOfVertexFactoryTypeCRCMap[(int)game]);
                 sc.Serialize(ref vertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);

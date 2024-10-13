@@ -18,10 +18,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         : MaterialInstanceConstant(export, assetCache, true)
     {
         private const string VERTEX_SHADER_TYPE_NAME = "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy";
-        private const string PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicySkyLight";
+        private const string LIT_PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicySkyLight";
+        private const string UNLIT_PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight";
 
         public EBlendMode BlendMode;
         public bool UseHairPass;
+        public bool IsUnlit;
         private readonly Dictionary<string, float> ScalarParameterValues = [];
         private readonly Dictionary<string, LinearColor> VectorParameterValues = [];
         private readonly Dictionary<string, string> TextureParameterValues = [];
@@ -57,6 +59,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
 
             UseHairPass = props.GetProp<BoolProperty>("bHairPass") is { Value: true };
+            IsUnlit = props.GetProp<EnumProperty>("LightingModel") is {} lightingModelProp && lightingModelProp.Value == "MLM_Unlit";
 
             var expressionsProp = props.GetProp<ArrayProperty<ObjectProperty>>("Expressions");
             if (expressionsProp is not null)
@@ -98,12 +101,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         private void LoadShaders(ExportEntry mat)
         {
-            (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, PIXEL_SHADER_TYPE_NAME);
-            if (shaders is [VertexShaderType vertexShader, PixelShaderType pixelShader])
-            {
-                VertexShader = vertexShader;
-                PixelShader = pixelShader;
-            }
+            (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, LIT_PIXEL_SHADER_TYPE_NAME, UNLIT_PIXEL_SHADER_TYPE_NAME);
+
+            VertexShader = (VertexShaderType)shaders[0];
+            PixelShader = (PixelShaderType)(shaders[1] ?? shaders[2]);
         }
 
         protected override void ReadMaterialInstanceConstant(ExportEntry matInst, PropertyCollection props)

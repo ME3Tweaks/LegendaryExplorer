@@ -38,7 +38,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             //TODO: LightMapPolicy params
             shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
-            bool drawUnlit = false;
+            bool drawUnlit = mat.IsUnlit;
             bool skylight = !drawUnlit;
             buffer.WriteVal(shader.AmbientColorAndSkyFactor, drawUnlit ? new LinearColor(1, 1, 1, 0) : new LinearColor(0, 0, 0, 1));
             Vector3 upperSkyColor = Vector3.Zero;

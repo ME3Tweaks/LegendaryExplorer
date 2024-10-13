@@ -284,7 +284,7 @@ public class MeshRenderContext : RenderContext
         return blendState;
     }
 
-    public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode, int numTexCoords)
+    public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode)
     {
         InputLayout inputLayout;
         if (VertexShaderCache.TryGetValue(id, out VertexShader shader))
@@ -295,7 +295,7 @@ public class MeshRenderContext : RenderContext
         {
             shader = new VertexShader(Device, shaderBytecode);
             VertexShaderCache.Add(id, shader);
-            inputLayout = new InputLayout(Device, shaderBytecode, LEVertex.InputElements(numTexCoords));
+            inputLayout = new InputLayout(Device, shaderBytecode, LEVertex.InputElements);
             InputLayoutCache.Add(id, inputLayout);
         }
         return (shader, inputLayout);

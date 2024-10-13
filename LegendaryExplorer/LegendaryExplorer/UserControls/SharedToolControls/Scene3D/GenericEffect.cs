@@ -71,7 +71,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             context.UpdateSubresource(ref constantData, ConstantBuffer);
 
             // Setup buffers for rendering
-            context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, Vertex.VertexLength, 0));
+            context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, Vertex.Stride, 0));
             context.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, Format.R32_UInt, 0);
 
             // Set the textures
