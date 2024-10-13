@@ -193,15 +193,6 @@ namespace LegendaryExplorerCore.Shaders
                 return brokenMaterials;
             }
             HashSet<StaticParameterSet> staticParamSets = staticParamSetsToMaterialsDict.Keys.ToHashSet();
-            lock (shaderCacheReaderObj)
-            {
-                RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
-            }
-
-            if (staticParamSets.Count is 0)
-            {
-                return brokenMaterials;
-            }
 
             if (pcc.FindExport("SeekFreeShaderCache") is ExportEntry localCacheExport)
             {
@@ -210,6 +201,16 @@ namespace LegendaryExplorerCore.Shaders
                 {
                     staticParamSets.Remove(key);
                 }
+            }
+
+            if (staticParamSets.Count is 0)
+            {
+                return brokenMaterials;
+            }
+
+            lock (shaderCacheReaderObj)
+            {
+                RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
             }
 
             foreach (StaticParameterSet staticParamSet in staticParamSets)
