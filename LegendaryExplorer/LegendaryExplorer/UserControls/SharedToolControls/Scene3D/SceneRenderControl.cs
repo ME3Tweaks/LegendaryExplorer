@@ -12,10 +12,18 @@ using SharpDX.Direct3D;
 using LegendaryExplorerCore.Unreal;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using SharpDX.DXGI;
+using Device = SharpDX.Direct3D11.Device;
 using Point = System.Windows.Point;
+using Resource = SharpDX.Direct3D11.Resource;
+using LegendaryExplorerCore.Gammtek;
+using LegendaryExplorerCore.Packages;
+using Texture2D = SharpDX.Direct3D11.Texture2D;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
+    using LECTexture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
+
     public enum MouseButtons
     {
         Left,
@@ -25,54 +33,75 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
     public static class RenderContextExtensions
     {
-        public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, SharpDX.DXGI.Format format, byte[] pixelData)
+        public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, Format format, byte[] pixelData)
         {
+            Texture2DDescription texture2DDescription = GetTextureDescription(width, height, format, false, out int pitch);
             fixed (byte* pixelDataPointer = pixelData)
             {
-                int pitch = (int)(SharpDX.DXGI.FormatHelper.SizeOfInBits(format) * width / 8);
-                if (SharpDX.DXGI.FormatHelper.IsCompressed(format))
-                {
-                    // Pitch calculation for compressed formats from https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide
-                    int blockSize = 16;
-                    if (format is SharpDX.DXGI.Format.BC1_UNorm or SharpDX.DXGI.Format.BC1_UNorm_SRgb or SharpDX.DXGI.Format.BC4_SNorm or SharpDX.DXGI.Format.BC4_UNorm)
-                    {
-                        blockSize = 8;
-                    }
-                    pitch = (int)(Math.Max(1, ((width + 3) / 4)) * blockSize);
-                }
-                return new Texture2D(renderContext.Device, new Texture2DDescription
-                {
-                    Width = (int)width,
-                    Height = (int)height,
-                    ArraySize = 1,
-                    BindFlags = BindFlags.ShaderResource,
-                    Usage = ResourceUsage.Immutable,
-                    
-                    CpuAccessFlags = CpuAccessFlags.None,
-                    Format = format,
-                    MipLevels = 1,
-                    OptionFlags = ResourceOptionFlags.None,
-                    SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0)
-                }, new DataRectangle((IntPtr)pixelDataPointer, pitch));
+                return new Texture2D(renderContext.Device, texture2DDescription, new DataRectangle((IntPtr)pixelDataPointer, pitch));
             }
+        }
+
+        private static Texture2DDescription GetTextureDescription(uint width, uint height, Format format, bool isCube, out int pitch)
+        {
+            pitch = (int)(format.SizeOfInBits() * width / 8);
+            if (format.IsCompressed())
+            {
+                // Pitch calculation for compressed formats from https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide
+                int blockSize = 16;
+                if (format is Format.BC1_UNorm or Format.BC1_UNorm_SRgb or Format.BC4_SNorm or Format.BC4_UNorm)
+                {
+                    blockSize = 8;
+                }
+                pitch = (int)(Math.Max(1, ((width + 3) / 4)) * blockSize);
+            }
+
+            var texture2DDescription = new Texture2DDescription
+            {
+                Width = (int)width,
+                Height = (int)height,
+                ArraySize = isCube ? 6 : 1,
+                BindFlags = BindFlags.ShaderResource,
+                Usage = isCube ? ResourceUsage.Default : ResourceUsage.Immutable,
+
+                CpuAccessFlags = CpuAccessFlags.None,
+                Format = format,
+                MipLevels = 1,
+                OptionFlags = isCube ? ResourceOptionFlags.TextureCube : ResourceOptionFlags.None,
+                SampleDescription = new SampleDescription(1, 0),
+            };
+            return texture2DDescription;
+        }
+
+        public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData)
+        {
+            Texture2DDescription texture2DDescription = GetTextureDescription(size, size, format, true, out int pitch);
+            var tex = new Texture2D(renderContext.Device, texture2DDescription);
+
+            for (int i = 0; i < faceData.Length; i++)
+            {
+                renderContext.Device.ImmediateContext.UpdateSubresource(faceData[i], tex, i, pitch);
+            }
+
+            return tex;
         }
 
         public static unsafe Texture2D LoadFile(this RenderContext renderContext, string filename)
         {
-            LegendaryExplorerCore.Textures.PixelFormat pixelFormat = LegendaryExplorerCore.Textures.PixelFormat.ARGB;
+            var pixelFormat = LegendaryExplorerCore.Textures.PixelFormat.ARGB;
             byte[] pixelData = LegendaryExplorerCore.Textures.TexConverter.LoadTexture(filename, out uint width, out uint height, ref pixelFormat); // NEEDS WAY TO HAVE ALPHA AS BLACK!
-            SharpDX.DXGI.Format format = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+            Format format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
             return renderContext.LoadTexture(width, height, format, pixelData);
         }
 
         public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
         {
             // Todo: Needs way to set black alpha
-            var imagebytes = LegendaryExplorerCore.Unreal.Classes.Texture2D.GetTextureData(mip, mip.Export.Game);
+            var imagebytes = LECTexture2D.GetTextureData(mip, mip.Export.Game);
             uint mipWidth = (uint)mip.width;
             uint mipHeight = (uint)mip.height;
-            SharpDX.DXGI.Format mipFormat = (SharpDX.DXGI.Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
-            if (SharpDX.DXGI.FormatHelper.IsCompressed(mipFormat))
+            var mipFormat = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+            if (mipFormat.IsCompressed())
             {
                 mipWidth = (mipWidth < 4) ? 4 : mipWidth;
                 mipHeight = (mipHeight < 4) ? 4 : mipHeight;
@@ -80,9 +109,34 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
         }
 
-        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2D unrealTexture)
+        public static Texture2D LoadUnrealTexture(this RenderContext renderContext, ExportEntry texture2DExport)
         {
+            var unrealTexture = new LECTexture2D(texture2DExport);
             return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name));
+        }
+
+        public static Texture2D LoadUnrealTextureCube(this RenderContext renderContext, ExportEntry textureCubeExport, PackageCache packageCache = null)
+        {
+            if (textureCubeExport.ClassName != "TextureCube") throw new ArgumentException("Expected a TextureCube export.", nameof(textureCubeExport));
+
+            var props = textureCubeExport.GetProperties();
+            var faceTextures = new Fixed6<LECTexture2D>();
+            Span<string> facePropNames = ["FacePosX", "FaceNegX", "FacePosY", "FaceNegY", "FacePosZ", "FaceNegZ"];
+            for (int i = 0; i < 6; i++)
+            {
+                faceTextures[i] = new(props.GetProp<ObjectProperty>(facePropNames[i]).ResolveToExport(textureCubeExport.FileRef, packageCache));
+            }
+            var pixelData = new Fixed6<byte[]>();
+
+            //should be the same for all textures
+            uint size = (uint)faceTextures[0].GetTopMip().width;
+            var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(
+                LegendaryExplorerCore.Textures.Image.getPixelFormatType(faceTextures[0].Export.GetProperty<EnumProperty>("Format").Value.Name));
+            for (int i = 0; i < 6; i++)
+            {
+                pixelData[i] = LECTexture2D.GetTextureData(faceTextures[i].GetTopMip(), textureCubeExport.Game);
+            }
+            return renderContext.LoadTextureCube(size, format, pixelData);
         }
     }
 
@@ -185,6 +239,11 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             return false;
         }
+
+        public virtual void EmptyCaches()
+        {
+            
+        }
     }
 
     /// <summary>
@@ -247,7 +306,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         private void InitializeComponent()
         {
-            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            if (DesignerProperties.GetIsInDesignMode(this))
                 return;
 
             Loaded += SceneRenderControl_Loaded;

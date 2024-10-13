@@ -268,7 +268,7 @@ namespace LegendaryExplorerCore.Shaders
             StaticParameterSet sps = material.ClassName switch
             {
                 "Material" => (StaticParameterSet) ObjectBinary.From<Material>(material).SM3MaterialResource.ID,
-                _ => throw new NotImplementedException("MaterialInstance shader cloning has not been implemented yet")
+                _ => ObjectBinary.From<MaterialInstance>(material).SM3StaticParameterSet
             };
             ShaderCache seekFreeShaderCache;
             Guid newMatGuid;
@@ -298,9 +298,19 @@ namespace LegendaryExplorerCore.Shaders
 
                     seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
 
-                    var matBin = ObjectBinary.From<Material>(material);
-                    matBin.SM3MaterialResource.ID = newMatGuid;
-                    material.WriteBinary(matBin);
+                    if (material.ClassName == "Material")
+                    {
+                        var matBin = ObjectBinary.From<Material>(material);
+                        matBin.SM3MaterialResource.ID = newMatGuid;
+                        material.WriteBinary(matBin);
+                    }
+                    else
+                    {
+
+                        var matBin = ObjectBinary.From<MaterialInstance>(material);
+                        matBin.SM3StaticPermutationResource.ID = newMatGuid;
+                        material.WriteBinary(matBin);
+                    }
 
                     return newMatGuid;
                 }
@@ -356,9 +366,19 @@ namespace LegendaryExplorerCore.Shaders
 
                 seekFreeShaderCacheExport.WriteBinary(seekFreeShaderCache);
 
-                var matBin = ObjectBinary.From<Material>(material);
-                matBin.SM3MaterialResource.ID = newMatGuid;
-                material.WriteBinary(matBin);
+                if (material.ClassName == "Material")
+                {
+                    var matBin = ObjectBinary.From<Material>(material);
+                    matBin.SM3MaterialResource.ID = newMatGuid;
+                    material.WriteBinary(matBin);
+                }
+                else
+                {
+
+                    var matBin = ObjectBinary.From<MaterialInstance>(material);
+                    matBin.SM3StaticPermutationResource.ID = newMatGuid;
+                    material.WriteBinary(matBin);
+                }
 
                 return newMatGuid;
             }

@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Shaders;
-using LegendaryExplorerCore.Textures.Studio;
 using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
@@ -22,13 +18,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         : MaterialInstanceConstant(export, assetCache, true)
     {
         private const string VERTEX_SHADER_TYPE_NAME = "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy";
-        private const string PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight";
+        private const string PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicySkyLight";
 
         public EBlendMode BlendMode;
+        public bool UseHairPass;
         private readonly Dictionary<string, float> ScalarParameterValues = [];
         private readonly Dictionary<string, LinearColor> VectorParameterValues = [];
         private readonly Dictionary<string, string> TextureParameterValues = [];
-        public readonly Dictionary<string, PreviewTextureCache.TextureEntry> TextureMap = new();
+        private readonly List<string> Uniform2DTextureExpressions = [];
+        public Dictionary<string, PreviewTextureCache.TextureEntry> TextureMap;
         private MaterialShaderMap ShaderMap;
         private uint CachedPixelFrameNumber = uint.MaxValue;
         private uint CachedVertexFrameNumber = uint.MaxValue;
@@ -46,16 +44,65 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             base.ReadBaseMaterial(mat, assetCache, parsedMaterial);
 
-            Enum.TryParse(mat.GetProperty<EnumProperty>("BlendMode", assetCache)?.Value ?? "BLEND_Opaque", out BlendMode);
+            var props = mat.GetProperties(packageCache: assetCache);
+            Enum.TryParse(props.GetProp<EnumProperty>("BlendMode")?.Value ?? "BLEND_Opaque", out BlendMode);
 
-            if (mat.Game is MEGame.LE3)
+            //if the MIC had a StaticPermutationResource, this is already set
+            if (Uniform2DTextureExpressions.IsEmpty())
             {
-                (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, PIXEL_SHADER_TYPE_NAME);
-                if (shaders is [VertexShaderType vertexShader, PixelShaderType pixelShader])
+                foreach (int uIndex in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
-                    VertexShader = vertexShader;
-                    PixelShader = pixelShader;
+                    Uniform2DTextureExpressions.Add(mat.FileRef.GetEntry(uIndex)?.InstancedFullPath);
                 }
+            }
+
+            UseHairPass = props.GetProp<BoolProperty>("bHairPass") is { Value: true };
+
+            var expressionsProp = props.GetProp<ArrayProperty<ObjectProperty>>("Expressions");
+            if (expressionsProp is not null)
+            {
+                foreach (ObjectProperty expressionProp in expressionsProp)
+                {
+                    ExportEntry expressionExport = expressionProp.ResolveToExport(mat.FileRef, assetCache);
+                    var expressionProps = expressionExport.GetProperties(packageCache: assetCache);
+                    if (expressionProps.GetProp<NameProperty>("ParameterName") is {} paramNameProp)
+                    {
+                        //this will run after ReadMaterialInstanceConstant, so we don't want to overwrite any values specified there
+                        if (expressionProps.GetProp<FloatProperty>("DefaultValue") is { } defaultfloatProp)
+                        {
+                            ScalarParameterValues.TryAdd(paramNameProp.Value.Instanced, defaultfloatProp.Value);
+                        }
+                        else if (expressionProps.GetProp<StructProperty>("DefaultValue") is {} defaultVectorProp)
+                        {
+                            VectorParameterValues.TryAdd(paramNameProp.Value.Instanced, CommonStructs.GetLinearColor(defaultVectorProp));
+                        }
+                        else if (expressionProps.GetProp<ObjectProperty>("Texture") is {} textureProp)
+                        {
+                            if (!TextureParameterValues.ContainsKey(paramNameProp.Value.Instanced) 
+                                && mat.FileRef.GetEntry(textureProp.Value) is {} texEntry)
+                            {
+                                Textures.Add(texEntry);
+                                TextureParameterValues.Add(paramNameProp.Value.Instanced, texEntry.InstancedFullPath);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //if the MIC had a StaticPermutationResource, this is already set
+            if (ShaderMap is null)
+            {
+                LoadShaders(mat);
+            }
+        }
+
+        private void LoadShaders(ExportEntry mat)
+        {
+            (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, PIXEL_SHADER_TYPE_NAME);
+            if (shaders is [VertexShaderType vertexShader, PixelShaderType pixelShader])
+            {
+                VertexShader = vertexShader;
+                PixelShader = pixelShader;
             }
         }
 
@@ -66,10 +113,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 foreach (StructProperty scalarValue in scalarValues)
                 {
-                    if (scalarValue.GetProp<StrProperty>("ParameterName") is { } paramNameProp
+                    if (scalarValue.GetProp<NameProperty>("ParameterName") is { } paramNameProp
                         && scalarValue.GetProp<FloatProperty>("ParameterValue") is { } valProp)
                     {
-                        ScalarParameterValues[paramNameProp.Value] = valProp.Value;
+                        ScalarParameterValues[paramNameProp.Value.Instanced] = valProp.Value;
                     }
                 }
             }
@@ -77,10 +124,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 foreach (StructProperty vectorValue in vectorValues)
                 {
-                    if (vectorValue.GetProp<StrProperty>("ParameterName") is { } paramNameProp
+                    if (vectorValue.GetProp<NameProperty>("ParameterName") is { } paramNameProp
                         && vectorValue.GetProp<StructProperty>("ParameterValue") is { } valProp)
                     {
-                        VectorParameterValues[paramNameProp.Value] = CommonStructs.GetLinearColor(valProp);
+                        VectorParameterValues[paramNameProp.Value.Instanced] = CommonStructs.GetLinearColor(valProp);
                     }
                 }
             }
@@ -88,12 +135,21 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 foreach (StructProperty textureValue in textureValues)
                 {
-                    if (textureValue.GetProp<StrProperty>("ParameterName") is { } paramNameProp
+                    if (textureValue.GetProp<NameProperty>("ParameterName") is { } paramNameProp
                         && textureValue.GetProp<ObjectProperty>("ParameterValue") is { } valProp)
                     {
-                        TextureParameterValues[paramNameProp.Value] = valProp.ResolveToEntry(matInst.FileRef)?.InstancedFullPath;
+                        TextureParameterValues[paramNameProp.Value.Instanced] = valProp.ResolveToEntry(matInst.FileRef)?.InstancedFullPath;
                     }
                 }
+            }
+
+            if (ObjectBinary.From(matInst) is MaterialInstance binary)
+            {
+                foreach (int uIndex in binary.SM3StaticPermutationResource.UniformExpressionTextures)
+                {
+                    Uniform2DTextureExpressions.Add(matInst.FileRef.GetEntry(uIndex)?.InstancedFullPath);
+                }
+                LoadShaders(matInst);
             }
         }
 
@@ -160,15 +216,17 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 switch (texExpression)
                 {
                     case MaterialUniformExpressionTextureParameter texParamExpression:
-                        if (TextureParameterValues.TryGetValue(texParamExpression.ParameterName.Instanced, out string texIfp))
+                        if (TextureParameterValues.TryGetValue(texParamExpression.ParameterName.Instanced, out string texIfp)
+                            && texIfp is not null)
                         {
                             TextureMap.TryGetValue(texIfp, out texture);
                         }
                         break;
                     default:
-                        if (Export.FileRef.TryGetEntry(texExpression.TextureIndex, out IEntry texEntry))
+                        if ((uint)texExpression.TextureIndex < Uniform2DTextureExpressions.Count
+                            && Uniform2DTextureExpressions[texExpression.TextureIndex] is {} texifp)
                         {
-                            TextureMap.TryGetValue(texEntry.InstancedFullPath, out texture);
+                            TextureMap.TryGetValue(texifp, out texture);
                         }
                         break;
                 }
@@ -177,7 +235,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         }
 
         private void UpdateExpressions(UniformExpressionRenderContext uniformContext, 
-            MaterialUniformExpression[] vertexExpressions, MaterialUniformExpression[] scalarExpressions, 
+            MaterialUniformExpression[] vectorExpressions, MaterialUniformExpression[] scalarExpressions, 
             List<Vector4> scalarCache, List<Vector4> vectorCache)
         {
             var enumerator = scalarExpressions.ChunkBySpan(4);
@@ -214,7 +272,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
                 scalarCache.Add(new Vector4(xVal.R, yVal.R, zVal.R, wVal.R));
             }
-            foreach (MaterialUniformExpression vectorExpression in vertexExpressions)
+            foreach (MaterialUniformExpression vectorExpression in vectorExpressions)
             {
                 LinearColor val = default;
                 vectorExpression.GetNumberValue(uniformContext, ref val);

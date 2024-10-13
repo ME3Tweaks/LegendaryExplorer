@@ -23,10 +23,5 @@ namespace LegendaryExplorerCore.Misc
         }
     }
 
-    public class CaseInsensitiveConcurrentDictionary<V> : ConcurrentDictionary<string, V>
-    {
-        public CaseInsensitiveConcurrentDictionary() : base(StringComparer.OrdinalIgnoreCase)
-        {
-        }
-    }
+    public class CaseInsensitiveConcurrentDictionary<V>() : ConcurrentDictionary<string, V>(StringComparer.OrdinalIgnoreCase);
 }

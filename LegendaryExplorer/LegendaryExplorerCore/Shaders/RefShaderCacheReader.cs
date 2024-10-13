@@ -84,6 +84,14 @@ namespace LegendaryExplorerCore.Shaders
             };
         }
 
+        public static void PopulateOffsets(MEGame game)
+        {
+            if (!IsShaderOffsetsDictInitialized(game))
+            {
+                GetMaterialShaderMap(game, null, out _);
+            }
+        }
+
         private static void PopulateOffsets(MEGame game, int offsetOfShaderCacheOffset)
         {
             string filePath = ShaderFilePath(game);

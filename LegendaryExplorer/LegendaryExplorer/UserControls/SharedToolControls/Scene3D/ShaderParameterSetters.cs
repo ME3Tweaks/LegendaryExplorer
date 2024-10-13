@@ -38,15 +38,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             //TODO: LightMapPolicy params
             shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
-            bool drawUnlit = true;
-            bool skylight = false;
+            bool drawUnlit = false;
+            bool skylight = !drawUnlit;
             buffer.WriteVal(shader.AmbientColorAndSkyFactor, drawUnlit ? new LinearColor(1, 1, 1, 0) : new LinearColor(0, 0, 0, 1));
-            LinearColor upperSkyColor = LinearColor.Black;
-            LinearColor lowerSkyColor = LinearColor.Black;
+            Vector3 upperSkyColor = Vector3.Zero;
+            Vector3 lowerSkyColor = Vector3.Zero;
             if (skylight)
             {
-                upperSkyColor = LinearColor.White;
-                lowerSkyColor = LinearColor.White;
+                upperSkyColor = new Vector3(1, 1, 1);
+                lowerSkyColor = new Vector3(1, 1, 1);
             }
             buffer.WriteVal(shader.UpperSkyColor, upperSkyColor);
             buffer.WriteVal(shader.LowerSkyColor, lowerSkyColor);
@@ -54,7 +54,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             buffer.WriteVal(shader.MotionBlurMask, 0f);
             if (shader.TranslucencyDepth.IsBound())
             {
-                Debugger.Break();
+                //no idea what this should be
+                buffer.WriteVal(shader.TranslucencyDepth, Vector4.One);
             }
         }
 
@@ -107,7 +108,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
             foreach (TUniformParameter<FShaderResourceParameter> cubeParam in p.UniformPixelCubeShaderResourceParameters)
             {
-                ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.TextureView ?? context.WhiteTexView;
+                ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.TextureView ?? context.WhiteTextureCubeView;
                 context.ImmediateContext.PixelShader.SetShaderResource(cubeParam.Param.BaseIndex, view);
             }
 
@@ -212,7 +213,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 return;
             }
-            if (sizeof(T) != param.NumBytes && !(typeof(T) == typeof(Matrix3x3) && param.NumBytes == 44))
+            if (sizeof(T) != param.NumBytes 
+                && !(typeof(T) == typeof(Matrix3x3) && param.NumBytes == 44) 
+                && Debugger.IsAttached)
             {
                 Debugger.Break();
             }

@@ -19,7 +19,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// <typeparam name="ConstantBufferData">The structure that will hold the data in the only constant buffer.</typeparam>
     /// <typeparam name="Vertex"></typeparam>
     // I may have gone slightly overboard with the generics here, but hey, it's very flexible!
-    public class GenericEffect<ConstantBufferData, Vertex> : IDisposable where ConstantBufferData : struct where Vertex : IVertexBase, new()
+    public class GenericEffect<ConstantBufferData, Vertex> : IDisposable where ConstantBufferData : struct where Vertex : IVertexBase
     {
         private const string VERTEX_SHADER_ENTRYPOINT = "VSMain";
         private const string PIXEL_SHADER_ENTRYPOINT = "PSMain";

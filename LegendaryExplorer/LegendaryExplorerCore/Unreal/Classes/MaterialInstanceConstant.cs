@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -9,7 +10,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
     public class MaterialInstanceConstant
     {
         public readonly ExportEntry Export;
-        public readonly List<IEntry> Textures = [];
+        public readonly HashSet<IEntry> Textures = [];
 
 
         public MaterialInstanceConstant(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
@@ -110,7 +111,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
                     var texntry = matInst.FileRef.GetEntry(paramValue.Value);
-                    if (texntry?.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                    if (texntry is not null)
                     {
                         Textures.Add(texntry);
                     }
@@ -122,7 +123,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 foreach (var obj in textures)
                 {
                     var texntry = matInst.FileRef.GetEntry(obj.Value);
-                    if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
+                    if (texntry is not null)
                     {
                         Textures.Add(texntry);
                     }
@@ -133,7 +134,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public static IEnumerable<IEntry> GetTextures(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
         {
             var mic = new MaterialInstanceConstant(export, assetCache, resolveImports);
-            return mic.Textures;
+            return mic.Textures.Where(entry => entry.ClassName == "Texture2D");
         }
     }
 }

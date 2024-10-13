@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.Classes;
 using SharpDX.Direct3D11;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
 
@@ -22,29 +21,36 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             /// Texture export for this cache entry
             /// </summary>
             //public ExportEntry TextureExport { get; set; }
-            public string InstanceFullPath { get; set; }
+            public string InstanceFullPath { get; }
+
             /// <summary>
             /// The Direct3D ShaderResourceView for binding to shaders.
             /// </summary>
-            public ShaderResourceView TextureView;
+            public readonly ShaderResourceView TextureView;
 
             /// <summary>
             /// The Direct3D texture for ShaderResourceView creation.
             /// </summary>
-            public Texture2D Texture;
+            public readonly Texture2D Texture;
 
             /// <summary>
             /// The time this object was last accessed.
             /// </summary>
             public DateTime LastUsageTime = DateTime.Now;
 
+            public readonly bool IsTextureCube;
+
             /// <summary>
             /// Creates a new cache entry for the given texture.
             /// </summary>
-            public TextureEntry(ExportEntry export)
+            public TextureEntry(RenderContext renderContext, ExportEntry export)
             {
                 MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}", new WeakReference(this));
                 InstanceFullPath = export.InstancedFullPath;
+                IsTextureCube = export.ClassName == "TextureCube";
+
+                Texture = IsTextureCube ? renderContext.LoadUnrealTextureCube(export) : renderContext.LoadUnrealTexture(export);
+                TextureView = new ShaderResourceView(renderContext.Device, Texture);
             }
 
             /// <summary>
@@ -104,38 +110,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         /// <summary>
         /// Queues a texture for eventual loading.
         /// </summary>
-        /// <param name="pcc">The full path of the pcc where the texture export is.</param>
-        /// <param name="exportid"></param>
-        //public PreviewTextureEntry LoadTexture(string pcc, int exportid)
-        //{
-        //    foreach (PreviewTextureEntry e in cache)
-        //    {
-        //        if (e.PCCPath == pcc && e.ExportID == exportid)
-        //        {
-        //            return e;
-        //        }
-        //    }
-        //    using (var texpcc = MEPackageHandler.OpenMEPackage(pcc))
-        //    {
-        //        PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
-        //        Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc.getUExport(exportid));
-        //        try
-        //        {
-        //            entry.Texture = metex.generatePreviewTexture(Device, out Texture2DDescription _);
-        //            entry.TextureView = new ShaderResourceView(Device, entry.Texture);
-        //            cache.Add(entry);
-        //            return entry;
-        //        } catch
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //}
-
-        /// <summary>
-        /// Queues a texture for eventual loading.
-        /// </summary>
-        public TextureEntry LoadTexture(ExportEntry export, Texture2DMipInfo preloadedMipInfo = null, byte[] decompressedTextureData = null)
+        public TextureEntry LoadTexture(ExportEntry export)
         {
             foreach (TextureEntry e in AssetCache)
             {
@@ -146,13 +121,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     return e;
                 }
             }
-            var entry = new TextureEntry(export);
-            var metex = new LegendaryExplorerCore.Unreal.Classes.Texture2D(export);
             try
             {
-                if (preloadedMipInfo != null && metex.Export != preloadedMipInfo.Export) throw new Exception();
-                entry.Texture = this.RenderContext.LoadUnrealTexture(new LegendaryExplorerCore.Unreal.Classes.Texture2D(export));
-                entry.TextureView = new ShaderResourceView(this.RenderContext.Device, entry.Texture);
+                var entry = new TextureEntry(RenderContext, export);
                 AssetCache.Add(entry);
                 return entry;
             }

@@ -63,8 +63,14 @@ public unsafe class LEEffect : IDisposable
         context.UpdateSubresource(VertexShaderGlobals, 0, null, (IntPtr)VertexShaderConstantBufferAlloc, 0, 0);
         context.UpdateSubresource(PixelShaderGlobals, 0, null, (IntPtr)PixelShaderConstantBufferAlloc, 0, 0);
 
+        int stride = 0;
+        if (mesh.Vertices.Count > 0)
+        {
+            stride = mesh.Vertices[0].VertexLength;
+        }
+
         // Setup buffers for rendering
-        context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, LEVertex.VertexLength, 0));
+        context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, stride, 0));
         context.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, Format.R32_UInt, 0);
 
         // Draw!!!
