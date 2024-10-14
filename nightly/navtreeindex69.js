@@ -1,5 +1,17 @@
 var NAVTREEINDEX69 =
 {
+"class_t_d_o_f_blur_pixel_shader.html#a57093839741c6172577b82d536dc42ef":[1,0,176,0],
+"class_t_d_o_f_blur_pixel_shader.html#a60b931d1454d1fb036f06dc17ac48627":[1,0,176,1],
+"class_t_d_o_f_blur_pixel_shader.html#aaf96114b76239cc6b0250864c0bd4523":[1,0,176,4],
+"class_t_d_o_f_blur_pixel_shader.html#aca6e7ac6f6ac7acd483d8450353908f7":[1,0,176,2],
+"class_t_d_o_f_gather_pixel_shader.html":[1,0,177],
+"class_t_d_o_f_gather_pixel_shader.html#a18b5544eb23f1f02baa9c351e370927d":[1,0,177,0],
+"class_t_downsample_depth_pixel_shader.html":[1,0,178],
+"class_t_downsample_depth_pixel_shader.html#a2b7b8a01ed0455eeab4d43e15566c79f":[1,0,178,0],
+"class_t_downsample_light_shafts_pixel_shader.html":[1,0,179],
+"class_t_downsample_light_shafts_pixel_shader.html#a68db7bf4c0a82f6afe5a2c41ec6ca63d":[1,0,179,3],
+"class_t_downsample_light_shafts_pixel_shader.html#a966cf4b14cb74a178e4126d6ea73464d":[1,0,179,2],
+"class_t_downsample_light_shafts_pixel_shader.html#aea1839b539440cda5792c4a66018e78f":[1,0,179,1],
 "class_t_downsample_light_shafts_pixel_shader.html#aef8c1ac60d8a98ac7c54b4c22264a955":[1,0,179,0],
 "class_t_edge_preserving_filter_pixel_shader.html":[1,0,180],
 "class_t_edge_preserving_filter_pixel_shader.html#a1d6eb24e0c4c3853c789ca3a9cea4594":[1,0,180,3],
@@ -237,17 +249,5 @@ var NAVTREEINDEX69 =
 "dir_94cc4fc8a19e6bf549b9915a3dc12af3.html":[2,0,0,0,1,1],
 "dir_956daa986f474c8ade0cc9cf484ad257.html":[2,0,0,0,6,8,1],
 "dir_95b3b80cb048fb0053d61e30c418125b.html":[2,0,0,0,6,3],
-"dir_98bf619af6835392524fc6506fdd72ad.html":[2,0,0,0,18],
-"dir_9f86ad9ca419a04eafae722f2ec1c1f7.html":[2,0,0,0,16],
-"dir_a119e93f7143033b3b692552bc294743.html":[2,0,0,0,26,1],
-"dir_a240a62b4baa8a4606f83e666af7ae5d.html":[2,0,0,0,23,1],
-"dir_a4ad695dd605f86bc9b3fc87be717e94.html":[2,0,0,0,26,5],
-"dir_a6f5db66b09c48978242e525bf04f7e2.html":[2,0,0,0,25,0,0],
-"dir_ab8ccd102f5b0417a0fce7029c3a1dd0.html":[2,0,0,0,6,4,3],
-"dir_ae6fee5e9224c7717ab2b41089d86ad6.html":[2,0,0,0,26,3,1],
-"dir_b03b3138f123e881380e47278bd6541d.html":[2,0,0,0,26,6],
-"dir_b3027c00f391576f48b5f093bd786f63.html":[2,0,0,0,6,8,0],
-"dir_b67164f93e9e65eff1cfb348f2408a5e.html":[2,0,0,0,6,6],
-"dir_b7dc4c9d96340696837e85aaec969c63.html":[2,0,0,0,9],
-"dir_b7ffc8a275e7710a56a7d12befb30858.html":[2,0,0,0,6,1]
+"dir_98bf619af6835392524fc6506fdd72ad.html":[2,0,0,0,18]
 };

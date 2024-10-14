@@ -38,6 +38,7 @@ var interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package =
     [ "AllowLookupTableInvalidation", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#af2391c3a60f600b09cbde9890668ea50", null ],
     [ "SetInternalFilepath", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a5b8962449faa8936b72c5fe220f84236", null ],
     [ "setFlags", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a47d611e43f88c51ccf9c74753ee20f6f", null ],
+    [ "HasDuplicateObjects", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aa13fd1ca8f40be6990a05d35107b0f3f", null ],
     [ "Flags", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a515995ad797f453a90f6573cbecfef08", null ],
     [ "IsCompressed", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#aac272d889b619bdf1381e764167641de", null ],
     [ "NameCount", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html#a45ec517db35faec58c83b4b61c0bd522", null ],

@@ -54,5 +54,10 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateName", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a7bdb081eb904254d1b8324ec206142b4", null ],
     [ "CreateSequence", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5972ae62657db45333b83e9ebd0d93d3", null ],
     [ "CreateAttachToEvent", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ad0ef4d5a4b09469ccb694b76007b536c", null ],
-    [ "CreateSetActive", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa8f52fe24ac1ca64b3853c1da253c1cf", null ]
+    [ "CreateSetActive", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa8f52fe24ac1ca64b3853c1da253c1cf", null ],
+    [ "CreateSetBool", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aecf90811f441900c72cfaad61a65071e", null ],
+    [ "CreateChangeAI", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a54d7d3d27b73dc5a1226c1990a80a053", null ],
+    [ "CreateCompareBool", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a13aaa82a6b0045c86fa4ca212a4a1dad", null ],
+    [ "CreateGetDistance", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a829b497746b4495330e897672ca4f059", null ],
+    [ "CreateCauseDamage", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af40fcc5d20f11a3825ca9a77eb40bcbb", null ]
 ];
