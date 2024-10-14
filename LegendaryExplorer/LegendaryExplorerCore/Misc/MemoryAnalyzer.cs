@@ -44,7 +44,7 @@ namespace LegendaryExplorerCore.Misc
         public static void Refresh()
         {
             TrackedMemoryObjects.Where(x => !x.IsAlive()).ForEach(x => x.RemainingLifetime--);
-            TrackedMemoryObjects.RemoveAll(x => !x.IsAlive() && x.RemainingLifetime < 0);
+            TrackedMemoryObjects.RemoveAll(x => !x.IsAlive() && x.RemainingLifetime <= 0);
             foreach (var v in TrackedMemoryObjects)
             {
                 v.RefreshStatus();

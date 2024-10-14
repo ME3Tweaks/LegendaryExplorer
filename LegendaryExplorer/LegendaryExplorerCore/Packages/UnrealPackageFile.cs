@@ -905,6 +905,9 @@ namespace LegendaryExplorerCore.Packages
             // DEBUGGING MEMORY LEAK CODE
             //Debug.WriteLine($"{FilePath} RefCount incrementing from {RefCount} to {RefCount + 1} due to RegisterTool()");
             RefCount++;
+#if DEBUG
+            RegisterStackTraces.Add(Environment.StackTrace);
+#endif
             _users.Add(user);
             user.RegisterClosed(() =>
             {
@@ -1056,15 +1059,25 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public int RefCount { get; private set; }
 
+#if DEBUG
+        /// <summary>
+        /// List of stack traces for when the RefCount was incremented
+        /// </summary>
+        public List<string> RegisterStackTraces = new();
+#endif
+
         public void RegisterUse()
         {
             // DEBUGGING MEMORY LEAK CODE
             //Debug.WriteLine($"{FilePath} RefCount incrementing from {RefCount} to {RefCount + 1}");
+#if DEBUG
+            RegisterStackTraces.Add(Environment.StackTrace);
+#endif
             RefCount++;
         }
 
         /// <summary>
-        /// Doesn't neccesarily dispose the object.
+        /// Doesn't necessarily dispose the object.
         /// Will only do so once this has been called by every place that uses it.
         /// HIGHLY Recommend using the using block instead of calling this directly.
         /// </summary>

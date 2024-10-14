@@ -7,6 +7,7 @@
         xmlns:misc="clr-namespace:LegendaryExplorerCore.Misc;assembly=LegendaryExplorerCore"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         Closing="MemoryAnalyzer_Closing"
         SizeToContent="Width"
@@ -41,11 +42,23 @@
             <ListBox ItemsSource="{x:Static misc:MemoryAnalyzer.TrackedMemoryObjects}" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
-                            <TextBlock TextWrapping="Wrap" Text="{Binding AllocationTime}" FontStyle="Italic" Opacity="{Binding PercentTimeRemaining}"/>
+                        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" Opacity="{Binding PercentTimeRemaining}">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding AllocationTime}" FontStyle="Italic"/>
                             <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" Margin="10,0,0,0">
-                                <TextBlock TextWrapping="Wrap" DockPanel.Dock="Left"  Text="{Binding Path=ReferenceName}" Opacity="{Binding PercentTimeRemaining}"/>
-                                <TextBlock TextWrapping="Wrap" DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Path=ReferenceStatus}" FontWeight="Bold" Opacity="{Binding PercentTimeRemaining}"/>
+                                <TextBlock TextWrapping="Wrap" DockPanel.Dock="Left"  Text="{Binding Path=ReferenceName}"/>
+                                <TextBlock TextWrapping="Wrap" DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Path=ReferenceStatus}" FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="FontSize" Value="12"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsPackageReference}">
+                                                    <Setter Property="Background" Value="Red"/>
+                                                    <Setter Property="FontSize" Value="20"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DockPanel>
                         </DockPanel>
                     </DataTemplate>
@@ -55,6 +68,11 @@
                         <VirtualizingStackPanel />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="MAUI_MouseDoubleClick"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
         </DockPanel>
     </xctk:BusyIndicator>

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 using LegendaryExplorerCore.Packages;
 using PropertyChanged;
 
@@ -19,6 +17,8 @@ namespace LegendaryExplorerCore.Misc
 
         [DependsOn(nameof(RemainingLifetime))]
         public double PercentTimeRemaining => RemainingLifetime / normalPostGCLifetime;
+
+        public bool IsPackageReference{ get; set; }
 
         public virtual string ReferenceStatus
         {
@@ -40,7 +40,7 @@ namespace LegendaryExplorerCore.Misc
 
                     return "In Memory";
                 }
-                return "Garbage Collected";
+                return "Garbage collected";
             }
         }
 
@@ -50,6 +50,10 @@ namespace LegendaryExplorerCore.Misc
             AllocationTime = DateTime.Now.ToString();
             this.reference = reference;
             this.ReferenceName = referenceName;
+            if (reference.IsAlive && reference.Target is IMEPackage)
+            {
+                IsPackageReference = true;
+            }
         }
 
         public void RefreshStatus()
