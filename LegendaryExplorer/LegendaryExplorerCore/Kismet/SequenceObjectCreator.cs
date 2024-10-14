@@ -1332,5 +1332,133 @@ namespace LegendaryExplorerCore.Kismet
             }
             return setActive;
         }
+
+
+        /// <summary>
+        /// Adds a SeqAct_SetBool object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="target">Optional: The bool object to link to the target terminal</param>
+        /// <param name="objValue">Optional: The bool object to link to the Value terminal</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateSetBool(ExportEntry seq, ExportEntry target = null, ExportEntry objValue = null, PackageCache cache = null)
+        {
+            var setObj = CreateSequenceObject(seq.FileRef, "SeqAct_SetBool", cache);
+            KismetHelper.AddObjectToSequence(setObj, seq);
+
+            if (target != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Target", target);
+            }
+
+            if (objValue != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Value", objValue);
+            }
+
+            return setObj;
+        }
+
+        /// <summary>
+        /// Adds a BioSeqAct_ChangeAI object in the given sequence, optionally linking the extra parameters if set. This class only works properly in LE1.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="controllerClass">Optional: The controller class property to set on the object</param>
+        /// <param name="pawn">Optional: The pawn actor object to link to the Pawn terminal</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateChangeAI(ExportEntry seq, IEntry controllerClass = null, ExportEntry pawn = null, PackageCache cache = null)
+        {
+            // Validated for LE1
+            var setObj = CreateSequenceObject(seq.FileRef, "BioSeqAct_ChangeAI", cache);
+            KismetHelper.AddObjectToSequence(setObj, seq);
+
+            if (controllerClass != null)
+            {
+                setObj.WriteProperty(new ObjectProperty(controllerClass, "ControllerClass"));
+            }
+
+            if (pawn != null)
+            {
+                KismetHelper.CreateVariableLink(setObj, "Pawn", pawn);
+            }
+
+            return setObj;
+        }
+
+        /// <summary>
+        /// Adds a SeqCond_CompareBool object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="boolObj">Optional: The bool object to link to the Bool terminal</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateCompareBool(ExportEntry seq, ExportEntry boolObj = null, PackageCache cache = null)
+        {
+            var comp = CreateSequenceObject(seq.FileRef, "SeqCond_CompareBool", cache);
+            KismetHelper.AddObjectToSequence(comp, seq);
+            if (boolObj != null)
+            {
+                KismetHelper.CreateVariableLink(comp, "Bool", boolObj);
+            }
+            return comp;
+        }
+
+        /// <summary>
+        /// Adds a SeqAct_GetDistance object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="objA">Optional: The object to connect to the A pin</param>
+        /// <param name="objB">Optional: The object to connect to the B pin</param>
+        /// <param name="fDistance">Optional: The output float object to connect to the Distance pin</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateGetDistance(ExportEntry seq, ExportEntry objA = null, ExportEntry objB = null, ExportEntry fDistance = null, PackageCache cache = null)
+        {
+            var getDistance = CreateSequenceObject(seq.FileRef, "SeqAct_GetDistance", cache);
+            KismetHelper.AddObjectToSequence(getDistance, seq);
+            if (objA != null)
+            {
+                KismetHelper.CreateVariableLink(getDistance, "A", objA);
+            }
+            if (objB != null)
+            {
+                KismetHelper.CreateVariableLink(getDistance, "B", objB);
+            }
+            if (fDistance != null)
+            {
+                KismetHelper.CreateVariableLink(getDistance, "Distance", fDistance);
+            }
+            return getDistance;
+        }
+
+        /// <summary>
+        /// Adds a BioSeqAct_CauseDamage object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="target">Optional: The object to connect to the Target pin</param>
+        /// <param name="instigator">Optional: The object to connect to the Instigator pin</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateCauseDamage(ExportEntry seq, ExportEntry target = null, ExportEntry instigator = null, float? damagePercent = null, PackageCache cache = null)
+        {
+            // Likely only works for LE1
+            var causeDamage = CreateSequenceObject(seq.FileRef, "BioSeqAct_CauseDamage", cache);
+            KismetHelper.AddObjectToSequence(causeDamage, seq);
+            if (target != null)
+            {
+                KismetHelper.CreateVariableLink(causeDamage, "Target", target);
+            }
+            if (instigator != null)
+            {
+                KismetHelper.CreateVariableLink(causeDamage, "Instigator", instigator);
+            }
+            if (damagePercent != null)
+            {
+                causeDamage.WriteProperty(new FloatProperty(damagePercent.Value, "m_fDamageAmountAsPercentOfMaxHealth"));
+            }
+            return causeDamage;
+        }
     }
 }
