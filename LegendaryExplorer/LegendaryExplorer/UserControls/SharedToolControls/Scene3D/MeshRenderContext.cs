@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define FPS_OVERLAY
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Input;
@@ -15,6 +16,11 @@ using SharpDX.DXGI;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
 using SharpDX.Mathematics.Interop;
+using Texture2D = SharpDX.Direct3D11.Texture2D;
+#if FPS_OVERLAY
+using D2D = SharpDX.Direct2D1;
+using DW = SharpDX.DirectWrite;
+#endif
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
 
@@ -50,9 +56,17 @@ public class MeshRenderContext : RenderContext
 
     public Color BackgroundColor = Color.FromArgb(255,255,255,255); //Default
 
+    #region Size-Dependent Resources
     public RenderTargetView BackbufferView { get; private set; }
     public Texture2D DepthBuffer { get; private set; } // also called Depth-Stencil, but we don't use stencil at the moment.
     public DepthStencilView DepthBufferView { get; private set; }
+
+#if FPS_OVERLAY
+    private D2D.RenderTarget renderTarget2D;
+    private DW.TextFormat textFormat;
+    private D2D.SolidColorBrush defaultForegroundBrush;
+#endif
+    #endregion
     public GenericEffect<WorldConstants, WorldVertex> DefaultEffect { get; private set; }
     public LEEffect LEEffect { get; private set; }
     private Texture2D DefaultTexture;
@@ -144,6 +158,16 @@ public class MeshRenderContext : RenderContext
 
             // Do whatever event handlers want
             RenderScene?.Invoke(null, EventArgs.Empty);
+
+#if FPS_OVERLAY
+            //render D2D overlay
+            renderTarget2D.BeginDraw();
+            {
+                var size = renderTarget2D.Size;
+                renderTarget2D.DrawText($"{FPS} fps", textFormat, new RawRectangleF(0, 0, size.Width, size.Height), defaultForegroundBrush);
+            }
+            renderTarget2D.EndDraw();
+#endif
         }
 
         base.Render();
@@ -234,6 +258,17 @@ public class MeshRenderContext : RenderContext
         ImmediateContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 
         Camera.aspect = (float)Width / Height;
+
+
+#if FPS_OVERLAY
+        using var factory = new D2D.Factory(D2D.FactoryType.SingleThreaded, App.IsDebug ? D2D.DebugLevel.Information : D2D.DebugLevel.None);
+        renderTarget2D = new D2D.RenderTarget(factory, newBackBuffer.QueryInterface<Surface>(), new D2D.RenderTargetProperties(new D2D.PixelFormat(Format.Unknown, D2D.AlphaMode.Premultiplied)));
+        defaultForegroundBrush = new D2D.SolidColorBrush(renderTarget2D, new RawColor4(0, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
+        using var dwFactory = new DW.Factory(DW.FactoryType.Shared);
+        textFormat = new DW.TextFormat(dwFactory, "Verdana", 12);
+        textFormat.TextAlignment = DW.TextAlignment.Trailing;
+        textFormat.ParagraphAlignment = DW.ParagraphAlignment.Near;
+#endif
     }
 
     public override void DisposeSizeDependentResources()
@@ -242,6 +277,11 @@ public class MeshRenderContext : RenderContext
         BackbufferView.Dispose();
         DepthBufferView.Dispose();
         DepthBuffer.Dispose();
+#if FPS_OVERLAY
+        renderTarget2D.Dispose();
+        textFormat.Dispose();
+        defaultForegroundBrush.Dispose();
+#endif
         base.DisposeSizeDependentResources();
     }
 

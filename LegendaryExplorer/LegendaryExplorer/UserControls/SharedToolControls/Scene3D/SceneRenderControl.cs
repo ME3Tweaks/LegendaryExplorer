@@ -428,8 +428,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
         }
 
-        public event EventHandler Render;
-
         private void D3DImage_OnRender(IntPtr surface, bool isNewSurface)
         {
             if (isNewSurface)
@@ -464,7 +462,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
 
                 Context.Render();
-                Render?.Invoke(this, EventArgs.Empty);
                 if (capturing)
                 {
                     RenderDoc.EndCapture(Context.Device.NativePointer, D3DImage.WindowOwner);
