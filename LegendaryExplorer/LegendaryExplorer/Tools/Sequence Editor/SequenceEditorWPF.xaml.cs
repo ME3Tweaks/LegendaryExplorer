@@ -542,7 +542,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
                 return;
             }
 
-            var packageCache = new PackageCache { AlwaysOpenFromDisk = false };
+            using var packageCache = new PackageCache { AlwaysOpenFromDisk = false };
             packageCache.InsertIntoCache(Pcc);
             var newSeqObj = new ExportEntry(Pcc, SelectedSequence, Pcc.GetNextIndexedName(info.ClassName),
                 properties: SequenceObjectCreator.GetSequenceObjectDefaults(Pcc, info, packageCache))

@@ -667,26 +667,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return Equals((StaticParameterSet)obj);
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = BaseMaterialId.GetHashCode();
-                foreach (StaticSwitchParameter staticSwitchParameter in StaticSwitchParameters)
-                {
-                    hashCode = hashCode * 31 + staticSwitchParameter.GetHashCode();
-                }
-                foreach (StaticComponentMaskParameter staticComponentMaskParameter in StaticComponentMaskParameters)
-                {
-                    hashCode = hashCode * 31 + staticComponentMaskParameter.GetHashCode();
-                }
-                foreach (NormalParameter normalParameter in NormalParameters)
-                {
-                    hashCode = hashCode * 31 + normalParameter.GetHashCode();
-                }
-                return hashCode;
-            }
-        }
+        //The hashcode does not have to uniquely identify the object, so just the Guid is enough
+        //including everything else was causing intermittent failures in Dictionary lookup
+        public override int GetHashCode() => BaseMaterialId.GetHashCode();
 
         public static bool operator ==(StaticParameterSet left, StaticParameterSet right)
         {
