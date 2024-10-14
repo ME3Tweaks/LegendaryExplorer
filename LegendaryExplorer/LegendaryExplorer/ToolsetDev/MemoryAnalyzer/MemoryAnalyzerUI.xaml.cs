@@ -107,6 +107,7 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
 
         private void MAUI_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+#if DEBUG
             if (sender is FrameworkElement fe && fe.DataContext is MemoryAnalyzerObject mao)
             {
                 if (mao.reference.IsAlive)
@@ -118,6 +119,7 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
                     }
                 }
             }
+#endif
         }
     }
 }
