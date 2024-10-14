@@ -8,6 +8,7 @@ var class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object =
     [ "RemainingLifetime", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html#a2b81ff972f67ac4bf0f215320ef29ab8", null ],
     [ "ReferenceName", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html#a376fffbeab474b77f42ea3bf7e621394", null ],
     [ "PercentTimeRemaining", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html#a4ce584546ebdfa6011a03efffc87ea92", null ],
+    [ "IsPackageReference", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html#a0412b60ad4053cd6a4ed149ae91c4a11", null ],
     [ "ReferenceStatus", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html#a6c87ecb16636d986d6358396fafea4fe", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_misc_1_1_memory_analyzer_object.html#a182781981b6c43ffb6d7c201f178e552", null ]
 ];

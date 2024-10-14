@@ -1,5 +1,7 @@
 var NAVTREEINDEX74 =
 {
+"namespace_legendary_explorer_core_1_1_debug_tools.html":[0,5,1,3],
+"namespace_legendary_explorer_core_1_1_dialogue.html":[0,5,1,4],
 "namespace_legendary_explorer_core_1_1_game_filesystem.html":[0,5,1,5],
 "namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53":[0,5,1,5,14],
 "namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381b":[0,5,1,5,13],
@@ -247,7 +249,5 @@ var NAVTREEINDEX74 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a3702c47da161a41cd12171adfa0f7cd6":[0,5,1,24,441],
 "namespace_legendary_explorer_core_1_1_unreal.html#a375f2e7920c846048b4aae3386e466d5":[0,5,1,24,271],
 "namespace_legendary_explorer_core_1_1_unreal.html#a38712c6092c523089339f7ca165f8463":[0,5,1,24,777],
-"namespace_legendary_explorer_core_1_1_unreal.html#a38cc171cd24b5c58a47f6e60cd341817":[0,5,1,24,773],
-"namespace_legendary_explorer_core_1_1_unreal.html#a397416e3ab23b9c06eaf86e1c3160366":[0,5,1,24,658],
-"namespace_legendary_explorer_core_1_1_unreal.html#a397f76fb0cf6e9ad5f2c2daee67c4673":[0,5,1,24,253]
+"namespace_legendary_explorer_core_1_1_unreal.html#a38cc171cd24b5c58a47f6e60cd341817":[0,5,1,24,773]
 };
