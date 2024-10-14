@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -35,17 +36,24 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="package">Package file to reconstruct</param>
         public static IMEPackage ResynthesizePackage(IMEPackage package, PackageCache cache)
         {
+            var hasDuplicates = package.HasDuplicateObjects();
+            if (hasDuplicates)
+            {
+                LECLog.Warning("Cannot resynthesisize package: Package has duplicate named objects");
+                return package;
+            }
+
             var newPackage = MEPackageHandler.CreateMemoryEmptyPackage(package.FilePath, package.Game);
             newPackage.setFlags(package.Flags);
 
             if (package.Game.IsMEGame())
             {
-            (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
+                (newPackage as MEPackage).AdditionalPackagesToCook.ReplaceAll((package as MEPackage).AdditionalPackagesToCook);
             }
 
             if (newPackage.LECLTagData != null)
             {
-            newPackage.LECLTagData.Copy(package.LECLTagData);
+                newPackage.LECLTagData.Copy(package.LECLTagData);
             }
             // I considered using EntryTree but it doesn't seem very suited for reordering. 
             // Too confusing for me <_>

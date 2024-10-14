@@ -881,6 +881,19 @@ namespace LegendaryExplorerCore.Packages
             return tlks;
         }
 
+        public bool HasDuplicateObjects()
+        {
+            if (lookupTableNeedsToBeRegenerated)
+            {
+                RebuildLookupTable();
+            }
+
+            lock (_findEntrySyncObj)
+            {
+                return EntryLookupTable?.Count != (ImportCount + ExportCount);
+            }
+        }
+
         /// <summary>
         /// Sets the filepath for this package. This will set the <see cref="FileNameNoExtension"/> property as well. Only use this if you know what you are doing; this can break a lot of things.
         /// </summary>

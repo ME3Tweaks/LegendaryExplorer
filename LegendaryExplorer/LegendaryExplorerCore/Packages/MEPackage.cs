@@ -81,7 +81,7 @@ namespace LegendaryExplorerCore.Packages
         public int PackageTypeId { get; }
 
         /// <summary>
-        /// This is not useful for modding but we should not be changing the format of the package file.
+        /// Present only on persistent level packages. List of sublevel files that are also part of this map
         /// </summary>
         public readonly List<string> AdditionalPackagesToCook = new();
 
