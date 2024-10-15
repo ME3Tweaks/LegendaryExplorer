@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -36,6 +37,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new Vector2(vec2DHalf.X, vec2DHalf.Y);
         }
     }
+
     [StructLayout(LayoutKind.Sequential)]
     public readonly struct Rotator(int pitch, int yaw, int roll)
     {
@@ -74,6 +76,43 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return $"Pitch:{Pitch} Yaw:{Yaw} Roll:{Roll}";
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LinearColor(float r, float g, float b, float a)
+    {
+        public float R = r;
+        public float G = g;
+        public float B = b;
+        public float A = a;
+
+        public LinearColor(float all) : this(all, all, all, all){}
+
+        public void Deconstruct(out float r, out float g, out float b, out float a)
+        {
+            r = R;
+            g = G;
+            b = B;
+            a = A;
+        }
+
+        public override string ToString()
+        {
+            return $"R:{R}, G:{G}, B:{B}, A:{A}";
+        }
+
+        public static explicit operator Vector4(LinearColor color)
+        {
+            return new Vector4(color.R, color.G, color.B, color.A);
+        }
+
+        public static explicit operator LinearColor(Vector4 vec)
+        {
+            return new LinearColor(vec.X, vec.Y, vec.Z, vec.W);
+        }
+
+        public static LinearColor Black => new(0, 0, 0, 1);
+        public static LinearColor White => new(1, 1, 1, 1);
     }
 
 // -1 to 1 converted to 0-255
@@ -286,6 +325,34 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     ms.Writer.WriteFloat(quat.Y);
                     ms.Writer.WriteFloat(quat.Z);
                     ms.Writer.WriteFloat(quat.W);
+                }
+            }
+        }
+        public void Serialize(ref LinearColor lColor)
+        {
+            if (ms.Endian.IsNative)
+            {
+                if (IsLoading)
+                {
+                    ms.Read(lColor.AsBytes());
+                }
+                else
+                {
+                    ms.Writer.Write(lColor.AsBytes());
+                }
+            }
+            else
+            {
+                if (IsLoading)
+                {
+                    lColor = new LinearColor(ms.ReadFloat(), ms.ReadFloat(), ms.ReadFloat(), ms.ReadFloat());
+                }
+                else
+                {
+                    ms.Writer.WriteFloat(lColor.R);
+                    ms.Writer.WriteFloat(lColor.G);
+                    ms.Writer.WriteFloat(lColor.B);
+                    ms.Writer.WriteFloat(lColor.A);
                 }
             }
         }

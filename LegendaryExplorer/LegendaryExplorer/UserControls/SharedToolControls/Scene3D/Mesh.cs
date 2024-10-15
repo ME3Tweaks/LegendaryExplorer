@@ -1,27 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using LegendaryExplorerCore.Gammtek;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using SharpDX.Direct3D11;
+using SharpDX.DXGI;
+using Device = SharpDX.Direct3D11.Device;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
     // This class exists because typing Mesh<WorldVertex> is a pain.
     public class WorldMesh : Mesh<WorldVertex>
     {
-        public WorldMesh(Device Device) : base(Device)
-        {
-        }
-
-        public WorldMesh(Device Device, List<Triangle> Triangles, List<WorldVertex> Vertices) : base(Device, Triangles, Vertices)
+        public WorldMesh(Device device, List<Triangle> triangles, List<WorldVertex> vertices) : base(device, triangles, vertices)
         {
         }
     }
 
-    public class Mesh<Vertex> : System.IDisposable where Vertex : VertexBase
+    public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
     {
-        public List<Triangle> Triangles;
-        public List<Vertex> Vertices;
-        public SharpDX.Direct3D11.Buffer VertexBuffer { get; private set; } = null;
-        public SharpDX.Direct3D11.Buffer IndexBuffer { get; private set; } = null;
+        public readonly List<Triangle> Triangles;
+        public readonly List<TVertex> Vertices;
+        public SharpDX.Direct3D11.Buffer VertexBuffer { get; private set; }
+        public SharpDX.Direct3D11.Buffer IndexBuffer { get; private set; }
         public Vector3 AABBMin { get; private set; }
         public Vector3 AABBMax { get; private set; }
         public Vector3 AABBCenter => AABBMin + AABBHalfSize;
@@ -29,21 +32,15 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public Vector3 AABBHalfSize => (AABBMax - AABBMin) * 0.5f;
 
         // Creates a new blank mesh.
-        public Mesh(SharpDX.Direct3D11.Device Device)
-        {
-            Triangles = new List<Triangle>();
-            Vertices = new List<Vertex>();
-            RebuildBuffer(Device);
-        }
 
         // Creates a blank mesh with the given data.
-        public Mesh(SharpDX.Direct3D11.Device Device, List<Triangle> Triangles, List<Vertex> Vertices)
+        public Mesh(Device device, List<Triangle> triangles, List<TVertex> vertices)
         {
-            this.Triangles = Triangles;
-            this.Vertices = Vertices;
-            RebuildBuffer(Device);
+            Triangles = triangles;
+            Vertices = vertices;
+            RebuildBuffer(device);
         }
-        public void RebuildBuffer(SharpDX.Direct3D11.Device Device)
+        public void RebuildBuffer(Device device)
         {
             // Dispose all the old stuff
             VertexBuffer?.Dispose();
@@ -69,31 +66,31 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             float maxx = AABBMax.X;
             float maxy = AABBMax.Y;
             float maxz = AABBMax.Z;
-            foreach (Vertex v in Vertices)
+            foreach (TVertex v in Vertices)
             {
-                minx = v.Position.X < minx ? v.Position.X : minx;
-                miny = v.Position.Y < miny ? v.Position.Y : miny;
-                minz = v.Position.Z < minz ? v.Position.Z : minz;
-                maxx = v.Position.X > maxx ? v.Position.X : maxx;
-                maxy = v.Position.Y > maxy ? v.Position.Y : maxy;
-                maxz = v.Position.Z > maxz ? v.Position.Z : maxz;
+                Vector3 pos = v.Position;
+                minx = pos.X < minx ? pos.X : minx;
+                miny = pos.Y < miny ? pos.Y : miny;
+                minz = pos.Z < minz ? pos.Z : minz;
+                maxx = pos.X > maxx ? pos.X : maxx;
+                maxy = pos.Y > maxy ? pos.Y : maxy;
+                maxz = pos.Z > maxz ? pos.Z : maxz;
             }
             AABBMin = new Vector3(minx, miny, minz);
             AABBMax = new Vector3(maxx, maxy, maxz);
 
-            // Build the list of floats for the vertex buffer
-            var vertexdata = new List<float>();
-            foreach (Vertex v in Vertices)
+            int floatsPerVertex = TVertex.Stride / 4;
+            int numFloats = floatsPerVertex * Vertices.Count;
+            float[] vertexdata = new float[numFloats];
+            Span<float> vertexDataSpan = vertexdata.AsSpan();
+            for (int vertIdx = 0, floatIdx = 0; vertIdx < Vertices.Count; vertIdx++, floatIdx += floatsPerVertex)
             {
-                foreach (float f in v.ToFloats())
-                {
-                    vertexdata.Add(f);
-                }
+                Vertices[vertIdx].ToFloats(vertexDataSpan[floatIdx..]);
             }
 
             // Create and populate the vertex and index buffers
-            VertexBuffer = SharpDX.Direct3D11.Buffer.Create<float>(Device, BindFlags.VertexBuffer, vertexdata.ToArray());
-            IndexBuffer = SharpDX.Direct3D11.Buffer.Create<Triangle>(Device, BindFlags.IndexBuffer, Triangles.ToArray());
+            VertexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.VertexBuffer, vertexdata);
+            IndexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.IndexBuffer, Triangles.ToArray());
         }
 
         public void Dispose()
@@ -106,92 +103,107 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
     /// <summary>
     /// Contains the indices of the three vertices that make up a triangle.
     /// </summary>
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public struct Triangle
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Triangle(uint vertex1, uint vertex2, uint vertex3)
     {
-        public uint Vertex1;
-        public uint Vertex2;
-        public uint Vertex3;
-
-        public Triangle(uint Vertex1, uint Vertex2, uint Vertex3)
-        {
-            this.Vertex1 = Vertex1;
-            this.Vertex2 = Vertex2;
-            this.Vertex3 = Vertex3;
-        }
+        public uint Vertex1 = vertex1;
+        public uint Vertex2 = vertex2;
+        public uint Vertex3 = vertex3;
     }
 
     /// <summary>
     /// The base class for vertices that can be rendered. They must have a position. This is necessary for builtin AABB computation as well.
     /// </summary>
-    //[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public class VertexBase
+    public interface IVertexBase
     {
-        public Vector3 Position { get; protected set; }
+        public Vector3 Position { get; }
 
-        public VertexBase(Vector3 Position)
-        {
-            this.Position = Position;
-        }
+        public void ToFloats(Span<float> dest);
 
-        public virtual float[] ToFloats() => new[] { Position.X, Position.Y, Position.Z };
+        public static abstract InputElement[] InputElements { get; }
 
-        public virtual InputElement[] InputElements => new[] { new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0) };
+        public static abstract int Stride { get; }
 
-        public virtual int VertexLength => 4 * 3; // four bytes for each of the three channels
+        public static abstract IVertexBase Create(Vector3 position, Vector3 tangent, Vector4 normal, Fixed4<Vector4> uvs);
     }
 
-    /// <summary>
-    /// A simple vertex for testing purposes. 
-    /// </summary>
-    //[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    public class PositionColorVertex : VertexBase
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    //vertex used by LEX's generic shader
+    public struct WorldVertex : IVertexBase
     {
-        readonly Vector3 Color;
-
-        public PositionColorVertex(Vector3 Position, Vector3 Color) : base(Position)
-        {
-            this.Color = Color;
-        }
-
-        public override float[] ToFloats() => new[] { Position.X, Position.Y, Position.Z, Color.X, Color.Y, Color.Z };
-
-        public override InputElement[] InputElements
-        {
-            get
-            {
-                return new[] { new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0), new InputElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0) };
-            }
-        }
-
-        public override int VertexLength => 4 * 3 + 4 * 3; // four bytes for each of three channels for both position and color.
-    }
-
-    public class WorldVertex : VertexBase
-    {
+        public Vector3 Position => _position;
+        private readonly Vector3 _position;
         public Vector3 Normal;
         public Vector2 UV;
 
-        public WorldVertex() : base(Vector3.Zero)
+        public WorldVertex(Vector3 position, Vector3 normal, Vector2 uv)
         {
+            _position = position;
+            Normal = normal;
+            UV = uv;
         }
 
-        public WorldVertex(Vector3 Position, Vector3 Normal, Vector2 UV) : base(Position)
+
+
+        public void ToFloats(Span<float> dest) => this.AsSpanOf<WorldVertex, float>().CopyTo(dest);
+
+        public static InputElement[] InputElements =>
+        [
+            new InputElement("POSITION", 0, Format.R32G32B32_Float, 0),
+            new InputElement("NORMAL", 0, Format.R32G32B32_Float, 0),
+            new InputElement("TEXCOORD", 0, Format.R32G32_Float, 0)
+        ];
+
+        public static unsafe int Stride => sizeof(Vector3) + sizeof(Vector3) + sizeof(Vector2);
+
+        public static IVertexBase Create(Vector3 position, Vector3 tangent, Vector4 normal, Fixed4<Vector4> uvs)
         {
-            this.Normal = Normal;
-            this.UV = UV;
+            return new WorldVertex(position, new Vector3(normal.X, normal.Y, normal.Z), new Vector2(uvs[0].X, uvs[0].Y));
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    //Vertex used for FLocalVertexFactory vertex shaders in LE games
+    public struct LEVertex : IVertexBase
+    {
+        private Vector4 position;
+        private Vector3 tangent;
+        private Vector4 normal;
+        private Vector4 color;
+        //actual number of UVs used by FLocalVertexFactory vertex shaders varies between 1 float2, and 3 float4s + 1 float2.
+        //however, it's perfectly fine for the vertex buffer stride to be longer than the parameters for a vertex shader
+        //and for the InputLayout to be bigger. So for simplicity, all vertexes are the maximum size regardless of shader
+        private Fixed4<Vector4> uvs;
+        public Vector3 Position => new(position.X, position.Y, position.Z);
+
+        private LEVertex(Vector4 position, Vector3 tangent, Vector4 normal, Vector4 color, Fixed4<Vector4> uvs)
+        {
+            this.position = position;
+            this.tangent = tangent;
+            this.normal = normal;
+            this.color = color;
+            this.uvs = uvs;
         }
 
-        public override float[] ToFloats() => new[] { Position.X, Position.Y, Position.Z, Normal.X, Normal.Y, Normal.Z, UV.X, UV.Y };
+        public void ToFloats(Span<float> floats) => MemoryMarshal.CreateSpan(ref Unsafe.As<LEVertex, float>(ref this), Stride / 4).CopyTo(floats);
 
-        public override InputElement[] InputElements =>
-            new[]
-            {
-                new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0),
-                new InputElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0),
-                new InputElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 0)
-            };
+        public static IVertexBase Create(Vector3 position, Vector3 tangent, Vector4 normal, Fixed4<Vector4> uvs)
+        {
+            return new LEVertex(new Vector4(position, 1), tangent, normal, Vector4.Zero, uvs);
+        }
+        public static unsafe int Stride => sizeof(Vector4) + sizeof(Vector3) + sizeof(Vector4) + sizeof(Vector4) + sizeof(Vector4) * 3 + sizeof(Vector2);
 
-        public override int VertexLength => 4 * 3 + 4 * 3 + 4 * 2;
+
+        public static InputElement[] InputElements { get; } =
+        [
+            new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0),
+            new InputElement("TANGENT", 0, Format.R32G32B32_Float, 0),
+            new InputElement("NORMAL", 0, Format.R32G32B32A32_Float, 0),
+            new InputElement("COLOR", 1, Format.R32G32B32A32_Float, 0),
+            new InputElement("TEXCOORD", 0, Format.R32G32B32A32_Float, 0),
+            new InputElement("TEXCOORD", 1, Format.R32G32B32A32_Float, 0),
+            new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, 0),
+            new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, 0),
+        ];
     }
 }

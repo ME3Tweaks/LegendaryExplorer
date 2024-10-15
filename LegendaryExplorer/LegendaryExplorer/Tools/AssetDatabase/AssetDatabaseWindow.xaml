@@ -761,15 +761,6 @@
                             <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Details of each animation" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
                                 <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=lstbx_Anims, Path=SelectedIndex}" Value=">=0">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
                                     <TextBlock Text="Ambient Performance" FontWeight="DemiBold" Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     <TextBlock Text="Sequence Name: " Margin="0,5,0,0" />
                                     <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=lstbx_Anims}" />
@@ -869,15 +860,6 @@
                             <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
                                 <StackPanel x:Name="details_PS" MinWidth="200" Margin="3">
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=lstbx_Particles, Path=SelectedIndex}" Value=">=0">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
                                     <TextBlock Text="Parent Package: " Margin="0,5,0,0"/>
                                     <TextBlock Text="{Binding Path=SelectedItem.ParentPackage, ElementName=lstbx_Particles}" />
                                     <TextBlock Text="System Complexity (effect count): " Margin="0,5,0,0"/>

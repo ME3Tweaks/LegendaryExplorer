@@ -8,6 +8,12 @@ public struct FShaderParameter
     public ushort BaseIndex;
     public ushort NumBytes;
     public ushort BufferIndex;
+
+    public readonly bool IsBound()
+    {
+        //if BufferIndex > 0, this param is in a shared constant buffer which is handled seperately
+        return NumBytes > 0 && BufferIndex == 0;
+    } 
 }
 
 public struct FShaderResourceParameter
@@ -15,6 +21,11 @@ public struct FShaderResourceParameter
     public ushort BaseIndex;
     public ushort NumResources;
     public ushort SamplerIndex;
+
+    public readonly bool IsBound()
+    {
+        return NumResources > 0;
+    }
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 2)]

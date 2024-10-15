@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -8,16 +9,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public ExportEntry Export;
-        public List<IEntry> Textures = new();
+        public readonly ExportEntry Export;
+        public readonly HashSet<IEntry> Textures = [];
 
-        //public List<TextureParam> Textures = new List<TextureParam>();
-
-        //public struct TextureParam
-        //{
-        //    public int TexIndex;
-        //    public string Desc;
-        //}
 
         public MaterialInstanceConstant(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
         {
@@ -25,19 +19,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
             ReadMaterial(export, assetCache, resolveImports);
         }
 
-        private void ReadMaterial(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
+        private void ReadMaterial(ExportEntry export, PackageCache assetCache, bool resolveImports)
         {
             if (export.ClassName == "Material")
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
-                foreach (int v in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
-                {
-                    IEntry tex = export.FileRef.GetEntry(v);
-                    if (tex != null)
-                    {
-                        Textures.Add(tex);
-                    }
-                }
+                ReadBaseMaterial(export, assetCache, parsedMaterial);
             }
             else if (export.ClassName == "RvrEffectsMaterialUser")
             {
@@ -58,7 +45,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                             var externalEntry = EntryImporter.ResolveImport(ie, assetCache);
                             if (externalEntry != null)
                             {
-                                ReadMaterial(externalEntry);
+                                ReadMaterial(externalEntry, assetCache, resolveImports);
                             }
                         }
                         else
@@ -70,40 +57,19 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
             else if (export.IsA("MaterialInstanceConstant"))
             {
-                //Read Local
-                if (export.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
-                {
-                    foreach (var param in textureparams)
-                    {
-                        var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
-                        var texntry = export.FileRef.GetEntry(paramValue.Value);
-                        if (texntry?.ClassName == "Texture2D" && !Textures.Contains(texntry))
-                        {
-                            Textures.Add(texntry);
-                        }
-                    }
-                }
+                var props = export.GetProperties(packageCache: assetCache);
 
-                if (export.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
-                {
-                    foreach (var obj in textures)
-                    {
-                        var texntry = export.FileRef.GetEntry(obj.Value);
-                        if (texntry.ClassName == "Texture2D" && !Textures.Contains(texntry))
-                        {
-                            Textures.Add(texntry);
-                        }
-                    }
-                }
+                //Read Local
+                ReadMaterialInstanceConstant(export, props);
 
                 //Read parent
-                if (export.GetProperty<ObjectProperty>("Parent") is ObjectProperty parentObjProp)
+                if (props.GetProp<ObjectProperty>("Parent") is ObjectProperty parentObjProp)
                 {
                     // This is an instance... maybe?
                     if (parentObjProp.Value > 0)
                     {
                         // Local export
-                        ReadMaterial(export.FileRef.GetUExport(parentObjProp.Value));
+                        ReadMaterial(export.FileRef.GetUExport(parentObjProp.Value), assetCache, resolveImports);
                     }
                     else
                     {
@@ -113,7 +79,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                             var externalEntry = EntryImporter.ResolveImport(ie, assetCache);
                             if (externalEntry != null)
                             {
-                                ReadMaterial(externalEntry);
+                                ReadMaterial(externalEntry, assetCache, resolveImports);
                             }
                         }
                         else
@@ -123,6 +89,52 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     }
                 }
             }
+        }
+
+        protected virtual void ReadBaseMaterial(ExportEntry mat, PackageCache assetCache, Material parsedMaterial)
+        {
+            foreach (int uIndex in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
+            {
+                IEntry tex = mat.FileRef.GetEntry(uIndex);
+                if (tex != null)
+                {
+                    Textures.Add(tex);
+                }
+            }
+        }
+
+        protected virtual void ReadMaterialInstanceConstant(ExportEntry matInst, PropertyCollection props)
+        {
+            if (props.GetProp<ArrayProperty<StructProperty>>("TextureParameterValues") is ArrayProperty<StructProperty> textureparams)
+            {
+                foreach (var param in textureparams)
+                {
+                    var paramValue = param.GetProp<ObjectProperty>("ParameterValue");
+                    var texntry = matInst.FileRef.GetEntry(paramValue.Value);
+                    if (texntry is not null)
+                    {
+                        Textures.Add(texntry);
+                    }
+                }
+            }
+
+            if (props.GetProp<ArrayProperty<ObjectProperty>>("ReferencedTextures") is ArrayProperty<ObjectProperty> textures)
+            {
+                foreach (var obj in textures)
+                {
+                    var texntry = matInst.FileRef.GetEntry(obj.Value);
+                    if (texntry is not null)
+                    {
+                        Textures.Add(texntry);
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<IEntry> GetTextures(ExportEntry export, PackageCache assetCache = null, bool resolveImports = true)
+        {
+            var mic = new MaterialInstanceConstant(export, assetCache, resolveImports);
+            return mic.Textures.Where(entry => entry.ClassName == "Texture2D"); //no texturecubes
         }
     }
 }

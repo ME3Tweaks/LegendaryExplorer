@@ -114,8 +114,7 @@ namespace LegendaryExplorerCore.Pathing
                 // Get list of textures on the materials.
                 foreach (var mat in materials.Distinct())
                 {
-                    var parsedMat = new MaterialInstanceConstant(mat, cache, true);
-                    texturesOnMesh.AddRange(parsedMat.Textures);
+                    texturesOnMesh.AddRange(MaterialInstanceConstant.GetTextures(mat, cache, true));
                 }
 
                 // Jiminy crickets this is complicated

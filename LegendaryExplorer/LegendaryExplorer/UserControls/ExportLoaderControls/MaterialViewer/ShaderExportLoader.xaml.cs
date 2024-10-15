@@ -181,7 +181,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 foreach (var shader in msm.Shaders)
                 {
                     var testShaderText = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
-                    if (shaderText.Length == testShaderText.Length)
+                    if (shaderText.Equals(testShaderText, StringComparison.Ordinal))
                     {
                         SelectedItem = shader;
                         MessageBox.Show($"Found shader: Index {shader.Index} {shader.ShaderType}");

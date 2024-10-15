@@ -72,39 +72,6 @@ namespace LegendaryExplorerCore.Shaders
 
         private static int MaterialShaderMapsOffset(MEGame game, string gamePathOverride)
         {
-            if (game.IsLEGame())
-            {
-                var expectedSize = game switch
-                {
-                    MEGame.LE3 => LE3RefShaderCacheSize,
-                    MEGame.LE2 => LE2RefShaderCacheSize,
-                    MEGame.LE1 => LE1RefShaderCacheSize,
-                    _ => 0
-                };
-                var shaderPath = ShaderFilePath(game, gamePathOverride);
-                if (shaderPath == null)
-                {
-                    // Shader file could not be found
-                    return 0;
-                }
-                var actualsize = new FileInfo(shaderPath).Length;
-                if (expectedSize != actualsize)
-                {
-                    GetMaterialShaderMap(game, null, out _, gamePathOverride = null);
-                    switch (game)
-                    {
-                        case MEGame.LE3:
-                            LE3RefShaderCacheSize = actualsize;
-                            break;
-                        case MEGame.LE2:
-                            LE2RefShaderCacheSize = actualsize;
-                            break;
-                        case MEGame.LE1:
-                            LE1RefShaderCacheSize = actualsize;
-                            break;
-                    }
-                }
-            }
             return game switch
             {
                 MEGame.ME3 => ME3MaterialShaderMapsOffset,
@@ -115,6 +82,14 @@ namespace LegendaryExplorerCore.Shaders
                 MEGame.LE1 => LE1MaterialShaderMapsOffset,
                 _ => 0
             };
+        }
+
+        public static void PopulateOffsets(MEGame game)
+        {
+            if (!IsShaderOffsetsDictInitialized(game))
+            {
+                GetMaterialShaderMap(game, null, out _);
+            }
         }
 
         private static void PopulateOffsets(MEGame game, int offsetOfShaderCacheOffset)
@@ -132,62 +107,67 @@ namespace LegendaryExplorerCore.Shaders
                     MEGame.LE1 => LE1ShaderOffsets ??= new Dictionary<Guid, int>(),
                     _ => null
                 };
-                if (offsetDict == null || offsetDict.Count > 0) return;
-
-                using FileStream fs = File.OpenRead(filePath);
-                fs.JumpTo(offsetOfShaderCacheOffset);
-                int binaryOffset = fs.ReadInt32() + 12;
-                fs.JumpTo(binaryOffset);
-                fs.Skip(1);
-                OffsetOfShaderTypeCRCMap[(int)game] = (int)fs.Position;
-                int nameCount = fs.ReadInt32();
-                fs.Skip(nameCount * 12);
-                if (game is not MEGame.ME2)
+                if (offsetDict == null) return;
+                lock (offsetDict)
                 {
-                    if (game is MEGame.ME1)
+                    if (offsetDict.Count > 0) return;
+                    //do not change the filestream creation options without testing what effect it has on the runtime of this method
+                    //default File.OpenRead is 10x slower than this. (keep in mind OS file caching when testing)
+                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 100, FileOptions.SequentialScan);
+                    fs.JumpTo(offsetOfShaderCacheOffset);
+                    int binaryOffset = fs.ReadInt32() + 12;
+                    fs.JumpTo(binaryOffset);
+                    fs.Skip(1);
+                    OffsetOfShaderTypeCRCMap[(int)game] = (int)fs.Position;
+                    int nameCount = fs.ReadInt32();
+                    fs.Skip(nameCount * 12);
+                    if (game is not MEGame.ME2)
+                    {
+                        if (game is MEGame.ME1)
+                        {
+                            OffsetOfVertexFactoryTypeCRCMap[(int)game] = (int)fs.Position;
+                        }
+                        nameCount = fs.ReadInt32();
+                        fs.Skip(nameCount * 12);
+                    }
+
+                    int shaderCount = fs.ReadInt32();
+                    for (int i = 0; i < shaderCount; i++)
+                    {
+                        fs.Skip(8);
+                        Guid shaderGuid = fs.ReadGuid();
+                        int shaderEndOffset = fs.ReadInt32();
+                        offsetDict.Add(shaderGuid, (int)fs.Position + 2);
+                        fs.Skip(shaderEndOffset - fs.Position);
+                    }
+
+                    if (game != MEGame.ME1)
                     {
                         OffsetOfVertexFactoryTypeCRCMap[(int)game] = (int)fs.Position;
+                        nameCount = fs.ReadInt32();
+                        fs.Skip(nameCount * 12);
                     }
-                    nameCount = fs.ReadInt32();
-                    fs.Skip(nameCount * 12);
-                }
-
-                int shaderCount = fs.ReadInt32();
-                for (int i = 0; i < shaderCount; i++)
-                {
-                    fs.Skip(8);
-                    Guid shaderGuid = fs.ReadGuid();
-                    int shaderEndOffset = fs.ReadInt32();
-                    offsetDict.Add(shaderGuid, (int)fs.Position + 2);
-                    fs.Skip(shaderEndOffset - fs.Position);
-                }
-
-                if (game != MEGame.ME1)
-                {
-                    OffsetOfVertexFactoryTypeCRCMap[(int)game] = (int)fs.Position;
-                    nameCount = fs.ReadInt32();
-                    fs.Skip(nameCount * 12);
-                }
-                switch (game)
-                {
-                    case MEGame.ME3:
-                        ME3MaterialShaderMapsOffset = (int)fs.Position;
-                        break;
-                    case MEGame.ME2:
-                        ME2MaterialShaderMapsOffset = (int)fs.Position;
-                        break;
-                    case MEGame.ME1:
-                        ME1MaterialShaderMapsOffset = (int)fs.Position;
-                        break;
-                    case MEGame.LE3:
-                        LE3MaterialShaderMapsOffset = (int)fs.Position;
-                        break;
-                    case MEGame.LE2:
-                        LE2MaterialShaderMapsOffset = (int)fs.Position;
-                        break;
-                    case MEGame.LE1:
-                        LE1MaterialShaderMapsOffset = (int)fs.Position;
-                        break;
+                    switch (game)
+                    {
+                        case MEGame.ME3:
+                            ME3MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                        case MEGame.ME2:
+                            ME2MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                        case MEGame.ME1:
+                            ME1MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                        case MEGame.LE3:
+                            LE3MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                        case MEGame.LE2:
+                            LE2MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                        case MEGame.LE1:
+                            LE1MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                    }
                 }
             }
         }
@@ -342,12 +322,12 @@ namespace LegendaryExplorerCore.Shaders
                 int i = 0;
                 foreach (Guid shaderGuid in shaderGuids)
                 {
-                    if (!offsets.TryGetValue(shaderGuid, out int offset))
+                    if (offsets.TryGetValue(shaderGuid, out int offset))
                     {
-                        return null;
+                        sc.ms.JumpTo(offset - 0x1E); //offset is to the bytecode, not the start of the shader structure.
+                        sc.Serialize(ref shaders[i]);
                     }
-                    sc.ms.JumpTo(offset - 0x1E); //offset is to the bytecode, not the start of the shader structure.
-                    sc.Serialize(ref shaders[i++]);
+                    ++i;
                 }
                 sc.ms.JumpTo(OffsetOfVertexFactoryTypeCRCMap[(int)game]);
                 sc.Serialize(ref vertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);

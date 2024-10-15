@@ -346,5 +346,10 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="newFlags">Flags to set</param>
         public void setFlags(EPackageFlags newFlags);
 
+        /// <summary>
+        /// Compares the size of the imports + exports table against the lookup table and returns true if they don't match, indicating that some objects have duplicate names.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasDuplicateObjects();
     }
 }

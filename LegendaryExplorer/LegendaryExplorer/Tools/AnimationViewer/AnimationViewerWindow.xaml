@@ -76,17 +76,6 @@
                             <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Column="2">
                                 <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Style.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding ElementName=listBoxAnims, Path=SelectedIndex}"
-                                                    Value=">=0">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
                                     <TextBlock Text="Sequence Name: " Margin="0,5,0,0" />
                                     <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=listBoxAnims}" />
                                     <TextBlock Text="Animation Group: " Margin="0,5,0,0" />

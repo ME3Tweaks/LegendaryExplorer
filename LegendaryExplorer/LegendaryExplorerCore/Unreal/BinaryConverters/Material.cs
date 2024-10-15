@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Collections;
@@ -710,10 +713,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     }
 
     #region MaterialUniformExpressions
-    //FMaterialUniformExpressionRealTime
-    //FMaterialUniformExpressionTime
-    //FMaterialUniformExpressionFractionOfEffectEnabled
-    public class MaterialUniformExpression
+
+    public class UniformExpressionRenderContext(
+        Dictionary<string, float> scalarParameterValues,
+        Dictionary<string, LinearColor> vectorParameterValues,
+        float currentTime,
+        float currentRealTime)
+    {
+        public readonly Dictionary<string, float> ScalarParameterValues = scalarParameterValues;
+        public readonly Dictionary<string, LinearColor> VectorParameterValues = vectorParameterValues;
+        public readonly float CurrentTime = currentTime;
+        public readonly float CurrentRealTime = currentRealTime;
+    }
+
+    public abstract class MaterialUniformExpression
     {
         public NameReference ExpressionType;
 
@@ -727,60 +740,77 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return [];
         }
 
+        public abstract void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal);
+
+        public abstract bool IsNotFrameDependent { get; }
+
         public static MaterialUniformExpression Create(SerializingContainer sc)
         {
             NameReference expressionType = sc.ms.ReadNameReference(sc.Pcc);
             sc.ms.Skip(-8);//ExpressionType will be read again during serialization, so back the stream up.
-            switch (expressionType.Name)
+            return expressionType.Name switch
             {
-                case "FMaterialUniformExpressionAbs":
-                case "FMaterialUniformExpressionCeil":
-                case "FMaterialUniformExpressionFloor":
-                case "FMaterialUniformExpressionFrac":
-                case "FMaterialUniformExpressionPeriodic":
-                case "FMaterialUniformExpressionSquareRoot":
-                    return new MaterialUniformExpressionUnaryOp();
-                case "FMaterialUniformExpressionAppendVector":
-                    return new MaterialUniformExpressionAppendVector();
-                case "FMaterialUniformExpressionClamp":
-                    return new MaterialUniformExpressionClamp();
-                case "FMaterialUniformExpressionConstant":
-                    return new MaterialUniformExpressionConstant();
-                case "FMaterialUniformExpressionFmod":
-                case "FMaterialUniformExpressionMax":
-                case "FMaterialUniformExpressionMin":
-                    return new MaterialUniformExpressionBinaryOp();
-                case "FMaterialUniformExpressionFoldedMath":
-                    return new MaterialUniformExpressionFoldedMath();
-                case "FMaterialUniformExpressionTime":
-                case "FMaterialUniformExpressionRealTime":
-                case "FMaterialUniformExpressionFractionOfEffectEnabled":
-                    return new MaterialUniformExpression();
-                case "FMaterialUniformExpressionScalarParameter":
-                    return new MaterialUniformExpressionScalarParameter();
-                case "FMaterialUniformExpressionSine":
-                    return new MaterialUniformExpressionSine();
-                case "FMaterialUniformExpressionTexture":
-                case "FMaterialUniformExpressionFlipBookTextureParameter":
-                    return new MaterialUniformExpressionTexture();
-                case "FMaterialUniformExpressionTextureParameter":
-                    return new MaterialUniformExpressionTextureParameter();
-                case "FMaterialUniformExpressionVectorParameter":
-                    return new MaterialUniformExpressionVectorParameter();
-                case "FMaterialUniformExpressionFlipbookParameter":
-                    return new MaterialUniformExpressionFlipbookParameter();
-                default:
-                    throw new ArgumentException(expressionType.Instanced);
-            }
+                "FMaterialUniformExpressionAbs" => new MaterialUniformExpressionAbs(),
+                "FMaterialUniformExpressionCeil" => new MaterialUniformExpressionCeil(),
+                "FMaterialUniformExpressionFloor" => new MaterialUniformExpressionFloor(),
+                "FMaterialUniformExpressionFrac" => new MaterialUniformExpressionFrac(),
+                "FMaterialUniformExpressionPeriodic" => new MaterialUniformExpressionPeriodic(),
+                "FMaterialUniformExpressionSquareRoot" => new MaterialUniformExpressionSquareRoot(),
+                "FMaterialUniformExpressionAppendVector" => new MaterialUniformExpressionAppendVector(),
+                "FMaterialUniformExpressionClamp" => new MaterialUniformExpressionClamp(),
+                "FMaterialUniformExpressionConstant" => new MaterialUniformExpressionConstant(),
+                "FMaterialUniformExpressionFmod" => new MaterialUniformExpressionFmod(),
+                "FMaterialUniformExpressionMax" => new MaterialUniformExpressionMax(),
+                "FMaterialUniformExpressionMin" => new MaterialUniformExpressionMin(),
+                "FMaterialUniformExpressionFoldedMath" => new MaterialUniformExpressionFoldedMath(),
+                "FMaterialUniformExpressionTime" => new MaterialUniformExpressionTime(),
+                "FMaterialUniformExpressionRealTime" => new MaterialUniformExpressionRealTime(),
+                "FMaterialUniformExpressionFractionOfEffectEnabled" => new MaterialUniformExpressionFractionOfEffectEnabled(),
+                "FMaterialUniformExpressionScalarParameter" => new MaterialUniformExpressionScalarParameter(),
+                "FMaterialUniformExpressionSine" => new MaterialUniformExpressionSine(),
+                "FMaterialUniformExpressionTexture" => new MaterialUniformExpressionTexture(),
+                "FMaterialUniformExpressionFlipBookTextureParameter" => new MaterialUniformExpressionFlipBookTextureParameter(),
+                "FMaterialUniformExpressionTextureParameter" => new MaterialUniformExpressionTextureParameter(),
+                "FMaterialUniformExpressionVectorParameter" => new MaterialUniformExpressionVectorParameter(),
+                "FMaterialUniformExpressionFlipbookParameter" => new MaterialUniformExpressionFlipbookParameter(),
+                _ => throw new ArgumentException(expressionType.Instanced)
+            };
         }
     }
-    // FMaterialUniformExpressionAbs
-    // FMaterialUniformExpressionCeil
-    // FMaterialUniformExpressionFloor
-    // FMaterialUniformExpressionFrac
-    // FMaterialUniformExpressionPeriodic
-    // FMaterialUniformExpressionSquareRoot
-    public class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
+
+    public class MaterialUniformExpressionTime : MaterialUniformExpression
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            outVal.R = context.CurrentTime;
+        }
+
+        public override bool IsNotFrameDependent => false;
+    }
+
+    public class MaterialUniformExpressionRealTime : MaterialUniformExpression
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            outVal.R = context.CurrentRealTime;
+        }
+
+        public override bool IsNotFrameDependent => false;
+    }
+
+    public class MaterialUniformExpressionFractionOfEffectEnabled : MaterialUniformExpression
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            //TODO: replace guess with whatever this actually should be
+            Debugger.Break();
+            outVal = new LinearColor(1, 1, 1, 1);
+        }
+
+        public override bool IsNotFrameDependent => false; //Re-evaluate once we've figured out what this is
+    }
+
+    public abstract class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
     {
         public MaterialUniformExpression X;
         public override void Serialize(SerializingContainer sc)
@@ -792,20 +822,99 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             X.Serialize(sc);
         }
+        public override bool IsNotFrameDependent => X.IsNotFrameDependent;
     }
-    //FMaterialUniformExpressionFlipbookParameter
+
+    public class MaterialUniformExpressionAbs : MaterialUniformExpressionUnaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            X.GetNumberValue(context, ref outVal);
+            outVal.R = MathF.Abs(outVal.R);
+            outVal.G = MathF.Abs(outVal.G);
+            outVal.B = MathF.Abs(outVal.B);
+            outVal.A = MathF.Abs(outVal.A);
+        }
+
+    }
+
+    public class MaterialUniformExpressionCeil : MaterialUniformExpressionUnaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            X.GetNumberValue(context, ref outVal);
+            outVal.R = MathF.Ceiling(outVal.R);
+            outVal.G = MathF.Ceiling(outVal.G);
+            outVal.B = MathF.Ceiling(outVal.B);
+            outVal.A = MathF.Ceiling(outVal.A);
+        }
+    }
+
+    public class MaterialUniformExpressionFloor : MaterialUniformExpressionUnaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            X.GetNumberValue(context, ref outVal);
+            outVal.R = MathF.Floor(outVal.R);
+            outVal.G = MathF.Floor(outVal.G);
+            outVal.B = MathF.Floor(outVal.B);
+            outVal.A = MathF.Floor(outVal.A);
+        }
+    }
+
+    public class MaterialUniformExpressionFrac : MaterialUniformExpressionUnaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            X.GetNumberValue(context, ref outVal);
+            outVal.R = outVal.R - MathF.Floor(outVal.R);
+            outVal.G = outVal.G - MathF.Floor(outVal.G);
+            outVal.B = outVal.B - MathF.Floor(outVal.B);
+            outVal.A = outVal.A - MathF.Floor(outVal.A);
+        }
+    }
+
+    public class MaterialUniformExpressionPeriodic : MaterialUniformExpressionUnaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor temp = LinearColor.Black;
+            X.GetNumberValue(context, ref temp);
+            outVal.R = temp.R - MathF.Floor(temp.R);
+            outVal.G = temp.G - MathF.Floor(temp.G);
+            outVal.B = temp.B - MathF.Floor(temp.B);
+            outVal.A = temp.A - MathF.Floor(temp.A);
+        }
+    }
+
+    public class MaterialUniformExpressionSquareRoot : MaterialUniformExpressionUnaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor temp = LinearColor.Black;
+            X.GetNumberValue(context, ref temp);
+            outVal.R = MathF.Sqrt(temp.R);
+        }
+    }
+
     public class MaterialUniformExpressionFlipbookParameter : MaterialUniformExpression
     {
         public int Index;
-        public UIndex TextureIndex;
+        public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3/LE
         public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref Index);
             sc.Serialize(ref TextureIndex);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            throw new NotImplementedException();
+        }
+        public override bool IsNotFrameDependent => false;
     }
-    //FMaterialUniformExpressionSine
+
     public class MaterialUniformExpressionSine : MaterialUniformExpressionUnaryOp
     {
         public bool bIsCosine;
@@ -814,11 +923,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.Serialize(sc);
             sc.Serialize(ref bIsCosine);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor temp = LinearColor.Black;
+            X.GetNumberValue(context, ref temp);
+            outVal.R = bIsCosine ? MathF.Cos(temp.R) : MathF.Sin(temp.R);
+        }
+        public override bool IsNotFrameDependent => X.IsNotFrameDependent;
     }
-    // FMaterialUniformExpressionFmod
-    // FMaterialUniformExpressionMax
-    // FMaterialUniformExpressionMin
-    public class MaterialUniformExpressionBinaryOp : MaterialUniformExpression
+
+    public abstract class MaterialUniformExpressionBinaryOp : MaterialUniformExpression
     {
         public MaterialUniformExpression A;
         public MaterialUniformExpression B;
@@ -847,8 +962,54 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 .. B.GetNames(game),
             ];
         }
+        public override bool IsNotFrameDependent => A.IsNotFrameDependent && B.IsNotFrameDependent;
     }
-    // FMaterialUniformExpressionAppendVector
+
+    public class MaterialUniformExpressionFmod: MaterialUniformExpressionBinaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor tempA = LinearColor.Black;
+            A.GetNumberValue(context, ref tempA);
+            LinearColor tempB = LinearColor.Black;
+            B.GetNumberValue(context, ref tempB);
+            outVal.R = tempA.R % tempB.R;
+            outVal.G = tempA.G % tempB.G;
+            outVal.B = tempA.B % tempB.B;
+            outVal.A = tempA.A % tempB.A;
+        }
+    }
+
+    public class MaterialUniformExpressionMax : MaterialUniformExpressionBinaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor tempA = LinearColor.Black;
+            A.GetNumberValue(context, ref tempA);
+            LinearColor tempB = LinearColor.Black;
+            B.GetNumberValue(context, ref tempB);
+            outVal.R = MathF.Max(tempA.R, tempB.R);
+            outVal.G = MathF.Max(tempA.G, tempB.G);
+            outVal.B = MathF.Max(tempA.B, tempB.B);
+            outVal.A = MathF.Max(tempA.A, tempB.A);
+        }
+    }
+
+    public class MaterialUniformExpressionMin : MaterialUniformExpressionBinaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor tempA = LinearColor.Black;
+            A.GetNumberValue(context, ref tempA);
+            LinearColor tempB = LinearColor.Black;
+            B.GetNumberValue(context, ref tempB);
+            outVal.R = MathF.Min(tempA.R, tempB.R);
+            outVal.G = MathF.Min(tempA.G, tempB.G);
+            outVal.B = MathF.Min(tempA.B, tempB.B);
+            outVal.A = MathF.Min(tempA.A, tempB.A);
+        }
+    }
+
     public class MaterialUniformExpressionAppendVector : MaterialUniformExpressionBinaryOp
     {
         public uint NumComponentsA;
@@ -857,18 +1018,79 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.Serialize(sc);
             sc.Serialize(ref NumComponentsA);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            Debug.Assert(NumComponentsA <= 4);
+            LinearColor tempA = LinearColor.Black;
+            A.GetNumberValue(context, ref tempA);
+            LinearColor tempB = LinearColor.Black;
+            B.GetNumberValue(context, ref tempB);
+            ReadOnlySpan<float> aFloats = tempA.AsSpanOf<LinearColor, float>();
+            ReadOnlySpan<float> bFloats = tempB.AsSpanOf<LinearColor, float>();
+            Span<float> resultFloats = outVal.AsSpanOf<LinearColor, float>();
+            int numComponentsA = (int)NumComponentsA;
+            aFloats[..numComponentsA].CopyTo(resultFloats);
+            bFloats[..^numComponentsA].CopyTo(resultFloats[numComponentsA..]);
+        }
     }
-    //FMaterialUniformExpressionFoldedMath
+
     public class MaterialUniformExpressionFoldedMath : MaterialUniformExpressionBinaryOp
     {
-        public byte Op; //EFoldedMathOperation
+        public EFoldedMathOperation Op; //EFoldedMathOperation
+        public enum EFoldedMathOperation : byte
+        {
+            Add,
+            Sub,
+            Mul,
+            Div,
+            Dot
+        }
+
         public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
-            sc.Serialize(ref Op);
+            if (sc.IsLoading)
+                Op = (EFoldedMathOperation)sc.ms.ReadByte();
+            else
+                sc.ms.Writer.WriteByte((byte)Op);
+        }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor tempA = LinearColor.Black;
+            A.GetNumberValue(context, ref tempA);
+            LinearColor tempB = LinearColor.Black;
+            B.GetNumberValue(context, ref tempB);
+            var aVec = (Vector4)tempA;
+            var bVec = (Vector4)tempB;
+
+            outVal = Op switch
+            {
+                EFoldedMathOperation.Add => (LinearColor)(aVec + bVec),
+                EFoldedMathOperation.Sub => (LinearColor)(aVec - bVec),
+                EFoldedMathOperation.Mul => (LinearColor)(aVec * bVec),
+                EFoldedMathOperation.Div => new LinearColor(aVec.X / SafeDiv(bVec.X), aVec.Y / SafeDiv(bVec.Y), aVec.Z / SafeDiv(bVec.Z), aVec.W / SafeDiv(bVec.W)),
+                EFoldedMathOperation.Dot => new LinearColor(Vector4.Dot(aVec, bVec)),
+                _ => throw new Exception($"Unknown folded math operation {Op}")
+            };
+            return;
+
+            static float SafeDiv(float divisor)
+            {
+                if (MathF.Abs(divisor) < 1e-05f)
+                {
+                    if (divisor < 0.0f)
+                    {
+                        return -1e-05f;
+                    }
+                    return +1e-05f;
+                }
+                return divisor;
+            }
         }
     }
-    // FMaterialUniformExpressionClamp
+
     public class MaterialUniformExpressionClamp : MaterialUniformExpression
     {
         public MaterialUniformExpression Input;
@@ -893,37 +1115,70 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
             Max.Serialize(sc);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor inVal = LinearColor.Black;
+            LinearColor minVal = LinearColor.Black;
+            LinearColor maxVal = LinearColor.Black;
+            Input.GetNumberValue(context, ref outVal);
+            Min.GetNumberValue(context, ref outVal);
+            Max.GetNumberValue(context, ref outVal);
+
+            outVal.R = Math.Clamp(inVal.R, minVal.R, maxVal.R);
+            outVal.G = Math.Clamp(inVal.G, minVal.G, maxVal.G);
+            outVal.B = Math.Clamp(inVal.B, minVal.B, maxVal.B);
+            outVal.A = Math.Clamp(inVal.A, minVal.A, maxVal.A);
+        }
+        public override bool IsNotFrameDependent => Input.IsNotFrameDependent && Min.IsNotFrameDependent && Max.IsNotFrameDependent;
     }
-    //FMaterialUniformExpressionConstant
+
     public class MaterialUniformExpressionConstant : MaterialUniformExpression
     {
-        public float R;
-        public float G;
-        public float B;
-        public float A;
+        public LinearColor Value;
         public byte ValueType;
         public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
-            sc.Serialize(ref R);
-            sc.Serialize(ref G);
-            sc.Serialize(ref B);
-            sc.Serialize(ref A);
+            sc.Serialize(ref Value);
             sc.Serialize(ref ValueType);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            outVal = Value;
+        }
+        public override bool IsNotFrameDependent => true;
     }
-    //FMaterialUniformExpressionTexture
-    //FMaterialUniformExpressionFlipBookTextureParameter
+
     public class MaterialUniformExpressionTexture : MaterialUniformExpression
     {
-        public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3
+        public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3/LE
         public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref TextureIndex);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override bool IsNotFrameDependent => true;
     }
-    //FMaterialUniformExpressionTextureParameter
+
+    public class MaterialUniformExpressionFlipBookTextureParameter : MaterialUniformExpressionTexture
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            //R = U, G = V, B = A = 0
+            Debugger.Break();
+            throw new NotImplementedException();
+        }
+        public override bool IsNotFrameDependent => false;
+    }
+
     public class MaterialUniformExpressionTextureParameter : MaterialUniformExpressionTexture
     {
         public NameReference ParameterName;
@@ -933,8 +1188,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ParameterName);
             sc.Serialize(ref TextureIndex);
         }
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            throw new NotSupportedException();
+        }
     }
-    //FMaterialUniformExpressionScalarParameter
+
     public class MaterialUniformExpressionScalarParameter : MaterialUniformExpression
     {
         public NameReference ParameterName;
@@ -945,24 +1204,33 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref ParameterName);
             sc.Serialize(ref DefaultValue);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            float paramValue = context.ScalarParameterValues.GetValueOrDefault(ParameterName.Instanced, DefaultValue);
+            outVal = new LinearColor(paramValue, 0, 0, 0);
+        }
+
+        public override bool IsNotFrameDependent => true;
     }
-    //FMaterialUniformExpressionVectorParameter
+
     public class MaterialUniformExpressionVectorParameter : MaterialUniformExpression
     {
         public NameReference ParameterName;
-        public float DefaultR;
-        public float DefaultG;
-        public float DefaultB;
-        public float DefaultA;
+        public LinearColor DefaultValue;
         public override void Serialize(SerializingContainer sc)
         {
             base.Serialize(sc);
             sc.Serialize(ref ParameterName);
-            sc.Serialize(ref DefaultR);
-            sc.Serialize(ref DefaultG);
-            sc.Serialize(ref DefaultB);
-            sc.Serialize(ref DefaultA);
+            sc.Serialize(ref DefaultValue);
         }
+
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            outVal = context.VectorParameterValues.GetValueOrDefault(ParameterName.Instanced, DefaultValue);
+        }
+
+        public override bool IsNotFrameDependent => true;
     }
     #endregion
 

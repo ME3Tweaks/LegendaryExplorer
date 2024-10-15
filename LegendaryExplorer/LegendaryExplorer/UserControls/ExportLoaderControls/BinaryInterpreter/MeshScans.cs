@@ -296,7 +296,7 @@ public partial class BinaryInterpreterWPF
                     {
                         if (Pcc.GetEntry(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
                         {
-                            foreach (IEntry texture in new MaterialInstanceConstant(matExport, resolveImports: false).Textures)
+                            foreach (IEntry texture in MaterialInstanceConstant.GetTextures(matExport, resolveImports: false))
                             {
                                 matNode.Items.Add(new BinInterpNode($"#{texture.UIndex} {matExport.FileRef.GetEntryString(texture.UIndex)}"));
                             }
