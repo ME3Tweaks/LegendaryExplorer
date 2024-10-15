@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture_parameter =
 [
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture_parameter.html#a2526f88a38a300f7be99d9680921610e", null ],
+    [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture_parameter.html#ac6165250a569c5b80eea30f2787e15c6", null ],
     [ "ParameterName", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture_parameter.html#a54d9aad211b9bf35f44faed1a4c07c48", null ]
 ];

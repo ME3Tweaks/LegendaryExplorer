@@ -114,7 +114,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.CachedNativeFunctionInfo", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_cached_native_function_info.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.CachedPhysSMData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_cached_phys_s_m_data.html", null ],
     [ "LegendaryExplorerCore.Gammtek.TypeSwitch.CaseInfo", "class_legendary_explorer_core_1_1_gammtek_1_1_type_switch_1_1_case_info.html", null ],
-    [ "LegendaryExplorerCore.Misc.CaseInsensitiveConcurrentDictionary< DateTime >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html", null ],
     [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< ASTNode >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", [
       [ "LegendaryExplorerCore.UnrealScript.Analysis.Symbols.ASTNodeDict", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_symbols_1_1_a_s_t_node_dict.html", null ]
     ] ],
@@ -159,9 +158,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.Compiling.CompilerUtils", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_compiler_utils.html", null ],
     [ "LegendaryExplorerCore.Textures.Studio.MEMTextureMap.CompressedMipInfo", "class_legendary_explorer_core_1_1_textures_1_1_studio_1_1_m_e_m_texture_map_1_1_compressed_mip_info.html", null ],
     [ "LegendaryExplorerCore.Packages.CompressionHelper", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html", null ],
-    [ "ConcurrentDictionary", null, [
-      [ "LegendaryExplorerCore.Misc.CaseInsensitiveConcurrentDictionary< V >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_concurrent_dictionary.html", null ]
-    ] ],
     [ "LegendaryExplorerCore.Unreal.CNDFile.ConditionalEntry", "class_legendary_explorer_core_1_1_unreal_1_1_c_n_d_file_1_1_conditional_entry.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.ConduitPath", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_conduit_path.html", null ],
     [ "LegendaryExplorerCore.Coalesced.Config.ConfigAssetBundle", "class_legendary_explorer_core_1_1_coalesced_1_1_config_1_1_config_asset_bundle.html", null ],
@@ -794,17 +790,30 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpression", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression.html", [
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionBinaryOp", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_binary_op.html", [
         [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionAppendVector", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_append_vector.html", null ],
-        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFoldedMath", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_folded_math.html", null ]
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFmod", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_fmod.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFoldedMath", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_folded_math.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionMax", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_max.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionMin", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_min.html", null ]
       ] ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionClamp", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_clamp.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionConstant", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_constant.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFlipbookParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flipbook_parameter.html", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFractionOfEffectEnabled", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_fraction_of_effect_enabled.html", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionRealTime", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_real_time.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionScalarParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_scalar_parameter.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionTexture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture.html", [
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFlipBookTextureParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flip_book_texture_parameter.html", null ],
         [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionTextureParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture_parameter.html", null ]
       ] ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionTime", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_time.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionUnaryOp", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_unary_op.html", [
-        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionSine", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_sine.html", null ]
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionAbs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_abs.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionCeil", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_ceil.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFloor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_floor.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionFrac", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_frac.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionPeriodic", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_periodic.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionSine", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_sine.html", null ],
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionSquareRoot", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_square_root.html", null ]
       ] ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialUniformExpressionVectorParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_vector_parameter.html", null ]
     ] ],
@@ -1359,6 +1368,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html", null ],
+    [ "LegendaryExplorerCore.Gammtek.Extensions.UnsafeExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unsafe_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.UPropertyExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_u_property_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l.html", null ],
     [ "USet< KeyValuePair< TKey, TValue >, TKey, TKeyFuncs >", "class_u_set.html", null ],

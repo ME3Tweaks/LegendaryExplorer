@@ -30,5 +30,7 @@ var class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions =
     [ "Add< T, U, V >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ac9d1c222ac04ce222ae1dfaf98611a4c", null ],
     [ "Add< T, U, V, W >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a69a6fb5952f25143c86f687bd0a28f5e", null ],
     [ "Add< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a8fe909bdd3ffecccfa883029bbb117e3", null ],
-    [ "GetEnumerator< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9b43276767ca0dd32271e5368d9f71e2", null ]
+    [ "GetEnumerator< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9b43276767ca0dd32271e5368d9f71e2", null ],
+    [ "ChunkBySpan< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a31e7280305b8cd57f7267edf14cdd5f2", null ],
+    [ "ChunkSpanEnumerator< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#acba89026af4df5d60ac1dbd47c69fb90", null ]
 ];

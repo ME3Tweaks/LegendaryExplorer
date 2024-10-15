@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"class_f_g_fx_pixel_shader.html#a14487a9e5d853c200fdccf1ee954d23e":[1,0,50,5],
+"class_f_g_fx_pixel_shader.html#a347ee022e975d4a262202a11172239d5":[1,0,50,1],
 "class_f_g_fx_pixel_shader.html#a56a12c2de717423ef88f79eb3d5c77ac":[1,0,50,0],
 "class_f_g_fx_pixel_shader.html#a7a775772c563ef35ac1f6c797a7c5f55":[1,0,50,4],
 "class_f_g_fx_pixel_shader.html#a8b57ebe2868db0dfda180a87eaba8ec0":[1,0,50,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX7 =
 "class_f_spline_mesh_vertex_factory_shader_parameters.html#abcdee25f97cddfdd1fb33310357d958b":[1,0,123,9],
 "class_f_spline_mesh_vertex_factory_shader_parameters.html#acba1a10b7daaea8ac9a3002e47ca2a3a":[1,0,123,12],
 "class_f_spline_mesh_vertex_factory_shader_parameters.html#ae3c0506af0ad9ba6d9d26d1480e835b9":[1,0,123,8],
-"class_f_spot_light_policy.html":[1,0,124],
-"class_f_static_history_update_pixel_shader.html":[1,0,127],
-"class_f_static_history_update_pixel_shader.html#a343d6c2161a86cfa1c5ea67084759bdc":[1,0,127,1]
+"class_f_spot_light_policy.html":[1,0,124]
 };

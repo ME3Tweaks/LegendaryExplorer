@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flip_book_texture_parameter =
+[
+    [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flip_book_texture_parameter.html#ab6f4764ccf197cbef62dcc37bfb592cf", null ],
+    [ "IsNotFrameDependent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flip_book_texture_parameter.html#a9d70d00ac9b336d19710f8c61b6b8ec8", null ]
+];

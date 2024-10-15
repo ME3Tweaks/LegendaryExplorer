@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_fraction_of_effect_enabled =
+[
+    [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_fraction_of_effect_enabled.html#a8f3e284f0cd91044d8ec50f2e7e5f90b", null ],
+    [ "IsNotFrameDependent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_fraction_of_effect_enabled.html#a940966c39d1bd499b910df5a87da4565", null ]
+];

@@ -23,5 +23,5 @@ var dir_624fb345666c0382d13aadf8c25760c2 =
     [ "UInt64Extensions.cs", "_u_int64_extensions_8cs.html", "_u_int64_extensions_8cs" ],
     [ "UIntPtrExtensions.cs", "_u_int_ptr_extensions_8cs.html", "_u_int_ptr_extensions_8cs" ],
     [ "UnrealExtensions.cs", "_unreal_extensions_8cs.html", "_unreal_extensions_8cs" ],
-    [ "UnsafeExtensions.cs", "_unsafe_extensions_8cs.html", null ]
+    [ "UnsafeExtensions.cs", "_unsafe_extensions_8cs.html", "_unsafe_extensions_8cs" ]
 ];

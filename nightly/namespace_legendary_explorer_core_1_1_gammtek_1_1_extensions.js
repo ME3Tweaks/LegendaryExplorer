@@ -22,5 +22,6 @@ var namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions =
     [ "UInt32Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int32_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int32_extensions" ],
     [ "UInt64Extensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int64_extensions" ],
     [ "UIntPtrExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int_ptr_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_u_int_ptr_extensions" ],
-    [ "UnrealExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions" ]
+    [ "UnrealExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unreal_extensions" ],
+    [ "UnsafeExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unsafe_extensions.html", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unsafe_extensions" ]
 ];

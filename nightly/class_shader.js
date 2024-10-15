@@ -11,8 +11,5 @@ var class_shader =
     [ "ParameterMapCRC", "class_shader.html#a1d6b37ef671f4a877c9da22bd50b71d7", null ],
     [ "InstructionCount", "class_shader.html#a5047f1f5c215ac5df0c1215deb949743", null ],
     [ "Platform", "class_shader.html#a2882e1cdaf512da84e9f32ca03a0c905", null ],
-    [ "VertexFactoryType", "class_shader.html#a90b492d7dfdc30e7fa01e45f815b4465", null ],
-    [ "UDKSerializations", "class_shader.html#a7b5a81442f155a4bcc39f644fe598f0b", null ],
-    [ "UDKSourceSHA", "class_shader.html#abde6cf788cd1097f417297b957023a3b", null ],
-    [ "UDKShaderSHA", "class_shader.html#ad6e678732eeaae687811a159150703ed", null ]
+    [ "VertexFactoryType", "class_shader.html#a90b492d7dfdc30e7fa01e45f815b4465", null ]
 ];

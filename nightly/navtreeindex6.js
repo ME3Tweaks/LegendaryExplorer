@@ -1,5 +1,7 @@
 var NAVTREEINDEX6 =
 {
+"_var_link_info_8cs.html":[2,0,0,0,8,6],
+"_variable_declaration_8cs.html":[2,0,0,0,26,3,1,73],
 "_variable_identifier_8cs.html":[2,0,0,0,26,3,1,74],
 "_variable_path_resolving_status_8cs.html":[2,0,0,0,6,7,23],
 "_variable_path_resolving_status_8cs.html#afd4065d0a3bde827daf59ff904374ff8":[2,0,0,0,6,7,23,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX6 =
 "class_f_foliage_vertex_factory_shader_parameters.html#a277767ee3f7ac07ebdf447cf19afe06e":[1,0,42,2],
 "class_f_foliage_vertex_factory_shader_parameters.html#a327f84b22dc6b0fccc406e3c19f05544":[1,0,42,0],
 "class_f_foliage_vertex_factory_shader_parameters.html#abc08e6f4fd73acdef24c93d9b9bf614c":[1,0,42,1],
-"class_f_g_fx_pixel_shader.html":[1,0,50],
-"class_f_g_fx_pixel_shader.html#a14487a9e5d853c200fdccf1ee954d23e":[1,0,50,5],
-"class_f_g_fx_pixel_shader.html#a347ee022e975d4a262202a11172239d5":[1,0,50,1]
+"class_f_g_fx_pixel_shader.html":[1,0,50]
 };

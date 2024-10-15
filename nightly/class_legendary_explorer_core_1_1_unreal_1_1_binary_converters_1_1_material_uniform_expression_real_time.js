@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_real_time =
+[
+    [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_real_time.html#af42a5fe90deb000b1b893abaef177a0b", null ],
+    [ "IsNotFrameDependent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_real_time.html#a576c6e3ca4e8809df15cdad1044b14c3", null ]
+];

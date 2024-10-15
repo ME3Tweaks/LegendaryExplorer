@@ -15,5 +15,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_common_structs =
     [ "GetGuid", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#aa422cfc656f8318daad564c24d08721d", null ],
     [ "ColorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#af9f7c8bd4b948e89449f792ef4d5dd06", null ],
     [ "GetColor", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a6d6f4037cb2d64ee111e7faeaf3c8159", null ],
-    [ "LinearColorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#ac0381d74d8a686f57867451287e0eb83", null ]
+    [ "LinearColorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#ac0381d74d8a686f57867451287e0eb83", null ],
+    [ "GetLinearColor", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a4b47a19f5742c6c75afb5c9d32d3eaf0", null ]
 ];
