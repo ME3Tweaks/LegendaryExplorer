@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,7 +115,10 @@ namespace LegendaryExplorer.ToolsetDev.MemoryAnalyzer
                 {
                     if (mao.reference.Target is UnrealPackageFile package)
                     {
-                        ListDialog ld = new ListDialog(package.RegisterStackTraces, "Package register stack traces", "This is the list of stack traces that were used to register use of this package", this);
+                        var list = new List<string>();
+                        list.Add($"CREATION STACK TRACE:\n{package.CreationStackTrace}");
+                        list.AddRange(package.RegisterStackTraces);
+                        ListDialog ld = new ListDialog(list, "Package register stack traces", "This is the list of stack traces that were used to register use of this package", this);
                         ld.Show();
                     }
                 }
