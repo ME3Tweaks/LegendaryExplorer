@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorer.SharedUI.Converters;
 
 namespace LegendaryExplorer.Misc
 {
     /// <summary>
-    /// Class for handling interaction with the 3DMIGOTO HLSL Decompiler for DirectX 11. This class is NOT thread safe.
+    /// Class for handling interaction with the 3DMIGOTO HLSL Decompiler for DirectX 11.
     /// </summary>
-    public partial class HLSLDecompiler
+    public static partial class HLSLDecompiler
     {
+        private static readonly object DecompileShaderLock = new(); 
+
         private const int MAX_SHADER_LEN = 65535; // 64KB
 
         [LibraryImport(@"HLSLDecompiler.dll")]
@@ -26,7 +21,11 @@ namespace LegendaryExplorer.Misc
                 return "Bytecode not loaded for shader!";
 
             byte[] buffer = new byte[65535];
-            var strLen = DecompileShader(bytecode, (uint)bytecode.Length, buffer, buffer.Length, includeCreatedBy);
+            int strLen;
+            lock (DecompileShaderLock)
+            {
+                strLen = DecompileShader(bytecode, (uint)bytecode.Length, buffer, buffer.Length, includeCreatedBy);
+            }
             if (strLen == -1)
             {
                 // Buffer too small;

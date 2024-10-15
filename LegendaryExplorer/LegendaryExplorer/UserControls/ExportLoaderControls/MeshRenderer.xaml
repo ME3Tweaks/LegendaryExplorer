@@ -31,32 +31,33 @@
         </xctk:BusyIndicator.ProgressBarStyle>
         <DockPanel>
             <StatusBar DockPanel.Dock="Bottom">
-                <StackPanel Orientation="Horizontal">
-                    <CheckBox Name="Wireframe_Checkbox" IsChecked="{Binding Wireframe}" Content="Wireframe"  VerticalAlignment="Center" Margin="2,0"/>
-                    <CheckBox Name="Solid_Checkbox" IsChecked="{Binding Solid}"  Content="Solid"  VerticalAlignment="Center"  Margin="2,0"/>
-                    <CheckBox Name="FirstPerson_Checkbox" IsChecked="{Binding FirstPerson}"  Content="FirstPerson"  VerticalAlignment="Center" Margin="2,0"/>
-                    <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"  VerticalAlignment="Center" Margin="2,0"/>
-                    <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh" 
-                          Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
-                    <CheckBox Name="ShowMemory_Checkbox" 
-                              IsChecked="{Binding ShowMemoryUsage}" 
-                              Content="Show memory usage" 
-                              Visibility="{Binding Path=(legendaryExplorer:App.IsDebug), Converter={StaticResource BoolToVisibilityConverter}, Mode=OneTime}"  
-                              VerticalAlignment="Center" Margin="2,0"/>
-                    <ComboBox Name="LODPicker_ComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" Width="55" ItemsSource="{Binding LODPicker}" 
-                              SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Name="Solid_Checkbox" IsChecked="{Binding RenderSolid}"  Content="Solid"  VerticalAlignment="Center"  Margin="2,0"/>
+                        <CheckBox Name="Wireframe_Checkbox" IsChecked="{Binding RenderWireframe}" Content="Wireframe"  VerticalAlignment="Center" Margin="2,0"/>
+                        <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh" 
+                                  Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
+                        <CheckBox Name="Shader_Checkbox" IsChecked="{Binding RenderGameShader}"  Content="In-Game Shader (Experimental)"  VerticalAlignment="Center"  Margin="2,0"
+                                  Visibility="{Binding CanUseGameShaders, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,2">
+                        <ComboBox Name="LODPicker_ComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" Width="55" ItemsSource="{Binding LODPicker}" 
+              SelectedIndex="{Binding CurrentLOD, Mode=TwoWay}" ToolTip="Change the visible LOD" Margin="2,0" FontStretch="UltraCondensed"/>
+                        <CheckBox Name="FirstPerson_Checkbox" IsChecked="{Binding FirstPerson}"  Content="FirstPerson"  VerticalAlignment="Center" Margin="2,0"/>
+                        <CheckBox Name="Rotating_Checkbox" IsChecked="{Binding Rotating}"  Content="Rotating"  VerticalAlignment="Center" Margin="2,0"/>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
 
-                    <xctk:DropDownButton Content="View options" Margin="0,3">
-                        <xctk:DropDownButton.DropDownContent>
-                            <scene3D:SceneControlOptionsControl/>
-                        </xctk:DropDownButton.DropDownContent>
-                    </xctk:DropDownButton>
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
-                    <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0"
-                            sharedUi:Bindings.VisibilityToEnabled="true">
-                        <Image Source="/Resources/Images/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
-                    </Button>
+                        <xctk:DropDownButton Content="View options" Margin="0,3">
+                            <xctk:DropDownButton.DropDownContent>
+                                <scene3D:SceneControlOptionsControl/>
+                            </xctk:DropDownButton.DropDownContent>
+                        </xctk:DropDownButton>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="2,0"/>
+                        <Button Command="{Binding UModelExportCommand}"  ToolTip="Export with umodel" Margin="2,0"
+            sharedUi:Bindings.VisibilityToEnabled="true">
+                            <Image Source="/Resources/Images/umodel.ico" Width="16" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </StatusBar>
             <Grid>
@@ -115,7 +116,7 @@
                         </ItemsControl.Resources>
                     </ItemsControl>
                 </StackPanel>-->
-                <scene3D:SceneRenderControl Canvas.ZIndex="0"  x:Name="SceneViewer" Render="SceneViewer_Render" />
+                <scene3D:SceneRenderControl Canvas.ZIndex="0"  x:Name="SceneViewer" />
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>

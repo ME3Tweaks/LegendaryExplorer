@@ -265,7 +265,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Guid ID;
         public string FriendlyName;
         public StaticParameterSet StaticParameters;
-        //ME3
+        //ME3/LE
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
         public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
