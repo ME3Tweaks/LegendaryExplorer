@@ -284,6 +284,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:af40fcc5d20f11a3825ca9a77eb40bcbb"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af40fcc5d20f11a3825ca9a77eb40bcbb">CreateCauseDamage</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seq, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> target=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> instigator=null, float? damagePercent=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
 <tr class="memdesc:af40fcc5d20f11a3825ca9a77eb40bcbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a BioSeqAct_CauseDamage object in the given sequence, optionally linking the extra parameters if set.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af40fcc5d20f11a3825ca9a77eb40bcbb">More...</a><br /></td></tr>
 <tr class="separator:af40fcc5d20f11a3825ca9a77eb40bcbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab47370a0ca3eb932f0d28e09f9a607e9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9">CreateDivideFloat</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seq, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> A=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> B=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> floatResult=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> intResult=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
+<tr class="memdesc:ab47370a0ca3eb932f0d28e09f9a607e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a BioSeqAct_CauseDamage object in the given sequence, optionally linking the extra parameters if set.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9">More...</a><br /></td></tr>
+<tr class="separator:ab47370a0ca3eb932f0d28e09f9a607e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to handle sequence variable creation  </p>
@@ -3520,6 +3523,78 @@ Static Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">float?&#160;</td>
           <td class="paramname"><em>damagePercent</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds a BioSeqAct_CauseDamage object in the given sequence, optionally linking the extra parameters if set.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seq</td><td>Sequence to add the new object to</td></tr>
+    <tr><td class="paramname">target</td><td>Optional: The object to connect to the Target pin</td></tr>
+    <tr><td class="paramname">instigator</td><td>Optional: The object to connect to the Instigator pin</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
+
+</div>
+</div>
+<a id="ab47370a0ca3eb932f0d28e09f9a607e9" name="ab47370a0ca3eb932f0d28e09f9a607e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab47370a0ca3eb932f0d28e09f9a607e9">&#9670;&#160;</a></span>CreateDivideFloat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreateDivideFloat </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>seq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>A</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>B</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>floatResult</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>intResult</em> = <code>null</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

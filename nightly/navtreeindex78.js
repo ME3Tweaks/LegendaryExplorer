@@ -1,10 +1,12 @@
 var NAVTREEINDEX78 =
 {
+"namespacemembers.html":[0,6,0],
+"namespacemembers_b.html":[0,6,0,1],
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
 "namespacemembers_e.html":[0,6,0,4],
-"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum.html":[0,6,2],
+"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum_b.html":[0,6,2,1],
 "namespacemembers_enum_c.html":[0,6,2,2],
 "namespacemembers_enum_d.html":[0,6,2,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX78 =
 "struct_f_signed_distance_field_shadow_texture_policy_1_1_pixel_parameters_type.html#affb70c08a20f81bc2d740a87908be852":[1,0,116,0,0],
 "struct_f_spherical_harmonic_light_policy_1_1_pixel_parameters_type.html":[1,0,122,0],
 "struct_f_spherical_harmonic_light_policy_1_1_pixel_parameters_type.html#a358d48cb61f3c4fd2dea3d62dbf026e6":[1,0,122,0,0],
-"struct_f_spherical_harmonic_light_policy_1_1_pixel_parameters_type.html#a78b4d13d8abde7e8d126bc32406dce34":[1,0,122,0,1],
-"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html":[1,0,124,0],
-"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a11ac2909b4f8377ca02a2cb293b34617":[1,0,124,0,3]
+"struct_f_spherical_harmonic_light_policy_1_1_pixel_parameters_type.html#a78b4d13d8abde7e8d126bc32406dce34":[1,0,122,0,1]
 };

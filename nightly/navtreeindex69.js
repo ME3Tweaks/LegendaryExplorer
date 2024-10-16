@@ -1,5 +1,7 @@
 var NAVTREEINDEX69 =
 {
+"class_sample_offset_bank_chunk.html":[1,0,160],
+"class_sample_offset_bank_chunk.html#a0b71bd9a5a58c83de97030cb7605284b":[1,0,160,1],
 "class_sample_offset_bank_chunk.html#a0ef48888da596038e8606f287c005343":[1,0,160,4],
 "class_sample_offset_bank_chunk.html#a0fb202bc2c3fde214a297d01be93df95":[1,0,160,2],
 "class_sample_offset_bank_chunk.html#a47a83f3284ccbf36b7b3488af43fb181":[1,0,160,5],
@@ -247,7 +249,5 @@ var NAVTREEINDEX69 =
 "class_u_map.html#a8dfe2510ea51965d346277cd5e0be558":[1,0,198,1],
 "class_u_map_base.html":[1,0,199],
 "class_u_map_base.html#a05077e29576d6e2328cbfa74d6ae9a51":[1,0,199,6],
-"class_u_map_base.html#a0b11a146a79cee906653d669770c9125":[1,0,199,5],
-"class_u_map_base.html#a2084066f42df4f6f63bd8ebff1cb97fe":[1,0,199,1],
-"class_u_map_base.html#a487c17dd0091ce7597081d2c4ae50f20":[1,0,199,7]
+"class_u_map_base.html#a0b11a146a79cee906653d669770c9125":[1,0,199,5]
 };
