@@ -1077,15 +1077,17 @@ namespace LegendaryExplorerCore.Packages
         /// List of stack traces for when the RefCount was incremented
         /// </summary>
         public List<string> RegisterStackTraces = new();
+        
+        /// <summary>
+        /// Stack trace for how this package object was created - used for memory leak tracing
+        /// </summary>
+        public string CreationStackTrace;
 #endif
 
         public void RegisterUse()
         {
             // DEBUGGING MEMORY LEAK CODE
             //Debug.WriteLine($"{FilePath} RefCount incrementing from {RefCount} to {RefCount + 1}");
-#if DEBUG
-            RegisterStackTraces.Add(Environment.StackTrace);
-#endif
             RefCount++;
         }
 
@@ -1113,6 +1115,9 @@ namespace LegendaryExplorerCore.Packages
 
         protected UnrealPackageFile(string filePath)
         {
+#if DEBUG
+            CreationStackTrace = Environment.StackTrace;
+#endif
             SetInternalFilepath(filePath);
         }
 
