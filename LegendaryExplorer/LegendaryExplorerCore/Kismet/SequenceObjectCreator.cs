@@ -1460,5 +1460,37 @@ namespace LegendaryExplorerCore.Kismet
             }
             return causeDamage;
         }
+
+        /// <summary>
+        /// Adds a BioSeqAct_CauseDamage object in the given sequence, optionally linking the extra parameters if set.
+        /// </summary>
+        /// <param name="seq">Sequence to add the new object to</param>
+        /// <param name="target">Optional: The object to connect to the Target pin</param>
+        /// <param name="instigator">Optional: The object to connect to the Instigator pin</param>
+        /// <param name="cache">Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</param>
+        /// <returns>The created kismet object</returns>
+        public static ExportEntry CreateDivideFloat(ExportEntry seq, ExportEntry A = null, ExportEntry B = null, ExportEntry floatResult = null, ExportEntry intResult = null, PackageCache cache = null)
+        {
+            // Likely only works for LE1
+            var divide = CreateSequenceObject(seq.FileRef, "SeqAct_DivideFloat", cache);
+            KismetHelper.AddObjectToSequence(divide, seq);
+            if (A != null)
+            {
+                KismetHelper.CreateVariableLink(divide, "A", A);
+            }
+            if (B != null)
+            {
+                KismetHelper.CreateVariableLink(divide, "B", B);
+            }
+            if (floatResult != null)
+            {
+                KismetHelper.CreateVariableLink(divide, "FloatResult", floatResult);
+            }
+            if (intResult != null)
+            {
+                KismetHelper.CreateVariableLink(divide, "IntResult", intResult);
+            }
+            return divide;
+        }
     }
 }
