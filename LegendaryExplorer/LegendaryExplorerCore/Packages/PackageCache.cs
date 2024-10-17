@@ -319,5 +319,14 @@ namespace LegendaryExplorerCore.Packages
         {
             return Cache.Values.ToList();
         }
+
+        /// <summary>
+        /// Removes a package from the cache. The package is not disposed, use ReleasePackage for that.
+        /// </summary>
+        /// <param name="pcc"></param>
+        public bool RemoveFromCache(IMEPackage pcc)
+        {
+            return Cache.TryRemove(pcc.FilePath, out _);
+        }
     }
 }

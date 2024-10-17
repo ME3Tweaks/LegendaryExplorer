@@ -549,6 +549,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             {
                 Class = classEntry,
             };
+            packageCache.RemoveFromCache(Pcc); // This prevents ref decrementing when cache is disposed
             newSeqObj.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
             Pcc.AddExport(newSeqObj);
             addObject(newSeqObj);
