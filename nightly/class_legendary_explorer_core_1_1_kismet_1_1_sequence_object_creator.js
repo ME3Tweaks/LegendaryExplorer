@@ -60,5 +60,7 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateCompareBool", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a13aaa82a6b0045c86fa4ca212a4a1dad", null ],
     [ "CreateGetDistance", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a829b497746b4495330e897672ca4f059", null ],
     [ "CreateCauseDamage", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af40fcc5d20f11a3825ca9a77eb40bcbb", null ],
-    [ "CreateDivideFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9", null ]
+    [ "CreateDivideFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9", null ],
+    [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af8df43564ce9c8beaba10656314700bd", null ],
+    [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5000f2e4e89eb95b3c17b0e3e4b04879", null ]
 ];
