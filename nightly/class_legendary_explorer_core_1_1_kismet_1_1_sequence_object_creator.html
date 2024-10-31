@@ -292,6 +292,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:af8df43564ce9c8beaba10656314700bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5000f2e4e89eb95b3c17b0e3e4b04879"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5000f2e4e89eb95b3c17b0e3e4b04879">CreateStreamInTextures</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> mainSeq, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> player, <a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a> cache)</td></tr>
 <tr class="separator:a5000f2e4e89eb95b3c17b0e3e4b04879"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd974e2b9e90e817e3e481a87ccc36fd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd">CreateSeqEventConsole</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, string consoleEventName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
+<tr class="memdesc:acd974e2b9e90e817e3e481a87ccc36fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new SeqEvent_ConsoleEvent with the given ConsoleEventName   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd">More...</a><br /></td></tr>
+<tr class="separator:acd974e2b9e90e817e3e481a87ccc36fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to handle sequence variable creation  </p>
@@ -3733,6 +3736,59 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd974e2b9e90e817e3e481a87ccc36fd" name="acd974e2b9e90e817e3e481a87ccc36fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd974e2b9e90e817e3e481a87ccc36fd">&#9670;&#160;</a></span>CreateSeqEventConsole()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreateSeqEventConsole </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>consoleEventName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new SeqEvent_ConsoleEvent with the given ConsoleEventName  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
+    <tr><td class="paramname">consoleEventName</td><td></td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
 
 </div>
 </div>

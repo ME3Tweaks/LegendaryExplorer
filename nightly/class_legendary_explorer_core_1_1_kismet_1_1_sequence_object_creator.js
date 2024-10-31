@@ -62,5 +62,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateCauseDamage", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af40fcc5d20f11a3825ca9a77eb40bcbb", null ],
     [ "CreateDivideFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9", null ],
     [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af8df43564ce9c8beaba10656314700bd", null ],
-    [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5000f2e4e89eb95b3c17b0e3e4b04879", null ]
+    [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5000f2e4e89eb95b3c17b0e3e4b04879", null ],
+    [ "CreateSeqEventConsole", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd", null ]
 ];
