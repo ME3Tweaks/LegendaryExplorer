@@ -295,6 +295,15 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:acd974e2b9e90e817e3e481a87ccc36fd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd">CreateSeqEventConsole</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, string consoleEventName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
 <tr class="memdesc:acd974e2b9e90e817e3e481a87ccc36fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new SeqEvent_ConsoleEvent with the given ConsoleEventName   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd">More...</a><br /></td></tr>
 <tr class="separator:acd974e2b9e90e817e3e481a87ccc36fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f13ecb880b6b8c6171da5ec42ea527b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a3f13ecb880b6b8c6171da5ec42ea527b">CreateInitLoadingMovie</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, string movieName, <a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a> cache)</td></tr>
+<tr class="memdesc:a3f13ecb880b6b8c6171da5ec42ea527b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new BioSeqAct_InitLoadingMovie with the given movie filename, if any   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a3f13ecb880b6b8c6171da5ec42ea527b">More...</a><br /></td></tr>
+<tr class="separator:a3f13ecb880b6b8c6171da5ec42ea527b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9bbe43db5e9f7677679a489804a64c5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af9bbe43db5e9f7677679a489804a64c5">CreatePlayLoadingMovie</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a> cache)</td></tr>
+<tr class="memdesc:af9bbe43db5e9f7677679a489804a64c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new BioSeqAct_PlayLoadingMovie   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af9bbe43db5e9f7677679a489804a64c5">More...</a><br /></td></tr>
+<tr class="separator:af9bbe43db5e9f7677679a489804a64c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f1354726247a629f72fe0dab418c27c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9f1354726247a629f72fe0dab418c27c">CreateStopLoadingMovie</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a> cache)</td></tr>
+<tr class="memdesc:a9f1354726247a629f72fe0dab418c27c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new BioSeqAct_StopLoadingMovie   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9f1354726247a629f72fe0dab418c27c">More...</a><br /></td></tr>
+<tr class="separator:a9f1354726247a629f72fe0dab418c27c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to handle sequence variable creation  </p>
@@ -3783,7 +3792,152 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
-    <tr><td class="paramname">consoleEventName</td><td></td></tr>
+    <tr><td class="paramname">consoleEventName</td><td>The console event name that is used to trigger the event</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
+
+</div>
+</div>
+<a id="a3f13ecb880b6b8c6171da5ec42ea527b" name="a3f13ecb880b6b8c6171da5ec42ea527b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f13ecb880b6b8c6171da5ec42ea527b">&#9670;&#160;</a></span>CreateInitLoadingMovie()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreateInitLoadingMovie </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>movieName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new BioSeqAct_InitLoadingMovie with the given movie filename, if any  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
+    <tr><td class="paramname">movieName</td><td>Name of loading movie to prepare</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
+
+</div>
+</div>
+<a id="af9bbe43db5e9f7677679a489804a64c5" name="af9bbe43db5e9f7677679a489804a64c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9bbe43db5e9f7677679a489804a64c5">&#9670;&#160;</a></span>CreatePlayLoadingMovie()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreatePlayLoadingMovie </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new BioSeqAct_PlayLoadingMovie  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
+
+</div>
+</div>
+<a id="a9f1354726247a629f72fe0dab418c27c" name="a9f1354726247a629f72fe0dab418c27c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f1354726247a629f72fe0dab418c27c">&#9670;&#160;</a></span>CreateStopLoadingMovie()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreateStopLoadingMovie </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_tiered_package_cache.html">TieredPackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new BioSeqAct_StopLoadingMovie  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
     <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
   </table>
   </dd>

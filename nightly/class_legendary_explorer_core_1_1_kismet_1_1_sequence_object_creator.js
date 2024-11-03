@@ -63,5 +63,8 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateDivideFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9", null ],
     [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af8df43564ce9c8beaba10656314700bd", null ],
     [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5000f2e4e89eb95b3c17b0e3e4b04879", null ],
-    [ "CreateSeqEventConsole", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd", null ]
+    [ "CreateSeqEventConsole", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd", null ],
+    [ "CreateInitLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a3f13ecb880b6b8c6171da5ec42ea527b", null ],
+    [ "CreatePlayLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af9bbe43db5e9f7677679a489804a64c5", null ],
+    [ "CreateStopLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9f1354726247a629f72fe0dab418c27c", null ]
 ];
