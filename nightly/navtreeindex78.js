@@ -1,5 +1,7 @@
 var NAVTREEINDEX78 =
 {
+"namespace_legendary_explorer_core_1_1_unreal_script_1_1_decompiling.html":[0,5,1,25,2],
+"namespace_legendary_explorer_core_1_1_unreal_script_1_1_language.html":[0,5,1,25,3],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_byte_code.html":[0,5,1,25,3,0],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_byte_code.html#ae19214b48ec3c2534c36d25e2ac4595f":[0,5,1,25,3,0,0],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html":[0,5,1,25,3,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX78 =
 "struct_f_shader_parameter.html#a9b9566b8c7d91100ef4a431460519e68":[1,0,110,2],
 "struct_f_shader_parameter.html#ab42bec7d93a2197c944424f54c96a99e":[1,0,110,1],
 "struct_f_shader_resource_parameter.html":[1,0,111],
-"struct_f_shader_resource_parameter.html#a0866b65f1a1067fae4d4eb18fb3f18a8":[1,0,111,3],
-"struct_f_shader_resource_parameter.html#a60272b1ddc4bc55a2fc03bccacc2f1c4":[1,0,111,0],
-"struct_f_shader_resource_parameter.html#aa327e95362d14158d385c2fc954ddfb8":[1,0,111,1]
+"struct_f_shader_resource_parameter.html#a0866b65f1a1067fae4d4eb18fb3f18a8":[1,0,111,3]
 };

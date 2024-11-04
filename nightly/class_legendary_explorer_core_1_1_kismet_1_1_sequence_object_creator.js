@@ -62,9 +62,10 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateCauseDamage", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af40fcc5d20f11a3825ca9a77eb40bcbb", null ],
     [ "CreateDivideFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ab47370a0ca3eb932f0d28e09f9a607e9", null ],
     [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af8df43564ce9c8beaba10656314700bd", null ],
-    [ "CreateStreamInTextures", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a5000f2e4e89eb95b3c17b0e3e4b04879", null ],
     [ "CreateSeqEventConsole", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#acd974e2b9e90e817e3e481a87ccc36fd", null ],
-    [ "CreateInitLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a3f13ecb880b6b8c6171da5ec42ea527b", null ],
-    [ "CreatePlayLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#af9bbe43db5e9f7677679a489804a64c5", null ],
-    [ "CreateStopLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9f1354726247a629f72fe0dab418c27c", null ]
+    [ "CreateInitLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ad3afe06b6073319953fd5e97e3f1b0fd", null ],
+    [ "CreatePlayLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a57c7ac2b9fe529549d9873cbdc757fdf", null ],
+    [ "CreateStopLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ac961191ec11c0d9588cfa84ed5f47296", null ],
+    [ "CreateForceActorMipsResident", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a02ffb5e2f26eb30455004b416e7a0575", null ],
+    [ "CreateSetStreamingState", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa1324d23bf7a5c45de0ffee37f37788e", null ]
 ];
