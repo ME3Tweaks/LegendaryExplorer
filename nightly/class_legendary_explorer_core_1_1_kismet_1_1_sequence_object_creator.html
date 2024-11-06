@@ -308,6 +308,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa1324d23bf7a5c45de0ffee37f37788e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa1324d23bf7a5c45de0ffee37f37788e">CreateSetStreamingState</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> stateName=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> set=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
 <tr class="memdesc:aa1324d23bf7a5c45de0ffee37f37788e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new BioSeqAct_SetStreamingState for with the given state name and value, if provided.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa1324d23bf7a5c45de0ffee37f37788e">More...</a><br /></td></tr>
 <tr class="separator:aa1324d23bf7a5c45de0ffee37f37788e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a7a2ed44f3198df6ce55dbe1609044f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9a7a2ed44f3198df6ce55dbe1609044f">CreateSetMaterial</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> targetObj=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> newMaterial=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache=null)</td></tr>
+<tr class="memdesc:a9a7a2ed44f3198df6ce55dbe1609044f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new SeqAct_SetMaterial for with the given object and material, if provided.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9a7a2ed44f3198df6ce55dbe1609044f">More...</a><br /></td></tr>
+<tr class="separator:a9a7a2ed44f3198df6ce55dbe1609044f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to handle sequence variable creation  </p>
@@ -4012,6 +4015,66 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
     <tr><td class="paramname">stateName</td><td>Optional: The name of the state.</td></tr>
     <tr><td class="paramname">set</td><td>Optional: The value to set the state to. If null, the value will be false.</td></tr>
+    <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The created kismet object</dd></dl>
+
+</div>
+</div>
+<a id="a9a7a2ed44f3198df6ce55dbe1609044f" name="a9a7a2ed44f3198df6ce55dbe1609044f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a7a2ed44f3198df6ce55dbe1609044f">&#9670;&#160;</a></span>CreateSetMaterial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.SequenceObjectCreator.CreateSetMaterial </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>targetObj</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>newMaterial</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
+          <td class="paramname"><em>cache</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new SeqAct_SetMaterial for with the given object and material, if provided.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequence</td><td>Sequence this object will be placed into</td></tr>
+    <tr><td class="paramname">targetObj</td><td>Optional: The target object to link on the Target pin.</td></tr>
+    <tr><td class="paramname">newMaterial</td><td>Optional: The new material to set on the target.</td></tr>
     <tr><td class="paramname">cache</td><td>Cache to use when creating the object. If you are doing many object creations, this will greatly improve performance.</td></tr>
   </table>
   </dd>

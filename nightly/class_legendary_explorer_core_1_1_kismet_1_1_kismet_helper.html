@@ -207,9 +207,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:acfe42576ba246a2e351642f532b5c35b"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acfe42576ba246a2e351642f532b5c35b">FindOutputConnectionsToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; sequenceElements, List&lt; int &gt; linkIdxsToMatchOn=null, List&lt; string &gt; filteredInputNames=null)</td></tr>
 <tr class="memdesc:acfe42576ba246a2e351642f532b5c35b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds sequence objects with outbound connections that come to this node   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acfe42576ba246a2e351642f532b5c35b">More...</a><br /></td></tr>
 <tr class="separator:acfe42576ba246a2e351642f532b5c35b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a525e5d22088b4aae25c02ae3d824cd73"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a525e5d22088b4aae25c02ae3d824cd73">FindVariableConnectionsToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; sequenceElements)</td></tr>
-<tr class="memdesc:a525e5d22088b4aae25c02ae3d824cd73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds sequence objects with variable connections that come to this node   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a525e5d22088b4aae25c02ae3d824cd73">More...</a><br /></td></tr>
-<tr class="separator:a525e5d22088b4aae25c02ae3d824cd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f6b13c3f3316de036f0976423862a0e"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f6b13c3f3316de036f0976423862a0e">FindVariableConnectionsToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; sequenceElements, List&lt; string &gt; filteredLinkNames=null)</td></tr>
+<tr class="memdesc:a3f6b13c3f3316de036f0976423862a0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds sequence objects with variable link connections that come to this node   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f6b13c3f3316de036f0976423862a0e">More...</a><br /></td></tr>
+<tr class="separator:a3f6b13c3f3316de036f0976423862a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0165f371fc31008d7037db04937bc166"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166">InsertActionAfter</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> originalNode, string outlinkName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> mitmNode, int mitmInputIdx, string mitmOutlinkName)</td></tr>
 <tr class="memdesc:a0165f371fc31008d7037db04937bc166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts an object between another in a kismet graph. The object being inserted should not have any outlinks on the outlink name specified   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166">More...</a><br /></td></tr>
 <tr class="separator:a0165f371fc31008d7037db04937bc166"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1783,8 +1783,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a525e5d22088b4aae25c02ae3d824cd73" name="a525e5d22088b4aae25c02ae3d824cd73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a525e5d22088b4aae25c02ae3d824cd73">&#9670;&#160;</a></span>FindVariableConnectionsToNode()</h2>
+<a id="a3f6b13c3f3316de036f0976423862a0e" name="a3f6b13c3f3316de036f0976423862a0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f6b13c3f3316de036f0976423862a0e">&#9670;&#160;</a></span>FindVariableConnectionsToNode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1801,8 +1801,14 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td>
-          <td class="paramname"><em>sequenceElements</em>&#160;</td>
+          <td class="paramtype">IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>sequenceElements</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; string &gt;&#160;</td>
+          <td class="paramname"><em>filteredLinkNames</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1817,11 +1823,12 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Finds sequence objects with variable connections that come to this node  </p>
+<p>Finds sequence objects with variable link connections that come to this node  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">node</td><td>Sequence variable to find connections to</td></tr>
+    <tr><td class="paramname">node</td><td>Node to find variable connections to</td></tr>
     <tr><td class="paramname">sequenceElements</td><td>Sequence objects to search for connections</td></tr>
+    <tr><td class="paramname">filteredLinkNames</td><td>Optional: Link desc of variable link that any sequence objects must match</td></tr>
   </table>
   </dd>
 </dl>

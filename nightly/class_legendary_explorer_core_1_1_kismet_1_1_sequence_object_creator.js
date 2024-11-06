@@ -67,5 +67,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreatePlayLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a57c7ac2b9fe529549d9873cbdc757fdf", null ],
     [ "CreateStopLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ac961191ec11c0d9588cfa84ed5f47296", null ],
     [ "CreateForceActorMipsResident", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a02ffb5e2f26eb30455004b416e7a0575", null ],
-    [ "CreateSetStreamingState", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa1324d23bf7a5c45de0ffee37f37788e", null ]
+    [ "CreateSetStreamingState", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa1324d23bf7a5c45de0ffee37f37788e", null ],
+    [ "CreateSetMaterial", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9a7a2ed44f3198df6ce55dbe1609044f", null ]
 ];
