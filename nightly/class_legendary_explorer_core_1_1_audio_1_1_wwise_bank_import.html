@@ -105,9 +105,9 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_audi
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a2d4b8b48bb246ac3a9ecd408b2d7f5cf"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a2d4b8b48bb246ac3a9ecd408b2d7f5cf">ImportBank</a> (string bankPath, bool useWwiseObjectNames, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string wwiseLanguage=null, XDocument preloadedInfoDoc=null, string bankPackageName=null, string bankStreamingAudioPackageName=null)</td></tr>
-<tr class="memdesc:a2d4b8b48bb246ac3a9ecd408b2d7f5cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#a2d4b8b48bb246ac3a9ecd408b2d7f5cf">More...</a><br /></td></tr>
-<tr class="separator:a2d4b8b48bb246ac3a9ecd408b2d7f5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbf80716e947c534e99f47ece978af11"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#afbf80716e947c534e99f47ece978af11">ImportBank</a> (string bankPath, bool useWwiseObjectNames, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, bool importNewStreamsOnly=false, string wwiseLanguage=null, XDocument preloadedInfoDoc=null, string bankPackageName=null, string bankStreamingAudioPackageName=null)</td></tr>
+<tr class="memdesc:afbf80716e947c534e99f47ece978af11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles importing a soundbank file from disk to the specified package. SoundbanksInfo.xml must exist next to the bank.   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#afbf80716e947c534e99f47ece978af11">More...</a><br /></td></tr>
+<tr class="separator:afbf80716e947c534e99f47ece978af11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe97f340e72a6322a5f900b72f1c5af3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#aefbc0ecf962a8819f213240cc7553d90">MELocalization</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#afe97f340e72a6322a5f900b72f1c5af3">GetMELocalizationFromWwiseLocalization</a> (string value)</td></tr>
 <tr class="memdesc:afe97f340e72a6322a5f900b72f1c5af3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the MELocalization from the Wwise <a class="el" href="namespace_legendary_explorer_core_1_1_localization.html">Localization</a> used by standard templates. If you don't use a standard template, oh well!   <a href="class_legendary_explorer_core_1_1_audio_1_1_wwise_bank_import.html#afe97f340e72a6322a5f900b72f1c5af3">More...</a><br /></td></tr>
 <tr class="separator:afe97f340e72a6322a5f900b72f1c5af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,8 +115,8 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Handles importing a .bnk file into a package file and setting up relevant data  </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2d4b8b48bb246ac3a9ecd408b2d7f5cf" name="a2d4b8b48bb246ac3a9ecd408b2d7f5cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d4b8b48bb246ac3a9ecd408b2d7f5cf">&#9670;&#160;</a></span>ImportBank()</h2>
+<a id="afbf80716e947c534e99f47ece978af11" name="afbf80716e947c534e99f47ece978af11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbf80716e947c534e99f47ece978af11">&#9670;&#160;</a></span>ImportBank()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,6 +141,12 @@ Static Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
           <td class="paramname"><em>package</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>importNewStreamsOnly</em> = <code>false</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
