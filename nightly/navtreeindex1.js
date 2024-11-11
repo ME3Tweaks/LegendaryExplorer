@@ -62,6 +62,7 @@ var NAVTREEINDEX1 =
 "_environment_variable_resolving_status_8cs.html#a4ff7322283e0a27fd7fc58bc8c53181c":[2,0,0,0,6,7,1,0],
 "_error_8cs.html":[2,0,0,0,26,1,0,0],
 "_error_productions_8cs.html":[2,0,0,0,26,3,1,28],
+"_event_link_info_8cs.html":[2,0,0,0,8,0],
 "_exact_matcher_8cs.html":[2,0,0,0,6,8,1,2],
 "_export_binary_converter_8cs.html":[2,0,0,0,25,0,24],
 "_export_creator_8cs.html":[2,0,0,0,15,3],
@@ -173,8 +174,8 @@ var NAVTREEINDEX1 =
 "_interp_curve_8cs.html":[2,0,0,0,25,0,31],
 "_k_d_o_p_tree_builder_8cs.html":[2,0,0,0,25,0,32],
 "_keywords_8cs.html":[2,0,0,0,26,6,1],
-"_kismet_2_n_s_doc_8cs.html":[2,0,0,0,8,1],
-"_kismet_helper_8cs.html":[2,0,0,0,8,0],
+"_kismet_2_n_s_doc_8cs.html":[2,0,0,0,8,2],
+"_kismet_helper_8cs.html":[2,0,0,0,8,1],
 "_l_e1_directory_8cs.html":[2,0,0,0,5,1],
 "_l_e1_talkfiles_8cs.html":[2,0,0,0,23,3],
 "_l_e1_unreal_object_info_8cs.html":[2,0,0,0,25,3,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "_m_e3_enums_8cs.html#a08beae9ef9e120aec39d68b2099a3ea2":[2,0,0,0,25,14,295],
 "_m_e3_enums_8cs.html#a08f048a608fa3a0c03d8e1d5673b5024":[2,0,0,0,25,14,405],
 "_m_e3_enums_8cs.html#a090e6c813c13eca6c3eb0e05b1decc53":[2,0,0,0,25,14,487],
-"_m_e3_enums_8cs.html#a0944bd7e210c7dd60ae4f7febee5b793":[2,0,0,0,25,14,308],
-"_m_e3_enums_8cs.html#a0988f8ef2f63f478fc35787ee1fc0adf":[2,0,0,0,25,14,305]
+"_m_e3_enums_8cs.html#a0944bd7e210c7dd60ae4f7febee5b793":[2,0,0,0,25,14,308]
 };

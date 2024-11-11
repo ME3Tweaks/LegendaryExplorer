@@ -951,6 +951,7 @@ var annotated_dup =
     [ "ContentIndexBankChunk", "class_content_index_bank_chunk.html", "class_content_index_bank_chunk" ],
     [ "DataBankChunk", "class_data_bank_chunk.html", "class_data_bank_chunk" ],
     [ "DefaultKeyFuncs", "struct_default_key_funcs.html", "struct_default_key_funcs" ],
+    [ "EventLinkInfo", "class_event_link_info.html", "class_event_link_info" ],
     [ "FAmbientOcclusionParams", "struct_f_ambient_occlusion_params.html", "struct_f_ambient_occlusion_params" ],
     [ "FAmbientOcclusionVertexShader", "class_f_ambient_occlusion_vertex_shader.html", "class_f_ambient_occlusion_vertex_shader" ],
     [ "FApplyForcePixelShader", "class_f_apply_force_pixel_shader.html", "class_f_apply_force_pixel_shader" ],

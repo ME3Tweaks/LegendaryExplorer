@@ -208,6 +208,7 @@ var hierarchy =
     [ "EventArgs", null, [
       [ "LegendaryExplorerCore.Misc.DictionaryChangedEvent< K, V >", "class_legendary_explorer_core_1_1_misc_1_1_dictionary_changed_event.html", null ]
     ] ],
+    [ "EventLinkInfo", "class_event_link_info.html", null ],
     [ "Exception", null, [
       [ "LegendaryExplorerCore.Coalesced.Exceptions.CBundleException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_bundle_exception.html", null ],
       [ "LegendaryExplorerCore.Coalesced.Exceptions.CToolException", "class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html", null ],

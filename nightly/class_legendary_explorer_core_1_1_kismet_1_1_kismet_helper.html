@@ -132,6 +132,18 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ab70c9c231c92cbcb99a9a9be84837e"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_var_link_info.html">VarLinkInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7ab70c9c231c92cbcb99a9a9be84837e">GetVariableLinksOfNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
 <tr class="memdesc:a7ab70c9c231c92cbcb99a9a9be84837e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the list of VarLinks that can be attached to by the specified sequence object export.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7ab70c9c231c92cbcb99a9a9be84837e">More...</a><br /></td></tr>
 <tr class="separator:a7ab70c9c231c92cbcb99a9a9be84837e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf58970e870ab8653f2c1dcb5ae8332b"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#adf58970e870ab8653f2c1dcb5ae8332b">GetEventLinksOfNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export)</td></tr>
+<tr class="memdesc:adf58970e870ab8653f2c1dcb5ae8332b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the list of EventLinks that can be attached to by the specified sequence object export.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#adf58970e870ab8653f2c1dcb5ae8332b">More...</a><br /></td></tr>
+<tr class="separator:adf58970e870ab8653f2c1dcb5ae8332b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2c699b9afb1056c6afa329cc9e691e3"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#af2c699b9afb1056c6afa329cc9e691e3">GetEventLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc)</td></tr>
+<tr class="memdesc:af2c699b9afb1056c6afa329cc9e691e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the list of event links from a collection of properties. If there is no EventLinks property, this returns an empty list.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#af2c699b9afb1056c6afa329cc9e691e3">More...</a><br /></td></tr>
+<tr class="separator:af2c699b9afb1056c6afa329cc9e691e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b8c8f545a5c9ef375941f80cce0e3b8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8b8c8f545a5c9ef375941f80cce0e3b8">WriteEventLinksToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt; eventLinks)</td></tr>
+<tr class="memdesc:a8b8c8f545a5c9ef375941f80cce0e3b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the list of event links to the node. Only the linked objects are written. The list MUST be in the same order and be the same length as the current event links on the export.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8b8c8f545a5c9ef375941f80cce0e3b8">More...</a><br /></td></tr>
+<tr class="separator:a8b8c8f545a5c9ef375941f80cce0e3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ca6c9cd26ff383795887d67721ecd95"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a5ca6c9cd26ff383795887d67721ecd95">WriteEventLinksToProperties</a> (List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt; varLinks, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props)</td></tr>
+<tr class="memdesc:a5ca6c9cd26ff383795887d67721ecd95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the list of event links to the given property collection. Only writes the linked event variables. The list MUST be in the same order and be the same length as the current event links in the collection.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a5ca6c9cd26ff383795887d67721ecd95">More...</a><br /></td></tr>
+<tr class="separator:a5ca6c9cd26ff383795887d67721ecd95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d8fb85279bf45a7e6a3eb2cd0b67fab"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_var_link_info.html">VarLinkInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3d8fb85279bf45a7e6a3eb2cd0b67fab">GetVariableLinks</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc)</td></tr>
 <tr class="memdesc:a3d8fb85279bf45a7e6a3eb2cd0b67fab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the list of variable links from a collection of properties. If there is no VariableLinks property, this returns an empty list.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3d8fb85279bf45a7e6a3eb2cd0b67fab">More...</a><br /></td></tr>
 <tr class="separator:a3d8fb85279bf45a7e6a3eb2cd0b67fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,6 +222,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a3f6b13c3f3316de036f0976423862a0e"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f6b13c3f3316de036f0976423862a0e">FindVariableConnectionsToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; sequenceElements, List&lt; string &gt; filteredLinkNames=null)</td></tr>
 <tr class="memdesc:a3f6b13c3f3316de036f0976423862a0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds sequence objects with variable link connections that come to this node   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f6b13c3f3316de036f0976423862a0e">More...</a><br /></td></tr>
 <tr class="separator:a3f6b13c3f3316de036f0976423862a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10e992f253e7a5899e095b230251626e"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a10e992f253e7a5899e095b230251626e">FindEventConnectionsToNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; sequenceElements, List&lt; string &gt; filteredLinkNames=null)</td></tr>
+<tr class="memdesc:a10e992f253e7a5899e095b230251626e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds sequence objects with event link connections that come to this node   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a10e992f253e7a5899e095b230251626e">More...</a><br /></td></tr>
+<tr class="separator:a10e992f253e7a5899e095b230251626e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0165f371fc31008d7037db04937bc166"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166">InsertActionAfter</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> originalNode, string outlinkName, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> mitmNode, int mitmInputIdx, string mitmOutlinkName)</td></tr>
 <tr class="memdesc:a0165f371fc31008d7037db04937bc166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts an object between another in a kismet graph. The object being inserted should not have any outlinks on the outlink name specified   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166">More...</a><br /></td></tr>
 <tr class="separator:a0165f371fc31008d7037db04937bc166"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -653,6 +668,180 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>List of variable link infos</dd></dl>
+
+</div>
+</div>
+<a id="adf58970e870ab8653f2c1dcb5ae8332b" name="adf58970e870ab8653f2c1dcb5ae8332b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf58970e870ab8653f2c1dcb5ae8332b">&#9670;&#160;</a></span>GetEventLinksOfNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt; LegendaryExplorerCore.Kismet.KismetHelper.GetEventLinksOfNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>export</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the list of EventLinks that can be attached to by the specified sequence object export.  </p>
+<p >You cannot ADD new eventlinks this way as the serialization does not include all types.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Export to get event links for</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of vent link infos</dd></dl>
+
+</div>
+</div>
+<a id="af2c699b9afb1056c6afa329cc9e691e3" name="af2c699b9afb1056c6afa329cc9e691e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2c699b9afb1056c6afa329cc9e691e3">&#9670;&#160;</a></span>GetEventLinks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt; LegendaryExplorerCore.Kismet.KismetHelper.GetEventLinks </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td>
+          <td class="paramname"><em>props</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>pcc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the list of event links from a collection of properties. If there is no EventLinks property, this returns an empty list.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">props</td><td>Properties to get event links from</td></tr>
+    <tr><td class="paramname">pcc</td><td>Package containing the property collection</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of any event links</dd></dl>
+
+</div>
+</div>
+<a id="a8b8c8f545a5c9ef375941f80cce0e3b8" name="a8b8c8f545a5c9ef375941f80cce0e3b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b8c8f545a5c9ef375941f80cce0e3b8">&#9670;&#160;</a></span>WriteEventLinksToNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.WriteEventLinksToNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>export</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt;&#160;</td>
+          <td class="paramname"><em>eventLinks</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Writes the list of event links to the node. Only the linked objects are written. The list MUST be in the same order and be the same length as the current event links on the export.  </p>
+<p >This can't be used to add any new event link points.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>Export to write links to</td></tr>
+    <tr><td class="paramname">eventLinks</td><td>Event links to write</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5ca6c9cd26ff383795887d67721ecd95" name="a5ca6c9cd26ff383795887d67721ecd95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ca6c9cd26ff383795887d67721ecd95">&#9670;&#160;</a></span>WriteEventLinksToProperties()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Kismet.KismetHelper.WriteEventLinksToProperties </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; <a class="el" href="class_event_link_info.html">EventLinkInfo</a> &gt;&#160;</td>
+          <td class="paramname"><em>varLinks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a>&#160;</td>
+          <td class="paramname"><em>props</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Writes the list of event links to the given property collection. Only writes the linked event variables. The list MUST be in the same order and be the same length as the current event links in the collection.  </p>
+<p >This can't be used to add any new event link points. LinkedEvents property must already exist.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">varLinks</td><td>Event links to write</td></tr>
+    <tr><td class="paramname">props</td><td>Properties to write links to</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1829,6 +2018,59 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">node</td><td>Node to find variable connections to</td></tr>
     <tr><td class="paramname">sequenceElements</td><td>Sequence objects to search for connections</td></tr>
     <tr><td class="paramname">filteredLinkNames</td><td>Optional: Link desc of variable link that any sequence objects must match</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of any sequence objects that link to this node</dd></dl>
+
+</div>
+</div>
+<a id="a10e992f253e7a5899e095b230251626e" name="a10e992f253e7a5899e095b230251626e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10e992f253e7a5899e095b230251626e">&#9670;&#160;</a></span>FindEventConnectionsToNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; LegendaryExplorerCore.Kismet.KismetHelper.FindEventConnectionsToNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>sequenceElements</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List&lt; string &gt;&#160;</td>
+          <td class="paramname"><em>filteredLinkNames</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Finds sequence objects with event link connections that come to this node  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Node to find event connections to</td></tr>
+    <tr><td class="paramname">sequenceElements</td><td>Sequence objects to search for connections</td></tr>
+    <tr><td class="paramname">filteredLinkNames</td><td>Optional: Link desc of event link that any sequence objects must match</td></tr>
   </table>
   </dd>
 </dl>

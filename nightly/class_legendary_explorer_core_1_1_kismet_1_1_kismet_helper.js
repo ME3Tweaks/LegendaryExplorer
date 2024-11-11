@@ -9,6 +9,10 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "WriteOutputLinksToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aee6a6d676cdefc11506d53d3ff1b3417", null ],
     [ "WriteOutputLinksToProperties", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a1f6e1aa3b0dddd4dbfd82c8f8c9ec241", null ],
     [ "GetVariableLinksOfNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a7ab70c9c231c92cbcb99a9a9be84837e", null ],
+    [ "GetEventLinksOfNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#adf58970e870ab8653f2c1dcb5ae8332b", null ],
+    [ "GetEventLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#af2c699b9afb1056c6afa329cc9e691e3", null ],
+    [ "WriteEventLinksToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a8b8c8f545a5c9ef375941f80cce0e3b8", null ],
+    [ "WriteEventLinksToProperties", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a5ca6c9cd26ff383795887d67721ecd95", null ],
     [ "GetVariableLinks", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3d8fb85279bf45a7e6a3eb2cd0b67fab", null ],
     [ "CreateVariableLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0ed65724ff5fc309909aaaea3b28d081", null ],
     [ "WriteVariableLinksToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aa3ada733e51e39af7d0dcd355b822b5c", null ],
@@ -35,6 +39,7 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "CloneSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a2e751ce658788eb8c2889c8ebfc8ea55", null ],
     [ "FindOutputConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#acfe42576ba246a2e351642f532b5c35b", null ],
     [ "FindVariableConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3f6b13c3f3316de036f0976423862a0e", null ],
+    [ "FindEventConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a10e992f253e7a5899e095b230251626e", null ],
     [ "InsertActionAfter", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166", null ],
     [ "AddVariableLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0a55406297c62d8019f10670cf0c54f7", null ],
     [ "RemoveFromSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871", null ]
