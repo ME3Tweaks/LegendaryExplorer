@@ -41,13 +41,13 @@ namespace LegendaryExplorer.GameInterop.InteropTargets
         }
 
         // This needs to be kept around for ME3 since we aren't updating its ASI anymore
-        public void ME3ExecuteConsoleCommands(params string[] commands)
+        public void ME3ExecuteConsoleCommands(params ReadOnlySpan<string> commands)
         {
             if (CanExecuteConsoleCommands && TryGetProcess(out Process gameProcess))
             {
                 string execFilePath = Path.Combine(MEDirectories.GetDefaultGamePath(Game), "Binaries", ExecFileName);
 
-                File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands.AsEnumerable()));
+                File.WriteAllText(execFilePath, string.Join(Environment.NewLine, commands));
                 GameController.DirectExecuteConsoleCommand(gameProcess.MainWindowHandle, $"exec {ExecFileName}");
             }
         }

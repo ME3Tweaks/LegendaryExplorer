@@ -32,6 +32,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
+using System.Threading;
 
 namespace LegendaryExplorer.Tools.PackageDumper
 {
@@ -197,7 +198,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
             set => verbose = value;
         }
 
-        private object _syncObj = new object();
+        private Lock _syncObj = new();
 
         private void EnsureCaches(MEGame game)
         {

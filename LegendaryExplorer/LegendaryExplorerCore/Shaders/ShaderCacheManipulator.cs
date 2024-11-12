@@ -160,7 +160,7 @@ namespace LegendaryExplorerCore.Shaders
         /// <summary>
         /// For locking shader cache file
         /// </summary>
-        private static object shaderCacheReaderObj = new object();
+        private static object shaderCacheReaderObj = new object(); //TODO NET 9: switch to System.Threading.Lock
 
         public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc, string gamePathOverride = null)
         {

@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Object used for synchronizing for threads
         /// </summary>
-        public readonly object syncObj = new();
+        public readonly object syncObj = new(); //TODO NET 9: switch to System.Threading.Lock
         /// <summary>
         /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
         /// </summary>

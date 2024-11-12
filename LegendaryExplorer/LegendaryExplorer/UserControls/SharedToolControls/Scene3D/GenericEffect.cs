@@ -65,7 +65,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             context.PixelShader.SetConstantBuffer(0, ConstantBuffer);
         }
 
-        public void RenderObject(DeviceContext context, ConstantBufferData constantData, Mesh<Vertex> mesh, int indexstart, int indexcount, params ShaderResourceView[] textures)
+        public void RenderObject(DeviceContext context, ConstantBufferData constantData, Mesh<Vertex> mesh, int indexstart, int indexcount, params ReadOnlySpan<ShaderResourceView> textures)
         {
             // Push new data into the shaders' constant buffer
             context.UpdateSubresource(ref constantData, ConstantBuffer);
@@ -84,7 +84,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             context.DrawIndexed(indexcount, indexstart, 0);
         }
 
-        public void RenderObject(DeviceContext context, ConstantBufferData constantData, Mesh<Vertex> mesh, params ShaderResourceView[] textures)
+        public void RenderObject(DeviceContext context, ConstantBufferData constantData, Mesh<Vertex> mesh, params ReadOnlySpan<ShaderResourceView> textures)
         {
             RenderObject(context, constantData, mesh, 0, mesh.Triangles.Count * 3, textures);
         }

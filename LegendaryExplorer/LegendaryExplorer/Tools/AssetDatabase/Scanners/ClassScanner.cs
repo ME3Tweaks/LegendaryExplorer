@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Threading;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -23,7 +24,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 
                 //providing a lambda that returns a new object prevents 100s of MBs of allocations
                 //since a static lambda is allocated once, then cached
-                lock (db.ClassLocks.GetOrAdd(e.ClassName, static _ => new object()))
+                lock (db.ClassLocks.GetOrAdd(e.ClassName, static _ => new Lock()))
                 {
                     if (!db.GeneratedClasses.TryGetValue(e.ClassName, out ConcurrentAssetDB.ScanTimeClassRecord classRecord))
                     {
@@ -93,7 +94,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 var classUsage = new ClassUsage(e.FileKey, e.Export.UIndex, false, e.IsMod);
                 var objectNameInstanced = e.ObjectNameInstanced;
 
-                lock (db.ClassLocks.GetOrAdd(objectNameInstanced, new object()))
+                lock (db.ClassLocks.GetOrAdd(objectNameInstanced, new Lock()))
                 {
                     if (db.GeneratedClasses.TryGetValue(objectNameInstanced, out ConcurrentAssetDB.ScanTimeClassRecord oldVal))
                     {

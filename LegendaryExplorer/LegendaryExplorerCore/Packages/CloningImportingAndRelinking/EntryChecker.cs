@@ -21,7 +21,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private List<EntryStringPair> SignificantIssues { get; } = new();
         private List<EntryStringPair> InfoWarnings { get; } = new();
 
-        private object syncLock = new object();
+        private object syncLock = new object(); //TODO NET 9: switch to System.Threading.Lock
 
         public IReadOnlyCollection<EntryStringPair> GetBlockingErrors() => BlockingErrors;
         public IReadOnlyCollection<EntryStringPair> GetSignificantIssues() => SignificantIssues;

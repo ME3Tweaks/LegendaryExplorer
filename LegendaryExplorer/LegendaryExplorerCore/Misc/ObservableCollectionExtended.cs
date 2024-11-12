@@ -210,7 +210,7 @@ namespace LegendaryExplorerCore.Misc
 
         #endregion // Sorting
 
-        private readonly object _syncLock = new();
+        private readonly object _syncLock = new(); //TODO NET 9: switch to System.Threading.Lock
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 

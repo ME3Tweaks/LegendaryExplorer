@@ -158,7 +158,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
         public static IVertexBase Create(Vector3 position, Vector3 tangent, Vector4 normal, Fixed4<Vector4> uvs)
         {
-            return new WorldVertex(position, new Vector3(normal.X, normal.Y, normal.Z), new Vector2(uvs[0].X, uvs[0].Y));
+            return new WorldVertex(position, normal.AsVector3(),  uvs[0].AsVector2());
         }
     }
 
@@ -174,7 +174,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         //however, it's perfectly fine for the vertex buffer stride to be longer than the parameters for a vertex shader
         //and for the InputLayout to be bigger. So for simplicity, all vertexes are the maximum size regardless of shader
         private Fixed4<Vector4> uvs;
-        public Vector3 Position => new(position.X, position.Y, position.Z);
+        public Vector3 Position => position.AsVector3();
 
         private LEVertex(Vector4 position, Vector3 tangent, Vector4 normal, Vector4 color, Fixed4<Vector4> uvs)
         {

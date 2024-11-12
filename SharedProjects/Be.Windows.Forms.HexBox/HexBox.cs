@@ -2258,7 +2258,7 @@ namespace Be.Windows.Forms
         }
 
         [GeneratedRegex("[^0-9A-Fa-f]")]
-        private static partial Regex ValidHexRegex();
+        private static partial Regex ValidHexRegex(); //TODO NET 9: switch to partial property
 
         /// <summary>
         /// Replaces the current selection in the hex box with the contents of the Clipboard.

@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Unreal
             return $"{entry.ClassName}'{entry.InstancedFullPath}'";
         }
         [GeneratedRegex("^([^']+)'([^']+)'$")]
-        private static partial Regex ObjectLiteralRegex();
+        private static partial Regex ObjectLiteralRegex(); //TODO NET 9: switch to partial property
 
         public int PathToUIndex(string objLiteral)
         {

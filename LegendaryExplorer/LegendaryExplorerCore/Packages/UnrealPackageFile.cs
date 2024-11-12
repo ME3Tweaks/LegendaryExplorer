@@ -84,12 +84,12 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// For concurrency when rebuilding the lookup table
         /// </summary>
-        private object _packageSyncObj = new object();
+        private object _packageSyncObj = new object(); //TODO NET 9: switch to System.Threading.Lock
 
         /// <summary>
         /// For concurrency when accessing FindExport/Import/Entry, and the table needs regenerated. This prevents multi-threading use from searching a currently rebuilding lookup table
         /// </summary>
-        private object _findEntrySyncObj = new object();
+        private object _findEntrySyncObj = new object(); //TODO NET 9: switch to System.Threading.Lock
 
         public bool IsCompressed => Flags.Has(UnrealFlags.EPackageFlags.Compressed);
 
@@ -986,7 +986,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        private readonly object _updatelock = new();
+        private readonly object _updatelock = new();  //TODO NET 9: switch to System.Threading.Lock
         private readonly HashSet<PackageUpdate> pendingUpdates = new();
 
         //Once this many milliseconds have gone by without a new change being queued, all the pending updates will be broadcast to the Users and WeakUsers

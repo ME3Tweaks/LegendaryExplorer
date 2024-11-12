@@ -86,13 +86,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 
         private readonly IEnumerable<IAssetSpecification<T>> _specifications;
 
-        public OrSpecification(params IAssetSpecification<T>[] specs)
-        {
-            _specifications = specs;
-            IsSelected = _specifications.Any();
-        }
-
-        public OrSpecification(IEnumerable<IAssetSpecification<T>> specs)
+        public OrSpecification(params IEnumerable<IAssetSpecification<T>> specs)
         {
             _specifications = specs;
             IsSelected = _specifications.Any();

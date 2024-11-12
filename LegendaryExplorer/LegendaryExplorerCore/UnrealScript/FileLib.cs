@@ -47,7 +47,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        private readonly object _initializationLock = new();
+        private readonly object _initializationLock = new(); //TODO NET 9: switch to System.Threading.Lock
 
         private SymbolTable _baseSymbols;
 

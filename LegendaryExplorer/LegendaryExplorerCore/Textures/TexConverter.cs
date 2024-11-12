@@ -233,7 +233,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static object _syncObj = new object();
+        private static object _syncObj = new object(); //TODO NET 9: switch to System.Threading.Lock
 
         public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, PixelFormat inputFormat, PixelFormat outputFormat)
         {
