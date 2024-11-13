@@ -79,8 +79,7 @@ var annotated_dup =
         [ "MELoadedDLC", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_d_l_c" ],
         [ "MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ],
         [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file" ],
-        [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ],
-        [ "UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ]
+        [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ]
       ] ],
       [ "Gammtek", "namespace_legendary_explorer_core_1_1_gammtek.html", [
         [ "Collections", "namespace_legendary_explorer_core_1_1_gammtek_1_1_collections.html", [

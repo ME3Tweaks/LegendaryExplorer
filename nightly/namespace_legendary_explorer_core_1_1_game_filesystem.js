@@ -11,7 +11,6 @@ var namespace_legendary_explorer_core_1_1_game_filesystem =
     [ "MELoadedFiles", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_m_e_loaded_files" ],
     [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file" ],
     [ "MountFlag", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_flag" ],
-    [ "UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory" ],
     [ "EAutoloadBioArmorType", "namespace_legendary_explorer_core_1_1_game_filesystem.html#afd1e9b0acff5be90d3a6f7fdce1b3924", null ],
     [ "EME2MountFileFlag", "namespace_legendary_explorer_core_1_1_game_filesystem.html#aa23133fea72a60ea6401786fd5a6381b", null ],
     [ "EME3MountFileFlag", "namespace_legendary_explorer_core_1_1_game_filesystem.html#a43f479aacbaa9f3944b3581287be5f53", null ]

@@ -102,13 +102,13 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_pack
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a2b1c253031bf388ce86ddde493d00544"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html#a2b1c253031bf388ce86ddde493d00544">ResynthesizePackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache)</td></tr>
-<tr class="memdesc:a2b1c253031bf388ce86ddde493d00544"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reconstructs a package file in a more sensible layout.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html#a2b1c253031bf388ce86ddde493d00544">More...</a><br /></td></tr>
-<tr class="separator:a2b1c253031bf388ce86ddde493d00544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fb711097d540332158a3765beb21170"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html#a9fb711097d540332158a3765beb21170">ResynthesizePackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache, bool dumpUnreferencedObjects=false)</td></tr>
+<tr class="memdesc:a9fb711097d540332158a3765beb21170"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reconstructs a package file in a more sensible layout.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html#a9fb711097d540332158a3765beb21170">More...</a><br /></td></tr>
+<tr class="separator:a9fb711097d540332158a3765beb21170"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2b1c253031bf388ce86ddde493d00544" name="a2b1c253031bf388ce86ddde493d00544"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b1c253031bf388ce86ddde493d00544">&#9670;&#160;</a></span>ResynthesizePackage()</h2>
+<a id="a9fb711097d540332158a3765beb21170" name="a9fb711097d540332158a3765beb21170"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fb711097d540332158a3765beb21170">&#9670;&#160;</a></span>ResynthesizePackage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,7 +126,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td>
-          <td class="paramname"><em>cache</em>&#160;</td>
+          <td class="paramname"><em>cache</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>dumpUnreferencedObjects</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -145,6 +151,7 @@ Static Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">package</td><td>Package file to reconstruct</td></tr>
+    <tr><td class="paramname">dumpUnreferencedObjects</td><td>Only ports objects referenced by ObjectReferencer and TheWorld, which will dump unreferenced objects.</td></tr>
   </table>
   </dd>
 </dl>

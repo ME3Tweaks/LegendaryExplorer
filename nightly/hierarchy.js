@@ -1315,7 +1315,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Extensions.Reflection.TypeExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection_1_1_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.TypeSwitch", "class_legendary_explorer_core_1_1_gammtek_1_1_type_switch.html", null ],
     [ "LegendaryExplorerCore.UDK.UDKAssetInfo", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_asset_info.html", null ],
-    [ "LegendaryExplorerCore.GameFilesystem.UDKDirectory", "class_legendary_explorer_core_1_1_game_filesystem_1_1_u_d_k_directory.html", null ],
     [ "LegendaryExplorerCore.UDK.UDKMaterialPort", "class_legendary_explorer_core_1_1_u_d_k_1_1_u_d_k_material_port.html", null ],
     [ "LegendaryExplorerCore.Unreal.UDKUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info.html", null ],
     [ "LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode.UE3FunctionReader", "class_legendary_explorer_core_1_1_m_e1_1_1_unreal_1_1_unhood_bytecode_1_1_u_e3_function_reader.html", null ],
