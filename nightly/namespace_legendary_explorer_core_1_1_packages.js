@@ -21,6 +21,7 @@ var namespace_legendary_explorer_core_1_1_packages =
     [ "MEPackageExtensions", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions" ],
     [ "MEPackageHandler", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler" ],
     [ "PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html", "class_legendary_explorer_core_1_1_packages_1_1_package_cache" ],
+    [ "PackageDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html", "class_legendary_explorer_core_1_1_packages_1_1_package_diff" ],
     [ "PackageResynthesizer", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer" ],
     [ "PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", "class_legendary_explorer_core_1_1_packages_1_1_package_saver" ],
     [ "PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", "struct_legendary_explorer_core_1_1_packages_1_1_package_update" ],

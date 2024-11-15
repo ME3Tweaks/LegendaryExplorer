@@ -21,7 +21,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_export_entry =
     [ "WriteBinary", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ad11ff867c115a51e1a7e5e0271b14be9", null ],
     [ "WriteBinary", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#aa5b2d0720ca174f47d2e95abef2d6bbd", null ],
     [ "WritePropertiesAndBinary", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab300214e2f1b8037f1ecd53d9c15b5ea", null ],
-    [ "WritePrePropsAndPropertiesAndBinary", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#afba8b28543c40dc796e5162afe8956ac", null ],
+    [ "WritePrePropsAndPropertiesAndBinary", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a689d08949c80541133405ae26ff5d27a", null ],
     [ "Clone", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a73ec8bcf1f629fc8b633f7491c1b5cdc", null ],
     [ "GetPropertyFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a1b31b5d1bc3af6dfc1dd42864ecf889b", null ],
     [ "SetPropertyFlags", "class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a66d884794e0e079ba20f416526c73107", null ],

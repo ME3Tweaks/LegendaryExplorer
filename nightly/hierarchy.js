@@ -913,6 +913,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SoundCue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_cue.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SoundNodeWave", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_node_wave.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SpeedTreeComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_speed_tree_component.html", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.StateFrame", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_state_frame.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticCollectionActor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_collection_actor.html", [
         [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticLightCollectionActor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_light_collection_actor.html", null ],
         [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticMeshCollectionActor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_collection_actor.html", null ]
@@ -992,6 +993,7 @@ var hierarchy =
     [ "PackageCache", null, [
       [ "TieredPackageCache", "class_tiered_package_cache.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Packages.PackageDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageResynthesizer", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", null ],

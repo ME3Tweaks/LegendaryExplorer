@@ -48,6 +48,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader =
     [ "ToUInt64", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a3e9a75c4340c4a4dd311b8c6671b1cae", null ],
     [ "ToUInt64", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a44337f11ffa692ab430e3af543f69605", null ],
     [ "ToGuid", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#ada6f0b90ad37fd00f28d79fbceebcc53", null ],
+    [ "ToName", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#afec84478cdfd09af090368ea4fdbd9a0", null ],
     [ "Writer", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#ad1a2dc5eee1e3afd5f7f857daf96b583", null ],
     [ "packageTagLittleEndian", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#afde0e59638186f0888cc612fef38f67d", null ],
     [ "packageTagBigEndian", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a0cefd49b0ff555c014cc203c107dfc43", null ],

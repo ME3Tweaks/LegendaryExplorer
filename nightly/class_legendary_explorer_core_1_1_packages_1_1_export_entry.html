@@ -166,9 +166,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab300214e2f1b8037f1ecd53d9c15b5ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab300214e2f1b8037f1ecd53d9c15b5ea">WritePropertiesAndBinary</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a> binary)</td></tr>
 <tr class="memdesc:ab300214e2f1b8037f1ecd53d9c15b5ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the existing pre-prop binary (if it exists), then appends props and binary   <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ab300214e2f1b8037f1ecd53d9c15b5ea">More...</a><br /></td></tr>
 <tr class="separator:ab300214e2f1b8037f1ecd53d9c15b5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afba8b28543c40dc796e5162afe8956ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#afba8b28543c40dc796e5162afe8956ac">WritePrePropsAndPropertiesAndBinary</a> (byte[] preProps, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a> binary)</td></tr>
-<tr class="memdesc:afba8b28543c40dc796e5162afe8956ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the entire export data   <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#afba8b28543c40dc796e5162afe8956ac">More...</a><br /></td></tr>
-<tr class="separator:afba8b28543c40dc796e5162afe8956ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a689d08949c80541133405ae26ff5d27a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a689d08949c80541133405ae26ff5d27a">WritePrePropsAndPropertiesAndBinary</a> (ReadOnlySpan&lt; byte &gt; preProps, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a> binary)</td></tr>
+<tr class="memdesc:a689d08949c80541133405ae26ff5d27a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the entire export data   <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a689d08949c80541133405ae26ff5d27a">More...</a><br /></td></tr>
+<tr class="separator:a689d08949c80541133405ae26ff5d27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73ec8bcf1f629fc8b633f7491c1b5cdc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a73ec8bcf1f629fc8b633f7491c1b5cdc">Clone</a> (int newIndex=-1, int newParentUIndex=int.MaxValue)</td></tr>
 <tr class="memdesc:a73ec8bcf1f629fc8b633f7491c1b5cdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones this export. If you don't supply a new index, it will remain the same - ENSURE YOU CHANGE IT OR YOU'LL WASTE TIME DEBUGGING THE GAME!!   <a href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a73ec8bcf1f629fc8b633f7491c1b5cdc">More...</a><br /></td></tr>
 <tr class="separator:a73ec8bcf1f629fc8b633f7491c1b5cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1214,8 +1214,8 @@ Events</h2></td></tr>
 
 </div>
 </div>
-<a id="afba8b28543c40dc796e5162afe8956ac" name="afba8b28543c40dc796e5162afe8956ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afba8b28543c40dc796e5162afe8956ac">&#9670;&#160;</a></span>WritePrePropsAndPropertiesAndBinary()</h2>
+<a id="a689d08949c80541133405ae26ff5d27a" name="a689d08949c80541133405ae26ff5d27a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a689d08949c80541133405ae26ff5d27a">&#9670;&#160;</a></span>WritePrePropsAndPropertiesAndBinary()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1226,7 +1226,7 @@ Events</h2></td></tr>
         <tr>
           <td class="memname">void LegendaryExplorerCore.Packages.ExportEntry.WritePrePropsAndPropertiesAndBinary </td>
           <td>(</td>
-          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramtype">ReadOnlySpan&lt; byte &gt;&#160;</td>
           <td class="paramname"><em>preProps</em>, </td>
         </tr>
         <tr>

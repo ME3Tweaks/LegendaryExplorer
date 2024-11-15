@@ -16,6 +16,7 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "MEPackageHandler.cs", "_m_e_package_handler_8cs.html", "_m_e_package_handler_8cs" ],
     [ "PackageCache.cs", "_package_cache_8cs.html", "_package_cache_8cs" ],
     [ "PackageComparer.cs", "_package_comparer_8cs.html", "_package_comparer_8cs" ],
+    [ "PackageDiff.cs", "_package_diff_8cs.html", "_package_diff_8cs" ],
     [ "PackageExtensions.cs", "_package_extensions_8cs.html", "_package_extensions_8cs" ],
     [ "PackageResynthesizer.cs", "_package_resynthesizer_8cs.html", "_package_resynthesizer_8cs" ],
     [ "PackageSaver.cs", "_package_saver_8cs.html", "_package_saver_8cs" ],

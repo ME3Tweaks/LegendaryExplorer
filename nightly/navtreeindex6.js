@@ -1,5 +1,7 @@
 var NAVTREEINDEX6 =
 {
+"_value_list_8cs.html":[2,0,0,0,6,0,2,1],
+"_value_tuple_equality_comparer_8cs.html":[2,0,0,0,13,11],
 "_var_int_8cs.html":[2,0,0,0,6,6,23],
 "_var_link_info_8cs.html":[2,0,0,0,8,7],
 "_variable_declaration_8cs.html":[2,0,0,0,26,3,1,73],
@@ -17,15 +19,15 @@ var NAVTREEINDEX6 =
 "_wildcard_matcher_8cs.html":[2,0,0,0,6,8,1,5],
 "_win_azure_test_2net8_80_2_8_n_e_t_core_app_00_version_0av8_80_8_assembly_attributes_8cs.html":[2,0,0,0,14,0,0,0],
 "_win_azure_test_2net8_80_2_legendary_explorer_core_8_assembly_info_8cs.html":[2,0,0,0,14,0,0,1],
-"_world_8cs.html":[2,0,0,0,25,0,72],
-"_world_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,25,0,72,3],
-"_wwise_bank_8cs.html":[2,0,0,0,25,0,73],
-"_wwise_bank_8cs.html#a75ac72b3e7a21859ebd29065a6cd926b":[2,0,0,0,25,0,73,11],
+"_world_8cs.html":[2,0,0,0,25,0,73],
+"_world_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,25,0,73,3],
+"_wwise_bank_8cs.html":[2,0,0,0,25,0,74],
+"_wwise_bank_8cs.html#a75ac72b3e7a21859ebd29065a6cd926b":[2,0,0,0,25,0,74,11],
 "_wwise_bank_import_8cs.html":[2,0,0,0,0,6],
-"_wwise_event_8cs.html":[2,0,0,0,25,0,74],
-"_wwise_event_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,25,0,74,3],
+"_wwise_event_8cs.html":[2,0,0,0,25,0,75],
+"_wwise_event_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,25,0,75,3],
 "_wwise_helper_8cs.html":[2,0,0,0,21,1,0],
-"_wwise_stream_8cs.html":[2,0,0,0,25,0,75],
+"_wwise_stream_8cs.html":[2,0,0,0,25,0,76],
 "_wwise_stream_ext_8cs.html":[2,0,0,0,0,7],
 "_wwise_versions_8cs.html":[2,0,0,0,0,8],
 "_xml_coalesce_asset_8cs.html":[2,0,0,0,1,2,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX6 =
 "class_f_fluid_tessellation_vertex_factory_shader_parameters.html#aa6ada957610c3a76696c93fbb8f5d22b":[1,0,41,6],
 "class_f_fluid_tessellation_vertex_factory_shader_parameters.html#ab402ae9f1cab20fe1838ca61695d7e9f":[1,0,41,1],
 "class_f_fluid_tessellation_vertex_factory_shader_parameters.html#acdd685b786d19283fe49fe8dd59e4792":[1,0,41,4],
-"class_f_fog_volume_apply_pixel_shader.html":[1,0,42],
-"class_f_fog_volume_apply_pixel_shader.html#a09a1b21ac302af8bda447967e4463d9d":[1,0,42,0],
-"class_f_fog_volume_apply_pixel_shader.html#a3bd74002b658c63910a0fdbc3e12ab0d":[1,0,42,1]
+"class_f_fog_volume_apply_pixel_shader.html":[1,0,42]
 };

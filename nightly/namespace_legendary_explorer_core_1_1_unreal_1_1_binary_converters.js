@@ -149,6 +149,7 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "SoundNodeWave", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_node_wave.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_node_wave" ],
     [ "SpeedTreeComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_speed_tree_component.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_speed_tree_component" ],
     [ "Sphere", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sphere.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sphere" ],
+    [ "StateFrame", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_state_frame.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_state_frame" ],
     [ "StaticCollectionActor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_collection_actor.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_collection_actor" ],
     [ "StaticLightCollectionActor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_light_collection_actor.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_light_collection_actor" ],
     [ "StaticLODModel", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_l_o_d_model.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_l_o_d_model" ],
