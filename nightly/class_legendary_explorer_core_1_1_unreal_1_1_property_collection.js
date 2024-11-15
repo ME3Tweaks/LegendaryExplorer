@@ -8,7 +8,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_property_collection =
     [ "ReadProps", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a73a0812e09a6786a54a24f95ee421c94", null ],
     [ "RemoveNamedProperty", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#afe4721333ff1c719c939bb74ec2c4f2a", null ],
     [ "DeepClone", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#ae0204cf4f2bc26c2e40922034dbc2439", null ],
-    [ "Equivalent", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a9543b7276d9cad780b9f3b948204a108", null ],
-    [ "Diff", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a63678d111b37180e88154feb14966fdf", null ],
+    [ "Equivalent", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a41a410433517f8e2a26b48be53f82960", null ],
+    [ "Diff", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#aa10f26fb2e54884aedc61f7761113446", null ],
     [ "IsImmutable", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html#a4e97dcfa6d0ae47630a356a13487cf09", null ]
 ];

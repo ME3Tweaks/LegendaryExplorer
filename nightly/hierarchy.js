@@ -511,7 +511,6 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet.StaticSwitchParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set_1_1_static_switch_parameter.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.StaticParameterSet.TerrainWeightParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set_1_1_terrain_weight_parameter.html", null ],
       [ "LegendaryExplorerCore.Unreal.NameReference", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html", null ],
-      [ "LegendaryExplorerCore.Unreal.ScriptDelegate", "struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DelegateType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_delegate_type.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DynamicArrayType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_dynamic_array_type.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Language.Tree.StaticArrayType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_static_array_type.html", null ]
@@ -1371,7 +1370,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_lookup.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.UnsafeExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_unsafe_extensions.html", null ],
-    [ "LegendaryExplorerCore.Unreal.UPropertyExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_u_property_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.URL", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_r_l.html", null ],
     [ "USet< KeyValuePair< TKey, TValue >, TKey, TKeyFuncs >", "class_u_set.html", null ],
     [ "USet< T, T, DefaultKeyFuncs< T > >", "class_u_set.html", [

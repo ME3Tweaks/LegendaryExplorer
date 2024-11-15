@@ -773,7 +773,6 @@ var annotated_dup =
         [ "PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection" ],
         [ "PSA", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a" ],
         [ "PSK", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k" ],
-        [ "ScriptDelegate", "struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate.html", "struct_legendary_explorer_core_1_1_unreal_1_1_script_delegate" ],
         [ "SFAREntryReader", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader" ],
         [ "SFARUnpacker", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_unpacker" ],
         [ "StorageTypeExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_storage_type_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_storage_type_extensions" ],
@@ -786,8 +785,7 @@ var annotated_dup =
         [ "Token", "class_legendary_explorer_core_1_1_unreal_1_1_token.html", "class_legendary_explorer_core_1_1_unreal_1_1_token" ],
         [ "UDKUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info" ],
         [ "UnknownProperty", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property" ],
-        [ "UnrealFlags", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags" ],
-        [ "UPropertyExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_u_property_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_u_property_extensions" ]
+        [ "UnrealFlags", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags" ]
       ] ],
       [ "UnrealScript", "namespace_legendary_explorer_core_1_1_unreal_script.html", [
         [ "Analysis", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_analysis.html", [

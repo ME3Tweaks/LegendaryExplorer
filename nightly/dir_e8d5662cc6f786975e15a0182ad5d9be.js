@@ -17,7 +17,7 @@ var dir_e8d5662cc6f786975e15a0182ad5d9be =
     [ "ME3Enums.cs", "_m_e3_enums_8cs.html", "_m_e3_enums_8cs" ],
     [ "NameReference.cs", "_name_reference_8cs.html", "_name_reference_8cs" ],
     [ "PropertyCollection.cs", "_property_collection_8cs.html", "_property_collection_8cs" ],
-    [ "PropertyReader.cs", "_property_reader_8cs.html", "_property_reader_8cs" ],
+    [ "PropertyReader.cs", "_property_reader_8cs.html", null ],
     [ "PSA.cs", "_p_s_a_8cs.html", "_p_s_a_8cs" ],
     [ "PSK.cs", "_p_s_k_8cs.html", "_p_s_k_8cs" ],
     [ "SerializingFile.cs", "_serializing_file_8cs.html", null ],
