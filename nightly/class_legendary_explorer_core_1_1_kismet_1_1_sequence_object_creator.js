@@ -28,7 +28,7 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateSetFloat", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9471a9600dd27210e975361e683547bb", null ],
     [ "CreateGate", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a14dacf7ab3666e887de9bd2a2eee71ad", null ],
     [ "CreateAndAddToSequence", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#afeda057e808609e97f585148d5360e57", null ],
-    [ "CreateLog", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a94cccb2f5f56689343d7ff850ec6bb45", null ],
+    [ "CreateLog", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a1d926d5df7ff0044dc3859fa62afce88", null ],
     [ "CreatePMCheckState", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a633e936c1207b3290a338a62afcc2017", null ],
     [ "CreateModifyObjectList", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aeead5ebfdf1db2e549f72f389758ac60", null ],
     [ "CreateSeqVarNamed", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa80fc551766f51f7f2671ffe0bc0d5a7", null ],
@@ -68,5 +68,6 @@ var class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator =
     [ "CreateStopLoadingMovie", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#ac961191ec11c0d9588cfa84ed5f47296", null ],
     [ "CreateForceActorMipsResident", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a02ffb5e2f26eb30455004b416e7a0575", null ],
     [ "CreateSetStreamingState", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#aa1324d23bf7a5c45de0ffee37f37788e", null ],
-    [ "CreateSetMaterial", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9a7a2ed44f3198df6ce55dbe1609044f", null ]
+    [ "CreateSetMaterial", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9a7a2ed44f3198df6ce55dbe1609044f", null ],
+    [ "CreateBlockForTextureStreaming", "class_legendary_explorer_core_1_1_kismet_1_1_sequence_object_creator.html#a9526aa5b47e806d279a8b999ff47e319", null ]
 ];
