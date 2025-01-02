@@ -28,11 +28,12 @@ var searchData=
   ['lineerror_2ecs_25',['LineError.cs',['../_line_error_8cs.html',1,'']]],
   ['linelookup_2ecs_26',['LineLookup.cs',['../_line_lookup_8cs.html',1,'']]],
   ['linewarning_2ecs_27',['LineWarning.cs',['../_line_warning_8cs.html',1,'']]],
-  ['listenabledictionary_2ecs_28',['ListenableDictionary.cs',['../_listenable_dictionary_8cs.html',1,'']]],
-  ['listextensions_2ecs_29',['ListExtensions.cs',['../_list_extensions_8cs.html',1,'']]],
-  ['localprofile_2ecs_30',['LocalProfile.cs',['../_local_profile_8cs.html',1,'']]],
-  ['localprofilele1_2ecs_31',['LocalProfileLE1.cs',['../_local_profile_l_e1_8cs.html',1,'']]],
-  ['logmessage_2ecs_32',['LogMessage.cs',['../_log_message_8cs.html',1,'']]],
-  ['lzo2helper_2ecs_33',['LZO2Helper.cs',['../_l_z_o2_helper_8cs.html',1,'']]],
-  ['lzxhelper_2ecs_34',['LZXHelper.cs',['../_l_z_x_helper_8cs.html',1,'']]]
+  ['listcomparer_2ecs_28',['ListComparer.cs',['../_list_comparer_8cs.html',1,'']]],
+  ['listenabledictionary_2ecs_29',['ListenableDictionary.cs',['../_listenable_dictionary_8cs.html',1,'']]],
+  ['listextensions_2ecs_30',['ListExtensions.cs',['../_list_extensions_8cs.html',1,'']]],
+  ['localprofile_2ecs_31',['LocalProfile.cs',['../_local_profile_8cs.html',1,'']]],
+  ['localprofilele1_2ecs_32',['LocalProfileLE1.cs',['../_local_profile_l_e1_8cs.html',1,'']]],
+  ['logmessage_2ecs_33',['LogMessage.cs',['../_log_message_8cs.html',1,'']]],
+  ['lzo2helper_2ecs_34',['LZO2Helper.cs',['../_l_z_o2_helper_8cs.html',1,'']]],
+  ['lzxhelper_2ecs_35',['LZXHelper.cs',['../_l_z_x_helper_8cs.html',1,'']]]
 ];
