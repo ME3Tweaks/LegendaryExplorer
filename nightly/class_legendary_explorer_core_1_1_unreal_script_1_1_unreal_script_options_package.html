@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage Class Reference</div></div>
@@ -103,6 +104,11 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
 <p>Object for passing through to various compiler functions to allow adding new features without having to edit method signatures.   
  <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:af7e039eb4b5c2fd3d4537a5fc52fba31"><td class="memItemLeft" align="right" valign="top">delegate <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#af7e039eb4b5c2fd3d4537a5fc52fba31">ObjectResolutionDelegate</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> sourcePackage, string instancedFullPath, string className)</td></tr>
+<tr class="separator:af7e039eb4b5c2fd3d4537a5fc52fba31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
 <tr class="memitem:abf57527c1e73d7fa496d863188af6cbc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#abf57527c1e73d7fa496d863188af6cbc">Cache</a><code> [get, set]</code></td></tr>
@@ -114,16 +120,51 @@ Properties</h2></td></tr>
 <tr class="memitem:a387f3847c393a959f32c86460f3a3f5b"><td class="memItemLeft" align="right" valign="top">Func&lt; string, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a387f3847c393a959f32c86460f3a3f5b">CustomFileResolver</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:a387f3847c393a959f32c86460f3a3f5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delegate that can be used to resolve package objects. When used properly this can significantly improve performance   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a387f3847c393a959f32c86460f3a3f5b">More...</a><br /></td></tr>
 <tr class="separator:a387f3847c393a959f32c86460f3a3f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af80eaf398898e2ebc00173bc0cab15bd"><td class="memItemLeft" align="right" valign="top">Func&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#af80eaf398898e2ebc00173bc0cab15bd">MissingObjectResolver</a><code> [get, set]</code></td></tr>
-<tr class="memdesc:af80eaf398898e2ebc00173bc0cab15bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delegate that can be used to look up missing objects when compiling classes and a referenced object is not found in the local file. [Source package, IFP to import/export]   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#af80eaf398898e2ebc00173bc0cab15bd">More...</a><br /></td></tr>
-<tr class="separator:af80eaf398898e2ebc00173bc0cab15bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f94b4c3d36b2937b5d8f2e65977c02c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#af7e039eb4b5c2fd3d4537a5fc52fba31">ObjectResolutionDelegate</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a6f94b4c3d36b2937b5d8f2e65977c02c">MissingObjectResolver</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:a6f94b4c3d36b2937b5d8f2e65977c02c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delegate that can be used to look up missing objects when compiling classes and a referenced object is not found in the local file. [Source package, IFP to import/export, Class name]   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a6f94b4c3d36b2937b5d8f2e65977c02c">More...</a><br /></td></tr>
+<tr class="separator:a6f94b4c3d36b2937b5d8f2e65977c02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeda45bcf844ce86e8a40bf0ce239331b"><td class="memItemLeft" align="right" valign="top">Func&lt; string, List&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#aeda45bcf844ce86e8a40bf0ce239331b">GetVTableFromDonor</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:aeda45bcf844ce86e8a40bf0ce239331b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked to fetch a VTable for a class from a donor object. Used to align VTables typically across games. [IFP to VTable list]   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#aeda45bcf844ce86e8a40bf0ce239331b">More...</a><br /></td></tr>
 <tr class="separator:aeda45bcf844ce86e8a40bf0ce239331b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Object for passing through to various compiler functions to allow adding new features without having to edit method signatures.  </p>
-</div><h2 class="groupheader">Property Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="af7e039eb4b5c2fd3d4537a5fc52fba31" name="af7e039eb4b5c2fd3d4537a5fc52fba31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7e039eb4b5c2fd3d4537a5fc52fba31">&#9670;&#160;</a></span>ObjectResolutionDelegate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">delegate <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage.ObjectResolutionDelegate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>sourcePackage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>instancedFullPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>className</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
 <a id="abf57527c1e73d7fa496d863188af6cbc" name="abf57527c1e73d7fa496d863188af6cbc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf57527c1e73d7fa496d863188af6cbc">&#9670;&#160;</a></span>Cache</h2>
 
@@ -196,8 +237,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="af80eaf398898e2ebc00173bc0cab15bd" name="af80eaf398898e2ebc00173bc0cab15bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af80eaf398898e2ebc00173bc0cab15bd">&#9670;&#160;</a></span>MissingObjectResolver</h2>
+<a id="a6f94b4c3d36b2937b5d8f2e65977c02c" name="a6f94b4c3d36b2937b5d8f2e65977c02c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f94b4c3d36b2937b5d8f2e65977c02c">&#9670;&#160;</a></span>MissingObjectResolver</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -206,7 +247,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Func&lt;<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>, string, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&gt; LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage.MissingObjectResolver</td>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#af7e039eb4b5c2fd3d4537a5fc52fba31">ObjectResolutionDelegate</a> LegendaryExplorerCore.UnrealScript.UnrealScriptOptionsPackage.MissingObjectResolver</td>
         </tr>
       </table>
   </td>
@@ -216,7 +257,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Delegate that can be used to look up missing objects when compiling classes and a referenced object is not found in the local file. [Source package, IFP to import/export]  </p>
+<p>Delegate that can be used to look up missing objects when compiling classes and a referenced object is not found in the local file. [Source package, IFP to import/export, Class name]  </p>
 
 </div>
 </div>
