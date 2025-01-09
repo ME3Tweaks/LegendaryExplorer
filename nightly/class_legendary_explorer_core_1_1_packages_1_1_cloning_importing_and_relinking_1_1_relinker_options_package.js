@@ -2,6 +2,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
 [
     [ "RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ade90299047e237f886c80c97852a5dbb", null ],
     [ "RelinkerOptionsPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e", null ],
+    [ "CustomRelinkUIndexDelegate", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7", null ],
     [ "CrossPackageMap", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#aa5e47b5e0a90e2220853f38af374174b", null ],
     [ "ErrorOccurredCallback", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a21e33d04fdc15d4c2e1626c8f6ea5414", null ],
     [ "ImportExportDependencies", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a9bcf4417e6b4a042e152665047f0b94d", null ],
@@ -20,5 +21,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "PortLocalizationImportsMemorySafe", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a3f8c3bd0d11b6b88747bf5fdfac780db", null ],
     [ "CustomDonorImporter", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a2f47c5d66bb4b8f96b4326b5fc698a77", null ],
     [ "CheckImportsWhenExportingToPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8e77b33bc07d335d0d54c75c6c51d91a", null ],
-    [ "ForceSamePackageImportRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1", null ]
+    [ "ForceSamePackageImportRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1", null ],
+    [ "CustomRelinkUIndex", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0a37be114ab5c88f83a5da5d1be1cc0", null ]
 ];

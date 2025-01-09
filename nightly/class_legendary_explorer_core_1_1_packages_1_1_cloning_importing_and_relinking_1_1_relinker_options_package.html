@@ -113,6 +113,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a489e134d5fb3424712352a1ae36a836e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e">RelinkerOptionsPackage</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> cache)</td></tr>
 <tr class="memdesc:a489e134d5fb3424712352a1ae36a836e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that takes an existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a>   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a489e134d5fb3424712352a1ae36a836e">More...</a><br /></td></tr>
 <tr class="separator:a489e134d5fb3424712352a1ae36a836e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d0b7c65e6617e07a18af0d9ac6979c7"><td class="memItemLeft" align="right" valign="top">delegate bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7">CustomRelinkUIndexDelegate</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> importingPcc, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> relinkingExport, ref int uIndex, string propertyName, string prefix, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a> rop, out <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html">EntryStringPair</a> result)</td></tr>
+<tr class="memdesc:a8d0b7c65e6617e07a18af0d9ac6979c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a way to override relinkUIndex() behavior. If not provided, the default implementation is used.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7">More...</a><br /></td></tr>
+<tr class="separator:a8d0b7c65e6617e07a18af0d9ac6979c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -178,6 +181,9 @@ Properties</h2></td></tr>
 <tr class="memitem:ac70d15e39a474e67cd935dbb3ecabdf1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1">ForceSamePackageImportRelink</a><code> [get, set]</code></td></tr>
 <tr class="memdesc:ac70d15e39a474e67cd935dbb3ecabdf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1">More...</a><br /></td></tr>
 <tr class="separator:ac70d15e39a474e67cd935dbb3ecabdf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0a37be114ab5c88f83a5da5d1be1cc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7">CustomRelinkUIndexDelegate</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0a37be114ab5c88f83a5da5d1be1cc0">CustomRelinkUIndex</a><code> [get, set]</code></td></tr>
+<tr class="memdesc:ae0a37be114ab5c88f83a5da5d1be1cc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a way to override relinkUIndex() behavior. If not provided, the default implementation is used.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0a37be114ab5c88f83a5da5d1be1cc0">More...</a><br /></td></tr>
+<tr class="separator:ae0a37be114ab5c88f83a5da5d1be1cc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures.  </p>
@@ -234,6 +240,80 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Constructor that takes an existing <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html" title="Class that allows you to cache packages in memory for fast accessing, without having to use a global ...">PackageCache</a>  </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8d0b7c65e6617e07a18af0d9ac6979c7" name="a8d0b7c65e6617e07a18af0d9ac6979c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d0b7c65e6617e07a18af0d9ac6979c7">&#9670;&#160;</a></span>CustomRelinkUIndexDelegate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">delegate bool LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.CustomRelinkUIndexDelegate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>importingPcc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>relinkingExport</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ref int&#160;</td>
+          <td class="paramname"><em>uIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>propertyName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>prefix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html">RelinkerOptionsPackage</a>&#160;</td>
+          <td class="paramname"><em>rop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html">EntryStringPair</a>&#160;</td>
+          <td class="paramname"><em>result</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Provides a way to override relinkUIndex() behavior. If not provided, the default implementation is used.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">importingPcc</td><td>Pcc being imported from</td></tr>
+    <tr><td class="paramname">relinkingExport</td><td>The export in the destination being relinked</td></tr>
+    <tr><td class="paramname">uIndex</td><td>The source package uIndex. It should be changed to the destination package uIndex by the end of the call.</td></tr>
+    <tr><td class="paramname">propertyName</td><td>Name of the item being relinked (for messages)</td></tr>
+    <tr><td class="paramname">prefix</td><td>Prefix to put on the relink message (if any)</td></tr>
+    <tr><td class="paramname">rop</td><td>Custom ROP object, same as the one this method is attached to</td></tr>
+    <tr><td class="paramname">result</td><td>The resulting relink message if an issue occurred</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the custom relink was used, false if it was not and the default relink logic will be used</dd></dl>
 
 </div>
 </div>
@@ -678,6 +758,30 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.  </p>
+
+</div>
+</div>
+<a id="ae0a37be114ab5c88f83a5da5d1be1cc0" name="ae0a37be114ab5c88f83a5da5d1be1cc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0a37be114ab5c88f83a5da5d1be1cc0">&#9670;&#160;</a></span>CustomRelinkUIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7">CustomRelinkUIndexDelegate</a> LegendaryExplorerCore.Packages.CloningImportingAndRelinking.RelinkerOptionsPackage.CustomRelinkUIndex</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Provides a way to override relinkUIndex() behavior. If not provided, the default implementation is used.  </p>
 
 </div>
 </div>
