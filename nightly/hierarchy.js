@@ -176,6 +176,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.DecalVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_vertex.html", null ],
     [ "LegendaryExplorerCore.Coalesced.Huffman.Decoder", "class_legendary_explorer_core_1_1_coalesced_1_1_huffman_1_1_decoder.html", null ],
     [ "LegendaryExplorerCore.Helpers.Deconstructors", "class_legendary_explorer_core_1_1_helpers_1_1_deconstructors.html", null ],
+    [ "LegendaryExplorerCore.Shaders.DecookedExporter", "class_legendary_explorer_core_1_1_shaders_1_1_decooked_exporter.html", null ],
     [ "Dictionary", null, [
       [ "LegendaryExplorerCore.Misc.CaseInsensitiveDictionary< TValue >", "class_legendary_explorer_core_1_1_misc_1_1_case_insensitive_dictionary.html", null ]
     ] ],

@@ -1,6 +1,7 @@
 var namespace_legendary_explorer_core_1_1_shaders =
 [
     [ "ConstantInfo", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info.html", "class_legendary_explorer_core_1_1_shaders_1_1_constant_info" ],
+    [ "DecookedExporter", "class_legendary_explorer_core_1_1_shaders_1_1_decooked_exporter.html", "class_legendary_explorer_core_1_1_shaders_1_1_decooked_exporter" ],
     [ "ParameterDeclaration", "class_legendary_explorer_core_1_1_shaders_1_1_parameter_declaration.html", "class_legendary_explorer_core_1_1_shaders_1_1_parameter_declaration" ],
     [ "RefShaderCacheReader", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader" ],
     [ "ShaderCacheManipulator", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator" ],
