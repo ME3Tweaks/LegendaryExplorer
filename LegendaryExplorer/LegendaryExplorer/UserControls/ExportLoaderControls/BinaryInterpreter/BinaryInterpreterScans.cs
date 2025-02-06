@@ -4747,6 +4747,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
 
+        private static BinInterpNode MakeReverseBoolIntNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32() != 1}", NodeType.StructLeafBool) { Length = 4 };
+        
         private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name, out bool boolVal)
         {
             return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };

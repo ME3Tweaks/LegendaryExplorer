@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Math;
-using LegendaryExplorer.SharedUI.Interfaces;
+﻿using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -14,7 +13,10 @@ using ME3Tweaks.Wwiser.Model.ParameterNode.Positioning;
 using ME3Tweaks.Wwiser.Model.RTPC;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using ME3Tweaks.Wwiser.Model.Action;
+using ME3Tweaks.Wwiser.Model.Action.Specific;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.AccumType;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.CurveScaling;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.GroupType;
@@ -28,6 +30,7 @@ using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PathMode;
 using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PositioningChunk;
 using static ME3Tweaks.Wwiser.Model.RTPC.RtpcType;
 using static ME3Tweaks.Wwiser.Model.State.SyncType;
+using LanguageId = ME3Tweaks.Wwiser.Model.LanguageId;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -73,7 +76,7 @@ public partial class BinaryInterpreterWPF
         {
             // float
             var f = BitConverter.ToSingle(span);
-            node.Header += f.ToString();
+            node.Header += f.ToString(CultureInfo.InvariantCulture);
         }
         else
         {
@@ -289,6 +292,118 @@ public partial class BinaryInterpreterWPF
                     root.Items.Add(MakeInt16Node(bin, "LoopModMax"));
                 }
                 break;
+            case HircType.Action:
+                var (actionType, actionFlags) = ActionType.DeserializeStatic(bin.BaseStream, version);
+                var typeLength = version <= 56 ? 4 : 2;
+                root.Items.Add(new BinInterpNode(bin.Position - typeLength,
+                    $"ActionType: {actionType.ToString()}, Flags: {actionFlags.ToString()}") { Length = typeLength });
+                root.Items.Add(MakeWwiseIdNode(bin, "Target", "Target ID"));
+                if (version <= 56)
+                {
+                    root.Items.Add(MakeInt32Node(bin, "Delay"));
+                    root.Items.Add(MakeInt32Node(bin, "DelayModMin"));
+                    root.Items.Add(MakeInt32Node(bin, "DelayModMax"));
+                }
+
+                if (version > 65) root.Items.Add(MakeBoolByteNode(bin, "IsBus"));
+                if (version > 56) Scan_HIRC_InitialParams(root, bin, version);
+                switch (actionType)
+                {
+                    case ActionTypeValue.Play:
+                    case ActionTypeValue.PlayAndContinue:
+                    case ActionTypeValue.PlayEventUnknown:
+                        if (version <= 56)
+                        {
+                            root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTime"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMin"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMax"));
+                        }
+                        root.Items.Add(MakeByteEnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+
+                        if (version <= 56)
+                        {
+                            Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
+                            Scan_HIRC_ActionExceptParams(root, bin, version);
+                        }
+                        root.Items.Add(MakeWwiseIdNode(bin, "BankId"));
+                        break;
+                    case ActionTypeValue.SetState:
+                    case ActionTypeValue.SetSwitch:
+                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                        root.Items.Add(MakeWwiseIdNode(bin, "GroupId"));
+                        root.Items.Add(MakeWwiseIdNode(bin, "TargetStateId"));
+                        break;
+                    case ActionTypeValue.SetRTPC:
+                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                        root.Items.Add(MakeWwiseIdNode(bin, "RTPCId"));
+                        root.Items.Add(MakeFloatNode(bin, "RTPCValue"));
+                        break;
+                    case ActionTypeValue.SetFX1:
+                    case ActionTypeValue.SetFX2:
+                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                        root.Items.Add(MakeBoolByteNode(bin, "IsAudioDeviceElement"));
+                        root.Items.Add(MakeByteNode(bin, "SlotIndex"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "FXId"));
+                        root.Items.Add(MakeBoolByteNode(bin, "IsShared"));
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                    case ActionTypeValue.BypassFX1:
+                    case ActionTypeValue.BypassFX2:
+                    case ActionTypeValue.BypassFX3:
+                    case ActionTypeValue.BypassFX4:
+                    case ActionTypeValue.BypassFX5:
+                    case ActionTypeValue.BypassFX6:
+                    case ActionTypeValue.BypassFX7:
+                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                        root.Items.Add(MakeBoolByteNode(bin, "IsBypass"));
+                        root.Items.Add(MakeByteNode(bin, "TargetMask"));
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                    case ActionTypeValue.Seek:
+                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                        root.Items.Add(MakeBoolByteNode(bin, "IsSeekRelativeToDuration"));
+                        root.Items.Add(MakeFloatNode(bin, "SeekValue"));
+                        root.Items.Add(MakeFloatNode(bin, "SeekValueModMin"));
+                        root.Items.Add(MakeFloatNode(bin, "SeekValueModMax"));
+                        root.Items.Add(MakeBoolByteNode(bin, "SnapToNearestMarker"));
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                    case ActionTypeValue.UseState1:
+                    case ActionTypeValue.UseState2:
+                        if (version == 56)
+                        {
+                            root.Items.Add(MakeInt32Node(bin, "Time"));
+                            root.Items.Add(MakeInt32Node(bin, "TimeModMin"));
+                            root.Items.Add(MakeInt32Node(bin, "TimeModMax"));
+                            root.Items.Add(MakeByteEnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                            Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
+                            Scan_HIRC_ActionExceptParams(root, bin, version);
+                        }
+                        break;
+                    case ActionTypeValue.Release:
+                    case ActionTypeValue.PlayEvent:
+                    case ActionTypeValue.Event1:
+                    case ActionTypeValue.Event2:
+                    case ActionTypeValue.Event3:
+                    case ActionTypeValue.Duck:
+                    case ActionTypeValue.Break:
+                    case ActionTypeValue.Trigger:
+                        break;
+                    default:
+                        if (version <= 56)
+                        {
+                            root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTime"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMin"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMax"));
+                        }
+                        root.Items.Add(MakeByteEnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                        Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                }
+                break;
             case HircType.Event:
                 root.Items.Add(MakeArrayNode(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()), IsExpanded:true));
                 break;
@@ -338,7 +453,7 @@ public partial class BinaryInterpreterWPF
                 {
                     var g = new BinInterpNode(bin.Position, $"Group {i}");
                     g.Items.Add(MakeWwiseIdNode(bin, "GroupId"));
-                    g.Items.Add(MakeArrayNode(bin, "ItemIDs", i => MakeWwiseIdRefNode(bin, $"Item {i}")));
+                    g.Items.Add(MakeArrayNode(bin, "ItemIDs", j => MakeWwiseIdRefNode(bin, $"Item {j}")));
                     return g;
                 }));
                 root.Items.Add(MakeArrayNode(bin, "SwitchParams", i =>
@@ -443,6 +558,93 @@ public partial class BinaryInterpreterWPF
         // Just in case we don't parse item in full - jump to next item
         bin.JumpTo(start + fullSize);
         return root;
+    }
+
+    private void Scan_HIRC_ActionExceptParams(BinInterpNode root, EndianReader bin, uint version)
+    {
+        var countPos = bin.Position;
+        var propsCount = VarCount.ReadResizingUint(bin.BaseStream);
+        bin.JumpTo(countPos);
+        root.Items.Add(MakeWwiseVarCountNode(bin, "ExceptionCount"));
+
+        if(propsCount > 0)
+        {
+            var props = new BinInterpNode(bin.Position, "Exceptions") { IsExpanded = true };
+            for (var i = 0;i < propsCount; i++)
+            {
+                var item = MakeWwiseIdNode(bin, $"Exception {i}", $"{i}: ID");
+
+                if (version > 65)
+                {
+                    item.Items.Add(MakeBoolByteNode(bin, "IsBus"));
+                }
+
+                props.Items.Add(item);
+            }
+
+            root.Items.Add(props);
+        }
+    }
+
+    private void Scan_HIRC_ActionSpecificParams(BinInterpNode root, EndianReader bin, uint version, ActionTypeValue actionType)
+    {
+        switch (actionType)
+        {
+            case ActionTypeValue.Stop:
+            case ActionTypeValue.Pause:
+            case ActionTypeValue.Resume:
+                if (version <= 56)
+                {
+                    root.Items.Add(MakeBoolIntNode(bin, "IsMaster"));
+                    root.Items.Add(MakeReverseBoolIntNode(bin, "IncludePendingResume"));
+                    root.Items.Add(MakeReverseBoolIntNode(bin, "ApplyToStateTransitions"));
+                    root.Items.Add(MakeReverseBoolIntNode(bin, "ApplyToDynamicSequence"));
+                }
+                else
+                {
+                    root.Items.Add(MakeByteEnumNode<ActiveFlags.ActiveFlagsInner>(bin, "ActiveFlags"));
+                }
+
+                break;
+                
+            case ActionTypeValue.SetHPF1:
+            case ActionTypeValue.SetHPF2:
+                if(version <= 56) root.Items.Add(MakeUInt32EnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                else root.Items.Add(MakeByteEnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifier"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMin"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMax"));
+                break;
+            case ActionTypeValue.SetGameParameter1:
+            case ActionTypeValue.SetGameParameter2:
+                if(version > 89) root.Items.Add(MakeBoolByteNode(bin, "BypassTransition"));
+                if(version <= 56) root.Items.Add(MakeUInt32EnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                else root.Items.Add(MakeByteEnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifier"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMin"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMax"));
+                break;
+            case ActionTypeValue.ResetPlaylist:
+                break;
+            default:
+                if (actionType is >= ActionTypeValue.SetPitch1 and <= ActionTypeValue.SetLPF2)
+                {
+                    // same as SetHPF - I just don't want to write out all the cases.
+                    if(version > 89) root.Items.Add(MakeBoolByteNode(bin, "BypassTransition"));
+                    if(version <= 56) root.Items.Add(MakeUInt32EnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                    else root.Items.Add(MakeByteEnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                    root.Items.Add(MakeFloatNode(bin, "RandomizerModifier"));
+                    root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMin"));
+                    root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMax"));
+                }
+                else if(version <= 56)
+                {
+                    root.Items.Add(new BinInterpNode(bin.Position, $"Unk") { Length = 10 });
+                    bin.Skip(10);
+                }
+
+                break;
+        }
     }
 
     private void Scan_HIRC_BankSourceData(BinInterpNode root, EndianReader bin, uint version)
@@ -871,7 +1073,7 @@ public partial class BinaryInterpreterWPF
 
         if(version <= 52)
         {
-            ReadStateGroup(sNode, bin, version);
+            ReadStateGroup(sNode);
 
         }
         else
@@ -913,7 +1115,7 @@ public partial class BinaryInterpreterWPF
                     var item = new BinInterpNode(bin.Position, i.ToString());
 
                     item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
-                    ReadStateGroup(item, bin, version);
+                    ReadStateGroup(item);
                     groups.Items.Add(item);
                 }
 
@@ -922,15 +1124,16 @@ public partial class BinaryInterpreterWPF
         }
 
         root.Items.Add(sNode);
+        return;
 
-        void ReadStateGroup(BinInterpNode root, EndianReader bin, uint version)
+        void ReadStateGroup(BinInterpNode grp)
         {
-            root.Items.Add(MakeByteEnumNode<SyncTypeInner>(bin, "SyncType"));
+            grp.Items.Add(MakeByteEnumNode<SyncTypeInner>(bin, "SyncType"));
             var countPos = bin.Position;
             var stateCount = ReadStateCount();
             var length = (int)(bin.Position - countPos);
             bin.JumpTo(countPos);
-            root.Items.Add(new BinInterpNode(bin.Position, $"StateCount: {ReadStateCount()}") { Length = length });
+            grp.Items.Add(new BinInterpNode(bin.Position, $"StateCount: {ReadStateCount()}") { Length = length });
             var states = new BinInterpNode(bin.Position, "States") { IsExpanded = true };
             for (var i = 0; i < stateCount; i++)
             {
@@ -943,7 +1146,7 @@ public partial class BinaryInterpreterWPF
                 // bunch of stuff goes right here except its only higher wwise versions! score!
                 states.Items.Add(state);
             }
-            root.Items.Add(states);
+            grp.Items.Add(states);
         }
 
         uint ReadStateCount()
@@ -991,9 +1194,9 @@ public partial class BinaryInterpreterWPF
             }
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RtpcCurveId"));
             rtpc.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
-            rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", i =>
+            rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", j =>
             {
-                var gItem = new BinInterpNode(bin.Position, $"Graph Item {i}");
+                var gItem = new BinInterpNode(bin.Position, $"Graph Item {j}");
                 gItem.Items.Add(MakeFloatNode(bin, "From"));
                 gItem.Items.Add(MakeFloatNode(bin, "To"));
                 gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
