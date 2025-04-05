@@ -1,5 +1,15 @@
 var NAVTREEINDEX78 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#afa3271b90edc35f1c1b8aa12911272c3":[0,5,1,24,314],
+"namespace_legendary_explorer_core_1_1_unreal.html#afa7126d7fc3befc8fb63a140a0e82df2":[0,5,1,24,276],
+"namespace_legendary_explorer_core_1_1_unreal.html#afaa612a1327cf82a44ba8387c199fee2":[0,5,1,24,745],
+"namespace_legendary_explorer_core_1_1_unreal.html#afae6768124d4f9a682b02ac31a4cf155":[0,5,1,24,326],
+"namespace_legendary_explorer_core_1_1_unreal.html#afbff0249ac67db99b0a22c1bf78aedbb":[0,5,1,24,698],
+"namespace_legendary_explorer_core_1_1_unreal.html#afc10fc48c9019742b4661a7eded355f8":[0,5,1,24,691],
+"namespace_legendary_explorer_core_1_1_unreal.html#afc4c41dd866fc2e334ede514bacdc79e":[0,5,1,24,535],
+"namespace_legendary_explorer_core_1_1_unreal.html#afc6f6a068eb618608e4275f106e23de1":[0,5,1,24,174],
+"namespace_legendary_explorer_core_1_1_unreal.html#afd0e44ccb12240b891c8fef73d248b2e":[0,5,1,24,643],
+"namespace_legendary_explorer_core_1_1_unreal.html#afe65cb495a75b39f35b3513dc383d57b":[0,5,1,24,392],
 "namespace_legendary_explorer_core_1_1_unreal.html#afe69fa10f56e85e4728b5a4dc5d18a98":[0,5,1,24,746],
 "namespace_legendary_explorer_core_1_1_unreal.html#afe7308966226a7cd8a30ca1c32f834e5":[0,5,1,24,347],
 "namespace_legendary_explorer_core_1_1_unreal.html#aff8e73fff205b860fa544a74b0d3dc5b":[0,5,1,24,149],
@@ -44,8 +54,8 @@ var NAVTREEINDEX78 =
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html":[0,5,1,25,6],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a3d927c811de46c923f979e6023a3d309":[0,5,1,25,6,3],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a4e06b7d8f5c03d24603d8549cff64edb":[0,5,1,25,6,4],
-"namespacemembers.html":[0,6,0],
 "namespacemembers.html":[0,6,0,0],
+"namespacemembers.html":[0,6,0],
 "namespacemembers_b.html":[0,6,0,1],
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
@@ -239,15 +249,5 @@ var NAVTREEINDEX78 =
 "struct_f_motion_blur_shader_parameters.html#ac9baa2968845b63727619fd09fc6ddd7":[1,0,94,8],
 "struct_f_motion_blur_shader_parameters.html#ad6dfb0342b7fbf600391d07db03036f1":[1,0,94,2],
 "struct_f_motion_blur_shader_parameters.html#adc24c09b0e44efeb72f12e60c039118f":[1,0,94,0],
-"struct_f_null_policy.html":[1,0,95],
-"struct_f_null_policy.html#aba949a63fd1b5f014e383d60b5e9e72e":[1,0,95,0],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html":[1,0,100,0],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html#a55d5de146983096596a8b13d2af3f89c":[1,0,100,0,0],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html#a94125f4fff0370a1b92afadcd2efb47f":[1,0,100,0,2],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html#ade43d2db6eb6d5bbbdb25be8c6120736":[1,0,100,0,1],
-"struct_f_point_light_policy_1_1_pixel_parameters_type.html":[1,0,100,1],
-"struct_f_point_light_policy_1_1_pixel_parameters_type.html#a6f3d1b9e09e391647ef92174b22bede1":[1,0,100,1,1],
-"struct_f_point_light_policy_1_1_pixel_parameters_type.html#abb4c52ce338126599dc31b18f686c82c":[1,0,100,1,0],
-"struct_f_point_light_policy_1_1_vertex_parameters_type.html":[1,0,100,2],
-"struct_f_point_light_policy_1_1_vertex_parameters_type.html#a1b30819162b188e4c8fcf99a999ba14c":[1,0,100,2,0]
+"struct_f_null_policy.html":[1,0,95]
 };
