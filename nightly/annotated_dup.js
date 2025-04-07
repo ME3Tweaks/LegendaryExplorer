@@ -407,6 +407,7 @@ var annotated_dup =
         [ "CharacterStatisticsSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_character_statistics_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_character_statistics_save_record" ],
         [ "GameOptionsSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_game_options_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_game_options_save_record" ],
         [ "GamerProfileSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_gamer_profile_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_gamer_profile_save_record" ],
+        [ "HeadMorph", "class_legendary_explorer_core_1_1_save_1_1_head_morph.html", "class_legendary_explorer_core_1_1_save_1_1_head_morph" ],
         [ "LocalProfile", "class_legendary_explorer_core_1_1_save_1_1_local_profile.html", "class_legendary_explorer_core_1_1_save_1_1_local_profile" ],
         [ "LocalProfileLE1", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1" ],
         [ "PlotManagerAchievementSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_plot_manager_achievement_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_plot_manager_achievement_save_record" ],
@@ -823,6 +824,11 @@ var annotated_dup =
         [ "Decompiling", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_decompiling.html", [
           [ "Jump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_jump" ],
           [ "UnconditionalJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump" ]
+        ] ],
+        [ "Documentation", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_documentation.html", [
+          [ "DocuClassEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry" ],
+          [ "DocuDB", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b" ],
+          [ "DocuMemberEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry" ]
         ] ],
         [ "Language", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language.html", [
           [ "Tree", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html", [

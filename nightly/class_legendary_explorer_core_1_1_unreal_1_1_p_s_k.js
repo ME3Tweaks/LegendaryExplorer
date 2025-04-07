@@ -1,5 +1,7 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_p_s_k =
 [
+    [ "MorphDelta", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_morph_delta.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_morph_delta" ],
+    [ "MorphInfo", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_morph_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_morph_info" ],
     [ "PSKMaterial", "struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material.html", "struct_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_material" ],
     [ "PSKTriangle", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_triangle.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_triangle" ],
     [ "PSKWedge", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_wedge.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_p_s_k_wedge" ],
@@ -13,5 +15,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_p_s_k =
     [ "Faces", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ac1c53d57c6eef4f72b4257577957a7c7", null ],
     [ "Materials", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9b2a1b4d7145c8975f0b775ca9544467", null ],
     [ "Bones", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a61f9abd9a8bdd00e6b616253483504dc", null ],
-    [ "Weights", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#afe787106ffaa74a7e6ad2dce116bf4a0", null ]
+    [ "Weights", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#afe787106ffaa74a7e6ad2dce116bf4a0", null ],
+    [ "Morphs", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a8e757d09d3126f3fa0a51e3f29bdba45", null ],
+    [ "MorphData", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9dc301e5a02d8c31a8e79babdc7b2a3f", null ]
 ];

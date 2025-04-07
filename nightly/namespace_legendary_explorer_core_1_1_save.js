@@ -5,6 +5,7 @@ var namespace_legendary_explorer_core_1_1_save =
     [ "CharacterStatisticsSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_character_statistics_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_character_statistics_save_record" ],
     [ "GameOptionsSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_game_options_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_game_options_save_record" ],
     [ "GamerProfileSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_gamer_profile_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_gamer_profile_save_record" ],
+    [ "HeadMorph", "class_legendary_explorer_core_1_1_save_1_1_head_morph.html", "class_legendary_explorer_core_1_1_save_1_1_head_morph" ],
     [ "LocalProfile", "class_legendary_explorer_core_1_1_save_1_1_local_profile.html", "class_legendary_explorer_core_1_1_save_1_1_local_profile" ],
     [ "LocalProfileLE1", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1.html", "class_legendary_explorer_core_1_1_save_1_1_local_profile_l_e1" ],
     [ "PlotManagerAchievementSaveRecord", "class_legendary_explorer_core_1_1_save_1_1_plot_manager_achievement_save_record.html", "class_legendary_explorer_core_1_1_save_1_1_plot_manager_achievement_save_record" ],

@@ -179,5 +179,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializi
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a9ae2efe3eb34fff1c0a837333a12acf9", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a725915d49d3b271ed59765813233c240", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a9045d0da7aae55583d9f29e351a31efb", null ],
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a44673347ee658c2b0dec25aaec4536a3", null ]
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a44673347ee658c2b0dec25aaec4536a3", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a10de31c87dddb18b679fd6709c925cb6", null ],
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a8c8eba794274d5f21baa8b82f113983b", null ]
 ];
