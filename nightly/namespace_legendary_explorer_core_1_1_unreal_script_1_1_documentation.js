@@ -2,5 +2,8 @@ var namespace_legendary_explorer_core_1_1_unreal_script_1_1_documentation =
 [
     [ "DocuClassEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry" ],
     [ "DocuDB", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b" ],
-    [ "DocuMemberEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry" ]
+    [ "DocuFunctionEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_function_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_function_entry" ],
+    [ "DocuMemberEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry" ],
+    [ "DocuStateEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_state_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_state_entry" ],
+    [ "DocuTypeEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_type_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_type_entry" ]
 ];
