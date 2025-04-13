@@ -1,5 +1,7 @@
 var NAVTREEINDEX78 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#ad76c85ee392d70041c2e52b7c0f0c3c0":[0,5,1,24,731],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad78bddb05de54a97885f40efea6a5ef9":[0,5,1,24,418],
 "namespace_legendary_explorer_core_1_1_unreal.html#ad794c2b52242b93fcf6f123b192b0183":[0,5,1,24,774],
 "namespace_legendary_explorer_core_1_1_unreal.html#ad7b1be7efdfb824711892d935a80d8ec":[0,5,1,24,319],
 "namespace_legendary_explorer_core_1_1_unreal.html#ad7c0b04e71c68294a3e5ba6a61eab48b":[0,5,1,24,583],
@@ -160,14 +162,14 @@ var NAVTREEINDEX78 =
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html":[0,5,1,25,7],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a3d927c811de46c923f979e6023a3d309":[0,5,1,25,7,3],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a4e06b7d8f5c03d24603d8549cff64edb":[0,5,1,25,7,4],
-"namespacemembers.html":[0,6,0,0],
 "namespacemembers.html":[0,6,0],
+"namespacemembers.html":[0,6,0,0],
 "namespacemembers_b.html":[0,6,0,1],
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
 "namespacemembers_e.html":[0,6,0,4],
-"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum.html":[0,6,2],
+"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum_b.html":[0,6,2,1],
 "namespacemembers_enum_c.html":[0,6,2,2],
 "namespacemembers_enum_d.html":[0,6,2,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX78 =
 "struct_f_directional_light_light_map_policy_1_1_pixel_parameters_type.html#a81b7b90269878ba8beddca7f1a245898":[1,0,26,0,1],
 "struct_f_directional_light_light_map_policy_1_1_vertex_parameters_type.html":[1,0,26,1],
 "struct_f_directional_light_light_map_policy_1_1_vertex_parameters_type.html#a7ee634953fdc2c7fe30cb95066402915":[1,0,26,1,1],
-"struct_f_directional_light_light_map_policy_1_1_vertex_parameters_type.html#aed4251ac542342c3bdcd860e063b85cd":[1,0,26,1,0],
-"struct_f_directional_light_policy_1_1_pixel_parameters_type.html":[1,0,27,0],
-"struct_f_directional_light_policy_1_1_pixel_parameters_type.html#a95357439da588eae2ecffffcaa7a99e8":[1,0,27,0,0]
+"struct_f_directional_light_light_map_policy_1_1_vertex_parameters_type.html#aed4251ac542342c3bdcd860e063b85cd":[1,0,26,1,0]
 };

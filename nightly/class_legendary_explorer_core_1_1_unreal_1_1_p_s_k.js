@@ -9,13 +9,14 @@ var class_legendary_explorer_core_1_1_unreal_1_1_p_s_k =
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#af187fb7da6192ffe9bd6bc21499b1823", null ],
     [ "ToFile", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ad0d819e071e52dcc90762fe5eb947fa5", null ],
     [ "FromFile", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a47dce6d32b1303c31f2fbf90bb01f06b", null ],
-    [ "CreateFromSkeletalMesh", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a8181ad236426776a172961a7e84c5dfb", null ],
+    [ "CreateFromSkeletalMesh", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a915d23c56e09e1f24fc648a1d47bf8e2", null ],
     [ "Points", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ad2f5e4c37e94fb003a40515b9cf81575", null ],
     [ "Wedges", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a300caa5cf77cdb474f1d5560c3817e92", null ],
     [ "Faces", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ac1c53d57c6eef4f72b4257577957a7c7", null ],
     [ "Materials", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9b2a1b4d7145c8975f0b775ca9544467", null ],
     [ "Bones", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a61f9abd9a8bdd00e6b616253483504dc", null ],
     [ "Weights", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#afe787106ffaa74a7e6ad2dce116bf4a0", null ],
+    [ "VertexNormals", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a19f8b4891ea399ce50b0426a8477cd31", null ],
     [ "Morphs", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a8e757d09d3126f3fa0a51e3f29bdba45", null ],
     [ "MorphData", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9dc301e5a02d8c31a8e79babdc7b2a3f", null ]
 ];
