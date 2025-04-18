@@ -1,0 +1,730 @@
+<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>All Enums</title>
+		<meta name="og:title" content="All Enums"/>
+		<meta name="description" content="List of all enums in LE2."/>
+		<meta name="og:description" content="List of all enums in LE2."/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE2/../"/>
+		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				document.title = document.title + " - LE2 - Legendary Explorer UnrealDoc"
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE2/");
+				var baseurl = url.substring(0, gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
+	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
+	<li><a href="../enums/index.html">All&nbsp;Enums</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		<div class="header">
+<h2>All Enums</h2>
+</div>
+
+<ul>
+<li><a data-type="enum">AlphaBlendType</a></li>
+<li><a data-type="enum">AnimationCompressionFormat</a></li>
+<li><a data-type="enum">AnimationKeyFormat</a></li>
+<li><a data-type="enum">ASParamTypes</a></li>
+<li><a data-type="enum">ASType</a></li>
+<li><a data-type="enum">AttackResult</a></li>
+<li><a data-type="enum">Beam2SourceTargetMethod</a></li>
+<li><a data-type="enum">Beam2SourceTargetTangentMethod</a></li>
+<li><a data-type="enum">BeamModifierType</a></li>
+<li><a data-type="enum">BioBrowserStates</a></li>
+<li><a data-type="enum">BioConvWheelPositions</a></li>
+<li><a data-type="enum">BioDUIElements</a></li>
+<li><a data-type="enum">BioGuiEvents</a></li>
+<li><a data-type="enum">BioLocalVariableObjectType</a></li>
+<li><a data-type="enum">BioMessageBoxIconSets</a></li>
+<li><a data-type="enum">BioNewCharacterTemplate</a></li>
+<li><a data-type="enum">BioNoticeContexts</a></li>
+<li><a data-type="enum">BioNoticeDisplayTypes</a></li>
+<li><a data-type="enum">BioNoticeIcons</a></li>
+<li><a data-type="enum">BioQuestEventTypes</a></li>
+<li><a data-type="enum">BioThumbstickDir</a></li>
+<li><a data-type="enum">BioTutorialPosition</a></li>
+<li><a data-type="enum">BlackScreenActionSet</a></li>
+<li><a data-type="enum">BlackScreenDisplayModes</a></li>
+<li><a data-type="enum">Cerberus3DState</a></li>
+<li><a data-type="enum">CharacterSelectState</a></li>
+<li><a data-type="enum">ClothBoneType</a></li>
+<li><a data-type="enum">ClothMovementScaleGen</a></li>
+<li><a data-type="enum">CREDCurveSet</a></li>
+<li><a data-type="enum">CylinderHeightAxis</a></li>
+<li><a data-type="enum">DistributionParamMode</a></li>
+<li><a data-type="enum">EAchievementID</a></li>
+<li><a data-type="enum">EActionComplete_Combat</a></li>
+<li><a data-type="enum">EActionComplete_Movement</a></li>
+<li><a data-type="enum">EActionComplete_None</a></li>
+<li><a data-type="enum">EActionState</a></li>
+<li><a data-type="enum">EActionStateVariable</a></li>
+<li><a data-type="enum">EActorTrackFindActorMode</a></li>
+<li><a data-type="enum">EAddPostProcessEffectCombineType</a></li>
+<li><a data-type="enum">EAffiliationType</a></li>
+<li><a data-type="enum">EAGUI_CerberusIntroResult</a></li>
+<li><a data-type="enum">EAGUI_EmailPswdMismatchResult</a></li>
+<li><a data-type="enum">EAGUI_MsgBoxResult</a></li>
+<li><a data-type="enum">EAGUI_NucleusLoginResult</a></li>
+<li><a data-type="enum">eAIBehaviour</a></li>
+<li><a data-type="enum">EAICompletionReasons</a></li>
+<li><a data-type="enum">EAICustomAction</a></li>
+<li><a data-type="enum">EAICustomActionTypes</a></li>
+<li><a data-type="enum">EAimAssistOptions</a></li>
+<li><a data-type="enum">EAimID</a></li>
+<li><a data-type="enum">EAimNodes</a></li>
+<li><a data-type="enum">EAITicketType</a></li>
+<li><a data-type="enum">EAmbientOcclusionQuality</a></li>
+<li><a data-type="enum">EAnimAimDir</a></li>
+<li><a data-type="enum">eArtPlaceableRole</a></li>
+<li><a data-type="enum">eArtPlaceableStates</a></li>
+<li><a data-type="enum">EAsyncLoadStatus</a></li>
+<li><a data-type="enum">EAttachSlot</a></li>
+<li><a data-type="enum">eATTACK_TYPE</a></li>
+<li><a data-type="enum">EAttractorParticleSelectionMethod</a></li>
+<li><a data-type="enum">EAutoLevelOptions</a></li>
+<li><a data-type="enum">EAutomatedRunResult</a></li>
+<li><a data-type="enum">EAxis</a></li>
+<li><a data-type="enum">EAxisBuffer</a></li>
+<li><a data-type="enum">EBaseBlendType</a></li>
+<li><a data-type="enum">EBeam2Method</a></li>
+<li><a data-type="enum">EBeamEndPointMethod</a></li>
+<li><a data-type="enum">EBeamMethod</a></li>
+<li><a data-type="enum">EBeamTaperMethod</a></li>
+<li><a data-type="enum">EBioActionAnimNode</a></li>
+<li><a data-type="enum">EBioAnimAdditive</a></li>
+<li><a data-type="enum">EBioAnimBlendDirection</a></li>
+<li><a data-type="enum">EBioAnimCombatState</a></li>
+<li><a data-type="enum">EBioAnimDamage</a></li>
+<li><a data-type="enum">EBioAnimDeath</a></li>
+<li><a data-type="enum">EBioAnimGetUpState</a></li>
+<li><a data-type="enum">EBioAnimIncline</a></li>
+<li><a data-type="enum">EBioAnimMoveStop</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendByAim</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendByFireSequenceChild</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendByStorm</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendByWeaponEquip</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendMovement</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendScalarMoveAxis</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendScalarMoveAxisDir</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendScalarMoveAxisDirMode</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendScalarMovementBehavior</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendScalarMoveSpeedStates</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendStateActionBehavior</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendStateCombatBehavior</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendStateMoveAxisDir</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendStateMoveAxisDirMode</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendStateMovementBehavior</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendStrafe</a></li>
+<li><a data-type="enum">EBioAnimNodeBlendTurn</a></li>
+<li><a data-type="enum">EBioAnimNodeCombatModeChild</a></li>
+<li><a data-type="enum">EBioAnimNodeCombatModeFadeOut</a></li>
+<li><a data-type="enum">EBioAnimNodeCombatModeState</a></li>
+<li><a data-type="enum">EBioAnimNodeCover2Actions</a></li>
+<li><a data-type="enum">EBioAnimNodeCover2ChangeDirection</a></li>
+<li><a data-type="enum">EBioAnimNodeCover2Move</a></li>
+<li><a data-type="enum">EBioAnimNodeCover2Neutral</a></li>
+<li><a data-type="enum">EBioAnimNodeCover2Transition</a></li>
+<li><a data-type="enum">EBioAnimNodeFall</a></li>
+<li><a data-type="enum">EBioAnimNodeLocomotion</a></li>
+<li><a data-type="enum">EBioAnimNodeLocomotionMoving</a></li>
+<li><a data-type="enum">EBioAnimNodeLocomotionSpeed</a></li>
+<li><a data-type="enum">EBioAnimNodeLocomotionStart</a></li>
+<li><a data-type="enum">EBioAnimNodeLocomotionStop</a></li>
+<li><a data-type="enum">EBioAnimNodePower</a></li>
+<li><a data-type="enum">EBioAnimNodePowerNotifyActive</a></li>
+<li><a data-type="enum">EBioAnimSkidTurn</a></li>
+<li><a data-type="enum">EBioAnimSkidTurnState</a></li>
+<li><a data-type="enum">EBioAnimStartDirection</a></li>
+<li><a data-type="enum">EBioAnimStartState</a></li>
+<li><a data-type="enum">EBioAnimStopState</a></li>
+<li><a data-type="enum">EBioAnimTurnDirState</a></li>
+<li><a data-type="enum">EBioAnim_SpeedType</a></li>
+<li><a data-type="enum">eBioAPLUseCase</a></li>
+<li><a data-type="enum">EBioAppearanceItemWeaponVFXDamageEnum</a></li>
+<li><a data-type="enum">EBioArmorType</a></li>
+<li><a data-type="enum">EBioArtPlaceableActionStates</a></li>
+<li><a data-type="enum">EBioAttributePawnRace</a></li>
+<li><a data-type="enum">EBioAutoSet</a></li>
+<li><a data-type="enum">EBioAutoSetFXAnimGroupTrack</a></li>
+<li><a data-type="enum">EBioAutoSetFXAnimSeqTrack</a></li>
+<li><a data-type="enum">EBioAutoSetFXAnimTrack</a></li>
+<li><a data-type="enum">EBioBaseAppearanceReportMethod</a></li>
+<li><a data-type="enum">EBioBlendStatePlayAction</a></li>
+<li><a data-type="enum">EBioBlendStatePlayMode</a></li>
+<li><a data-type="enum">EBioCameraDebuggerFlag</a></li>
+<li><a data-type="enum">EBioCameraShakeType</a></li>
+<li><a data-type="enum">EBioCameraShakeVariant</a></li>
+<li><a data-type="enum">EBioCapabilityTypes</a></li>
+<li><a data-type="enum">EBioCapMode</a></li>
+<li><a data-type="enum">EBioCommonStageCameras</a></li>
+<li><a data-type="enum">EBioEpicPawnBehaviorWeaponFireMode</a></li>
+<li><a data-type="enum">EBioEquipmentType</a></li>
+<li><a data-type="enum">EBioFactionRelationship</a></li>
+<li><a data-type="enum">EBioFactionTypes</a></li>
+<li><a data-type="enum">EBioFOVOLines</a></li>
+<li><a data-type="enum">EBioFOVOSpeakers</a></li>
+<li><a data-type="enum">EBioFuncShotType</a></li>
+<li><a data-type="enum">EBioGalaxyMapState</a></li>
+<li><a data-type="enum">EBioGalaxyMap_PlanetType</a></li>
+<li><a data-type="enum">EBioGameOverCondition</a></li>
+<li><a data-type="enum">EBioGestureAllPoses</a></li>
+<li><a data-type="enum">EBioGestureGroups</a></li>
+<li><a data-type="enum">EBioGestureOverrideType</a></li>
+<li><a data-type="enum">EBioGestureValidGestures</a></li>
+<li><a data-type="enum">EBioGestureValidPoses</a></li>
+<li><a data-type="enum">EBioHeadGearType</a></li>
+<li><a data-type="enum">EBioInterpolationMethod</a></li>
+<li><a data-type="enum">EBioItemWeaponMeleeType</a></li>
+<li><a data-type="enum">EBioItemWeaponRangedType</a></li>
+<li><a data-type="enum">EBioItemWeaponType</a></li>
+<li><a data-type="enum">EBioLayer</a></li>
+<li><a data-type="enum">EBioLevelUp2DA</a></li>
+<li><a data-type="enum">EBioMorphFrontendSliderType</a></li>
+<li><a data-type="enum">EBioMorphUtilityComponentType</a></li>
+<li><a data-type="enum">EBioMorphUtilityHairComponentType</a></li>
+<li><a data-type="enum">EBioMovementSpeedStates</a></li>
+<li><a data-type="enum">EBioPartGroup</a></li>
+<li><a data-type="enum">EBioParticleCollisionComplete</a></li>
+<li><a data-type="enum">EBioPathNodeAlignment</a></li>
+<li><a data-type="enum">EBioPathNodeGenerators</a></li>
+<li><a data-type="enum">EBioPawnAnimActionStates</a></li>
+<li><a data-type="enum">EBioPawnAnimActiveStates</a></li>
+<li><a data-type="enum">EBioPawnClassification</a></li>
+<li><a data-type="enum">EBioPawnHeadGearComponent</a></li>
+<li><a data-type="enum">eBioPendingStateChange</a></li>
+<li><a data-type="enum">EBioPlanetEventConditionAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetEventConditionPlotAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetEventTransitionAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetEventTransitionPlotAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetLandConditionAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetLandConditionPlotAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetPlotLabelConditionAutoSet</a></li>
+<li><a data-type="enum">EBioPlanetPlotLabelConditionPlotAutoSet</a></li>
+<li><a data-type="enum">EBioPlotAutoSet</a></li>
+<li><a data-type="enum">EBioPowerResource</a></li>
+<li><a data-type="enum">EBioPowerState</a></li>
+<li><a data-type="enum">EBioPowerType</a></li>
+<li><a data-type="enum">EBioPropertyType</a></li>
+<li><a data-type="enum">EBioRadarType</a></li>
+<li><a data-type="enum">EBioRegionAutoSet</a></li>
+<li><a data-type="enum">EBioReloadAnimNode</a></li>
+<li><a data-type="enum">EBioSeqActSelectWeaponLinks</a></li>
+<li><a data-type="enum">EBioSeqActSetWeaponLinks</a></li>
+<li><a data-type="enum">EBioSetGestureModes</a></li>
+<li><a data-type="enum">EBioSkillGame</a></li>
+<li><a data-type="enum">EBioSkillGameDifficulty</a></li>
+<li><a data-type="enum">EBioStateEnumProxy</a></li>
+<li><a data-type="enum">EBioSwitchCamSpecific</a></li>
+<li><a data-type="enum">EBioTacticalAction</a></li>
+<li><a data-type="enum">EBioTechniqueWeapon</a></li>
+<li><a data-type="enum">EBioTrackAllPoseGroups</a></li>
+<li><a data-type="enum">EBioUnTexCompressSetting</a></li>
+<li><a data-type="enum">EBioValidPoseGroups</a></li>
+<li><a data-type="enum">EBioVFXCost</a></li>
+<li><a data-type="enum">EBioVFXPriority</a></li>
+<li><a data-type="enum">EBioVFXState</a></li>
+<li><a data-type="enum">EBlendMode</a></li>
+<li><a data-type="enum">EBlendType</a></li>
+<li><a data-type="enum">EBMaxPath_BuildSize</a></li>
+<li><a data-type="enum">EBodyStance</a></li>
+<li><a data-type="enum">EBoneBlendTestType</a></li>
+<li><a data-type="enum">EBoneBlendType</a></li>
+<li><a data-type="enum">EBoneControlSpace</a></li>
+<li><a data-type="enum">EBootEndReason</a></li>
+<li><a data-type="enum">EBuildingStatsBrowserColumns</a></li>
+<li><a data-type="enum">ECalloutButtonLayoutType</a></li>
+<li><a data-type="enum">ECameraAnimPlaySpace</a></li>
+<li><a data-type="enum">ECellAutoSizeMode</a></li>
+<li><a data-type="enum">ECellLinkType</a></li>
+<li><a data-type="enum">EChallengeType</a></li>
+<li><a data-type="enum">ECharacterClass</a></li>
+<li><a data-type="enum">ECharacterType</a></li>
+<li><a data-type="enum">EChoiceGUIHandlerID</a></li>
+<li><a data-type="enum">ECollisionType</a></li>
+<li><a data-type="enum">eColorSelection</a></li>
+<li><a data-type="enum">EColumnHeaderState</a></li>
+<li><a data-type="enum">ECombatReaction</a></li>
+<li><a data-type="enum">EComponentType</a></li>
+<li><a data-type="enum">EConsoleType</a></li>
+<li><a data-type="enum">EContextMenuItemType</a></li>
+<li><a data-type="enum">EConversationScriptType</a></li>
+<li><a data-type="enum">EConvGUIStyles</a></li>
+<li><a data-type="enum">EConvLightingType</a></li>
+<li><a data-type="enum">ECoverAction</a></li>
+<li><a data-type="enum">ECoverBodyStanceID</a></li>
+<li><a data-type="enum">ECoverCameraPosition</a></li>
+<li><a data-type="enum">ECoverDirection</a></li>
+<li><a data-type="enum">ECoverGroupFillAction</a></li>
+<li><a data-type="enum">ECoverLocationDescription</a></li>
+<li><a data-type="enum">ECoverType</a></li>
+<li><a data-type="enum">ECsgOper</a></li>
+<li><a data-type="enum">ECustomizableElementType</a></li>
+<li><a data-type="enum">ECustomMaterialOutputType</a></li>
+<li><a data-type="enum">EDataOrigin</a></li>
+<li><a data-type="enum">EDebugBreakType</a></li>
+<li><a data-type="enum">EDebugState</a></li>
+<li><a data-type="enum">EDecalTransform</a></li>
+<li><a data-type="enum">EDecompressionType</a></li>
+<li><a data-type="enum">eDefaultAIBehaviour</a></li>
+<li><a data-type="enum">EDetailMode</a></li>
+<li><a data-type="enum">EDifficultyOptions</a></li>
+<li><a data-type="enum">EDisableType</a></li>
+<li><a data-type="enum">EDistributionVectorLockFlags</a></li>
+<li><a data-type="enum">EDistributionVectorMirrorFlags</a></li>
+<li><a data-type="enum">EDLEStateType</a></li>
+<li><a data-type="enum">EDoorType</a></li>
+<li><a data-type="enum">EDoubleClickDir</a></li>
+<li><a data-type="enum">EDurationType</a></li>
+<li><a data-type="enum">EDynamicLightEnvironmentBoundsMethod</a></li>
+<li><a data-type="enum">EDynamicStageNodes</a></li>
+<li><a data-type="enum">EDynPropActionList</a></li>
+<li><a data-type="enum">EDynPropList</a></li>
+<li><a data-type="enum">EEdgeHandlingStatus</a></li>
+<li><a data-type="enum">EEditBoxCharacterSet</a></li>
+<li><a data-type="enum">EEmitterDynamicParameterValue</a></li>
+<li><a data-type="enum">EEmitterNormalsMode</a></li>
+<li><a data-type="enum">EEmitterRenderMode</a></li>
+<li><a data-type="enum">EEndGameState</a></li>
+<li><a data-type="enum">EExperienceSourceType</a></li>
+<li><a data-type="enum">EFaceFXBlendMode</a></li>
+<li><a data-type="enum">EFaceFXRegOp</a></li>
+<li><a data-type="enum">EFadeType</a></li>
+<li><a data-type="enum">EFeaturePrivilegeLevel</a></li>
+<li><a data-type="enum">EFeatureType</a></li>
+<li><a data-type="enum">EFilterMode</a></li>
+<li><a data-type="enum">EFireWeaponAtOutputPins</a></li>
+<li><a data-type="enum">EFocusType</a></li>
+<li><a data-type="enum">EFontImportCharacterSet</a></li>
+<li><a data-type="enum">EFullyLoadPackageType</a></li>
+<li><a data-type="enum">EGalaxyObjectUsableAutoSet</a></li>
+<li><a data-type="enum">EGalaxyObjectUsablePlotAutoSet</a></li>
+<li><a data-type="enum">EGalaxyObjectVisibleAutoSet</a></li>
+<li><a data-type="enum">EGalaxyObjectVisiblePlotAutoSet</a></li>
+<li><a data-type="enum">EGameEndReason</a></li>
+<li><a data-type="enum">EGameModePriority2</a></li>
+<li><a data-type="enum">EGameModes</a></li>
+<li><a data-type="enum">EGeneralSelectionMode</a></li>
+<li><a data-type="enum">EGuiHandlers</a></li>
+<li><a data-type="enum">eHairVar</a></li>
+<li><a data-type="enum">eHeadVar</a></li>
+<li><a data-type="enum">EHelmetPart</a></li>
+<li><a data-type="enum">EHumanoidBehaviours</a></li>
+<li><a data-type="enum">EInfluenceType</a></li>
+<li><a data-type="enum">EInitalizeEventType</a></li>
+<li><a data-type="enum">EInitialOscillatorOffset</a></li>
+<li><a data-type="enum">EInputEvent</a></li>
+<li><a data-type="enum">EInputMatchAction</a></li>
+<li><a data-type="enum">EInputPlatformType</a></li>
+<li><a data-type="enum">EInputTypes</a></li>
+<li><a data-type="enum">EInstanceVersion</a></li>
+<li><a data-type="enum">EInterpCurveMode</a></li>
+<li><a data-type="enum">EInterpMethodType</a></li>
+<li><a data-type="enum">EInterpTrackMoveFrame</a></li>
+<li><a data-type="enum">EInterpTrackMoveRotMode</a></li>
+<li><a data-type="enum">EInterruptionType</a></li>
+<li><a data-type="enum">EInventoryResourceTypes</a></li>
+<li><a data-type="enum">EKeyboardType</a></li>
+<li><a data-type="enum">EKroganChargeActions</a></li>
+<li><a data-type="enum">ELanBeaconState</a></li>
+<li><a data-type="enum">ELightAffectsClassification</a></li>
+<li><a data-type="enum">ELightingBuildQuality</a></li>
+<li><a data-type="enum">ELightShadowMode</a></li>
+<li><a data-type="enum">EListWrapBehavior</a></li>
+<li><a data-type="enum">ELoadGuiMode</a></li>
+<li><a data-type="enum">ELoadoutWeapons</a></li>
+<li><a data-type="enum">ELocationEmitterSelectionMethod</a></li>
+<li><a data-type="enum">ELocationNearestSurface</a></li>
+<li><a data-type="enum">ELocationType</a></li>
+<li><a data-type="enum">ELoginStatus</a></li>
+<li><a data-type="enum">ELookAtTransitionType</a></li>
+<li><a data-type="enum">EMappedSettingTypes</a></li>
+<li><a data-type="enum">eMateralVariation</a></li>
+<li><a data-type="enum">EMaterialAdjustmentType</a></li>
+<li><a data-type="enum">EMaterialLightingModel</a></li>
+<li><a data-type="enum">EMaterialPositionTransform</a></li>
+<li><a data-type="enum">EMaterialProperty</a></li>
+<li><a data-type="enum">EMaterialUsage</a></li>
+<li><a data-type="enum">eMaterialVar</a></li>
+<li><a data-type="enum">EMaterialVectorCoordTransform</a></li>
+<li><a data-type="enum">EMaterialVectorCoordTransformSource</a></li>
+<li><a data-type="enum">EMawBurrowAction</a></li>
+<li><a data-type="enum">EMenuOptionType</a></li>
+<li><a data-type="enum">EMeshCameraFacingOptions</a></li>
+<li><a data-type="enum">EMeshCameraFacingUpAxis</a></li>
+<li><a data-type="enum">EMeshScreenAlignment</a></li>
+<li><a data-type="enum">EMeshType</a></li>
+<li><a data-type="enum">EMineralType</a></li>
+<li><a data-type="enum">EmissionAreaSpecificationType</a></li>
+<li><a data-type="enum">EModalPower</a></li>
+<li><a data-type="enum">EMode</a></li>
+<li><a data-type="enum">eModelType</a></li>
+<li><a data-type="enum">eModelVar</a></li>
+<li><a data-type="enum">EModes</a></li>
+<li><a data-type="enum">EModuleType</a></li>
+<li><a data-type="enum">EMoveDir</a></li>
+<li><a data-type="enum">EMoveToObjectOutputPins</a></li>
+<li><a data-type="enum">EMovieControlType</a></li>
+<li><a data-type="enum">EMoviePlayState</a></li>
+<li><a data-type="enum">EMovieStreamSource</a></li>
+<li><a data-type="enum">ENATType</a></li>
+<li><a data-type="enum">ENavigationLinkType</a></li>
+<li><a data-type="enum">ENavMeshEdgeType</a></li>
+<li><a data-type="enum">ENetMode</a></li>
+<li><a data-type="enum">ENetRole</a></li>
+<li><a data-type="enum">ENetworkNotificationPosition</a></li>
+<li><a data-type="enum">ENotorietyType</a></li>
+<li><a data-type="enum">EOnlineAccountCreateStatus</a></li>
+<li><a data-type="enum">EOnlineDataAdvertisementType</a></li>
+<li><a data-type="enum">EOnlineEnumerationReadState</a></li>
+<li><a data-type="enum">EOnlineFriendState</a></li>
+<li><a data-type="enum">EOnlineGameSearchComparisonType</a></li>
+<li><a data-type="enum">EOnlineGameSearchEntryType</a></li>
+<li><a data-type="enum">EOnlineGameSearchSortType</a></li>
+<li><a data-type="enum">EOnlineGameState</a></li>
+<li><a data-type="enum">EOnlineNewsType</a></li>
+<li><a data-type="enum">EOnlinePlayerStorageAsyncState</a></li>
+<li><a data-type="enum">EOnlineProfilePropertyOwner</a></li>
+<li><a data-type="enum">EOnlineServerConnectionStatus</a></li>
+<li><a data-type="enum">eOption</a></li>
+<li><a data-type="enum">EOptionOnOff</a></li>
+<li><a data-type="enum">EOptionsGuiMode</a></li>
+<li><a data-type="enum">EOptionYesNo</a></li>
+<li><a data-type="enum">EOrbitChainMode</a></li>
+<li><a data-type="enum">EOrbitRingType</a></li>
+<li><a data-type="enum">EOriginType</a></li>
+<li><a data-type="enum">EPacketSizeMultiplier</a></li>
+<li><a data-type="enum">EParticleAxisLock</a></li>
+<li><a data-type="enum">EParticleBurstMethod</a></li>
+<li><a data-type="enum">EParticleCollisionComplete</a></li>
+<li><a data-type="enum">EParticleEventOutputType</a></li>
+<li><a data-type="enum">EParticleEventType</a></li>
+<li><a data-type="enum">EParticleScreenAlignment</a></li>
+<li><a data-type="enum">EParticleSortMode</a></li>
+<li><a data-type="enum">EParticleSourceSelectionMethod</a></li>
+<li><a data-type="enum">EParticleSubUVInterpMethod</a></li>
+<li><a data-type="enum">EParticleSysParamType</a></li>
+<li><a data-type="enum">EParticleSystemOcclusionBoundsMethod</a></li>
+<li><a data-type="enum">EParticleSystemUpdateMode</a></li>
+<li><a data-type="enum">EPathSearchType</a></li>
+<li><a data-type="enum">ePawnValidType</a></li>
+<li><a data-type="enum">EPBCornerType</a></li>
+<li><a data-type="enum">EPerceptionType</a></li>
+<li><a data-type="enum">EPhysBodyOp</a></li>
+<li><a data-type="enum">EPhysEffectType</a></li>
+<li><a data-type="enum">EPhysics</a></li>
+<li><a data-type="enum">EPhysXDestructibleChunkState</a></li>
+<li><a data-type="enum">EPhysXMeshRotationMethod</a></li>
+<li><a data-type="enum">EPixelFormat</a></li>
+<li><a data-type="enum">EPlanetType</a></li>
+<li><a data-type="enum">EPlayerAppearanceType</a></li>
+<li><a data-type="enum">EPlayerRenderStateSetting</a></li>
+<li><a data-type="enum">EPointSelection</a></li>
+<li><a data-type="enum">ePoses</a></li>
+<li><a data-type="enum">EPositionEvalType</a></li>
+<li><a data-type="enum">EPostProcessAAType</a></li>
+<li><a data-type="enum">EProcBuildingAxis</a></li>
+<li><a data-type="enum">EProcBuildingEdge</a></li>
+<li><a data-type="enum">EProfileAutoAimOptions</a></li>
+<li><a data-type="enum">EProfileAutoCenterOptions</a></li>
+<li><a data-type="enum">EProfileControllerSensitivityOptions</a></li>
+<li><a data-type="enum">EProfileControllerVibrationToggleOptions</a></li>
+<li><a data-type="enum">EProfileDifficultyOptions</a></li>
+<li><a data-type="enum">EProfileMovementControlOptions</a></li>
+<li><a data-type="enum">EProfilePreferredColorOptions</a></li>
+<li><a data-type="enum">EProfileRaceAcceleratorControlOptions</a></li>
+<li><a data-type="enum">EProfileRaceBrakeControlOptions</a></li>
+<li><a data-type="enum">EProfileRaceCameraLocationOptions</a></li>
+<li><a data-type="enum">EProfileRaceTransmissionOptions</a></li>
+<li><a data-type="enum">EProfileSetting</a></li>
+<li><a data-type="enum">EProfileSettingID</a></li>
+<li><a data-type="enum">EProfileType</a></li>
+<li><a data-type="enum">EProfileVoiceThruSpeakersOptions</a></li>
+<li><a data-type="enum">EProfileXInversionOptions</a></li>
+<li><a data-type="enum">EProfileYInversionOptions</a></li>
+<li><a data-type="enum">EProgressMessageType</a></li>
+<li><a data-type="enum">EPropertyValueMappingType</a></li>
+<li><a data-type="enum">EProviderAccessType</a></li>
+<li><a data-type="enum">ERaceType</a></li>
+<li><a data-type="enum">ERadialForceType</a></li>
+<li><a data-type="enum">ERadialImpulseFalloff</a></li>
+<li><a data-type="enum">ERBCollisionChannel</a></li>
+<li><a data-type="enum">EReplyCategory</a></li>
+<li><a data-type="enum">EReplyTypes</a></li>
+<li><a data-type="enum">EResearchMode</a></li>
+<li><a data-type="enum">ERimLightControlType</a></li>
+<li><a data-type="enum">ERootBoneAxis</a></li>
+<li><a data-type="enum">ERootMotionMode</a></li>
+<li><a data-type="enum">ERootMotionRotationMode</a></li>
+<li><a data-type="enum">ERootRotationOption</a></li>
+<li><a data-type="enum">ERotationAnchor</a></li>
+<li><a data-type="enum">ERouteDirection</a></li>
+<li><a data-type="enum">ERouteFillAction</a></li>
+<li><a data-type="enum">ERouteType</a></li>
+<li><a data-type="enum">ESafeRegionType</a></li>
+<li><a data-type="enum">ESafeZoneType</a></li>
+<li><a data-type="enum">ESaveGuiMode</a></li>
+<li><a data-type="enum">EScalarMathOps</a></li>
+<li><a data-type="enum">ESceneCaptureViewMode</a></li>
+<li><a data-type="enum">ESceneDepthPriorityGroup</a></li>
+<li><a data-type="enum">ESceneTextureType</a></li>
+<li><a data-type="enum">EScopeEdge</a></li>
+<li><a data-type="enum">EScreenInputMode</a></li>
+<li><a data-type="enum">ESettingsDataType</a></li>
+<li><a data-type="enum">ESFPanelInvokeCategories</a></li>
+<li><a data-type="enum">ESFPanelInvokeLabel</a></li>
+<li><a data-type="enum">ESFXDamageFalloffType</a></li>
+<li><a data-type="enum">ESFXDoorState</a></li>
+<li><a data-type="enum">ESFXDoorType</a></li>
+<li><a data-type="enum">ESFXLocomotionState</a></li>
+<li><a data-type="enum">ESFXPersonalizationOption</a></li>
+<li><a data-type="enum">ESFXPlanetFeatureEventTransitionAutoSet</a></li>
+<li><a data-type="enum">ESFXPlanetFeatureEventTransitionPlotAutoSet</a></li>
+<li><a data-type="enum">ESFXRigidBodyMode</a></li>
+<li><a data-type="enum">ESFXSaveGameAction</a></li>
+<li><a data-type="enum">ESFXSaveGameType</a></li>
+<li><a data-type="enum">ESFXTracerScaling</a></li>
+<li><a data-type="enum">ESFXVocalizationBool</a></li>
+<li><a data-type="enum">ESFXVocalizationEventID</a></li>
+<li><a data-type="enum">ESFXVocalizationGender</a></li>
+<li><a data-type="enum">ESFXVocalizationLocation</a></li>
+<li><a data-type="enum">ESFXVocalizationName</a></li>
+<li><a data-type="enum">ESFXVocalizationRole</a></li>
+<li><a data-type="enum">ESFXVocalizationVariationType</a></li>
+<li><a data-type="enum">ESFXVocalizationWeapon</a></li>
+<li><a data-type="enum">EShadowFilterQuality</a></li>
+<li><a data-type="enum">EShadowProjectionTechnique</a></li>
+<li><a data-type="enum">EShakeParam</a></li>
+<li><a data-type="enum">EShieldType</a></li>
+<li><a data-type="enum">ESimulationMethod</a></li>
+<li><a data-type="enum">ESkillGameComplete</a></li>
+<li><a data-type="enum">ESleepFamily</a></li>
+<li><a data-type="enum">ESliderType</a></li>
+<li><a data-type="enum">ESoundClassName</a></li>
+<li><a data-type="enum">ESoundDistanceCalc</a></li>
+<li><a data-type="enum">ESpeedTreeMeshType</a></li>
+<li><a data-type="enum">ESplineControlRotMode</a></li>
+<li><a data-type="enum">ESplitscreenRenderMode</a></li>
+<li><a data-type="enum">ESplitScreenType</a></li>
+<li><a data-type="enum">ESquadIcons</a></li>
+<li><a data-type="enum">EStandbyType</a></li>
+<li><a data-type="enum">EStateEventElementTypes</a></li>
+<li><a data-type="enum">EStatsFetchType</a></li>
+<li><a data-type="enum">EStickConfigOptions</a></li>
+<li><a data-type="enum">EStreamingVolumeUsage</a></li>
+<li><a data-type="enum">ESubtitlesRenderMode</a></li>
+<li><a data-type="enum">ESwitchToWeapon</a></li>
+<li><a data-type="enum">ESystemLevelType</a></li>
+<li><a data-type="enum">ETelemetryAttributeType</a></li>
+<li><a data-type="enum">ETelemetryChannel</a></li>
+<li><a data-type="enum">ETelemetryExtendedSettings</a></li>
+<li><a data-type="enum">ETelemetryGameDataType</a></li>
+<li><a data-type="enum">ETelemetryLoginStatus</a></li>
+<li><a data-type="enum">ETelemetryLogoutReason</a></li>
+<li><a data-type="enum">ETerrainMappingType</a></li>
+<li><a data-type="enum">ETextAutoScaleMode</a></li>
+<li><a data-type="enum">ETextClipMode</a></li>
+<li><a data-type="enum">ETextureColorChannel</a></li>
+<li><a data-type="enum">ETickingGroup</a></li>
+<li><a data-type="enum">ETrackActiveCondition</a></li>
+<li><a data-type="enum">ETrackToggleAction</a></li>
+<li><a data-type="enum">ETrail2SourceMethod</a></li>
+<li><a data-type="enum">ETrail2SpawnMethod</a></li>
+<li><a data-type="enum">ETrailsRenderAxisOption</a></li>
+<li><a data-type="enum">ETrailTaperMethod</a></li>
+<li><a data-type="enum">ETransitionType</a></li>
+<li><a data-type="enum">ETravelType</a></li>
+<li><a data-type="enum">ETreasureType</a></li>
+<li><a data-type="enum">ETriggerConfigOptions</a></li>
+<li><a data-type="enum">ETrilogyProfileSetting</a></li>
+<li><a data-type="enum">ETTSSpeaker</a></li>
+<li><a data-type="enum">ETutorialHooks</a></li>
+<li><a data-type="enum">ETVType</a></li>
+<li><a data-type="enum">EUIAlignment</a></li>
+<li><a data-type="enum">EUIAnimationInterpMode</a></li>
+<li><a data-type="enum">EUIAnimationLoopMode</a></li>
+<li><a data-type="enum">EUIAnimNotifyType</a></li>
+<li><a data-type="enum">EUIAnimType</a></li>
+<li><a data-type="enum">EUIAspectRatioConstraint</a></li>
+<li><a data-type="enum">EUIAutoSizeConstraintType</a></li>
+<li><a data-type="enum">EUIDataProviderFieldType</a></li>
+<li><a data-type="enum">EUIDefaultPenColor</a></li>
+<li><a data-type="enum">EUIDockPaddingEvalType</a></li>
+<li><a data-type="enum">EUIExtentEvalType</a></li>
+<li><a data-type="enum">EUIListElementState</a></li>
+<li><a data-type="enum">EUIOrientation</a></li>
+<li><a data-type="enum">EUIPostProcessGroup</a></li>
+<li><a data-type="enum">EUIWidgetFace</a></li>
+<li><a data-type="enum">eventEnumID</a></li>
+<li><a data-type="enum">EViewTargetBlendFunction</a></li>
+<li><a data-type="enum">EVisibilityTrackAction</a></li>
+<li><a data-type="enum">EVisibilityTrackCondition</a></li>
+<li><a data-type="enum">EWalkingSpeedMode</a></li>
+<li><a data-type="enum">EWalkWaypointSetOutputPins</a></li>
+<li><a data-type="enum">eWalkWaypointsTypes</a></li>
+<li><a data-type="enum">EWaveformFunction</a></li>
+<li><a data-type="enum">EWeaponFireType</a></li>
+<li><a data-type="enum">EWeaponRange</a></li>
+<li><a data-type="enum">EWeightCheck</a></li>
+<li><a data-type="enum">EWheelSide</a></li>
+<li><a data-type="enum">EWhoTriggers</a></li>
+<li><a data-type="enum">FFB_ForceFieldCoordinates</a></li>
+<li><a data-type="enum">FFG_ForceFieldCoordinates</a></li>
+<li><a data-type="enum">FireModes</a></li>
+<li><a data-type="enum">FWFileType</a></li>
+<li><a data-type="enum">GFxAlign</a></li>
+<li><a data-type="enum">GFxRenderTextureMode</a></li>
+<li><a data-type="enum">GFxScaleMode</a></li>
+<li><a data-type="enum">GFxTimingMode</a></li>
+<li><a data-type="enum">GJKResult</a></li>
+<li><a data-type="enum">GUILayout</a></li>
+<li><a data-type="enum">HenchmanOrderType</a></li>
+<li><a data-type="enum">JournalSortMethods</a></li>
+<li><a data-type="enum">Keyboard_Options</a></li>
+<li><a data-type="enum">KismetVarTypes</a></li>
+<li><a data-type="enum">LoadingMovieState</a></li>
+<li><a data-type="enum">MainMenuEntries</a></li>
+<li><a data-type="enum">MEBrowserWheelSubPages</a></li>
+<li><a data-type="enum">MessageBoxIcon</a></li>
+<li><a data-type="enum">MultiplyByEmitterSpeedProperty</a></li>
+<li><a data-type="enum">NewCharacterLookAtTarget</a></li>
+<li><a data-type="enum">ParticleReplayState</a></li>
+<li><a data-type="enum">ParticleSystemLODMethod</a></li>
+<li><a data-type="enum">PhotoModeOptionType</a></li>
+<li><a data-type="enum">PowerRankState</a></li>
+<li><a data-type="enum">ResistanceType</a></li>
+<li><a data-type="enum">ReverbPreset</a></li>
+<li><a data-type="enum">sessionStatus</a></li>
+<li><a data-type="enum">SFMovieStrokeStyle</a></li>
+<li><a data-type="enum">SFXAreaMapLayout</a></li>
+<li><a data-type="enum">SFXChoiceColors</a></li>
+<li><a data-type="enum">SFXDisplayableSquadCommands</a></li>
+<li><a data-type="enum">SFXGenericHintIcon</a></li>
+<li><a data-type="enum">SFXHintPosition</a></li>
+<li><a data-type="enum">SFXNotificationPriotity</a></li>
+<li><a data-type="enum">SFXOnlineComponentBlazeHubEnvironment</a></li>
+<li><a data-type="enum">SFXOnlineComponentType</a></li>
+<li><a data-type="enum">SFXOnlineConnection_MessageType</a></li>
+<li><a data-type="enum">SFXOnlineConnectMode</a></li>
+<li><a data-type="enum">SFXOnlineEventStatus</a></li>
+<li><a data-type="enum">SFXOnlineEventStatusFinished</a></li>
+<li><a data-type="enum">SFXOnlineEventType</a></li>
+<li><a data-type="enum">SFXOnlineNotificationOfferPurchaseStatus</a></li>
+<li><a data-type="enum">SFXOnlineNotificationPriority</a></li>
+<li><a data-type="enum">SFXOnlinePurchaseSource</a></li>
+<li><a data-type="enum">SFXOnlineUIState</a></li>
+<li><a data-type="enum">SFXOnlineXenonPlayerListButtonType</a></li>
+<li><a data-type="enum">SFXPCHintIcon</a></li>
+<li><a data-type="enum">SFXPowerTutorialType</a></li>
+<li><a data-type="enum">SFXPowerWheelMapButtonIcon</a></li>
+<li><a data-type="enum">SFXPowerWheelMode</a></li>
+<li><a data-type="enum">SFXPowerWheelPawnID</a></li>
+<li><a data-type="enum">SFXPowerWheelPowerState</a></li>
+<li><a data-type="enum">SFXPowerWheelWeaponState</a></li>
+<li><a data-type="enum">SFXPS3HintIcon</a></li>
+<li><a data-type="enum">SFXReticleCrosshair</a></li>
+<li><a data-type="enum">SFXXBoxHintIcon</a></li>
+<li><a data-type="enum">SFX_MB_Skin</a></li>
+<li><a data-type="enum">SFX_MB_TextAlign</a></li>
+<li><a data-type="enum">SoftBodyBoneType</a></li>
+<li><a data-type="enum">SoundDistanceModel</a></li>
+<li><a data-type="enum">TextureAddress</a></li>
+<li><a data-type="enum">TextureCompressionSettings</a></li>
+<li><a data-type="enum">TextureFilter</a></li>
+<li><a data-type="enum">TextureFlipBookMethod</a></li>
+<li><a data-type="enum">TextureGroup</a></li>
+<li><a data-type="enum">TextureMipGenSettings</a></li>
+<li><a data-type="enum">ToggleLightEnvType</a></li>
+<li><a data-type="enum">TriangleSortOption</a></li>
+<li><a data-type="enum">WeaponAnimState</a></li>
+<li><a data-type="enum">WeaponAnimType</a></li>
+<li><a data-type="enum">WwiseEventPrepareState</a></li>
+<;ul>
+
+</div>
+	</body>
+</html>
