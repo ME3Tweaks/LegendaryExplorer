@@ -1,0 +1,1210 @@
+<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>EAICustomAction</title>
+		<meta name="og:title" content="EAICustomAction"/>
+		<meta name="description" content=""/>
+		<meta name="og:description" content=""/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE2/../"/>
+		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE2/");
+				var baseurl = url.substring(0, gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		<div class="header">
+	<h2 class="title">Enum EAICustomAction</h2>
+</div>
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Values</h3>
+	<table>
+	<tr>
+		<th>Value</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>0</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_None</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>1</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_CollectorDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>2</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PraetorianDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>3</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_DeathCrawl</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>4</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Frozen</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>5</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Ragdoll</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>6</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_BovineFortitude</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>7</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Charge</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>8</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_CombatActivate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>9</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_CoverClimb</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>10</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_CoverMantle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>11</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_WaypointAnim</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>12</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Freezing</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>13</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Possessed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>14</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Knockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>15</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_HeadShot</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>16</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_GreatPain</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>17</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Staggering</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>18</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Reave</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>19</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ScionHeadless</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>20</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_HitLeftLeg</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>21</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_HitRightLeg</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>22</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_CorkscrewDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>23</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ExplosionDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>24</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_LeftArmDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>25</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_RightArmDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>26</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_StomachDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>27</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_DeathKnockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>28</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_OnFire</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>29</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_TakeAKnee</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>30</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_StaggerImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>31</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_StandardImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>32</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ZombieTakeAKnee</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>33</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ScionImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>34</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_HuskImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>35</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ShieldKnockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>36</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ShieldStaggerImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>37</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ShieldStandardImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>38</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_GlobalDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>39</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_TentacleDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>40</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_OculusDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>41</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_NeuralShock</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>42</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_BioticCharge</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>43</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_HeavyPunch</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>44</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Swipe</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>45</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PraetorianTeleportStart</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>46</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PraetorianTeleportEnd</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>47</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerStagger</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>48</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerMeleed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>49</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerMeleedII</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>50</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerMeleedNoRotate</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>51</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerStandardImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>52</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerKnockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>53</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Maelstrom</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>54</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Melee</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>55</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Explosion_Level1</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>56</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Explosion_Level2</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>57</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Explosion_Level3</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>58</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Meleed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>59</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Meleed_Twice</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>60</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_MawDeath</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>61</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_MawBurrow</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>62</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Spider</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>63</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_BloodyPlayerStandardImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>64</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerOnFire</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>65</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_BloodLust</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>66</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_OnFireShort</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>67</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerShortStagger</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>68</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_StumbleForward</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>69</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_MechDogIdle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>70</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_MechDogBite</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>71</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ElectricStandardImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>72</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_RoboticImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>73</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_GreatPainII</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>74</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_KnockbackII</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>75</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_MeleedII</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>76</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_HeavyMeleed</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>77</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Utilize</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>78</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PunchDeathKnockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>79</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_GreatPainII_Death</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>80</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_PlayerStumbleForward</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>81</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_VarrenImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>82</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_SpiderImpact</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>83</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Exploration_Comm</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>84</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_VarrenBite</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>85</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_ExplosiveKnockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>86</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_Standard</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>87</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_StandardVariant</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>88</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_Stagger</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>89</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_StaggerVariant</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>90</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_Knockback</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>91</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_KnockbackVariant</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>92</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_StandardForward</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>93</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_StaggerForward</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>94</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_OnFireShort</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>95</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_OnFireLong</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>96</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_OnFireVariant</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>97</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_NeuralShock</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>98</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AI_CustomAction_Power_Reave</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+</div>
+	</body>
+</html>

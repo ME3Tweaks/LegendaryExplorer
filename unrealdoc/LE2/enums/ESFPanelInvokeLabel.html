@@ -1,0 +1,715 @@
+<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>ESFPanelInvokeLabel</title>
+		<meta name="og:title" content="ESFPanelInvokeLabel"/>
+		<meta name="description" content=""/>
+		<meta name="og:description" content=""/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE2/../"/>
+		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
+		<link rel="stylesheet" href="../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE2/");
+				var baseurl = url.substring(0, gameidx + 5);
+				console.log(baseurl);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Constructor.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-files/index-1.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><strong>Legendary Explorer<br>DocuDB</strong></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
+<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		<div class="header">
+	<h2 class="title">Enum ESFPanelInvokeLabel</h2>
+</div>
+<hr>
+<p></p>
+
+	<!-- VARIABLES-->
+	<h3>Values</h3>
+	<table>
+	<tr>
+		<th>Value</th>
+		<th>Name</th>
+		<th>Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>0</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_NONE</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>1</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_InitializeHUD</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>2</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateHUDMode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>3</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateTargetStatus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>4</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_ChangeSelectedWeapon</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>5</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateWeaponHeat</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>6</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_ShowSniper</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>7</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_HideSniper</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>8</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateVehicleStatus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>9</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateVehicleStatusSquad</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>10</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateSquadStatus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>11</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_ChangeSelectedSquadOrder</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>12</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateSquadFormation</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>13</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_setSquadVisible</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>14</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_showCoverElement</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>15</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_hideCoverElement</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>16</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_showClimbMantleElement</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>17</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_hideClimbMantleElement</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>18</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateStorm</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>19</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_addUpdateFiringDirection</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>20</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_removeFiringDirection</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>21</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdatePowerPadMode</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>22</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_CreateIconDumpListItem</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>23</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateIconDumpListTotal</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>24</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_CreateMapPowerList</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>25</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_PopulateMapPowerItem</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>26</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_CreateMapCommandsList</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>27</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_UpdateCustomButtons</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>28</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_setRadarVisible</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>29</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_addRadarElement</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>30</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_removeRadarElement</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>31</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_setElementType</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>32</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_setElementLockedStatus</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>33</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_updateRadarElementBatch</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>34</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_updateRadarArrow</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>35</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_updateNorthIndicator</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>36</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_setRadarParameters</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>37</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_updateRadarBoundaries</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>38</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_RETICLE_updateCombatReticle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>39</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_RETICLE_updateSelectionReticle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>40</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_RETICLE_updateLosReticle</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>41</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_assignHotKeys</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>42</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_0</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>43</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_1</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>44</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_2</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>45</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_3</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>46</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_4</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>47</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_5</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>48</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_6</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>49</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_7</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>50</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_8</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>51</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_9</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>52</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_10</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>53</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFP_INVOKELABEL_HUD_KEYMAP_assignKeyMap_11</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+
+
+</div>
+	</body>
+</html>
