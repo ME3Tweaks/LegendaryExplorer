@@ -36,9 +36,9 @@ steps:
       $outputDir = "$(Build.SourcesDirectory)\BuiltDocs" # Where docs get built
 
       # Build UnrealDoc so we can run it to build the docs.
-      Write-Host Switching to $docToolBranch branch...
-      git fetch $docToolBranch --depth 1
-      git switch $docToolBranch
+      Write-Host Switching to $(docToolBranch) branch...
+      git fetch $(docToolBranch) --depth 1
+      git switch $(docToolBranch)
       dotnet publish $unrealDocProj -o $buildDir -c Release
 
       # Checkout UnrealDoc branch
