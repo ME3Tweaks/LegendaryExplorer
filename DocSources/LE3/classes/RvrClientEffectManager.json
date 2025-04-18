@@ -1,0 +1,306 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aLocalStoppableEffects": {
+      "type": "RvrClientEffectSpawnable",
+      "documentation": null
+    },
+    "m_aTargets": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aStacks": {
+      "type": "RvrClientEffectStack",
+      "documentation": null
+    },
+    "m_fMaxDistance_Multiplayer_Bias": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxDistance_LocalPlayer_Bias": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxDistance_Debug_Override_Value": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxDistance_Debug_Bias": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bMaxDistance_Debug_Override": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOnVisible_Debug_Override": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOnVisible_Debug_Override_Value": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLogOnCleanup_Debug": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CleanUpPools": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanUpPools()"
+    },
+    "GetClientEffectManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "RvrClientEffectManager",
+      "signature": "RvrClientEffectManager GetClientEffectManager()"
+    },
+    "HideOn": {
+      "documentation": null,
+      "signature_members": {
+        "pOnActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bHide": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideOn(Actor pOnActor, bool bHide)"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "pInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "vParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Play(RvrClientEffectInterface pEffect, Actor pInstigator, optional Vector vParams)"
+    },
+    "PlayAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "vParams": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAtLocation(RvrClientEffectInterface pEffect, Vector vLocation, optional Vector vNormal, optional Vector vParams, optional Actor pOwner)"
+    },
+    "PlayHit": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "pInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpactInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "vParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayHit(RvrClientEffectInterface pEffect, Actor pInstigator, const out ImpactInfo oImpactInfo, optional Vector vParams)"
+    },
+    "PlayOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayOnTarget(RvrClientEffectInterface pEffect, const out RvrClientEffectTarget oTarget, optional Actor pOwner)"
+    },
+    "Prime": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "MinCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Prime(RvrClientEffectInterface pEffect, optional int MinCount)"
+    },
+    "PrimeClass": {
+      "documentation": null,
+      "signature_members": {
+        "pClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrimeClass(Class<Object> pClass)"
+    },
+    "Start": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "pInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "vParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Guid",
+      "signature": "Guid Start(RvrClientEffectInterface pEffect, Actor pInstigator, optional Vector vParams)"
+    },
+    "StartAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "vParams": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Guid",
+      "signature": "Guid StartAtLocation(RvrClientEffectInterface pEffect, Vector vLocation, optional Vector vNormal, optional Vector vParams, optional Actor pOwner)"
+    },
+    "StartHit": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "pInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpactInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "vParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Guid",
+      "signature": "Guid StartHit(RvrClientEffectInterface pEffect, Actor pInstigator, const out ImpactInfo oImpactInfo, optional Vector vParams)"
+    },
+    "StartOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Guid",
+      "signature": "Guid StartOnTarget(RvrClientEffectInterface pEffect, const out RvrClientEffectTarget oTarget, optional Actor pOwner)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowCooldown": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Stop(RvrClientEffectInterface pEffect, Guid Id, bool bAllowCooldown, optional Actor pOwner)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

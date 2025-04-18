@@ -1,0 +1,25 @@
+{
+  "parent": "PostProcessEffect",
+  "package": "Engine",
+  "variables": {
+    "BaseFlare": {
+      "type": "BioFlareParameters",
+      "documentation": null
+    },
+    "OverrideFlare": {
+      "type": "BioFlareParameters",
+      "documentation": null
+    },
+    "BlurScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurWidth": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PCVTO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PCVTO_IgnoreThis": {
+      "value": 1,
+      "documentation": null
+    },
+    "PCVTO_IgnoreThis2": {
+      "value": 2,
+      "documentation": null
+    },
+    "PCVTO_On": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Achievements": {
+      "type": null,
+      "documentation": null
+    },
+    "TempImage": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerNum": {
+      "type": null,
+      "documentation": null
+    },
+    "TitleId": {
+      "type": null,
+      "documentation": null
+    },
+    "ReadState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

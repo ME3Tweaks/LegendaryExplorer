@@ -1,0 +1,73 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "sendToPersonaNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "sParams": {
+      "type": "string",
+      "documentation": null
+    },
+    "MessageType": {
+      "type": "SFXOnlineMessageType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateSendMessageJob": {
+      "documentation": null,
+      "signature_members": {
+        "InSendToPersonaNames": {
+          "type": null,
+          "documentation": null
+        },
+        "InMessageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobSendMessage",
+      "signature": "SFXOnlineJobSendMessage CreateSendMessageJob(array<string> InSendToPersonaNames, SFXOnlineMessageType InMessageType, optional array<string> Params)"
+    },
+    "CreateSendMessageToAllFriendsJob": {
+      "documentation": null,
+      "signature_members": {
+        "InMessageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobSendMessage",
+      "signature": "SFXOnlineJobSendMessage CreateSendMessageToAllFriendsJob(SFXOnlineMessageType InMessageType, optional array<string> Params)"
+    },
+    "GetFriendsList": {
+      "documentation": null,
+      "signature_members": {
+        "friendsPersonaNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFriendsList(out array<string> friendsPersonaNames)"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

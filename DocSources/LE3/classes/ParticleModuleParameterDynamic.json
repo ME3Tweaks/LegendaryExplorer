@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleParameterBase",
+  "package": "Engine",
+  "variables": {
+    "DynamicParams": {
+      "type": "EmitterDynamicParameter",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

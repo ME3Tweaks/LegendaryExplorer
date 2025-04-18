@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "HighlightImage": {
+      "type": null,
+      "documentation": null
+    },
+    "AvailableImage": {
+      "type": null,
+      "documentation": null
+    },
+    "DeadImage": {
+      "type": null,
+      "documentation": null
+    },
+    "SilhouetteImage": {
+      "type": null,
+      "documentation": null
+    },
+    "DescriptionText": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomToken0": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberTag": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberAppearancePlotLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "AppearanceId": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberAppearanceValue": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotUnlockCID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

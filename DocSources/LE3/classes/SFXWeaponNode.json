@@ -1,0 +1,30 @@
+{
+  "parent": "SFXPointOfInterest",
+  "package": "SFXGame",
+  "variables": {
+    "SMC": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "DisableWeaponNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableWeaponNode()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "FlareBase": {
+      "type": null,
+      "documentation": null
+    },
+    "FlareHot": {
+      "type": null,
+      "documentation": null
+    },
+    "FlareTintMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "LineLength": {
+      "type": null,
+      "documentation": null
+    },
+    "FalloffParameter": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

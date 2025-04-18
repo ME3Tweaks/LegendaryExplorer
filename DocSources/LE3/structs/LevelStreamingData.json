@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldBeLoaded": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldBeVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldBlockOnLoad": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

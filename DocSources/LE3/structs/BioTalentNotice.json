@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "sName": {
+      "type": null,
+      "documentation": null
+    },
+    "oCharacter": {
+      "type": null,
+      "documentation": null
+    },
+    "nIcon": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "AdvertisementType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

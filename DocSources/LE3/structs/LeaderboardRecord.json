@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "uidEntity": {
+      "type": null,
+      "documentation": null
+    },
+    "sRecordData": {
+      "type": null,
+      "documentation": null
+    },
+    "nRank": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

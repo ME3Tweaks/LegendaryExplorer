@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "eWalkingSpeedMode_ExploreRun": {
+      "value": 0,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_ExploreWalk": {
+      "value": 1,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_ExploreStorming": {
+      "value": 2,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_ExploreCrouched": {
+      "value": 3,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CombatRun": {
+      "value": 4,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CombatWalk": {
+      "value": 5,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CombatStorming": {
+      "value": 6,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CombatCrouched": {
+      "value": 7,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CombatSniping": {
+      "value": 8,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CombatZoomed": {
+      "value": 9,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CoverMove": {
+      "value": 10,
+      "documentation": null
+    },
+    "eWalkingSpeedMode_CoverCrouched": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

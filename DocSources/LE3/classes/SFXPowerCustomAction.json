@@ -1,0 +1,1968 @@
+{
+  "parent": "SFXPowerCustomActionBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_ImpactedActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Projectiles": {
+      "type": "SFXProjectile_PowerCustomAction",
+      "documentation": null
+    },
+    "ComboDetonators": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PowerComboTypes": {
+      "type": "string",
+      "documentation": null
+    },
+    "BS_StartCastAnimation": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_EndCastAnimation": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "EvolvedImpactSounds": {
+      "type": "EvolvedSoundStruct",
+      "documentation": null
+    },
+    "EvolvedReleaseSounds": {
+      "type": "EvolvedSoundStruct",
+      "documentation": null
+    },
+    "EvolvedCastSounds": {
+      "type": "EvolvedSoundStruct",
+      "documentation": null
+    },
+    "HenchmanEvolvedImpactSounds": {
+      "type": "EvolvedSoundStruct",
+      "documentation": null
+    },
+    "HenchmanEvolvedReleaseSounds": {
+      "type": "EvolvedSoundStruct",
+      "documentation": null
+    },
+    "HenchmanEvolvedCastSounds": {
+      "type": "EvolvedSoundStruct",
+      "documentation": null
+    },
+    "DefaultDamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "NonRagdollDamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ProjectileClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DetonationRumbleClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DetonationScreenShakeClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DelayedPowerCombo": {
+      "type": "DelayedPowerComboData",
+      "documentation": null
+    },
+    "DetonationParameters": {
+      "type": "AreaEffectParameters",
+      "documentation": null
+    },
+    "m_vDetonationHitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vDetonationHitNormal": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CustomCasterCrustParameters": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ProjectileAttachPoint": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CastAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "HenchCastAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "CastCameraAnim": {
+      "type": "CameraAnim",
+      "documentation": null
+    },
+    "CE_CasterCrustTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_TargetCrustTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "ReleaseEffectBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CE_ReleaseEffectTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_ProjectileTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_ImpactTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "ImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ReleaseSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CastSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HenchmanImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HenchmanReleaseSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HenchmanCastSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ImpactDistanceLayer": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HenchmanImpactDistanceLayer": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CancelCastSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HenchmanCancelCastSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ProjectileRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReleaseTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastPhysicsCallbackTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinTimeBetweenPhysicsCallbacks": {
+      "type": "float",
+      "documentation": null
+    },
+    "PhysicsToDamageMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PowerAssistFullControlValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "PowerAssistPartialControlValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "PowerComboDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "Recommended_TargetVulnerable": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetOrganic": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetMachine": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetHasShields": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetHasBiotics": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetHasArmor": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_NoMedigel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_NoSquadMemberDead": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_NoSquadMemberInjured": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_WeaponPowerAlreadyOn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotRecommended_TargetImmune": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_Damage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_DamagePerSecond": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_Force": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_Cooldown": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_Duration": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_ImpactRadius": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_Range": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_ParagonRenegade": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_PowerDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_WeaponDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_WeightCapacity": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_HealthShield": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_MeleeDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_HealthDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_ArmorDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_BarrierDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_ShieldBarrierDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_FreezeDuration": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarTitle_DamageReduction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_RawValue": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_Force": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_Time": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_Distance": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_Percent": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_PositivePercent": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatBarToken_NegativePercent": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CameraAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraAnimBlendIn": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraAnimBlendOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraAnimDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStartAnimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStartAnimBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndAnimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndAnimBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bProjectileUsePawnRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCustomImpactLogic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ImpactDeadPawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ImpactFriends": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ImpactPlaceables": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockedByObjects": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BuffAppliesToSquad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPowerStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPowerReleased": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RestoreCoverAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "WaitingOnLeanOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LeanOutToCast": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideComboDetonate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDynamicLoadAnimSet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayStartCastAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayEndCastAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowAnimInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCustomCasterCrustParameters": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReleaseFBUsesEffectDuration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCustomImpactSound": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CapabilityType": {
+      "type": "EBioCapabilityTypes",
+      "documentation": null
+    },
+    "Discipline": {
+      "type": "EBioCapMode",
+      "documentation": null
+    },
+    "InitialCoverAction": {
+      "type": "ECoverAction",
+      "documentation": null
+    },
+    "CastingPhase": {
+      "type": "ECastingPhase",
+      "documentation": null
+    },
+    "ERootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanImpactActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanImpactActor(Actor oActor)"
+    },
+    "CanUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUsePower(Actor oTarget)"
+    },
+    "CombatEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CombatEnded()"
+    },
+    "DoAreaExplosionForActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "location": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "fDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "fForce": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRagdollOverride": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRagdollDmgTypeOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoAreaExplosionForActor(Actor oActor, Vector location, int ImpactCount, float fDamage, Class<SFXDamageType> DamageType, float fForce, AreaEffectParameters Param, int MaxRagdollOverride, delegate<OnActorImpacted> ImpactCallback, optional Class<SFXDamageType> MaxRagdollDmgTypeOverride)"
+    },
+    "DoPowerDetonatedForActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "nImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "oProjectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoPowerDetonatedForActor(Actor oActor, Vector HitLocation, Vector HitNormal, int nImpactCount, bool bFirstTarget, optional SFXProjectile_PowerCustomAction oProjectile)"
+    },
+    "GetPowerAnimInfo": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPowerAnimInfo(out AnimSet AnimSet, out array<Name> AnimNames)"
+    },
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(EPowerResistance Resistance, Actor oImpacted, int nPreviouslyImpacted, Vector HitLocation, Vector HitNormal)"
+    },
+    "PlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "BodyStance": {
+          "type": null,
+          "documentation": null
+        },
+        "fStanceBlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "fStanceBlendOutTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayBodyStance(BodyStance BodyStance, float fStanceBlendInTime, float fStanceBlendOutTime)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "ReplaceAnimSetWithDynamic": {
+      "documentation": null,
+      "signature_members": {
+        "DynAnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplaceAnimSetWithDynamic(AnimSet DynAnimSet)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float fDeltaTime)"
+    },
+    "AddActorToImpactedList": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactedActors": {
+          "type": null,
+          "documentation": null
+        },
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vImpactLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddActorToImpactedList(out array<Actor> ImpactedActors, Actor oActor, Vector vImpactLocation)"
+    },
+    "AddComboEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "ComboClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect_PowerCombo",
+      "signature": "SFXGameEffect_PowerCombo AddComboEffect(Actor Target, Class<SFXGameEffect_PowerCombo> ComboClass, float Duration)"
+    },
+    "AddEvolvedRankBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "Bonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEvolvedRankBonus(out PowerData Data, float Bonus)"
+    },
+    "ApplyBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Parameter": {
+          "type": null,
+          "documentation": null
+        },
+        "Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyBonus(Name Parameter, SFXGameEffect Bonus, optional bool bRemove)"
+    },
+    "ApplyBonusToParameter": {
+      "documentation": null,
+      "signature_members": {
+        "Parameter": {
+          "type": null,
+          "documentation": null
+        },
+        "Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyBonusToParameter(out PowerData Parameter, SFXGameEffect Bonus, optional bool bRemove)"
+    },
+    "ApplyForceToActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyForceToActor(Actor oActor, Vector vForce)"
+    },
+    "ApplyHealthBonus": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "fHealthValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bHealthValueIsPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyHealthBonus(BioPawn oPawn, float fHealthValue, bool bHealthValueIsPercent, float fDuration, Name Category)"
+    },
+    "ApplyPermanentGameEffect": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "fEffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "nmCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplyPermanentGameEffect(Actor oTarget, Class<SFXGameEffect> className, float fEffectValue, Name nmCategory, Controller Instigator)"
+    },
+    "ApplyShieldBonus": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "fShieldValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bShieldValueIsPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "bRemoveEffectWhenShieldsDown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyShieldBonus(BioPawn oPawn, float fShieldValue, bool bShieldValueIsPercent, float fDuration, Name Category, optional bool bRemoveEffectWhenShieldsDown)"
+    },
+    "ApplyTemporaryGameEffect": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "fEffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "nmCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplyTemporaryGameEffect(Actor oTarget, Class<SFXGameEffect> className, float fDuration, float fEffectValue, Name nmCategory, Controller Instigator)"
+    },
+    "AreaExplosion": {
+      "documentation": null,
+      "signature_members": {
+        "location": {
+          "type": null,
+          "documentation": null
+        },
+        "fRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "fDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "fForce": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRagdollOverride": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRagdollDmgTypeOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AreaExplosion(Vector location, float fRadius, float fDamage, Class<SFXDamageType> DamageType, float fForce, AreaEffectParameters Param, int MaxImpactCount, optional delegate<OnActorImpacted> ImpactCallback, optional int MaxRagdollOverride, optional Class<SFXDamageType> MaxRagdollDmgTypeOverride)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "CanBeRagdolledByPowers": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeRagdolledByPowers(BioPawn oPawn)"
+    },
+    "ChangeCoverAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ChangeCoverAction()"
+    },
+    "CheckForPowerCombo": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckForPowerCombo(Actor Target, EPowerResistance Resistance, Vector HitLocation, Vector HitNormal)"
+    },
+    "CleanUpProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "oProjectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CleanUpProjectile(optional SFXProjectile_PowerCustomAction oProjectile)"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "ClientDoCustomActionImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomActionImpact(Actor oActor, int ImpactCount, optional bool bFirstTarget, optional Vector HitLocation, optional Vector HitNormal, optional int CustomActionReactionType)"
+    },
+    "ClientDoPowerCombo": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SourcePowerID": {
+          "type": null,
+          "documentation": null
+        },
+        "SourcePowerInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoPowerCombo(Class<SFXGameEffect_PowerCombo> EffectClass, int SourcePowerID, BioPawn SourcePowerInstigator, BioPawn TargetPawn, Vector HitLocation, Vector HitNormal)"
+    },
+    "ClientDoPowerComboImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRank": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerComboTypeUniqueID": {
+          "type": null,
+          "documentation": null
+        },
+        "MiscFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoPowerComboImpact(Actor oActor, int CustomActionReactionType, float PowerRank, int PowerComboTypeUniqueID, int MiscFlags)"
+    },
+    "ClientDoPowerComboImpactFromEffect": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "DetonatorPowerRank": {
+          "type": null,
+          "documentation": null
+        },
+        "MiscFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoPowerComboImpactFromEffect(Actor oTarget, int CustomActionReactionType, string EffectClassName, float DetonatorPowerRank, int MiscFlags)"
+    },
+    "ClientDoPowerSubsequentImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "Delay": {
+          "type": null,
+          "documentation": null
+        },
+        "DoCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoPowerSubsequentImpact(Actor oActor, optional int CustomActionReactionType, optional float Duration, optional int ImpactCount, optional float Delay, optional bool DoCallback)"
+    },
+    "DelayedDoPowerCombo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DelayedDoPowerCombo()"
+    },
+    "DetonationHitsTarget": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRange": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "DetonationParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DetonationHitsTarget(Vector HitLocation, float MaxRange, Actor HitActor, AreaEffectParameters DetonationParams)"
+    },
+    "DoPowerCombo": {
+      "documentation": null,
+      "signature_members": {
+        "ComboEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "bDelayed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoPowerCombo(SFXGameEffect_PowerCombo ComboEffect, BioPawn TargetPawn, Vector HitLocation, Vector HitNormal, optional bool bDelayed)"
+    },
+    "EndThisCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndThisCustomAction()"
+    },
+    "GetCurrentBodyStance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BodyStance",
+      "signature": "BodyStance GetCurrentBodyStance()"
+    },
+    "GetDefaultClientEffectParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetDefaultClientEffectParams()"
+    },
+    "GetImpactDamage": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetImpactDamage(Actor oImpacted, out Class<SFXDamageType> DamageType)"
+    },
+    "GetImpactForce": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetImpactForce(Actor oImpacted)"
+    },
+    "GetNearbyActors": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactedActors": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRange": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNearbyActors(out array<Actor> ImpactedActors, Vector HitLocation, float Radius, float MaxRange, AreaEffectParameters Param)"
+    },
+    "GetNonRagdollDamageType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<SFXDamageType> GetNonRagdollDamageType()"
+    },
+    "GetPhysicsLevel": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreResistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPhysicsLevel(Actor oImpacted, optional bool bIgnoreResistance)"
+    },
+    "GetPhysicsLevelResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPhysicsLevelResistance(Actor oTarget)"
+    },
+    "GetPowerComboClassFromUniqueID": {
+      "documentation": null,
+      "signature_members": {
+        "PowerComboTypeUniqueID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPowerComboClassFromUniqueID(int PowerComboTypeUniqueID)"
+    },
+    "GetPowerComboTypeUniqueIDFromClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPowerComboTypeUniqueIDFromClass(string className)"
+    },
+    "GetPowerCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPowerCooldown()"
+    },
+    "GetProjectileAttachPoint": {
+      "documentation": null,
+      "signature_members": {
+        "AttachPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProjectileAttachPoint(out Vector AttachPoint)"
+    },
+    "GetSaveGamePowerState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSaveGamePowerState()"
+    },
+    "GetUniquePowerPlayerVariable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetUniquePowerPlayerVariable()"
+    },
+    "HasRemainingShieldOfType": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "ShieldClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasRemainingShieldOfType(BioPawn oPawn, Class<SFXShield_Base> ShieldClass)"
+    },
+    "ImpactPlaceable": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlotPlaceableDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactPlaceable(Actor oCaster, Actor oImpacted, Vector Momentum, float PlotPlaceableDamage, optional bool bForceDamage)"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "IsMachineRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMachineRace(Actor oImpacted)"
+    },
+    "IsOfRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "eRace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOfRace(Actor oImpacted, ECharacterType eRace)"
+    },
+    "IsPlaceable": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlaceable(Actor oImpacted)"
+    },
+    "LoadAnimSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadAnimSet()"
+    },
+    "OnClientPowerProjectileSpawned": {
+      "documentation": null,
+      "signature_members": {
+        "NewProjectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnClientPowerProjectileSpawned(SFXProjectile_PowerCustomAction NewProjectile)"
+    },
+    "OnPowerDetonated": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "oProjectile": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPowerDetonated(Vector HitLocation, Vector HitNormal, optional SFXProjectile_PowerCustomAction oProjectile, optional Actor HitActor)"
+    },
+    "OnSourcePowerBioticDetonation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSourcePowerBioticDetonation()"
+    },
+    "PlayCasterSounds": {
+      "documentation": null,
+      "signature_members": {
+        "BaseSound": {
+          "type": null,
+          "documentation": null
+        },
+        "EvolvedSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayCasterSounds(WwiseEvent BaseSound, out array<EvolvedSoundStruct> EvolvedSounds)"
+    },
+    "PlayDetonationEffects": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "oProjectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDetonationEffects(Vector ImpactLocation, Vector ImpactNormal, optional SFXProjectile_PowerCustomAction oProjectile)"
+    },
+    "PlayImpactEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayImpactEffects(Actor oImpacted, Vector ImpactLocation, Vector ImpactNormal)"
+    },
+    "PlayImpactSounds": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseSound": {
+          "type": null,
+          "documentation": null
+        },
+        "EvolvedSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayImpactSounds(Vector ImpactLocation, WwiseEvent BaseSound, out array<EvolvedSoundStruct> EvolvedSounds)"
+    },
+    "PlayParticleSystemOnSocket": {
+      "documentation": null,
+      "signature_members": {
+        "PS_Template": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "SocketName": {
+          "type": null,
+          "documentation": null
+        },
+        "Rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayParticleSystemOnSocket(ParticleSystem PS_Template, BioPawn TargetPawn, Name SocketName, Rotator Rotation)"
+    },
+    "PlayPowerControllerRumble": {
+      "documentation": null,
+      "signature_members": {
+        "RumbleClass": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayPowerControllerRumble(Class<SFXRumble_Power> RumbleClass, Vector HitLocation)"
+    },
+    "PlayPowerScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenShakeClass": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayPowerScreenShake(Class<SFXShake_Power> ScreenShakeClass, Vector HitLocation)"
+    },
+    "PlayReleaseEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayReleaseEffects()"
+    },
+    "RagdollPhysicsImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpactActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vImpactDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RagdollPhysicsImpact(Pawn oPawn, Actor oImpactActor, Vector vImpactDir)"
+    },
+    "ReleaseBuffPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseBuffPower()"
+    },
+    "ReleaseInstantPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseInstantPower()"
+    },
+    "ReleaseMeleePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseMeleePower()"
+    },
+    "ReleasePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleasePower()"
+    },
+    "ReleaseProjectilePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXProjectile_PowerCustomAction",
+      "signature": "SFXProjectile_PowerCustomAction ReleaseProjectilePower()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "ReplicateImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateImpact(BioPawn Target, optional int ImpactCount, optional bool bFirstTarget, optional Vector HitLocation, optional Vector HitNormal, optional int CustomActionReactionType)"
+    },
+    "ReplicatePowerCombo": {
+      "documentation": null,
+      "signature_members": {
+        "ComboEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatePowerCombo(SFXGameEffect_PowerCombo ComboEffect, BioPawn TargetPawn, Vector HitLocation, Vector HitNormal)"
+    },
+    "ReplicatePowerComboImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRank": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerComboTypeUniqueID": {
+          "type": null,
+          "documentation": null
+        },
+        "MiscFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatePowerComboImpact(BioPawn Target, int CustomActionReactionType, float PowerRank, int PowerComboTypeUniqueID, int MiscFlags)"
+    },
+    "ReplicatePowerSubsequentImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "Delay": {
+          "type": null,
+          "documentation": null
+        },
+        "DoCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatePowerSubsequentImpact(BioPawn Target, optional int CustomActionReactionType, optional float Duration, optional int ImpactCount, optional float Delay, optional bool DoCallback)"
+    },
+    "ReplicationDecodeDelayAndResistance": {
+      "documentation": null,
+      "signature_members": {
+        "EncodedData": {
+          "type": null,
+          "documentation": null
+        },
+        "fDelay": {
+          "type": null,
+          "documentation": null
+        },
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicationDecodeDelayAndResistance(int EncodedData, out float fDelay, out EPowerResistance Resistance)"
+    },
+    "ReplicationEncodeDelayAndResistance": {
+      "documentation": null,
+      "signature_members": {
+        "fDelay": {
+          "type": null,
+          "documentation": null
+        },
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ReplicationEncodeDelayAndResistance(float fDelay, EPowerResistance Resistance)"
+    },
+    "ResetPowerCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPowerCooldown()"
+    },
+    "RestoreSaveState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreSaveState()"
+    },
+    "SetSaveGamePowerState": {
+      "documentation": null,
+      "signature_members": {
+        "nState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSaveGamePowerState(int nState)"
+    },
+    "ShouldUsePowerOnShields": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "sOptionalInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUsePowerOnShields(BioPawn Target, Class<SFXDamageType> DamageType, out string sOptionalInfo)"
+    },
+    "StartCastAnimations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCastAnimations()"
+    },
+    "StartPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartPower()"
+    },
+    "StartPowerCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartPowerCooldown()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

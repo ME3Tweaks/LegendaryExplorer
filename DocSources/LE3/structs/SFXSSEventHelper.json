@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "pNode": {
+      "type": null,
+      "documentation": null
+    },
+    "nmEventName": {
+      "type": null,
+      "documentation": null
+    },
+    "fEventTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

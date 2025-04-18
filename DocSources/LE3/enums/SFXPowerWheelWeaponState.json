@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "PWWS_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "PWWS_Hover": {
+      "value": 1,
+      "documentation": null
+    },
+    "PWWS_Disabled": {
+      "value": 2,
+      "documentation": null
+    },
+    "PWWS_Selected": {
+      "value": 3,
+      "documentation": null
+    },
+    "PWWS_WEAPSTATE_COUNT": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

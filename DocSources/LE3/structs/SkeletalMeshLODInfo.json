@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "DisplayFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "LODHysteresis": {
+      "type": null,
+      "documentation": null
+    },
+    "LODMaterialMap": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableShadowCasting": {
+      "type": null,
+      "documentation": null
+    },
+    "TriangleSorting": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

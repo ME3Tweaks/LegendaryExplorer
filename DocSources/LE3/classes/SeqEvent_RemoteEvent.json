@@ -1,0 +1,39 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "Parameters": {
+      "type": "RemoteEventParameter",
+      "documentation": null
+    },
+    "EventName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindRemoteEvent": {
+      "documentation": null,
+      "signature_members": {
+        "fnEventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SeqEvent_RemoteEvent",
+      "signature": "SeqEvent_RemoteEvent FindRemoteEvent(Name fnEventName)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

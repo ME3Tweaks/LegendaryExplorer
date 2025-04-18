@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "fPercentage": {
+      "type": null,
+      "documentation": null
+    },
+    "fDistance": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

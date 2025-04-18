@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "WoundDamage_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "WoundDamage_Light": {
+      "value": 1,
+      "documentation": null
+    },
+    "WoundDamage_Medium": {
+      "value": 2,
+      "documentation": null
+    },
+    "WoundDamage_Heavy": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

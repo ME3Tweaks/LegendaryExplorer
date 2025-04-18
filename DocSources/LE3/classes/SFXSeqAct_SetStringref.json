@@ -1,0 +1,24 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "SFXGame",
+  "variables": {
+    "Target": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Value": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

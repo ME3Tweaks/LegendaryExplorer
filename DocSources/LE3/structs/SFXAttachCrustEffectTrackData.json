@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_fLifeTime": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bAttach": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

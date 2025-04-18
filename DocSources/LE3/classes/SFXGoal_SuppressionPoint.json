@@ -1,0 +1,83 @@
+{
+  "parent": "PathGoalEvaluator",
+  "package": "SFXGame",
+  "variables": {
+    "TargetFacing": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetNav": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "AI": {
+      "type": "SFXAI_NativeBase",
+      "documentation": null
+    },
+    "BestNode": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "DesiredDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "BestRating": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxNodes": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumNodesTested": {
+      "type": "int",
+      "documentation": null
+    },
+    "bFlank": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "SuppressPoint": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "SuppressDist": {
+          "type": null,
+          "documentation": null
+        },
+        "bPreferFlank": {
+          "type": null,
+          "documentation": null
+        },
+        "fMinDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuppressPoint(Pawn P, Actor Target, float SuppressDist, optional bool bPreferFlank, optional float fMinDistance)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

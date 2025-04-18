@@ -1,0 +1,873 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "AccomplishmentData": {
+      "type": "Accomplishment",
+      "documentation": null
+    },
+    "AccomplishmentIsComplete": {
+      "type": "int",
+      "documentation": null
+    },
+    "AccomplishmentCompletionTimes": {
+      "type": "int",
+      "documentation": null
+    },
+    "AccomplishmentProgressData": {
+      "type": "AccomplishmentProgress",
+      "documentation": null
+    },
+    "GrinderAccomplishmentData": {
+      "type": "GrinderAccomplishment",
+      "documentation": null
+    },
+    "Rewards": {
+      "type": "AchievementReward",
+      "documentation": null
+    },
+    "Challenges": {
+      "type": "ChallengeEvent",
+      "documentation": null
+    },
+    "AccomplishmentStorage": {
+      "type": "SFXAccomplishmentStorage",
+      "documentation": null
+    },
+    "bChallengeSystemEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsDataValidated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSaving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPendingSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSaveRequired": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateJobSendAchievementMessage": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobSendMessage",
+      "signature": "SFXOnlineJobSendMessage CreateJobSendAchievementMessage(int AchievementId)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Save": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Save()"
+    },
+    "AccomplishmentIndexToName": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name AccomplishmentIndexToName(int AccomplishmentIndex)"
+    },
+    "AccomplishmentProgressIndexToName": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name AccomplishmentProgressIndexToName(int AccomplishmentProgressIndex)"
+    },
+    "AddChallengePointsEarned": {
+      "documentation": null,
+      "signature_members": {
+        "PointsEarned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddChallengePointsEarned(int PointsEarned)"
+    },
+    "AreAllChildAccomplishmentsCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "ParentAccomplishment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AreAllChildAccomplishmentsCompleted(Name ParentAccomplishment)"
+    },
+    "CanUnlockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUnlockAccomplishment(Name AccomplishmentName)"
+    },
+    "CanUpdateAccomplishmentProgress": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentProgress": {
+          "type": null,
+          "documentation": null
+        },
+        "GrinderIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUpdateAccomplishmentProgress(int CurrentProgress, int GrinderIndex, int AccomplishmentIndex)"
+    },
+    "GetAccomplishmentParamsStorage": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "IsMultiplayerOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EAccomplishmentStorage",
+      "signature": "EAccomplishmentStorage GetAccomplishmentParamsStorage(EAchievementID AchievementId, bool IsMultiplayerOnly)"
+    },
+    "GetAccomplishmentStorage": {
+      "documentation": null,
+      "signature_members": {
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EAccomplishmentStorage",
+      "signature": "EAccomplishmentStorage GetAccomplishmentStorage(int ArrayIndex)"
+    },
+    "GetCurrentChallengeData": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCurrentChallengeData(out ChallengeEvent CurrentEvent, BioPlayerController PC)"
+    },
+    "GetCurrentReward": {
+      "documentation": null,
+      "signature_members": {
+        "nRewardID": {
+          "type": null,
+          "documentation": null
+        },
+        "nRewardLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCurrentReward(out int nRewardID, out int nRewardLevel)"
+    },
+    "GetDamageScoreAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDamageScoreAccomplishments(out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetEnemyScoreAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawnClass": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetEnemyScoreAccomplishments(Class<SFXPawn> KilledPawnClass, out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetGrinderAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        },
+        "GAList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetGrinderAccomplishment(Name AccomplishmentName, out array<GrinderAccomplishment> GAList)"
+    },
+    "GetGrinderAccomplishmentProgress": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetGrinderAccomplishmentProgress(Name AccomplishmentProgressName, BioPlayerController PC)"
+    },
+    "GetKillAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawnClass": {
+          "type": null,
+          "documentation": null
+        },
+        "KillingDamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetKillAccomplishments(Class<SFXPawn> KilledPawnClass, Class<SFXDamageType> KillingDamageType, out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetMatchAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetMatchAccomplishments(out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetMedalAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetMedalAccomplishments(out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetOtherAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetOtherAccomplishments(out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetPowerAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "PowerDamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPowerAccomplishments(Class<SFXDamageType> PowerDamageType, out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GetProfileSettingFromAccomplishmentProgress": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EProfileSetting",
+      "signature": "EProfileSetting GetProfileSettingFromAccomplishmentProgress(Name AccomplishmentProgressName)"
+    },
+    "GetTotalChallengePoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTotalChallengePoints()"
+    },
+    "GetWaveAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "Accomplishments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetWaveAccomplishments(out ChallengeEvent CurrentEvent, out array<Name> Accomplishments)"
+    },
+    "GrinderAccomplishmentIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrinderAccomplishmentIncrement(Name AccomplishmentProgressName, BioPlayerController PC)"
+    },
+    "GrinderAccomplishmentReset": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrinderAccomplishmentReset(Name AccomplishmentProgressName, BioPlayerController PC)"
+    },
+    "HasCompletedAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasCompletedAccomplishment(Name AccomplishmentName)"
+    },
+    "LoadAchievementData": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementsList": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAchievementData(array<AchievementDetails> AchievementsList, BioPlayerController PC)"
+    },
+    "LoadSettingsData": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentProfileSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadSettingsData(SFXProfileSettings CurrentProfileSettings)"
+    },
+    "LoadStorageData": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadStorageData(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "OnGrantedEntitlement": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGrantedEntitlement(BWEntitlementId Id, int nResult)"
+    },
+    "PropagateAccomplishmentCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "IsComplete": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "bSaveProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PropagateAccomplishmentCompletion(int Index, bool IsComplete, BioPlayerController PC, bool bSaveProfile)"
+    },
+    "ResetAchievementStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAchievementStatus()"
+    },
+    "ResetChallengeGroupProgress": {
+      "documentation": null,
+      "signature_members": {
+        "ChallengeGroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetChallengeGroupProgress(Name ChallengeGroupName)"
+    },
+    "ResetChallengeRewards": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetChallengeRewards()"
+    },
+    "SaveComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "SaveOnInvalidVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveOnInvalidVersion()"
+    },
+    "SetAccomplishmentCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAccomplishmentCompleted(Name AccomplishmentName, BioPlayerController PC)"
+    },
+    "SetAccomplishmentUncompleted": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAccomplishmentUncompleted(Name AccomplishmentName, BioPlayerController PC)"
+    },
+    "SetCurrentReward": {
+      "documentation": null,
+      "signature_members": {
+        "nRewardID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentReward(int nRewardID)"
+    },
+    "SetGrinderAccomplishmentProgress": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "Progress": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGrinderAccomplishmentProgress(Name AccomplishmentProgressName, int Progress, BioPlayerController PC)"
+    },
+    "SetGrinderAccomplishmentProgressWithUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "Progress": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetGrinderAccomplishmentProgressWithUpdate(Name AccomplishmentProgressName, int Progress, BioPlayerController PC)"
+    },
+    "UnlockReward": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        },
+        "PointsEarned": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsMultiplayerOnly": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockReward(Name AccomplishmentName, int PointsEarned, bool bIsMultiplayerOnly, BioPlayerController PC)"
+    },
+    "UpdateAccomplishmentTree": {
+      "documentation": null,
+      "signature_members": {
+        "ParentAccomplishment": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAccomplishmentTree(Name ParentAccomplishment, BioPlayerController PC)"
+    },
+    "UpdateDamageScoreChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "Score": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageSource": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateDamageScoreChallenges(float Score, stringref DamageSource, BioPlayerController PC)"
+    },
+    "UpdateEnemyScoreChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawnClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Score": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEnemyScoreChallenges(Class<SFXPawn> KilledPawnClass, float Score, BioPlayerController PC)"
+    },
+    "UpdateGrinderAccomplishmentByValue": {
+      "documentation": null,
+      "signature_members": {
+        "UpdateValue": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateGrinderAccomplishmentByValue(int UpdateValue, Name AccomplishmentProgressName, BioPlayerController PC)"
+    },
+    "UpdateKillChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawnClass": {
+          "type": null,
+          "documentation": null
+        },
+        "KillingDamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "KillingSource": {
+          "type": null,
+          "documentation": null
+        },
+        "bHeadShot": {
+          "type": null,
+          "documentation": null
+        },
+        "bHeadGib": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKillChallenges(Class<SFXPawn> KilledPawnClass, Class<SFXDamageType> KillingDamageType, stringref KillingSource, bool bHeadShot, bool bHeadGib, BioPlayerController PC)"
+    },
+    "UpdateMatchChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMatchChallenges(int PlayerID, BioPlayerController PC)"
+    },
+    "UpdateMedalChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "Medal": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMedalChallenges(MPMedalType Medal, BioPlayerController PC)"
+    },
+    "UpdateMiscChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "ChallengeType": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMiscChallenges(ChallengeEventType ChallengeType, BioPlayerController PC)"
+    },
+    "UpdateN7RatingChallenge": {
+      "documentation": null,
+      "signature_members": {
+        "n7Rating": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateN7RatingChallenge(int n7Rating, BioPlayerController PC)"
+    },
+    "UpdatePowerChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerDamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "bCombo": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePowerChallenges(Name PowerName, Class<SFXDamageType> PowerDamageType, bool bCombo, BioPlayerController PC)"
+    },
+    "UpdateWaveChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWaveChallenges(BioPlayerController PC)"
+    },
+    "Validate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Validate()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

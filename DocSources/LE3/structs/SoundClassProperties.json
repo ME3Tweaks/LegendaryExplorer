@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Volume": {
+      "type": null,
+      "documentation": null
+    },
+    "Pitch": {
+      "type": null,
+      "documentation": null
+    },
+    "StereoBleed": {
+      "type": null,
+      "documentation": null
+    },
+    "LFEBleed": {
+      "type": null,
+      "documentation": null
+    },
+    "VoiceCenterChannelVolume": {
+      "type": null,
+      "documentation": null
+    },
+    "VoiceRadioVolume": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyEffects": {
+      "type": null,
+      "documentation": null
+    },
+    "bAlwaysPlay": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsUISound": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsMusic": {
+      "type": null,
+      "documentation": null
+    },
+    "bReverb": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

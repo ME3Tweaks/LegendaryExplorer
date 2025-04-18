@@ -1,0 +1,26 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "TREASURE": {
+      "type": "ETreasureIndex",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

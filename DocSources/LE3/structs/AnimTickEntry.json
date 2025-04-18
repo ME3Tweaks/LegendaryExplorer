@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Node": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalWeightAccumulator": {
+      "type": null,
+      "documentation": null
+    },
+    "bRelevant": {
+      "type": null,
+      "documentation": null
+    },
+    "bBioNeedTickingCompleteCall": {
+      "type": null,
+      "documentation": null
+    },
+    "bSkipTickWhenZeroWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "bTickDuringPausedAnims": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

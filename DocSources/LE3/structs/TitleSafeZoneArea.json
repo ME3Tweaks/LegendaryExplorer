@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "MaxPercentX": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxPercentY": {
+      "type": null,
+      "documentation": null
+    },
+    "RecommendedPercentX": {
+      "type": null,
+      "documentation": null
+    },
+    "RecommendedPercentY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

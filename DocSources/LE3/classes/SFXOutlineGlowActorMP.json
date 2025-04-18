@@ -1,0 +1,25 @@
+{
+  "parent": "SFXOutlineGlowActorBase",
+  "package": "SFXGame",
+  "variables": {
+    "AliveColour": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "DyingColour": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "EnemyColour": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "RenderDelay": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

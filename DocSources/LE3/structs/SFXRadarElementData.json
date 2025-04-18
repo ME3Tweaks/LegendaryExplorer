@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "vActorLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "vPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "nSize": {
+      "type": null,
+      "documentation": null
+    },
+    "nRelativeZ": {
+      "type": null,
+      "documentation": null
+    },
+    "nID": {
+      "type": null,
+      "documentation": null
+    },
+    "bLocked": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdate": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdateLock": {
+      "type": null,
+      "documentation": null
+    },
+    "eRadarType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

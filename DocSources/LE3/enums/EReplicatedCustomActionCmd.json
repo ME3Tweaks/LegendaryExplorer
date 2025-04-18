@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eRCACmd_Start": {
+      "value": 0,
+      "documentation": null
+    },
+    "eRCACmd_Override": {
+      "value": 1,
+      "documentation": null
+    },
+    "eRCACmd_Interrupt": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

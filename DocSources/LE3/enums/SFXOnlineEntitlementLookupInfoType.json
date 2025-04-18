@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SFX_OELIT_NAM_ENTITLEMENT": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFX_OELIT_NAM_GROUP": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFX_OELIT_SERVER_ENTITLEMENT": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFX_OELIT_SERVER_REVOKE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

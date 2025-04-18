@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "REDEMPTION_SUCCESS": {
+      "value": 0,
+      "documentation": null
+    },
+    "REDEMPTION_CANCELED": {
+      "value": 1,
+      "documentation": null
+    },
+    "REDEMPTION_INVALID": {
+      "value": 2,
+      "documentation": null
+    },
+    "REDEMPTION_ERROR": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ProfileSetting": {
+      "type": null,
+      "documentation": null
+    },
+    "Owner": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "SrcType": {
+      "type": null,
+      "documentation": null
+    },
+    "SrcAction": {
+      "type": null,
+      "documentation": null
+    },
+    "DestType": {
+      "type": null,
+      "documentation": null
+    },
+    "DestAction": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

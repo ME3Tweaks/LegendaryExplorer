@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Threshold": {
+      "type": null,
+      "documentation": null
+    },
+    "Emissive": {
+      "type": null,
+      "documentation": null
+    },
+    "Normal": {
+      "type": null,
+      "documentation": null
+    },
+    "EyeEmissive": {
+      "type": null,
+      "documentation": null
+    },
+    "FemaleEmissive": {
+      "type": null,
+      "documentation": null
+    },
+    "FemaleNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "FemaleEyeEmissive": {
+      "type": null,
+      "documentation": null
+    },
+    "Color": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

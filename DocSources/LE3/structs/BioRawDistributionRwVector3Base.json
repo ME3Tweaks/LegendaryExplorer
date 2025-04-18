@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "Op": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTableNumElements": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTableChunkSize": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTableMinOut": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTableMaxOut": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTable": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTableTimeScale": {
+      "type": null,
+      "documentation": null
+    },
+    "LookupTableStartTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

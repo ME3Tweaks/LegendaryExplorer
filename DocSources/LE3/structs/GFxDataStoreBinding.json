@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "DataSource": {
+      "type": null,
+      "documentation": null
+    },
+    "VarPath": {
+      "type": null,
+      "documentation": null
+    },
+    "ModelId": {
+      "type": null,
+      "documentation": null
+    },
+    "ControlId": {
+      "type": null,
+      "documentation": null
+    },
+    "CellTags": {
+      "type": null,
+      "documentation": null
+    },
+    "ModelIdUtf8": {
+      "type": null,
+      "documentation": null
+    },
+    "ControlIdUtf8": {
+      "type": null,
+      "documentation": null
+    },
+    "FullCellTags": {
+      "type": null,
+      "documentation": null
+    },
+    "ModelRef": {
+      "type": null,
+      "documentation": null
+    },
+    "ControlRef": {
+      "type": null,
+      "documentation": null
+    },
+    "ListDataProvider": {
+      "type": null,
+      "documentation": null
+    },
+    "bEditable": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

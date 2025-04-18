@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Guid": {
+      "type": null,
+      "documentation": null
+    },
+    "Actor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

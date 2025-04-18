@@ -1,0 +1,712 @@
+{
+  "parent": "BioHintSystemBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmCurrentWeapon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmLastUsedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmLeftMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmRightMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmClassMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmNearestEnemy": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmTutorialSelectHint": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmTutorialHighlightHint": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fAmmoPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fShieldsPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fNearestEnemyDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nMedigel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMostUnspentTalentPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fRealTimeSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOutOfAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsingHeavyWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsingTurret": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowedToLeaveTurret": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsingSniperRifle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsingShotgun": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsingAmmoPower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasAnyAmmoPowers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNearestEnemyCanBeMeleed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAnyHenchmenDead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsingGamepad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPowerWheelTutorialEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWeaponWheelTutorialEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowingSelectHint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_ePowerTutorialType": {
+      "type": "SFXPowerTutorialType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddNotification_BonusPower": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStateID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_BonusPower(int PlotStateID)"
+    },
+    "CacheCurrentState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CacheCurrentState()"
+    },
+    "CodexUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CodexUpdate(stringref srTitle, stringref srDescription)"
+    },
+    "JournalUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JournalUpdate(stringref srTitle, stringref srDescription)"
+    },
+    "PowerCast": {
+      "documentation": null,
+      "signature_members": {
+        "nmContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PowerCast(out Name nmContext)"
+    },
+    "AddNotification_AllianceCredits": {
+      "documentation": null,
+      "signature_members": {
+        "Credits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_AllianceCredits(int Credits)"
+    },
+    "AddNotification_ArmorTreasureUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_ArmorTreasureUnlocked(string sSubtitle)"
+    },
+    "AddNotification_GalaxyAtWarArtifact": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_GalaxyAtWarArtifact(stringref srTitle)"
+    },
+    "AddNotification_GalaxyAtWarArtifactCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddNotification_GalaxyAtWarArtifactCredits()"
+    },
+    "AddNotification_GalaxyAtWarAsset": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_GalaxyAtWarAsset(stringref srTitle)"
+    },
+    "AddNotification_GalaxyAtWarIntel": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_GalaxyAtWarIntel(stringref srTitle)"
+    },
+    "AddNotification_GalaxyAtWarModifier": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_GalaxyAtWarModifier(stringref srTitle)"
+    },
+    "AddNotification_GalaxyAtWarSalvage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddNotification_GalaxyAtWarSalvage()"
+    },
+    "AddNotification_HeavyAmmoFull": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddNotification_HeavyAmmoFull()"
+    },
+    "AddNotification_LevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_LevelUp(int Level)"
+    },
+    "AddNotification_MediGelFull": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddNotification_MediGelFull()"
+    },
+    "AddNotification_MPMedalGranted": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "nScoreBonus": {
+          "type": null,
+          "documentation": null
+        },
+        "sImage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_MPMedalGranted(string sName, int nScoreBonus, optional string sImage)"
+    },
+    "AddNotification_ResearchRecovered": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_ResearchRecovered(string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_SalvageRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_SalvageRecovery(int Amount)"
+    },
+    "AddNotification_StorePurchase": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_StorePurchase(string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_Tech": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_Tech(string sTitle, string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_TechUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_TechUnlocked(string sTitle, string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_TreasureError": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_TreasureError(string sTitle, string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_Weapon": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_Weapon(string sTitle, string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_WeaponMod": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_WeaponMod(string sTitle, string sName, string sMessage, optional string sImagePath)"
+    },
+    "AddNotification_XP": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_XP(int Amount)"
+    },
+    "AddNotificationOneParameter": {
+      "documentation": null,
+      "signature_members": {
+        "oNoteData": {
+          "type": null,
+          "documentation": null
+        },
+        "nParam1": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotificationOneParameter(SFXNotificationData oNoteData, int nParam1)"
+    },
+    "BypassGameHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BypassGameHint()"
+    },
+    "ChargedWeaponHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ChargedWeaponHint()"
+    },
+    "ClassMappedPowerHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ClassMappedPowerHint()"
+    },
+    "CooldownHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CooldownHint()"
+    },
+    "EnablePowerTutorialHint": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": null,
+          "documentation": null
+        },
+        "eTutType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnablePowerTutorialHint(bool bOn, SFXPowerTutorialType eTutType)"
+    },
+    "EnableWeaponTutorialHint": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableWeaponTutorialHint(bool bOn)"
+    },
+    "ExitTurretHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ExitTurretHint()"
+    },
+    "FindHintDefinition": {
+      "documentation": null,
+      "signature_members": {
+        "nmHint": {
+          "type": null,
+          "documentation": null
+        },
+        "oHint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindHintDefinition(Name nmHint, out HintDefinition oHint)"
+    },
+    "FindLandingSite": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool FindLandingSite()"
+    },
+    "GeneratePowerWheelTutorialHint": {
+      "documentation": null,
+      "signature_members": {
+        "bPowerWheel": {
+          "type": null,
+          "documentation": null
+        },
+        "bWeaponWheel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GeneratePowerWheelTutorialHint(bool bPowerWheel, bool bWeaponWheel)"
+    },
+    "GrenadeHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GrenadeHint()"
+    },
+    "HackGameHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HackGameHint()"
+    },
+    "LaunchProbeHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LaunchProbeHint()"
+    },
+    "LeftMappedPowerHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LeftMappedPowerHint()"
+    },
+    "LevelUpHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LevelUpHint()"
+    },
+    "ManualReloadHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ManualReloadHint()"
+    },
+    "MedigelHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MedigelHint()"
+    },
+    "MeleeHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MeleeHint()"
+    },
+    "PCMappedPowerHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PCMappedPowerHint()"
+    },
+    "PlanetScanHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PlanetScanHint()"
+    },
+    "ResurrectHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ResurrectHint()"
+    },
+    "RightMappedPowerHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RightMappedPowerHint()"
+    },
+    "SyncMeleeHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SyncMeleeHint()"
+    },
+    "TakeCoverHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TakeCoverHint()"
+    },
+    "UpdatePowerWheelTutorialHint": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePowerWheelTutorialHint(Name nmPower)"
+    },
+    "UpdateWeaponWheelTutorialHint": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWeaponWheelTutorialHint(int nWeaponType)"
+    },
+    "UseAmmoPowerHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UseAmmoPowerHint()"
+    },
+    "ZoomHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ZoomHint()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

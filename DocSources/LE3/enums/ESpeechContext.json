@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SpeechContext_Combat": {
+      "value": 0,
+      "documentation": null
+    },
+    "SpeechContext_Explore": {
+      "value": 1,
+      "documentation": null
+    },
+    "SpeechContext_Global": {
+      "value": 2,
+      "documentation": null
+    },
+    "SpeechContext_Conversation": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

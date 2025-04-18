@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "LinkedOp": {
+      "type": null,
+      "documentation": null
+    },
+    "InputLinkIdx": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

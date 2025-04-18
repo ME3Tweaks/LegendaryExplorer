@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "ValueVector": {
+      "type": null,
+      "documentation": null
+    },
+    "Module": {
+      "type": null,
+      "documentation": null
+    },
+    "Variable": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueFloat": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "DataType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

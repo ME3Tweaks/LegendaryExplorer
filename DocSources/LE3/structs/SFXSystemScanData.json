@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "vScanOrigin": {
+      "type": null,
+      "documentation": null
+    },
+    "fElapsedTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

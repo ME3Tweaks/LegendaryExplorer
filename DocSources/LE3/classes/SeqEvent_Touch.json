@@ -1,0 +1,99 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "ClassProximityTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "IgnoredClassProximityTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "TouchedList": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bForceOverlapping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseInstigator": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreVehicleTransitions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDeadPawns": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckTouchActivate": {
+      "documentation": null,
+      "signature_members": {
+        "inOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckTouchActivate(Actor inOriginator, Actor inInstigator, optional bool bTest)"
+    },
+    "CheckUnTouchActivate": {
+      "documentation": null,
+      "signature_members": {
+        "inOriginator": {
+          "type": null,
+          "documentation": null
+        },
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bTest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckUnTouchActivate(Actor inOriginator, Actor inInstigator, optional bool bTest)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "NotifyTouchingPawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTouchingPawnDied(Pawn P)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

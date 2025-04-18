@@ -1,0 +1,93 @@
+{
+  "parent": "SFXAICmd_CustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_fCachedTurnSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fChargeTurnSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "NotifyHitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyHitWall(Vector HitNormal, Actor Wall)"
+    },
+    "BreakHitObject": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BreakHitObject(Actor Other, Vector HitNormal)"
+    },
+    "ExecuteCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ExecuteCustomAction()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "SetDesiredRotationAndLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDesiredRotationAndLocation()"
+    },
+    "ShouldFinishRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFinishRotation()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

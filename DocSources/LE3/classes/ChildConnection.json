@@ -1,0 +1,13 @@
+{
+  "parent": "NetConnection",
+  "package": "Engine",
+  "variables": {
+    "Parent": {
+      "type": "NetConnection",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

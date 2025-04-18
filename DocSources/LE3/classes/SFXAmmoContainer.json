@@ -1,0 +1,124 @@
+{
+  "parent": "SFXDroppedAmmo",
+  "package": "SFXGameContent",
+  "variables": {
+    "RespawnTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRespawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAmmoMeshVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SetInitialState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetInitialState()"
+    },
+    "GiveTo": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTo(Pawn P)"
+    },
+    "SetRespawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetRespawn()"
+    },
+    "StartSleeping": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartSleeping()"
+    }
+  },
+  "states": {
+    "Disabled": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "StartSleeping": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "Reset": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Sleeping": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "StartSleeping": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

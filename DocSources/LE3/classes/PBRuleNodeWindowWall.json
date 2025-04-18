@@ -1,0 +1,45 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "CellMaxSizeX": {
+      "type": "float",
+      "documentation": null
+    },
+    "CellMaxSizeZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "WindowSizeX": {
+      "type": "float",
+      "documentation": null
+    },
+    "WindowSizeZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "WindowPosX": {
+      "type": "float",
+      "documentation": null
+    },
+    "WindowPosZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "YOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "bScaleWindowWithCell": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

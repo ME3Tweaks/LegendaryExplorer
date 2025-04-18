@@ -1,0 +1,667 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "LocalMessages": {
+      "type": "HudLocalizedMessage",
+      "documentation": null
+    },
+    "PostRenderedActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ConsoleMessages": {
+      "type": "ConsoleMessage",
+      "documentation": null
+    },
+    "DebugDisplay": {
+      "type": "Name",
+      "documentation": null
+    },
+    "KismetTextInfo": {
+      "type": "KismetDrawTextInfo",
+      "documentation": null
+    },
+    "PlayerOwner": {
+      "type": "PlayerController",
+      "documentation": null
+    },
+    "HudOwner": {
+      "type": "HUD",
+      "documentation": null
+    },
+    "ViewedInfo": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null
+    },
+    "Scoreboard": {
+      "type": "Scoreboard",
+      "documentation": null
+    },
+    "Canvas": {
+      "type": "Canvas",
+      "documentation": null
+    },
+    "WhiteColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "GreenColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "RedColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "HudCanvasScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConsoleColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ConsoleMessageCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ConsoleFontSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MessageFontOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxHUDAreaMessageCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ConsoleMessagePosX": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConsoleMessagePosY": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastHUDRenderTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "RenderDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "float",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "float",
+      "documentation": null
+    },
+    "CenterX": {
+      "type": "float",
+      "documentation": null
+    },
+    "CenterY": {
+      "type": "float",
+      "documentation": null
+    },
+    "RatioX": {
+      "type": "float",
+      "documentation": null
+    },
+    "RatioY": {
+      "type": "float",
+      "documentation": null
+    },
+    "LostFocusPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowHUD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowGameHUD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowScores": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowDebugInfo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowGameDebug": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowBadConnectionAlert": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMessageBeep": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowOverlays": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Draw2DLine": {
+      "documentation": null,
+      "signature_members": {
+        "X1": {
+          "type": null,
+          "documentation": null
+        },
+        "Y1": {
+          "type": null,
+          "documentation": null
+        },
+        "X2": {
+          "type": null,
+          "documentation": null
+        },
+        "Y2": {
+          "type": null,
+          "documentation": null
+        },
+        "LineColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Draw2DLine(int X1, int Y1, int X2, int Y2, Color LineColor)"
+    },
+    "Draw3DLine": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        },
+        "LineColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Draw3DLine(Vector Start, Vector End, Color LineColor)"
+    },
+    "DrawActorOverlays": {
+      "documentation": null,
+      "signature_members": {
+        "Viewpoint": {
+          "type": null,
+          "documentation": null
+        },
+        "ViewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawActorOverlays(Vector Viewpoint, Rotator ViewRotation)"
+    },
+    "Message": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        },
+        "Msg": {
+          "type": null,
+          "documentation": null
+        },
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Message(PlayerReplicationInfo PRI, coerce string Msg, Name msgType, optional float Lifetime)"
+    },
+    "OnLostFocusPause": {
+      "documentation": null,
+      "signature_members": {
+        "enable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLostFocusPause(bool enable)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PostRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostRender()"
+    },
+    "AddConsoleMessage": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        },
+        "InMessageClass": {
+          "type": null,
+          "documentation": null
+        },
+        "PRI": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddConsoleMessage(string M, Class<LocalMessage> InMessageClass, PlayerReplicationInfo PRI, optional float Lifetime)"
+    },
+    "AddLocalizedMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "InMessageClass": {
+          "type": null,
+          "documentation": null
+        },
+        "CriticalString": {
+          "type": null,
+          "documentation": null
+        },
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        },
+        "FontSize": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageCount": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLocalizedMessage(int Index, Class<LocalMessage> InMessageClass, string CriticalString, int Switch, float Position, float Lifetime, int FontSize, Color DrawColor, optional int MessageCount, optional Object OptionalObject)"
+    },
+    "AddPostRenderedActor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPostRenderedActor(Actor A)"
+    },
+    "ClearMessage": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMessage(out HudLocalizedMessage M)"
+    },
+    "DisplayBadConnectionAlert": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayBadConnectionAlert()"
+    },
+    "DisplayConsoleMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayConsoleMessages()"
+    },
+    "DisplayKismetMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayKismetMessages()"
+    },
+    "DisplayLocalMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayLocalMessages()"
+    },
+    "DrawDemoHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawDemoHUD()"
+    },
+    "DrawEngineHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawEngineHUD()"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawHUD()"
+    },
+    "DrawMessage": {
+      "documentation": null,
+      "signature_members": {
+        "i": {
+          "type": null,
+          "documentation": null
+        },
+        "PosY": {
+          "type": null,
+          "documentation": null
+        },
+        "dx": {
+          "type": null,
+          "documentation": null
+        },
+        "DY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawMessage(int i, float PosY, out float dx, out float DY)"
+    },
+    "DrawMessageText": {
+      "documentation": null,
+      "signature_members": {
+        "LocalMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenX": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawMessageText(HudLocalizedMessage LocalMessage, float ScreenX, float ScreenY)"
+    },
+    "DrawRoute": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawRoute(Pawn Target)"
+    },
+    "FXPlay": {
+      "documentation": null,
+      "signature_members": {
+        "aClass": {
+          "type": null,
+          "documentation": null
+        },
+        "FXAnimPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FXPlay(Class<Pawn> aClass, string FXAnimPath)"
+    },
+    "FXStop": {
+      "documentation": null,
+      "signature_members": {
+        "aClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FXStop(Class<Pawn> aClass)"
+    },
+    "GetFontSizeIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FontSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Font",
+      "signature": "Font GetFontSizeIndex(int FontSize)"
+    },
+    "GetRYGColorRamp": {
+      "documentation": null,
+      "signature_members": {
+        "Pct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color GetRYGColorRamp(float Pct)"
+    },
+    "GetScreenCoords": {
+      "documentation": null,
+      "signature_members": {
+        "PosY": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenX": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenY": {
+          "type": null,
+          "documentation": null
+        },
+        "InMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetScreenCoords(float PosY, out float ScreenX, out float ScreenY, out HudLocalizedMessage InMessage)"
+    },
+    "LocalizedMessage": {
+      "documentation": null,
+      "signature_members": {
+        "InMessageClass": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "CriticalString": {
+          "type": null,
+          "documentation": null
+        },
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        },
+        "FontSize": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LocalizedMessage(Class<LocalMessage> InMessageClass, PlayerReplicationInfo RelatedPRI_1, string CriticalString, int Switch, float Position, float Lifetime, int FontSize, Color DrawColor, optional Object OptionalObject)"
+    },
+    "PlayerOwnerDied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerOwnerDied()"
+    },
+    "PreCalcValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreCalcValues()"
+    },
+    "RemovePostRenderedActor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePostRenderedActor(Actor A)"
+    },
+    "SetShowScores": {
+      "documentation": null,
+      "signature_members": {
+        "bNewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShowScores(bool bNewValue)"
+    },
+    "ShouldDisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "DebugType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldDisplayDebug(Name DebugType)"
+    },
+    "ShowDebug": {
+      "documentation": null,
+      "signature_members": {
+        "DebugType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowDebug(optional Name DebugType)"
+    },
+    "ShowGameDebug": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowGameDebug()"
+    },
+    "ShowHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowHUD()"
+    },
+    "ShowScores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowScores()"
+    },
+    "SpawnScoreBoard": {
+      "documentation": null,
+      "signature_members": {
+        "ScoringType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnScoreBoard(Class<Scoreboard> ScoringType)"
+    },
+    "ToggleHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleHUD()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

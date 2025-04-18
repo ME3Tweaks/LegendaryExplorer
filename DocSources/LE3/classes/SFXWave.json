@@ -1,0 +1,155 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "AssetLoadData": {
+      "type": "SFXWaveAssetLoadData",
+      "documentation": null
+    },
+    "BioWorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "LocalPlayerController": {
+      "type": "SFXPlayerController",
+      "documentation": null
+    },
+    "WaveManager": {
+      "type": "SFXWaveManager",
+      "documentation": null
+    },
+    "WaveCoordinator": {
+      "type": "SFXWaveCoordinator",
+      "documentation": null
+    },
+    "IsLoading": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDied(BioPawn Pawn, optional BioPawn Killer)"
+    },
+    "AggregateAssetLoadStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAsyncLoadStatus",
+      "signature": "EAsyncLoadStatus AggregateAssetLoadStatus()"
+    },
+    "BeginLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginLoading()"
+    },
+    "BeginWave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BeginWave()"
+    },
+    "FinishWave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishWave()"
+    },
+    "InitializeWave": {
+      "documentation": null,
+      "signature_members": {
+        "NewWaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeWave(SFXWaveManager NewWaveManager)"
+    },
+    "IsFinishedLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFinishedLoading()"
+    },
+    "PawnDestroyed": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDestroyed(BioPawn Pawn)"
+    },
+    "PawnDowned": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDowned(BioPawn Pawn)"
+    },
+    "PawnRevived": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnRevived(BioPawn Pawn)"
+    },
+    "PawnSpawned": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnSpawned(BioPawn Pawn)"
+    },
+    "SetWaveCoordinator": {
+      "documentation": null,
+      "signature_members": {
+        "OwnerCoordinator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaveCoordinator(SFXWaveCoordinator OwnerCoordinator)"
+    },
+    "UpdateLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLoading()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

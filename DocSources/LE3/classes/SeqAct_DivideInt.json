@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "ValueA": {
+      "type": "int",
+      "documentation": null
+    },
+    "ValueB": {
+      "type": "int",
+      "documentation": null
+    },
+    "FloatResult": {
+      "type": "float",
+      "documentation": null
+    },
+    "IntResult": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

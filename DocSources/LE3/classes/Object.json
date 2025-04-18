@@ -1,0 +1,4464 @@
+{
+  "parent": null,
+  "package": "Core",
+  "variables": {
+    "VfTableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ObjectInternalInteger": {
+      "type": "int",
+      "documentation": null
+    },
+    "ObjectFlags": {
+      "type": "QWord",
+      "documentation": null
+    },
+    "HashNext": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "HashOuterNext": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "StateFrame": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Linker": {
+      "type": "Object",
+      "documentation": null
+    },
+    "LinkerIndex": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NetIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Outer": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Class": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ObjectArchetype": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Abs": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Abs(float A)"
+    },
+    "Acos": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Acos(float A)"
+    },
+    "appScreenDebugMessageStatic": {
+      "documentation": null,
+      "signature_members": {
+        "sMsg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "appScreenDebugMessageStatic(string sMsg)"
+    },
+    "Asc": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Asc(string S)"
+    },
+    "Asin": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Asin(float A)"
+    },
+    "Atan": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Atan(float A)"
+    },
+    "Atan2": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Atan2(float A, float B)"
+    },
+    "BeginState": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousStateName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginState(Name PreviousStateName)"
+    },
+    "Caps": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Caps(coerce string S)"
+    },
+    "Chr": {
+      "documentation": null,
+      "signature_members": {
+        "i": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Chr(int i)"
+    },
+    "Clamp": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Clamp(int V, int A, int B)"
+    },
+    "ClampLength": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector ClampLength(Vector V, float MaxLength)"
+    },
+    "ClassIsChildOf": {
+      "documentation": null,
+      "signature_members": {
+        "TestClass": {
+          "type": null,
+          "documentation": null
+        },
+        "ParentClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClassIsChildOf(Class<Object> TestClass, Class<Object> ParentClass)"
+    },
+    "ClearCustomTokens": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCustomTokens()"
+    },
+    "ContinuedState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ContinuedState()"
+    },
+    "Cos": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Cos(float A)"
+    },
+    "DebugBreak": {
+      "documentation": null,
+      "signature_members": {
+        "UserFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "DebuggerType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugBreak(optional int UserFlags, optional EDebugBreakType DebuggerType)"
+    },
+    "DumpStateStack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpStateStack()"
+    },
+    "DynamicLoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectName": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "MayFail": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object DynamicLoadObject(string ObjectName, Class<Object> ObjectClass, optional bool MayFail)"
+    },
+    "EndState": {
+      "documentation": null,
+      "signature_members": {
+        "NextStateName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndState(Name NextStateName)"
+    },
+    "EvalInterpCurveFloat": {
+      "documentation": null,
+      "signature_members": {
+        "FloatCurve": {
+          "type": null,
+          "documentation": null
+        },
+        "InVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float EvalInterpCurveFloat(InterpCurveFloat FloatCurve, float InVal)"
+    },
+    "EvalInterpCurveVector": {
+      "documentation": null,
+      "signature_members": {
+        "VectorCurve": {
+          "type": null,
+          "documentation": null
+        },
+        "InVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector EvalInterpCurveVector(InterpCurveVector VectorCurve, float InVal)"
+    },
+    "EvalInterpCurveVector2D": {
+      "documentation": null,
+      "signature_members": {
+        "Vector2DCurve": {
+          "type": null,
+          "documentation": null
+        },
+        "InVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector2D",
+      "signature": "Vector2D EvalInterpCurveVector2D(InterpCurveVector2D Vector2DCurve, float InVal)"
+    },
+    "Exp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Exp(float A)"
+    },
+    "FCeil": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FCeil(float A)"
+    },
+    "FClamp": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FClamp(float V, float A, float B)"
+    },
+    "FCubicInterp": {
+      "documentation": null,
+      "signature_members": {
+        "P0": {
+          "type": null,
+          "documentation": null
+        },
+        "T0": {
+          "type": null,
+          "documentation": null
+        },
+        "P1": {
+          "type": null,
+          "documentation": null
+        },
+        "T1": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FCubicInterp(float P0, float T0, float P1, float T1, float A)"
+    },
+    "FFloor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FFloor(float A)"
+    },
+    "FindObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectName": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object FindObject(string ObjectName, Class<Object> ObjectClass)"
+    },
+    "FInterpConstantTo": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FInterpConstantTo(float Current, float Target, float DeltaTime, float InterpSpeed)"
+    },
+    "FInterpEaseInOut": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        },
+        "Exp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FInterpEaseInOut(float A, float B, float Alpha, float Exp)"
+    },
+    "FInterpTo": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FInterpTo(float Current, float Target, float DeltaTime, float InterpSpeed)"
+    },
+    "FMax": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FMax(float A, float B)"
+    },
+    "FMin": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FMin(float A, float B)"
+    },
+    "FRand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float FRand()"
+    },
+    "GetAngleBetween": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAngleBetween(Vector A, Vector B)"
+    },
+    "GetAngularDistance": {
+      "documentation": null,
+      "signature_members": {
+        "OutAngularDist": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisX": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisY": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAngularDistance(out Vector2D OutAngularDist, Vector Direction, Vector AxisX, Vector AxisY, Vector AxisZ)"
+    },
+    "GetAngularFromDotDist": {
+      "documentation": null,
+      "signature_members": {
+        "OutAngDist": {
+          "type": null,
+          "documentation": null
+        },
+        "DotDist": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAngularFromDotDist(out Vector2D OutAngDist, Vector2D DotDist)"
+    },
+    "GetAxes": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAxes(Rotator A, out Vector X, out Vector Y, out Vector Z)"
+    },
+    "GetDotDistance": {
+      "documentation": null,
+      "signature_members": {
+        "OutDotDist": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisX": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisY": {
+          "type": null,
+          "documentation": null
+        },
+        "AxisZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDotDistance(out Vector2D OutDotDist, Vector Direction, Vector AxisX, Vector AxisY, Vector AxisZ)"
+    },
+    "GetEnum": {
+      "documentation": null,
+      "signature_members": {
+        "E": {
+          "type": null,
+          "documentation": null
+        },
+        "i": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetEnum(Object E, coerce int i)"
+    },
+    "GetEnumIndex": {
+      "documentation": null,
+      "signature_members": {
+        "E": {
+          "type": null,
+          "documentation": null
+        },
+        "valueName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetEnumIndex(Object E, Name valueName)"
+    },
+    "GetFuncName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetFuncName()"
+    },
+    "GetMappedRangeValue": {
+      "documentation": null,
+      "signature_members": {
+        "InputRange": {
+          "type": null,
+          "documentation": null
+        },
+        "OutputRange": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetMappedRangeValue(Vector2D InputRange, Vector2D OutputRange, float Value)"
+    },
+    "GetNetIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNetIndex()"
+    },
+    "GetObjectArrayFromConfigSection": {
+      "documentation": null,
+      "signature_members": {
+        "SearchClass": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ObjectResults": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchChildren": {
+          "type": null,
+          "documentation": null
+        },
+        "ResultOuter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "array<Object> GetObjectArrayFromConfigSection(Class<Object> SearchClass, out array<Object> out_ObjectResults, optional bool SearchChildren, optional Object ResultOuter)"
+    },
+    "GetPerObjectConfigSections": {
+      "documentation": null,
+      "signature_members": {
+        "SearchClass": {
+          "type": null,
+          "documentation": null
+        },
+        "out_SectionNames": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectOuter": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxResults": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPerObjectConfigSections(Class<Object> SearchClass, out array<string> out_SectionNames, optional Object ObjectOuter, optional int MaxResults)"
+    },
+    "GetStateName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStateName()"
+    },
+    "GetSystemTime": {
+      "documentation": null,
+      "signature_members": {
+        "Year": {
+          "type": null,
+          "documentation": null
+        },
+        "Month": {
+          "type": null,
+          "documentation": null
+        },
+        "DayOfWeek": {
+          "type": null,
+          "documentation": null
+        },
+        "Day": {
+          "type": null,
+          "documentation": null
+        },
+        "Hour": {
+          "type": null,
+          "documentation": null
+        },
+        "Min": {
+          "type": null,
+          "documentation": null
+        },
+        "Sec": {
+          "type": null,
+          "documentation": null
+        },
+        "MSec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSystemTime(out int Year, out int Month, out int DayOfWeek, out int Day, out int Hour, out int Min, out int Sec, out int MSec)"
+    },
+    "GetTokenisedString": {
+      "documentation": null,
+      "signature_members": {
+        "srStringID": {
+          "type": null,
+          "documentation": null
+        },
+        "TokenList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetTokenisedString(stringref srStringID, optional array<SFXTokenMapping> TokenList)"
+    },
+    "GetUnAxes": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUnAxes(Rotator A, out Vector X, out Vector Y, out Vector Z)"
+    },
+    "GetVectorSide": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetVectorSide(Vector A, Vector B)"
+    },
+    "GotoState": {
+      "documentation": null,
+      "signature_members": {
+        "NewState": {
+          "type": null,
+          "documentation": null
+        },
+        "Label": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceEvents": {
+          "type": null,
+          "documentation": null
+        },
+        "bKeepStack": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoState(optional Name NewState, optional Name Label, optional bool bForceEvents, optional bool bKeepStack)"
+    },
+    "InStr": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "T": {
+          "type": null,
+          "documentation": null
+        },
+        "bSearchFromRight": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreCase": {
+          "type": null,
+          "documentation": null
+        },
+        "StartPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int InStr(coerce string S, coerce string T, optional bool bSearchFromRight, optional bool bIgnoreCase, optional int StartPos)"
+    },
+    "InverseTransformNormal": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector InverseTransformNormal(Matrix TM, Vector A)"
+    },
+    "InverseTransformVector": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector InverseTransformVector(Matrix TM, Vector A)"
+    },
+    "IsA": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsA(Name className)"
+    },
+    "IsChildState": {
+      "documentation": null,
+      "signature_members": {
+        "TestState": {
+          "type": null,
+          "documentation": null
+        },
+        "TestParentState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsChildState(Name TestState, Name TestParentState)"
+    },
+    "IsInState": {
+      "documentation": null,
+      "signature_members": {
+        "TestState": {
+          "type": null,
+          "documentation": null
+        },
+        "bTestStateStack": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInState(Name TestState, optional bool bTestStateStack)"
+    },
+    "IsPendingKill": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPendingKill()"
+    },
+    "IsUTracing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUTracing()"
+    },
+    "IsZero": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsZero(Vector A)"
+    },
+    "Left": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "i": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Left(coerce string S, int i)"
+    },
+    "Len": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Len(coerce string S)"
+    },
+    "Lerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Lerp(float A, float B, float Alpha)"
+    },
+    "Localize": {
+      "documentation": null,
+      "signature_members": {
+        "SectionName": {
+          "type": null,
+          "documentation": null
+        },
+        "KeyName": {
+          "type": null,
+          "documentation": null
+        },
+        "PackageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Localize(string SectionName, string KeyName, string PackageName)"
+    },
+    "Locs": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Locs(coerce string S)"
+    },
+    "Loge": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Loge(float A)"
+    },
+    "LogInternal": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "Tag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LogInternal(coerce string S, optional Name Tag)"
+    },
+    "MakeRotationMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "Rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix MakeRotationMatrix(Rotator Rotation)"
+    },
+    "MakeRotationTranslationMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "Translation": {
+          "type": null,
+          "documentation": null
+        },
+        "Rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix MakeRotationTranslationMatrix(Vector Translation, Rotator Rotation)"
+    },
+    "MatrixGetAxis": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        },
+        "Axis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector MatrixGetAxis(Matrix TM, EAxis Axis)"
+    },
+    "MatrixGetOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector MatrixGetOrigin(Matrix TM)"
+    },
+    "MatrixGetRotator": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator MatrixGetRotator(Matrix TM)"
+    },
+    "Max": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Max(int A, int B)"
+    },
+    "Mid": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "i": {
+          "type": null,
+          "documentation": null
+        },
+        "J": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Mid(coerce string S, int i, optional int J)"
+    },
+    "Min": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Min(int A, int B)"
+    },
+    "MirrorVectorByNormal": {
+      "documentation": null,
+      "signature_members": {
+        "InVect": {
+          "type": null,
+          "documentation": null
+        },
+        "InNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector MirrorVectorByNormal(Vector InVect, Vector InNormal)"
+    },
+    "Normal": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Normal(Vector A)"
+    },
+    "Normalize": {
+      "documentation": null,
+      "signature_members": {
+        "Rot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator Normalize(Rotator Rot)"
+    },
+    "NormalizeRotAxis": {
+      "documentation": null,
+      "signature_members": {
+        "Angle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int NormalizeRotAxis(int Angle)"
+    },
+    "OrthoRotation": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Z": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator OrthoRotation(Vector X, Vector Y, Vector Z)"
+    },
+    "ParseStringIntoArray": {
+      "documentation": null,
+      "signature_members": {
+        "BaseString": {
+          "type": null,
+          "documentation": null
+        },
+        "Pieces": {
+          "type": null,
+          "documentation": null
+        },
+        "delim": {
+          "type": null,
+          "documentation": null
+        },
+        "bCullEmpty": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseStringIntoArray(string BaseString, out array<string> Pieces, string delim, bool bCullEmpty)"
+    },
+    "PathName": {
+      "documentation": null,
+      "signature_members": {
+        "CheckObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PathName(Object CheckObject)"
+    },
+    "PausedState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PausedState()"
+    },
+    "PointDistToLine": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "Line": {
+          "type": null,
+          "documentation": null
+        },
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "OutClosestPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PointDistToLine(Vector Point, Vector Line, Vector Origin, optional out Vector OutClosestPoint)"
+    },
+    "PointDistToSegment": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "StartPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "EndPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "OutClosestPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PointDistToSegment(Vector Point, Vector StartPoint, Vector EndPoint, optional out Vector OutClosestPoint)"
+    },
+    "PointProjectToPlane": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector PointProjectToPlane(Vector Point, Vector A, Vector B, Vector C)"
+    },
+    "PoppedState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PoppedState()"
+    },
+    "PopState": {
+      "documentation": null,
+      "signature_members": {
+        "bPopAll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopState(optional bool bPopAll)"
+    },
+    "ProjectOnTo": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector ProjectOnTo(Vector X, Vector Y)"
+    },
+    "PushedState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PushedState()"
+    },
+    "PushState": {
+      "documentation": null,
+      "signature_members": {
+        "NewState": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PushState(Name NewState, optional Name NewLabel)"
+    },
+    "QuatDot": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float QuatDot(Quat A, Quat B)"
+    },
+    "QuatFindBetween": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat QuatFindBetween(Vector A, Vector B)"
+    },
+    "QuatFromAxisAndAngle": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        },
+        "Angle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat QuatFromAxisAndAngle(Vector Axis, float Angle)"
+    },
+    "QuatFromRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat QuatFromRotator(Rotator A)"
+    },
+    "QuatInvert": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat QuatInvert(Quat A)"
+    },
+    "QuatProduct": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat QuatProduct(Quat A, Quat B)"
+    },
+    "QuatRotateVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector QuatRotateVector(Quat A, Vector B)"
+    },
+    "QuatSlerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        },
+        "bShortestPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat QuatSlerp(Quat A, Quat B, float Alpha, optional bool bShortestPath)"
+    },
+    "QuatToRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator QuatToRotator(Quat A)"
+    },
+    "Rand": {
+      "documentation": null,
+      "signature_members": {
+        "Max": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Rand(int Max)"
+    },
+    "RDiff": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float RDiff(Rotator A, Rotator B)"
+    },
+    "Repl": {
+      "documentation": null,
+      "signature_members": {
+        "Src": {
+          "type": null,
+          "documentation": null
+        },
+        "Match": {
+          "type": null,
+          "documentation": null
+        },
+        "With": {
+          "type": null,
+          "documentation": null
+        },
+        "bCaseSensitive": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Repl(coerce string Src, coerce string Match, coerce string With, optional bool bCaseSensitive)"
+    },
+    "Right": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "i": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Right(coerce string S, int i)"
+    },
+    "RInterpTo": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "bConstantInterpSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator RInterpTo(Rotator Current, Rotator Target, float DeltaTime, float InterpSpeed, optional bool bConstantInterpSpeed)"
+    },
+    "RLerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        },
+        "bShortestPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator RLerp(Rotator A, Rotator B, float Alpha, optional bool bShortestPath)"
+    },
+    "RotRand": {
+      "documentation": null,
+      "signature_members": {
+        "bRoll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator RotRand(optional bool bRoll)"
+    },
+    "Round": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Round(float A)"
+    },
+    "RSmerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        },
+        "bShortestPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator RSmerp(Rotator A, Rotator B, float Alpha, optional bool bShortestPath)"
+    },
+    "RTransform": {
+      "documentation": null,
+      "signature_members": {
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "RBasis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator RTransform(Rotator R, Rotator RBasis)"
+    },
+    "SaveConfig": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveConfig()"
+    },
+    "ScriptTrace": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScriptTrace()"
+    },
+    "SetBioRwBox": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Min": {
+          "type": null,
+          "documentation": null
+        },
+        "Max": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBioRwBox(BioRwBox Target, Vector Min, Vector Max)"
+    },
+    "SetCustomToken": {
+      "documentation": null,
+      "signature_members": {
+        "nTokenNum": {
+          "type": null,
+          "documentation": null
+        },
+        "sToken": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCustomToken(int nTokenNum, string sToken)"
+    },
+    "SetUTracing": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldUTrace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUTracing(bool bShouldUTrace)"
+    },
+    "Sin": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Sin(float A)"
+    },
+    "Sqrt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Sqrt(float A)"
+    },
+    "Square": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Square(float A)"
+    },
+    "StaticSaveConfig": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StaticSaveConfig()"
+    },
+    "Tan": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Tan(float A)"
+    },
+    "TimeStamp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string TimeStamp()"
+    },
+    "ToHex": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ToHex(int A)"
+    },
+    "TransformNormal": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector TransformNormal(Matrix TM, Vector A)"
+    },
+    "TransformVector": {
+      "documentation": null,
+      "signature_members": {
+        "TM": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector TransformVector(Matrix TM, Vector A)"
+    },
+    "TransformVectorByRotation": {
+      "documentation": null,
+      "signature_members": {
+        "SourceRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceVector": {
+          "type": null,
+          "documentation": null
+        },
+        "bInverse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector TransformVectorByRotation(Rotator SourceRotation, Vector SourceVector, optional bool bInverse)"
+    },
+    "VInterpTo": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector VInterpTo(Vector Current, Vector Target, float DeltaTime, float InterpSpeed)"
+    },
+    "VLerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector VLerp(Vector A, Vector B, float Alpha)"
+    },
+    "VRand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector VRand()"
+    },
+    "VRandCone": {
+      "documentation": null,
+      "signature_members": {
+        "Dir": {
+          "type": null,
+          "documentation": null
+        },
+        "ConeHalfAngleRadians": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector VRandCone(Vector Dir, float ConeHalfAngleRadians)"
+    },
+    "VRandCone2": {
+      "documentation": null,
+      "signature_members": {
+        "Dir": {
+          "type": null,
+          "documentation": null
+        },
+        "HorizontalConeHalfAngleRadians": {
+          "type": null,
+          "documentation": null
+        },
+        "VerticalConeHalfAngleRadians": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector VRandCone2(Vector Dir, float HorizontalConeHalfAngleRadians, float VerticalConeHalfAngleRadians)"
+    },
+    "VSize": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float VSize(Vector A)"
+    },
+    "VSize2D": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float VSize2D(Vector A)"
+    },
+    "VSizeSq": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float VSizeSq(Vector A)"
+    },
+    "VSizeSq2D": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float VSizeSq2D(Vector A)"
+    },
+    "VSmerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector VSmerp(Vector A, Vector B, float Alpha)"
+    },
+    "WarnInternal": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WarnInternal(coerce string S)"
+    },
+    "Add_ColorColor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color Add_ColorColor(Color A, Color B)"
+    },
+    "Add_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Add_FloatFloat(float A, float B)"
+    },
+    "Add_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Add_IntInt(int A, int B)"
+    },
+    "Add_QuatQuat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat Add_QuatQuat(Quat A, Quat B)"
+    },
+    "Add_RotatorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator Add_RotatorRotator(Rotator A, Rotator B)"
+    },
+    "Add_Vector2DVector2D": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector2D",
+      "signature": "Vector2D Add_Vector2DVector2D(Vector2D A, Vector2D B)"
+    },
+    "Add_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Add_VectorVector(Vector A, Vector B)"
+    },
+    "AddAdd_Byte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte AddAdd_Byte(out byte A)"
+    },
+    "AddAdd_Int": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddAdd_Int(out int A)"
+    },
+    "AddAdd_PreByte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte AddAdd_PreByte(out byte A)"
+    },
+    "AddAdd_PreInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddAdd_PreInt(out int A)"
+    },
+    "AddEqual_ByteByte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte AddEqual_ByteByte(out byte A, byte B)"
+    },
+    "AddEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float AddEqual_FloatFloat(out float A, float B)"
+    },
+    "AddEqual_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddEqual_IntInt(out int A, int B)"
+    },
+    "AddEqual_RotatorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator AddEqual_RotatorRotator(out Rotator A, Rotator B)"
+    },
+    "AddEqual_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector AddEqual_VectorVector(out Vector A, Vector B)"
+    },
+    "And_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int And_IntInt(int A, int B)"
+    },
+    "AndAnd_BoolBool": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AndAnd_BoolBool(bool A, skip bool B)"
+    },
+    "appScreenDebugMessage": {
+      "documentation": null,
+      "signature_members": {
+        "sMsg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "appScreenDebugMessage(string sMsg)"
+    },
+    "At_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string At_StrStr(coerce string A, coerce string B)"
+    },
+    "AtEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string AtEqual_StrStr(out string A, coerce string B)"
+    },
+    "ByteToFloat": {
+      "documentation": null,
+      "signature_members": {
+        "inputByte": {
+          "type": null,
+          "documentation": null
+        },
+        "bSigned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ByteToFloat(byte inputByte, optional bool bSigned)"
+    },
+    "ClampRotAxis": {
+      "documentation": null,
+      "signature_members": {
+        "ViewAxis": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DeltaViewAxis": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxLimit": {
+          "type": null,
+          "documentation": null
+        },
+        "MinLimit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClampRotAxis(int ViewAxis, out int out_DeltaViewAxis, int MaxLimit, int MinLimit)"
+    },
+    "ClampRotAxisFromBase": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Center": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ClampRotAxisFromBase(int Current, int Center, int MaxDelta)"
+    },
+    "ClampRotAxisFromRange": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": null,
+          "documentation": null
+        },
+        "Min": {
+          "type": null,
+          "documentation": null
+        },
+        "Max": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ClampRotAxisFromRange(int Current, int Min, int Max)"
+    },
+    "ClockwiseFrom_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClockwiseFrom_IntInt(int A, int B)"
+    },
+    "ColorToLinearColor": {
+      "documentation": null,
+      "signature_members": {
+        "OldColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LinearColor",
+      "signature": "LinearColor ColorToLinearColor(Color OldColor)"
+    },
+    "Complement_PreInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Complement_PreInt(int A)"
+    },
+    "ComplementEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ComplementEqual_FloatFloat(float A, float B)"
+    },
+    "ComplementEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ComplementEqual_StrStr(string A, string B)"
+    },
+    "Concat_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Concat_StrStr(coerce string A, coerce string B)"
+    },
+    "ConcatEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConcatEqual_StrStr(out string A, coerce string B)"
+    },
+    "Cross_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Cross_VectorVector(Vector A, Vector B)"
+    },
+    "Divide_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Divide_FloatFloat(float A, float B)"
+    },
+    "Divide_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Divide_IntInt(int A, int B)"
+    },
+    "Divide_RotatorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator Divide_RotatorFloat(Rotator A, float B)"
+    },
+    "Divide_VectorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Divide_VectorFloat(Vector A, float B)"
+    },
+    "DivideEqual_ByteByte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte DivideEqual_ByteByte(out byte A, byte B)"
+    },
+    "DivideEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float DivideEqual_FloatFloat(out float A, float B)"
+    },
+    "DivideEqual_IntFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int DivideEqual_IntFloat(out int A, float B)"
+    },
+    "DivideEqual_RotatorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator DivideEqual_RotatorFloat(out Rotator A, float B)"
+    },
+    "DivideEqual_VectorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector DivideEqual_VectorFloat(out Vector A, float B)"
+    },
+    "Dot_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Dot_VectorVector(Vector A, Vector B)"
+    },
+    "EqualEqual_BoolBool": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_BoolBool(bool A, bool B)"
+    },
+    "EqualEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_FloatFloat(float A, float B)"
+    },
+    "EqualEqual_InterfaceInterface": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_InterfaceInterface(Interface A, Interface B)"
+    },
+    "EqualEqual_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_IntInt(int A, int B)"
+    },
+    "EqualEqual_IntStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_IntStringRef(int A, stringref B)"
+    },
+    "EqualEqual_NameName": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_NameName(Name A, Name B)"
+    },
+    "EqualEqual_ObjectObject": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_ObjectObject(Object A, Object B)"
+    },
+    "EqualEqual_RotatorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_RotatorRotator(Rotator A, Rotator B)"
+    },
+    "EqualEqual_StringRefInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_StringRefInt(stringref A, int B)"
+    },
+    "EqualEqual_StringRefStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_StringRefStringRef(stringref A, stringref B)"
+    },
+    "EqualEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_StrStr(string A, string B)"
+    },
+    "EqualEqual_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EqualEqual_VectorVector(Vector A, Vector B)"
+    },
+    "FindDeltaAngle": {
+      "documentation": null,
+      "signature_members": {
+        "A1": {
+          "type": null,
+          "documentation": null
+        },
+        "A2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FindDeltaAngle(float A1, float A2)"
+    },
+    "FInterpEaseIn": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        },
+        "Exp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FInterpEaseIn(float A, float B, float Alpha, float Exp)"
+    },
+    "FInterpEaseOut": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        },
+        "Exp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FInterpEaseOut(float A, float B, float Alpha, float Exp)"
+    },
+    "FloatToByte": {
+      "documentation": null,
+      "signature_members": {
+        "inputFloat": {
+          "type": null,
+          "documentation": null
+        },
+        "bSigned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte FloatToByte(float inputFloat, optional bool bSigned)"
+    },
+    "FPctByRange": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        },
+        "InMin": {
+          "type": null,
+          "documentation": null
+        },
+        "InMax": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FPctByRange(float Value, float InMin, float InMax)"
+    },
+    "GetAngularDegreesFromRadians": {
+      "documentation": null,
+      "signature_members": {
+        "OutFOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAngularDegreesFromRadians(out Vector2D OutFOV)"
+    },
+    "GetHeadingAngle": {
+      "documentation": null,
+      "signature_members": {
+        "Dir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetHeadingAngle(Vector Dir)"
+    },
+    "GetPackageName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetPackageName()"
+    },
+    "GetRangePctByValue": {
+      "documentation": null,
+      "signature_members": {
+        "Range": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRangePctByValue(Vector2D Range, float Value)"
+    },
+    "GetRangeValueByPct": {
+      "documentation": null,
+      "signature_members": {
+        "Range": {
+          "type": null,
+          "documentation": null
+        },
+        "Pct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRangeValueByPct(Vector2D Range, float Pct)"
+    },
+    "GetRightMost": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetRightMost(coerce string Text)"
+    },
+    "Greater_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Greater_FloatFloat(float A, float B)"
+    },
+    "Greater_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Greater_IntInt(int A, int B)"
+    },
+    "Greater_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Greater_StrStr(string A, string B)"
+    },
+    "GreaterEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GreaterEqual_FloatFloat(float A, float B)"
+    },
+    "GreaterEqual_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GreaterEqual_IntInt(int A, int B)"
+    },
+    "GreaterEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GreaterEqual_StrStr(string A, string B)"
+    },
+    "GreaterGreater_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GreaterGreater_IntInt(int A, int B)"
+    },
+    "GreaterGreater_VectorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GreaterGreater_VectorRotator(Vector A, Rotator B)"
+    },
+    "GreaterGreaterGreater_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GreaterGreaterGreater_IntInt(int A, int B)"
+    },
+    "InCylinder": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Dir": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InCylinder(Vector Origin, Rotator Dir, float Width, Vector A, optional bool bIgnoreZ)"
+    },
+    "JoinArray": {
+      "documentation": null,
+      "signature_members": {
+        "StringArray": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Result": {
+          "type": null,
+          "documentation": null
+        },
+        "delim": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreBlanks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JoinArray(array<string> StringArray, out string out_Result, optional string delim, optional bool bIgnoreBlanks)"
+    },
+    "LerpColor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color LerpColor(Color A, Color B, float Alpha)"
+    },
+    "Less_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Less_FloatFloat(float A, float B)"
+    },
+    "Less_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Less_IntInt(int A, int B)"
+    },
+    "Less_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Less_StrStr(string A, string B)"
+    },
+    "LessEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LessEqual_FloatFloat(float A, float B)"
+    },
+    "LessEqual_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LessEqual_IntInt(int A, int B)"
+    },
+    "LessEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LessEqual_StrStr(string A, string B)"
+    },
+    "LessLess_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int LessLess_IntInt(int A, int B)"
+    },
+    "LessLess_VectorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector LessLess_VectorRotator(Vector A, Rotator B)"
+    },
+    "MakeColor": {
+      "documentation": null,
+      "signature_members": {
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color MakeColor(byte R, byte G, byte B, optional byte A)"
+    },
+    "MakeLinearColor": {
+      "documentation": null,
+      "signature_members": {
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LinearColor",
+      "signature": "LinearColor MakeLinearColor(float R, float G, float B, float A)"
+    },
+    "MakeRotator": {
+      "documentation": null,
+      "signature_members": {
+        "Pitch": {
+          "type": null,
+          "documentation": null
+        },
+        "Yaw": {
+          "type": null,
+          "documentation": null
+        },
+        "Roll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator MakeRotator(int Pitch, int Yaw, int Roll)"
+    },
+    "Multiply_ColorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color Multiply_ColorFloat(Color A, float B)"
+    },
+    "Multiply_FloatColor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color Multiply_FloatColor(float A, Color B)"
+    },
+    "Multiply_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Multiply_FloatFloat(float A, float B)"
+    },
+    "Multiply_FloatRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator Multiply_FloatRotator(float A, Rotator B)"
+    },
+    "Multiply_FloatVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Multiply_FloatVector(float A, Vector B)"
+    },
+    "Multiply_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Multiply_IntInt(int A, int B)"
+    },
+    "Multiply_LinearColorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "LC": {
+          "type": null,
+          "documentation": null
+        },
+        "Mult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LinearColor",
+      "signature": "LinearColor Multiply_LinearColorFloat(LinearColor LC, float Mult)"
+    },
+    "Multiply_MatrixMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix Multiply_MatrixMatrix(Matrix A, Matrix B)"
+    },
+    "Multiply_RotatorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator Multiply_RotatorFloat(Rotator A, float B)"
+    },
+    "Multiply_VectorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Multiply_VectorFloat(Vector A, float B)"
+    },
+    "Multiply_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Multiply_VectorVector(Vector A, Vector B)"
+    },
+    "MultiplyEqual_ByteByte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte MultiplyEqual_ByteByte(out byte A, byte B)"
+    },
+    "MultiplyEqual_ByteFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte MultiplyEqual_ByteFloat(out byte A, float B)"
+    },
+    "MultiplyEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float MultiplyEqual_FloatFloat(out float A, float B)"
+    },
+    "MultiplyEqual_IntFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int MultiplyEqual_IntFloat(out int A, float B)"
+    },
+    "MultiplyEqual_RotatorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator MultiplyEqual_RotatorFloat(out Rotator A, float B)"
+    },
+    "MultiplyEqual_VectorFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector MultiplyEqual_VectorFloat(out Vector A, float B)"
+    },
+    "MultiplyEqual_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector MultiplyEqual_VectorVector(out Vector A, Vector B)"
+    },
+    "MultiplyMultiply_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Base": {
+          "type": null,
+          "documentation": null
+        },
+        "Exp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float MultiplyMultiply_FloatFloat(float Base, float Exp)"
+    },
+    "Not_PreBool": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Not_PreBool(bool A)"
+    },
+    "NotEqual_BoolBool": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_BoolBool(bool A, bool B)"
+    },
+    "NotEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_FloatFloat(float A, float B)"
+    },
+    "NotEqual_InterfaceInterface": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_InterfaceInterface(Interface A, Interface B)"
+    },
+    "NotEqual_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_IntInt(int A, int B)"
+    },
+    "NotEqual_IntStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_IntStringRef(int A, stringref B)"
+    },
+    "NotEqual_NameName": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_NameName(Name A, Name B)"
+    },
+    "NotEqual_ObjectObject": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_ObjectObject(Object A, Object B)"
+    },
+    "NotEqual_RotatorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_RotatorRotator(Rotator A, Rotator B)"
+    },
+    "NotEqual_StringRefInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_StringRefInt(stringref A, int B)"
+    },
+    "NotEqual_StringRefStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_StringRefStringRef(stringref A, stringref B)"
+    },
+    "NotEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_StrStr(string A, string B)"
+    },
+    "NotEqual_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotEqual_VectorVector(Vector A, Vector B)"
+    },
+    "NoZDot": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float NoZDot(Vector A, Vector B)"
+    },
+    "Or_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Or_IntInt(int A, int B)"
+    },
+    "OrOr_BoolBool": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OrOr_BoolBool(bool A, skip bool B)"
+    },
+    "ParseLocalizedPropertyPath": {
+      "documentation": null,
+      "signature_members": {
+        "PathName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ParseLocalizedPropertyPath(string PathName)"
+    },
+    "Percent_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Percent_FloatFloat(float A, float B)"
+    },
+    "Percent_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Percent_IntInt(int A, int B)"
+    },
+    "PointDistToPlane": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": null,
+          "documentation": null
+        },
+        "Orientation": {
+          "type": null,
+          "documentation": null
+        },
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ClosestPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PointDistToPlane(Vector Point, Rotator Orientation, Vector Origin, optional out Vector out_ClosestPoint)"
+    },
+    "RandRange": {
+      "documentation": null,
+      "signature_members": {
+        "InMin": {
+          "type": null,
+          "documentation": null
+        },
+        "InMax": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float RandRange(float InMin, float InMax)"
+    },
+    "RSize": {
+      "documentation": null,
+      "signature_members": {
+        "R": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float RSize(Rotator R)"
+    },
+    "SClampRotAxis": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ViewAxis": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DeltaViewAxis": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxLimit": {
+          "type": null,
+          "documentation": null
+        },
+        "MinLimit": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpolationSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SClampRotAxis(float DeltaTime, int ViewAxis, out int out_DeltaViewAxis, int MaxLimit, int MinLimit, float InterpolationSpeed)"
+    },
+    "Split": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "SplitStr": {
+          "type": null,
+          "documentation": null
+        },
+        "bOmitSplitStr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string Split(coerce string Text, coerce string SplitStr, optional bool bOmitSplitStr)"
+    },
+    "SplitString": {
+      "documentation": null,
+      "signature_members": {
+        "Source": {
+          "type": null,
+          "documentation": null
+        },
+        "Delimiter": {
+          "type": null,
+          "documentation": null
+        },
+        "bCullEmpty": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "array<string> SplitString(string Source, optional string Delimiter, optional bool bCullEmpty)"
+    },
+    "Subtract_ColorColor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color Subtract_ColorColor(Color A, Color B)"
+    },
+    "Subtract_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Subtract_FloatFloat(float A, float B)"
+    },
+    "Subtract_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Subtract_IntInt(int A, int B)"
+    },
+    "Subtract_LinearColorLinearColor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LinearColor",
+      "signature": "LinearColor Subtract_LinearColorLinearColor(LinearColor A, LinearColor B)"
+    },
+    "Subtract_PreFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Subtract_PreFloat(float A)"
+    },
+    "Subtract_PreInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Subtract_PreInt(int A)"
+    },
+    "Subtract_PreVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Subtract_PreVector(Vector A)"
+    },
+    "Subtract_QuatQuat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat Subtract_QuatQuat(Quat A, Quat B)"
+    },
+    "Subtract_RotatorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator Subtract_RotatorRotator(Rotator A, Rotator B)"
+    },
+    "Subtract_Vector2DVector2D": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector2D",
+      "signature": "Vector2D Subtract_Vector2DVector2D(Vector2D A, Vector2D B)"
+    },
+    "Subtract_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Subtract_VectorVector(Vector A, Vector B)"
+    },
+    "SubtractEqual_ByteByte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte SubtractEqual_ByteByte(out byte A, byte B)"
+    },
+    "SubtractEqual_FloatFloat": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float SubtractEqual_FloatFloat(out float A, float B)"
+    },
+    "SubtractEqual_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int SubtractEqual_IntInt(out int A, int B)"
+    },
+    "SubtractEqual_RotatorRotator": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator SubtractEqual_RotatorRotator(out Rotator A, Rotator B)"
+    },
+    "SubtractEqual_StrStr": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string SubtractEqual_StrStr(out string A, coerce string B)"
+    },
+    "SubtractEqual_VectorVector": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector SubtractEqual_VectorVector(out Vector A, Vector B)"
+    },
+    "SubtractSubtract_Byte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte SubtractSubtract_Byte(out byte A)"
+    },
+    "SubtractSubtract_Int": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int SubtractSubtract_Int(out int A)"
+    },
+    "SubtractSubtract_PreByte": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte SubtractSubtract_PreByte(out byte A)"
+    },
+    "SubtractSubtract_PreInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int SubtractSubtract_PreInt(out int A)"
+    },
+    "UnwindHeading": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float UnwindHeading(float A)"
+    },
+    "vect2d": {
+      "documentation": null,
+      "signature_members": {
+        "InX": {
+          "type": null,
+          "documentation": null
+        },
+        "InY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector2D",
+      "signature": "Vector2D vect2d(float InX, float InY)"
+    },
+    "Xor_IntInt": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int Xor_IntInt(int A, int B)"
+    },
+    "XorXor_BoolBool": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool XorXor_BoolBool(bool A, bool B)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

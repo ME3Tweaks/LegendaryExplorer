@@ -1,0 +1,473 @@
+{
+  "parent": "GameReplicationInfo",
+  "package": "SFXGame",
+  "variables": {
+    "__GenericTimerCallback__Delegate": {
+      "type": "GenericTimerCallback",
+      "documentation": null
+    },
+    "DifficultyHandlerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "VocManagerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ObjectPool": {
+      "type": "SFXObjectPool",
+      "documentation": null
+    },
+    "PreAsyncWorker": {
+      "type": "SFXPreAsyncWorkTicker",
+      "documentation": null
+    },
+    "DuringAsyncWorker": {
+      "type": "SFXDuringAsyncWorkTicker",
+      "documentation": null
+    },
+    "gameconfig": {
+      "type": "SFXGameConfig",
+      "documentation": null
+    },
+    "VocManager": {
+      "type": "SFXVocalizationManager",
+      "documentation": null
+    },
+    "MarkerModuleManager": {
+      "type": "SFXMarkerModuleManager",
+      "documentation": null
+    },
+    "DifficultyHandler": {
+      "type": "SFXDifficultyHandler",
+      "documentation": null
+    },
+    "WaveCoordinator": {
+      "type": "SFXWaveCoordinator",
+      "documentation": null
+    },
+    "m_pClientEffectManager": {
+      "type": "RvrClientEffectManager",
+      "documentation": null
+    },
+    "m_pClientEffectPool": {
+      "type": "RvrClientEffectPool",
+      "documentation": null
+    },
+    "StormStamina": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormRegen": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormStaminaNonCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormRegenNonCombat": {
+      "type": "float",
+      "documentation": null
+    },
+    "HackCrouchCoverOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "WaveDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCanSpawnHenchmen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayerCanChangeSquad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPauseForCommand": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowTimeDilation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMultiplayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsMultiplayerCharacter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanShowMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanShowCodex": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanShowJournal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceOperationWave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MaxUniquePlayers": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearAllMarkerActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllMarkerActors()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "DestroyLoadMovieAudio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestroyLoadMovieAudio()"
+    },
+    "GenericTimerCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GenericTimerCallback()"
+    },
+    "GetPlayerLevel": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerLevel(int ControllerId, out int PlayerLevel)"
+    },
+    "InCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InCombat()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "TriggerVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VocalizationID": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "Recipient": {
+          "type": null,
+          "documentation": null
+        },
+        "Delay": {
+          "type": null,
+          "documentation": null
+        },
+        "fChanceToPlayModifier": {
+          "type": null,
+          "documentation": null
+        },
+        "bReplicated": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerVocalizationEvent(byte VocalizationID, BioPawn instigatedBy, optional BioPawn Recipient, optional float Delay, optional float fChanceToPlayModifier, optional bool bReplicated)"
+    },
+    "CopyProperties": {
+      "documentation": null,
+      "signature_members": {
+        "OldGRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyProperties(SFXGRI OldGRI)"
+    },
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "injured": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCalc": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyDamage(out float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, Vector Momentum, Class<SFXDamageType> DamageType, Actor injured, Controller instigatedBy, out DamageCalculationAlgorithm DamageCalc, optional Actor DamageCauser)"
+    },
+    "AddSquadMedal": {
+      "documentation": null,
+      "signature_members": {
+        "Medal": {
+          "type": null,
+          "documentation": null
+        },
+        "ReplaceMedal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSquadMedal(int Medal, optional int ReplaceMedal)"
+    },
+    "ClearGenericTimer": {
+      "documentation": null,
+      "signature_members": {
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearGenericTimer(delegate<GenericTimerCallback> Callback)"
+    },
+    "CreateWaveCoordinator": {
+      "documentation": null,
+      "signature_members": {
+        "WaveCoordinatorClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateWaveCoordinator(Class<SFXWaveCoordinator> WaveCoordinatorClass)"
+    },
+    "GenericTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GenericTimer()"
+    },
+    "GetEnemyWaveTypeID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetEnemyWaveTypeID()"
+    },
+    "GetEventTicker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXMPEventTicker",
+      "signature": "SFXMPEventTicker GetEventTicker()"
+    },
+    "GetMapID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMapID()"
+    },
+    "GetScoreManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXScoreManager",
+      "signature": "SFXScoreManager GetScoreManager()"
+    },
+    "GetTeamScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTeamScore()"
+    },
+    "HasSquadMedal": {
+      "documentation": null,
+      "signature_members": {
+        "Medal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasSquadMedal(int Medal)"
+    },
+    "IsGameOver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsGameOver()"
+    },
+    "IsJoinInProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsJoinInProgress()"
+    },
+    "IsOperationWave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsOperationWave()"
+    },
+    "NextLivingPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn NextLivingPlayer()"
+    },
+    "NumLivingPlayers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int NumLivingPlayers()"
+    },
+    "NumPlayersInGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int NumPlayersInGame()"
+    },
+    "OnMissionComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnMissionComplete()"
+    },
+    "PlayTransientSound": {
+      "documentation": null,
+      "signature_members": {
+        "InWwiseEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "SoundLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "RTPCName": {
+          "type": null,
+          "documentation": null
+        },
+        "RTPCValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayTransientSound(WwiseBaseSoundObject InWwiseEvent, Vector SoundLocation, optional array<string> RTPCName, optional array<float> RTPCValue)"
+    },
+    "RandomFactionChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RandomFactionChosen()"
+    },
+    "RandomMapChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RandomMapChosen()"
+    },
+    "SetGenericTimer": {
+      "documentation": null,
+      "signature_members": {
+        "InRate": {
+          "type": null,
+          "documentation": null
+        },
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetGenericTimer(float InRate, delegate<GenericTimerCallback> Callback)"
+    },
+    "SetMatchMinuteCounter": {
+      "documentation": null,
+      "signature_members": {
+        "MatchTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMatchMinuteCounter(int MatchTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

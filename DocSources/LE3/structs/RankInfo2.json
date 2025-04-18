@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Icon": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "Evolved1Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Evolved1Description": {
+      "type": null,
+      "documentation": null
+    },
+    "Evolved2Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Evolved2Description": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,44 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "ComplexPropertyTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "__CanSupportComplexPropertyType__Delegate": {
+      "type": "CanSupportComplexPropertyType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanSupportComplexPropertyType": {
+      "documentation": null,
+      "signature_members": {
+        "UnsupportedProperty": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSupportComplexPropertyType(Property UnsupportedProperty)"
+    },
+    "GetCustomPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyValue": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCustomPropertyValue(out UIProviderScriptFieldValue PropertyValue, optional int ArrayIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,768 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "Slots": {
+      "type": "CoverSlot",
+      "documentation": null
+    },
+    "DynamicLinkInfos": {
+      "type": "DynamicLinkInfo",
+      "documentation": null
+    },
+    "Claims": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "CircularOrigin": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StandingLeanOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CrouchLeanOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PopupOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "NextCoverLink": {
+      "type": "CoverLink",
+      "documentation": null
+    },
+    "InvalidateDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFireLinkDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "CircularRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "AlignDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "AutoCoverSlotInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "StandHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "MidHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "SlipDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "DangerScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "GLOBAL_bUseSlotMarkers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClaimAllSlots": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoSort": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoAdjust": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCircular": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLooped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDynamicCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug_FireLinks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug_ExposedLinks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug_DangerLinks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LocationDescription": {
+      "type": "ECoverLocationDescription",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddCoverSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceSlotUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddCoverSlot(Vector SlotLocation, Rotator SlotRotation, optional int SlotIdx, optional bool bForceSlotUpdate)"
+    },
+    "AutoAdjustSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyCheckLeans": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AutoAdjustSlot(int SlotIdx, bool bOnlyCheckLeans)"
+    },
+    "Claim": {
+      "documentation": null,
+      "signature_members": {
+        "NewClaim": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Claim(Pawn NewClaim, int SlotIdx)"
+    },
+    "FindSlots": {
+      "documentation": null,
+      "signature_members": {
+        "CheckLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "LeftSlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "RightSlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindSlots(Vector CheckLocation, float MaxDistance, out int LeftSlotIdx, out int RightSlotIdx)"
+    },
+    "GetCoverTurnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Info": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCoverTurnTarget(int SlotIdx, int Direction, out CoverInfo out_Info)"
+    },
+    "GetDebugAbbrev": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugAbbrev()"
+    },
+    "GetDebugString": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDebugString(int SlotIdx)"
+    },
+    "GetFireLinkTargetCoverInfo": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "FireLinkIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Info": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFireLinkTargetCoverInfo(int SlotIdx, int FireLinkIdx, out CoverInfo out_Info, optional EFireLinkID ArrayID)"
+    },
+    "GetFireLinkTo": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkCover": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkAction": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkType": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FireLinkIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Items": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFireLinkTo(int SlotIdx, CoverInfo ChkCover, ECoverAction ChkAction, ECoverType ChkType, out int out_FireLinkIdx, out array<int> out_Items)"
+    },
+    "GetLocationDescription": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ECoverLocationDescription",
+      "signature": "ECoverLocationDescription GetLocationDescription(int SlotIdx)"
+    },
+    "GetSlotActions": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Actions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSlotActions(int SlotIdx, out array<ECoverAction> Actions)"
+    },
+    "GetSlotIdxToLeft": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Cnt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSlotIdxToLeft(int SlotIdx, optional int Cnt)"
+    },
+    "GetSlotIdxToRight": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Cnt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSlotIdxToRight(int SlotIdx, optional int Cnt)"
+    },
+    "GetSlotLocation": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceUseOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetSlotLocation(int SlotIdx, optional bool bForceUseOffset)"
+    },
+    "GetSlotMarker": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "CoverSlotMarker",
+      "signature": "CoverSlotMarker GetSlotMarker(int SlotIdx)"
+    },
+    "GetSlotRotation": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceUseOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetSlotRotation(int SlotIdx, optional bool bForceUseOffset)"
+    },
+    "GetSlotViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetSlotViewPoint(int SlotIdx, optional ECoverType Type, optional ECoverAction Action)"
+    },
+    "GetSwatTurnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Info": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSwatTurnTarget(int SlotIdx, int Direction, out CoverInfo out_Info)"
+    },
+    "HasFireLinkTo": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkCover": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowFallbackLinks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasFireLinkTo(int SlotIdx, CoverInfo ChkCover, optional bool bAllowFallbackLinks)"
+    },
+    "IsEdgeSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreLeans": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEdgeSlot(int SlotIdx, optional bool bIgnoreLeans)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "IsExposedTo": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkSlot": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ExposedScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsExposedTo(int SlotIdx, CoverInfo ChkSlot, out float out_ExposedScale)"
+    },
+    "IsLeftEdgeSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreLeans": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsLeftEdgeSlot(int SlotIdx, bool bIgnoreLeans)"
+    },
+    "IsRightEdgeSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreLeans": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsRightEdgeSlot(int SlotIdx, bool bIgnoreLeans)"
+    },
+    "IsValidClaim": {
+      "documentation": null,
+      "signature_members": {
+        "ChkClaim": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipTeamCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipOverlapCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidClaim(Pawn ChkClaim, int SlotIdx, optional bool bSkipTeamCheck, optional bool bSkipOverlapCheck)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "PackFireLinkInteractionInfo": {
+      "documentation": null,
+      "signature_members": {
+        "SrcType": {
+          "type": null,
+          "documentation": null
+        },
+        "SrcAction": {
+          "type": null,
+          "documentation": null
+        },
+        "DestType": {
+          "type": null,
+          "documentation": null
+        },
+        "DestAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte PackFireLinkInteractionInfo(ECoverType SrcType, ECoverAction SrcAction, ECoverType DestType, ECoverAction DestAction)"
+    },
+    "RemovedFromWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemovedFromWorld()"
+    },
+    "SetDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bNewDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisabled(bool bNewDisabled)"
+    },
+    "SetInvalidUntil": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeToBecomeValid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInvalidUntil(int SlotIdx, float TimeToBecomeValid)"
+    },
+    "SetSlotEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSlotEnabled(int SlotIdx, bool bEnable)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UnClaim": {
+      "documentation": null,
+      "signature_members": {
+        "OldClaim": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bUnclaimAll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnClaim(Pawn OldClaim, int SlotIdx, bool bUnclaimAll)"
+    },
+    "UnPackFireLinkInteractionInfo": {
+      "documentation": null,
+      "signature_members": {
+        "PackedByte": {
+          "type": null,
+          "documentation": null
+        },
+        "SrcType": {
+          "type": null,
+          "documentation": null
+        },
+        "SrcAction": {
+          "type": null,
+          "documentation": null
+        },
+        "DestType": {
+          "type": null,
+          "documentation": null
+        },
+        "DestAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnPackFireLinkInteractionInfo(const byte PackedByte, out ECoverType SrcType, out ECoverAction SrcAction, out ECoverType DestType, out ECoverAction DestAction)"
+    },
+    "AllowLeftTransition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowLeftTransition(int SlotIdx)"
+    },
+    "AllowRightTransition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowRightTransition(int SlotIdx)"
+    },
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "IsStationarySlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsStationarySlot(int SlotIdx)"
+    },
+    "NotifySlotOwnerCoverDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySlotOwnerCoverDisabled(int SlotIdx)"
+    },
+    "OnModifyCover": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnModifyCover(SeqAct_ModifyCover Action)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

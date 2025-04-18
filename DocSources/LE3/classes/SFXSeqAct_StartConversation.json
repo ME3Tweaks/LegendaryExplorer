@@ -1,0 +1,40 @@
+{
+  "parent": "SFXSeqAct_StartAmbientConv",
+  "package": "SFXGame",
+  "variables": {
+    "m_pStage": {
+      "type": "BioStage",
+      "documentation": null
+    },
+    "m_nbNodes": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bSupportsPlayerHelmet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSupportsPlayerFace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFadeIn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBlackOut": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

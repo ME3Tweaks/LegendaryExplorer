@@ -1,0 +1,84 @@
+{
+  "parent": "SFXGameChoiceGUIData",
+  "package": "SFXGame",
+  "variables": {
+    "IntelSummary": {
+      "type": "StoreItemData",
+      "documentation": null
+    },
+    "StoreItemArray": {
+      "type": "StoreItemData",
+      "documentation": null
+    },
+    "DefaultImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "MallStoreArray": {
+      "type": "SFXGUIData_Store",
+      "documentation": null
+    },
+    "StoreHeaderImageRef": {
+      "type": "string",
+      "documentation": null
+    },
+    "StoreName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DiscoveryID": {
+      "type": "int",
+      "documentation": null
+    },
+    "DiscountUnlockID": {
+      "type": "int",
+      "documentation": null
+    },
+    "DiscountPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MarkupPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "srStoreDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmationMessageATextOverride": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srOutOfStock": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srOutOfStockDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bApplyIntelSummary": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseChoiceNameAsConfirmationMessage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ItemType": {
+      "type": "EItemType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsStoreDiscovered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStoreDiscovered()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

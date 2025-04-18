@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "WREX_ALIVE": {
+      "value": 0,
+      "documentation": null
+    },
+    "WREX_DEAD": {
+      "value": 1,
+      "documentation": null
+    },
+    "WREX_IGNORED": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

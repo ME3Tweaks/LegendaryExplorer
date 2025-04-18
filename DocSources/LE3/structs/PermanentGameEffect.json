@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "UniqueName": {
+      "type": null,
+      "documentation": null
+    },
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "Value": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "GAWAssetType": {
+      "type": null,
+      "documentation": null
+    },
+    "GAWAssetSubType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

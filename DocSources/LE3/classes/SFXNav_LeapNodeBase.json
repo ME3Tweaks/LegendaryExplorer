@@ -1,0 +1,17 @@
+{
+  "parent": "SFXNav_BlockingPathNode",
+  "package": "SFXGame",
+  "variables": {
+    "LeapDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "LandingOffset": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

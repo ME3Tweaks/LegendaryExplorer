@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "HitInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "RayDir": {
+      "type": null,
+      "documentation": null
+    },
+    "StartTrace": {
+      "type": null,
+      "documentation": null
+    },
+    "HitActor": {
+      "type": null,
+      "documentation": null
+    },
+    "PenetrationDepth": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

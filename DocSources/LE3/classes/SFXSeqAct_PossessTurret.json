@@ -1,0 +1,20 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "MountedGun": {
+      "type": "SFXVehicle_MountedGun",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "IMR_Keyframed": {
+      "value": 0,
+      "documentation": null
+    },
+    "IMR_LookAtGroup": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

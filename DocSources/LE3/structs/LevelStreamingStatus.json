@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PackageName": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldBeLoaded": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldBeVisible": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

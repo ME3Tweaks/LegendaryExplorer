@@ -1,0 +1,77 @@
+{
+  "parent": "Projectile",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        },
+        "WallComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "RunPhysicsSimulationTilEnd": {
+      "documentation": null,
+      "signature_members": {
+        "GrenadeLifeSpan": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RunPhysicsSimulationTilEnd(float GrenadeLifeSpan)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

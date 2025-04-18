@@ -1,0 +1,115 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "Settings": {
+      "type": "SettingsPair",
+      "documentation": null
+    },
+    "JobCompleteDelegates": {
+      "type": "SFXOnlineComponentUnrealPlayer.OnWritePlayerStorageComplete",
+      "documentation": null
+    },
+    "__SaveSettingsCallback__Delegate": {
+      "type": "SaveSettingsCallback",
+      "documentation": null
+    },
+    "m_Save_RPC_TimeOut": {
+      "type": "int",
+      "documentation": null
+    },
+    "CallbackArg": {
+      "type": "int",
+      "documentation": null
+    },
+    "OutstandingSubJobs": {
+      "type": "int",
+      "documentation": null
+    },
+    "CallbackHasRun": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddCompletionDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "JobCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCompletionDelegate(delegate<OnWritePlayerStorageComplete> JobCompleteDelegate)"
+    },
+    "AddSetting": {
+      "documentation": null,
+      "signature_members": {
+        "InKey": {
+          "type": null,
+          "documentation": null
+        },
+        "InValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSetting(const out string InKey, const out string InValue)"
+    },
+    "CallCompletionDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CallCompletionDelegates(bool Success)"
+    },
+    "CreateJob": {
+      "documentation": null,
+      "signature_members": {
+        "InCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "InCallbackArg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobSaveSettings",
+      "signature": "SFXOnlineJobSaveSettings CreateJob(delegate<SaveSettingsCallback> InCallback, int InCallbackArg)"
+    },
+    "SaveSettingsCallback": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "InJobId": {
+          "type": null,
+          "documentation": null
+        },
+        "InCallbackArg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveSettingsCallback(OnlineJobErrorCode errorCode, int InJobId, int InCallbackArg)"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

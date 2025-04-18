@@ -1,0 +1,161 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "m_bAllowEarlyFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowedToFire": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMoveCancelled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsePartialPaths": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "Paused": {
+      "documentation": null,
+      "signature_members": {
+        "NewCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Paused(GameAICommand NewCommand)"
+    },
+    "NotifyWeaponFinishedFiring": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFinishedFiring(Weapon W, byte FireMode)"
+    },
+    "CancelCommand": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelCommand(optional int nReason)"
+    },
+    "CanStartFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanStartFiring()"
+    },
+    "HasReachedLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasReachedLocation()"
+    },
+    "MoveToLocation": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMovePoint": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowedToFire": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowPartialPath": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowEarlyFinish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToLocation(SFXAI_Core AI, Vector NewMovePoint, optional float NewMoveOffset, optional bool bInAllowedToFire, optional bool bInAllowPartialPath, optional bool bInAllowEarlyFinish)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "StartFiringWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartFiringWeapon()"
+    },
+    "StopFiringWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "bReleaseAttackTicket": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopFiringWeapon(optional bool bReleaseAttackTicket)"
+    },
+    "UpdateFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateFiring()"
+    }
+  },
+  "states": {
+    "MovingToLocation": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

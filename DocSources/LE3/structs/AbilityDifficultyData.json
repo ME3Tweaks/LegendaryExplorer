@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "StatName": {
+      "type": null,
+      "documentation": null
+    },
+    "StatRange": {
+      "type": null,
+      "documentation": null
+    },
+    "bStatActive": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

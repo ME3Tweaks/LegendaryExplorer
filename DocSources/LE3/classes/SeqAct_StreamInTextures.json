@@ -1,0 +1,55 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "LocationActors": {
+      "type": "Object",
+      "documentation": null
+    },
+    "ForceMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "Seconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "StopTimestamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "CinematicTextureGroups": {
+      "type": "TextureGroupContainer",
+      "documentation": null
+    },
+    "SelectedCinematicTextureGroups": {
+      "type": "int",
+      "documentation": null
+    },
+    "bStreamingActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

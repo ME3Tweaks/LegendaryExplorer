@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "PropertyUpdateCallback": {
+      "type": "function",
+      "documentation": null
+    },
+    "PropertyOuterObjectInst": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

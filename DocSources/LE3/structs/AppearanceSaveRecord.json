@@ -1,0 +1,73 @@
+{
+  "Members": {
+    "MorphHead": {
+      "type": null,
+      "documentation": null
+    },
+    "CasualID": {
+      "type": null,
+      "documentation": null
+    },
+    "FullBodyID": {
+      "type": null,
+      "documentation": null
+    },
+    "TorsoID": {
+      "type": null,
+      "documentation": null
+    },
+    "ShoulderID": {
+      "type": null,
+      "documentation": null
+    },
+    "ArmID": {
+      "type": null,
+      "documentation": null
+    },
+    "LegID": {
+      "type": null,
+      "documentation": null
+    },
+    "SpecID": {
+      "type": null,
+      "documentation": null
+    },
+    "Tint1ID": {
+      "type": null,
+      "documentation": null
+    },
+    "Tint2ID": {
+      "type": null,
+      "documentation": null
+    },
+    "Tint3ID": {
+      "type": null,
+      "documentation": null
+    },
+    "PatternID": {
+      "type": null,
+      "documentation": null
+    },
+    "PatternColorID": {
+      "type": null,
+      "documentation": null
+    },
+    "HelmetID": {
+      "type": null,
+      "documentation": null
+    },
+    "EmissiveID": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasMorphHead": {
+      "type": null,
+      "documentation": null
+    },
+    "CombatAppearance": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

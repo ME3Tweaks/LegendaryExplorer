@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ObjectValue": {
+      "type": null,
+      "documentation": null
+    },
+    "bFallThru": {
+      "type": null,
+      "documentation": null
+    },
+    "bDefaultValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

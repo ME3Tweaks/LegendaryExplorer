@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Direction": {
+      "type": null,
+      "documentation": null
+    },
+    "Enemy": {
+      "type": null,
+      "documentation": null
+    },
+    "Distance": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

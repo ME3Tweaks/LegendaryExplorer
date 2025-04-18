@@ -1,0 +1,38 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {
+    "CancelSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "CheckFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckFiring()"
+    },
+    "EndThisCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndThisCustomAction()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

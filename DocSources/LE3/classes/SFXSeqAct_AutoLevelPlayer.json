@@ -1,0 +1,34 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "MissionScores": {
+      "type": "MissionScore",
+      "documentation": null
+    },
+    "FullGameExperience": {
+      "type": "int",
+      "documentation": null
+    },
+    "SideContentXP": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "AutoLevelUpPlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoLevelUpPlot()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,485 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "ForceInParty": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ForceOutParty": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DeadToParty": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Party": {
+      "type": "int",
+      "documentation": null
+    },
+    "__OnRequestExitDelegate__Delegate": {
+      "type": "OnRequestExitDelegate",
+      "documentation": null
+    },
+    "HenchmenPool": {
+      "type": "SFXGUIData_TeamSelect",
+      "documentation": null
+    },
+    "BaseHenchPool": {
+      "type": "SFXGUIData_TeamSelect",
+      "documentation": null
+    },
+    "DataManager": {
+      "type": "SFXWeaponUIDataManager",
+      "documentation": null
+    },
+    "bIsFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoSelect": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ASNativeReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASNativeReady()"
+    },
+    "ASSetTitles": {
+      "documentation": null,
+      "signature_members": {
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "AText": {
+          "type": null,
+          "documentation": null
+        },
+        "BText": {
+          "type": null,
+          "documentation": null
+        },
+        "XText": {
+          "type": null,
+          "documentation": null
+        },
+        "YText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTitles(string Title, string AText, string BText, string XText, string YText)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "InitialHenchPool": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(SFXGUIData_TeamSelect InitialHenchPool)"
+    },
+    "OnRequestExitDelegate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRequestExitDelegate()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "ClearDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDelegates()"
+    },
+    "ASAddPartyMember": {
+      "documentation": null,
+      "signature_members": {
+        "KeepAlive": {
+          "type": null,
+          "documentation": null
+        },
+        "MemberId": {
+          "type": null,
+          "documentation": null
+        },
+        "MemberName": {
+          "type": null,
+          "documentation": null
+        },
+        "State": {
+          "type": null,
+          "documentation": null
+        },
+        "Req": {
+          "type": null,
+          "documentation": null
+        },
+        "AvailableAsDLC": {
+          "type": null,
+          "documentation": null
+        },
+        "Mission": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddPartyMember(bool KeepAlive, int MemberId, string MemberName, int State, int Req, bool AvailableAsDLC, int Mission)"
+    },
+    "ASAddPartyMemberAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Selected": {
+          "type": null,
+          "documentation": null
+        },
+        "Unselected": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlySelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddPartyMemberAppearance(int Id, string Selected, string Unselected, bool bCurrentlySelected)"
+    },
+    "ASAddPartyMemberInfo": {
+      "documentation": null,
+      "signature_members": {
+        "HenchmanName": {
+          "type": null,
+          "documentation": null
+        },
+        "Ability1": {
+          "type": null,
+          "documentation": null
+        },
+        "Ability2": {
+          "type": null,
+          "documentation": null
+        },
+        "Ability3": {
+          "type": null,
+          "documentation": null
+        },
+        "Ability4": {
+          "type": null,
+          "documentation": null
+        },
+        "Ability5": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank1": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank2": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank3": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank4": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank5": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon1": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon2": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon3": {
+          "type": null,
+          "documentation": null
+        },
+        "Dossier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddPartyMemberInfo(int HenchmanName, int Ability1, int Ability2, int Ability3, int Ability4, int Ability5, int Rank1, int Rank2, int Rank3, int Rank4, int Rank5, string Weapon1, string Weapon2, string Weapon3, int Dossier)"
+    },
+    "ASCancelConfirmation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASCancelConfirmation()"
+    },
+    "ASRequestNoSelect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASRequestNoSelect()"
+    },
+    "ASSetSquadSize": {
+      "documentation": null,
+      "signature_members": {
+        "Size": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetSquadSize(int Size)"
+    },
+    "ASSetTotalPartySize": {
+      "documentation": null,
+      "signature_members": {
+        "nPartySize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTotalPartySize(int nPartySize)"
+    },
+    "ConfirmParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmParty()"
+    },
+    "ExitScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitScreen()"
+    },
+    "ExPullAppearances": {
+      "documentation": null,
+      "signature_members": {
+        "HenchId": {
+          "type": null,
+          "documentation": null
+        },
+        "IsForcedOut": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExPullAppearances(int HenchId, int IsForcedOut)"
+    },
+    "ExPullInfos": {
+      "documentation": null,
+      "signature_members": {
+        "HenchId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExPullInfos(int HenchId)"
+    },
+    "ExPullParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullParty()"
+    },
+    "ExPullSquadSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullSquadSize()"
+    },
+    "ExPullTitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullTitles()"
+    },
+    "ExSelectAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "HenchId": {
+          "type": null,
+          "documentation": null
+        },
+        "AppearanceId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExSelectAppearance(int HenchId, int AppearanceId)"
+    },
+    "ExSelectParty": {
+      "documentation": null,
+      "signature_members": {
+        "HenchId1": {
+          "type": null,
+          "documentation": null
+        },
+        "HenchId2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExSelectParty(int HenchId1, int HenchId2)"
+    },
+    "FinalizeParty": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinalizeParty(bool bAPressed, int nContext)"
+    },
+    "ForceIn": {
+      "documentation": null,
+      "signature_members": {
+        "HenchTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceIn(Name HenchTag)"
+    },
+    "ForceOut": {
+      "documentation": null,
+      "signature_members": {
+        "HenchTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceOut(Name HenchTag)"
+    },
+    "GetAppearanceBonus": {
+      "documentation": null,
+      "signature_members": {
+        "AppearanceId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAppearanceBonus(int AppearanceId)"
+    },
+    "GetInfoPanelCloseButtonText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetInfoPanelCloseButtonText()"
+    },
+    "GetPartySize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPartySize()"
+    },
+    "GetPowerDisplayName": {
+      "documentation": null,
+      "signature_members": {
+        "PowerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetPowerDisplayName(int PowerID)"
+    },
+    "GetPowerRank": {
+      "documentation": null,
+      "signature_members": {
+        "PowerID": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPowerRank(int PowerID, out array<PowerSaveRecord> PowerData)"
+    },
+    "OnWeaponUIDataLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponUIDataLoaded()"
+    },
+    "SetOnRequestExitCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnRequestExitDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnRequestExitCallback(delegate<OnRequestExitDelegate> fn_OnRequestExitDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

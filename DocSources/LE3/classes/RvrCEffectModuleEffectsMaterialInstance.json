@@ -1,0 +1,17 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_pTargetActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pTargetWeapon": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

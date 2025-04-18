@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "HS_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "HS_ForcedOn": {
+      "value": 1,
+      "documentation": null
+    },
+    "HS_ForcedOn_Full": {
+      "value": 2,
+      "documentation": null
+    },
+    "HS_ForcedOff": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

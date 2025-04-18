@@ -1,0 +1,170 @@
+{
+  "parent": "MaterialInterface",
+  "package": "Engine",
+  "variables": {
+    "StaticParameters": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "StaticPermutationResources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Resources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ParentLightingGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "PhysMaterial": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "Parent": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "bHasStaticPermutationResource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStaticPermutationDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ReentrantFlag": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearParameterValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearParameterValues()"
+    },
+    "IsInMapOrTransientPackage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInMapOrTransientPackage()"
+    },
+    "SetEffectsMaterialFractionValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterialFractionValue(float Value)"
+    },
+    "SetEffectsMaterialNameValue": {
+      "documentation": null,
+      "signature_members": {
+        "EffectName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterialNameValue(Name EffectName)"
+    },
+    "SetFontParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "FontValue": {
+          "type": null,
+          "documentation": null
+        },
+        "FontPage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFontParameterValue(Name ParameterName, Font FontValue, int FontPage)"
+    },
+    "SetParent": {
+      "documentation": null,
+      "signature_members": {
+        "NewParent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParent(MaterialInterface NewParent)"
+    },
+    "SetScalarCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalarCurveParameterValue(Name ParameterName, const out InterpCurveFloat Value)"
+    },
+    "SetScalarParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalarParameterValue(Name ParameterName, float Value)"
+    },
+    "SetTextureParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextureParameterValue(Name ParameterName, Texture Value)"
+    },
+    "SetVectorParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameterValue(Name ParameterName, const out LinearColor Value)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

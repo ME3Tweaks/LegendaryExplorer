@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "Chapter": {
+      "type": null,
+      "documentation": null
+    },
+    "PageNum": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Body": {
+      "type": null,
+      "documentation": null
+    },
+    "ConsoleBody": {
+      "type": null,
+      "documentation": null
+    },
+    "ChapterIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

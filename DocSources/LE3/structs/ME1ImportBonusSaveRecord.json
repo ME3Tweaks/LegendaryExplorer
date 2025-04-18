@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "ImportedME1Level": {
+      "type": null,
+      "documentation": null
+    },
+    "StartingME2Level": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusXP": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusCredits": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusResources": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusParagon": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusRenegade": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

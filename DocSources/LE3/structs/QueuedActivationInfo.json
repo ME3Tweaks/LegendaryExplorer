@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ActivateIndices": {
+      "type": null,
+      "documentation": null
+    },
+    "ActivatedEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "inOriginator": {
+      "type": null,
+      "documentation": null
+    },
+    "inInstigator": {
+      "type": null,
+      "documentation": null
+    },
+    "bPushTop": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

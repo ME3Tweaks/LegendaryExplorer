@@ -1,0 +1,257 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nmPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Script": {
+      "type": "BioPowerScript",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "NewPower": {
+      "type": "SFXPower",
+      "documentation": null
+    },
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_nSuppressedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bFakePower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableVFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableDamageAndEffects": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableAnimation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanCasterMoveDuringPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanCasterMoveDuringPower()"
+    },
+    "CreatePowerScript": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreatePowerScript()"
+    },
+    "GetAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "oAnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAnimSet(out AnimSet oAnimSet)"
+    },
+    "GetBlockedByObjects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetBlockedByObjects()"
+    },
+    "GetCastingTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCastingTime()"
+    },
+    "GetConeHalfAngle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetConeHalfAngle()"
+    },
+    "GetDescription": {
+      "documentation": null,
+      "signature_members": {
+        "sDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDescription(out string sDescription)"
+    },
+    "GetDiscipline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetDiscipline()"
+    },
+    "GetDisplayName": {
+      "documentation": null,
+      "signature_members": {
+        "sDisplayName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDisplayName(out string sDisplayName)"
+    },
+    "GetEffectDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetEffectDuration()"
+    },
+    "GetGlobalCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGlobalCooldown()"
+    },
+    "GetImpactRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetImpactRadius()"
+    },
+    "GetImpactText": {
+      "documentation": null,
+      "signature_members": {
+        "srImpactText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetImpactText(out stringref srImpactText)"
+    },
+    "GetMaximumRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaximumRange()"
+    },
+    "GetMinimumRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMinimumRange()"
+    },
+    "GetPowerIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPowerIcon()"
+    },
+    "GetProjectileRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProjectileRadius()"
+    },
+    "GetProjectileSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProjectileSpeed()"
+    },
+    "GetReleaseAnimRate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReleaseAnimRate()"
+    },
+    "GetStopOnFirstHit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetStopOnFirstHit()"
+    },
+    "GetType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioPowerType",
+      "signature": "EBioPowerType GetType()"
+    },
+    "GetVFXIntensity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetVFXIntensity()"
+    },
+    "InitializePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePower(Name nmPower)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "IsSuppressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSuppressed()"
+    },
+    "ShouldDisplayInHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldDisplayInHUD()"
+    },
+    "SuppressPower": {
+      "documentation": null,
+      "signature_members": {
+        "bSuppress": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int SuppressPower(bool bSuppress)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

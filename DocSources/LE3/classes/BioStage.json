@@ -1,0 +1,77 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapPlacement": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_aCameraList": {
+      "type": "BioStageCamera",
+      "documentation": null
+    },
+    "m_pMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "m_nmCurrentCamera": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fHeightHumanMale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fHeightAdjust": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fStageZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSpeakerFeetZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSpeakerEyeHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDoHeightAdjustment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLookAtActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDOFActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableProceduralCameraHeightAdjust": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ProfileStage": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileStage(BioHUD HUD)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Text": {
+      "type": null,
+      "documentation": null
+    },
+    "Disabled": {
+      "type": null,
+      "documentation": null
+    },
+    "Action": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

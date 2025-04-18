@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "DrawColor": {
+      "type": null,
+      "documentation": null
+    },
+    "Padding": {
+      "type": null,
+      "documentation": null
+    },
+    "Opacity": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideDrawColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideOpacity": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverridePadding": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

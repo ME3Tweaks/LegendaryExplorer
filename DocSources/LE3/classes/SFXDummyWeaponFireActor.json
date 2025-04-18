@@ -1,0 +1,69 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "FireAction": {
+      "type": "SFXSeqAct_DummyWeaponFire",
+      "documentation": null
+    },
+    "OriginActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TargetActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ShotCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "NotifyShotFired": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginActor": {
+          "type": null,
+          "documentation": null
+        },
+        "InTargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyShotFired(Actor InOriginActor, Actor InTargetActor)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

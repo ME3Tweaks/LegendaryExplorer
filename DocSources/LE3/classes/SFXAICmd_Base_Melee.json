@@ -1,0 +1,37 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "IsProtectedByCover": {
+      "documentation": null,
+      "signature_members": {
+        "ChkPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsProtectedByCover(Pawn ChkPawn)"
+    },
+    "MeleeTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MeleeTimeout()"
+    },
+    "SetupTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupTimeout()"
+    }
+  },
+  "states": {
+    "Melee": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

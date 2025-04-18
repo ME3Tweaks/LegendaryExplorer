@@ -1,0 +1,97 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "MoveLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MeleeTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fMoveOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "bMovingToLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowedToFire": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShooting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsePartialPaths": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyEnemyVisible": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeSinceSeen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEnemyVisible(int EnemyIdx, float TimeSinceSeen)"
+    },
+    "ApproachTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApproachTarget()"
+    },
+    "GetDestinationActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetDestinationActor()"
+    },
+    "MoveToMeleeRange": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowedToFire": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowPartialPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToMeleeRange(SFXAI_Core AI, Actor Target, optional float NewMoveOffset, optional bool bInAllowedToFire, optional bool bInAllowPartialPath)"
+    }
+  },
+  "states": {
+    "MovingToMeleeRange": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

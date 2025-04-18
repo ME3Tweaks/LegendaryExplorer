@@ -1,0 +1,89 @@
+{
+  "parent": "WwiseVolume",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_fLastLineCheckTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "WwiseEventArray": {
+      "type": "WwiseEventPair",
+      "documentation": null
+    },
+    "AudioComponent": {
+      "type": "WwiseAudioComponentMultiLoc",
+      "documentation": null
+    },
+    "m_fTimeBetweenLineChecks": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DrawSoundLocations": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIs2D": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DrawVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawVolume()"
+    },
+    "HideVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideVolume()"
+    },
+    "myTimerPop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "myTimerPop()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Start": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Start()"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    },
+    "TimerPop": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TimerPop(WwiseVolumeTimer T)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

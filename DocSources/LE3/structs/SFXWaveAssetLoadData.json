@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "AssetToLoad": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadedAsset": {
+      "type": null,
+      "documentation": null
+    },
+    "AssetLoadStatus": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

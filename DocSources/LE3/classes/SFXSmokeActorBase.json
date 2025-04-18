@@ -1,0 +1,46 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "PSC_Smoke": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "SmokeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Deactivate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivate()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

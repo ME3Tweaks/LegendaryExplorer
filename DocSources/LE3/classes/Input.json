@@ -1,0 +1,86 @@
+{
+  "parent": "Interaction",
+  "package": "Engine",
+  "variables": {
+    "AxisArray": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Bindings": {
+      "type": "KeyBind",
+      "documentation": null
+    },
+    "PressedKeys": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NameToPtr": {
+      "type": "Object",
+      "documentation": null
+    },
+    "KeyToModifiers": {
+      "type": "Object",
+      "documentation": null
+    },
+    "CurrentDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentDeltaTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentEvent": {
+      "type": "EInputEvent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetBind": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Control": {
+          "type": null,
+          "documentation": null
+        },
+        "Shift": {
+          "type": null,
+          "documentation": null
+        },
+        "Alt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBind(const out Name Key, bool Control, bool Shift, bool Alt)"
+    },
+    "ResetInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetInput()"
+    },
+    "SetBind": {
+      "documentation": null,
+      "signature_members": {
+        "BindName": {
+          "type": null,
+          "documentation": null
+        },
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBind(const out Name BindName, string Command)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

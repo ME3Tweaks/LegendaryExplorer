@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "LinkedEvents": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkDesc": {
+      "type": null,
+      "documentation": null
+    },
+    "ExpectedType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

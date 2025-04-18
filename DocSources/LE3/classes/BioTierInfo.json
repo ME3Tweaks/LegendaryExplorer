@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Triggers": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CurrentTrigger": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "Enabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsFloor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsGlobal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsDynamic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ValidCurrentTrigger": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

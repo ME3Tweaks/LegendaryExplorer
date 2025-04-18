@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_RTPCHandler": {
+      "type": "WwiseRTPCForActorHandler",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

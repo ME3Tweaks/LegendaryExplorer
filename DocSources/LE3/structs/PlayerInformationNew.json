@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ControllerName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerName": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsBot": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

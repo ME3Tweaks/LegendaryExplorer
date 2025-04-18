@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "XPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "YPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "ZPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "WPlane": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

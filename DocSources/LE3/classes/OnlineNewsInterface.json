@@ -1,0 +1,81 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnReadNewsCompleted__Delegate": {
+      "type": "OnReadNewsCompleted",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnReadNewsCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "NewsType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadNewsCompleted(bool bWasSuccessful, EOnlineNewsType NewsType)"
+    },
+    "ReadNews": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "NewsType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadNews(byte LocalUserNum, EOnlineNewsType NewsType)"
+    },
+    "AddReadNewsCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadNewsDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadNewsCompletedDelegate(delegate<OnReadNewsCompleted> ReadNewsDelegate)"
+    },
+    "ClearReadNewsCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadNewsDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadNewsCompletedDelegate(delegate<OnReadNewsCompleted> ReadNewsDelegate)"
+    },
+    "GetNews": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "NewsType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetNews(byte LocalUserNum, EOnlineNewsType NewsType)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

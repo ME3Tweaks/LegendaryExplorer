@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Controller": {
+      "type": null,
+      "documentation": null
+    },
+    "EventName": {
+      "type": null,
+      "documentation": null
+    },
+    "UpdateTime": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

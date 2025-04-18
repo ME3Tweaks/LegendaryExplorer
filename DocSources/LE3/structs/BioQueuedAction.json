@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "pPropActionData": {
+      "type": null,
+      "documentation": null
+    },
+    "pGestureData": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeQueued": {
+      "type": null,
+      "documentation": null
+    },
+    "bAddedThisFrame": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

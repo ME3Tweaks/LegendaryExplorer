@@ -1,0 +1,163 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "BlazeJobIds": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "JobId": {
+      "type": "int",
+      "documentation": null
+    },
+    "SchedulingsLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "RescheduleCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "JobIsCanceled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsProcessing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RunningError": {
+      "type": "OnlineJobErrorCode",
+      "documentation": null
+    },
+    "JobCategory": {
+      "type": "OnlineJobCategory",
+      "documentation": null
+    },
+    "JobType": {
+      "type": "OnlineJobType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Cancel": {
+      "documentation": null,
+      "signature_members": {
+        "WithError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Cancel(optional OnlineJobErrorCode WithError)"
+    },
+    "CancelBlazeJobs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelBlazeJobs()"
+    },
+    "DeleteBlazeJobs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeleteBlazeJobs()"
+    },
+    "EndProcessing": {
+      "documentation": null,
+      "signature_members": {
+        "WithError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndProcessing(optional OnlineJobErrorCode WithError)"
+    },
+    "GetId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetId()"
+    },
+    "GetJobType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineJobType",
+      "signature": "OnlineJobType GetJobType()"
+    },
+    "InProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InProgress()"
+    },
+    "IsCanceled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCanceled()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "SetId": {
+      "documentation": null,
+      "signature_members": {
+        "NewJobId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetId(int NewJobId)"
+    },
+    "ShouldReschedule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldReschedule()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Tick()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    },
+    "Execute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Execute()"
+    },
+    "GetJobCategory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineJobCategory",
+      "signature": "OnlineJobCategory GetJobCategory()"
+    },
+    "GetSchedulingsLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSchedulingsLeft()"
+    },
+    "IsBlocking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsBlocking()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

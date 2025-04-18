@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "PrimaryScene": {
+      "type": null,
+      "documentation": null
+    },
+    "CompartmentRigidBody": {
+      "type": null,
+      "documentation": null
+    },
+    "CompartmentFluid": {
+      "type": null,
+      "documentation": null
+    },
+    "CompartmentCloth": {
+      "type": null,
+      "documentation": null
+    },
+    "CompartmentSoftBody": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

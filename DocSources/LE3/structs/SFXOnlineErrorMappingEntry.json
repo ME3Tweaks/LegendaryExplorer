@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "LocalizationKey": {
+      "type": null,
+      "documentation": null
+    },
+    "ErrorContext": {
+      "type": null,
+      "documentation": null
+    },
+    "errorCode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,923 @@
+{
+  "parent": "Object",
+  "package": "GFxUI",
+  "variables": {
+    "Value": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetBool": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBool(string member)"
+    },
+    "GetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPosition(out float X, out float Y)"
+    },
+    "Set": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Arg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Set(string member, ASValue Arg)"
+    },
+    "SetBool": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBool(string member, bool B)"
+    },
+    "SetElementVisible": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "visible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementVisible(int Index, bool visible)"
+    },
+    "SetObject": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "val": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObject(string member, GFxValue val)"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float X, float Y)"
+    },
+    "SetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "visible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisible(bool visible)"
+    },
+    "ActionScriptArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "array<GFxValue> ActionScriptArray(string Path)"
+    },
+    "ActionScriptFloat": {
+      "documentation": null,
+      "signature_members": {
+        "method": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ActionScriptFloat(string method)"
+    },
+    "ActionScriptInt": {
+      "documentation": null,
+      "signature_members": {
+        "method": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ActionScriptInt(string method)"
+    },
+    "ActionScriptObject": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue ActionScriptObject(string Path)"
+    },
+    "ActionScriptSetFunction": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActionScriptSetFunction(string member)"
+    },
+    "ActionScriptSetFunctionOn": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActionScriptSetFunctionOn(GFxValue Target, string member)"
+    },
+    "ActionScriptString": {
+      "documentation": null,
+      "signature_members": {
+        "method": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ActionScriptString(string method)"
+    },
+    "ActionScriptVoid": {
+      "documentation": null,
+      "signature_members": {
+        "method": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActionScriptVoid(string method)"
+    },
+    "AttachMovie": {
+      "documentation": null,
+      "signature_members": {
+        "symbolname": {
+          "type": null,
+          "documentation": null
+        },
+        "InstanceName": {
+          "type": null,
+          "documentation": null
+        },
+        "Depth": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue AttachMovie(string symbolname, string InstanceName, optional int Depth, optional Class<GFxValue> Type)"
+    },
+    "CastTo": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "coerce GFxValue CastTo(Class<GFxValue> Type)"
+    },
+    "CreateEmptyMovieClip": {
+      "documentation": null,
+      "signature_members": {
+        "InstanceName": {
+          "type": null,
+          "documentation": null
+        },
+        "Depth": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue CreateEmptyMovieClip(string InstanceName, optional int Depth, optional Class<GFxValue> Type)"
+    },
+    "Get": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue Get(string member)"
+    },
+    "GetColorTransform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ASColorTransform",
+      "signature": "ASColorTransform GetColorTransform()"
+    },
+    "GetDisplayInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ASDisplayInfo",
+      "signature": "ASDisplayInfo GetDisplayInfo()"
+    },
+    "GetDisplayMatrix": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Matrix",
+      "signature": "Matrix GetDisplayMatrix()"
+    },
+    "GetElement": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue GetElement(int Index)"
+    },
+    "GetElementBool": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetElementBool(int Index)"
+    },
+    "GetElementDisplayInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ASDisplayInfo",
+      "signature": "ASDisplayInfo GetElementDisplayInfo(int Index)"
+    },
+    "GetElementDisplayMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetElementDisplayMatrix(int Index)"
+    },
+    "GetElementMember": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue GetElementMember(int Index, string member)"
+    },
+    "GetElementMemberBool": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetElementMemberBool(int Index, string member)"
+    },
+    "GetElementMemberNumber": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetElementMemberNumber(int Index, string member)"
+    },
+    "GetElementMemberObject": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue GetElementMemberObject(int Index, string member, optional Class<GFxValue> Type)"
+    },
+    "GetElementMemberString": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetElementMemberString(int Index, string member)"
+    },
+    "GetElementNumber": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetElementNumber(int Index)"
+    },
+    "GetElementObject": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue GetElementObject(int Index, optional Class<GFxValue> Type)"
+    },
+    "GetElementString": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetElementString(int Index)"
+    },
+    "GetNumber": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetNumber(string member)"
+    },
+    "GetObject": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue GetObject(string member, optional Class<GFxValue> Type)"
+    },
+    "GetString": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetString(string member)"
+    },
+    "GetText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetText()"
+    },
+    "GotoAndPlay": {
+      "documentation": null,
+      "signature_members": {
+        "frame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoAndPlay(string frame)"
+    },
+    "GotoAndPlayI": {
+      "documentation": null,
+      "signature_members": {
+        "frame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoAndPlayI(int frame)"
+    },
+    "GotoAndStop": {
+      "documentation": null,
+      "signature_members": {
+        "frame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoAndStop(string frame)"
+    },
+    "GotoAndStopI": {
+      "documentation": null,
+      "signature_members": {
+        "frame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoAndStopI(int frame)"
+    },
+    "Invoke": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue Invoke(string member, array<ASValue> Args)"
+    },
+    "SetColorTransform": {
+      "documentation": null,
+      "signature_members": {
+        "cxform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColorTransform(ASColorTransform cxform)"
+    },
+    "SetDisplayInfo": {
+      "documentation": null,
+      "signature_members": {
+        "D": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisplayInfo(const out ASDisplayInfo D)"
+    },
+    "SetDisplayMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisplayMatrix(Matrix M)"
+    },
+    "SetDisplayMatrix3D": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisplayMatrix3D(Matrix M)"
+    },
+    "SetElement": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "Arg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElement(int Index, ASValue Arg)"
+    },
+    "SetElementBool": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementBool(int Index, bool B)"
+    },
+    "SetElementColorTransform": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "cxform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementColorTransform(int Index, ASColorTransform cxform)"
+    },
+    "SetElementDisplayInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "D": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementDisplayInfo(int Index, ASDisplayInfo D)"
+    },
+    "SetElementDisplayMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementDisplayMatrix(int Index, Matrix M)"
+    },
+    "SetElementMember": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Arg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementMember(int Index, string member, ASValue Arg)"
+    },
+    "SetElementMemberBool": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementMemberBool(int Index, string member, bool B)"
+    },
+    "SetElementMemberNumber": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementMemberNumber(int Index, string member, float F)"
+    },
+    "SetElementMemberObject": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "val": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementMemberObject(int Index, string member, GFxValue val)"
+    },
+    "SetElementMemberString": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementMemberString(int Index, string member, string S)"
+    },
+    "SetElementNumber": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementNumber(int Index, float F)"
+    },
+    "SetElementObject": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "val": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementObject(int Index, GFxValue val)"
+    },
+    "SetElementPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementPosition(int Index, float X, float Y)"
+    },
+    "SetElementString": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementString(int Index, string S)"
+    },
+    "SetFunction": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        },
+        "fname": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFunction(string member, Object Context, Name fname)"
+    },
+    "SetMemberObjectText": {
+      "documentation": null,
+      "signature_members": {
+        "sMember": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsHTML": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMemberObjectText(string sMember, coerce string sText, optional bool bIsHTML)"
+    },
+    "SetNumber": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNumber(string member, float F)"
+    },
+    "SetString": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetString(string member, string S)"
+    },
+    "SetText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsHTML": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetText(coerce string Text, optional bool bIsHTML)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

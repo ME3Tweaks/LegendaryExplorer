@@ -1,0 +1,20 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "DefaultValue": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

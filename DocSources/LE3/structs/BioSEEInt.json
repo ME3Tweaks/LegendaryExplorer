@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "nGlobalInt": {
+      "type": null,
+      "documentation": null
+    },
+    "nNewValue": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseParam": {
+      "type": null,
+      "documentation": null
+    },
+    "bIncrement": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

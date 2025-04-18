@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nmDestPose": {
+      "type": null,
+      "documentation": null
+    },
+    "fTransBlendTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoTransAnim": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

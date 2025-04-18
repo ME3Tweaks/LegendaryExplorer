@@ -1,0 +1,743 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_IISFXOnlineComponentGameEntryFlow": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ZeroId": {
+      "type": "UniqueNetId",
+      "documentation": null
+    },
+    "DeferredGameSettings": {
+      "type": "SFXOnlineGameSettings",
+      "documentation": null
+    },
+    "PopupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "srJoiningGame": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConnecting": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInvalidControllerJoin": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMultiplayerUpdate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDownloadRequiredDataError": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srOK": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAlreadyConnected": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srOnlinePassRequired": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "KismetEventTicksDelay": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentKismetEventTicksDelay": {
+      "type": "int",
+      "documentation": null
+    },
+    "InvitePlatformData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "m_FlowType": {
+      "type": "MPFlowType",
+      "documentation": null
+    },
+    "m_LoginUIState": {
+      "type": "SFXOnlineUIState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CancelSearchInput": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelSearchInput(bool bAPressed, int nContext)"
+    },
+    "ClearInviteData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearInviteData()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetCurrentFocusMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUIMovie",
+      "signature": "SFXGUIMovie GetCurrentFocusMovie()"
+    },
+    "GetLocalPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXPlayerController",
+      "signature": "SFXPlayerController GetLocalPlayerController()"
+    },
+    "GetMovie": {
+      "documentation": null,
+      "signature_members": {
+        "nmMovie": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUIMovie",
+      "signature": "SFXGUIMovie GetMovie(Name nmMovie)"
+    },
+    "IsInMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInMainMenu()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "ReconstructInviteDataNative": {
+      "documentation": null,
+      "signature_members": {
+        "Invite": {
+          "type": null,
+          "documentation": null
+        },
+        "ResultNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReconstructInviteDataNative(out OnlineGameSearch Invite, int ResultNum)"
+    },
+    "SetLoginState": {
+      "documentation": null,
+      "signature_members": {
+        "loginState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLoginState(SFXOnlineUIState loginState)"
+    },
+    "ShowPopup": {
+      "documentation": null,
+      "signature_members": {
+        "bodyStr": {
+          "type": null,
+          "documentation": null
+        },
+        "showOkButton": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowPopup(stringref bodyStr, optional bool showOkButton)"
+    },
+    "UpdateMPDLCInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMPDLCInfo()"
+    },
+    "OnInviteJoinComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInviteJoinComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "AccessLobbyFlowComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AccessLobbyFlowComplete()"
+    },
+    "ActivateConnectFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivateConnectFlow()"
+    },
+    "ActivateConnectToMapFlow": {
+      "documentation": null,
+      "signature_members": {
+        "mapPackageName": {
+          "type": null,
+          "documentation": null
+        },
+        "fromGalaxyMap": {
+          "type": null,
+          "documentation": null
+        },
+        "Difficulty": {
+          "type": null,
+          "documentation": null
+        },
+        "EnemyType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateConnectToMapFlow(string mapPackageName, optional bool fromGalaxyMap, optional SFXOnlineGameDifficulty Difficulty, optional int EnemyType)"
+    },
+    "ActivateInviteFlow": {
+      "documentation": null,
+      "signature_members": {
+        "InviteResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateInviteFlow(const out OnlineGameSearchResult InviteResult)"
+    },
+    "ActivateMPLobbyAccessFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateMPLobbyAccessFlow()"
+    },
+    "ArchiveInviteData": {
+      "documentation": null,
+      "signature_members": {
+        "Invite": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ArchiveInviteData(const out OnlineGameSearchResult Invite)"
+    },
+    "CancelConnecting": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelConnecting(bool bAPressed, int nContext)"
+    },
+    "ClearMainMenuFlow": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMainMenuFlow(bool Success)"
+    },
+    "GetDeferredGameSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineGameSettings",
+      "signature": "SFXOnlineGameSettings GetDeferredGameSettings()"
+    },
+    "GetMainMenuMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUIMovie",
+      "signature": "SFXGUIMovie GetMainMenuMovie()"
+    },
+    "HasValidDeployedCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasValidDeployedCharacter()"
+    },
+    "HidePopup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HidePopup()"
+    },
+    "InviteFlowComplete": {
+      "documentation": null,
+      "signature_members": {
+        "InviteResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InviteFlowComplete(const out OnlineGameSearchResult InviteResult)"
+    },
+    "InviteStartConnecting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InviteStartConnecting()"
+    },
+    "IsInConnectToMapFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInConnectToMapFlow()"
+    },
+    "IsInGalaxyMapFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInGalaxyMapFlow()"
+    },
+    "IsInSplash": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInSplash()"
+    },
+    "IsInvitedUserActive": {
+      "documentation": null,
+      "signature_members": {
+        "invitedId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInvitedUserActive(const out UniqueNetId invitedId)"
+    },
+    "IsMovieLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "MovieName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMovieLoaded(Name MovieName)"
+    },
+    "IsWaitingForKitSelect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsWaitingForKitSelect()"
+    },
+    "OnConnectToMapFlowCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnConnectToMapFlowCompleted(optional bool Success)"
+    },
+    "OnKitDeployed": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnKitDeployed(bool Success)"
+    },
+    "OpenMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenMainMenu()"
+    },
+    "OS_OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OS_OnTick(SFXOnlineEvent oEvent)"
+    },
+    "ProcessInvite": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessInvite()"
+    },
+    "ReconstructInviteData": {
+      "documentation": null,
+      "signature_members": {
+        "Invite": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReconstructInviteData(out OnlineGameSearch Invite)"
+    }
+  },
+  "states": {
+    "InviteLeavingPreviousGame": {
+      "functions": {
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "InviteSelectKit": {
+      "functions": {
+        "OnKitDeployed": {
+          "documentation": null,
+          "signature_members": {
+            "Success": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "IsWaitingForKitSelect": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WaitingForProfileId": {
+      "functions": {
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "ChangingUser": {
+      "functions": {
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "TravelToMainMenu": {
+      "functions": {
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "StartLobbyKismetEvent": {
+      "functions": {
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WaitForDLCMounting": {
+      "functions": {
+        "CheckDLCMountingState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "BlazeLoginFlow": {
+      "functions": {
+        "SetLoginState": {
+          "documentation": null,
+          "signature_members": {
+            "loginState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Inactive": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "GameEntryState_PostLogin": {
+      "functions": {
+        "SetLoginState": {
+          "documentation": null,
+          "signature_members": {
+            "loginState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "GameEntryState": {
+      "functions": {
+        "OS_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SetLoginState": {
+          "documentation": null,
+          "signature_members": {
+            "loginState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "SupportedCustomActions": {
+      "type": "EAICustomAction",
+      "documentation": null
+    },
+    "SupportedReachSpecs": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

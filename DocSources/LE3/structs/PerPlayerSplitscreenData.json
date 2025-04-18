@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "SizeX": {
+      "type": null,
+      "documentation": null
+    },
+    "SizeY": {
+      "type": null,
+      "documentation": null
+    },
+    "OriginX": {
+      "type": null,
+      "documentation": null
+    },
+    "OriginY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

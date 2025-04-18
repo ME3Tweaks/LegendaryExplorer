@@ -1,0 +1,73 @@
+{
+  "EnumValues": {
+    "WModCategory_Uncategorized": {
+      "value": 0,
+      "documentation": null
+    },
+    "WModCategory_Barrel": {
+      "value": 1,
+      "documentation": null
+    },
+    "WModCategory_Scope": {
+      "value": 2,
+      "documentation": null
+    },
+    "WModCategory_Body": {
+      "value": 3,
+      "documentation": null
+    },
+    "WModCategory_Grip": {
+      "value": 4,
+      "documentation": null
+    },
+    "WModCategory_Emissive": {
+      "value": 5,
+      "documentation": null
+    },
+    "WModCategory_Blade": {
+      "value": 6,
+      "documentation": null
+    },
+    "WModCategory_DLC1": {
+      "value": 7,
+      "documentation": null
+    },
+    "WModCategory_DLC2": {
+      "value": 8,
+      "documentation": null
+    },
+    "WModCategory_DLC3": {
+      "value": 9,
+      "documentation": null
+    },
+    "WModCategory_DLC4": {
+      "value": 10,
+      "documentation": null
+    },
+    "WModCategory_DLC5": {
+      "value": 11,
+      "documentation": null
+    },
+    "WModCategory_DLC6": {
+      "value": 12,
+      "documentation": null
+    },
+    "WModCategory_DLC7": {
+      "value": 13,
+      "documentation": null
+    },
+    "WModCategory_DLC8": {
+      "value": 14,
+      "documentation": null
+    },
+    "WModCategory_DLC9": {
+      "value": 15,
+      "documentation": null
+    },
+    "WModCategory_DLC10": {
+      "value": 16,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

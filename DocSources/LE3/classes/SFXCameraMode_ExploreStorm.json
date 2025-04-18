@@ -1,0 +1,60 @@
+{
+  "parent": "SFXCameraMode_Explore",
+  "package": "SFXGame",
+  "variables": {
+    "StickFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "FullTurnRecenter": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "OutDeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator OutViewRotation, out Rotator OutDeltaRot)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetTarget()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

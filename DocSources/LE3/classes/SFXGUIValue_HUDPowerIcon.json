@@ -1,0 +1,136 @@
+{
+  "parent": "SFXGUIValue_PowerIcon",
+  "package": "SFXGame",
+  "variables": {
+    "bCooldownActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CheckCooldownState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckCooldownState()"
+    },
+    "ClearIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearIcon()"
+    },
+    "CooldownComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CooldownComplete()"
+    },
+    "GetInfoTextPath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetInfoTextPath()"
+    },
+    "GetMappedHenchmanPower": {
+      "documentation": null,
+      "signature_members": {
+        "pHenchPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetMappedHenchmanPower(BioPawn pHenchPawn)"
+    },
+    "GetStatePath": {
+      "documentation": null,
+      "signature_members": {
+        "ePathState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStatePath(optional SFXPowerWheelPowerState ePathState)"
+    },
+    "Map": {
+      "documentation": null,
+      "signature_members": {
+        "eMapIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Map(SFXPowerWheelMapButtonIcon eMapIcon)"
+    },
+    "PowerUsed": {
+      "documentation": null,
+      "signature_members": {
+        "pUsedPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PowerUsed(SFXPowerCustomActionBase pUsedPower)"
+    },
+    "SetBaseIconVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bMakeVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBaseIconVisibility(bool bMakeVisible)"
+    },
+    "SetIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nNewIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResourcePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIcon(int nNewIcon, const string sIconResourcePath)"
+    },
+    "SetToDefaultHenchIcon": {
+      "documentation": null,
+      "signature_members": {
+        "pPowerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetToDefaultHenchIcon(BioPawn pPowerPawn)"
+    },
+    "UpdateCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCooldown(optional bool bForceUpdate)"
+    },
+    "BeginCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginCooldown()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

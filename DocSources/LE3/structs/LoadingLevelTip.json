@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "LevelName": {
+      "type": null,
+      "documentation": null
+    },
+    "Tip": {
+      "type": null,
+      "documentation": null
+    },
+    "UseRandomTip": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

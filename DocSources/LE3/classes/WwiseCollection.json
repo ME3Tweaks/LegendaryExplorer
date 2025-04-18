@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "WwiseAudio",
+  "variables": {
+    "Events": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "EventPairs": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "Streams": {
+      "type": "WwiseStream",
+      "documentation": null
+    },
+    "Bank": {
+      "type": "WwiseBank",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

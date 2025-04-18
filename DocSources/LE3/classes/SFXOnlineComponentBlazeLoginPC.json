@@ -1,0 +1,27 @@
+{
+  "parent": "SFXOnlineComponentBlazeLogin",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "HasInternetConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasInternetConnection()"
+    },
+    "OnOriginClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOriginClosed()"
+    },
+    "OnOriginGoesOffline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOriginGoesOffline()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

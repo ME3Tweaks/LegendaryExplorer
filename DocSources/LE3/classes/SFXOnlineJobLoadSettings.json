@@ -1,0 +1,76 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "Settings": {
+      "type": "SettingsPair",
+      "documentation": null
+    },
+    "__LoadSettingsCallback__Delegate": {
+      "type": "LoadSettingsCallback",
+      "documentation": null
+    },
+    "CallbackArg": {
+      "type": "int",
+      "documentation": null
+    },
+    "RunningErrorCode": {
+      "type": "OnlineJobErrorCode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateJob": {
+      "documentation": null,
+      "signature_members": {
+        "InCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "InCallbackArg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobLoadSettings",
+      "signature": "SFXOnlineJobLoadSettings CreateJob(delegate<LoadSettingsCallback> InCallback, int InCallbackArg)"
+    },
+    "LoadSettingsCallback": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "InJobId": {
+          "type": null,
+          "documentation": null
+        },
+        "InSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "InCallbackArg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadSettingsCallback(OnlineJobErrorCode errorCode, int InJobId, array<SettingsPair> InSettings, int InCallbackArg)"
+    },
+    "ShouldReschedule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldReschedule()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

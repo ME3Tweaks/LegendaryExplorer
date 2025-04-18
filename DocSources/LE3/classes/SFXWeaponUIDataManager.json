@@ -1,0 +1,444 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponUIDataResources": {
+      "type": "SFXUIDataResource",
+      "documentation": null
+    },
+    "WeaponUIData": {
+      "type": "SFXWeaponSelectWeaponData",
+      "documentation": null
+    },
+    "ModUIData": {
+      "type": "SFXWeaponModData",
+      "documentation": null
+    },
+    "RomanNumerals": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "__OnDataLoadedDelegate__Delegate": {
+      "type": "OnDataLoadedDelegate",
+      "documentation": null
+    },
+    "StatNameAccuracy": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatNameDamage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatNameFireRate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatNameMagSize": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatNameWeight": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MaxAccuracyValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDamageValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFireRateValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxMagazineValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWeightValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWeaponLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "DataIsLoaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "GetWeaponIniData": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponPath": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponLevelOverMaxLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "Accuracy": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "RateOfFire": {
+          "type": null,
+          "documentation": null
+        },
+        "AmmoCapacity": {
+          "type": null,
+          "documentation": null
+        },
+        "Weight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetWeaponIniData(string WeaponPath, float WeaponLevelOverMaxLevel, out float Accuracy, out float Damage, out float RateOfFire, out float AmmoCapacity, out float Weight)"
+    },
+    "GetWeaponName": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetWeaponName(int nWeaponIndex)"
+    },
+    "OnDataLoadedDelegate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDataLoadedDelegate()"
+    },
+    "CalculateMaximumStatBarValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CalculateMaximumStatBarValues()"
+    },
+    "CategoryHasNewWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "eType": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyAvailableWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CategoryHasNewWeapons(ELoadoutWeapons eType, optional bool bOnlyAvailableWeapons)"
+    },
+    "GetCurrentWeaponMods": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "array<Name> GetCurrentWeaponMods(int nWeaponIndex, Name nmHench)"
+    },
+    "GetModDescription": {
+      "documentation": null,
+      "signature_members": {
+        "nModIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetModDescription(int nModIndex, optional int nLevel)"
+    },
+    "GetModDisplayName": {
+      "documentation": null,
+      "signature_members": {
+        "nModIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetModDisplayName(int nModIndex, optional int nLevel)"
+    },
+    "GetModsForWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowAllMods": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "array<int> GetModsForWeapon(int nWeapIndex, optional bool bAllowAllMods)"
+    },
+    "GetModsForWeaponType": {
+      "documentation": null,
+      "signature_members": {
+        "eType": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowAllMods": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "array<int> GetModsForWeaponType(ELoadoutWeapons eType, optional bool bAllowAllMods)"
+    },
+    "GetModStatsForLevel": {
+      "documentation": null,
+      "signature_members": {
+        "oModData": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeaponUIStats",
+      "signature": "SFXWeaponUIStats GetModStatsForLevel(const SFXWeaponModData oModData, optional int nLevel)"
+    },
+    "GetRomanNumeral": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetRomanNumeral(int nLevel)"
+    },
+    "GetWeaponModsByClassName": {
+      "documentation": null,
+      "signature_members": {
+        "nmWeapClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "array<Name> GetWeaponModsByClassName(Name nmWeapClass, Name nmHench)"
+    },
+    "GetWeaponModUIDataFromClassName": {
+      "documentation": null,
+      "signature_members": {
+        "nmModClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeaponModData",
+      "signature": "SFXWeaponModData GetWeaponModUIDataFromClassName(Name nmModClass, optional out int nIndex)"
+    },
+    "GetWeaponModValues": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeaponUIStats",
+      "signature": "SFXWeaponUIStats GetWeaponModValues(int nWeapIndex, Name nmHench)"
+    },
+    "GetWeaponModValuesByClassName": {
+      "documentation": null,
+      "signature_members": {
+        "nmWeapClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeaponUIStats",
+      "signature": "SFXWeaponUIStats GetWeaponModValuesByClassName(Name nmWeapClass, Name nmHench)"
+    },
+    "GetWeaponsByType": {
+      "documentation": null,
+      "signature_members": {
+        "eType": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyAvailableWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "array<int> GetWeaponsByType(ELoadoutWeapons eType, optional bool bOnlyAvailableWeapons)"
+    },
+    "GetWeaponUIDataFromClassName": {
+      "documentation": null,
+      "signature_members": {
+        "nmWeaponClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeaponSelectWeaponData",
+      "signature": "SFXWeaponSelectWeaponData GetWeaponUIDataFromClassName(Name nmWeaponClass, out int nIndex)"
+    },
+    "GetWeaponUIDataFromClassPath": {
+      "documentation": null,
+      "signature_members": {
+        "nmWeaponClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeaponSelectWeaponData",
+      "signature": "SFXWeaponSelectWeaponData GetWeaponUIDataFromClassPath(Name nmWeaponClass, out int nIndex)"
+    },
+    "GetWeaponUIStatValue": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eStat": {
+          "type": null,
+          "documentation": null
+        },
+        "oModValues": {
+          "type": null,
+          "documentation": null
+        },
+        "bAddModStat": {
+          "type": null,
+          "documentation": null
+        },
+        "fModBonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetWeaponUIStatValue(int nWeapIndex, EWeaponStatBars eStat, const SFXWeaponUIStats oModValues, optional bool bAddModStat, optional out float fModBonus)"
+    },
+    "IsWeaponNew": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsWeaponNew(int nWeaponIndex)"
+    },
+    "LoadData": {
+      "documentation": null,
+      "signature_members": {
+        "doneCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceReLoad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadData(delegate<OnDataLoadedDelegate> doneCallback, optional bool bForceReLoad)"
+    },
+    "ModIndexIsValid": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModIndexIsValid(int nIndex)"
+    },
+    "OnDataLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDataLoaded()"
+    },
+    "WeaponIndexIsValid": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WeaponIndexIsValid(int nIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

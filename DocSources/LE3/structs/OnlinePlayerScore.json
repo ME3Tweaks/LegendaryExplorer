@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PlayerID": {
+      "type": null,
+      "documentation": null
+    },
+    "TeamID": {
+      "type": null,
+      "documentation": null
+    },
+    "Score": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

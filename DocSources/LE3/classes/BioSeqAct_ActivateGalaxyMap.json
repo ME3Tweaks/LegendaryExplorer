@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sGalaxyMapResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oGalaxyMapReferenced": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_pGalaxyMap": {
+      "type": "SFXGalaxy",
+      "documentation": null
+    },
+    "Data": {
+      "type": "SFXGalaxyMapGameData",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

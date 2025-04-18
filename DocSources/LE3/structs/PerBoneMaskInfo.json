@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "BranchList": {
+      "type": null,
+      "documentation": null
+    },
+    "WeightRuleList": {
+      "type": null,
+      "documentation": null
+    },
+    "PerBoneWeights": {
+      "type": null,
+      "documentation": null
+    },
+    "TransformReqBone": {
+      "type": null,
+      "documentation": null
+    },
+    "DesiredWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendTimeToGo": {
+      "type": null,
+      "documentation": null
+    },
+    "TransformReqBoneIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "bWeightBasedOnNodeRules": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableForNonLocalHumanPlayers": {
+      "type": null,
+      "documentation": null
+    },
+    "bPendingBlend": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,20 @@
+{
+  "parent": "SFXCameraMode_TightAim",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

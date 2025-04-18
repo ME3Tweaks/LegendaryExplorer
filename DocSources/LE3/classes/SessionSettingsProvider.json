@@ -1,0 +1,78 @@
+{
+  "parent": "UISettingsProvider",
+  "package": "Engine",
+  "variables": {
+    "ProviderClientClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ProviderClientMetaClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ProviderClient": {
+      "type": "Class",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BindProviderClient": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BindProviderClient(Class<Object> DataSourceClass)"
+    },
+    "CleanupDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CleanupDataProvider()"
+    },
+    "IsValidDataSourceClass": {
+      "documentation": null,
+      "signature_members": {
+        "PotentialDataSourceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidDataSourceClass(Class<Object> PotentialDataSourceClass)"
+    },
+    "ProviderClientBound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderClientBound(Class<Object> DataSourceClass)"
+    },
+    "ProviderClientUnbound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderClientUnbound(Class<Object> DataSourceClass)"
+    },
+    "UnbindProviderClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnbindProviderClient()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

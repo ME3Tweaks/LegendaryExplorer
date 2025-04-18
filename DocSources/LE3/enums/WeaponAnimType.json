@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "WeaponAnimType_Pistol": {
+      "value": 0,
+      "documentation": null
+    },
+    "WeaponAnimType_Shotgun": {
+      "value": 1,
+      "documentation": null
+    },
+    "WeaponAnimType_Rifle": {
+      "value": 2,
+      "documentation": null
+    },
+    "WeaponAnimType_Sniper": {
+      "value": 3,
+      "documentation": null
+    },
+    "WeaponAnimType_GrenadeLauncher": {
+      "value": 4,
+      "documentation": null
+    },
+    "WeaponAnimType_MissileLauncher": {
+      "value": 5,
+      "documentation": null
+    },
+    "WeaponAnimType_NukeLauncher": {
+      "value": 6,
+      "documentation": null
+    },
+    "WeaponAnimType_ParticleBeam": {
+      "value": 7,
+      "documentation": null
+    },
+    "WeaponAnimType_RepulsorBeam": {
+      "value": 8,
+      "documentation": null
+    },
+    "WeaponAnimType_AutoShotgun": {
+      "value": 9,
+      "documentation": null
+    },
+    "WeaponAnimType_AutoSniper": {
+      "value": 10,
+      "documentation": null
+    },
+    "WeaponAnimType_AutoPistol": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Shadows": {
+      "type": null,
+      "documentation": null
+    },
+    "MidTones": {
+      "type": null,
+      "documentation": null
+    },
+    "HighLights": {
+      "type": null,
+      "documentation": null
+    },
+    "Desaturation": {
+      "type": null,
+      "documentation": null
+    },
+    "Preset": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

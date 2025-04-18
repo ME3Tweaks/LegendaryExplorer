@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Country": {
+      "type": null,
+      "documentation": null
+    },
+    "MinimumAge": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

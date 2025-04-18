@@ -1,0 +1,57 @@
+{
+  "parent": "SVehicleSimCar",
+  "package": "Engine",
+  "variables": {
+    "LeftTrackVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "RightTrackVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "LeftTrackTorque": {
+      "type": "float",
+      "documentation": null
+    },
+    "RightTrackTorque": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxEngineTorque": {
+      "type": "float",
+      "documentation": null
+    },
+    "EngineDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "InsideTrackTorqueFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "SteeringLatStiffnessFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnInPlaceThrottle": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnMaxGripReduction": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnGripScaleRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTurnInPlaceOnSteer": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

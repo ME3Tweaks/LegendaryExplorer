@@ -1,0 +1,37 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "ReplicationDebugCam": {
+      "type": "SFXCameraMode_ReplicationDebug",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

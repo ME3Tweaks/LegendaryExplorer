@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "bHidesHead": {
+      "type": null,
+      "documentation": null
+    },
+    "bHidesHair": {
+      "type": null,
+      "documentation": null
+    },
+    "bAffectsVO": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

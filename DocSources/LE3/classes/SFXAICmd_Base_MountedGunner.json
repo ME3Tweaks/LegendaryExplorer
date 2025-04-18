@@ -1,0 +1,59 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "ShouldAttack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAttack()"
+    }
+  },
+  "states": {
+    "Combat": {
+      "functions": {
+        "GetAdjustedAimFor": {
+          "documentation": null,
+          "signature_members": {
+            "W": {
+              "type": null,
+              "documentation": null
+            },
+            "StartFireLoc": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "Tick": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "TriggerIdleNotification": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

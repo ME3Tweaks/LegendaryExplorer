@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "CookData": {
+      "type": null,
+      "documentation": null
+    },
+    "ClassPath": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponModGripColors": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponModBodyColors": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponModEmissiveValues": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadoutInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "Stats": {
+      "type": null,
+      "documentation": null
+    },
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "IconResource": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "ShortDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "IconIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "EncumbranceWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "Unlocked": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

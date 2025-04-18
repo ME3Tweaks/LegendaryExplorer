@@ -1,0 +1,44 @@
+{
+  "parent": "SFXPowerCustomAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ApplyGlobalBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyGlobalBonus()"
+    },
+    "OnPowerRankIncreased": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPowerRankIncreased()"
+    },
+    "OnPowersLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPowersLoaded()"
+    },
+    "OnSquadMemberAdded": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSquadMemberAdded(Pawn Pawn)"
+    },
+    "ResetPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPower()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "STATE_LOCKED": {
+      "value": 0,
+      "documentation": null
+    },
+    "STATE_UNLOCKED": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

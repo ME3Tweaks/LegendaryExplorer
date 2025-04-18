@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Shields": {
+      "type": null,
+      "documentation": null
+    },
+    "ShieldLevelRange": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxShields": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

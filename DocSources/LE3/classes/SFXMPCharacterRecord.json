@@ -1,0 +1,264 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "CharacterName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Powers": {
+      "type": "PowerRecord",
+      "documentation": null
+    },
+    "Weapons": {
+      "type": "WeaponRecord",
+      "documentation": null
+    },
+    "WeaponMods": {
+      "type": "WeaponModRecord",
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": "SaveTimeStamp",
+      "documentation": null
+    },
+    "className": {
+      "type": "Name",
+      "documentation": null
+    },
+    "KitName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Tint1ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint2ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternColorID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PhongID": {
+      "type": "int",
+      "documentation": null
+    },
+    "EmissiveID": {
+      "type": "int",
+      "documentation": null
+    },
+    "SkinToneID": {
+      "type": "int",
+      "documentation": null
+    },
+    "SecondsPlayed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TalentPointsAvailable": {
+      "type": "int",
+      "documentation": null
+    },
+    "TalentPointsInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Deployed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LeveledUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSerializedFromBlaze": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsInitialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInitialized()"
+    },
+    "AutoLevelUpPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoLevelUpPowers(SFXPawn_Player PlayerPawn)"
+    },
+    "GetPointsSpentAtRank": {
+      "documentation": null,
+      "signature_members": {
+        "PowerRank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPointsSpentAtRank(int PowerRank)"
+    },
+    "GetTalentPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTalentPoints()"
+    },
+    "GetTalentPointsFast": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTalentPointsFast()"
+    },
+    "HasLeveledUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasLeveledUp()"
+    },
+    "InitializeFromCharacterClass": {
+      "documentation": null,
+      "signature_members": {
+        "CharacterClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeFromCharacterClass(string CharacterClassName)"
+    },
+    "InitializeWeaponsFromEnginePlayerLoadout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeWeaponsFromEnginePlayerLoadout()"
+    },
+    "IsDeployed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDeployed()"
+    },
+    "IsUnlocked": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUnlocked()"
+    },
+    "LoadPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXPowerCustomActionBase> LoadPower(string PowerClassName)"
+    },
+    "RecalculateTalentPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecalculateTalentPoints()"
+    },
+    "ResetCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "RetainCustomization": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetCharacter(bool RetainCustomization)"
+    },
+    "ResetPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPowers()"
+    },
+    "SetLeveledUp": {
+      "documentation": null,
+      "signature_members": {
+        "bLeveledUp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLeveledUp(bool bLeveledUp)"
+    },
+    "SetPowersFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPowersFromPawn(SFXPawn Pawn)"
+    },
+    "TransferCharacterDataToPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransferCharacterDataToPawn(SFXPawn_Player Pawn)"
+    },
+    "TransferPowersToPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransferPowersToPawn(SFXPawn_Player Pawn)"
+    },
+    "TransferWeaponsToEnginePlayerLoadout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransferWeaponsToEnginePlayerLoadout()"
+    },
+    "VerifySavedPawnPowers": {
+      "documentation": null,
+      "signature_members": {
+        "SavedPowers": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool VerifySavedPawnPowers(out array<Name> SavedPowers, SFXPawn_Player Pawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

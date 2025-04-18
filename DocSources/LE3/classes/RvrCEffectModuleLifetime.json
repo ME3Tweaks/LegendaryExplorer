@@ -1,0 +1,21 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_fMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRequestStop": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

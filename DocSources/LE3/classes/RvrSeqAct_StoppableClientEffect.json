@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_LastStarted": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "m_vSpawnParameters": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_bAllowCooldown": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

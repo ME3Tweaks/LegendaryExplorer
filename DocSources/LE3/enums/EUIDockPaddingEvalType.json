@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "UIPADDINGEVAL_Pixels": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIPADDINGEVAL_PercentTarget": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIPADDINGEVAL_PercentOwner": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIPADDINGEVAL_PercentScene": {
+      "value": 3,
+      "documentation": null
+    },
+    "UIPADDINGEVAL_PercentViewport": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

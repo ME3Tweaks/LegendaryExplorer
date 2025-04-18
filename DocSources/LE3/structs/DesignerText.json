@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Text": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "X": {
+      "type": null,
+      "documentation": null
+    },
+    "Y": {
+      "type": null,
+      "documentation": null
+    },
+    "Duration": {
+      "type": null,
+      "documentation": null
+    },
+    "Scale": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": null,
+      "documentation": null
+    },
+    "Center": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

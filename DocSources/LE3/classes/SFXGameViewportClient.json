@@ -1,0 +1,72 @@
+{
+  "parent": "GFxGameViewportClient",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "CreateInitialPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateInitialPlayer(out string OutError)"
+    },
+    "DisplayProgressMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayProgressMessage(Canvas Canvas)"
+    },
+    "DrawTransitionMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTransitionMessage(Canvas Canvas, string Message)"
+    },
+    "NotifyConnectionError": {
+      "documentation": null,
+      "signature_members": {
+        "Message": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyConnectionError(optional string Message, optional string Title)"
+    },
+    "CreateInitialPlayerWithLauncherOverride": {
+      "documentation": null,
+      "signature_members": {
+        "OutError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateInitialPlayerWithLauncherOverride(out string OutError)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

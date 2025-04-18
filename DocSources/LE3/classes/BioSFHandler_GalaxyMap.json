@@ -1,0 +1,946 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "aUIActionCallbacks": {
+      "type": "OnCallbackEvent",
+      "documentation": null
+    },
+    "m_sDisplayedFuel": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sDisplayedCash": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnCallbackEvent__Delegate": {
+      "type": "OnCallbackEvent",
+      "documentation": null
+    },
+    "aActions": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "BackControlState": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "ActionControlState": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "AltActionControlState": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "AltAction2ControlState": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "oGalaxyCam": {
+      "type": "BioCameraBehaviorGalaxy",
+      "documentation": null
+    },
+    "m_fScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLeftStickX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLeftStickY": {
+      "type": "float",
+      "documentation": null
+    },
+    "AButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "BButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "XButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "YButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TitleText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nDiscoveredPercent": {
+      "type": "int",
+      "documentation": null
+    },
+    "LTriggerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "RTriggerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextTravelMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextTravelConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextTravelCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextPlanetEventConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextGalaxyTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextUnknownObj": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextRefueling": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextTravel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextLand": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextBack": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextExit": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextScan": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextScanStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextScanClose": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextMassRelayJump": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextMassRelay": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextOrbit": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextFuelDepot": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextFuel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextProbes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextEmergencyFuel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextLaunchProbe": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextExploredPercent": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DescriptionTabText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MissionTabText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "FuelDisplayTextTemplate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "FuelAwardDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRemainingFuelAwardTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFuelAwardStartValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFuelAwardEndValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bClosingPlanet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bClosingScan": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWaitingForMsgBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AButtonEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BButtonEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "XButtonEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "YButtonEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLTriggerOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRTriggerOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsMultiLand": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceControlUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingFuelAwardAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFullCleanupOnClose": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_DisplayStageFrame": {
+      "documentation": null,
+      "signature_members": {
+        "bDisplay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_DisplayStageFrame(bool bDisplay)"
+    },
+    "AS_EnterPlanetScan": {
+      "documentation": null,
+      "signature_members": {
+        "sCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_EnterPlanetScan(const string sCallback)"
+    },
+    "AS_HideAllPlanetTags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_HideAllPlanetTags()"
+    },
+    "AS_HidePlanetPanel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_HidePlanetPanel()"
+    },
+    "AS_HidePlanetTag": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_HidePlanetTag(int nIndex)"
+    },
+    "AS_HideSystemScan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_HideSystemScan()"
+    },
+    "AS_LeavePlanetScan": {
+      "documentation": null,
+      "signature_members": {
+        "sCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_LeavePlanetScan(const string sCallback)"
+    },
+    "AS_SetActionButton": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sCallbackFn": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetActionButton(const string sTitle, const string sCallbackFn, bool bEnabled)"
+    },
+    "AS_SetAltAction2Button": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sCallbackFn": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetAltAction2Button(const string sTitle, const string sCallbackFn, bool bEnabled)"
+    },
+    "AS_SetAltActionButton": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sCallbackFn": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetAltActionButton(const string sTitle, const string sCallbackFn, bool bEnabled)"
+    },
+    "AS_SetBackButton": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sCallbackFn": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetBackButton(const string sTitle, const string sCallbackFn, bool bEnabled)"
+    },
+    "AS_SetPlanetTagSelection": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetPlanetTagSelection(int nIndex)"
+    },
+    "AS_SetReaperAlert": {
+      "documentation": null,
+      "signature_members": {
+        "fAlertLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetReaperAlert(float fAlertLevel)"
+    },
+    "AS_ShowPlanetTag": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowPlanetTag(int nIndex)"
+    },
+    "AS_ShowSystemScan": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowSystemScan(const string sText)"
+    },
+    "AS_SystemScanUsed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_SystemScanUsed()"
+    },
+    "AS_UpdateFuelRemaining": {
+      "documentation": null,
+      "signature_members": {
+        "sFuel": {
+          "type": null,
+          "documentation": null
+        },
+        "sCash": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_UpdateFuelRemaining(const string sFuel, const string sCash)"
+    },
+    "AS_UpdateSystemSelectors": {
+      "documentation": null,
+      "signature_members": {
+        "nStartIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "aLocations": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_UpdateSystemSelectors(int nStartIndex, array<Vector2D> aLocations)"
+    },
+    "BuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuyFuel()"
+    },
+    "DisplayPlanetPanel": {
+      "documentation": null,
+      "signature_members": {
+        "oPlanet": {
+          "type": null,
+          "documentation": null
+        },
+        "bStartOnMission": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayPlanetPanel(BioPlanet oPlanet, bool bStartOnMission)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents nEvent, optional float fValue)"
+    },
+    "HidePlanetPanel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HidePlanetPanel()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "InitializePlanetTags": {
+      "documentation": null,
+      "signature_members": {
+        "nNumTags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePlanetTags(int nNumTags)"
+    },
+    "OnCallbackEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCallbackEvent()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "SelectGalaxyItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectGalaxyItem()"
+    },
+    "SetSelectorState": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "nType": {
+          "type": null,
+          "documentation": null
+        },
+        "nDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "nPctVisited": {
+          "type": null,
+          "documentation": null
+        },
+        "srName": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSelectorState(int nIndex, bool bVisible, int nType, int nDisplay, int nPctVisited, stringref srName, const out string sText)"
+    },
+    "SetTitleStrings": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "nPercentDiscovered": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTitleStrings(stringref srTitle, int nPercentDiscovered)"
+    },
+    "TravelPrompt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TravelPrompt()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "UpdateFuelAndCashDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "fCurrentFuel": {
+          "type": null,
+          "documentation": null
+        },
+        "fMaxFuel": {
+          "type": null,
+          "documentation": null
+        },
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        },
+        "bDisplayCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFuelAndCashDisplay(float fCurrentFuel, float fMaxFuel, int nCredits, bool bDisplayCredits)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AS_ClearControls": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_ClearControls()"
+    },
+    "AS_DisplayPlanetPanel": {
+      "documentation": null,
+      "signature_members": {
+        "sDisplayName": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "sImageResource": {
+          "type": null,
+          "documentation": null
+        },
+        "sInfoHeader": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_DisplayPlanetPanel(const string sDisplayName, const string sDescription, const string sImageResource, const string sInfoHeader)"
+    },
+    "AS_InitializePlanetTags": {
+      "documentation": null,
+      "signature_members": {
+        "nNumTags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_InitializePlanetTags(int nNumTags)"
+    },
+    "AS_SetLTriggerLabelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetLTriggerLabelVisible(bool bVisible, const string sText)"
+    },
+    "AS_SetRTriggerLabelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetRTriggerLabelVisible(bool bVisible, const string sText)"
+    },
+    "AS_SetSelectorState": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "nPlanetType": {
+          "type": null,
+          "documentation": null
+        },
+        "nPlanetDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "nPctVisited": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetSelectorState(int nIndex, bool bVisible, int nPlanetType, int nPlanetDisplay, int nPctVisited, const string sName, const string sText)"
+    },
+    "AS_SetTitleStrings": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sDisplayName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetTitleStrings(const string sTitle, const string sDisplayName)"
+    },
+    "CloseScan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseScan()"
+    },
+    "CloseUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseUI()"
+    },
+    "ExitGalaxyMap": {
+      "documentation": null,
+      "signature_members": {
+        "bForcedExit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExitGalaxyMap(bool bForcedExit)"
+    },
+    "ExitPlanet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitPlanet()"
+    },
+    "FuelAwarded": {
+      "documentation": null,
+      "signature_members": {
+        "fInitialFuel": {
+          "type": null,
+          "documentation": null
+        },
+        "fFuel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FuelAwarded(float fInitialFuel, float fFuel)"
+    },
+    "OnEscapeAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnEscapeAction()"
+    },
+    "PlanetInfoPanelHidden": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlanetInfoPanelHidden()"
+    },
+    "PlanetInfoPanelVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlanetInfoPanelVisible()"
+    },
+    "SaveCurrentGalaxyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveCurrentGalaxyLocation(Vector vLoc)"
+    },
+    "SaveGalaxyState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGalaxyState(EBioGalaxyMapState eState)"
+    },
+    "Scan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Scan()"
+    },
+    "SetFuelAndCashDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "sFuel": {
+          "type": null,
+          "documentation": null
+        },
+        "sCash": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFuelAndCashDisplay(const string sFuel, const string sCash)"
+    },
+    "SetLTriggerLabel": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        },
+        "srText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLTriggerLabel(bool bShow, stringref srText)"
+    },
+    "SetRTriggerLabel": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        },
+        "srText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRTriggerLabel(bool bShow, stringref srText)"
+    },
+    "TravelConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TravelConfirm(bool bAPressed, int nContext)"
+    },
+    "UpdateFuelAward": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFuelAward(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

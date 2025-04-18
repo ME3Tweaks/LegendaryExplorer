@@ -1,0 +1,53 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "mRequest": {
+      "type": "SFXOnlineImageRequest",
+      "documentation": null
+    },
+    "__OnJobComplete__Delegate": {
+      "type": "OnJobComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateImageRequestJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineJobImageRequest",
+      "signature": "SFXOnlineJobImageRequest CreateImageRequestJob()"
+    },
+    "OnJobComplete": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJobComplete(SFXOnlineImageRequest request)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Tick()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    },
+    "MoveToBackOfQueue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveToBackOfQueue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

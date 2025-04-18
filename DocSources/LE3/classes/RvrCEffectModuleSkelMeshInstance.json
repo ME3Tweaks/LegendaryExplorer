@@ -1,0 +1,13 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_pSkelMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

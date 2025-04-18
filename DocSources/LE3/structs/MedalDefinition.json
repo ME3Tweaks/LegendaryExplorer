@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Icon": {
+      "type": null,
+      "documentation": null
+    },
+    "MedalName": {
+      "type": null,
+      "documentation": null
+    },
+    "Threshold": {
+      "type": null,
+      "documentation": null
+    },
+    "Score": {
+      "type": null,
+      "documentation": null
+    },
+    "ReplacesIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

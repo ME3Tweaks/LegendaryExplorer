@@ -1,0 +1,17 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "Text": {
+      "type": "string",
+      "documentation": null
+    },
+    "ZoneMeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,45 @@
+{
+  "parent": "PathNode",
+  "package": "SFXGame",
+  "variables": {
+    "AnimInfo": {
+      "type": "SFXAnimSetCookSpec",
+      "documentation": null
+    },
+    "PistolAnimInfo": {
+      "type": "SFXAnimSetCookSpec",
+      "documentation": null
+    },
+    "InteractionCustomActionID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPreciseLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreciseRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bModifyPerception": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartInteraction(BioPawn oPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

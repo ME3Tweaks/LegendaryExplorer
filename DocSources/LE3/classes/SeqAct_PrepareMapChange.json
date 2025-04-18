@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "InitiallyLoadedSecondaryLevelNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MainLevelName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bIsHighPriority": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

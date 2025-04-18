@@ -1,0 +1,506 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_ChosenTechData": {
+      "type": "TechData",
+      "documentation": null
+    },
+    "m_TechChoices": {
+      "type": "TechData",
+      "documentation": null
+    },
+    "m_ResearchChoices": {
+      "type": "TechData",
+      "documentation": null
+    },
+    "m_ResearchSubMenuChoices": {
+      "type": "TechData",
+      "documentation": null
+    },
+    "m_TopLevelChoices": {
+      "type": "SFXChoiceEntry",
+      "documentation": null
+    },
+    "m_TechTopChoices": {
+      "type": "SFXChoiceEntry",
+      "documentation": null
+    },
+    "m_ResearchTopChoices": {
+      "type": "SFXChoiceEntry",
+      "documentation": null
+    },
+    "ResearchSubMenus": {
+      "type": "ResearchMenu",
+      "documentation": null
+    },
+    "m_ChoiceGUIHandler": {
+      "type": "BioSFHandler_ChoiceGUI",
+      "documentation": null
+    },
+    "m_ChoiceGUIData": {
+      "type": "SFXGameChoiceGUIData_Research",
+      "documentation": null
+    },
+    "m_oMsgBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "srText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srErrorAButton": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srErrorCanNotAfford": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srErrorDoNotQualify": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srErrorKnown": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTechNameLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srResearchConfirmMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srResearchConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srResearchCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srEezo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPlatinum": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPalladium": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srIridium": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nLastUnlockedResearch": {
+      "type": "int",
+      "documentation": null
+    },
+    "nLastUnlockedTech": {
+      "type": "int",
+      "documentation": null
+    },
+    "srResearchDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srResearchTokenizedDescriptionPlural": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srResearchTokenizedDescriptionSingular": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srResearchTokenizedDescriptionResources": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srUpgradeTokenizedDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTokenizedResearchCategory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTokenizedResearchCategoryCounter": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTopLevelAButton": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDidResearch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMessageBoxActivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mode": {
+      "type": "eMode",
+      "documentation": null
+    },
+    "RMode": {
+      "type": "EResearchMode",
+      "documentation": null
+    },
+    "InitialMode": {
+      "type": "eMode",
+      "documentation": null
+    },
+    "InitialResearchMode": {
+      "type": "EResearchMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "ChoiceGUIInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChoiceGUIInputPressed(bool bAPressed, int nContext)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "DoResearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoResearch()"
+    },
+    "ExitChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitChosen()"
+    },
+    "ExitGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitGui()"
+    },
+    "GetResearchCanAffordString": {
+      "documentation": null,
+      "signature_members": {
+        "ResearchData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetResearchCanAffordString(TechData ResearchData)"
+    },
+    "GetResearchDescription": {
+      "documentation": null,
+      "signature_members": {
+        "ResearchData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetResearchDescription(TechData ResearchData)"
+    },
+    "GetResearchQualifiesForString": {
+      "documentation": null,
+      "signature_members": {
+        "ResearchData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetResearchQualifiesForString(TechData ResearchData)"
+    },
+    "HandleInput_Research": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInput_Research(bool bAPressed, int nContext)"
+    },
+    "HandleInput_Tech": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInput_Tech(bool bAPressed, int nContext)"
+    },
+    "HandleInput_TopLevel": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInput_TopLevel(bool bAPressed, int nContext)"
+    },
+    "MessageInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressed(bool bAPressed, int nContext)"
+    },
+    "MessageInputPressedError": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressedError(bool bAPressed, int nContext)"
+    },
+    "MessageInputPressedResearch": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressedResearch(bool bAPressed, int nContext)"
+    },
+    "RenderModeResearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RenderModeResearch()"
+    },
+    "RenderModeTech": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RenderModeTech()"
+    },
+    "RenderModeTopLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RenderModeTopLevel()"
+    },
+    "ResearchMenuChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResearchMenuChosen()"
+    },
+    "SetupChoiceGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupChoiceGUI()"
+    },
+    "SetupResearch": {
+      "documentation": null,
+      "signature_members": {
+        "Menu": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupResearch(ResearchMenu Menu)"
+    },
+    "SetupTech": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupTech()"
+    },
+    "SetupTop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupTop()"
+    },
+    "SetupTreasureData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupTreasureData()"
+    },
+    "ShowErrorMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srError": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowErrorMessageBox(stringref srError)"
+    },
+    "ShowResearchMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "stTreasure": {
+          "type": null,
+          "documentation": null
+        },
+        "stTech": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowResearchMessageBox(STreasure stTreasure, STech stTech)"
+    },
+    "TechChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TechChosen()"
+    },
+    "TechMenuChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TechMenuChosen()"
+    },
+    "TokenizeResearchString": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "srString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string TokenizeResearchString(int nLevel, stringref srString)"
+    },
+    "TokenizeTechData": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TokenizeTechData(out TechData Data, int nLevel)"
+    },
+    "TopLevelChosen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TopLevelChosen()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

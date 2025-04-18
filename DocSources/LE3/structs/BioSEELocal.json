@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "ObjectTag": {
+      "type": null,
+      "documentation": null
+    },
+    "FunctionName": {
+      "type": null,
+      "documentation": null
+    },
+    "nObjectType": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseParam": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

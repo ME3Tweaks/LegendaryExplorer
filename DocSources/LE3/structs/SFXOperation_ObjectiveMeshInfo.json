@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "UniqueString": {
+      "type": null,
+      "documentation": null
+    },
+    "MeshPath": {
+      "type": null,
+      "documentation": null
+    },
+    "Translation": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "GameName": {
+      "type": null,
+      "documentation": null
+    },
+    "MeshVOLine": {
+      "type": null,
+      "documentation": null
+    },
+    "Scale": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "TipText": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

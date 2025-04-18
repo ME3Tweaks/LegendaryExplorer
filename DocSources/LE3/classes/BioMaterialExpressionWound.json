@@ -1,0 +1,13 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "m_nWoundNumber": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

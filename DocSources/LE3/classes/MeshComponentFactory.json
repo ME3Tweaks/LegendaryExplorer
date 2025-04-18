@@ -1,0 +1,13 @@
+{
+  "parent": "PrimitiveComponentFactory",
+  "package": "Engine",
+  "variables": {
+    "Materials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

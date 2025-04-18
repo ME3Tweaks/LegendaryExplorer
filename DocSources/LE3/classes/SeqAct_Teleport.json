@@ -1,0 +1,57 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "m_vSFXTeleportLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rSFXTeleportRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "bUpdateRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPreserveVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSnapToFloor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSFXTeleportDataIsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSFXCreatedBeforeStuntActorLocationChange": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SFXGetTeleportLocAndRot": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "rRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "pDestActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SFXGetTeleportLocAndRot(out Vector vLocation, out Rotator rRotation, out Actor pDestActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

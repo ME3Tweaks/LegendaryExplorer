@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "GlowColor": {
+      "type": null,
+      "documentation": null
+    },
+    "GlowOuterRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "GlowInnerRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableGlow": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

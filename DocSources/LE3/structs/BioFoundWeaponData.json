@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "pWeapon": {
+      "type": null,
+      "documentation": null
+    },
+    "bSpawned": {
+      "type": null,
+      "documentation": null
+    },
+    "bCurrentlyEquipped": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

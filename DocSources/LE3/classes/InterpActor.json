@@ -1,0 +1,232 @@
+{
+  "parent": "DynamicSMActor",
+  "package": "Engine",
+  "variables": {
+    "MyMarker": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "OpenSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "OpeningAmbientSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "OpenedSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "CloseSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "ClosingAmbientSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "ClosedSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "AmbientSoundComponent": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "MaxZVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "StayOpenTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bShouldSaveForCheckpoint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMonitorMover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMonitorZVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDestroyProjectilesOnEncroach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bContinueOnEncroachPhysicsObject": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopOnEncroach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldShadowParentAllAttachedActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsLift": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Attach": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Attach(Actor Other)"
+    },
+    "Detach": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Detach(Actor Other)"
+    },
+    "EncroachingOn": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EncroachingOn(Actor Other)"
+    },
+    "InterpolationChanged": {
+      "documentation": null,
+      "signature_members": {
+        "InterpAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolationChanged(SeqAct_Interp InterpAction)"
+    },
+    "InterpolationFinished": {
+      "documentation": null,
+      "signature_members": {
+        "InterpAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolationFinished(SeqAct_Interp InterpAction)"
+    },
+    "InterpolationStarted": {
+      "documentation": null,
+      "signature_members": {
+        "InterpAction": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolationStarted(SeqAct_Interp InterpAction, InterpGroupInst GroupInst)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "RanInto": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RanInto(Actor Other)"
+    },
+    "SetShadowParentOnAllAttachedComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetShadowParentOnAllAttachedComponents()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "FinishedOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishedOpen()"
+    },
+    "PlayMovingSound": {
+      "documentation": null,
+      "signature_members": {
+        "bClosing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayMovingSound(bool bClosing)"
+    },
+    "Restart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Restart()"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,30 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

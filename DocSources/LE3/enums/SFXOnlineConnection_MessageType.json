@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "SFXONLINE_MT_MESSAGEOFTHEDAY": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_MT_DOWNLOAD_PROMPT": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_MT_GAW_SUMMARY": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_MT_GAW_STATUS_UPDATE": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_MT_FRIEND_ACHIVEMENT": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_MT_FRIEND_LEADERBOARD_RANK_CHANGE": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_MT_MESSAGEOFTHEDAY_TICKERONLY": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_MT_DISCONNECTED_TICKERONLY": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXONLINE_MT_MP_PROMO": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

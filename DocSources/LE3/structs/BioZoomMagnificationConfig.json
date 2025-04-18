@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "m_fCamSpeedFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fFOVFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nLevelCount": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fTransitionDuration": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

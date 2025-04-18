@@ -1,0 +1,24 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "CanAffordNewStoreItems": {
+      "documentation": null,
+      "signature_members": {
+        "OldCredits": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanAffordNewStoreItems(int OldCredits, int NewCredits)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

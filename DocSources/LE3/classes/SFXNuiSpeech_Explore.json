@@ -1,0 +1,15 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "NuiSpeechUseModule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NuiSpeechUseModule()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

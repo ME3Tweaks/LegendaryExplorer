@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "m_nNodeID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nConvResRefID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

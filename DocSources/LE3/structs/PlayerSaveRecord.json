@@ -1,0 +1,165 @@
+{
+  "Members": {
+    "Appearance": {
+      "type": null,
+      "documentation": null
+    },
+    "firstName": {
+      "type": null,
+      "documentation": null
+    },
+    "Powers": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapons": {
+      "type": null,
+      "documentation": null
+    },
+    "GAWAssets": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponMods": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadoutWeaponGroups": {
+      "type": null,
+      "documentation": null
+    },
+    "HotKeys": {
+      "type": null,
+      "documentation": null
+    },
+    "faceCode": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerClass": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadoutWeapons": {
+      "type": null,
+      "documentation": null
+    },
+    "ME1ImportBonuses": {
+      "type": null,
+      "documentation": null
+    },
+    "CharacterGUID": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "MappedPower1": {
+      "type": null,
+      "documentation": null
+    },
+    "MappedPower2": {
+      "type": null,
+      "documentation": null
+    },
+    "MappedPower3": {
+      "type": null,
+      "documentation": null
+    },
+    "PrimaryWeapon": {
+      "type": null,
+      "documentation": null
+    },
+    "SecondaryWeapon": {
+      "type": null,
+      "documentation": null
+    },
+    "srClassFriendlyName": {
+      "type": null,
+      "documentation": null
+    },
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentXP": {
+      "type": null,
+      "documentation": null
+    },
+    "LastName": {
+      "type": null,
+      "documentation": null
+    },
+    "TalentPoints": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentHealth": {
+      "type": null,
+      "documentation": null
+    },
+    "Credits": {
+      "type": null,
+      "documentation": null
+    },
+    "Medigel": {
+      "type": null,
+      "documentation": null
+    },
+    "Grenades": {
+      "type": null,
+      "documentation": null
+    },
+    "Eezo": {
+      "type": null,
+      "documentation": null
+    },
+    "Iridium": {
+      "type": null,
+      "documentation": null
+    },
+    "Palladium": {
+      "type": null,
+      "documentation": null
+    },
+    "Platinum": {
+      "type": null,
+      "documentation": null
+    },
+    "Probes": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentFuel": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsFemale": {
+      "type": null,
+      "documentation": null
+    },
+    "bCombatPawn": {
+      "type": null,
+      "documentation": null
+    },
+    "bInjuredPawn": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseCasualAppearance": {
+      "type": null,
+      "documentation": null
+    },
+    "Origin": {
+      "type": null,
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

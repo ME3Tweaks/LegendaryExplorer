@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "EffectorLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "JointTargetLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectorSpaceBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "JointTargetSpaceBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectorLocationSpace": {
+      "type": null,
+      "documentation": null
+    },
+    "JointTargetLocationSpace": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

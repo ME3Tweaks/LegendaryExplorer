@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "pConversation": {
+      "type": null,
+      "documentation": null
+    },
+    "nLineStrRef": {
+      "type": null,
+      "documentation": null
+    },
+    "srActorNameOverride": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceHideSubtitles": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlaySoundOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableDelayUntilPreload": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowInConversation": {
+      "type": null,
+      "documentation": null
+    },
+    "bSubtitleHasPriority": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

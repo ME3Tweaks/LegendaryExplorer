@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "BoolVariables": {
+      "type": null,
+      "documentation": null
+    },
+    "IntVariables": {
+      "type": null,
+      "documentation": null
+    },
+    "FloatVariables": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

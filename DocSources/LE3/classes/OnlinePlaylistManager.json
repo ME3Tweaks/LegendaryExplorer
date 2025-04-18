@@ -1,0 +1,154 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Playlists": {
+      "type": "Playlist",
+      "documentation": null
+    },
+    "PlaylistFileNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "DatastoresToRefresh": {
+      "type": "Name",
+      "documentation": null
+    },
+    "__OnReadPlaylistComplete__Delegate": {
+      "type": "OnReadPlaylistComplete",
+      "documentation": null
+    },
+    "DownloadCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "SuccessfulCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "VersionNumber": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DetermineFilesToDownload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineFilesToDownload()"
+    },
+    "FinalizePlaylistObjects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinalizePlaylistObjects()"
+    },
+    "OnReadPlaylistComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReadPlaylistComplete()"
+    },
+    "OnReadTitleFileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "Filename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadTitleFileComplete(bool bWasSuccessful, string Filename)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "DownloadPlaylist": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DownloadPlaylist()"
+    },
+    "GetContentIdsFromPlaylist": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": null,
+          "documentation": null
+        },
+        "ContentIds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetContentIdsFromPlaylist(int PlaylistId, out array<int> ContentIds)"
+    },
+    "GetGameSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": null,
+          "documentation": null
+        },
+        "GameSettingsId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "OnlineGameSettings",
+      "signature": "OnlineGameSettings GetGameSettings(int PlaylistId, int GameSettingsId)"
+    },
+    "GetTeamInfoFromPlaylist": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": null,
+          "documentation": null
+        },
+        "TeamSize": {
+          "type": null,
+          "documentation": null
+        },
+        "TeamCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTeamInfoFromPlaylist(int PlaylistId, out int TeamSize, out int TeamCount)"
+    },
+    "HasAnyGameSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasAnyGameSettings(int PlaylistId)"
+    },
+    "PlaylistSupportsDedicatedServers": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaylistSupportsDedicatedServers(int PlaylistId)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

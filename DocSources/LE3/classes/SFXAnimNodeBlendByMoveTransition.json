@@ -1,0 +1,33 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "MoveToIdleBlends": {
+      "type": "MoveToIdleTransitionBlend",
+      "documentation": null
+    },
+    "MoveSyncGroup": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IdleSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "ActiveMoveToIdleTrans": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIdle": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

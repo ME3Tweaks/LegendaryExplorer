@@ -1,0 +1,69 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_LocationAdjust": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "m_RotationAdjust": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "m_oLocationParam": {
+      "type": "RvrClientEffectParameter",
+      "documentation": null
+    },
+    "m_oNormalParam": {
+      "type": "RvrClientEffectParameter",
+      "documentation": null
+    },
+    "m_sAttachment": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_HitLocationPullback": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bSetEffectLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bContinuous": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSendLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSendNormal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAttach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eTarget": {
+      "type": "EEffectLocationTarget",
+      "documentation": null
+    },
+    "m_eReference": {
+      "type": "EEffectLocationReference",
+      "documentation": null
+    },
+    "m_eRotationTarget": {
+      "type": "EEffectRotationTarget",
+      "documentation": null
+    },
+    "m_eBoneAxis": {
+      "type": "EEffectBoneAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

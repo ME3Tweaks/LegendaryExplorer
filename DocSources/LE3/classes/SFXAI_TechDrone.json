@@ -1,0 +1,27 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "ClearForcedTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearForcedTarget()"
+    },
+    "PeriodicMoveCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PeriodicMoveCheck()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

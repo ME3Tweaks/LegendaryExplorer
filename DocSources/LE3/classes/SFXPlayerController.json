@@ -1,0 +1,1019 @@
+{
+  "parent": "BioPlayerController",
+  "package": "SFXGame",
+  "variables": {
+    "CachedInviteResult": {
+      "type": "OnlineGameSearchResult",
+      "documentation": null
+    },
+    "m_aPOIKismet": {
+      "type": "SFXSeqAct_LookAtPOI",
+      "documentation": null
+    },
+    "NavList": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "SPMapNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SPN7MapNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "OnDestroyDelegates": {
+      "type": "OnDestroyCallback",
+      "documentation": null
+    },
+    "__OnDestroyCallback__Delegate": {
+      "type": "OnDestroyCallback",
+      "documentation": null
+    },
+    "m_pActivePOI": {
+      "type": "SFXSeqAct_LookAtPOI",
+      "documentation": null
+    },
+    "MyCamera": {
+      "type": "SFXPlayerCamera",
+      "documentation": null
+    },
+    "CurrentNavGoal": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "OldPawn": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "FoundLadder": {
+      "type": "SFXLadderReachSpec",
+      "documentation": null
+    },
+    "CurrentNavIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "srConnectionLost": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srHostLeft": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInviteFailure": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInviteGameFull": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInviterLeft": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInviteProtocolMismatch": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInviteMissingDLCInvitee": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInviteMissingDLCInviter": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMultiplayerUpdate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPlayerKicked": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nInviteWaitDelay": {
+      "type": "int",
+      "documentation": null
+    },
+    "nMaxInviteWaitDelay": {
+      "type": "int",
+      "documentation": null
+    },
+    "ObjectiveTimerPositionY": {
+      "type": "int",
+      "documentation": null
+    },
+    "QuickMantleDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLeanDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHidPlayerForAtlasHack": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ActivatePOI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivatePOI()"
+    },
+    "DeactivatePOI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivatePOI()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "GetDUIHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_DesignerUI",
+      "signature": "BioSFHandler_DesignerUI GetDUIHandler()"
+    },
+    "IsSignedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSignedIn()"
+    },
+    "LoadingScreenTimedOut": {
+      "documentation": null,
+      "signature_members": {
+        "WaitMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadingScreenTimedOut(EWaitMessage WaitMessage)"
+    },
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "NotifyHitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyHitWall(Vector HitNormal, Actor Wall)"
+    },
+    "OnGameInviteAccepted": {
+      "documentation": null,
+      "signature_members": {
+        "InviteResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameInviteAccepted(const out OnlineGameSearchResult InviteResult)"
+    },
+    "Possess": {
+      "documentation": null,
+      "signature_members": {
+        "aPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bVehicleTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Possess(Pawn aPawn, bool bVehicleTransition)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetZoomed": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZoomed(bool bEnabled)"
+    },
+    "SpawnPlayerCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnPlayerCamera()"
+    },
+    "UnPossess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnPossess()"
+    },
+    "CheckNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "Shooter": {
+          "type": null,
+          "documentation": null
+        },
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "WeapLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "LineDir": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckNearMiss(Pawn Shooter, Weapon W, Vector WeapLoc, Vector LineDir, Vector HitLocation)"
+    },
+    "EnterStartState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterStartState()"
+    },
+    "NotifyInviteFailed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyInviteFailed()"
+    },
+    "AddOnDestroyDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "OnDestroyDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOnDestroyDelegate(delegate<OnDestroyCallback> OnDestroyDelegate)"
+    },
+    "AtlasHideDriverHack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AtlasHideDriverHack()"
+    },
+    "BeginCountdownTimer": {
+      "documentation": null,
+      "signature_members": {
+        "CountdownTime": {
+          "type": null,
+          "documentation": null
+        },
+        "CountdownWarningTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginCountdownTimer(float CountdownTime, float CountdownWarningTime)"
+    },
+    "BuildMissingDLCString": {
+      "documentation": null,
+      "signature_members": {
+        "bInvitee": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string BuildMissingDLCString(bool bInvitee)"
+    },
+    "Callback_GameDestroyedMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_GameDestroyedMessage(bool bAPressed, int Context)"
+    },
+    "Callback_HostLeftMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_HostLeftMessage(bool bAPressed, int Context)"
+    },
+    "CancelCountdownTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelCountdownTimer()"
+    },
+    "CheckCancelCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckCancelCover()"
+    },
+    "CheckQuickCoverAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckQuickCoverAction()"
+    },
+    "ClientSetSharedCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "Cooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientSetSharedCooldown(float Cooldown)"
+    },
+    "ClientShowExtractionCredits": {
+      "documentation": null,
+      "signature_members": {
+        "Credits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientShowExtractionCredits(float Credits)"
+    },
+    "ClientUpdateKillChallenges": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "ChallengeScoreData": {
+          "type": null,
+          "documentation": null
+        },
+        "records": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientUpdateKillChallenges(Class<SFXPawn> KilledPawn, PlayerChallengeScoreData ChallengeScoreData, ScoreEvent records[10])"
+    },
+    "ComputeConstrainedAngle": {
+      "documentation": null,
+      "signature_members": {
+        "Mag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeConstrainedAngle(out float Mag)"
+    },
+    "ConnectToMPMap": {
+      "documentation": null,
+      "signature_members": {
+        "mapPackageName": {
+          "type": null,
+          "documentation": null
+        },
+        "fromGalaxyMap": {
+          "type": null,
+          "documentation": null
+        },
+        "Difficulty": {
+          "type": null,
+          "documentation": null
+        },
+        "objectiveMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConnectToMPMap(string mapPackageName, optional bool fromGalaxyMap, optional SFXOnlineGameDifficulty Difficulty, optional int objectiveMode)"
+    },
+    "ContinueGameInviteAccepted": {
+      "documentation": null,
+      "signature_members": {
+        "InviteResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ContinueGameInviteAccepted(const out OnlineGameSearchResult InviteResult)"
+    },
+    "ContinueGameInviteAcceptedPart2": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ContinueGameInviteAcceptedPart2()"
+    },
+    "DisplayTextPopup": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayTextPopup(coerce string Text)"
+    },
+    "DUI_ClearAll": {
+      "documentation": null,
+      "signature_members": {
+        "bModal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_ClearAll(bool bModal)"
+    },
+    "DUI_ClearElementPulse": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_ClearElementPulse(BioDUIElements nElement)"
+    },
+    "DUI_SetBarFillDirection": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": null,
+          "documentation": null
+        },
+        "bLeftToRight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetBarFillDirection(bool bModalBar, bool bLeftToRight)"
+    },
+    "DUI_SetBarFillPercent": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": null,
+          "documentation": null
+        },
+        "nPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetBarFillPercent(bool bModalBar, int nPercent)"
+    },
+    "DUI_SetBarMarkerPoints": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": null,
+          "documentation": null
+        },
+        "nMarker1": {
+          "type": null,
+          "documentation": null
+        },
+        "nMarker2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetBarMarkerPoints(bool bModalBar, int nMarker1, int nMarker2)"
+    },
+    "DUI_SetCounterValue": {
+      "documentation": null,
+      "signature_members": {
+        "bModalCounter": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetCounterValue(bool bModalCounter, int nValue)"
+    },
+    "DUI_SetElementAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "fAlpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementAlpha(BioDUIElements nElement, float fAlpha)"
+    },
+    "DUI_SetElementColor": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "stColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementColor(BioDUIElements nElement, Color stColor)"
+    },
+    "DUI_SetElementText": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementText(BioDUIElements nElement, string sText)"
+    },
+    "DUI_SetElementVisible": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "fFadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementVisible(BioDUIElements nElement, bool bVisible, optional float fFadeTime)"
+    },
+    "DUI_SetQuasarLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetQuasarLayout(bool bShow)"
+    },
+    "DUI_SetTextStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "srText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetTextStringRef(BioDUIElements nElement, stringref srText)"
+    },
+    "DUI_SetTimerDetails": {
+      "documentation": null,
+      "signature_members": {
+        "bModalTimer": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "fStartTime": {
+          "type": null,
+          "documentation": null
+        },
+        "fEndTime": {
+          "type": null,
+          "documentation": null
+        },
+        "fInterval": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetTimerDetails(bool bModalTimer, bool bVisible, float fStartTime, float fEndTime, float fInterval)"
+    },
+    "DUI_SetupElementPulse": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "fMinAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "fCycleTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetupElementPulse(BioDUIElements nElement, float fMinAlpha, float fCycleTime)"
+    },
+    "ForceOnlineSubCleanUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceOnlineSubCleanUp()"
+    },
+    "ForceUnZoom": {
+      "documentation": null,
+      "signature_members": {
+        "Time": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceUnZoom(float Time)"
+    },
+    "GetRemainingCountdownTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRemainingCountdownTime()"
+    },
+    "HideInGameConsumableUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideInGameConsumableUI()"
+    },
+    "OnBeginIllusiveManConflict": {
+      "documentation": null,
+      "signature_members": {
+        "Seq": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnBeginIllusiveManConflict(SFXSeqAct_BeginIllusiveManConflict Seq)"
+    },
+    "OnDestroyCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDestroyCallback()"
+    },
+    "OnGameConnectionLost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnGameConnectionLost()"
+    },
+    "OnMultiplayerGameDestroyed": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnMultiplayerGameDestroyed(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnWaveFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWaveFinished()"
+    },
+    "PlayDistanceScaledCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "CameraShake": {
+          "type": null,
+          "documentation": null
+        },
+        "MinShakeDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "MinShakeMultiplier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDistanceScaledCameraShake(Vector ImpactLocation, ScreenShakeStruct CameraShake, optional float MinShakeDistance, optional float MinShakeMultiplier)"
+    },
+    "PlayDistanceScaledForceFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ForceFeedback": {
+          "type": null,
+          "documentation": null
+        },
+        "MinShakeDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "MinShakeMultiplier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDistanceScaledForceFeedback(Vector ImpactLocation, ForceFeedbackWaveform ForceFeedback, optional float MinShakeDistance, optional float MinShakeMultiplier)"
+    },
+    "PlayScaledCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "CameraShake": {
+          "type": null,
+          "documentation": null
+        },
+        "ScaleFactor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayScaledCameraShake(ScreenShakeStruct CameraShake, float ScaleFactor)"
+    },
+    "PulsePowerDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PulsePowerDisplay()"
+    },
+    "QueueHostLeftMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bTransitionToMainMenu": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueHostLeftMessage(optional bool bTransitionToMainMenu)"
+    },
+    "RemoveOnDestroyDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "OnDestroyDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveOnDestroyDelegate(delegate<OnDestroyCallback> OnDestroyDelegate)"
+    },
+    "ResetLean": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetLean()"
+    },
+    "ServerBecomeActivePlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ServerBecomeActivePlayer()"
+    },
+    "SetObjectiveCircleProgress": {
+      "documentation": null,
+      "signature_members": {
+        "nNumComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectiveCircleProgress(int nNumComplete)"
+    },
+    "SetObjectiveCircleText": {
+      "documentation": null,
+      "signature_members": {
+        "s1": {
+          "type": null,
+          "documentation": null
+        },
+        "s2": {
+          "type": null,
+          "documentation": null
+        },
+        "s3": {
+          "type": null,
+          "documentation": null
+        },
+        "s4": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectiveCircleText(const string s1, const string s2, const string s3, const string s4)"
+    },
+    "SetScoreHudObjectiveProgress": {
+      "documentation": null,
+      "signature_members": {
+        "Progress": {
+          "type": null,
+          "documentation": null
+        },
+        "bBoostAnim": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScoreHudObjectiveProgress(float Progress, optional bool bBoostAnim)"
+    },
+    "SetScoreHudObjectiveText": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectiveText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScoreHudObjectiveText(stringref ObjectiveText)"
+    },
+    "ShowNetworkErrorMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowNetworkErrorMessage()"
+    },
+    "TickCoverVisualization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TickCoverVisualization()"
+    },
+    "TryQuickMantle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryQuickMantle()"
+    },
+    "UpdateCountdownTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCountdownTimer()"
+    },
+    "UpdateHUDPOIIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateHUDPOIIcon()"
+    },
+    "UpdateInGameConsumableUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateInGameConsumableUI()"
+    },
+    "WasKickedOutOfGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WasKickedOutOfGame()"
+    }
+  },
+  "states": {
+    "PlayerConstrained": {
+      "functions": {
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMoveConstrained": {
+          "documentation": null,
+          "signature_members": {
+            "PawnAsBioPawn": {
+              "type": null,
+              "documentation": null
+            },
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveMag": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

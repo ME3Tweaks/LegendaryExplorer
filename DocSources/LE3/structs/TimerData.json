@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "FuncName": {
+      "type": null,
+      "documentation": null
+    },
+    "TimerObj": {
+      "type": null,
+      "documentation": null
+    },
+    "Rate": {
+      "type": null,
+      "documentation": null
+    },
+    "Count": {
+      "type": null,
+      "documentation": null
+    },
+    "TimerTimeDilation": {
+      "type": null,
+      "documentation": null
+    },
+    "bLoop": {
+      "type": null,
+      "documentation": null
+    },
+    "bPaused": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

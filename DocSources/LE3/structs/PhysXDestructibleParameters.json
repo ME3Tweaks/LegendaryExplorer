@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "DepthParameters": {
+      "type": null,
+      "documentation": null
+    },
+    "FractureSound": {
+      "type": null,
+      "documentation": null
+    },
+    "CrumbleParticleSystem": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageToRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageCap": {
+      "type": null,
+      "documentation": null
+    },
+    "ForceToDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "CrumbleParticleSize": {
+      "type": null,
+      "documentation": null
+    },
+    "ScaledDamageToRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "bAccumulateDamage": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

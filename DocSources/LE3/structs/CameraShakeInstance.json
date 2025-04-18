@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "UserPlaySpaceMatrix": {
+      "type": null,
+      "documentation": null
+    },
+    "LocSinOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "RotSinOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "SourceShake": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimInst": {
+      "type": null,
+      "documentation": null
+    },
+    "OscillatorTimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentBlendInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentBlendOutTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FOVSinOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "Scale": {
+      "type": null,
+      "documentation": null
+    },
+    "bBlendingIn": {
+      "type": null,
+      "documentation": null
+    },
+    "bBlendingOut": {
+      "type": null,
+      "documentation": null
+    },
+    "PlaySpace": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "TEAM_PLAYER": {
+      "value": 0,
+      "documentation": null
+    },
+    "TEAM_ENEMY": {
+      "value": 1,
+      "documentation": null
+    },
+    "TEAM_DUMMY": {
+      "value": 2,
+      "documentation": null
+    },
+    "TEAM_EVERYONE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

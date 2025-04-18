@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "vPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "nIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "fPassTime": {
+      "type": null,
+      "documentation": null
+    },
+    "nSize": {
+      "type": null,
+      "documentation": null
+    },
+    "nRelativeZ": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlayerLockedOn": {
+      "type": null,
+      "documentation": null
+    },
+    "eRadarType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,43 @@
+{
+  "parent": "SFXCustomAction_DamageReaction",
+  "package": "SFXGame",
+  "variables": {
+    "Moo": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HealDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "DelayedSoundEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DelayedSoundEffect()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

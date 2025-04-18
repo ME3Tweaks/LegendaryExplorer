@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Subscriber": {
+      "type": null,
+      "documentation": null
+    },
+    "SubscriberId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

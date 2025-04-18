@@ -1,0 +1,292 @@
+{
+  "parent": "SFXProjectile_Explosive",
+  "package": "SFXGame",
+  "variables": {
+    "SentNofications": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ReplicatedPowerProjInitInfo": {
+      "type": "ReplicatedPowerProjInit",
+      "documentation": null
+    },
+    "LastLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Power": {
+      "type": "SFXPowerCustomAction",
+      "documentation": null
+    },
+    "Caster": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "TargetActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TouchedActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ReservationID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ImpactedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ReplicatedTravelSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "PassThroughCoverDistSq": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUsePowerReservation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ShowPowerAiming": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        },
+        "WallComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "Direction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector Direction)"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "GetDamageRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageRadius()"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor Other, Vector HitLocation, Vector HitNormal)"
+    },
+    "ProjectileHurtRadius": {
+      "documentation": null,
+      "signature_members": {
+        "InDamageAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "InDamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProjectileHurtRadius(float InDamageAmount, float InDamageRadius, float Momentum, Vector HurtOrigin, Vector HitNormal)"
+    },
+    "ChangeSpeedDynamically": {
+      "documentation": null,
+      "signature_members": {
+        "NewSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeSpeedDynamically(float NewSpeed)"
+    },
+    "IgnoreOther": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IgnoreOther(Actor Other)"
+    },
+    "InitializePowerProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fTravelSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "fRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializePowerProjectile(Actor oCaster, float fTravelSpeed, float fRadius, SFXPowerCustomAction oPower)"
+    },
+    "PawnEvadedPower": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Label": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeBeforeImpact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnEvadedPower(BioPawn Pawn, Name Label, float TimeBeforeImpact)"
+    },
+    "ReplicatedInitUpdated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicatedInitUpdated()"
+    },
+    "ReplicateInit": {
+      "documentation": null,
+      "signature_members": {
+        "Direction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateInit(Vector Direction)"
+    },
+    "UpdateImpactNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateImpactNotifications()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

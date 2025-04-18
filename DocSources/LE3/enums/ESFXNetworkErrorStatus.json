@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ErrorStatus_NoError": {
+      "value": 0,
+      "documentation": null
+    },
+    "ErrorStatus_DisplayingPrompt": {
+      "value": 1,
+      "documentation": null
+    },
+    "ErrorStatus_DisplayPromptAfterTravel": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

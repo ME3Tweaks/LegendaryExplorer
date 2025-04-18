@@ -1,0 +1,34 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oTargetBool": {
+      "type": "SeqVar_Bool",
+      "documentation": null
+    },
+    "oCombatTargetBool": {
+      "type": "SeqVar_Bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

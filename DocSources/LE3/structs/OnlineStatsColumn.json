@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "StatValue": {
+      "type": null,
+      "documentation": null
+    },
+    "ColumnNo": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

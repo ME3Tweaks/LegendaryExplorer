@@ -1,0 +1,33 @@
+{
+  "parent": "CoverGoalConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "LOFs": {
+      "type": "FriendlyLOFData",
+      "documentation": null
+    },
+    "LOFDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvaluator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Goal_AtCover GoalEvaluator)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,37 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "bLoadingMovie": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "ActivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSpecifier(Name ModeSpecifier)"
+    },
+    "SkipMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipMovie()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

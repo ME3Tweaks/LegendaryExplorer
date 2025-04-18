@@ -1,0 +1,187 @@
+{
+  "parent": "SkeletalMeshCinematicActor",
+  "package": "Engine",
+  "variables": {
+    "SlotNodes": {
+      "type": "AnimNodeSlot",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinishAnimControl(InterpGroup InInterpGroup)"
+    },
+    "MAT_SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": null,
+          "documentation": null
+        },
+        "ChannelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "InPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "MAT_SetAnimWeights": {
+      "documentation": null,
+      "signature_members": {
+        "SlotInfos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_SetAnimWeights(array<AnimSlotInfo> SlotInfos)"
+    },
+    "MAT_SetMorphWeight": {
+      "documentation": null,
+      "signature_members": {
+        "MorphNodeName": {
+          "type": null,
+          "documentation": null
+        },
+        "MorphWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_SetMorphWeight(Name MorphNodeName, float MorphWeight)"
+    },
+    "MAT_SetSkelControlScale": {
+      "documentation": null,
+      "signature_members": {
+        "SkelControlName": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_SetSkelControlScale(Name SkelControlName, float Scale)"
+    },
+    "PostInitAnimTree": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostInitAnimTree(SkeletalMeshComponent SkelComp)"
+    },
+    "SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": null,
+          "documentation": null
+        },
+        "ChannelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "InPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "SetMorphWeight": {
+      "documentation": null,
+      "signature_members": {
+        "MorphNodeName": {
+          "type": null,
+          "documentation": null
+        },
+        "MorphWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMorphWeight(Name MorphNodeName, float MorphWeight)"
+    },
+    "SetSkelControlScale": {
+      "documentation": null,
+      "signature_members": {
+        "SkelControlName": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkelControlScale(Name SkelControlName, float Scale)"
+    },
+    "CacheAnimNodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CacheAnimNodes()"
+    },
+    "ClearAnimNodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAnimNodes()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

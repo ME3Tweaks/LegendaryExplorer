@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Event": {
+      "type": null,
+      "documentation": null
+    },
+    "Speaker": {
+      "type": null,
+      "documentation": null
+    },
+    "Specific": {
+      "type": null,
+      "documentation": null
+    },
+    "Role": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

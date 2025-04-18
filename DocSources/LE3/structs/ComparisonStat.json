@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "StatName": {
+      "type": null,
+      "documentation": null
+    },
+    "StatBaseValue": {
+      "type": null,
+      "documentation": null
+    },
+    "StatBonusValue": {
+      "type": null,
+      "documentation": null
+    },
+    "StatCompValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

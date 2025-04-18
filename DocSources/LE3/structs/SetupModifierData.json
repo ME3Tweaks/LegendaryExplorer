@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "PlotIDSet": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotIDClear": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotInts": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotCond": {
+      "type": null,
+      "documentation": null
+    },
+    "Modifier": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

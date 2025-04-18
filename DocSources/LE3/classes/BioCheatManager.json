@@ -1,0 +1,5414 @@
+{
+  "parent": "CheatManager",
+  "package": "SFXGame",
+  "variables": {
+    "AllProfiles": {
+      "type": "ProfileData",
+      "documentation": null
+    },
+    "PendingLoadGameDebugName": {
+      "type": "string",
+      "documentation": null
+    },
+    "PendingSaveGameFileName": {
+      "type": "string",
+      "documentation": null
+    },
+    "PendingSendToHost": {
+      "type": "string",
+      "documentation": null
+    },
+    "GFxWatchValues": {
+      "type": "GFxWatchData",
+      "documentation": null
+    },
+    "CE_Destructible_Name": {
+      "type": "string",
+      "documentation": null
+    },
+    "__ProfileHandler__Delegate": {
+      "type": "ProfileHandler",
+      "documentation": null
+    },
+    "__ProfileUtility__Delegate": {
+      "type": "ProfileUtility",
+      "documentation": null
+    },
+    "CoverGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "ProfileTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ProfileSubTarget": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TopLeft": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_TestKeyboard": {
+      "type": "SFXGUIHelper_ConsoleKeyboard",
+      "documentation": null
+    },
+    "CE_Destructible": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CurrentColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "ColumnWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProfileTitleColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ProfileHeaderColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ProfileTextColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ProfileHighlightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ProfilesTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProfilesDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "GAWTextColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "GAWHighlightColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "GAWHighlightColor2": {
+      "type": "Color",
+      "documentation": null
+    },
+    "PendingSendToPort": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMiniNotificationTest": {
+      "type": "int",
+      "documentation": null
+    },
+    "bProfileHidesGUI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCoverGuidShowing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowPowerAiming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnablePowerCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugAllLevels": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentProfile": {
+      "type": "EProfileType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Actors": {
+      "documentation": null,
+      "signature_members": {
+        "ActorClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Actors(Class<Actor> ActorClass)"
+    },
+    "AdvanceQuest": {
+      "documentation": null,
+      "signature_members": {
+        "sQuestName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdvanceQuest(string sQuestName)"
+    },
+    "AILog": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AILog(string nmPawn, bool bEnable)"
+    },
+    "ASyncSkeletal": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASyncSkeletal(optional string Param)"
+    },
+    "BioClearCrossLevelReferences": {
+      "documentation": null,
+      "signature_members": {
+        "pLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioClearCrossLevelReferences(Level pLevel)"
+    },
+    "BioLoadState": {
+      "documentation": null,
+      "signature_members": {
+        "nSaveStateSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioLoadState(int nSaveStateSlot)"
+    },
+    "BioSaveState": {
+      "documentation": null,
+      "signature_members": {
+        "nSaveStateSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioSaveState(int nSaveStateSlot)"
+    },
+    "BioTransition": {
+      "documentation": null,
+      "signature_members": {
+        "nTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "nParam": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioTransition(int nTransition, int nParam)"
+    },
+    "BlazeTestAcceptTOS": {
+      "documentation": null,
+      "signature_members": {
+        "bAccept": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestAcceptTOS(bool bAccept)"
+    },
+    "BlazeTestDisconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTestDisconnect()"
+    },
+    "BlazeTestReconnect": {
+      "documentation": null,
+      "signature_members": {
+        "connectMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestReconnect(SFXOnlineConnectMode connectMode)"
+    },
+    "BlazeTestSetCerberusRefused": {
+      "documentation": null,
+      "signature_members": {
+        "bArg": {
+          "type": null,
+          "documentation": null
+        },
+        "bSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestSetCerberusRefused(bool bArg, optional bool bSave)"
+    },
+    "BlazeTestSetNucleusRefused": {
+      "documentation": null,
+      "signature_members": {
+        "bArg": {
+          "type": null,
+          "documentation": null
+        },
+        "bSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestSetNucleusRefused(bool bArg, optional bool bSave)"
+    },
+    "BlazeTestSetNucleusSuccessful": {
+      "documentation": null,
+      "signature_members": {
+        "bArg": {
+          "type": null,
+          "documentation": null
+        },
+        "bSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestSetNucleusSuccessful(bool bArg, optional bool bSave)"
+    },
+    "CancelHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelHint()"
+    },
+    "CodexAudit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CodexAudit()"
+    },
+    "Damage": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Damage(string Target, float Amount)"
+    },
+    "DebugSpawnPrefab": {
+      "documentation": null,
+      "signature_members": {
+        "nTestNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugSpawnPrefab(int nTestNum)"
+    },
+    "DisableGUIDCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableGUIDCheck()"
+    },
+    "DisplayStringID": {
+      "documentation": null,
+      "signature_members": {
+        "i_bDisplay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayStringID(bool i_bDisplay)"
+    },
+    "DisplayTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayTime()"
+    },
+    "Distance": {
+      "documentation": null,
+      "signature_members": {
+        "nmActor1": {
+          "type": null,
+          "documentation": null
+        },
+        "nmActor2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Distance(string nmActor1, string nmActor2)"
+    },
+    "DoSetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "sDesintation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoSetLocation(string sDesintation)"
+    },
+    "DownloadContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DownloadContent()"
+    },
+    "DrawBrightText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "Highlight": {
+          "type": null,
+          "documentation": null
+        },
+        "bFinishLine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawBrightText(coerce string Text, optional int Highlight, optional bool bFinishLine)"
+    },
+    "DrawProfileHeaderText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "Highlight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawProfileHeaderText(coerce string Text, optional bool Highlight)"
+    },
+    "DrawProfileText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "Highlight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawProfileText(coerce string Text, optional bool Highlight)"
+    },
+    "EmptyInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EmptyInventory()"
+    },
+    "EnableAI": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableAI(Name nmPawn, bool bEnable)"
+    },
+    "EnableDamage": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableDamage(bool B)"
+    },
+    "ForceEnableCCD": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceEnableCCD(bool bValue)"
+    },
+    "ForceEndRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceEndRagdoll()"
+    },
+    "GetActorFromString": {
+      "documentation": null,
+      "signature_members": {
+        "Str": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetActorFromString(string Str)"
+    },
+    "GetHenchmanByName": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetHenchmanByName(string sName)"
+    },
+    "GetLatentAction": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLatentAction(Controller AI)"
+    },
+    "GetNumStates": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumStates(Controller AI)"
+    },
+    "GetProfileColumnCoord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProfileColumnCoord()"
+    },
+    "GetPronunciations": {
+      "documentation": null,
+      "signature_members": {
+        "word": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPronunciations(string word)"
+    },
+    "GetStateNameByIdx": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStateNameByIdx(Controller AI, int idx)"
+    },
+    "GetUIWorldActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetUIWorldActor()"
+    },
+    "GrantAllCodex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GrantAllCodex()"
+    },
+    "HideHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideHint()"
+    },
+    "HideLoadingMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideLoadingMessage()"
+    },
+    "HideSavingMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSavingMessage()"
+    },
+    "HideStrings": {
+      "documentation": null,
+      "signature_members": {
+        "i_bHide": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideStrings(bool i_bHide)"
+    },
+    "ImportAllCareersXenon": {
+      "documentation": null,
+      "signature_members": {
+        "TargetDeviceId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImportAllCareersXenon(int TargetDeviceId)"
+    },
+    "JournalAudit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "JournalAudit()"
+    },
+    "LoadExternalSave": {
+      "documentation": null,
+      "signature_members": {
+        "SavePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadExternalSave(string SavePath)"
+    },
+    "LoadSaveGameFrom": {
+      "documentation": null,
+      "signature_members": {
+        "Host": {
+          "type": null,
+          "documentation": null
+        },
+        "Port": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadSaveGameFrom(string Host, int Port)"
+    },
+    "LockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LockAccomplishment(int AccomplishmentIndex)"
+    },
+    "LogActorArtPlaceables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorArtPlaceables()"
+    },
+    "LogActorClasses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorClasses()"
+    },
+    "LogActorEmitters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorEmitters()"
+    },
+    "LogActorPawns": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorPawns()"
+    },
+    "LogActorPrefabInstances": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorPrefabInstances()"
+    },
+    "LogActorSkelMeshes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorSkelMeshes()"
+    },
+    "LogActorUnclassified": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogActorUnclassified()"
+    },
+    "LogAnimSequences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogAnimSequences()"
+    },
+    "LogPermanentObjects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogPermanentObjects()"
+    },
+    "LogProperties": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogProperties()"
+    },
+    "Mark": {
+      "documentation": null,
+      "signature_members": {
+        "sComment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Mark(string sComment)"
+    },
+    "NotFun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotFun()"
+    },
+    "OnConsumeResult": {
+      "documentation": null,
+      "signature_members": {
+        "aID": {
+          "type": null,
+          "documentation": null
+        },
+        "nCopies": {
+          "type": null,
+          "documentation": null
+        },
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnConsumeResult(BWConsumableId aID, int nCopies, int nResult)"
+    },
+    "OnGrantEntitlementResult": {
+      "documentation": null,
+      "signature_members": {
+        "aID": {
+          "type": null,
+          "documentation": null
+        },
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGrantEntitlementResult(BWEntitlementId aID, int nResult)"
+    },
+    "OnPromptRedeemCodeResult": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPromptRedeemCodeResult(int nResult)"
+    },
+    "OnPurchaseOfferIdResult": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPurchaseOfferIdResult(int nResult)"
+    },
+    "OnRefreshDigitalRightsResult": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRefreshDigitalRightsResult(int nResult)"
+    },
+    "OutputBugReportXML": {
+      "documentation": null,
+      "signature_members": {
+        "bCreateSavegame": {
+          "type": null,
+          "documentation": null
+        },
+        "bCreateScreenshot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OutputBugReportXML(bool bCreateSavegame, bool bCreateScreenshot)"
+    },
+    "ParseVectorFromFlexibleFormat": {
+      "documentation": null,
+      "signature_members": {
+        "sInput": {
+          "type": null,
+          "documentation": null
+        },
+        "vResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ParseVectorFromFlexibleFormat(string sInput, out Vector vResult)"
+    },
+    "PerformanceLog": {
+      "documentation": null,
+      "signature_members": {
+        "Msg": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformanceLog(string Msg)"
+    },
+    "PerformanceTimerStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Double",
+      "signature": "Double PerformanceTimerStart()"
+    },
+    "PerformanceTimerStop": {
+      "documentation": null,
+      "signature_members": {
+        "StartTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PerformanceTimerStop(Double StartTime)"
+    },
+    "PlayBinkMovie": {
+      "documentation": null,
+      "signature_members": {
+        "MovieName": {
+          "type": null,
+          "documentation": null
+        },
+        "Stream": {
+          "type": null,
+          "documentation": null
+        },
+        "Preload": {
+          "type": null,
+          "documentation": null
+        },
+        "LoopDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayBinkMovie(string MovieName, optional bool Stream, optional bool Preload, optional float LoopDuration)"
+    },
+    "PrintMuzzleLoc": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrintMuzzleLoc(string Target)"
+    },
+    "Profile": {
+      "documentation": null,
+      "signature_members": {
+        "Keyword": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "SubTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Profile(Name Keyword, optional string Target, optional Name SubTarget)"
+    },
+    "ProfileAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileAnim()"
+    },
+    "ProfileAnimPreload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileAnimPreload()"
+    },
+    "ProfileAnimTree": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileAnimTree()"
+    },
+    "ProfileConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileConversation()"
+    },
+    "ProfileConversationBug": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileConversationBug()"
+    },
+    "ProfileCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileCover()"
+    },
+    "ProfileGestures": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileGestures()"
+    },
+    "ProfileHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileHandler()"
+    },
+    "ProfileKinect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileKinect()"
+    },
+    "ProfileLoadSeekFreeAsync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileLoadSeekFreeAsync()"
+    },
+    "ProfileLocomotion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileLocomotion()"
+    },
+    "ProfileLookAt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileLookAt()"
+    },
+    "Profiles": {
+      "documentation": null,
+      "signature_members": {
+        "TimeToDisplay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Profiles(optional float TimeToDisplay)"
+    },
+    "ProfileUtility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileUtility()"
+    },
+    "ProfileWwise": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileWwise()"
+    },
+    "PromptRedeemCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PromptRedeemCode()"
+    },
+    "RemoveAllEffects": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveAllEffects(string nmPawn)"
+    },
+    "ResetMPPlayerVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMPPlayerVariables()"
+    },
+    "RestoreHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreHint()"
+    },
+    "SaveGame": {
+      "documentation": null,
+      "signature_members": {
+        "SaveName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGame(string SaveName)"
+    },
+    "SendSaveGameTo": {
+      "documentation": null,
+      "signature_members": {
+        "Host": {
+          "type": null,
+          "documentation": null
+        },
+        "Port": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendSaveGameTo(string Host, int Port)"
+    },
+    "SendSaveGameTo_Callback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendSaveGameTo_Callback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SendScreenshotTo": {
+      "documentation": null,
+      "signature_members": {
+        "Host": {
+          "type": null,
+          "documentation": null
+        },
+        "Port": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendScreenshotTo(string Host, int Port)"
+    },
+    "SetBoolByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmVar": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolByName(Name nmVar, bool nValue)"
+    },
+    "SetEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Effect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterial(string Target, Name Effect)"
+    },
+    "SetGCDebugPackage": {
+      "documentation": null,
+      "signature_members": {
+        "sPackageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGCDebugPackage(string sPackageName)"
+    },
+    "SetHostViabilityEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHostViabilityEnabled(bool Enabled)"
+    },
+    "SetIntByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmVar": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntByName(Name nmVar, int nValue)"
+    },
+    "SetLexicalLookup": {
+      "documentation": null,
+      "signature_members": {
+        "enable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLexicalLookup(bool enable)"
+    },
+    "SetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "sDestination": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLocation(string sDestination)"
+    },
+    "SetMMBotModeEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMMBotModeEnabled(bool Enabled)"
+    },
+    "SetProfileColumn": {
+      "documentation": null,
+      "signature_members": {
+        "ColumnIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProfileColumn(int ColumnIdx)"
+    },
+    "SetVehicleCamRadiusPoint": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "fDegVal": {
+          "type": null,
+          "documentation": null
+        },
+        "fScaleVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVehicleCamRadiusPoint(int nIndex, float fDegVal, float fScaleVal)"
+    },
+    "ShowGFxLog": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowGFxLog(bool bShow)"
+    },
+    "ShowHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowHint()"
+    },
+    "ShowMarketplaceUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMarketplaceUI()"
+    },
+    "SimulateFreeze": {
+      "documentation": null,
+      "signature_members": {
+        "freezeTimeSec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SimulateFreeze(float freezeTimeSec)"
+    },
+    "SkynetSavegame": {
+      "documentation": null,
+      "signature_members": {
+        "sFilename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SkynetSavegame(string sFilename)"
+    },
+    "SkynetSavegame_Callback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SkynetSavegame_Callback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SkynetScreenshot": {
+      "documentation": null,
+      "signature_members": {
+        "sFilename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SkynetScreenshot(string sFilename)"
+    },
+    "SkynetToggleNucleusTelemetry": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkynetToggleNucleusTelemetry()"
+    },
+    "SkynetToggleQAPaths": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkynetToggleQAPaths()"
+    },
+    "SkynetToggleSessionDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkynetToggleSessionDisplay()"
+    },
+    "SkynetToggleSilentMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkynetToggleSilentMode()"
+    },
+    "SkynetToggleVerboseMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkynetToggleVerboseMode()"
+    },
+    "StartRecordKinectSpeech": {
+      "documentation": null,
+      "signature_members": {
+        "SendToServer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartRecordKinectSpeech(optional bool SendToServer)"
+    },
+    "StartVerboseKinectLogging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartVerboseKinectLogging()"
+    },
+    "StopRecordKinectSpeech": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopRecordKinectSpeech()"
+    },
+    "StopVerboseKinectLogging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopVerboseKinectLogging()"
+    },
+    "TestRagdoll": {
+      "documentation": null,
+      "signature_members": {
+        "sWhitespaceDelimitedArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestRagdoll(coerce string sWhitespaceDelimitedArguments)"
+    },
+    "ToggleActorVis": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Vis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleActorVis(string Target, optional string Vis)"
+    },
+    "UnlockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAccomplishment(int AccomplishmentIndex)"
+    },
+    "Unreaper": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Unreaper()"
+    },
+    "UpdateGFxWatchValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGFxWatchValues()"
+    },
+    "UpdateSplitscreenPlayers": {
+      "documentation": null,
+      "signature_members": {
+        "bCreatePlayers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSplitscreenPlayers(bool bCreatePlayers)"
+    },
+    "UsePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UsePower(Name nmPawn, Name nmPower)"
+    },
+    "DebugAI": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugAI(optional coerce Name Category)"
+    },
+    "God": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "God()"
+    },
+    "InitCheatManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitCheatManager()"
+    },
+    "Respawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Respawn()"
+    },
+    "Slomo": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Slomo(float T)"
+    },
+    "Splitscreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Splitscreen()"
+    },
+    "AddAIFilter": {
+      "documentation": null,
+      "signature_members": {
+        "nmFilter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddAIFilter(Name nmFilter)"
+    },
+    "AddBar": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "Grows": {
+          "type": null,
+          "documentation": null
+        },
+        "Shrinks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBar(Name Id, float X, float Y, float Width, optional float Lifetime, optional int C, optional bool Grows, optional bool Shrinks)"
+    },
+    "AddText": {
+      "documentation": null,
+      "signature_members": {
+        "N": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Timer": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "Center": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddText(Name N, string S, float X, float Y, optional float Timer, optional float Scale, optional bool Center)"
+    },
+    "AdjustCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCreditAdjust": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustCredits(int nCreditAdjust)"
+    },
+    "AdjustMediGel": {
+      "documentation": null,
+      "signature_members": {
+        "nMediGelAdjust": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustMediGel(int nMediGelAdjust)"
+    },
+    "AdjustWeaponUIPawnOffset": {
+      "documentation": null,
+      "signature_members": {
+        "nmAppearanceTag": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "nYaw": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustWeaponUIPawnOffset(Name nmAppearanceTag, float fX, float fY, float fZ, int nYaw)"
+    },
+    "ApplyAchPartyDamageBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAchPartyDamageBonus()"
+    },
+    "ApplyAchPartyHealthBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAchPartyHealthBonus()"
+    },
+    "AwardCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AwardCredits(int nCredits, optional string Level)"
+    },
+    "AwardItem": {
+      "documentation": null,
+      "signature_members": {
+        "ItemName": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AwardItem(Name ItemName, optional string Level)"
+    },
+    "AwardTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AwardTreasure(int nTreasureId)"
+    },
+    "AwardXP": {
+      "documentation": null,
+      "signature_members": {
+        "nXP": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AwardXP(int nXP, optional string Level)"
+    },
+    "BasicWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BasicWeapons()"
+    },
+    "BiasCEMaxDistance": {
+      "documentation": null,
+      "signature_members": {
+        "fBias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BiasCEMaxDistance(float fBias)"
+    },
+    "BinaryHttpResult": {
+      "documentation": null,
+      "signature_members": {
+        "Image": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BinaryHttpResult(SFXOnlineImageRequest Image)"
+    },
+    "BlazeDlcMountTime": {
+      "documentation": null,
+      "signature_members": {
+        "nSeconds": {
+          "type": null,
+          "documentation": null
+        },
+        "nStallComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeDlcMountTime(float nSeconds, optional int nStallComponent)"
+    },
+    "BlazeTest_CreateGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_CreateGui()"
+    },
+    "BlazeTest_DestroyGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_DestroyGui()"
+    },
+    "BlazeTest_ShowAccountDemographics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowAccountDemographics()"
+    },
+    "BlazeTest_ShowCerberusIntro": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowCerberusIntro()"
+    },
+    "BlazeTest_ShowCerberusWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowCerberusWelcomeMessage()"
+    },
+    "BlazeTest_ShowCreateNucleusAccount": {
+      "documentation": null,
+      "signature_members": {
+        "sEmail": {
+          "type": null,
+          "documentation": null
+        },
+        "sPassword": {
+          "type": null,
+          "documentation": null
+        },
+        "bEAProducts": {
+          "type": null,
+          "documentation": null
+        },
+        "bThirdParty": {
+          "type": null,
+          "documentation": null
+        },
+        "bRegisterProduct": {
+          "type": null,
+          "documentation": null
+        },
+        "bBioWareProducts": {
+          "type": null,
+          "documentation": null
+        },
+        "bUnderage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTest_ShowCreateNucleusAccount(string sEmail, string sPassword, optional bool bEAProducts, optional bool bThirdParty, optional bool bRegisterProduct, optional bool bBioWareProducts, optional bool bUnderage)"
+    },
+    "BlazeTest_ShowCreateNucleusAccountEx": {
+      "documentation": null,
+      "signature_members": {
+        "sEmail": {
+          "type": null,
+          "documentation": null
+        },
+        "sPassword": {
+          "type": null,
+          "documentation": null
+        },
+        "bEAProducts": {
+          "type": null,
+          "documentation": null
+        },
+        "bThirdParty": {
+          "type": null,
+          "documentation": null
+        },
+        "bBioWareProducts": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sCountryCode": {
+          "type": null,
+          "documentation": null
+        },
+        "BirthDay": {
+          "type": null,
+          "documentation": null
+        },
+        "BirthMonth": {
+          "type": null,
+          "documentation": null
+        },
+        "BirthYear": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTest_ShowCreateNucleusAccountEx(string sEmail, string sPassword, bool bEAProducts, bool bThirdParty, bool bBioWareProducts, string i_sCountryCode, int BirthDay, int BirthMonth, int BirthYear)"
+    },
+    "BlazeTest_ShowEmailPasswordMismatch": {
+      "documentation": null,
+      "signature_members": {
+        "email": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTest_ShowEmailPasswordMismatch(string email, string Password)"
+    },
+    "BlazeTest_ShowIntroPage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowIntroPage()"
+    },
+    "BlazeTest_ShowMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sButton1Text": {
+          "type": null,
+          "documentation": null
+        },
+        "sButton2Text": {
+          "type": null,
+          "documentation": null
+        },
+        "sButton3Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTest_ShowMessageBox(string sTitle, string sMessage, optional string sButton1Text, optional string sButton2Text, optional string sButton3Text)"
+    },
+    "BlazeTest_ShowNucleusLogin": {
+      "documentation": null,
+      "signature_members": {
+        "email": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        },
+        "eScreenState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTest_ShowNucleusLogin(string email, string Password, int eScreenState)"
+    },
+    "BlazeTest_ShowNucleusWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowNucleusWelcomeMessage()"
+    },
+    "BlazeTest_ShowParentEmail": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowParentEmail()"
+    },
+    "BlazeTest_ShowRedeemCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeTest_ShowRedeemCode()"
+    },
+    "BlazeTest_ShowTermsOfService": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTermsOfService": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sPrivacyPolicy": {
+          "type": null,
+          "documentation": null
+        },
+        "bTOSChanged": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTest_ShowTermsOfService(optional string i_sTermsOfService, optional string i_sPrivacyPolicy, optional bool bTOSChanged)"
+    },
+    "BlazeTestConsumeCode": {
+      "documentation": null,
+      "signature_members": {
+        "sCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestConsumeCode(string sCode)"
+    },
+    "BlazeTestSetAutoLoginOption": {
+      "documentation": null,
+      "signature_members": {
+        "bAutoLogin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlazeTestSetAutoLoginOption(bool bAutoLogin)"
+    },
+    "CastPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CastPower(Name PowerName)"
+    },
+    "ChoiceDialogResult": {
+      "documentation": null,
+      "signature_members": {
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        },
+        "nChoiceID": {
+          "type": null,
+          "documentation": null
+        },
+        "bCancelled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChoiceDialogResult(BioSFHandler_MessageBox oMsgBox, int nChoiceID, bool bCancelled)"
+    },
+    "ClearDebugLines": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDebugLines()"
+    },
+    "ClearFaceCodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearFaceCodes()"
+    },
+    "ClearTraces": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearTraces()"
+    },
+    "CloseGui": {
+      "documentation": null,
+      "signature_members": {
+        "HandlerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CloseGui(Name HandlerId)"
+    },
+    "CompleteGame": {
+      "documentation": null,
+      "signature_members": {
+        "Ending": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CompleteGame(int Ending)"
+    },
+    "Cooldown": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Cooldown(bool bEnable)"
+    },
+    "CoverPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "HenchmanName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CoverPlayer(optional string HenchmanName)"
+    },
+    "DebugAdhesion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugAdhesion()"
+    },
+    "DebugAIVals": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugAIVals()"
+    },
+    "DebugCoverCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugCoverCheck()"
+    },
+    "DebugCoverLeans": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugCoverLeans()"
+    },
+    "DebugDraw_AIVals": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_AIVals(BioHUD HUD)"
+    },
+    "DebugDraw_AngstIcons": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_AngstIcons(BioHUD HUD)"
+    },
+    "DebugDraw_CurrentProfile": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_CurrentProfile(BioHUD HUD)"
+    },
+    "DebugDraw_GFxWatchValues": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_GFxWatchValues(BioHUD HUD)"
+    },
+    "DebugDraw_Profiles": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Profiles(BioHUD HUD)"
+    },
+    "DebugDraw_Wounds": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Wounds(BioHUD HUD)"
+    },
+    "DebugFriction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugFriction()"
+    },
+    "DebugMagnetism": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugMagnetism()"
+    },
+    "DebugSecondController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugSecondController()"
+    },
+    "DebugSetPlotState": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "plotVarName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugSetPlotState(Name Type, Name plotVarName, float Value)"
+    },
+    "DebugVoc": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugVoc()"
+    },
+    "DebugVocLine": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Recipient": {
+          "type": null,
+          "documentation": null
+        },
+        "eventStr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugVocLine(string inInstigator, string Recipient, string eventStr)"
+    },
+    "DebugVocSystem": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugVocSystem(bool bEnable)"
+    },
+    "DebugWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugWeapon()"
+    },
+    "DebugWounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugWounds()"
+    },
+    "DebugZoomSnap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugZoomSnap()"
+    },
+    "DisplayAngstInfo": {
+      "documentation": null,
+      "signature_members": {
+        "bShowIcons": {
+          "type": null,
+          "documentation": null
+        },
+        "bShowProfileData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayAngstInfo(bool bShowIcons, bool bShowProfileData)"
+    },
+    "DisplayAngstWeaponRange": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bShowIcons": {
+          "type": null,
+          "documentation": null
+        },
+        "bShowProfileData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayAngstWeaponRange(BioPawn oPawn, bool bShowIcons, bool bShowProfileData)"
+    },
+    "DisplayNegotiate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayNegotiate()"
+    },
+    "DisplayTrilogyData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayTrilogyData()"
+    },
+    "DrawAIUtility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawAIUtility()"
+    },
+    "DrawAngstIcon": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawAngstIcon(Actor oActor)"
+    },
+    "DrawLine": {
+      "documentation": null,
+      "signature_members": {
+        "s1": {
+          "type": null,
+          "documentation": null
+        },
+        "s2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawLine(coerce string s1, optional coerce string s2)"
+    },
+    "DrawProfileTitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawProfileTitle()"
+    },
+    "DrawSafeFrame": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawSafeFrame(BioHUD HUD)"
+    },
+    "DrawTargetLineUtility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawTargetLineUtility()"
+    },
+    "DumpGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpGAWAssets()"
+    },
+    "DumpPlotManagerValueByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sVariableType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DumpPlotManagerValueByIndex(int nIndex, string sVariableType)"
+    },
+    "EbisuCheckOnline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EbisuCheckOnline()"
+    },
+    "EbisuCheckout": {
+      "documentation": null,
+      "signature_members": {
+        "offerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EbisuCheckout(string offerId)"
+    },
+    "EbisuRequestAuthToken": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EbisuRequestAuthToken()"
+    },
+    "EbisuRequestFriendsList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EbisuRequestFriendsList()"
+    },
+    "EbisuShowCheckoutOverlay": {
+      "documentation": null,
+      "signature_members": {
+        "offerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EbisuShowCheckoutOverlay(string offerId)"
+    },
+    "EbisuShowFriendsOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EbisuShowFriendsOverlay()"
+    },
+    "EbisuShowStoreOverlay": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EbisuShowStoreOverlay(string categoryId)"
+    },
+    "EchoStrref": {
+      "documentation": null,
+      "signature_members": {
+        "StrRef": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EchoStrref(int StrRef)"
+    },
+    "EnableAllAI": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableAllAI(bool bEnable)"
+    },
+    "EnableFaceFX": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableFaceFX(bool bEnable)"
+    },
+    "EnableHenchmanPowers": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "HenchmanIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableHenchmanPowers(bool Enabled, optional int HenchmanIndex)"
+    },
+    "EnableHenchmanPowersByGameName": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "Spawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableHenchmanPowersByGameName(bool Enabled, optional string Spawn)"
+    },
+    "EnablePowerCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnablePowerCooldown(bool bEnable)"
+    },
+    "EvalCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EvalCover()"
+    },
+    "FindPowerClass": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXPowerCustomActionBase> FindPowerClass(string PowerClassName)"
+    },
+    "FindSFXGameEffectClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXGameEffect> FindSFXGameEffectClass(string className)"
+    },
+    "FindWeaponClass": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXWeapon> FindWeaponClass(string WeaponClassName)"
+    },
+    "FlushTelemetry": {
+      "documentation": null,
+      "signature_members": {
+        "bAnonymous": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FlushTelemetry(optional bool bAnonymous)"
+    },
+    "GameOver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameOver()"
+    },
+    "GaWHTTPResult": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GaWHTTPResult(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "GetCharm": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetCharm()"
+    },
+    "GetCurrentChallengeReward": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetCurrentChallengeReward()"
+    },
+    "GetCurrentPlayerMorphHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioMorphFace",
+      "signature": "BioMorphFace GetCurrentPlayerMorphHead()"
+    },
+    "GetFireTeam": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetFireTeam()"
+    },
+    "GetGaWSecurityRatings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetGaWSecurityRatings()"
+    },
+    "GetGaWSecurityRatingsResult": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetGaWSecurityRatingsResult(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "GetHenchCodename": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetHenchCodename(string Henchman)"
+    },
+    "GetHenchIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetHenchIndex(string Henchman)"
+    },
+    "GetHenchIsDeadGVarIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetHenchIsDeadGVarIndex(string Henchman)"
+    },
+    "GetHenchmanAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmanAppearance(string Henchman)"
+    },
+    "GetHenchmanAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmanAvailable(string Henchman)"
+    },
+    "GetHenchmanDead": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmanDead(string Henchman)"
+    },
+    "GetHenchmanKnown": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmanKnown(string Henchman)"
+    },
+    "GetHenchmanLoyalty": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmanLoyalty(string Henchman)"
+    },
+    "GetHenchmanSpecialization": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmanSpecialization(string Henchman)"
+    },
+    "GetHenchName": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetHenchName(int Henchman)"
+    },
+    "GetIntimidate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetIntimidate()"
+    },
+    "GetLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetLocation()"
+    },
+    "GetMorinth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetMorinth()"
+    },
+    "GetParagon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetParagon()"
+    },
+    "GetPlotVariableID": {
+      "documentation": null,
+      "signature_members": {
+        "plotVarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlotVariableID(Name plotVarName)"
+    },
+    "GetProductDetails": {
+      "documentation": null,
+      "signature_members": {
+        "aList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProductDetails(int aList)"
+    },
+    "GetProductDetailsComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetProductDetailsComplete()"
+    },
+    "GetRenegade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetRenegade()"
+    },
+    "GetSpecialist": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetSpecialist()"
+    },
+    "GetVocalizationBankInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetVocalizationBankInfo(string Target)"
+    },
+    "GFxWatch": {
+      "documentation": null,
+      "signature_members": {
+        "nmMovie": {
+          "type": null,
+          "documentation": null
+        },
+        "sPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GFxWatch(Name nmMovie, optional string sPath)"
+    },
+    "GiveAllGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GiveAllGAWAssets()"
+    },
+    "GiveCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveCredits(int nCredits)"
+    },
+    "GiveEffect": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveEffect(string nmPawn, string EffectClassName)"
+    },
+    "GiveEffectWithValue": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveEffectWithValue(string nmPawn, string EffectClassName, float Value)"
+    },
+    "GiveExplorationGawAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GiveExplorationGawAsset()"
+    },
+    "GiveGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveGAWAsset(int Id)"
+    },
+    "GiveGAWAssetByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveGAWAssetByName(string AssetName)"
+    },
+    "GiveGAWCredits": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveGAWCredits(int Id)"
+    },
+    "GiveItem": {
+      "documentation": null,
+      "signature_members": {
+        "sTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nmItemLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveItem(string sTarget, Name nmItemLabel)"
+    },
+    "GiveNextGawAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveNextGawAsset(string Type)"
+    },
+    "GivePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GivePower(string nmPawn, string PowerClassName)"
+    },
+    "GiveResource": {
+      "documentation": null,
+      "signature_members": {
+        "eResourceType": {
+          "type": null,
+          "documentation": null
+        },
+        "nAmt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveResource(EInventoryResourceTypes eResourceType, int nAmt)"
+    },
+    "GiveSuperGun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GiveSuperGun()"
+    },
+    "GiveTalentPoints": {
+      "documentation": null,
+      "signature_members": {
+        "nNumPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTalentPoints(int nNumPoints)"
+    },
+    "GiveXP": {
+      "documentation": null,
+      "signature_members": {
+        "XPValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveXP(float XPValue)"
+    },
+    "GUICMD": {
+      "documentation": null,
+      "signature_members": {
+        "nmPanelTag": {
+          "type": null,
+          "documentation": null
+        },
+        "sCmd": {
+          "type": null,
+          "documentation": null
+        },
+        "sArg1": {
+          "type": null,
+          "documentation": null
+        },
+        "sArg2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GUICMD(Name nmPanelTag, string sCmd, optional string sArg1, optional string sArg2)"
+    },
+    "HasChangedDifficulty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HasChangedDifficulty()"
+    },
+    "HenchmanUseNode": {
+      "documentation": null,
+      "signature_members": {
+        "HenchmanName": {
+          "type": null,
+          "documentation": null
+        },
+        "NodeName": {
+          "type": null,
+          "documentation": null
+        },
+        "StartUsingNode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HenchmanUseNode(string HenchmanName, Name NodeName, bool StartUsingNode)"
+    },
+    "HideActionIndicator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideActionIndicator()"
+    },
+    "HideAudioEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "nmAudioEmitter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideAudioEmitter(string nmAudioEmitter)"
+    },
+    "HideAudioVolume": {
+      "documentation": null,
+      "signature_members": {
+        "nmAudioVolume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideAudioVolume(string nmAudioVolume)"
+    },
+    "HideInterruptUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideInterruptUI()"
+    },
+    "HideMicrophone": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideMicrophone()"
+    },
+    "HidePOIIndicator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HidePOIIndicator()"
+    },
+    "HideWwiseVolumeLocations": {
+      "documentation": null,
+      "signature_members": {
+        "nmVolume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideWwiseVolumeLocations(string nmVolume)"
+    },
+    "HolsterWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HolsterWeapon(string nmPawn)"
+    },
+    "HTTPResult": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HTTPResult(SFXOnlineHTTPRequest request)"
+    },
+    "IgnorePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "bIgnore": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IgnorePlayer(bool bIgnore)"
+    },
+    "ImportAllCareers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ImportAllCareers()"
+    },
+    "ImportAllCareers_OnDeviceSelectionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasBlocked": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ImportAllCareers_OnDeviceSelectionComplete(bool bWasSuccessful, bool bWasBlocked)"
+    },
+    "IncrementGrinder": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementGrinder(int AccomplishmentProgressIndex, optional int Amount)"
+    },
+    "IncrementGrinder2": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentProgressIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementGrinder2(int Amount, int AccomplishmentProgressIndex)"
+    },
+    "IncrementTrilogyStat": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementTrilogyStat(int ProfileSettingId, optional int Amount)"
+    },
+    "InitAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "nAmmo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitAmmo(int nAmmo)"
+    },
+    "InitCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitCredits(int nCredits)"
+    },
+    "InitEezo": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitEezo(int nResource)"
+    },
+    "InitFuel": {
+      "documentation": null,
+      "signature_members": {
+        "fAmt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitFuel(float fAmt)"
+    },
+    "InitFuelEfficiency": {
+      "documentation": null,
+      "signature_members": {
+        "fEff": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitFuelEfficiency(float fEff)"
+    },
+    "InitGrenades": {
+      "documentation": null,
+      "signature_members": {
+        "nGrenade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitGrenades(int nGrenade)"
+    },
+    "InitIridium": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitIridium(int nResource)"
+    },
+    "InitMaxFuel": {
+      "documentation": null,
+      "signature_members": {
+        "FMax": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitMaxFuel(float FMax)"
+    },
+    "InitMedigel": {
+      "documentation": null,
+      "signature_members": {
+        "nMedigel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitMedigel(int nMedigel)"
+    },
+    "InitPalladium": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitPalladium(int nResource)"
+    },
+    "InitPlatinum": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitPlatinum(int nResource)"
+    },
+    "InitPlotManagerValueByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sVariableType": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitPlotManagerValueByIndex(int nIndex, string sVariableType, float fValue)"
+    },
+    "InitProbes": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitProbes(int nResource)"
+    },
+    "InitResource": {
+      "documentation": null,
+      "signature_members": {
+        "eResourceType": {
+          "type": null,
+          "documentation": null
+        },
+        "nAmt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitResource(EInventoryResourceTypes eResourceType, int nAmt)"
+    },
+    "InitSalvage": {
+      "documentation": null,
+      "signature_members": {
+        "nSalvage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitSalvage(int nSalvage)"
+    },
+    "IsBonusPowerUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "BonusPowerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IsBonusPowerUnlocked(int BonusPowerID)"
+    },
+    "KeyboardTestEntryComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bOK": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KeyboardTestEntryComplete(bool bOK, string sText)"
+    },
+    "KillEnemies": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillEnemies()"
+    },
+    "KillParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillParty()"
+    },
+    "KillSelf": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillSelf()"
+    },
+    "KillTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillTarget()"
+    },
+    "LoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "LoadName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGame(string LoadName)"
+    },
+    "LockAllAccomplishments": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LockAllAccomplishments()"
+    },
+    "LogFaceCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogFaceCode()"
+    },
+    "LogImportedME2FaceCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogImportedME2FaceCode()"
+    },
+    "LogImportedME3FaceCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogImportedME3FaceCode()"
+    },
+    "LogKeyBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogKeyBindings()"
+    },
+    "LogMorphHead": {
+      "documentation": null,
+      "signature_members": {
+        "PawnName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LogMorphHead(Name PawnName)"
+    },
+    "LogMorphHeadInfo": {
+      "documentation": null,
+      "signature_members": {
+        "MorphHead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LogMorphHeadInfo(BioMorphFace MorphHead)"
+    },
+    "LogSliders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogSliders()"
+    },
+    "MainMenu_AddCerberusItem": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "nDlcID": {
+          "type": null,
+          "documentation": null
+        },
+        "nMessageId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MainMenu_AddCerberusItem(string i_sTitle, string i_sInfo, int nDlcID, int nMessageId)"
+    },
+    "MainMenu_ClearNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MainMenu_ClearNotifications()"
+    },
+    "MainMenu_FailImageAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MainMenu_FailImageAssets()"
+    },
+    "MainMenu_OutputMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MainMenu_OutputMessages()"
+    },
+    "MapPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MapPower(Name PowerName)"
+    },
+    "Min1Health": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Min1Health(bool B)"
+    },
+    "OnAutoGrantComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAutoGrantComplete()"
+    },
+    "OpenGui": {
+      "documentation": null,
+      "signature_members": {
+        "HandlerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OpenGui(Name HandlerId)"
+    },
+    "OutputGAWAssetsFromIDs": {
+      "documentation": null,
+      "signature_members": {
+        "Assets": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalStrength": {
+          "type": null,
+          "documentation": null
+        },
+        "AssetCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OutputGAWAssetsFromIDs(const out array<GAWAsset> Assets, optional int TotalStrength, optional int AssetCount)"
+    },
+    "OverrideCEMaxDistance": {
+      "documentation": null,
+      "signature_members": {
+        "bOverride": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverrideCEMaxDistance(bool bOverride, float fValue)"
+    },
+    "OverrideCEOnVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bOverride": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverrideCEOnVisible(bool bOverride, bool bValue)"
+    },
+    "PartyMin1Health": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PartyMin1Health(bool B)"
+    },
+    "PauseNotifications": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseNotifications(bool bPause)"
+    },
+    "PauseTraceStrips": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseTraceStrips()"
+    },
+    "PermanentBonus": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PermanentBonus(Name UniqueName)"
+    },
+    "PlayLine": {
+      "documentation": null,
+      "signature_members": {
+        "DialogPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayLine(BioSimpleDialog DialogPlayer, string EventName, int Index)"
+    },
+    "Playpens": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Playpens()"
+    },
+    "PowersWhileVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PowersWhileVisible()"
+    },
+    "PrettyFloat": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        },
+        "decimals": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrettyFloat(float F, optional int decimals)"
+    },
+    "PrettySF": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrettySF(ScaledFloat V)"
+    },
+    "PrettyV2D": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "digits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrettyV2D(Vector2D V, optional int digits)"
+    },
+    "PrintFaceCodesStoredOnline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrintFaceCodesStoredOnline()"
+    },
+    "PrintGui": {
+      "documentation": null,
+      "signature_members": {
+        "HandlerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrintGui(Name HandlerId)"
+    },
+    "ProfileAngst": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileAngst()"
+    },
+    "ProfileArtifactGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileArtifactGAWAssets()"
+    },
+    "ProfileCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileCamera()"
+    },
+    "ProfileCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileCombat()"
+    },
+    "ProfileCombatStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileCombatStats()"
+    },
+    "ProfileCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileCooldown()"
+    },
+    "ProfileDeviceGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileDeviceGAWAssets()"
+    },
+    "ProfileDifficulty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileDifficulty()"
+    },
+    "ProfileDoor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileDoor()"
+    },
+    "ProfileEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileEffects()"
+    },
+    "ProfileFocus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileFocus()"
+    },
+    "ProfileGalaxy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileGalaxy()"
+    },
+    "ProfileGameSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileGameSettings()"
+    },
+    "ProfileGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileGAWAssets()"
+    },
+    "ProfileHenchmen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileHenchmen()"
+    },
+    "ProfileIntelGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileIntelGAWAssets()"
+    },
+    "ProfileMilitaryGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileMilitaryGAWAssets()"
+    },
+    "ProfileMorphHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileMorphHead()"
+    },
+    "ProfileMPGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileMPGame()"
+    },
+    "ProfilePawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfilePawn()"
+    },
+    "ProfilePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfilePlaceable()"
+    },
+    "ProfilePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfilePower()"
+    },
+    "ProfileSalvageGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileSalvageGAWAssets()"
+    },
+    "ProfileSaveGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileSaveGame()"
+    },
+    "ProfileScaleform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileScaleform()"
+    },
+    "ProfileTech": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileTech()"
+    },
+    "ProfileTicket": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileTicket()"
+    },
+    "ProfileTreasure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileTreasure()"
+    },
+    "ProfileTrilogy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileTrilogy()"
+    },
+    "ProfileVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileVehicle()"
+    },
+    "ProfileWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileWeapon()"
+    },
+    "ReadAccomplishments": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReadAccomplishments()"
+    },
+    "RemoveAIFilter": {
+      "documentation": null,
+      "signature_members": {
+        "nmFilter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveAIFilter(Name nmFilter)"
+    },
+    "RemoveAllPowers": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveAllPowers(string nmPawn)"
+    },
+    "RemoveEffect": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffect(string nmPawn, string EffectClassName)"
+    },
+    "RemoveHeavyWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveHeavyWeapons()"
+    },
+    "RemovePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePower(string nmPawn, string PowerClassName)"
+    },
+    "RemoveText": {
+      "documentation": null,
+      "signature_members": {
+        "N": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveText(Name N)"
+    },
+    "RemoveTrace": {
+      "documentation": null,
+      "signature_members": {
+        "nTrace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTrace(int nTrace)"
+    },
+    "ResetAllChallengeRewards": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAllChallengeRewards()"
+    },
+    "ResetAllGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAllGAWAssets()"
+    },
+    "ResetAllMultiplayerGrinders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAllMultiplayerGrinders()"
+    },
+    "ResetAlwaysPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAlwaysPlay()"
+    },
+    "ResetGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGAWAsset(int Id)"
+    },
+    "ResetGAWAssetByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGAWAssetByName(string AssetName)"
+    },
+    "ResetGrinder": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGrinder(int AccomplishmentProgressIndex)"
+    },
+    "ResetReaperAlertLevels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetReaperAlertLevels()"
+    },
+    "ResetTalents": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetTalents(string nmPawn)"
+    },
+    "ResetTrilogyData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetTrilogyData()"
+    },
+    "ResetTrilogyStat": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetTrilogyStat(int ProfileSettingId)"
+    },
+    "ResetWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "sTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetWeapons(string sTarget)"
+    },
+    "Revive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Revive()"
+    },
+    "RevivePawn": {
+      "documentation": null,
+      "signature_members": {
+        "PawnName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RevivePawn(string PawnName)"
+    },
+    "RunConditional": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RunConditional(int Id, optional int Param)"
+    },
+    "SaveCommandCallback_LoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveCommandCallback_LoadGame(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SaveGame_Callback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGame_Callback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SendMiniNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendMiniNotification()"
+    },
+    "SendTelemetryTest": {
+      "documentation": null,
+      "signature_members": {
+        "Number": {
+          "type": null,
+          "documentation": null
+        },
+        "bAnonymous": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTelemetryTest(int Number, optional bool bAnonymous)"
+    },
+    "SetAimAssistValues": {
+      "documentation": null,
+      "signature_members": {
+        "Adhesion": {
+          "type": null,
+          "documentation": null
+        },
+        "AimCorrection": {
+          "type": null,
+          "documentation": null
+        },
+        "Friction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAimAssistValues(Vector2D Adhesion, float AimCorrection, Vector2D Friction)"
+    },
+    "SetAllMoods": {
+      "documentation": null,
+      "signature_members": {
+        "NewMood": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllMoods(EAICombatMood NewMood)"
+    },
+    "SetAllWeaponModLevels": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllWeaponModLevels(int nLevel)"
+    },
+    "SetAutoRightUpForceAndTorque": {
+      "documentation": null,
+      "signature_members": {
+        "fUpLiftForce": {
+          "type": null,
+          "documentation": null
+        },
+        "fUprightTorque": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoRightUpForceAndTorque(float fUpLiftForce, float fUprightTorque)"
+    },
+    "SetBoolByID": {
+      "documentation": null,
+      "signature_members": {
+        "PlotId": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolByID(int PlotId, bool nValue)"
+    },
+    "SetCurrentChallengeReward": {
+      "documentation": null,
+      "signature_members": {
+        "Reward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentChallengeReward(int Reward)"
+    },
+    "SetFireTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFireTeam(string Henchman)"
+    },
+    "SetHelmetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "PawnName": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHelmetVisible(string PawnName, bool bVisible)"
+    },
+    "SetHenchmanAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanAppearance(string Henchman, int Value)"
+    },
+    "SetHenchmanAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanAvailable(string Henchman, bool Value)"
+    },
+    "SetHenchmanDead": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanDead(string Henchman, bool Value)"
+    },
+    "SetHenchmanKnown": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanKnown(string Henchman, bool Value)"
+    },
+    "SetHenchmanLoyalty": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanLoyalty(string Henchman, bool Value)"
+    },
+    "SetHenchmanSpecialization": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanSpecialization(string Henchman, bool Value)"
+    },
+    "SetModLevels": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetModLevels(int nLevel)"
+    },
+    "SetMood": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMood": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMood(Name nmPawn, EAICombatMood NewMood)"
+    },
+    "SetMorinth": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMorinth(bool Value)"
+    },
+    "SetParagon": {
+      "documentation": null,
+      "signature_members": {
+        "nPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParagon(int nPoints)"
+    },
+    "SetParam": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParam(string Target, Name Param, float Value)"
+    },
+    "SetPowerPercent": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "fPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPowerPercent(Name nmPawn, float fPercent)"
+    },
+    "SetProfileChoseMorinth": {
+      "documentation": null,
+      "signature_members": {
+        "ChoseMorinth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProfileChoseMorinth(bool ChoseMorinth)"
+    },
+    "SetRank": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        },
+        "fRank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRank(string nmPawn, Class<Object> PowerClass, float fRank)"
+    },
+    "SetRenegade": {
+      "documentation": null,
+      "signature_members": {
+        "nPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRenegade(int nPoints)"
+    },
+    "SetSpecialist": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpecialist(string Henchman)"
+    },
+    "SetUgly": {
+      "documentation": null,
+      "signature_members": {
+        "Ugliness": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUgly(int Ugliness)"
+    },
+    "SetVecParam": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVecParam(string Target, Name Param, float R, float G, float B, float A)"
+    },
+    "SetVehicleCOMOffsetZ": {
+      "documentation": null,
+      "signature_members": {
+        "fOffsetZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVehicleCOMOffsetZ(float fOffsetZ)"
+    },
+    "ShowAudioEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "nmAudioEmitter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowAudioEmitter(string nmAudioEmitter)"
+    },
+    "ShowAudioVolume": {
+      "documentation": null,
+      "signature_members": {
+        "nmAudioVolume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowAudioVolume(string nmAudioVolume)"
+    },
+    "ShowDebugText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowDebugText()"
+    },
+    "ShowInterruptUI": {
+      "documentation": null,
+      "signature_members": {
+        "showParagon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowInterruptUI(bool showParagon)"
+    },
+    "ShowMicrophone": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMicrophone()"
+    },
+    "ShowNumPlayers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowNumPlayers()"
+    },
+    "ShowSafeFrame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowSafeFrame()"
+    },
+    "ShowVocInfo": {
+      "documentation": null,
+      "signature_members": {
+        "PawnTag": {
+          "type": null,
+          "documentation": null
+        },
+        "eventStr": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowVocInfo(string PawnTag, string eventStr, optional int Type)"
+    },
+    "ShowWeaponSelection": {
+      "documentation": null,
+      "signature_members": {
+        "bAll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWeaponSelection(optional bool bAll)"
+    },
+    "ShowWwiseVolumeLocations": {
+      "documentation": null,
+      "signature_members": {
+        "nmVolume": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWwiseVolumeLocations(string nmVolume)"
+    },
+    "Speak": {
+      "documentation": null,
+      "signature_members": {
+        "EventId": {
+          "type": null,
+          "documentation": null
+        },
+        "sInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "sRecipient": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Speak(byte EventId, string sInstigator, optional string sRecipient)"
+    },
+    "StartCoverGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCoverGUI()"
+    },
+    "StatusGrinder": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StatusGrinder(int AccomplishmentProgressIndex)"
+    },
+    "StopCoverGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCoverGUI()"
+    },
+    "TeleportHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TeleportHenchman(string nmPawn)"
+    },
+    "Test_MiniNotifications": {
+      "documentation": null,
+      "signature_members": {
+        "bStart": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Test_MiniNotifications(bool bStart)"
+    },
+    "Test_Notifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Test_Notifications()"
+    },
+    "TestActionIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "eIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestActionIndicator(ESFXHUDActionIcon eIcon)"
+    },
+    "TestAutoGrant": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestAutoGrant()"
+    },
+    "TestBinaryHTTPSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestBinaryHTTPSystem()"
+    },
+    "TestCancelCountdown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestCancelCountdown()"
+    },
+    "TestChoiceBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestChoiceBox()"
+    },
+    "TestConditionals": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestConditionals()"
+    },
+    "TestConsumeId": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestConsumeId(int nID)"
+    },
+    "TestCountdown": {
+      "documentation": null,
+      "signature_members": {
+        "fSeconds": {
+          "type": null,
+          "documentation": null
+        },
+        "fWarningSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestCountdown(float fSeconds, float fWarningSeconds)"
+    },
+    "TestDisplay1stPartyStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestDisplay1stPartyStore()"
+    },
+    "TestDumpDime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestDumpDime()"
+    },
+    "TestEchoDigitalRights": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestEchoDigitalRights()"
+    },
+    "TestEchoWallet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestEchoWallet()"
+    },
+    "TestFalling": {
+      "documentation": null,
+      "signature_members": {
+        "nmTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestFalling(Name nmTarget)"
+    },
+    "TestGaWHTTPSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestGaWHTTPSystem()"
+    },
+    "TestGetConsumablesList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestGetConsumablesList()"
+    },
+    "TestGetEntitlementsList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestGetEntitlementsList()"
+    },
+    "TestGetOffersList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestGetOffersList()"
+    },
+    "TestGrantEntitlementId": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestGrantEntitlementId(int nID)"
+    },
+    "TestHTTPSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestHTTPSystem()"
+    },
+    "TestIsGoBigEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestIsGoBigEnabled()"
+    },
+    "TestKeyboardInput": {
+      "documentation": null,
+      "signature_members": {
+        "sDefaultText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestKeyboardInput(string sDefaultText)"
+    },
+    "TestLoadingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "fTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestLoadingMessage(float fTime)"
+    },
+    "TestMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "bDesign": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestMessageBox(bool bDesign, string S)"
+    },
+    "TestMPObjective": {
+      "documentation": null,
+      "signature_members": {
+        "sr": {
+          "type": null,
+          "documentation": null
+        },
+        "fPct": {
+          "type": null,
+          "documentation": null
+        },
+        "bBoost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestMPObjective(stringref sr, float fPct, bool bBoost)"
+    },
+    "TestMPTicker": {
+      "documentation": null,
+      "signature_members": {
+        "nCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestMPTicker(int nCount)"
+    },
+    "TestPOIIndicator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestPOIIndicator()"
+    },
+    "TestPrefab": {
+      "documentation": null,
+      "signature_members": {
+        "nTestNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestPrefab(int nTestNum)"
+    },
+    "TestPulseFullAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "bGrenade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestPulseFullAmmo(bool bGrenade)"
+    },
+    "TestPurchaseOfferId": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestPurchaseOfferId(int nID)"
+    },
+    "TestRefreshDigitalRights": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestRefreshDigitalRights()"
+    },
+    "TestSavingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "fSaveTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestSavingMessage(float fSaveTime)"
+    },
+    "TestString": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestString(string S)"
+    },
+    "TestTreasure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestTreasure()"
+    },
+    "TestTutorialHint": {
+      "documentation": null,
+      "signature_members": {
+        "nPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestTutorialHint(int nPosition)"
+    },
+    "TestWeaponChoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestWeaponChoice()"
+    },
+    "TestWound": {
+      "documentation": null,
+      "signature_members": {
+        "WoundIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestWound(int WoundIdx, string TargetName)"
+    },
+    "TestXMLParser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestXMLParser()"
+    },
+    "ToggleAI": {
+      "documentation": null,
+      "signature_members": {
+        "IncludeHenchmen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleAI(optional bool IncludeHenchmen)"
+    },
+    "ToggleAngstIcons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleAngstIcons()"
+    },
+    "TogglePowerAiming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TogglePowerAiming()"
+    },
+    "ToggleScoreIndicators": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleScoreIndicators()"
+    },
+    "ToggleSFHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleSFHUD()"
+    },
+    "ToggleThreatRadius": {
+      "documentation": null,
+      "signature_members": {
+        "PawnName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleThreatRadius(optional string PawnName)"
+    },
+    "ToggleWeaponMod": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponName": {
+          "type": null,
+          "documentation": null
+        },
+        "modName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleWeaponMod(string WeaponName, string modName)"
+    },
+    "TraceActorAnimNode": {
+      "documentation": null,
+      "signature_members": {
+        "sTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "nmNode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TraceActorAnimNode(string sTargetActor, Name nmNode)"
+    },
+    "TraceActorProperty": {
+      "documentation": null,
+      "signature_members": {
+        "sTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "nmProp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TraceActorProperty(string sTargetActor, Name nmProp)"
+    },
+    "TraceAxis": {
+      "documentation": null,
+      "signature_members": {
+        "nmAxis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TraceAxis(Name nmAxis)"
+    },
+    "TraceButton": {
+      "documentation": null,
+      "signature_members": {
+        "nmButton": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TraceButton(Name nmButton)"
+    },
+    "UnlockAllAccomplishments": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllAccomplishments()"
+    },
+    "UnlockAllGamerpics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllGamerpics()"
+    },
+    "UnlockAllResearch": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAllResearch(bool B)"
+    },
+    "UnlockAllTech": {
+      "documentation": null,
+      "signature_members": {
+        "i": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAllTech(int i)"
+    },
+    "UnlockAllTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAllTreasure(bool B)"
+    },
+    "UnlockBonusPower": {
+      "documentation": null,
+      "signature_members": {
+        "BonusPowerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockBonusPower(int BonusPowerID)"
+    },
+    "UpdateGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "NewStrength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateGAWAsset(int Id, int NewStrength)"
+    },
+    "UpdateGAWAssetByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewStrength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateGAWAssetByName(string AssetName, int NewStrength)"
+    },
+    "UpdatePlayerMorphHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlayerMorphHead()"
+    },
+    "UploadNewFaceCode": {
+      "documentation": null,
+      "signature_members": {
+        "CharacterName": {
+          "type": null,
+          "documentation": null
+        },
+        "faceCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UploadNewFaceCode(string CharacterName, optional string faceCode)"
+    },
+    "UseIconicShepard": {
+      "documentation": null,
+      "signature_members": {
+        "ShouldUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UseIconicShepard(bool ShouldUse)"
+    },
+    "Validate": {
+      "documentation": null,
+      "signature_members": {
+        "oTreasure": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Validate(SFXPlotTreasure oTreasure)"
+    },
+    "ValidateResourcesSheet": {
+      "documentation": null,
+      "signature_members": {
+        "oTreasure": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ValidateResourcesSheet(SFXPlotTreasure oTreasure)"
+    },
+    "ValidateTechSheet": {
+      "documentation": null,
+      "signature_members": {
+        "oTreasure": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ValidateTechSheet(SFXPlotTreasure oTreasure)"
+    },
+    "ValidateTreasureSheet": {
+      "documentation": null,
+      "signature_members": {
+        "oTreasure": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ValidateTreasureSheet(SFXPlotTreasure oTreasure)"
+    },
+    "VoiceEnumerateInputs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VoiceEnumerateInputs()"
+    },
+    "VoiceEnumerateOutputs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VoiceEnumerateOutputs()"
+    },
+    "VoiceGetDefaultInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VoiceGetDefaultInput()"
+    },
+    "VoiceGetDefaultOutput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VoiceGetDefaultOutput()"
+    },
+    "VoiceSetInput": {
+      "documentation": null,
+      "signature_members": {
+        "inputDevice": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VoiceSetInput(int inputDevice)"
+    },
+    "VoiceSetOutput": {
+      "documentation": null,
+      "signature_members": {
+        "outputDevice": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VoiceSetOutput(int outputDevice)"
+    },
+    "WeaponChoiceDialogResult": {
+      "documentation": null,
+      "signature_members": {
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        },
+        "nChoiceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponChoiceDialogResult(BioSFHandler_MessageBox oMsgBox, int nChoiceID)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

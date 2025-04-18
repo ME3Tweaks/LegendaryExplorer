@@ -1,0 +1,121 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "barkName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nextBark": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_fBarkDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "AIBarkI": {
+      "type": "int",
+      "documentation": null
+    },
+    "AIBarkJ": {
+      "type": "int",
+      "documentation": null
+    },
+    "AIBarkK": {
+      "type": "int",
+      "documentation": null
+    },
+    "AIBarkVar": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDoneCombatBarks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoneExploreBarks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoneStealthBarks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDoneCombatVarBarks": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "GetNextAIBark": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetNextAIBark()"
+    },
+    "GetNextCombatBark": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetNextCombatBark(BioPawn pPawn)"
+    },
+    "GetNextCombatVariantBark": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetNextCombatVariantBark(BioPawn pPawn)"
+    },
+    "GetNextExploreBark": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetNextExploreBark(BioPawn pPawn)"
+    },
+    "GetNextStealthBark": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetNextStealthBark(BioPawn pPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

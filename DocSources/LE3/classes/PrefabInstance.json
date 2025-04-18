@@ -1,0 +1,71 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "PI_Bytes": {
+      "type": "byte",
+      "documentation": null
+    },
+    "PI_CompleteObjects": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PI_ReferencedObjects": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PI_SavedNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "ArchetypeToInstanceMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PI_ObjectMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "TemplatePrefab": {
+      "type": "Prefab",
+      "documentation": null
+    },
+    "SequenceInstance": {
+      "type": "PrefabSequence",
+      "documentation": null
+    },
+    "TemplateVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "PI_PackageVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "PI_LicenseePackageVersion": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DestroyPrefab": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestroyPrefab()"
+    },
+    "InstancePrefab": {
+      "documentation": null,
+      "signature_members": {
+        "InPrefab": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InstancePrefab(Prefab InPrefab)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

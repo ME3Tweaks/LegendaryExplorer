@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "BCS_WorldSpace": {
+      "value": 0,
+      "documentation": null
+    },
+    "BCS_ActorSpace": {
+      "value": 1,
+      "documentation": null
+    },
+    "BCS_ComponentSpace": {
+      "value": 2,
+      "documentation": null
+    },
+    "BCS_ParentBoneSpace": {
+      "value": 3,
+      "documentation": null
+    },
+    "BCS_BoneSpace": {
+      "value": 4,
+      "documentation": null
+    },
+    "BCS_OtherBoneSpace": {
+      "value": 5,
+      "documentation": null
+    },
+    "BCS_BaseMeshSpace": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

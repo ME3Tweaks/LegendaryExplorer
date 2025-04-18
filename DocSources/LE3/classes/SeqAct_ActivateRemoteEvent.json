@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "Parameters": {
+      "type": "RemoteEventParameter",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "EventName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

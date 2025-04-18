@@ -1,0 +1,17 @@
+{
+  "parent": "KActorSpawnable",
+  "package": "SFXGame",
+  "variables": {
+    "m_aLastCollidedActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fPhysicsSoundLastTimePlayed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

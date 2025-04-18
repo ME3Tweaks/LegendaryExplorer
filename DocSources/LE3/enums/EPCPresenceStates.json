@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "PC_PRESENCE_OFFLINE": {
+      "value": 0,
+      "documentation": null
+    },
+    "PC_PRESENCE_ONLINE": {
+      "value": 1,
+      "documentation": null
+    },
+    "PC_PRESENCE_INGAME": {
+      "value": 2,
+      "documentation": null
+    },
+    "PC_PRESENCE_BUSY": {
+      "value": 3,
+      "documentation": null
+    },
+    "PC_PRESENCE_IDLE": {
+      "value": 4,
+      "documentation": null
+    },
+    "PC_PRESENCE_JOINABLE": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "NextRepeatTime": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentRepeatKey": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

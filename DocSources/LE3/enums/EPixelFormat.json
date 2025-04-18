@@ -1,0 +1,221 @@
+{
+  "EnumValues": {
+    "PF_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "PF_A32B32G32R32F": {
+      "value": 1,
+      "documentation": null
+    },
+    "PF_A8R8G8B8": {
+      "value": 2,
+      "documentation": null
+    },
+    "PF_G8": {
+      "value": 3,
+      "documentation": null
+    },
+    "PF_G16": {
+      "value": 4,
+      "documentation": null
+    },
+    "PF_DXT1": {
+      "value": 5,
+      "documentation": null
+    },
+    "PF_DXT3": {
+      "value": 6,
+      "documentation": null
+    },
+    "PF_DXT5": {
+      "value": 7,
+      "documentation": null
+    },
+    "PF_UYVY": {
+      "value": 8,
+      "documentation": null
+    },
+    "PF_FloatRGB": {
+      "value": 9,
+      "documentation": null
+    },
+    "PF_FloatRGBA": {
+      "value": 10,
+      "documentation": null
+    },
+    "PF_DepthStencil": {
+      "value": 11,
+      "documentation": null
+    },
+    "PF_ShadowDepth": {
+      "value": 12,
+      "documentation": null
+    },
+    "PF_FilteredShadowDepth": {
+      "value": 13,
+      "documentation": null
+    },
+    "PF_R32F": {
+      "value": 14,
+      "documentation": null
+    },
+    "PF_G16R16": {
+      "value": 15,
+      "documentation": null
+    },
+    "PF_G16R16F": {
+      "value": 16,
+      "documentation": null
+    },
+    "PF_G16R16F_FILTER": {
+      "value": 17,
+      "documentation": null
+    },
+    "PF_G32R32F": {
+      "value": 18,
+      "documentation": null
+    },
+    "PF_A2B10G10R10": {
+      "value": 19,
+      "documentation": null
+    },
+    "PF_A16B16G16R16_UNORM": {
+      "value": 20,
+      "documentation": null
+    },
+    "PF_D24": {
+      "value": 21,
+      "documentation": null
+    },
+    "PF_R16F": {
+      "value": 22,
+      "documentation": null
+    },
+    "PF_R16F_FILTER": {
+      "value": 23,
+      "documentation": null
+    },
+    "PF_BC5": {
+      "value": 24,
+      "documentation": null
+    },
+    "PF_V8U8": {
+      "value": 25,
+      "documentation": null
+    },
+    "PF_A1": {
+      "value": 26,
+      "documentation": null
+    },
+    "PF_NormalMap_LQ": {
+      "value": 27,
+      "documentation": null
+    },
+    "PF_NormalMap_HQ": {
+      "value": 28,
+      "documentation": null
+    },
+    "PF_A16B16G16R16_FLOAT": {
+      "value": 29,
+      "documentation": null
+    },
+    "PF_A16B16G16R16_SNORM": {
+      "value": 30,
+      "documentation": null
+    },
+    "PF_FloatR11G11B10": {
+      "value": 31,
+      "documentation": null
+    },
+    "PF_A4R4G4B4": {
+      "value": 32,
+      "documentation": null
+    },
+    "PF_R5G6B5": {
+      "value": 33,
+      "documentation": null
+    },
+    "PF_G8R8": {
+      "value": 34,
+      "documentation": null
+    },
+    "PF_R8_UNORM": {
+      "value": 35,
+      "documentation": null
+    },
+    "PF_R8_UINT": {
+      "value": 36,
+      "documentation": null
+    },
+    "PF_R8_SINT": {
+      "value": 37,
+      "documentation": null
+    },
+    "PF_R16_FLOAT": {
+      "value": 38,
+      "documentation": null
+    },
+    "PF_R16_UNORM": {
+      "value": 39,
+      "documentation": null
+    },
+    "PF_R16_UINT": {
+      "value": 40,
+      "documentation": null
+    },
+    "PF_R16_SINT": {
+      "value": 41,
+      "documentation": null
+    },
+    "PF_R8G8_UNORM": {
+      "value": 42,
+      "documentation": null
+    },
+    "PF_R8G8_UINT": {
+      "value": 43,
+      "documentation": null
+    },
+    "PF_R8G8_SINT": {
+      "value": 44,
+      "documentation": null
+    },
+    "PF_R16G16_FLOAT": {
+      "value": 45,
+      "documentation": null
+    },
+    "PF_R16G16_UNORM": {
+      "value": 46,
+      "documentation": null
+    },
+    "PF_R16G16_UINT": {
+      "value": 47,
+      "documentation": null
+    },
+    "PF_R16G16_SINT": {
+      "value": 48,
+      "documentation": null
+    },
+    "PF_R32_FLOAT": {
+      "value": 49,
+      "documentation": null
+    },
+    "PF_R32_UINT": {
+      "value": 50,
+      "documentation": null
+    },
+    "PF_R32_SINT": {
+      "value": 51,
+      "documentation": null
+    },
+    "PF_A8": {
+      "value": 52,
+      "documentation": null
+    },
+    "PF_BC7": {
+      "value": 53,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

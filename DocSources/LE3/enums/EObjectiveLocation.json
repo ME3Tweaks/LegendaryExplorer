@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EObjectiveLocation_Table": {
+      "value": 0,
+      "documentation": null
+    },
+    "EObjectiveLocation_Floor": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

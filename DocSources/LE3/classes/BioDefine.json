@@ -1,0 +1,35 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "TipText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetStringRef(ETargetTipText TipText)"
+    },
+    "PrettyFloat": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        },
+        "decimals": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrettyFloat(float F, optional int decimals)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

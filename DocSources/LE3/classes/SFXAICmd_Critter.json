@@ -1,0 +1,48 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AdjustSteeringSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustSteeringSpeed(Vector vSteering)"
+    },
+    "GetSteeringDirection": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSteeringDirection(out Vector vSteering)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "CritterWander": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

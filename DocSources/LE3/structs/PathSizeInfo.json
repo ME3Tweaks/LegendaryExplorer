@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Desc": {
+      "type": null,
+      "documentation": null
+    },
+    "Radius": {
+      "type": null,
+      "documentation": null
+    },
+    "Height": {
+      "type": null,
+      "documentation": null
+    },
+    "CrouchHeight": {
+      "type": null,
+      "documentation": null
+    },
+    "PathColor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

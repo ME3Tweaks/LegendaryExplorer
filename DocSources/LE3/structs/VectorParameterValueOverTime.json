@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ParameterValueCurve": {
+      "type": null,
+      "documentation": null
+    },
+    "ParameterValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

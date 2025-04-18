@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nmPinName": {
+      "type": null,
+      "documentation": null
+    },
+    "pActor": {
+      "type": null,
+      "documentation": null
+    },
+    "pSeqVar": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

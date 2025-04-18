@@ -1,0 +1,53 @@
+{
+  "parent": "AnimNodeAimOffset",
+  "package": "SFXGame",
+  "variables": {
+    "BoneToAimMap": {
+      "type": "byte",
+      "documentation": null
+    },
+    "OwningActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "LastAimOffset": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "LastPostProcessedAimOffset": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MotionAimOffset": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "TurnInPlaceOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnAroundTimeToGo": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnAroundBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngVelAimOffsetChangeSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngVelAimOffsetScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "AimInput": {
+      "type": "EAimInputType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "SeqNodes": {
+      "type": null,
+      "documentation": null
+    },
+    "SynchMaster": {
+      "type": null,
+      "documentation": null
+    },
+    "NotifyMaster": {
+      "type": null,
+      "documentation": null
+    },
+    "GroupName": {
+      "type": null,
+      "documentation": null
+    },
+    "RateScale": {
+      "type": null,
+      "documentation": null
+    },
+    "SynchPctPosition": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

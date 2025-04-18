@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "m_fLastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

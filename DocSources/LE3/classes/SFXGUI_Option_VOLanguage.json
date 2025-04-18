@@ -1,0 +1,15 @@
+{
+  "parent": "SFXGUI_Option_LanguageBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "SaveOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveOption()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

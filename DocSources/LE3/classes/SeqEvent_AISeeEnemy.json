@@ -1,0 +1,13 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "MaxSightDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

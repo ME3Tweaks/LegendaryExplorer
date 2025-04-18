@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "SFXONLINE_ERRCONTEXT_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_Connect": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_Login": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_CreatePersona": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_LoginPersona": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_CreateAccount": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_AssociateAccount": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_ERRCONTEXT_SignOut": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

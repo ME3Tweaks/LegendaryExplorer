@@ -1,0 +1,36 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {
+    "OmniToolGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "CE_OmniTool": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "CheckFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckFiring()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

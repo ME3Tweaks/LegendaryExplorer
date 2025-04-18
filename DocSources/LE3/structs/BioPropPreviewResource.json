@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "mapActions": {
+      "type": null,
+      "documentation": null
+    },
+    "nmProp": {
+      "type": null,
+      "documentation": null
+    },
+    "pPropCmp": {
+      "type": null,
+      "documentation": null
+    },
+    "bEquipped": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

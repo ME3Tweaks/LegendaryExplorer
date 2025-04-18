@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SaveDelegate": {
+      "type": null,
+      "documentation": null
+    },
+    "ForceSaveBase": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

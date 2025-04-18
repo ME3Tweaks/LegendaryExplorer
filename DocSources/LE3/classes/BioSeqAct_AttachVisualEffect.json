@@ -1,0 +1,38 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oAttachTo": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_vOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nmSocketOrBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oEffect": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

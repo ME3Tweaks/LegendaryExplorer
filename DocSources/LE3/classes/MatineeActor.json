@@ -1,0 +1,54 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "InterpAction": {
+      "type": "SeqAct_Interp",
+      "documentation": null
+    },
+    "PlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "Position": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClientSidePositionErrorTolerance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReversePlayback": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SFXReplicationTriggerDummy": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Update": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Update()"
+    },
+    "CheckPriorityRefresh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckPriorityRefresh()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

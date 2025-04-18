@@ -1,0 +1,81 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "ReportName": {
+      "type": "string",
+      "documentation": null
+    },
+    "__GameReportingCallback__Delegate": {
+      "type": "GameReportingCallback",
+      "documentation": null
+    },
+    "mGameReport": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BuildReport": {
+      "documentation": null,
+      "signature_members": {
+        "StatsWrite": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildReport(OnlineStatsWrite StatsWrite)"
+    },
+    "CreateJob": {
+      "documentation": null,
+      "signature_members": {
+        "InCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "StatsWrite": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGameReporting",
+      "signature": "SFXOnlineJobGameReporting CreateJob(delegate<GameReportingCallback> InCallback, OnlineStatsWrite StatsWrite)"
+    },
+    "GameReportingCallback": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "InJobId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GameReportingCallback(OnlineJobErrorCode errorCode, int InJobId)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnReleaseImpl": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReleaseImpl()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

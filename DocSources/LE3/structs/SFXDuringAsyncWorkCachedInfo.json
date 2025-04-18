@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "LocalPlayerLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "LocalPlayer": {
+      "type": null,
+      "documentation": null
+    },
+    "LODfactor": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeSeconds": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

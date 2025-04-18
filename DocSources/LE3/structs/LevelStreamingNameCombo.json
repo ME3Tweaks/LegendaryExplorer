@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "LevelName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

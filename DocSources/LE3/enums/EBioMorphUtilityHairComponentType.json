@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BMU_HairComponent_Hair": {
+      "value": 0,
+      "documentation": null
+    },
+    "BMU_HairComponent_Other": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

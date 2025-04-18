@@ -1,0 +1,77 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerStorage",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "AddReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "ClearReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "ReadData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    },
+    "WriteData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

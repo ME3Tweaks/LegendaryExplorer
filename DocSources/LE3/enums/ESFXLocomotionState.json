@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eSFXLocomotionState_Inactive": {
+      "value": 0,
+      "documentation": null
+    },
+    "eSFXLocomotionState_Moving": {
+      "value": 1,
+      "documentation": null
+    },
+    "eSFXLocomotionState_Idle": {
+      "value": 2,
+      "documentation": null
+    },
+    "eSFXLocomotionState_MoveStart": {
+      "value": 3,
+      "documentation": null
+    },
+    "eSFXLocomotionState_MoveStop": {
+      "value": 4,
+      "documentation": null
+    },
+    "eSFXLocomotionState_SkidTurn": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

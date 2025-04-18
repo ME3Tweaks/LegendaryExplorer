@@ -1,0 +1,20 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "Combat": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

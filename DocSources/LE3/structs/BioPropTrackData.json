@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "pWeaponClass": {
+      "type": null,
+      "documentation": null
+    },
+    "nmProp": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAction": {
+      "type": null,
+      "documentation": null
+    },
+    "pPropMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "pActionPartSys": {
+      "type": null,
+      "documentation": null
+    },
+    "pActionClientEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "bEquip": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceGenericWeapon": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

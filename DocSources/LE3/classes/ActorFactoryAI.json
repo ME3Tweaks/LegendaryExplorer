@@ -1,0 +1,33 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "PawnName": {
+      "type": "string",
+      "documentation": null
+    },
+    "InventoryList": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ControllerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PawnClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "TeamIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bGiveDefaultInventory": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

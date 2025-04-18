@@ -1,0 +1,37 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ColumnHeaderText": {
+      "type": "string",
+      "documentation": null
+    },
+    "Values": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PlayerStorage": {
+      "type": "OnlinePlayerStorage",
+      "documentation": null
+    },
+    "PlayerStorageName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PlayerStorageId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

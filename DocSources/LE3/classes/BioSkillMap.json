@@ -1,0 +1,40 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SkillToStateMap": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bClosedIsSkillState": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetSkill": {
+      "documentation": null,
+      "signature_members": {
+        "Num": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetSkill(int Num)"
+    },
+    "IsSkillInMap": {
+      "documentation": null,
+      "signature_members": {
+        "Skill": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSkillInMap(Name Skill)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

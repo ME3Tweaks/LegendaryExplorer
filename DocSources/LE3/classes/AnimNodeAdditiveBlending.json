@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "Engine",
+  "variables": {
+    "bPassThroughWhenNotRendered": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

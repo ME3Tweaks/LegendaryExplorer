@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_INTERPOLATION_METHOD_LINEAR": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_INTERPOLATION_METHOD_LOG_E": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_INTERPOLATION_METHOD_QUARTER_SIN": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

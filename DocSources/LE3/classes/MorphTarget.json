@@ -1,0 +1,33 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "MorphLODModels": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaterialSlotId": {
+      "type": "int",
+      "documentation": null
+    },
+    "ScalarParameterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MaterialInstanceConstant": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "OffsetSkeleton": {
+      "type": "int",
+      "documentation": null
+    },
+    "OffsetSkeleton_dep": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,85 @@
+{
+  "EnumValues": {
+    "CharacterType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CharacterType_Human": {
+      "value": 1,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Trooper": {
+      "value": 2,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Centurion": {
+      "value": 3,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Guardian": {
+      "value": 4,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Nemesis": {
+      "value": 5,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Phantom": {
+      "value": 6,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Engineer": {
+      "value": 7,
+      "documentation": null
+    },
+    "CharacterType_Cerberus_Atlas": {
+      "value": 8,
+      "documentation": null
+    },
+    "CharacterType_Reaper_Husk": {
+      "value": 9,
+      "documentation": null
+    },
+    "CharacterType_Reaper_Cannibal": {
+      "value": 10,
+      "documentation": null
+    },
+    "CharacterType_Reaper_Marauder": {
+      "value": 11,
+      "documentation": null
+    },
+    "CharacterType_Reaper_Brute": {
+      "value": 12,
+      "documentation": null
+    },
+    "CharacterType_Reaper_Ravager": {
+      "value": 13,
+      "documentation": null
+    },
+    "CharacterType_Reaper_Banshee": {
+      "value": 14,
+      "documentation": null
+    },
+    "CharacterType_Geth_Trooper": {
+      "value": 15,
+      "documentation": null
+    },
+    "CharacterType_Geth_Rocket_Trooper": {
+      "value": 16,
+      "documentation": null
+    },
+    "CharacterType_Geth_Pyro": {
+      "value": 17,
+      "documentation": null
+    },
+    "CharacterType_Geth_Hunter": {
+      "value": 18,
+      "documentation": null
+    },
+    "CharacterType_Geth_Prime": {
+      "value": 19,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

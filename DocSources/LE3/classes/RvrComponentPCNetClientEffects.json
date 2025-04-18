@@ -1,0 +1,93 @@
+{
+  "parent": "ActorComponent",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "SpawnClientEffectOnClient": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnClientEffectOnClient(RvrClientEffectInterface pEffect, RvrClientEffectTarget oTarget, optional Actor pOwner)"
+    },
+    "SpawnClientEffectOnServer": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "pOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnClientEffectOnServer(PlayerController oInstigator, RvrClientEffectInterface pEffect, RvrClientEffectTarget oTarget, optional Actor pOwner)"
+    },
+    "StopClientEffectOnClient": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopClientEffectOnClient(RvrClientEffectInterface pEffect, Guid Id, bool bAllowCooldown)"
+    },
+    "StopClientEffectOnServer": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "pEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopClientEffectOnServer(PlayerController oInstigator, RvrClientEffectInterface pEffect, Guid Id, bool bAllowCooldown)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

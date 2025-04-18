@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Stripe1ParameterValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe2ParameterValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe3ParameterValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe1ParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe2ParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe3ParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "PatternName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

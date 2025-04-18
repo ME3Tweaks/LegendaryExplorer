@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "CV_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CV_Mantle": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "EventCallback": {
+      "type": null,
+      "documentation": null
+    },
+    "EventType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

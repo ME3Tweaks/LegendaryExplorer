@@ -1,0 +1,61 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponMods": {
+      "type": "SFXWeaponMod",
+      "documentation": null
+    },
+    "ExtraMeshComponents": {
+      "type": "ExtraMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddMod": {
+      "documentation": null,
+      "signature_members": {
+        "ModClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddMod(Class<SFXWeaponMod> ModClass, int nLevel)"
+    },
+    "RemoveAllMods": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllMods()"
+    },
+    "RemoveMod": {
+      "documentation": null,
+      "signature_members": {
+        "ModClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveMod(Class<SFXWeaponMod> ModClass)"
+    },
+    "SetWeaponModHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponModHidden(bool bHidden)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

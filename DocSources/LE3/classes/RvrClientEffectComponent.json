@@ -1,0 +1,215 @@
+{
+  "parent": "ActorComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstParameters": {
+      "type": "RvrClientEffectParameter",
+      "documentation": null
+    },
+    "m_lstModuleInstances": {
+      "type": "RvrClientEffectModuleInstance",
+      "documentation": null
+    },
+    "__OnEffectFinished__Delegate": {
+      "type": "OnEffectFinished",
+      "documentation": null
+    },
+    "m_oTarget": {
+      "type": "RvrClientEffectTarget",
+      "documentation": null
+    },
+    "m_pClientEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_pPostProcessChain": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "m_nExclusivePriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCoolDownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nEffectIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPrimed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bResetPending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bStopRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bExclusiveOnTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOnLocalPlayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstigatorValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBehind": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMultiplayer": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ActivateModule": {
+      "documentation": null,
+      "signature_members": {
+        "pInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateModule(RvrClientEffectModuleInstance pInstance)"
+    },
+    "ApplyParameters": {
+      "documentation": null,
+      "signature_members": {
+        "lstParams": {
+          "type": null,
+          "documentation": null
+        },
+        "pInstance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyParameters(array<RvrClientEffectParameter> lstParams, RvrClientEffectModuleInstance pInstance)"
+    },
+    "CreateModule": {
+      "documentation": null,
+      "signature_members": {
+        "pTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "RvrClientEffectModuleInstance",
+      "signature": "RvrClientEffectModuleInstance CreateModule(RvrClientEffectModule pTemplate)"
+    },
+    "Hide": {
+      "documentation": null,
+      "signature_members": {
+        "bHide": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Hide(bool bHide)"
+    },
+    "OnEffectFinished": {
+      "documentation": null,
+      "signature_members": {
+        "pComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEffectFinished(RvrClientEffectComponent pComponent)"
+    },
+    "OnProjectileExploded": {
+      "documentation": null,
+      "signature_members": {
+        "pProjectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnProjectileExploded(Projectile pProjectile)"
+    },
+    "Prime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Prime()"
+    },
+    "ResetEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetEffect()"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "pTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(RvrClientEffectInterface pTemplate)"
+    },
+    "StopEffect": {
+      "documentation": null,
+      "signature_members": {
+        "bAllowCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopEffect(optional bool bAllowCooldown)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "UpdateDistance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateDistance()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "SeqVar_Bool",
+  "package": "SFXGame",
+  "variables": {
+    "MyGuid": {
+      "type": "Guid",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

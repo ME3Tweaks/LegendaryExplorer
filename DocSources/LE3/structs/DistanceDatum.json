@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "FadeInDistanceStart": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeInDistanceEnd": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutDistanceStart": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutDistanceEnd": {
+      "type": null,
+      "documentation": null
+    },
+    "Volume": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

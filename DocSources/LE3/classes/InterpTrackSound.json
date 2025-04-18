@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackVectorBase",
+  "package": "Engine",
+  "variables": {
+    "Sounds": {
+      "type": "SoundTrackKey",
+      "documentation": null
+    },
+    "bContinueSoundOnMatineeEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressSubtitles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

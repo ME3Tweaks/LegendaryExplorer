@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "m_sMessage": {
+      "type": null,
+      "documentation": null
+    },
+    "m_stParams": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nmName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pCallbackObject": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nmCallbackFunction": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nPriority": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nContext": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nControllerId": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bPersistThroughTravel": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bWasGamePaused": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bIsWeaponChoiceDlg": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackFloatBase",
+  "package": "WwiseAudio",
+  "variables": {
+    "Param": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

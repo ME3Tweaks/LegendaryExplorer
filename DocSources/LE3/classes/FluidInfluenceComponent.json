@@ -1,0 +1,113 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "FluidActor": {
+      "type": "FluidSurfaceActor",
+      "documentation": null
+    },
+    "CurrentFluidActor": {
+      "type": "FluidSurfaceActor",
+      "documentation": null
+    },
+    "MaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "WaveStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "WaveFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "WavePhase": {
+      "type": "float",
+      "documentation": null
+    },
+    "WaveRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RaindropAreaRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RaindropRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RaindropStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "RaindropRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlowSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlowNumRipples": {
+      "type": "int",
+      "documentation": null
+    },
+    "FlowSideMotionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlowWaveRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlowStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlowFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereOuterRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereInnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RaindropFillEntireFluid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsToggleTriggered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "InfluenceType": {
+      "type": "EInfluenceType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

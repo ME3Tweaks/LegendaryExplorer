@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeLocomotion_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotion_MoveStart": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotion_Moving": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotion_MoveStop": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotion_SkidTurn": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotion_PoseHolder": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SCR_NoChange": {
+      "value": 0,
+      "documentation": null
+    },
+    "SCR_AlongSpline": {
+      "value": 1,
+      "documentation": null
+    },
+    "SCR_Interpolate": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

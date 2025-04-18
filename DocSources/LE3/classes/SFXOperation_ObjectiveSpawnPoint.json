@@ -1,0 +1,45 @@
+{
+  "parent": "BioStartLocation",
+  "package": "SFXGame",
+  "variables": {
+    "SupportedSpawnTags": {
+      "type": "string",
+      "documentation": null
+    },
+    "CombatZone": {
+      "type": "SFXCombatZone",
+      "documentation": null
+    },
+    "AnnexZoneLocation": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null
+    },
+    "DynamicWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpawnLocation": {
+      "type": "EObjectiveLocation",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsObjectiveValidForSpawn": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectiveData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsObjectiveValidForSpawn(SFXOperation_ObjectiveData ObjectiveData)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

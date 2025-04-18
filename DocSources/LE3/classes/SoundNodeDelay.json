@@ -1,0 +1,17 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "DelayMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "DelayMax": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

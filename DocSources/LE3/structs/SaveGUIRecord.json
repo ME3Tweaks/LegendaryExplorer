@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "SaveDescriptor": {
+      "type": null,
+      "documentation": null
+    },
+    "FriendlyName": {
+      "type": null,
+      "documentation": null
+    },
+    "ImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "SaveGame": {
+      "type": null,
+      "documentation": null
+    },
+    "AreaImage": {
+      "type": null,
+      "documentation": null
+    },
+    "m_sec": {
+      "type": null,
+      "documentation": null
+    },
+    "m_min": {
+      "type": null,
+      "documentation": null
+    },
+    "m_hr": {
+      "type": null,
+      "documentation": null
+    },
+    "m_day": {
+      "type": null,
+      "documentation": null
+    },
+    "m_mo": {
+      "type": null,
+      "documentation": null
+    },
+    "m_year": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

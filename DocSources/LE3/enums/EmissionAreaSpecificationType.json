@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EAST_UniformDensityPerVertex": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAST_UniformDensityPerBone": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAST_WeightedDensityPerBone": {
+      "value": 2,
+      "documentation": null
+    },
+    "EAST_WeightedDensityPerEmissionArea": {
+      "value": 3,
+      "documentation": null
+    },
+    "EAST_UniformDensityPerEmissionArea": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

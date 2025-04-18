@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "SelectedIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumHenchmen": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "EXPLORE": {
+      "value": 0,
+      "documentation": null
+    },
+    "UPRIGHT_NORMAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "UPRIGHT_IRONSIGHTS": {
+      "value": 2,
+      "documentation": null
+    },
+    "UPRIGHT_SCOPE_SNIPER": {
+      "value": 3,
+      "documentation": null
+    },
+    "UPRIGHT_SCOPE_OTHER": {
+      "value": 4,
+      "documentation": null
+    },
+    "COVER_NORMAL": {
+      "value": 5,
+      "documentation": null
+    },
+    "COVER_IRONSIGHTS": {
+      "value": 6,
+      "documentation": null
+    },
+    "COVER_SCOPE_SNIPER": {
+      "value": 7,
+      "documentation": null
+    },
+    "COVER_SCOPE_OTHER": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

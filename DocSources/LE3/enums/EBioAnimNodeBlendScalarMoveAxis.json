@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BScMvAxis_All": {
+      "value": 0,
+      "documentation": null
+    },
+    "BScMvAxis_2D": {
+      "value": 1,
+      "documentation": null
+    },
+    "BScMvAxis_X": {
+      "value": 2,
+      "documentation": null
+    },
+    "BScMvAxis_Y": {
+      "value": 3,
+      "documentation": null
+    },
+    "BScMvAxis_Z": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

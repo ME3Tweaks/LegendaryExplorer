@@ -1,0 +1,615 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "GameModeAttribute": {
+      "type": "string",
+      "documentation": null
+    },
+    "ConfigHooks": {
+      "type": "TelemetryHookConfig",
+      "documentation": null
+    },
+    "GameDataPlotsInt": {
+      "type": "int",
+      "documentation": null
+    },
+    "GameDataPlotsFloat": {
+      "type": "int",
+      "documentation": null
+    },
+    "GameDataPlotsBool": {
+      "type": "int",
+      "documentation": null
+    },
+    "BlacklistPlotsInt": {
+      "type": "int",
+      "documentation": null
+    },
+    "BlacklistPlotsFloat": {
+      "type": "int",
+      "documentation": null
+    },
+    "BlacklistPlotsBool": {
+      "type": "int",
+      "documentation": null
+    },
+    "Hooks": {
+      "type": "Object",
+      "documentation": null
+    },
+    "GameSession": {
+      "type": "SFXTelemetryGameSession",
+      "documentation": null
+    },
+    "bEnableTelemetry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAreDelegatesRegistered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBootStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLoggedIn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOptOut": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GenerateUniqueClassId": {
+      "documentation": null,
+      "signature_members": {
+        "Object": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateUniqueClassId(Object Object)"
+    },
+    "GenerateUniqueClassIdFromString": {
+      "documentation": null,
+      "signature_members": {
+        "FullFriendlyName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateUniqueClassIdFromString(const out string FullFriendlyName)"
+    },
+    "GetInstanceGameSession": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXTelemetryGameSession",
+      "signature": "SFXTelemetryGameSession GetInstanceGameSession()"
+    },
+    "InitConnectionDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitConnectionDelegates()"
+    },
+    "IsCollectionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCollectionEnabled()"
+    },
+    "OnAuthenticate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAuthenticate()"
+    },
+    "OnDisconnect": {
+      "documentation": null,
+      "signature_members": {
+        "Error": {
+          "type": null,
+          "documentation": null
+        },
+        "SessionId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisconnect(int Error, const string SessionId)"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "SendArray": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendArray(Name HookName, const out array<TelemetryAttribute> Attributes, optional bool bNeedFlush)"
+    },
+    "SendBool": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendBool(Name HookName, string AttrName, const bool bValue, optional bool bNeedFlush)"
+    },
+    "SendFloat": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendFloat(Name HookName, string AttrName, const float fValue, optional bool bNeedFlush)"
+    },
+    "SendInt": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendInt(Name HookName, string AttrName, const int nValue, optional bool bNeedFlush)"
+    },
+    "SendName": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "nmValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendName(Name HookName, string AttrName, Name nmValue, optional bool bNeedFlush)"
+    },
+    "SendString": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "sValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendString(Name HookName, string AttrName, const out string sValue, optional bool bNeedFlush)"
+    },
+    "SendVoid": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": null,
+          "documentation": null
+        },
+        "bNeedFlush": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendVoid(Name HookName, optional bool bNeedFlush)"
+    },
+    "AddBoolToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "bData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBoolToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, bool bData)"
+    },
+    "AddClassNameToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "cnData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddClassNameToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, Name cnData)"
+    },
+    "AddFloatToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "fData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFloatToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, float fData)"
+    },
+    "AddIntToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "nData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddIntToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, int nData)"
+    },
+    "AddStringToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "AttrName": {
+          "type": null,
+          "documentation": null
+        },
+        "sData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddStringToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, const out string sData)"
+    },
+    "GenerateUniqueClassIdFromName": {
+      "documentation": null,
+      "signature_members": {
+        "FullFriendlyName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateUniqueClassIdFromName(Name FullFriendlyName)"
+    },
+    "GetLoginAndPlayerInterface": {
+      "documentation": null,
+      "signature_members": {
+        "Login": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetLoginAndPlayerInterface(out ISFXOnlineComponentLogin Login, optional out OnlinePlayerInterface PlayerInterface)"
+    },
+    "IncSessionCombatScore": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionCombatScore(int Amount)"
+    },
+    "IncSessionPlayerDeaths": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionPlayerDeaths(int Amount)"
+    },
+    "IncSessionPlayerKills": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionPlayerKills(int Amount)"
+    },
+    "IncSessionPlayerScore": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionPlayerScore(int Amount)"
+    },
+    "IncSessionTeamDeaths": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionTeamDeaths(int Amount)"
+    },
+    "IncSessionTeamKills": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionTeamKills(int Amount)"
+    },
+    "IncSessionXP": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionXP(int Amount)"
+    },
+    "SendCustomizationStr": {
+      "documentation": null,
+      "signature_members": {
+        "TargetName": {
+          "type": null,
+          "documentation": null
+        },
+        "sSelection": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendCustomizationStr(const string TargetName, const string sSelection, const string TargetType)"
+    },
+    "SendGameData": {
+      "documentation": null,
+      "signature_members": {
+        "GameDataType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendGameData(ETelemetryGameDataType GameDataType)"
+    },
+    "SendMissionComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendMissionComplete()"
+    },
+    "SendProfileDependentTelemetry": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendProfileDependentTelemetry(byte LocalUserNum)"
+    },
+    "SendProfileDependentTelemetryNative": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendProfileDependentTelemetryNative()"
+    },
+    "SendTelemetryOnProfileReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTelemetryOnProfileReadComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "SetContextCustomHeader": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContextCustomHeader(Name ChunkName)"
+    },
+    "SetContextMap": {
+      "documentation": null,
+      "signature_members": {
+        "MapName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContextMap(Name MapName)"
+    },
+    "SetContextPlayerLevel": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContextPlayerLevel(int Level)"
+    },
+    "SetContextPlayerLevelFromCurrentRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetContextPlayerLevelFromCurrentRecord()"
+    },
+    "VectorToTelemetryString": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string VectorToTelemetryString(Vector V)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

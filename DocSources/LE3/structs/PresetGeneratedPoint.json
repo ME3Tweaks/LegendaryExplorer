@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "KeyIn": {
+      "type": null,
+      "documentation": null
+    },
+    "KeyOut": {
+      "type": null,
+      "documentation": null
+    },
+    "TangentIn": {
+      "type": null,
+      "documentation": null
+    },
+    "TangentOut": {
+      "type": null,
+      "documentation": null
+    },
+    "TangentsValid": {
+      "type": null,
+      "documentation": null
+    },
+    "IntepMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

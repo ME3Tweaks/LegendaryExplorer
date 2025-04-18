@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_nParamName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_oTexture": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

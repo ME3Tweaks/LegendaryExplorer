@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Atoms": {
+      "type": null,
+      "documentation": null
+    },
+    "Attachments": {
+      "type": null,
+      "documentation": null
+    },
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "Velocity": {
+      "type": null,
+      "documentation": null
+    },
+    "ComponentTranslation": {
+      "type": null,
+      "documentation": null
+    },
+    "ComponentRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "ComponentScale3D": {
+      "type": null,
+      "documentation": null
+    },
+    "ComponentScale": {
+      "type": null,
+      "documentation": null
+    },
+    "LOD": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

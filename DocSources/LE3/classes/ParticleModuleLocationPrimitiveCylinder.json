@@ -1,0 +1,25 @@
+{
+  "parent": "ParticleModuleLocationPrimitiveBase",
+  "package": "Engine",
+  "variables": {
+    "StartRadius": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "StartHeight": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "RadialVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HeightAxis": {
+      "type": "CylinderHeightAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "UniqueStats": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "Threshold": {
+      "type": null,
+      "documentation": null
+    },
+    "AchievementId": {
+      "type": null,
+      "documentation": null
+    },
+    "Stat": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

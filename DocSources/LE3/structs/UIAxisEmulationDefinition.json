@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "InputKeyToEmulate": {
+      "type": null,
+      "documentation": null
+    },
+    "AxisInputKey": {
+      "type": null,
+      "documentation": null
+    },
+    "AdjacentAxisInputKey": {
+      "type": null,
+      "documentation": null
+    },
+    "bEmulateButtonPress": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

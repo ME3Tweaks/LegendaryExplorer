@@ -1,0 +1,185 @@
+{
+  "EnumValues": {
+    "PIT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PIT_MoveStickLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "PIT_MoveStickRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "PIT_MoveStickLRNeutral": {
+      "value": 3,
+      "documentation": null
+    },
+    "PIT_MoveStickUp": {
+      "value": 4,
+      "documentation": null
+    },
+    "PIT_MoveStickDown": {
+      "value": 5,
+      "documentation": null
+    },
+    "PIT_MoveStickUDNeutral": {
+      "value": 6,
+      "documentation": null
+    },
+    "PIT_LookStickLeft": {
+      "value": 7,
+      "documentation": null
+    },
+    "PIT_LookStickRight": {
+      "value": 8,
+      "documentation": null
+    },
+    "PIT_LookStickLRNeutral": {
+      "value": 9,
+      "documentation": null
+    },
+    "PIT_LookStickUp": {
+      "value": 10,
+      "documentation": null
+    },
+    "PIT_LookStickDown": {
+      "value": 11,
+      "documentation": null
+    },
+    "PIT_LookStickUDNeutral": {
+      "value": 12,
+      "documentation": null
+    },
+    "PIT_A": {
+      "value": 13,
+      "documentation": null
+    },
+    "PIT_A_Off": {
+      "value": 14,
+      "documentation": null
+    },
+    "PIT_B": {
+      "value": 15,
+      "documentation": null
+    },
+    "PIT_B_Off": {
+      "value": 16,
+      "documentation": null
+    },
+    "PIT_X": {
+      "value": 17,
+      "documentation": null
+    },
+    "PIT_X_Off": {
+      "value": 18,
+      "documentation": null
+    },
+    "PIT_Y": {
+      "value": 19,
+      "documentation": null
+    },
+    "PIT_Y_Off": {
+      "value": 20,
+      "documentation": null
+    },
+    "PIT_Back": {
+      "value": 21,
+      "documentation": null
+    },
+    "PIT_Back_Off": {
+      "value": 22,
+      "documentation": null
+    },
+    "PIT_Start": {
+      "value": 23,
+      "documentation": null
+    },
+    "PIT_Start_Off": {
+      "value": 24,
+      "documentation": null
+    },
+    "PIT_LShoulder": {
+      "value": 25,
+      "documentation": null
+    },
+    "PIT_LShoulder_Off": {
+      "value": 26,
+      "documentation": null
+    },
+    "PIT_RShoulder": {
+      "value": 27,
+      "documentation": null
+    },
+    "PIT_RShoulder_Off": {
+      "value": 28,
+      "documentation": null
+    },
+    "PIT_LTrigger": {
+      "value": 29,
+      "documentation": null
+    },
+    "PIT_LTrigger_Off": {
+      "value": 30,
+      "documentation": null
+    },
+    "PIT_RTrigger": {
+      "value": 31,
+      "documentation": null
+    },
+    "PIT_RTrigger_Off": {
+      "value": 32,
+      "documentation": null
+    },
+    "PIT_LThumbstick": {
+      "value": 33,
+      "documentation": null
+    },
+    "PIT_LThumbstick_Off": {
+      "value": 34,
+      "documentation": null
+    },
+    "PIT_RThumbstick": {
+      "value": 35,
+      "documentation": null
+    },
+    "PIT_RThumbstick_Off": {
+      "value": 36,
+      "documentation": null
+    },
+    "PIT_DPadUp": {
+      "value": 37,
+      "documentation": null
+    },
+    "PIT_DPadUp_Off": {
+      "value": 38,
+      "documentation": null
+    },
+    "PIT_DPadDown": {
+      "value": 39,
+      "documentation": null
+    },
+    "PIT_DPadDown_Off": {
+      "value": 40,
+      "documentation": null
+    },
+    "PIT_DPadLeft": {
+      "value": 41,
+      "documentation": null
+    },
+    "PIT_DPadLeft_Off": {
+      "value": 42,
+      "documentation": null
+    },
+    "PIT_DPadRight": {
+      "value": 43,
+      "documentation": null
+    },
+    "PIT_DPadRight_Off": {
+      "value": 44,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

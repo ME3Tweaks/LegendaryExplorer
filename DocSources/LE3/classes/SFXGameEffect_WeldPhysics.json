@@ -1,0 +1,40 @@
+{
+  "parent": "SFXGameEffect_DeathEffect",
+  "package": "SFXGame",
+  "variables": {
+    "Caster": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "bFreezeSucceeded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CustomActionType": {
+      "type": "EAICustomAction",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "RemoveExistingWeldEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveExistingWeldEffects()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

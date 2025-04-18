@@ -1,0 +1,29 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "TrackBoneNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LinkupCache": {
+      "type": "AnimSetMeshLinkup",
+      "documentation": null
+    },
+    "UseTranslationBoneNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ForceMeshTranslationBoneNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bAnimRotationOnly": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

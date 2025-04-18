@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Transform": {
+      "type": null,
+      "documentation": null
+    },
+    "LightmapUVBias": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowmapUVBias": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,88 @@
+{
+  "parent": "SceneCapturePortalActor",
+  "package": "Engine",
+  "variables": {
+    "SisterPortal": {
+      "type": "PortalTeleporter",
+      "documentation": null
+    },
+    "MyMarker": {
+      "type": "PortalMarker",
+      "documentation": null
+    },
+    "TextureResolutionX": {
+      "type": "int",
+      "documentation": null
+    },
+    "TextureResolutionY": {
+      "type": "int",
+      "documentation": null
+    },
+    "bMovablePortal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysTeleportNonPawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanTeleportVehicles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreatePortalTexture": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "TextureRenderTarget2D",
+      "signature": "TextureRenderTarget2D CreatePortalTexture()"
+    },
+    "TransformActor": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TransformActor(Actor A)"
+    },
+    "TransformHitLocation": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector TransformHitLocation(Vector HitLocation)"
+    },
+    "TransformVectorDir": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector TransformVectorDir(Vector V)"
+    },
+    "StopsProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopsProjectile(Projectile P)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

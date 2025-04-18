@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "RelativeLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "PSC": {
+      "type": null,
+      "documentation": null
+    },
+    "Base": {
+      "type": null,
+      "documentation": null
+    },
+    "bInheritBaseScale": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

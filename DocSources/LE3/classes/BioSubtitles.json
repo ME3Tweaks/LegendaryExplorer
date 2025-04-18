@@ -1,0 +1,118 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aSubtitles": {
+      "type": "SFXSubtitleEntry",
+      "documentation": null
+    },
+    "m_FontSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentSubtitle": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bSubtitleVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_DefaultRenderMode": {
+      "type": "ESubtitlesRenderMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddSubtitle": {
+      "documentation": null,
+      "signature_members": {
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "pRefObject": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        },
+        "colFontColor": {
+          "type": null,
+          "documentation": null
+        },
+        "bAlert": {
+          "type": null,
+          "documentation": null
+        },
+        "eRenderMode": {
+          "type": null,
+          "documentation": null
+        },
+        "bHasPriority": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "fDelayStarting": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSubtitle(string sSubtitle, Object pRefObject, Actor pActor, Color colFontColor, bool bAlert, ESubtitlesRenderMode eRenderMode, bool bHasPriority, optional float fDuration, optional float fDelayStarting)"
+    },
+    "ClearAllSubtitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllSubtitles()"
+    },
+    "ClearSubtitleText": {
+      "documentation": null,
+      "signature_members": {
+        "pRefObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearSubtitleText(Object pRefObject)"
+    },
+    "Enforce16x9": {
+      "documentation": null,
+      "signature_members": {
+        "bEnforce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Enforce16x9(bool bEnforce)"
+    },
+    "HasSubtitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasSubtitle()"
+    },
+    "RemoveSubtitle": {
+      "documentation": null,
+      "signature_members": {
+        "pRefObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSubtitle(Object pRefObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

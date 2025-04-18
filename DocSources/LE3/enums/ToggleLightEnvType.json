@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "TLET_ENABLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "TLET_DISABLE": {
+      "value": 1,
+      "documentation": null
+    },
+    "TLET_TOGGLE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

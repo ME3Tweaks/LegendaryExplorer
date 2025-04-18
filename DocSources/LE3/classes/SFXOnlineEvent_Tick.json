@@ -1,0 +1,17 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "LastTickTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "DeltaTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,77 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "bWelded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "UnWeldPhysicsAssetInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnWeldPhysicsAssetInstance()"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "CanOverrideMoveWith": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideMoveWith(int OldCustomAction, int NewCustomAction)"
+    },
+    "CheckBeginRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckBeginRecovery()"
+    },
+    "CheckEndRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckEndRecovery()"
+    },
+    "HackFreeze": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HackFreeze()"
+    },
+    "StartRagdollPhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartRagdollPhase()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

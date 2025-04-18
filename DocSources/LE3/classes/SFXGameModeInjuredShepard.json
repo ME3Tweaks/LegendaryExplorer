@@ -1,0 +1,77 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "InjuredCamera": {
+      "type": "SFXCameraMode_Combat",
+      "documentation": null
+    },
+    "InputDelayTightAimExit": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "ResetSelectionMaterialParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetSelectionMaterialParams()"
+    },
+    "StopTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopTightAim()"
+    },
+    "TightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TightAim()"
+    },
+    "TryReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryReload()"
+    },
+    "TurnOffTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffTightAim()"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Used()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

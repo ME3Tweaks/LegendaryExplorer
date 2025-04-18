@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "DistributionFloat": {
+      "type": null,
+      "documentation": null
+    },
+    "DistributionVector": {
+      "type": null,
+      "documentation": null
+    },
+    "Parameter": {
+      "type": null,
+      "documentation": null
+    },
+    "bDistanceBased": {
+      "type": null,
+      "documentation": null
+    },
+    "bNormalizeTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bSuppressDuringRegular": {
+      "type": null,
+      "documentation": null
+    },
+    "bSuppressDuringCooldown": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueModifierOperation": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueModifierSelection": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

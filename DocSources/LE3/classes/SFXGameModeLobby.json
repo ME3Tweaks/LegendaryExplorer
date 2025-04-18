@@ -1,0 +1,48 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "StackedGuis": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "ActivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSpecifier(Name ModeSpecifier)"
+    },
+    "DeactivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivateSpecifier(Name ModeSpecifier)"
+    },
+    "MPToggleReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MPToggleReady()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

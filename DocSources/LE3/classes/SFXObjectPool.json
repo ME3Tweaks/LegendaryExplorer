@@ -1,0 +1,447 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "TracerPool": {
+      "type": "SFXObjectPoolTracers",
+      "documentation": null
+    },
+    "ProjectilePool": {
+      "type": "SFXObjectPoolProjectiles",
+      "documentation": null
+    },
+    "DroppedPool": {
+      "type": "SFXObjectPoolDroppedAmmos",
+      "documentation": null
+    },
+    "ImpactPSCPool": {
+      "type": "SFXObjectPoolImpactPSCs",
+      "documentation": null
+    },
+    "GenericPSCPool": {
+      "type": "SFXObjectPoolPSCs",
+      "documentation": null
+    },
+    "EmitterPool": {
+      "type": "SFXObjectPoolEmitters",
+      "documentation": null
+    },
+    "WwiseACPool": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "MaxTracers": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxImpacts": {
+      "type": "int",
+      "documentation": null
+    },
+    "WwiseNextIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDebugLogOnCleanup": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyBloodColor": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyBloodColor(ParticleSystemComponent PSC, Actor HitActor)"
+    },
+    "ApplyLODLevel": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyLODLevel(ParticleSystemComponent PSC, Vector EffectLocation)"
+    },
+    "AttachParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitBone": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "bStaticLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachParticleSystemComponent(ParticleSystemComponent PSC, Actor HitActor, PrimitiveComponent HitComponent, Name HitBone, Vector HitLocation, Vector HitNormal, bool bStaticLocation)"
+    },
+    "AttachParticleSystemComponentToSocket": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "Socket": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachParticleSystemComponentToSocket(ParticleSystemComponent PSC, PrimitiveComponent HitComponent, Name Socket)"
+    },
+    "CleanUpPools": {
+      "documentation": null,
+      "signature_members": {
+        "bPreserveRunningEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "bClearAmmo": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsMultiplayerWaveEnd": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CleanUpPools(bool bPreserveRunningEffects, optional bool bClearAmmo, optional bool bIsMultiplayerWaveEnd)"
+    },
+    "CreatePooledDroppedAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "DroppedAmmoClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DroppedPickup",
+      "signature": "DroppedPickup CreatePooledDroppedAmmo(Class<DroppedPickup> DroppedAmmoClass, Vector SpawnLocation)"
+    },
+    "CreatePooledEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Emitter",
+      "signature": "Emitter CreatePooledEmitter(ParticleSystem Template)"
+    },
+    "CreatePooledProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "ProjClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "Projectile CreatePooledProjectile(Class<Projectile> ProjClass, Vector SpawnLocation)"
+    },
+    "GetDroppedAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "DroppedAmmoClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DroppedPickup",
+      "signature": "coerce DroppedPickup GetDroppedAmmo(Class<DroppedPickup> DroppedAmmoClass, Vector SpawnLocation)"
+    },
+    "GetGenericParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent GetGenericParticleSystemComponent(ParticleSystem Template)"
+    },
+    "GetImpactEmitterInternal": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Emitter",
+      "signature": "Emitter GetImpactEmitterInternal(ParticleSystem Template, Vector SpawnLocation, Rotator SpawnRotation)"
+    },
+    "GetImpactParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent GetImpactParticleSystemComponent(ParticleSystem Template)"
+    },
+    "GetProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "ProjectileClass": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ProjRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "coerce Projectile GetProjectile(Class<Projectile> ProjectileClass, Actor ProjOwner, Pawn ProjInstigator, Vector ProjLocation, Rotator ProjRotation)"
+    },
+    "GetTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXTracer",
+      "signature": "SFXTracer GetTracer(StaticMesh Mesh, ParticleSystem Template)"
+    },
+    "GetWwiseAudioComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WwiseAudioComponent",
+      "signature": "WwiseAudioComponent GetWwiseAudioComponent()"
+    },
+    "PrecacheGenericParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheGenericParticleSystemComponent(ParticleSystem Template)"
+    },
+    "PrecacheImpactEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheImpactEmitter(ParticleSystem Template)"
+    },
+    "PrecacheImpactParticleSystemComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "MinCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheImpactParticleSystemComponent(ParticleSystem Template, optional int MinCount)"
+    },
+    "PrecacheProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "ProjectileClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheProjectile(Class<Projectile> ProjectileClass)"
+    },
+    "PrecacheTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "MinCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheTracer(StaticMesh Mesh, ParticleSystem Template, optional int MinCount)"
+    },
+    "ResetActorParticleSystemComponents": {
+      "documentation": null,
+      "signature_members": {
+        "ParOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetActorParticleSystemComponents(Actor ParOwner)"
+    },
+    "ResetPooledPSC": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        },
+        "bHide": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetPooledPSC(ParticleSystemComponent PSC, bool bHide)"
+    },
+    "ReusePooledDroppedAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Dropped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledDroppedAmmo(DroppedPickup Dropped)"
+    },
+    "ReusePooledEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Emit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledEmitter(Emitter Emit)"
+    },
+    "ReusePooledProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "Proj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReusePooledProjectile(Projectile Proj)"
+    },
+    "GetImpactEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SpawnRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXEmitter",
+      "signature": "SFXEmitter GetImpactEmitter(ParticleSystem Template, Vector SpawnLocation, Rotator SpawnRotation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

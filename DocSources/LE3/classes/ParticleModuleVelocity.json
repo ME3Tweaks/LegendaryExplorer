@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleVelocityBase",
+  "package": "Engine",
+  "variables": {
+    "StartVelocityRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "StartVelocityRadial": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,93 @@
+{
+  "Members": {
+    "Source": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetName": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "BaseDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_RangeMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_PawnEffectsDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_PawnEffectsHeadshotDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_WeaponEffectsDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_StealthDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_HeadshotDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_RagdollDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon_DamageTakenMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Power_WeaponMeleeDamageMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Power_DamageTakenMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Global_DifficultyMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Global_CoverMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Global_PlayerPopupMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Global_OutOfCoverMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Global_DamageTakenMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Global_HeadshotTakenMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "ActualDamageDealt": {
+      "type": null,
+      "documentation": null
+    },
+    "ActualDamageApplied": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

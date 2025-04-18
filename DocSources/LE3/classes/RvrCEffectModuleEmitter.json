@@ -1,0 +1,25 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_pParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "m_eEmitterTarget": {
+      "type": "EEffectLocationTarget",
+      "documentation": null
+    },
+    "m_eEmitterInstigator": {
+      "type": "EEffectLocationTarget",
+      "documentation": null
+    },
+    "m_eDPG": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

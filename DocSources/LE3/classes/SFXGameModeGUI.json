@@ -1,0 +1,136 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "StackedGuis": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DeathCam": {
+      "type": "BioCameraBehaviorFlourish",
+      "documentation": null
+    },
+    "InstantTransition": {
+      "type": "SFXCameraTransition_GalaxyMap",
+      "documentation": null
+    },
+    "DeathTransitionTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "ActivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSpecifier(Name ModeSpecifier)"
+    },
+    "ConnectToCerberus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConnectToCerberus()"
+    },
+    "DeactivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivateSpecifier(Name ModeSpecifier)"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "HideAreaMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HideAreaMap()"
+    },
+    "MPToggleReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MPToggleReady()"
+    },
+    "NextCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextCerberusItem()"
+    },
+    "PrevCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevCerberusItem()"
+    },
+    "SlideshowAdvance": {
+      "documentation": null,
+      "signature_members": {
+        "bForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SlideshowAdvance(bool bForward)"
+    },
+    "SlideshowExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SlideshowExit()"
+    },
+    "TryEnterPhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryEnterPhotoMode()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

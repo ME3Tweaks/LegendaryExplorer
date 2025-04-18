@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "Reaction_Light": {
+      "value": 0,
+      "documentation": null
+    },
+    "Reaction_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "Reaction_Heavy": {
+      "value": 2,
+      "documentation": null
+    },
+    "Reaction_Pain": {
+      "value": 3,
+      "documentation": null
+    },
+    "Reaction_Fire": {
+      "value": 4,
+      "documentation": null
+    },
+    "Reaction_ShieldBreach": {
+      "value": 5,
+      "documentation": null
+    },
+    "Reaction_DeathLight": {
+      "value": 6,
+      "documentation": null
+    },
+    "Reaction_DeathHeavy": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

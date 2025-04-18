@@ -1,0 +1,290 @@
+{
+  "parent": "AIController",
+  "package": "GameFramework",
+  "variables": {
+    "AILogFilter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DemoActionString": {
+      "type": "string",
+      "documentation": null
+    },
+    "CommandList": {
+      "type": "GameAICommand",
+      "documentation": null
+    },
+    "AILogFile": {
+      "type": "FileLog",
+      "documentation": null
+    },
+    "bHasRunawayCommandList": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAILogging": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAILogToWindow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFlushAILogEachLine": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapBasedLogName": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAIDrawDebug": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAIBroken": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseIterativePathFinding": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "SetDesiredRotation": {
+      "documentation": null,
+      "signature_members": {
+        "TargetDesiredRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "InLockDesiredRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "InUnlockWhenReached": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpolationTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDesiredRotation(Rotator TargetDesiredRotation, optional bool InLockDesiredRotation, optional bool InUnlockWhenReached, optional float InterpolationTime)"
+    },
+    "AbortCommand": {
+      "documentation": null,
+      "signature_members": {
+        "AbortCmd": {
+          "type": null,
+          "documentation": null
+        },
+        "AbortClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AbortCommand(GameAICommand AbortCmd, optional Class<GameAICommand> AbortClass)"
+    },
+    "AILog_Internal": {
+      "documentation": null,
+      "signature_members": {
+        "LogText": {
+          "type": null,
+          "documentation": null
+        },
+        "LogCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AILog_Internal(coerce string LogText, optional Name LogCategory, optional bool bForce)"
+    },
+    "CheckCommandCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckCommandCount()"
+    },
+    "DumpCommandStack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpCommandStack()"
+    },
+    "FindCommandOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "SearchClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GameAICommand",
+      "signature": "coerce GameAICommand FindCommandOfClass(Class<GameAICommand> SearchClass)"
+    },
+    "GeneratePathToActor": {
+      "documentation": null,
+      "signature_members": {
+        "Goal": {
+          "type": null,
+          "documentation": null
+        },
+        "WithinDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowPartialPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GeneratePathToActor(Actor Goal, optional float WithinDistance, optional bool bAllowPartialPath)"
+    },
+    "GeneratePathToLocation": {
+      "documentation": null,
+      "signature_members": {
+        "Goal": {
+          "type": null,
+          "documentation": null
+        },
+        "WithinDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowPartialPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GeneratePathToLocation(Vector Goal, optional float WithinDistance, optional bool bAllowPartialPath)"
+    },
+    "GetActionString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetActionString()"
+    },
+    "GetActiveCommand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GameAICommand",
+      "signature": "GameAICommand GetActiveCommand()"
+    },
+    "GetAICommandInStack": {
+      "documentation": null,
+      "signature_members": {
+        "InClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GameAICommand",
+      "signature": "GameAICommand GetAICommandInStack(const Class<GameAICommand> InClass)"
+    },
+    "PopCommand": {
+      "documentation": null,
+      "signature_members": {
+        "ToBePoppedCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopCommand(GameAICommand ToBePoppedCommand)"
+    },
+    "PushCommand": {
+      "documentation": null,
+      "signature_members": {
+        "NewCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PushCommand(GameAICommand NewCommand)"
+    },
+    "RecordDemoAILog": {
+      "documentation": null,
+      "signature_members": {
+        "LogText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordDemoAILog(coerce string LogText)"
+    }
+  },
+  "states": {
+    "DebugState": {
+      "functions": {
+        "PausedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ContinuedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

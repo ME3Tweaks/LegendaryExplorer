@@ -1,0 +1,806 @@
+{
+  "parent": "BioPawn",
+  "package": "SFXGame",
+  "variables": {
+    "ReplicatedGibInfo": {
+      "type": "ReplicatedGib",
+      "documentation": null
+    },
+    "ReplicatedDeathInfo": {
+      "type": "DeathInfo",
+      "documentation": null
+    },
+    "PowerImpactNotifications": {
+      "type": "PowerImpactNotification",
+      "documentation": null
+    },
+    "ScoreRecords": {
+      "type": "ScoreRecord",
+      "documentation": null
+    },
+    "ChallengeScores": {
+      "type": "ChallengeScoreRecord",
+      "documentation": null
+    },
+    "FootstepShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "HeadCapGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "PS_HeadGib": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_LimbGib": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "CE_HeadGibCap": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "PlayerHeadShot": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "NonPlayerHeadShot": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AmbientVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PainVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ShieldsDownVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "MoveToCoverVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "MeleedVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "MuzzleSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ShellCasingSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DrivenAtlas": {
+      "type": "SFXPawn",
+      "documentation": null
+    },
+    "ThreateningPawn": {
+      "type": "SFXPawn",
+      "documentation": null
+    },
+    "ScoreSourceOverride": {
+      "type": "SFXPawn_Player",
+      "documentation": null
+    },
+    "ScoreSourceOverrideSetter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FootstepForceFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "HeadshotMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PrettyName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "fThreatDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAssistVocDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastTimeEaten": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumConsumeTickets": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumReleasedConsumeTickets": {
+      "type": "int",
+      "documentation": null
+    },
+    "AmmoDropPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxConsumeTickets": {
+      "type": "int",
+      "documentation": null
+    },
+    "PowerControlResistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "CodexPlotState": {
+      "type": "int",
+      "documentation": null
+    },
+    "DamageScoreBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "KillBonusScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "PowerControlAssistBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "srScoreTickerEntry": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srScoreTickerValueToken": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bAllowHeadGib": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayFootstepScreenShake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayFootstepRumble": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLimitConsoleLOD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanPartialLean": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSupportsVisibleWeapons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsMeleeThreat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeEaten": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCorpseDestroyed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecentlyDeceased": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanUseTurrets": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanDriveAtlas": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeRepaired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeMarauderBuffed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeMeleed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoresPets": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bScoreDistributed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsPet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanDropAmmo": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayHit": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayHit(float Damage, Controller instigatedBy, Vector HitLocation, Class<DamageType> DamageType, Vector Momentum, TraceHitInfo HitInfo, Pawn DamageCauser)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageFalloffExponent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller instigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional float DamageFalloffExponent, optional TraceHitInfo HitInfo)"
+    },
+    "GetPowerResistance": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EPowerResistance",
+      "signature": "EPowerResistance GetPowerResistance(Pawn Caster, Vector HitLocation, Vector HitNormal, out float Damage, out Vector Force, Class<DamageType> DamageType, out Actor TargetOverride)"
+    },
+    "GetPrettyName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetPrettyName()"
+    },
+    "ImpactWithPower": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactWithPower(EPowerResistance Resistance, Pawn Caster, Vector HitLocation, Vector HitNormal, float Damage, Vector Force, Class<DamageType> DamageType)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "DriverDied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DriverDied()"
+    },
+    "HandleMomentum": {
+      "documentation": null,
+      "signature_members": {
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleMomentum(Vector Momentum, Vector HitLocation, Class<DamageType> DamageType, optional TraceHitInfo HitInfo)"
+    },
+    "PlayDying": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDying(Class<DamageType> DamageType, Vector HitLoc)"
+    },
+    "AcquireConsumeTicket": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AcquireConsumeTicket()"
+    },
+    "AddDamageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "fAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDamageEvent(SFXPawn PlayerPawn, Controller instigatedBy, float fAmount, stringref SourceName)"
+    },
+    "AddPowerAssistEvent": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceName": {
+          "type": null,
+          "documentation": null
+        },
+        "fAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPowerAssistEvent(BioPawn PlayerPawn, stringref SourceName, float fAmount)"
+    },
+    "AllowDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AllowDeath()"
+    },
+    "ApplyMarauderArmourBuff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyMarauderArmourBuff()"
+    },
+    "CanBeDrivenBy": {
+      "documentation": null,
+      "signature_members": {
+        "PossibleDriver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeDrivenBy(SFXPawn PossibleDriver)"
+    },
+    "CanUseWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUseWeapon(Class<SFXWeapon> WeaponClass)"
+    },
+    "DeferredResetReplicatedDeathInfoDamageType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeferredResetReplicatedDeathInfoDamageType()"
+    },
+    "DistributeScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DistributeScore()"
+    },
+    "GetPetOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetPetOwner()"
+    },
+    "GetShieldTypeAsDisplayString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetShieldTypeAsDisplayString()"
+    },
+    "GibHead": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GibHead(Vector HitLocation, Vector HitNormal, Name BoneName, Class<SFXDamageType> DamageType)"
+    },
+    "NotifyHealed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyHealed()"
+    },
+    "OnCorpseDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCorpseDestroyed()"
+    },
+    "OnPowersLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPowersLoaded()"
+    },
+    "PlayAmbientSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayAmbientSound()"
+    },
+    "PlayDeathVocalization": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDeathVocalization(BioPawn Killer)"
+    },
+    "PlayMeleedVoc": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayMeleedVoc()"
+    },
+    "PlayMoveToCoverSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayMoveToCoverSound()"
+    },
+    "PlayRepairEffects": {
+      "documentation": null,
+      "signature_members": {
+        "bActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayRepairEffects(bool bActivate)"
+    },
+    "PlayStepEffect": {
+      "documentation": null,
+      "signature_members": {
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "Loudness": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayStepEffect(int FootDown, TraceHitInfo HitInfo, float Loudness)"
+    },
+    "ReleaseConsumeTicket": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseConsumeTicket()"
+    },
+    "ReplicatedGibUpdated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicatedGibUpdated()"
+    },
+    "ReplicateGibHead": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateGibHead(Vector HitLocation, Vector HitNormal, Name BoneName, Class<SFXDamageType> DamageType)"
+    },
+    "ResetThreat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetThreat()"
+    },
+    "SetThreat": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bMelee": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetThreat(SFXPawn oPawn, bool bMelee)"
+    },
+    "ShieldsDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShieldsDown()"
+    },
+    "TryToDriveMe": {
+      "documentation": null,
+      "signature_members": {
+        "NewDriver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TryToDriveMe(SFXPawn NewDriver)"
+    },
+    "TryToExitMe": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryToExitMe()"
+    }
+  },
+  "states": {
+    "Downed": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "RagdollRecovery": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,115 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "EnterTightAimSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ExitTightAimSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "VehicleCam": {
+      "type": "SFXCameraMode_Vehicle",
+      "documentation": null
+    },
+    "TightAimCam": {
+      "type": "SFXCameraMode_MountedGunTightAim",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "ShowMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMenu()"
+    },
+    "EnterCommandMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterCommandMenu()"
+    },
+    "EnterPowerWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterPowerWheel()"
+    },
+    "EnterWeaponWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterWeaponWheel()"
+    },
+    "ExitVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitVehicle()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "StopTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopTightAim()"
+    },
+    "TightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TightAim()"
+    },
+    "TryReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryReload()"
+    },
+    "TryRoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryRoll()"
+    },
+    "TurnOffTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffTightAim()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

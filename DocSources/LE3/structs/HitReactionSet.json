@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "BodyPart": {
+      "type": null,
+      "documentation": null
+    },
+    "ReactionChance": {
+      "type": null,
+      "documentation": null
+    },
+    "bIgnoreShields": {
+      "type": null,
+      "documentation": null
+    },
+    "Reaction": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxRange": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

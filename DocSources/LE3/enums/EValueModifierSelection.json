@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "VMS_Spawn_Value_X": {
+      "value": 0,
+      "documentation": null
+    },
+    "VMS_Spawn_Value_Y": {
+      "value": 1,
+      "documentation": null
+    },
+    "VMS_Spawn_Value_Z": {
+      "value": 2,
+      "documentation": null
+    },
+    "VMS_Spawn_Value_Vector": {
+      "value": 3,
+      "documentation": null
+    },
+    "VMS_Parameter_X": {
+      "value": 4,
+      "documentation": null
+    },
+    "VMS_Parameter_Y": {
+      "value": 5,
+      "documentation": null
+    },
+    "VMS_Parameter_Z": {
+      "value": 6,
+      "documentation": null
+    },
+    "VMS_Parameter_Vector": {
+      "value": 7,
+      "documentation": null
+    },
+    "VMS_Blood_Color": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

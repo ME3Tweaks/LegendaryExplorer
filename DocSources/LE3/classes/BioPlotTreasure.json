@@ -1,0 +1,132 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "oPlotTreasureResources2DA": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "oPlotTreasureTreasure2DA": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "oPlotTreasureTech2DA": {
+      "type": "Bio2DA",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMapName": {
+      "documentation": null,
+      "signature_members": {
+        "sOutMapName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetMapName(out string sOutMapName)"
+    },
+    "GetPlotTreasureResourcesInt": {
+      "documentation": null,
+      "signature_members": {
+        "nmLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "nPlotTreasureValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlotTreasureResourcesInt(Name nmLevel, Name nmHeader, out int nPlotTreasureValue)"
+    },
+    "GetPlotTreasureTechInt": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        },
+        "nmNameHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "nTechValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlotTreasureTechInt(Name nmTech, Name nmNameHeader, Name nmHeader, out int nTechValue)"
+    },
+    "GetPlotTreasureTechName": {
+      "documentation": null,
+      "signature_members": {
+        "nmTech": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "nmTechName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlotTreasureTechName(Name nmTech, Name nmHeader, out Name nmTechName)"
+    },
+    "GetPlotTreasureTreasureInt": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "nPlotTreasureValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlotTreasureTreasureInt(int nTreasureId, Name nmHeader, out int nPlotTreasureValue)"
+    },
+    "GetPlotTreasureTreasureName": {
+      "documentation": null,
+      "signature_members": {
+        "nTreasureId": {
+          "type": null,
+          "documentation": null
+        },
+        "nmHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPlotTreasureName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlotTreasureTreasureName(int nTreasureId, Name nmHeader, out Name nmPlotTreasureName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

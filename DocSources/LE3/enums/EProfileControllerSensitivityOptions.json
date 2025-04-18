@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PCSO_Medium": {
+      "value": 0,
+      "documentation": null
+    },
+    "PCSO_Low": {
+      "value": 1,
+      "documentation": null
+    },
+    "PCSO_High": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

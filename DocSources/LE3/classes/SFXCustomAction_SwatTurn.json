@@ -1,0 +1,219 @@
+{
+  "parent": "SFXCustomAction_ProceduralMoveBase",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Start_Mid": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_Loop_Mid": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_End_Mid": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_ShortStart": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "SwatTurnTarget": {
+      "type": "CoverReference",
+      "documentation": null
+    },
+    "LoopStartLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HighSwatTurnCamera": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "LowSwatTurnCamera": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "fEndBlendInTimeHigh": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndBlendOutTimeHigh": {
+      "type": "float",
+      "documentation": null
+    },
+    "fShortSwatThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "fHighAnimDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLowAnimDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStartStanding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEndStanding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRightSwatTurn": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "CanPerformSwatTurn": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPerformSwatTurn(BioPawn oPawn, out CoverReference Target)"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "GetBlendInTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBlendInTime()"
+    },
+    "GetBlendOutTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBlendOutTime()"
+    },
+    "GetCustomActionCamera": {
+      "documentation": null,
+      "signature_members": {
+        "oNewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "fTransitionIn": {
+          "type": null,
+          "documentation": null
+        },
+        "fTransitionOut": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCustomActionCamera(out SFXCameraMode oNewCameraMode, out float fTransitionIn, out float fTransitionOut)"
+    },
+    "GetEndAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetEndAnim(out BodyStance Stance)"
+    },
+    "GetLoopAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetLoopAnim(out BodyStance Stance)"
+    },
+    "GetStartAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStartAnim(out BodyStance Stance)"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "SetMoveStage": {
+      "documentation": null,
+      "signature_members": {
+        "NextStage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveStage(EMoveStage NextStage)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

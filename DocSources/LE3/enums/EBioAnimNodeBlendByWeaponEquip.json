@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendByWeaponEquip_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByWeaponEquip_Draw": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByWeaponEquip_Holster": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

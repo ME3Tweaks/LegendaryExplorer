@@ -1,0 +1,213 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "LinkedCover": {
+      "type": "CoverLink",
+      "documentation": null
+    },
+    "TexturePrimedActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "GroupInst": {
+      "type": "InterpGroupInst",
+      "documentation": null
+    },
+    "CameraCuts": {
+      "type": "CameraCutInfo",
+      "documentation": null
+    },
+    "ReplicatedActorClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "InterpData": {
+      "type": "InterpData",
+      "documentation": null
+    },
+    "ReplicatedActor": {
+      "type": "MatineeActor",
+      "documentation": null
+    },
+    "m_pSFXSceneDataInst": {
+      "type": "SFXSceneShopDataInstInterface",
+      "documentation": null
+    },
+    "PlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "Position": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceStartPosition": {
+      "type": "float",
+      "documentation": null
+    },
+    "PreferredSplitScreenNum": {
+      "type": "int",
+      "documentation": null
+    },
+    "TerminationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSFXBuildingPreloadCameraCuts": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsBeingEdited": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResetPositionOnFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFreeAnimsetsOnFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRewindOnPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoResetOnRewind": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRewindIfAlreadyPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReversePlayback": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInterpForPathBuilding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceStartPos": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientSideOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipUpdateIfNotVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSkippable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockForPriming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldShowGore": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioSkipToEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioRequestSkipToEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioHACK_StopPinFired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSFXStartedUnderCinematicMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSFXIsCurrentlyActivating": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddPlayerToDirectorTracks": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerToDirectorTracks(PlayerController PC)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bJump": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float NewPosition, optional bool bJump)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "SFXGame",
+  "variables": {
+    "vPlayPenLineColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "vSquadLeaderColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "vSquadMemberColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "vSquadAssetColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "vDynamicCoverColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bInited": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "SendingPlayerId": {
+      "type": null,
+      "documentation": null
+    },
+    "SendingPlayerNick": {
+      "type": null,
+      "documentation": null
+    },
+    "Message": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsFriendInvite": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsGameInvite": {
+      "type": null,
+      "documentation": null
+    },
+    "bWasAccepted": {
+      "type": null,
+      "documentation": null
+    },
+    "bWasDenied": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

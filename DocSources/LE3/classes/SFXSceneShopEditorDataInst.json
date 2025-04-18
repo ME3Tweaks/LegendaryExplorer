@@ -1,0 +1,25 @@
+{
+  "parent": "SFXSceneShopDataInstInterface",
+  "package": "Engine",
+  "variables": {
+    "m_mapGroupsToPreview": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_aPreviewNodes": {
+      "type": "SFXSceneShopNode",
+      "documentation": null
+    },
+    "m_aAllPreviewGroups": {
+      "type": "InterpGroup",
+      "documentation": null
+    },
+    "m_fPreviewPosition": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

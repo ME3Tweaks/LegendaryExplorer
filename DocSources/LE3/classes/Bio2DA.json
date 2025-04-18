@@ -1,0 +1,580 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_CellDataMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_MasterRowNameToIndex": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_ColumnIndex": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_CellData": {
+      "type": "Bio2DACellData",
+      "documentation": null
+    },
+    "m_MasterRowIndex": {
+      "type": "Bio2daMasterRowIndexRec",
+      "documentation": null
+    },
+    "m_sRowLabel": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetColumnIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nmColumnLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetColumnIndex(Name nmColumnLabel)"
+    },
+    "GetColumnName": {
+      "documentation": null,
+      "signature_members": {
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetColumnName(int nColumn)"
+    },
+    "GetColumnNames": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "array<Name> GetColumnNames()"
+    },
+    "GetFloatEntryII": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "fEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatEntryII(int nRow, int nColumn, out float fEntry)"
+    },
+    "GetFloatEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "fEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatEntryIN(int nRow, Name sColumn, out float fEntry)"
+    },
+    "GetFloatEntryNI": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "fEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatEntryNI(Name sRow, int nColumn, out float fEntry)"
+    },
+    "GetFloatEntryNN": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "fEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatEntryNN(Name sRow, Name sColumn, out float fEntry)"
+    },
+    "GetFloatEntryNumI": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "fEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatEntryNumI(int nRowID, int nColumn, out float fEntry)"
+    },
+    "GetFloatEntryNumN": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "fEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatEntryNumN(int nRowID, Name sColumn, out float fEntry)"
+    },
+    "GetIntEntryII": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryII(int nRow, int nColumn, out int nEntry)"
+    },
+    "GetIntEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryIN(int nRow, Name sColumn, out int nEntry)"
+    },
+    "GetIntEntryNI": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryNI(Name sRow, int nColumn, out int nEntry)"
+    },
+    "GetIntEntryNN": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryNN(Name sRow, Name sColumn, out int nEntry)"
+    },
+    "GetIntEntryNumI": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryNumI(int nRowID, int nColumn, out int nEntry)"
+    },
+    "GetIntEntryNumN": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryNumN(int nRowID, Name sColumn, out int nEntry)"
+    },
+    "GetNameEntryII": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryII(int nRow, int nColumn, out Name nEntry)"
+    },
+    "GetNameEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryIN(int nRow, Name sColumn, out Name nEntry)"
+    },
+    "GetNameEntryNI": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryNI(Name sRow, int nColumn, out Name nEntry)"
+    },
+    "GetNameEntryNN": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryNN(Name sRow, Name sColumn, out Name nEntry)"
+    },
+    "GetNameEntryNumI": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryNumI(int nRowID, int nColumn, out Name nEntry)"
+    },
+    "GetNameEntryNumN": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryNumN(int nRowID, Name sColumn, out Name nEntry)"
+    },
+    "GetNumberedRowIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumberedRowIndex(int nRowID)"
+    },
+    "GetNumColumns": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumColumns()"
+    },
+    "GetNumRows": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumRows()"
+    },
+    "GetRowIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nmRowLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRowIndex(Name nmRowLabel)"
+    },
+    "GetRowName": {
+      "documentation": null,
+      "signature_members": {
+        "nRowIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetRowName(int nRowIndex)"
+    },
+    "GetRowNames": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "array<Name> GetRowNames()"
+    },
+    "GetRowNumber": {
+      "documentation": null,
+      "signature_members": {
+        "nRowIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRowNumber(int nRowIndex)"
+    },
+    "GetStringEntryII": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "sEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryII(int nRow, int nColumn, out string sEntry)"
+    },
+    "GetStringEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "nRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "sEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryIN(int nRow, Name sColumn, out string sEntry)"
+    },
+    "GetStringEntryNI": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "sEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryNI(Name sRow, int nColumn, out string sEntry)"
+    },
+    "GetStringEntryNN": {
+      "documentation": null,
+      "signature_members": {
+        "sRow": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "sEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryNN(Name sRow, Name sColumn, out string sEntry)"
+    },
+    "GetStringEntryNumI": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "sEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryNumI(int nRowID, int nColumn, out string sEntry)"
+    },
+    "GetStringEntryNumN": {
+      "documentation": null,
+      "signature_members": {
+        "nRowID": {
+          "type": null,
+          "documentation": null
+        },
+        "sColumn": {
+          "type": null,
+          "documentation": null
+        },
+        "sEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryNumN(int nRowID, Name sColumn, out string sEntry)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

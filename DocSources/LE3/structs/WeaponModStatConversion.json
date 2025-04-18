@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ModEffectClass": {
+      "type": null,
+      "documentation": null
+    },
+    "ConversionMultiplier": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

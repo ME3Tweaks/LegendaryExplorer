@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "pActor": {
+      "type": null,
+      "documentation": null
+    },
+    "pLookAtTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "fLookAtDelay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

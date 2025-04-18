@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "IS_Start": {
+      "value": 0,
+      "documentation": null
+    },
+    "IS_Loop": {
+      "value": 1,
+      "documentation": null
+    },
+    "IS_End": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

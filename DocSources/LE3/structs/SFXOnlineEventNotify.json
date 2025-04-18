@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Subscribers": {
+      "type": null,
+      "documentation": null
+    },
+    "Waiters": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "SFXVocalizationSpecificType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_Location": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_CharacterName": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_CharacterType": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_Affiliation": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_Gender": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_Weapon": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_Challenge": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_Me": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXVocalizationSpecificType_IsFriendly": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "SourceText": {
+      "type": null,
+      "documentation": null
+    },
+    "ParentNode": {
+      "type": null,
+      "documentation": null
+    },
+    "NodeDataStore": {
+      "type": null,
+      "documentation": null
+    },
+    "Extent": {
+      "type": null,
+      "documentation": null
+    },
+    "Scaling": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceWrap": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "SFXNav_BlockingPathNode",
+  "package": "SFXGame",
+  "variables": {
+    "JumpDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "LandingOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TouchingCylinder": {
+      "type": "CylinderComponent",
+      "documentation": null
+    },
+    "JumpDist": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

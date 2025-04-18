@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "FaceFXGroupName": {
+      "type": null,
+      "documentation": null
+    },
+    "FaceFXSeqName": {
+      "type": null,
+      "documentation": null
+    },
+    "StartTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

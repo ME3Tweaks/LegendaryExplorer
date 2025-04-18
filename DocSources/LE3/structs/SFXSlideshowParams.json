@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Slides": {
+      "type": null,
+      "documentation": null
+    },
+    "Music": {
+      "type": null,
+      "documentation": null
+    },
+    "SlideFadeScalar": {
+      "type": null,
+      "documentation": null
+    },
+    "AutoAdvance": {
+      "type": null,
+      "documentation": null
+    },
+    "AllowRewind": {
+      "type": null,
+      "documentation": null
+    },
+    "AllowAdvancePastEnd": {
+      "type": null,
+      "documentation": null
+    },
+    "SlidesFadeIn": {
+      "type": null,
+      "documentation": null
+    },
+    "SlidesFadeOut": {
+      "type": null,
+      "documentation": null
+    },
+    "BlackBackground": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

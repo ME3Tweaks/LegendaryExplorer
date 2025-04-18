@@ -1,0 +1,13 @@
+{
+  "parent": "SkeletalMesh",
+  "package": "SFXGame",
+  "variables": {
+    "Dependents": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

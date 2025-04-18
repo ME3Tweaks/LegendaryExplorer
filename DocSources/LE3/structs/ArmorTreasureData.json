@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ArmorString": {
+      "type": null,
+      "documentation": null
+    },
+    "srDisplayName": {
+      "type": null,
+      "documentation": null
+    },
+    "ArmorPlotState": {
+      "type": null,
+      "documentation": null
+    },
+    "Conditional": {
+      "type": null,
+      "documentation": null
+    },
+    "ArmorPiece": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

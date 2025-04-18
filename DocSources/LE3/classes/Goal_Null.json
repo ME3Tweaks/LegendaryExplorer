@@ -1,0 +1,30 @@
+{
+  "parent": "PathGoalEvaluator",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "GoUntilBust": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "InMaxPathVisits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GoUntilBust(Pawn P, optional int InMaxPathVisits)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

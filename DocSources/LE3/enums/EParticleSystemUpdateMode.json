@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EPSUM_RealTime": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPSUM_FixedTime": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

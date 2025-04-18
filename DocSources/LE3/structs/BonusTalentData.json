@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "PowerClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "oChoiceImage": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusPowerID": {
+      "type": null,
+      "documentation": null
+    },
+    "srChoiceName": {
+      "type": null,
+      "documentation": null
+    },
+    "srChoiceTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srChoiceDescription": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

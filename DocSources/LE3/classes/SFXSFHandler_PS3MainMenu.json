@@ -1,0 +1,31 @@
+{
+  "parent": "BioSFHandler_MainMenu",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnSignInComplete_ShowMarketPlace": {
+      "documentation": null,
+      "signature_members": {
+        "bSignedIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSignInComplete_ShowMarketPlace(bool bSignedIn)"
+    },
+    "ShowMarketPlace": {
+      "documentation": null,
+      "signature_members": {
+        "bCheckForSignIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMarketPlace(bool bCheckForSignIn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

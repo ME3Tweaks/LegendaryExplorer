@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EPBC_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPBC_Chamfer": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPBC_Round": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

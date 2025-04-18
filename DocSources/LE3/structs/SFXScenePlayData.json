@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "fScenePosition": {
+      "type": null,
+      "documentation": null
+    },
+    "bSceneNeedsStartup": {
+      "type": null,
+      "documentation": null
+    },
+    "bSceneNeedsSmallTick": {
+      "type": null,
+      "documentation": null
+    },
+    "bSceneFinished": {
+      "type": null,
+      "documentation": null
+    },
+    "bSceneActive": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

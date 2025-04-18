@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BioBinkAsync_Closed": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioBinkAsync_Preloading": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioBinkAsync_PreloadComplete": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioBinkAsync_Running": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

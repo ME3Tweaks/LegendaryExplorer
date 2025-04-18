@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "FunctionPackage": {
+      "type": null,
+      "documentation": null
+    },
+    "FunctionClass": {
+      "type": null,
+      "documentation": null
+    },
+    "FunctionName": {
+      "type": null,
+      "documentation": null
+    },
+    "nParameter": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

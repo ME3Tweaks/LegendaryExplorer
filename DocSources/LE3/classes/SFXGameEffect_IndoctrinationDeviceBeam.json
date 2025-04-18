@@ -1,0 +1,68 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGameContent",
+  "variables": {
+    "CrustTemplateGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "BeamTargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PSC_Beam": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "BeamAttachBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BeamSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "TargetShield": {
+      "type": "SFXShield_Base",
+      "documentation": null
+    },
+    "CE_CrustTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "IndocDevice": {
+      "type": "SFXPlaceable_IndoctrinationDevice",
+      "documentation": null
+    },
+    "UpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "RegenPerTick": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "PlayBeamEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayBeamEffect()"
+    },
+    "RegenShield": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegenShield()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

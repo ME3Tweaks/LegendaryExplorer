@@ -1,0 +1,26 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "ResurrectHenchman": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ResurrectHenchman()"
+    }
+  },
+  "states": {
+    "Resurrecting": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,78 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "RotOscillation": {
+      "type": "ROscillator",
+      "documentation": null
+    },
+    "LocOscillation": {
+      "type": "VOscillator",
+      "documentation": null
+    },
+    "FOVOscillation": {
+      "type": "FOscillator",
+      "documentation": null
+    },
+    "Anim": {
+      "type": "CameraAnim",
+      "documentation": null
+    },
+    "OscillationDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "OscillationBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "OscillationBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "RandomAnimSegmentDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSingleInstance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRandomAnimSegment": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetLocOscillationMagnitude": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetLocOscillationMagnitude()"
+    },
+    "GetRotOscillationMagnitude": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRotOscillationMagnitude()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

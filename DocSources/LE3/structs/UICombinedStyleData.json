@@ -1,0 +1,69 @@
+{
+  "Members": {
+    "AdjustmentType": {
+      "type": null,
+      "documentation": null
+    },
+    "TextColor": {
+      "type": null,
+      "documentation": null
+    },
+    "ImageColor": {
+      "type": null,
+      "documentation": null
+    },
+    "AtlasCoords": {
+      "type": null,
+      "documentation": null
+    },
+    "TextPadding": {
+      "type": null,
+      "documentation": null
+    },
+    "ImagePadding": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawFont": {
+      "type": null,
+      "documentation": null
+    },
+    "FallbackImage": {
+      "type": null,
+      "documentation": null
+    },
+    "TextAutoScaling": {
+      "type": null,
+      "documentation": null
+    },
+    "TextScale": {
+      "type": null,
+      "documentation": null
+    },
+    "TextSpacingAdjust": {
+      "type": null,
+      "documentation": null
+    },
+    "TextAttributes": {
+      "type": null,
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": null,
+      "documentation": null
+    },
+    "TextAlignment": {
+      "type": null,
+      "documentation": null
+    },
+    "TextClipMode": {
+      "type": null,
+      "documentation": null
+    },
+    "TextClipAlignment": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

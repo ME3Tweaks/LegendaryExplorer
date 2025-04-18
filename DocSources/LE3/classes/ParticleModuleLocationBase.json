@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModule",
+  "package": "Engine",
+  "variables": {
+    "m_Seed": {
+      "type": "DistributionFloatParticleParameter",
+      "documentation": null
+    },
+    "m_bUseSeed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUpdateSeed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

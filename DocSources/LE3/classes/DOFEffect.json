@@ -1,0 +1,49 @@
+{
+  "parent": "PostProcessEffect",
+  "package": "Engine",
+  "variables": {
+    "FocusPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "FStop": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxNearBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFarBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "ModulateBlurColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "FocusInnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "FocusDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "FocusType": {
+      "type": "EFocusType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

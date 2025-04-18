@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "Nebulae": {
+      "type": null,
+      "documentation": null
+    },
+    "Sunlight": {
+      "type": null,
+      "documentation": null
+    },
+    "Planet": {
+      "type": null,
+      "documentation": null
+    },
+    "PlanetSphere": {
+      "type": null,
+      "documentation": null
+    },
+    "Corona": {
+      "type": null,
+      "documentation": null
+    },
+    "Object": {
+      "type": null,
+      "documentation": null
+    },
+    "Clouds": {
+      "type": null,
+      "documentation": null
+    },
+    "Card": {
+      "type": null,
+      "documentation": null
+    },
+    "PlanetRing": {
+      "type": null,
+      "documentation": null
+    },
+    "BackgroundCloud": {
+      "type": null,
+      "documentation": null
+    },
+    "Citadel": {
+      "type": null,
+      "documentation": null
+    },
+    "Camera": {
+      "type": null,
+      "documentation": null
+    },
+    "Scanner": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

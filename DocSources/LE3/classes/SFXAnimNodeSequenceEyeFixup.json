@@ -1,0 +1,89 @@
+{
+  "parent": "AnimNodeSequence",
+  "package": "SFXGame",
+  "variables": {
+    "EyeBoneDeltas": {
+      "type": "BoneAtom",
+      "documentation": null
+    },
+    "EyeBoneIndices": {
+      "type": "byte",
+      "documentation": null
+    },
+    "EyeBoneNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DebugDeltas": {
+      "type": "float",
+      "documentation": null
+    },
+    "EyeRotationThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableEyeFixup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPoseCached": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "bLoop": {
+          "type": null,
+          "documentation": null
+        },
+        "InRate": {
+          "type": null,
+          "documentation": null
+        },
+        "StartTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(optional bool bLoop, optional float InRate, optional float StartTime)"
+    },
+    "SetAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Sequence": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnim(Name Sequence)"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float NewTime, bool bFireNotifies)"
+    },
+    "StopAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnim()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "TargetCoverInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "FireTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "PawnTarget": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

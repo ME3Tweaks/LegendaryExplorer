@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Subtitles": {
+      "type": null,
+      "documentation": null
+    },
+    "bMature": {
+      "type": null,
+      "documentation": null
+    },
+    "bManualWordWrap": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

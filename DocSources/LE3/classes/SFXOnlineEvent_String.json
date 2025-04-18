@@ -1,0 +1,31 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "StringData": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetStringData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStringData()"
+    },
+    "SetStringData": {
+      "documentation": null,
+      "signature_members": {
+        "sStringData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringData(string sStringData)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

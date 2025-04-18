@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SplineComponent": {
+      "type": null,
+      "documentation": null
+    },
+    "ConnectTo": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "IMA_GreaterThan": {
+      "value": 0,
+      "documentation": null
+    },
+    "IMA_LessThan": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

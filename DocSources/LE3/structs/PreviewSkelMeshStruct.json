@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PreviewMorphSets": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": null,
+      "documentation": null
+    },
+    "PreviewSkelMesh": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

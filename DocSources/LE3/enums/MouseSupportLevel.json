@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "Mouse_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "Mouse_Click": {
+      "value": 1,
+      "documentation": null
+    },
+    "Mouse_ClickAndMove": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

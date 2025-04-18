@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "DeviceSelectionMulticast": {
+      "type": null,
+      "documentation": null
+    },
+    "DeviceSelectionDelegates": {
+      "type": null,
+      "documentation": null
+    },
+    "DeviceID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

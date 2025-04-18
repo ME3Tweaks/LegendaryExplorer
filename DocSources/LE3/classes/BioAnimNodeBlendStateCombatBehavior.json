@@ -1,0 +1,25 @@
+{
+  "parent": "BioAnimNodeBlendStateBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "bUseCoverAnimState": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyDuringWeaponSwitch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyDuringNoOffensiveAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CombatBehavior": {
+      "type": "EBioAnimNodeBlendStateCombatBehavior",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

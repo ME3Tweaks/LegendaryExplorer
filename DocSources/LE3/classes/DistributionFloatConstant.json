@@ -1,0 +1,13 @@
+{
+  "parent": "DistributionFloat",
+  "package": "Engine",
+  "variables": {
+    "Constant": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

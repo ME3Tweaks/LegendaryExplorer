@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "fHalfCycleTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fMinAlpha": {
+      "type": null,
+      "documentation": null
+    },
+    "fCurCycle": {
+      "type": null,
+      "documentation": null
+    },
+    "nElement": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

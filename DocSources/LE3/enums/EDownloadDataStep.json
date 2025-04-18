@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "DDS_Init": {
+      "value": 0,
+      "documentation": null
+    },
+    "DDS_GalaxyAtWarLevel": {
+      "value": 1,
+      "documentation": null
+    },
+    "DDS_BinaryLiveIniData": {
+      "value": 2,
+      "documentation": null
+    },
+    "DDS_LiveTlkTable": {
+      "value": 3,
+      "documentation": null
+    },
+    "DDS_GetLeaderboardList": {
+      "value": 4,
+      "documentation": null
+    },
+    "DDS_ReadPlayerStorage": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

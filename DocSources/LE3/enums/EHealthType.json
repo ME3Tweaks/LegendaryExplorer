@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "HealthType_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "HealthType_Shields": {
+      "value": 1,
+      "documentation": null
+    },
+    "HealthType_Barrier": {
+      "value": 2,
+      "documentation": null
+    },
+    "HealthType_Armour": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

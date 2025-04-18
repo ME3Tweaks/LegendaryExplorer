@@ -1,0 +1,96 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "Groups": {
+      "type": "SynchGroup",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddNodeToGroup": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNodeToGroup(AnimNodeSequence SeqNode, Name GroupName)"
+    },
+    "ForceRelativePosition": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "RelativePosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceRelativePosition(Name GroupName, float RelativePosition)"
+    },
+    "GetMasterNodeOfGroup": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetMasterNodeOfGroup(Name GroupName)"
+    },
+    "GetRelativePosition": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRelativePosition(Name GroupName)"
+    },
+    "RemoveNodeFromGroup": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveNodeFromGroup(AnimNodeSequence SeqNode, Name GroupName)"
+    },
+    "SetGroupRateScale": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRateScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGroupRateScale(Name GroupName, float NewRateScale)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

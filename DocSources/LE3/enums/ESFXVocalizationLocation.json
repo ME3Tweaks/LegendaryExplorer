@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "SFXVocalizationLocation_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Above": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Below": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Right": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Left": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Ahead": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Behind": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXVocalizationLocation_Specific": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

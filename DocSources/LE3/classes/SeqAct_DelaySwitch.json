@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "LinkCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "SwitchDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "NextLinkTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

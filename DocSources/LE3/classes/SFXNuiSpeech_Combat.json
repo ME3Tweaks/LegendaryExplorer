@@ -1,0 +1,105 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "TargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SelectionTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CollectWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CollectWeapons(BioPawn Pawn, out array<stringref> WeaponNames)"
+    },
+    "GetPlayerClassName": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPlayerClassName(BioPawn member)"
+    },
+    "GetPlayerClassStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "member": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetPlayerClassStringRef(BioPawn member)"
+    },
+    "GetSWITCH_WEAPON_STRREF": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetSWITCH_WEAPON_STRREF()"
+    },
+    "HenchmanCleared": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HenchmanCleared()"
+    },
+    "HenchmanSelected": {
+      "documentation": null,
+      "signature_members": {
+        "GRI": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawns": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HenchmanSelected(SFXGRI GRI, out array<BioPawn> Pawns)"
+    },
+    "SetWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Controller": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeapon(BioPlayerController Controller, BioPawn TargetPawn, stringref WeaponName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

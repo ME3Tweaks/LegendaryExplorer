@@ -1,0 +1,17 @@
+{
+  "parent": "MaterialExpressionTextureSampleParameter2D",
+  "package": "Engine",
+  "variables": {
+    "Threshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "Channel": {
+      "type": "ETextureColorChannel",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

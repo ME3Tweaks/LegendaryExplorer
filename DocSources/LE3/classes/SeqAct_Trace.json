@@ -1,0 +1,48 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "TraceExtent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "EndOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitObject": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Distance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTraceActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTraceWorld": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

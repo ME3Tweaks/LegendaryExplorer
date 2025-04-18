@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "BulkDataFlags": {
+      "type": null,
+      "documentation": null
+    },
+    "ElementCount": {
+      "type": null,
+      "documentation": null
+    },
+    "BulkDataOffsetInFile": {
+      "type": null,
+      "documentation": null
+    },
+    "BulkDataSizeOnDisk": {
+      "type": null,
+      "documentation": null
+    },
+    "SavedBulkDataFlags": {
+      "type": null,
+      "documentation": null
+    },
+    "SavedElementCount": {
+      "type": null,
+      "documentation": null
+    },
+    "SavedBulkDataOffsetInFile": {
+      "type": null,
+      "documentation": null
+    },
+    "SavedBulkDataSizeOnDisk": {
+      "type": null,
+      "documentation": null
+    },
+    "BulkData": {
+      "type": null,
+      "documentation": null
+    },
+    "LockStatus": {
+      "type": null,
+      "documentation": null
+    },
+    "AttachedAr": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldFreeOnEmpty": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

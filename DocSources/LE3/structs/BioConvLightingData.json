@@ -1,0 +1,93 @@
+{
+  "Members": {
+    "TargetBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "LightRig": {
+      "type": null,
+      "documentation": null
+    },
+    "KeyLight_Scale_Red": {
+      "type": null,
+      "documentation": null
+    },
+    "KeyLight_Scale_Green": {
+      "type": null,
+      "documentation": null
+    },
+    "KeyLight_Scale_Blue": {
+      "type": null,
+      "documentation": null
+    },
+    "FillLight_Scale_Red": {
+      "type": null,
+      "documentation": null
+    },
+    "FillLight_Scale_Green": {
+      "type": null,
+      "documentation": null
+    },
+    "FillLight_Scale_Blue": {
+      "type": null,
+      "documentation": null
+    },
+    "RimLightColor": {
+      "type": null,
+      "documentation": null
+    },
+    "RimLightScale": {
+      "type": null,
+      "documentation": null
+    },
+    "RimLightYaw": {
+      "type": null,
+      "documentation": null
+    },
+    "RimLightPitch": {
+      "type": null,
+      "documentation": null
+    },
+    "BouncedLightingIntensity": {
+      "type": null,
+      "documentation": null
+    },
+    "WrapLightingDirectMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "WrapLightingIndirectMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "LightRigOrientation": {
+      "type": null,
+      "documentation": null
+    },
+    "bLockEnvironment": {
+      "type": null,
+      "documentation": null
+    },
+    "bTriggerFullUpdate": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseForNextCamera": {
+      "type": null,
+      "documentation": null
+    },
+    "bCastShadows": {
+      "type": null,
+      "documentation": null
+    },
+    "RimLightControl": {
+      "type": null,
+      "documentation": null
+    },
+    "LightingType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

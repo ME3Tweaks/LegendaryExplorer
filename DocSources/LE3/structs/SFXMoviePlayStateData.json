@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlaceHolder": {
+      "type": null,
+      "documentation": null
+    },
+    "m_eState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

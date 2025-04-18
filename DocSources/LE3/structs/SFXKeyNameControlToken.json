@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Key": {
+      "type": null,
+      "documentation": null
+    },
+    "token": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

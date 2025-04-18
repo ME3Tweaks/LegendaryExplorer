@@ -1,0 +1,81 @@
+{
+  "parent": "Component",
+  "package": "Engine",
+  "variables": {
+    "Scene": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bAttached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTickInEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeedsReattach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeedsUpdateTransform": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TickGroup": {
+      "type": "ETickingGroup",
+      "documentation": null
+    },
+    "ComponentType": {
+      "type": "EComponentType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DetachFromAny": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetachFromAny()"
+    },
+    "ForceUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "bTransformOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceUpdate(bool bTransformOnly)"
+    },
+    "SetComponentRBFixed": {
+      "documentation": null,
+      "signature_members": {
+        "bFixed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetComponentRBFixed(bool bFixed)"
+    },
+    "SetTickGroup": {
+      "documentation": null,
+      "signature_members": {
+        "NewTickGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTickGroup(ETickingGroup NewTickGroup)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

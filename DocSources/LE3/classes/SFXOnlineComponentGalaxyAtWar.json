@@ -1,0 +1,717 @@
+{
+  "parent": "SFXOnlineComponentBlaze",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponentGalaxyAtWar": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PersonaId": {
+      "type": "string",
+      "documentation": null
+    },
+    "BaseUrl": {
+      "type": "string",
+      "documentation": null
+    },
+    "SessionKey": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_CachedSecurityRatings": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_CachedWarAssets": {
+      "type": "int",
+      "documentation": null
+    },
+    "__AuthenticateCompleted__Delegate": {
+      "type": "AuthenticateCompleted",
+      "documentation": null
+    },
+    "__OnGetRatingsComplete__Delegate": {
+      "type": "OnGetRatingsComplete",
+      "documentation": null
+    },
+    "__OnIncreaseRatingsComplete__Delegate": {
+      "type": "OnIncreaseRatingsComplete",
+      "documentation": null
+    },
+    "__OnSendMessageComplete__Delegate": {
+      "type": "OnSendMessageComplete",
+      "documentation": null
+    },
+    "__OnGetMessagesComplete__Delegate": {
+      "type": "OnGetMessagesComplete",
+      "documentation": null
+    },
+    "__OnTouchMessagesComplete__Delegate": {
+      "type": "OnTouchMessagesComplete",
+      "documentation": null
+    },
+    "LevelChangeStrRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_CachedLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_CachedRatingsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_CachedWarAssetsValid": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AuthenticateCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AuthenticateCompleted(int errorCode)"
+    },
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "CreateJobGaWGetMessages": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPGetMessages",
+      "signature": "SFXOnlineJobGaWHTTPGetMessages CreateJobGaWGetMessages(int msgType, delegate<OnGetMessagesComplete> funcOnRequestComplete)"
+    },
+    "CreateJobGaWGetRatings": {
+      "documentation": null,
+      "signature_members": {
+        "getWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPGetRatings",
+      "signature": "SFXOnlineJobGaWHTTPGetRatings CreateJobGaWGetRatings(bool getWarAssets, delegate<OnGetRatingsComplete> funcOnRequestComplete)"
+    },
+    "CreateJobGaWIncreaseRatings": {
+      "documentation": null,
+      "signature_members": {
+        "defaultRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "securityRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "warAssetIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPIncreaseRatings",
+      "signature": "SFXOnlineJobGaWHTTPIncreaseRatings CreateJobGaWIncreaseRatings(int defaultRatingIncrease, array<MapEntry> securityRatingIncrease, array<MapEntry> warAssetIncrease, delegate<OnIncreaseRatingsComplete> funcOnRequestComplete)"
+    },
+    "CreateJobGaWSendMessage": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam1": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam2": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam3": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPSendMessage",
+      "signature": "SFXOnlineJobGaWHTTPSendMessage CreateJobGaWSendMessage(int msgType, string sendMsgParam1, string sendMsgParam2, string sendMsgParam3, delegate<OnSendMessageComplete> funcOnRequestComplete)"
+    },
+    "CreateJobGaWTouchMessages": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPTouchMessages",
+      "signature": "SFXOnlineJobGaWHTTPTouchMessages CreateJobGaWTouchMessages(int msgType, delegate<OnTouchMessagesComplete> funcOnRequestComplete)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetAuthenticationHTTPRequest": {
+      "documentation": null,
+      "signature_members": {
+        "token": {
+          "type": null,
+          "documentation": null
+        },
+        "tokenType": {
+          "type": null,
+          "documentation": null
+        },
+        "pSFXOnlineHTTPRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAuthenticationHTTPRequest(string token, int tokenType, out SFXOnlineHTTPRequest pSFXOnlineHTTPRequest)"
+    },
+    "GetFirstBlazeAttrId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetFirstBlazeAttrId()"
+    },
+    "GetGetMessagesHTTPRequest": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "pSFXOnlineHTTPRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetGetMessagesHTTPRequest(int msgType, out SFXOnlineHTTPRequest pSFXOnlineHTTPRequest)"
+    },
+    "GetIncreaseRatingsHTTPRequest": {
+      "documentation": null,
+      "signature_members": {
+        "defaultRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "securityRatingsIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "warAssetsIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "pSFXOnlineHTTPRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetIncreaseRatingsHTTPRequest(int defaultRatingIncrease, array<MapEntry> securityRatingsIncrease, array<MapEntry> warAssetsIncrease, out SFXOnlineHTTPRequest pSFXOnlineHTTPRequest)"
+    },
+    "GetMessages": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetMessages(int msgType, delegate<OnGetMessagesComplete> funcOnRequestComplete)"
+    },
+    "GetRatings": {
+      "documentation": null,
+      "signature_members": {
+        "getWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "bCached": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetRatings(bool getWarAssets, bool bCached, delegate<OnGetRatingsComplete> funcOnRequestComplete)"
+    },
+    "GetRatingsHTTPRequest": {
+      "documentation": null,
+      "signature_members": {
+        "getAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "pSFXOnlineHTTPRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetRatingsHTTPRequest(bool getAssets, out SFXOnlineHTTPRequest pSFXOnlineHTTPRequest)"
+    },
+    "GetSendMessageHTTPRequest": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "param1": {
+          "type": null,
+          "documentation": null
+        },
+        "param2": {
+          "type": null,
+          "documentation": null
+        },
+        "param3": {
+          "type": null,
+          "documentation": null
+        },
+        "pSFXOnlineHTTPRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSendMessageHTTPRequest(int msgType, string param1, string param2, string param3, out SFXOnlineHTTPRequest pSFXOnlineHTTPRequest)"
+    },
+    "GetTouchMessagesHTTPRequest": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "pSFXOnlineHTTPRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTouchMessagesHTTPRequest(int msgType, out SFXOnlineHTTPRequest pSFXOnlineHTTPRequest)"
+    },
+    "IncreaseRatings": {
+      "documentation": null,
+      "signature_members": {
+        "defaultRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "securityRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "warAssetIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncreaseRatings(int defaultRatingIncrease, array<MapEntry> securityRatingIncrease, array<MapEntry> warAssetIncrease, delegate<OnIncreaseRatingsComplete> funcOnRequestComplete)"
+    },
+    "InvalidateSession": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InvalidateSession()"
+    },
+    "IsSessionValid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSessionValid()"
+    },
+    "OnGetMessagesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Messages": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGetMessagesComplete(array<MessageEntry> Messages, int errorCode)"
+    },
+    "OnGetRatingsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGetRatingsComplete(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "OnIncreaseRatingsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnIncreaseRatingsComplete(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnSendMessageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "messageId": {
+          "type": null,
+          "documentation": null
+        },
+        "messageIds": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSendMessageComplete(int messageId, array<int> messageIds, int errorCode)"
+    },
+    "OnTouchMessagesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Count": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTouchMessagesComplete(int Count, int errorCode)"
+    },
+    "ParseAuthenticationResult": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ParseAuthenticationResult(SFXOnlineHTTPRequest request)"
+    },
+    "ParseGetMessagesResult": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        },
+        "messageEntries": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseGetMessagesResult(SFXOnlineHTTPRequest request, out array<MessageEntry> messageEntries, out int errorCode)"
+    },
+    "ParseHTTPRatingsAssetsLevel": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseHTTPRatingsAssetsLevel(SFXOnlineHTTPRequest request, out array<int> updatedSecurityRatings, out array<int> updatedWarAssets, out int Level, out int errorCode)"
+    },
+    "ParseSendMessageResult": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        },
+        "messageId": {
+          "type": null,
+          "documentation": null
+        },
+        "messageIds": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseSendMessageResult(SFXOnlineHTTPRequest request, out int messageId, out array<int> messageIds, out int errorCode)"
+    },
+    "ParseTouchMessagesResult": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        },
+        "numMsgs": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseTouchMessagesResult(SFXOnlineHTTPRequest request, out int numMsgs, out int errorCode)"
+    },
+    "SendMessage": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam1": {
+          "type": null,
+          "documentation": null
+        },
+        "ParamType": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam3": {
+          "type": null,
+          "documentation": null
+        },
+        "OnSendMessageComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMessage(int msgType, string sendMsgParam1, EGawParamType ParamType, string sendMsgParam3, delegate<OnSendMessageComplete> OnSendMessageComplete)"
+    },
+    "SetBaseURL": {
+      "documentation": null,
+      "signature_members": {
+        "sURL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBaseURL(string sURL)"
+    },
+    "TouchMessages": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "funcOnRequestComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TouchMessages(int msgType, delegate<OnTouchMessagesComplete> funcOnRequestComplete)"
+    },
+    "TestGetMessagesCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Messages": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestGetMessagesCallback(array<MessageEntry> Messages, int errorCode)"
+    },
+    "TestGetRatingsCallback": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestGetRatingsCallback(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "TestSendMessageCallback": {
+      "documentation": null,
+      "signature_members": {
+        "messageId": {
+          "type": null,
+          "documentation": null
+        },
+        "messageIds": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestSendMessageCallback(int messageId, array<int> messageIds, int errorCode)"
+    },
+    "TestTouchMessagesCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Count": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestTouchMessagesCallback(int Count, int errorCode)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

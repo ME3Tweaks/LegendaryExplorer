@@ -1,0 +1,69 @@
+{
+  "EnumValues": {
+    "OJT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "OJT_SaveSettings": {
+      "value": 1,
+      "documentation": null
+    },
+    "OJT_LoadSettings": {
+      "value": 2,
+      "documentation": null
+    },
+    "OJT_GameReporting": {
+      "value": 3,
+      "documentation": null
+    },
+    "OJT_GetLeaderboardData": {
+      "value": 4,
+      "documentation": null
+    },
+    "OJT_GetLeaderboardList": {
+      "value": 5,
+      "documentation": null
+    },
+    "OJT_GetStatsGroupList": {
+      "value": 6,
+      "documentation": null
+    },
+    "OJT_ImportFriendListToBlaze": {
+      "value": 7,
+      "documentation": null
+    },
+    "OJT_SendMessage": {
+      "value": 8,
+      "documentation": null
+    },
+    "OJT_FetchAllMessages": {
+      "value": 9,
+      "documentation": null
+    },
+    "OJT_PurgeMessages": {
+      "value": 10,
+      "documentation": null
+    },
+    "OJT_HTTPRequest": {
+      "value": 11,
+      "documentation": null
+    },
+    "OJT_GetAuthToken": {
+      "value": 12,
+      "documentation": null
+    },
+    "OJT_GalaxyAtWarHTTPRequest": {
+      "value": 13,
+      "documentation": null
+    },
+    "OJT_HTTPImageRequest": {
+      "value": 14,
+      "documentation": null
+    },
+    "OJT_AllJobs": {
+      "value": 15,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

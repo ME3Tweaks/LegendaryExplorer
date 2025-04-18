@@ -1,0 +1,236 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "AllMarkerActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ActiveMarkerActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MarkerActivatedDelegates": {
+      "type": "OnActivated",
+      "documentation": null
+    },
+    "MarkerDeactivatedDelegates": {
+      "type": "OnDeactivated",
+      "documentation": null
+    },
+    "ManagerDestroyedDelegates": {
+      "type": "OnDestroyed",
+      "documentation": null
+    },
+    "__OnActivated__Delegate": {
+      "type": "OnActivated",
+      "documentation": null
+    },
+    "__OnDeactivated__Delegate": {
+      "type": "OnDeactivated",
+      "documentation": null
+    },
+    "__OnDestroyed__Delegate": {
+      "type": "OnDestroyed",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearAllMarkerActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllMarkerActors()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "AddManagerDestroyedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ManagerDestroyedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddManagerDestroyedDelegate(delegate<OnDestroyed> ManagerDestroyedDelegate)"
+    },
+    "AddMarkerActivatedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerActivatedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMarkerActivatedDelegate(delegate<OnActivated> MarkerActivatedDelegate)"
+    },
+    "AddMarkerActor": {
+      "documentation": null,
+      "signature_members": {
+        "NewMarkerActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMarkerActor(Actor NewMarkerActor)"
+    },
+    "AddMarkerDeactivatedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerDeactivatedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMarkerDeactivatedDelegate(delegate<OnDeactivated> MarkerDeactivatedDelegate)"
+    },
+    "ClearManagerDestroyedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ManagerDestroyedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearManagerDestroyedDelegate(delegate<OnDestroyed> ManagerDestroyedDelegate)"
+    },
+    "ClearMarkerActivatedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerActivatedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMarkerActivatedDelegate(delegate<OnActivated> MarkerActivatedDelegate)"
+    },
+    "ClearMarkerDeactivatedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerDeactivatedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMarkerDeactivatedDelegate(delegate<OnDeactivated> MarkerDeactivatedDelegate)"
+    },
+    "FindActorInActiveMarkerActors": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToSearchFor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor FindActorInActiveMarkerActors(Actor ActorToSearchFor)"
+    },
+    "FindActorInAllMarkerActors": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToSearchFor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor FindActorInAllMarkerActors(Actor ActorToSearchFor)"
+    },
+    "GetActiveMarkerActors": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "array<Actor> GetActiveMarkerActors(optional string MarkerType)"
+    },
+    "GetAllMarkerActors": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "array<Actor> GetAllMarkerActors(optional string MarkerType)"
+    },
+    "OnActivated": {
+      "documentation": null,
+      "signature_members": {
+        "ActivatedTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActivated(Actor ActivatedTarget)"
+    },
+    "OnDeactivated": {
+      "documentation": null,
+      "signature_members": {
+        "DeactivatedTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeactivated(Actor DeactivatedTarget)"
+    },
+    "OnDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDestroyed()"
+    },
+    "RemoveMarkerActor": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerActorToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveMarkerActor(Actor MarkerActorToRemove)"
+    },
+    "SetMarkerActorAsActive": {
+      "documentation": null,
+      "signature_members": {
+        "NewActiveMarkerActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarkerActorAsActive(Actor NewActiveMarkerActor)"
+    },
+    "SetMarkerActorAsInactive": {
+      "documentation": null,
+      "signature_members": {
+        "NewInactiveMarkerActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarkerActorAsInactive(Actor NewInactiveMarkerActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

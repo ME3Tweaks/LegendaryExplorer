@@ -1,0 +1,17 @@
+{
+  "parent": "LocalPlayer",
+  "package": "SFXGame",
+  "variables": {
+    "GAWReinforcementManager": {
+      "type": "SFXGAWReinforcementManagerBase",
+      "documentation": null
+    },
+    "GAWHandler": {
+      "type": "SFXGAWAssetsHandler",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,264 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ItemName": {
+      "type": "string",
+      "documentation": null
+    },
+    "PickupMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "PickupForce": {
+      "type": "string",
+      "documentation": null
+    },
+    "DroppedPickupClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "Inventory": {
+      "type": "Inventory",
+      "documentation": null
+    },
+    "InvManager": {
+      "type": "InventoryManager",
+      "documentation": null
+    },
+    "PickupSound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "DroppedPickupMesh": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "PickupFactoryMesh": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "DroppedPickupParticles": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "RespawnTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDesireability": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRenderOverlays": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReceiveOwnerEvents": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDropOnDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayedSpawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPredictRespawns": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BotDesireability": {
+      "documentation": null,
+      "signature_members": {
+        "PickupHolder": {
+          "type": null,
+          "documentation": null
+        },
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float BotDesireability(Actor PickupHolder, Pawn P, Controller C)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "DetourWeight": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "PathWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float DetourWeight(Pawn Other, float PathWeight)"
+    },
+    "GetHumanReadableName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHumanReadableName()"
+    },
+    "GetLocalString": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocalString(optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2)"
+    },
+    "ActiveRenderOverlays": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActiveRenderOverlays(HUD H)"
+    },
+    "AnnouncePickup": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AnnouncePickup(Pawn Other)"
+    },
+    "ClientGivenTo": {
+      "documentation": null,
+      "signature_members": {
+        "NewOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientGivenTo(Pawn NewOwner, bool bDoNotActivate)"
+    },
+    "DenyPickupQuery": {
+      "documentation": null,
+      "signature_members": {
+        "ItemClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Pickup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DenyPickupQuery(Class<Inventory> ItemClass, Actor Pickup)"
+    },
+    "DropFrom": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "StartVelocity": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DropFrom(Vector StartLocation, Vector StartVelocity)"
+    },
+    "GivenTo": {
+      "documentation": null,
+      "signature_members": {
+        "thisPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GivenTo(Pawn thisPawn, optional bool bDoNotActivate)"
+    },
+    "GiveTo": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTo(Pawn Other)"
+    },
+    "ItemRemovedFromInvManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ItemRemovedFromInvManager()"
+    },
+    "OwnerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OwnerEvent(Name EventName)"
+    },
+    "RenderOverlays": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RenderOverlays(HUD H)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,61 @@
+{
+  "EnumValues": {
+    "EReinforcementGUICategory_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_AssaultRifle": {
+      "value": 1,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_SMG": {
+      "value": 2,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_SniperRifle": {
+      "value": 3,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_Pistol": {
+      "value": 4,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_Shotgun": {
+      "value": 5,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_Mod": {
+      "value": 6,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_Kit": {
+      "value": 7,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_MatchConsumableAmmo": {
+      "value": 8,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_MatchConsumableWeapon": {
+      "value": 9,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_MatchConsumableArmor": {
+      "value": 10,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_MatchConsumableGear": {
+      "value": 11,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_NewlyAffordableStoreItems": {
+      "value": 12,
+      "documentation": null
+    },
+    "EReinforcementGUICategory_KitAppearance": {
+      "value": 13,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

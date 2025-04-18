@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "tDOFData": {
+      "type": null,
+      "documentation": null
+    },
+    "nmCameraTag": {
+      "type": null,
+      "documentation": null
+    },
+    "fFov": {
+      "type": null,
+      "documentation": null
+    },
+    "fNearPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "fHeightDelta": {
+      "type": null,
+      "documentation": null
+    },
+    "fPitchDelta": {
+      "type": null,
+      "documentation": null
+    },
+    "fYawDelta": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableHeightAdjustment": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

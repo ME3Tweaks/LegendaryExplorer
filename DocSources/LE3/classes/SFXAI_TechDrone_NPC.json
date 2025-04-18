@@ -1,0 +1,38 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "bHasHowled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasFlanked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasTaunted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasWarned": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PeriodicMoveCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PeriodicMoveCheck()"
+    },
+    "SetMovementSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetMovementSpeed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

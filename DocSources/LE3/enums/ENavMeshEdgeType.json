@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "NAVEDGE_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "NAVEDGE_Mantle": {
+      "value": 1,
+      "documentation": null
+    },
+    "NAVEDGE_Coverslip": {
+      "value": 2,
+      "documentation": null
+    },
+    "NAVEDGE_SwatTurn": {
+      "value": 3,
+      "documentation": null
+    },
+    "NAVEDGE_DropDown": {
+      "value": 4,
+      "documentation": null
+    },
+    "NAVEDGE_PathObject": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

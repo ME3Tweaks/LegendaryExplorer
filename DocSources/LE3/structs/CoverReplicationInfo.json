@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SlotsEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotsDisabled": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotsAdjusted": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotsCoverTypeChanged": {
+      "type": null,
+      "documentation": null
+    },
+    "Link": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

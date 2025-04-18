@@ -1,0 +1,43 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "TargetOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TargetDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bOutputToScreen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIncludeObjComment": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

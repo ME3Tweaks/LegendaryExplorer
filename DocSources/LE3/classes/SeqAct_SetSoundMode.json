@@ -1,0 +1,30 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "SoundMode": {
+      "type": "SoundMode",
+      "documentation": null
+    },
+    "bTopPriority": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

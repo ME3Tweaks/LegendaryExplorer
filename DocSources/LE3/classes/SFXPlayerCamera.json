@@ -1,0 +1,284 @@
+{
+  "parent": "SFXCameraNativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "CameraRubberBandCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "CameraDesiredPosition": {
+      "type": "TPOV",
+      "documentation": null
+    },
+    "KickBackModifier": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "FaceTargetTransition": {
+      "type": "SFXCameraTransition_FaceTarget",
+      "documentation": null
+    },
+    "ScreenShakeModifier": {
+      "type": "SFXCameraModifier_ScreenShake",
+      "documentation": null
+    },
+    "CurrentModalAction": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "FreeCam": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "DefaultTransition": {
+      "type": "SFXCameraMode_Interpolate",
+      "documentation": null
+    },
+    "TransitionTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastAspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraRubberBandMaxStretchLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraRubberBandSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationalDecay": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTransitionStackDepth": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCurrentTransitionIsModal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugging": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLastConstrainAspect": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "Shake": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScreenShake(ScreenShakeStruct Shake)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "CreateCameraModifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModifierClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "CameraModifier",
+      "signature": "CameraModifier CreateCameraModifier(Class<CameraModifier> ModifierClass)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "OutDeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator OutViewRotation, out Rotator OutDeltaRot)"
+    },
+    "UpdateViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "OutVT": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateViewTarget(out TViewTarget OutVT, float DeltaTime)"
+    },
+    "GetBaseRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetBaseRotation()"
+    },
+    "IsPlayingCameraAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayingCameraAnim()"
+    },
+    "PickCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutVT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PickCameraMode(float DeltaTime, out TViewTarget OutVT)"
+    },
+    "PlayCameraTransition": {
+      "documentation": null,
+      "signature_members": {
+        "Transition": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        },
+        "mode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode_Interpolate",
+      "signature": "SFXCameraMode_Interpolate PlayCameraTransition(SFXCameraMode_Interpolate Transition, float Time, optional SFXCameraMode mode)"
+    },
+    "RotateToFace": {
+      "documentation": null,
+      "signature_members": {
+        "AimPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RotateToFace(Vector AimPoint, float Time)"
+    },
+    "SetBaseRotation": {
+      "documentation": null,
+      "signature_members": {
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBaseRotation(Rotator NewRotation)"
+    },
+    "SetBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "mode": {
+          "type": null,
+          "documentation": null
+        },
+        "NewTransitionTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode_Interpolate",
+      "signature": "SFXCameraMode_Interpolate SetBehavior(SFXCameraMode mode, SFXCameraMode_Interpolate NewTransitionTemplate, float Time, bool PreserveTarget)"
+    },
+    "SmoothPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector SmoothPosition(Vector Start, Vector Target, float TimeDelta)"
+    },
+    "SwitchTo": {
+      "documentation": null,
+      "signature_members": {
+        "NewMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchTo(SFXCameraMode NewMode)"
+    },
+    "UpdateCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutVT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCameraMode(float fDeltaTime, out TViewTarget OutVT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

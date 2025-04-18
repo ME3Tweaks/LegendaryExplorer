@@ -1,0 +1,91 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGameContentLiveKismet",
+  "variables": {
+    "CachedEngine": {
+      "type": "SFXEngine",
+      "documentation": null
+    },
+    "LevelNameDisplayOverride": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ElapsedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bFiredOutPin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceAutoSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FinishState": {
+      "type": "EEndGameState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "CanSave": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSave(BioPlayerController PC)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "BeginSave": {
+      "documentation": null,
+      "signature_members": {
+        "Descriptor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginSave(SFXSaveDescriptor Descriptor)"
+    },
+    "GetBioPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetBioPlayerController()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

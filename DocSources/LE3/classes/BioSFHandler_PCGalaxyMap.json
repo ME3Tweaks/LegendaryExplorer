@@ -1,0 +1,156 @@
+{
+  "parent": "BioSFHandler_GalaxyMap",
+  "package": "SFXGame",
+  "variables": {
+    "PrimaryAction": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "EscapeAction": {
+      "type": "SFXUIControlState",
+      "documentation": null
+    },
+    "ActionTokenString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bMoveToMouse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMouseMovementEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bActionTextVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuyFuel()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents nEvent, optional float fValue)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "SetPCEscapeAction": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPCEscapeAction(bool bVisible)"
+    },
+    "SetPCPrimaryAction": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPCPrimaryAction(bool bVisible)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "AllowMouseMovement": {
+      "documentation": null,
+      "signature_members": {
+        "bAllow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllowMouseMovement(bool bAllow)"
+    },
+    "AS_SetPCEscapeAction": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetPCEscapeAction(const string sText)"
+    },
+    "AS_SetPCPrimaryAction": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetPCPrimaryAction(const string sText)"
+    },
+    "PerformEscapeAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PerformEscapeAction()"
+    },
+    "PerformPrimaryAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PerformPrimaryAction()"
+    },
+    "RepeatBuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RepeatBuyFuel()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

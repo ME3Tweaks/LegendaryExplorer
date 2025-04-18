@@ -1,0 +1,33 @@
+{
+  "parent": "Actor",
+  "package": "WwiseAudio",
+  "variables": {
+    "RTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "TickDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimeSinceLastUpdate": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

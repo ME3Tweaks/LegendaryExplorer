@@ -1,0 +1,81 @@
+{
+  "parent": "SFXNav_BlockingPathNode",
+  "package": "SFXGame",
+  "variables": {
+    "LadderDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "AnimInfo": {
+      "type": "SFXAnimSetCookSpec",
+      "documentation": null
+    },
+    "LadderDistX": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxJumpHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTopNode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanUse": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUse(Actor User)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "OnUse": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUse(Actor User)"
+    },
+    "StartLadderCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        },
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "LadderSpec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartLadderCustomAction(BioPawn User, int NewAction, ReachSpec LadderSpec)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

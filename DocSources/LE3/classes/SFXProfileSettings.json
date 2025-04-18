@@ -1,0 +1,735 @@
+{
+  "parent": "OnlineProfileSettings",
+  "package": "SFXGame",
+  "variables": {
+    "BonusPowerUnlockDataArray": {
+      "type": "BonusPowerUnlockData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplySettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplySettings()"
+    },
+    "AreHintsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AreHintsEnabled()"
+    },
+    "GetAudioDynamicRangeOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAudioDynamicRangeOptions",
+      "signature": "EAudioDynamicRangeOptions GetAudioDynamicRangeOption()"
+    },
+    "GetAutoReplyMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetAutoReplyMode()"
+    },
+    "GetDialogVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetDialogVolume()"
+    },
+    "GetDifficultyConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EDifficultyOptions",
+      "signature": "EDifficultyOptions GetDifficultyConfigOption()"
+    },
+    "GetFriendN7RatingBlob": {
+      "documentation": null,
+      "signature_members": {
+        "userBlob": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetFriendN7RatingBlob(out string userBlob)"
+    },
+    "GetFXVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetFXVolume()"
+    },
+    "GetLanguageSpeech": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLanguageSpeech()"
+    },
+    "GetLanguageText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLanguageText()"
+    },
+    "GetLanguageVO": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLanguageVO()"
+    },
+    "GetMusicVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMusicVolume()"
+    },
+    "GetN7RatingLocalUser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetN7RatingLocalUser()"
+    },
+    "GetTriggerConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ETriggerConfigOptions",
+      "signature": "ETriggerConfigOptions GetTriggerConfigOption()"
+    },
+    "IsPlotStateIDABonusPowerPlotStateID": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStateID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlotStateIDABonusPowerPlotStateID(int PlotStateID)"
+    },
+    "SetAutoReplyMode": {
+      "documentation": null,
+      "signature_members": {
+        "mode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoReplyMode(int mode)"
+    },
+    "SetFriendN7RatingBlob": {
+      "documentation": null,
+      "signature_members": {
+        "userBlob": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFriendN7RatingBlob(string userBlob)"
+    },
+    "SetLanguageSpeech": {
+      "documentation": null,
+      "signature_members": {
+        "Language": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLanguageSpeech(string Language)"
+    },
+    "SetLanguageText": {
+      "documentation": null,
+      "signature_members": {
+        "Language": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLanguageText(string Language)"
+    },
+    "SetLanguageVO": {
+      "documentation": null,
+      "signature_members": {
+        "Language": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLanguageVO(string Language)"
+    },
+    "SetN7RatingLocalUser": {
+      "documentation": null,
+      "signature_members": {
+        "n7Rating": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetN7RatingLocalUser(int n7Rating)"
+    },
+    "SetToDefaultsEx": {
+      "documentation": null,
+      "signature_members": {
+        "lstProfileSettingsToReset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetToDefaultsEx(const out array<EProfileSetting> lstProfileSettingsToReset)"
+    },
+    "ApplyAudioSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAudioSettings()"
+    },
+    "ApplyDisplaySettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyDisplaySettings()"
+    },
+    "GetAccomplishmentSettingField": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAccomplishmentSettingField(int AccomplishmentIndex)"
+    },
+    "GetActionIconHintOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetActionIconHintOption()"
+    },
+    "GetAimAssistValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAimAssistOptions",
+      "signature": "EAimAssistOptions GetAimAssistValue()"
+    },
+    "GetAutoLevelConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAutoLevelOptions",
+      "signature": "EAutoLevelOptions GetAutoLevelConfigOption()"
+    },
+    "GetAutoLoginConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetAutoLoginConfigOption()"
+    },
+    "GetAutoSaveConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetAutoSaveConfigOption()"
+    },
+    "GetBonusPowerArray": {
+      "documentation": null,
+      "signature_members": {
+        "OutBonusPowers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBonusPowerArray(out array<BonusPowerUnlockData> OutBonusPowers)"
+    },
+    "GetChoseMorinthNotSamara": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetChoseMorinthNotSamara()"
+    },
+    "GetControllerSensitivityValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EProfileControllerSensitivityOptions",
+      "signature": "EProfileControllerSensitivityOptions GetControllerSensitivityValue()"
+    },
+    "GetControllerVibrationOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetControllerVibrationOption()"
+    },
+    "GetCurrentCareerName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCurrentCareerName()"
+    },
+    "GetCurrentDeviceID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentDeviceID()"
+    },
+    "GetDisplayGamma": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDisplayGamma()"
+    },
+    "GetFilmgrainConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetFilmgrainConfigOption()"
+    },
+    "GetFinishedGameCareerName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetFinishedGameCareerName()"
+    },
+    "GetFriendChallengePointBlob": {
+      "documentation": null,
+      "signature_members": {
+        "userBlob": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetFriendChallengePointBlob(out string userBlob)"
+    },
+    "GetHasSeenKinectTutorialPrompt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetHasSeenKinectTutorialPrompt()"
+    },
+    "GetHenchmenHelmetOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EHenchHelmetOptions",
+      "signature": "EHenchHelmetOptions GetHenchmenHelmetOption()"
+    },
+    "GetHideCinematicHelmet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetHideCinematicHelmet()"
+    },
+    "GetHighestPowerLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetHighestPowerLevel()"
+    },
+    "GetHighestWeaponLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetHighestWeaponLevel()"
+    },
+    "GetInvertYOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetInvertYOption()"
+    },
+    "GetLastSelectedCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLastSelectedCharacter()"
+    },
+    "GetMotionBlurConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetMotionBlurConfigOption()"
+    },
+    "GetMPAutoLevelConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EOptionOnOff",
+      "signature": "EOptionOnOff GetMPAutoLevelConfigOption()"
+    },
+    "GetNumArmorBought": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumArmorBought()"
+    },
+    "GetNumEnemiesFlying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumEnemiesFlying()"
+    },
+    "GetNumEnemiesOnFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumEnemiesOnFire()"
+    },
+    "GetNumGameCompletions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumGameCompletions()"
+    },
+    "GetNumGuardianHeadKilled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumGuardianHeadKilled()"
+    },
+    "GetNumKills": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumKills()"
+    },
+    "GetNumMeleeKills": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumMeleeKills()"
+    },
+    "GetNumPowerCombos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumPowerCombos()"
+    },
+    "GetNumSalvageFound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumSalvageFound()"
+    },
+    "GetNumShieldsOverloaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumShieldsOverloaded()"
+    },
+    "GetNumSPMapsComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumSPMapsComplete()"
+    },
+    "GetNumSPMapsInsane": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumSPMapsInsane()"
+    },
+    "GetPreviousChallengePointLocalUser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPreviousChallengePointLocalUser()"
+    },
+    "GetShowScoreIndicators": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetShowScoreIndicators()"
+    },
+    "GetSPLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSPLevel()"
+    },
+    "GetSquadPowerConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSquadPowerConfigOption()"
+    },
+    "GetStickConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EStickConfigOptions",
+      "signature": "EStickConfigOptions GetStickConfigOption()"
+    },
+    "GetSubtitleConfigOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSubtitleConfigOption()"
+    },
+    "GetSwappedCrossCircle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSwappedCrossCircle()"
+    },
+    "GetSwappedTriggersShoulders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetSwappedTriggersShoulders()"
+    },
+    "HasCompletedAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasCompletedAccomplishment(int AccomplishmentIndex)"
+    },
+    "IsBonusPowerUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "BonusPowerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsBonusPowerUnlocked(int BonusPowerID)"
+    },
+    "IsTelemetryCollectionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTelemetryCollectionEnabled()"
+    },
+    "SetAccomplishmentCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "bSaveProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAccomplishmentCompleted(int AccomplishmentIndex, BioPlayerController PC, optional bool bSaveProfile)"
+    },
+    "SetAccomplishmentUncompleted": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "bSaveProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAccomplishmentUncompleted(int AccomplishmentIndex, BioPlayerController PC, optional bool bSaveProfile)"
+    },
+    "SetAutoSaveConfigOption": {
+      "documentation": null,
+      "signature_members": {
+        "bAutoSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoSaveConfigOption(bool bAutoSave)"
+    },
+    "SetChoseMorinthNotSamara": {
+      "documentation": null,
+      "signature_members": {
+        "ChoseMorinth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetChoseMorinthNotSamara(bool ChoseMorinth)"
+    },
+    "SetCurrentCareerName": {
+      "documentation": null,
+      "signature_members": {
+        "CareerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentCareerName(string CareerName)"
+    },
+    "SetCurrentDeviceID": {
+      "documentation": null,
+      "signature_members": {
+        "DeviceID": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentDeviceID(int DeviceID, BioPlayerController PC)"
+    },
+    "SetDifficultyConfigOption": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDifficultyConfigOption(int Value)"
+    },
+    "SetFriendChallengePointBlob": {
+      "documentation": null,
+      "signature_members": {
+        "userBlob": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFriendChallengePointBlob(string userBlob)"
+    },
+    "SetHasSeenKinectTutorialPrompt": {
+      "documentation": null,
+      "signature_members": {
+        "bHasSeen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHasSeenKinectTutorialPrompt(bool bHasSeen)"
+    },
+    "SetHenchmenHelmetOption": {
+      "documentation": null,
+      "signature_members": {
+        "InValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmenHelmetOption(EHenchHelmetOptions InValue)"
+    },
+    "SetHideCinematicHelmet": {
+      "documentation": null,
+      "signature_members": {
+        "bHideCinematicHelmet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHideCinematicHelmet(bool bHideCinematicHelmet)"
+    },
+    "SetLastSelectedCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLastSelectedCharacter(string NewValue)"
+    },
+    "SetPreviousChallengePointLocalUser": {
+      "documentation": null,
+      "signature_members": {
+        "n7Rating": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPreviousChallengePointLocalUser(int n7Rating)"
+    },
+    "SetShowHints": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShowHints(bool bEnabled)"
+    },
+    "SetShowScoreIndicators": {
+      "documentation": null,
+      "signature_members": {
+        "bShowIndicators": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShowScoreIndicators(bool bShowIndicators)"
+    },
+    "SetTelemetryCollection": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTelemetryCollection(bool bEnabled)"
+    },
+    "UnlockBonusPower": {
+      "documentation": null,
+      "signature_members": {
+        "BonusPowerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockBonusPower(int BonusPowerID)"
+    },
+    "UpdateBonusPowerPlotStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBonusPowerPlotStates()"
+    },
+    "UpdateBonusPowerProfileSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBonusPowerProfileSettings()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

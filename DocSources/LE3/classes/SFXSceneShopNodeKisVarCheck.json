@@ -1,0 +1,13 @@
+{
+  "parent": "SFXSceneShopNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmKismetBoolVarName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

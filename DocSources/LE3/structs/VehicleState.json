@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "RBState": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerView": {
+      "type": null,
+      "documentation": null
+    },
+    "bServerHandbrake": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerBrake": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerGas": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerSteering": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerRise": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

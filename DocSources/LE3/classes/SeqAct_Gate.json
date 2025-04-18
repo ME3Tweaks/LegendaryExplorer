@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "AutoCloseCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentCloseCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bOpen": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

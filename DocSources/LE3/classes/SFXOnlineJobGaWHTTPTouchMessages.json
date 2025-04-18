@@ -1,0 +1,77 @@
+{
+  "parent": "SFXOnlineJobGaWHTTPRequest",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnTouchMessagesComplete__Delegate": {
+      "type": "OnTouchMessagesComplete",
+      "documentation": null
+    },
+    "mMsgType": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGaWTouchMessagesJob": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPTouchMessages",
+      "signature": "SFXOnlineJobGaWHTTPTouchMessages CreateGaWTouchMessagesJob(int msgType, delegate<OnTouchMessagesComplete> RequestCompleteDelegate)"
+    },
+    "HandleSecondHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSecondHTTPResult()"
+    },
+    "JobFailedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobFailedHandler(OnlineJobErrorCode errorCode)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnTouchMessagesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Count": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTouchMessagesComplete(int Count, int errorCode)"
+    },
+    "QueueSecondHTTPRequest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QueueSecondHTTPRequest()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

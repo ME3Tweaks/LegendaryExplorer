@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "oWeapon": {
+      "type": null,
+      "documentation": null
+    },
+    "oProjectile": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomActionReactionType": {
+      "type": null,
+      "documentation": null
+    },
+    "TriggerCounter": {
+      "type": null,
+      "documentation": null
+    },
+    "Delay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

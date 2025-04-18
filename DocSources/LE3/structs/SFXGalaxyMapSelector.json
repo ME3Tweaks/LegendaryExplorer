@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "m_PlotNames": {
+      "type": null,
+      "documentation": null
+    },
+    "m_GalaxyMapObject": {
+      "type": null,
+      "documentation": null
+    },
+    "m_actor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_Name": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nPctExplored": {
+      "type": null,
+      "documentation": null
+    },
+    "m_State": {
+      "type": null,
+      "documentation": null
+    },
+    "m_Visible": {
+      "type": null,
+      "documentation": null
+    },
+    "m_Visited": {
+      "type": null,
+      "documentation": null
+    },
+    "m_HasCritPath": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

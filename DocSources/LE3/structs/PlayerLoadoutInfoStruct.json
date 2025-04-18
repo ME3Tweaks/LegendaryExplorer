@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "RequiredWeaponClasses": {
+      "type": null,
+      "documentation": null
+    },
+    "StartingWeaponClasses": {
+      "type": null,
+      "documentation": null
+    },
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "NumOptionalSlots": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

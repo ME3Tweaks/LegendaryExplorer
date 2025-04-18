@@ -1,0 +1,43 @@
+{
+  "parent": "SFXPowerCustomAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetSourceAmmoPower": {
+      "documentation": null,
+      "signature_members": {
+        "AmmoPowerName": {
+          "type": null,
+          "documentation": null
+        },
+        "AmmoPowerSourceTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerCustomAction_AmmoPowerBase",
+      "signature": "SFXPowerCustomAction_AmmoPowerBase GetSourceAmmoPower(Name AmmoPowerName, Name AmmoPowerSourceTag)"
+    },
+    "SetWeaponPower": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bOverrideCurrentPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWeaponPower(BioPawn oPawn, SFXWeapon oWeapon, bool bOverrideCurrentPower)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_pLensFlare": {
+      "type": "LensFlare",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

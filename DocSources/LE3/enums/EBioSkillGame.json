@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SKILL_GAME_DECRYPTION": {
+      "value": 0,
+      "documentation": null
+    },
+    "SKILL_GAME_ELECTRONICS": {
+      "value": 1,
+      "documentation": null
+    },
+    "SKILL_GAME_CUSTOM": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

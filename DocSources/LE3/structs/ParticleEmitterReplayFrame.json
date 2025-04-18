@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "FrameState": {
+      "type": null,
+      "documentation": null
+    },
+    "EmitterType": {
+      "type": null,
+      "documentation": null
+    },
+    "OriginalEmitterIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "ParticleModuleSpawnBase",
+  "package": "Engine",
+  "variables": {
+    "SpawnPerUnit": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "UnitScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "MovementTolerance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIgnoreSpawnRateWhenMoving": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

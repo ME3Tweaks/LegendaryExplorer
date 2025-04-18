@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Position": {
+      "type": null,
+      "documentation": null
+    },
+    "Quaternion": {
+      "type": null,
+      "documentation": null
+    },
+    "LinVel": {
+      "type": null,
+      "documentation": null
+    },
+    "AngVel": {
+      "type": null,
+      "documentation": null
+    },
+    "bNewData": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

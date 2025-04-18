@@ -1,0 +1,1134 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_TestStateNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_TestInputNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_Substate": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_TimeElapsedInState": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_LobbyLongWaitingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_GameLongActionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_JoinFailureReason": {
+      "type": "JoinFailureReason",
+      "documentation": null
+    },
+    "m_MatchMakingTimeStatus": {
+      "type": "SFXOnlineGameStatus",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DebugTestInput": {
+      "documentation": null,
+      "signature_members": {
+        "InputType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DebugTestInput(Name InputType)"
+    },
+    "DebugValidateStates": {
+      "documentation": null,
+      "signature_members": {
+        "writeToFile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DebugValidateStates(optional bool writeToFile)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetStateStr": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStateStr()"
+    },
+    "GM_CancelSearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_CancelSearch()"
+    },
+    "GM_HasCreatedGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasCreatedGame()"
+    },
+    "GM_HasFailedConnecting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedConnecting()"
+    },
+    "GM_HasFailedConnecting_QM": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedConnecting_QM()"
+    },
+    "GM_HasFailedJoiningFullGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningFullGame()"
+    },
+    "GM_HasFailedJoiningGameMissingDLCInvitee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningGameMissingDLCInvitee()"
+    },
+    "GM_HasFailedJoiningGameMissingDLCInviter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningGameMissingDLCInviter()"
+    },
+    "GM_HasFailedJoiningGameProtocolMismatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningGameProtocolMismatch()"
+    },
+    "GM_HasFailedJoiningInviterLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningInviterLeft()"
+    },
+    "GM_HasJoinedGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasJoinedGame()"
+    },
+    "GM_IsConnectionErrorSilent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsConnectionErrorSilent()"
+    },
+    "GM_IsInInviteFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInInviteFlow()"
+    },
+    "GM_IsInMPMapAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInMPMapAction()"
+    },
+    "GM_IsInMultiplayerFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInMultiplayerFlow()"
+    },
+    "GM_IsInMultiplayerGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInMultiplayerGame()"
+    },
+    "GM_IsLeavingGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsLeavingGame()"
+    },
+    "GM_OnCreateGameSent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnCreateGameSent()"
+    },
+    "GM_OnDisconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnDisconnect()"
+    },
+    "GM_OnEnterMPFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnEnterMPFlow()"
+    },
+    "GM_OnEnterMPGameplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnEnterMPGameplay()"
+    },
+    "GM_OnEnterMPGameResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnEnterMPGameResults()"
+    },
+    "GM_OnExitMPFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnExitMPFlow()"
+    },
+    "GM_OnGameCreated": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccess": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnGameCreated(bool bSuccess)"
+    },
+    "GM_OnGameJoined": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccess": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnGameJoined(bool bSuccess)"
+    },
+    "GM_OnGameJoinFailure": {
+      "documentation": null,
+      "signature_members": {
+        "Reason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnGameJoinFailure(JoinFailureReason Reason)"
+    },
+    "GM_OnHostAddressResolved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnHostAddressResolved()"
+    },
+    "GM_OnHostMigrationEnded": {
+      "documentation": null,
+      "signature_members": {
+        "bInLobby": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnHostMigrationEnded(bool bInLobby)"
+    },
+    "GM_OnHostMigrationStarted": {
+      "documentation": null,
+      "signature_members": {
+        "bLocalPlayerIsHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnHostMigrationStarted(bool bLocalPlayerIsHost)"
+    },
+    "GM_OnInviteAborted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteAborted()"
+    },
+    "GM_OnInviteAccepted": {
+      "documentation": null,
+      "signature_members": {
+        "invitedInactiveUser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteAccepted(bool invitedInactiveUser)"
+    },
+    "GM_OnInviteErrorNotified": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteErrorNotified()"
+    },
+    "GM_OnInviteProceed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteProceed()"
+    },
+    "GM_OnLeaveGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnLeaveGame()"
+    },
+    "GM_OnLeaveGameComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnLeaveGameComplete()"
+    },
+    "GM_OnNetworkErrorDismissed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnNetworkErrorDismissed()"
+    },
+    "GM_OnP2PConnectionFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnP2PConnectionFailure()"
+    },
+    "GM_OnProfileSelected": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnProfileSelected()"
+    },
+    "GM_OnQuickMatchSent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnQuickMatchSent()"
+    },
+    "GM_OnQuickMatchUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "qmEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnQuickMatchUpdate(SFXOnlineEvent_QuickMatch qmEvent)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "GM_OnQuickMatchUpdateEvent": {
+      "documentation": null,
+      "signature_members": {
+        "qmEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GM_OnQuickMatchUpdateEvent(SFXOnlineEvent_QuickMatch qmEvent)"
+    },
+    "GM_OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GM_OnTick(SFXOnlineEvent oEvent)"
+    },
+    "MatchMakingTimeStatusUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "NewStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MatchMakingTimeStatusUpdate(SFXOnlineGameStatus NewStatus)"
+    }
+  },
+  "states": {
+    "MMS_ShowNetworkError": {
+      "functions": {
+        "GM_OnNetworkErrorDismissed": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnExitMPFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_HostMigrating": {
+      "functions": {
+        "GM_OnHostMigrationEnded": {
+          "documentation": null,
+          "signature_members": {
+            "bInLobby": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ResolvingHostAddress_Invite": {
+      "functions": {
+        "GM_IsInInviteFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnHostAddressResolved": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_AcceptedInvite": {
+      "functions": {
+        "GM_IsInInviteFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnGameJoinFailure": {
+          "documentation": null,
+          "signature_members": {
+            "Reason": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnGameJoined": {
+          "documentation": null,
+          "signature_members": {
+            "bSuccess": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ResolvingInvite_InactiveUser": {
+      "functions": {
+        "GM_IsConnectionErrorSilent": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnProfileSelected": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnDisconnect": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ResolvingInvite": {
+      "functions": {},
+      "documentation": null
+    },
+    "MMS_Invite": {
+      "functions": {
+        "GM_OnLeaveGameComplete": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInInviteFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnInviteAborted": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_LeavingGame": {
+      "functions": {
+        "GM_IsInMultiplayerGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnLeaveGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsLeavingGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_MapBeingPlayedAsClient": {
+      "functions": {
+        "GM_OnEnterMPGameResults": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMPMapAction": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ConnectingToHost_Migration": {
+      "functions": {
+        "GM_OnHostMigrationStarted": {
+          "documentation": null,
+          "signature_members": {
+            "bLocalPlayerIsHost": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ConnectingToHost_Invite": {
+      "functions": {
+        "GM_IsInInviteFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ConnectingToHost_QM": {
+      "functions": {
+        "GM_OnLeaveGameComplete": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnP2PConnectionFailure": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ConnectingToHost": {
+      "functions": {
+        "GM_OnLeaveGameComplete": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnP2PConnectionFailure": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasJoinedGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_CancelSearch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnHostMigrationEnded": {
+          "documentation": null,
+          "signature_members": {
+            "bInLobby": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnHostMigrationStarted": {
+          "documentation": null,
+          "signature_members": {
+            "bLocalPlayerIsHost": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnEnterMPGameplay": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnEnterMPFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ResolvingHostAddress_Migration": {
+      "functions": {
+        "GM_OnHostAddressResolved": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ResolvingHostAddress_QM": {
+      "functions": {
+        "GM_CancelSearch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnHostAddressResolved": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ResolvingHostAddress": {
+      "functions": {
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_FailConnecting_QM": {
+      "functions": {
+        "GM_OnQuickMatchSent": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasFailedConnecting_QM": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_FailJoiningGame": {
+      "functions": {
+        "GM_HasFailedConnecting": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnInviteErrorNotified": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasFailedJoiningGameMissingDLCInviter": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasFailedJoiningGameMissingDLCInvitee": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasFailedJoiningGameProtocolMismatch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasFailedJoiningInviterLeft": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasFailedJoiningFullGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_JoinConnectionFailed": {
+      "functions": {
+        "GM_HasFailedConnecting": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_LobbyClient": {
+      "functions": {
+        "GM_OnLeaveGameComplete": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnEnterMPGameplay": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasJoinedGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ClientConnected": {
+      "functions": {
+        "GM_OnHostMigrationStarted": {
+          "documentation": null,
+          "signature_members": {
+            "bLocalPlayerIsHost": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_ClientState": {
+      "functions": {
+        "GM_OnHostMigrationStarted": {
+          "documentation": null,
+          "signature_members": {
+            "bLocalPlayerIsHost": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_MapBeingPlayedAsHost": {
+      "functions": {
+        "GM_OnEnterMPGameResults": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMPMapAction": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_LobbyHost": {
+      "functions": {
+        "GM_OnEnterMPGameplay": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_HasCreatedGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_CreateGameSent": {
+      "functions": {},
+      "documentation": null
+    },
+    "MMS_QuickMatchSent": {
+      "functions": {
+        "GM_OnGameJoined": {
+          "documentation": null,
+          "signature_members": {
+            "bSuccess": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_MatchRequestSent": {
+      "functions": {
+        "GM_CancelSearch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnGameCreated": {
+          "documentation": null,
+          "signature_members": {
+            "bSuccess": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_PreMatch": {
+      "functions": {
+        "GM_OnExitMPFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMultiplayerGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnCreateGameSent": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnQuickMatchSent": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MMS_Inactive": {
+      "functions": {
+        "GM_OnEnterMPFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMultiplayerFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMultiplayerGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnDisconnect": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnCreateGameSent": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnQuickMatchSent": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MatchMakingMState": {
+      "functions": {
+        "GM_OnTick": {
+          "documentation": null,
+          "signature_members": {
+            "oEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnEnterMPGameResults": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnEnterMPFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnEnterMPGameplay": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnInviteProceed": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMultiplayerFlow": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsInMultiplayerGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnInviteAccepted": {
+          "documentation": null,
+          "signature_members": {
+            "invitedInactiveUser": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnDisconnect": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnQuickMatchUpdate": {
+          "documentation": null,
+          "signature_members": {
+            "qmEvent": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnLeaveGameComplete": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_OnLeaveGame": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GM_IsWaitingForNetwork": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "nmPrevious": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

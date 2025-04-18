@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "PlayerList": {
+      "type": "PlayerInformation",
+      "documentation": null
+    },
+    "EventDescList": {
+      "type": "string",
+      "documentation": null
+    },
+    "EventNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "GameplayEvents": {
+      "type": "GameplayEvent",
+      "documentation": null
+    },
+    "PlayerEvents": {
+      "type": "PlayerEvent",
+      "documentation": null
+    },
+    "GameplaySessionStartTime": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameplaySessionID": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "bGameplaySessionInProgress": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

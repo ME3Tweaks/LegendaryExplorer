@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PCT_Death": {
+      "value": 0,
+      "documentation": null
+    },
+    "PCT_ThisPlayerRevive": {
+      "value": 1,
+      "documentation": null
+    },
+    "PCT_OtherPlayerRevive": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

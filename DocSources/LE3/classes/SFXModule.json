@@ -1,0 +1,201 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ModuleOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ModuleNetIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bNetInitial": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetOwner": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNetVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTickWhilePaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUserCreated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostAdd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostAdd()"
+    },
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "HandlePreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePreBeginPlay()"
+    },
+    "HandlePreRemove": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePreRemove()"
+    },
+    "HandleSetInitialEditorState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSetInitialEditorState()"
+    },
+    "IsClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsClient()"
+    },
+    "IsServer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsServer()"
+    },
+    "IsServerOrStandalone": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsServerOrStandalone()"
+    },
+    "ModulePostAdd": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModulePostAdd(Actor oHost)"
+    },
+    "ModulePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModulePostBeginPlay(Actor oHost)"
+    },
+    "ModulePreBeginPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModulePreBeginPlay(Actor oHost)"
+    },
+    "ModulePreRemove": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModulePreRemove(Actor oHost)"
+    },
+    "ModuleSetInitialEditorState": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModuleSetInitialEditorState(Actor oHost)"
+    },
+    "ReInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReInitialize(Actor oHost)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DebugShowDestructibles": {
+      "documentation": null,
+      "signature_members": {
+        "CM": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugShowDestructibles(CheatManager CM)"
+    },
+    "GetActorRemoteRole": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENetRole",
+      "signature": "ENetRole GetActorRemoteRole()"
+    },
+    "GetActorRole": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENetRole",
+      "signature": "ENetRole GetActorRole()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

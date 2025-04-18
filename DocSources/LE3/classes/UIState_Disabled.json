@@ -1,0 +1,43 @@
+{
+  "parent": "UIState",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "ActivateState": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateState(UIScreenObject Target, int PlayerIndex)"
+    },
+    "IsStateAllowed": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "NewState": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsStateAllowed(UIScreenObject Target, UIState NewState, int PlayerIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

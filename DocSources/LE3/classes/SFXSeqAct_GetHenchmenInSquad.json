@@ -1,0 +1,67 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContentLiveKismet",
+  "variables": {
+    "Hench1": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "Hench2": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "hench_liara": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_kaidan": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_ashley": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_garrus": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_edi": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_prothean": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_marine": {
+      "type": "float",
+      "documentation": null
+    },
+    "hench_tali": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetPriority": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPriority(Pawn Henchman)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

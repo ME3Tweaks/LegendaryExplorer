@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "Resistance_Full": {
+      "value": 0,
+      "documentation": null
+    },
+    "Resistance_Partial": {
+      "value": 1,
+      "documentation": null
+    },
+    "Resistance_None": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

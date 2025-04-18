@@ -1,0 +1,55 @@
+{
+  "parent": "BioPropertyEditorBaseNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_sValueString": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sDeliminator": {
+      "type": "string",
+      "documentation": null
+    },
+    "Base": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "getDisplayText": {
+      "documentation": null,
+      "signature_members": {
+        "selectable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string getDisplayText(bool selectable)"
+    },
+    "MakeNodes": {
+      "documentation": null,
+      "signature_members": {
+        "thisOneOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MakeNodes(string thisOneOnly)"
+    },
+    "SetObject": {
+      "documentation": null,
+      "signature_members": {
+        "Obj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObject(Object Obj)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

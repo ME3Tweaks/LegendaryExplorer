@@ -1,0 +1,51 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "CoverLinkRefs": {
+      "type": "ActorReference",
+      "documentation": null
+    },
+    "AutoSelectRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "AutoSelectHeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisableGroup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableGroup()"
+    },
+    "EnableGroup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableGroup()"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "ToggleGroup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleGroup()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

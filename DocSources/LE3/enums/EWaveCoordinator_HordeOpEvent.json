@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EW_StartWaves": {
+      "value": 0,
+      "documentation": null
+    },
+    "EW_BeginWave": {
+      "value": 1,
+      "documentation": null
+    },
+    "EW_BeginSupplyWave": {
+      "value": 2,
+      "documentation": null
+    },
+    "EW_FinishWave": {
+      "value": 3,
+      "documentation": null
+    },
+    "EW_JoinInProgress": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

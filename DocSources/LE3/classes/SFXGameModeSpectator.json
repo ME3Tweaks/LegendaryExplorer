@@ -1,0 +1,55 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "SpectatorCam": {
+      "type": "SFXCameraMode_Spectator",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "ValidateTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ValidateTarget()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

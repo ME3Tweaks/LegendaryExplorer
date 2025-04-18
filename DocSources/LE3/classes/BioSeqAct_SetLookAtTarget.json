@@ -1,0 +1,45 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Actors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "LookAtTarget": {
+      "type": "Actor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

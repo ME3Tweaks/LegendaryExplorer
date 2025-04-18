@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "CoplanarTolerance": {
+      "type": null,
+      "documentation": null
+    },
+    "ExecutionTimeDivisor": {
+      "type": null,
+      "documentation": null
+    },
+    "bDebugMode": {
+      "type": null,
+      "documentation": null
+    },
+    "bStatsEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bGatherBSPSurfacesAcrossComponents": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseDeterministicLighting": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseImmediateImport": {
+      "type": null,
+      "documentation": null
+    },
+    "bImmediateProcessMappings": {
+      "type": null,
+      "documentation": null
+    },
+    "bSortMappings": {
+      "type": null,
+      "documentation": null
+    },
+    "bDumpBinaryFiles": {
+      "type": null,
+      "documentation": null
+    },
+    "bDebugMaterials": {
+      "type": null,
+      "documentation": null
+    },
+    "bPadMappings": {
+      "type": null,
+      "documentation": null
+    },
+    "bDebugPaddings": {
+      "type": null,
+      "documentation": null
+    },
+    "bOnlyCalcDebugTexelMappings": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseRandomColors": {
+      "type": null,
+      "documentation": null
+    },
+    "bColorBordersGreen": {
+      "type": null,
+      "documentation": null
+    },
+    "bColorByExecutionTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

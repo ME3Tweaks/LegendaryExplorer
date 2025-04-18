@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PlotStateID": {
+      "type": null,
+      "documentation": null
+    },
+    "BrainThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "HeartThreshold": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

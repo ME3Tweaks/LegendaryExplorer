@@ -1,0 +1,343 @@
+{
+  "parent": "GFxValue",
+  "package": "SFXGame",
+  "variables": {
+    "m_aPowerStatePaths": {
+      "type": "string",
+      "documentation": null
+    },
+    "oMappedIcon": {
+      "type": "SFXPowerWheelButtonIcon",
+      "documentation": null
+    },
+    "sPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "sID": {
+      "type": "string",
+      "documentation": null
+    },
+    "sIconResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "sName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "sMappedBGPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "CurrentInfoText": {
+      "type": "string",
+      "documentation": null
+    },
+    "pPower": {
+      "type": "SFXPowerCustomActionBase",
+      "documentation": null
+    },
+    "pPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "nmPowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "fBoundary": {
+      "type": "float",
+      "documentation": null
+    },
+    "nIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "nCooldownValue": {
+      "type": "int",
+      "documentation": null
+    },
+    "bHenchIcon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayedFlash": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMapped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDragHover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FlashWhenTextChanges": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eState": {
+      "type": "SFXPowerWheelPowerState",
+      "documentation": null
+    },
+    "eDesiredState": {
+      "type": "SFXPowerWheelPowerState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activate()"
+    },
+    "AS_BeginDragging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_BeginDragging()"
+    },
+    "AS_GetDropTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string AS_GetDropTarget()"
+    },
+    "AS_StopDragging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_StopDragging()"
+    },
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "ClearIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearIcon()"
+    },
+    "CooldownComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CooldownComplete()"
+    },
+    "EvaluateForTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "sOutInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EvaluateForTarget(Actor pTarget, out string sOutInfo)"
+    },
+    "Flash": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Flash()"
+    },
+    "GetCooldownPercentage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCooldownPercentage()"
+    },
+    "GetInfoTextPath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetInfoTextPath()"
+    },
+    "GetStatePath": {
+      "documentation": null,
+      "signature_members": {
+        "ePathState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStatePath(optional SFXPowerWheelPowerState ePathState)"
+    },
+    "Hide": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Hide()"
+    },
+    "IsUsable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUsable()"
+    },
+    "MadeVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bIconIsRendering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MadeVisible(bool bIconIsRendering)"
+    },
+    "Map": {
+      "documentation": null,
+      "signature_members": {
+        "eMapIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Map(SFXPowerWheelMapButtonIcon eMapIcon)"
+    },
+    "SetDragHover": {
+      "documentation": null,
+      "signature_members": {
+        "bHover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDragHover(bool bHover)"
+    },
+    "SetHover": {
+      "documentation": null,
+      "signature_members": {
+        "bHover": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHover(bool bHover, bool bSkipTransition)"
+    },
+    "SetIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nNewIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResourcePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIcon(int nNewIcon, const string sIconResourcePath)"
+    },
+    "SetPower": {
+      "documentation": null,
+      "signature_members": {
+        "pNewPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPower(SFXPowerCustomActionBase pNewPower)"
+    },
+    "SetSelected": {
+      "documentation": null,
+      "signature_members": {
+        "bSelect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSelected(bool bSelect)"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "eNewState": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetState(SFXPowerWheelPowerState eNewState, optional bool bForceUpdate)"
+    },
+    "SetStateDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetStateDisplay()"
+    },
+    "TickCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TickCooldown()"
+    },
+    "UpdateCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCooldown(optional bool bForceUpdate)"
+    },
+    "UpdateDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateDisplay()"
+    },
+    "UpdateInfoText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateInfoText()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

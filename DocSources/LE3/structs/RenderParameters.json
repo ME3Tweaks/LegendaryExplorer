@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "DrawCoords": {
+      "type": null,
+      "documentation": null
+    },
+    "OverideDrawColor": {
+      "type": null,
+      "documentation": null
+    },
+    "Scaling": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawFont": {
+      "type": null,
+      "documentation": null
+    },
+    "ImageExtent": {
+      "type": null,
+      "documentation": null
+    },
+    "SpacingAdjust": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawX": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawY": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawXL": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawYL": {
+      "type": null,
+      "documentation": null
+    },
+    "ViewportHeight": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseOverrideColor": {
+      "type": null,
+      "documentation": null
+    },
+    "TextAlignment": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

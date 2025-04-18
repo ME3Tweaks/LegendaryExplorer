@@ -1,0 +1,142 @@
+{
+  "parent": "UIDataStore_StringBase",
+  "package": "Engine",
+  "variables": {
+    "InputAliases": {
+      "type": "UIDataStoreInputAlias",
+      "documentation": null
+    },
+    "InputAliasLookupMap": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindInputAliasIndex": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindInputAliasIndex(Name DesiredAlias)"
+    },
+    "GetAliasFontMarkup": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": null,
+          "documentation": null
+        },
+        "OverridePlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAliasFontMarkup(Name DesiredAlias, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasFontMarkupByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "AliasIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "OverridePlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAliasFontMarkupByIndex(int AliasIndex, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyData": {
+      "documentation": null,
+      "signature_members": {
+        "out_InputKeyData": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredAlias": {
+          "type": null,
+          "documentation": null
+        },
+        "OverridePlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAliasInputKeyData(out RawInputKeyEventData out_InputKeyData, Name DesiredAlias, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyDataByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "out_InputKeyData": {
+          "type": null,
+          "documentation": null
+        },
+        "AliasIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "OverridePlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAliasInputKeyDataByIndex(out RawInputKeyEventData out_InputKeyData, int AliasIndex, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyName": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": null,
+          "documentation": null
+        },
+        "OverridePlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetAliasInputKeyName(Name DesiredAlias, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyNameByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "AliasIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "OverridePlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetAliasInputKeyNameByIndex(int AliasIndex, optional EInputPlatformType OverridePlatform)"
+    },
+    "HasAliasMappingForPlatform": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredPlatform": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasAliasMappingForPlatform(Name DesiredAlias, EInputPlatformType DesiredPlatform)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

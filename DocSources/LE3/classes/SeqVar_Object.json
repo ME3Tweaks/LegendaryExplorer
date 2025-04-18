@@ -1,0 +1,63 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "SupportedClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ActorLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ObjValue": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_bBioPauseAmbPerfOnStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioUnpauseAmbPerfOnEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioRestoreInitialPoseOnEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioSkipInitialPlacement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioRestoreInitialLocationOnEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBioDisableLookAt": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjectValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Object",
+      "signature": "Object GetObjectValue()"
+    },
+    "SetObjectValue": {
+      "documentation": null,
+      "signature_members": {
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectValue(Object NewValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

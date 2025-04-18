@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackFloatBase",
+  "package": "Engine",
+  "variables": {
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

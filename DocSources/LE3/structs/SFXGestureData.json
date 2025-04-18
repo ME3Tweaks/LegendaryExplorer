@@ -1,0 +1,89 @@
+{
+  "Members": {
+    "aChainedGestures": {
+      "type": null,
+      "documentation": null
+    },
+    "nmPoseSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmPoseAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "nmGestureSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmGestureAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "nmTransitionSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmTransitionAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "fPlayRate": {
+      "type": null,
+      "documentation": null
+    },
+    "fStartOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "fStartBlendDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndBlendDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "fWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "fTransBlendTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bInvalidData": {
+      "type": null,
+      "documentation": null
+    },
+    "bOneShotAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "bChainToPrevious": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlayUntilNext": {
+      "type": null,
+      "documentation": null
+    },
+    "bTerminateAllGestures": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseDynAnimSets": {
+      "type": null,
+      "documentation": null
+    },
+    "bSnapToPose": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

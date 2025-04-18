@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "UseConstant": {
+      "type": null,
+      "documentation": null
+    },
+    "ConstantX": {
+      "type": null,
+      "documentation": null
+    },
+    "ConstantY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

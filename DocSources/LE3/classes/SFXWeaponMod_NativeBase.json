@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PickupFactoryMesh": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

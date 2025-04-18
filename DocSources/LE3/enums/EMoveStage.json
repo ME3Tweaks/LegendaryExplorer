@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EMS_Sync": {
+      "value": 0,
+      "documentation": null
+    },
+    "EMS_Start": {
+      "value": 1,
+      "documentation": null
+    },
+    "EMS_Loop": {
+      "value": 2,
+      "documentation": null
+    },
+    "EMS_End": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

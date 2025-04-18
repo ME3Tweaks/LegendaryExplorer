@@ -1,0 +1,61 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "BlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "Default2LeanBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Lean2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2PopupBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Popup2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2PeekBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Peek2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2PartialLeanBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "PartialLean2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2PartialPopUpBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "PartialPopUp2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Default2AimbackBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Aimback2DefaultBlendDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

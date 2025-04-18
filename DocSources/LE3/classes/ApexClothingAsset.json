@@ -1,0 +1,57 @@
+{
+  "parent": "ApexAsset",
+  "package": "Engine",
+  "variables": {
+    "MApexAsset": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "UVChannelForTangentUpdate": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxDistanceBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ContinuousRotationThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "ContinuousDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodWeightsMaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodWeightsDistanceWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodWeightsBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodWeightsBenefitsBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseHardwareCloth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFallbackSkinning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSlowStart": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

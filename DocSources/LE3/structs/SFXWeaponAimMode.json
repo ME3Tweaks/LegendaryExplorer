@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ScopeResource": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoomFOV": {
+      "type": null,
+      "documentation": null
+    },
+    "FrictionMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "AdhesionMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "bScoped": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

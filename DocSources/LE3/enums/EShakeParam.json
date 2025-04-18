@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ESP_OffsetRandom": {
+      "value": 0,
+      "documentation": null
+    },
+    "ESP_OffsetZero": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,93 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapStrRefToAnimData": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_StartingList": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_EntryList": {
+      "type": "BioDialogEntryNode",
+      "documentation": null
+    },
+    "m_ReplyList": {
+      "type": "BioDialogReplyNode",
+      "documentation": null
+    },
+    "m_aSpeakerList": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_aScriptList": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_aStageDirections": {
+      "type": "BioStageDirection",
+      "documentation": null
+    },
+    "m_aMaleFaceSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_aFemaleFaceSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_aMaleSoundObjects": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_aFemaleSoundObjects": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "MatineeSequence": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "FaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_pNonSpeakerFaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_pRubberMouthAnimSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_nResRefID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bOneLinerConversation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerSexIsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayerIsFemale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasSpeechGrammar": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsesRubberMouth": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

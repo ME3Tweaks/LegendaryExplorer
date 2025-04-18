@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "TargetPerBoneWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetRequiredBones": {
+      "type": null,
+      "documentation": null
+    },
+    "InitTargetStartBone": {
+      "type": null,
+      "documentation": null
+    },
+    "OldStartBone": {
+      "type": null,
+      "documentation": null
+    },
+    "InitPerBoneIncrease": {
+      "type": null,
+      "documentation": null
+    },
+    "OldBoneIncrease": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

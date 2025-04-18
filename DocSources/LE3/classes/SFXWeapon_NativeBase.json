@@ -1,0 +1,219 @@
+{
+  "parent": "Weapon",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentSpareAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "AmmoUsedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bWeaponExpanded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInstantExpansion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceReplayAnimation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanDropWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanDropAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawingWeaponBlendOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReloadWeaponBlendOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsZoomed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBlindUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInfiniteAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowGlowInZoom": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGlowOnlyThroughSmoke": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressAudio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "VocalizationType": {
+      "type": "ESFXVocalizationWeapon",
+      "documentation": null
+    },
+    "FizzleCount": {
+      "type": "byte",
+      "documentation": null
+    },
+    "CharacterSlot": {
+      "type": "EAttachSlot",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalculateCoverLeanOutOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Offset": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CalculateCoverLeanOutOffset(out Vector Offset, ECoverDirection Direction, ECoverType Type)"
+    },
+    "CalcWeaponFire_Native": {
+      "documentation": null,
+      "signature_members": {
+        "StartTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "EndTrace": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactList": {
+          "type": null,
+          "documentation": null
+        },
+        "PenetrationDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ImpactInfo",
+      "signature": "ImpactInfo CalcWeaponFire_Native(out Vector StartTrace, out Vector EndTrace, out array<ImpactInfo> ImpactList, float PenetrationDistance, optional Vector Extent)"
+    },
+    "CanPartialLean": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanPartialLean()"
+    },
+    "DummyFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "AttachedTo": {
+          "type": null,
+          "documentation": null
+        },
+        "AimErrorDeg": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DummyFire(byte FireModeNum, Vector TargetLoc, optional Actor AttachedTo, optional float AimErrorDeg, optional Actor TargetActor)"
+    },
+    "FireAmmunition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireAmmunition()"
+    },
+    "GetPenetrationDepth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPenetrationDepth()"
+    },
+    "HasLoopingFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasLoopingFire()"
+    },
+    "IsZoomed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsZoomed()"
+    },
+    "ProcessInstantHit_Internal": {
+      "documentation": null,
+      "signature_members": {
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "NumHits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessInstantHit_Internal(byte FiringMode, ImpactInfo Impact, optional int NumHits)"
+    },
+    "WeaponStoppedFiring": {
+      "documentation": null,
+      "signature_members": {
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponStoppedFiring(byte FiringMode)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "MinScale": {
+      "type": null,
+      "documentation": null
+    },
+    "AutoScaleMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

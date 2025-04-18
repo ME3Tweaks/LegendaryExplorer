@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PackageName": {
+      "type": null,
+      "documentation": null
+    },
+    "HairMorphSpecMaskName": {
+      "type": null,
+      "documentation": null
+    },
+    "HairComponents": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

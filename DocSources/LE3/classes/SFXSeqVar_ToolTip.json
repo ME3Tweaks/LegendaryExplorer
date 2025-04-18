@@ -1,0 +1,13 @@
+{
+  "parent": "SeqVar_Int",
+  "package": "SFXGame",
+  "variables": {
+    "TipText": {
+      "type": "ETargetTipText",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

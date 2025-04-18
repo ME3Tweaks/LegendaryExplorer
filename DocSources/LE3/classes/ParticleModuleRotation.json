@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleRotationBase",
+  "package": "Engine",
+  "variables": {
+    "StartRotation": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

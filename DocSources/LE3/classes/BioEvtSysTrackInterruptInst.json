@@ -1,0 +1,13 @@
+{
+  "parent": "SFXGameInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_pConvCont": {
+      "type": "BioConversationController",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

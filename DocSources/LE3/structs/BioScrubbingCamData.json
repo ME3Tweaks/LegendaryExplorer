@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "vCamPos": {
+      "type": null,
+      "documentation": null
+    },
+    "rCamRot": {
+      "type": null,
+      "documentation": null
+    },
+    "nmStageCam": {
+      "type": null,
+      "documentation": null
+    },
+    "fFov": {
+      "type": null,
+      "documentation": null
+    },
+    "fNearPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "fAspectRatio": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

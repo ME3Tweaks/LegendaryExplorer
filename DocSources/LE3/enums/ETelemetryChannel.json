@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "Channel_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "Channel_Anonymous": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

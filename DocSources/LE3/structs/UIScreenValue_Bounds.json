@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Value": {
+      "type": null,
+      "documentation": null
+    },
+    "ScaleType": {
+      "type": null,
+      "documentation": null
+    },
+    "bInvalidated": {
+      "type": null,
+      "documentation": null
+    },
+    "AspectRatioMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

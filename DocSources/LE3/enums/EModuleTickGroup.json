@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "MTG_Main": {
+      "value": 0,
+      "documentation": null
+    },
+    "MTG_Location": {
+      "value": 1,
+      "documentation": null
+    },
+    "MTG_Parameters": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

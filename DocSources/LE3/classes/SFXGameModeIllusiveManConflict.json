@@ -1,0 +1,138 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "PainShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "TargetOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DesignerSeq": {
+      "type": "SFXSeqAct_BeginIllusiveManConflict",
+      "documentation": null
+    },
+    "CameraMode": {
+      "type": "SFXCameraMode_IllusiveManConflict",
+      "documentation": null
+    },
+    "Difficulty": {
+      "type": "int",
+      "documentation": null
+    },
+    "AccumulatedMovement": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPushing": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "FireWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireWeapon()"
+    },
+    "AndersonTargetLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector AndersonTargetLocation()"
+    },
+    "DecreaseDifficulty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecreaseDifficulty()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetSpringStiffness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSpringStiffness()"
+    },
+    "IllusiveManTargetLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector IllusiveManTargetLocation()"
+    },
+    "IncreaseDifficulty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncreaseDifficulty()"
+    },
+    "InitializeMiniGame": {
+      "documentation": null,
+      "signature_members": {
+        "Seq": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeMiniGame(SFXSeqAct_BeginIllusiveManConflict Seq)"
+    },
+    "PollInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PollInput()"
+    },
+    "StartPush": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartPush()"
+    },
+    "UpdateInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateInput()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

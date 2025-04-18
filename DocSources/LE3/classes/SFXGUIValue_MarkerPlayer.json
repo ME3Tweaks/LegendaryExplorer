@@ -1,0 +1,105 @@
+{
+  "parent": "SFXGUIValue_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "Player": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "TimeToHideDeathIconAt": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemainingTimeUntilShowTitle": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWorldDistanceForVisibility": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxScreenDistanceFromCenter": {
+      "type": "float",
+      "documentation": null
+    },
+    "LingeringDeathIconTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TitleTextDelayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PreviousIconIsVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PreviousPlayerIsDead": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetPlayerTitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetPlayerTitle()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "IsTargetInAreaOfInterest": {
+      "documentation": null,
+      "signature_members": {
+        "TargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTargetInAreaOfInterest(Vector TargetLocation, const out SFXGUISceneView SceneView)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(const out SFXGUISceneView SceneView)"
+    },
+    "UpdateIcon": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIsDown": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIsDead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateIcon(bool PlayerIsDown, bool PlayerIsDead)"
+    },
+    "DeferredMarkerTextUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeferredMarkerTextUpdate()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Params": {
+      "type": null,
+      "documentation": null
+    },
+    "pJobId": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_object": {
+      "type": null,
+      "documentation": null
+    },
+    "m_count": {
+      "type": null,
+      "documentation": null
+    },
+    "m_statid": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

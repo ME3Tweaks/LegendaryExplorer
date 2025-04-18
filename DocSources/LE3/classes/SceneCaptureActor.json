@@ -1,0 +1,25 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "SceneCapture": {
+      "type": "SceneCaptureComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

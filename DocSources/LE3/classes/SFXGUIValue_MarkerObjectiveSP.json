@@ -1,0 +1,27 @@
+{
+  "parent": "SFXGUIValue_MarkerObjective",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "FadeOutMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutMarker()"
+    },
+    "PulseMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PulseMarker()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

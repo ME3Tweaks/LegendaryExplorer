@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "ChoiceEntry": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotPurchaseID": {
+      "type": null,
+      "documentation": null
+    },
+    "LargeImage": {
+      "type": null,
+      "documentation": null
+    },
+    "SmallImage": {
+      "type": null,
+      "documentation": null
+    },
+    "PVsToIncrement": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomTokens": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemConditionals": {
+      "type": null,
+      "documentation": null
+    },
+    "BaseCost": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotUnlockID": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotUnlockConditionalID": {
+      "type": null,
+      "documentation": null
+    },
+    "ArmorID": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotPurchaseInt": {
+      "type": null,
+      "documentation": null
+    },
+    "Priority": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentModRank": {
+      "type": null,
+      "documentation": null
+    },
+    "Value": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsGameEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

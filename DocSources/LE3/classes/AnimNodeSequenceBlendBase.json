@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNodeSequence",
+  "package": "Engine",
+  "variables": {
+    "Anims": {
+      "type": "AnimBlendInfo",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

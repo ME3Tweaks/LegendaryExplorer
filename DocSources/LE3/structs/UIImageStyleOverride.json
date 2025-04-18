@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Formatting": {
+      "type": null,
+      "documentation": null
+    },
+    "Coordinates": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideCoordinates": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideFormatting": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

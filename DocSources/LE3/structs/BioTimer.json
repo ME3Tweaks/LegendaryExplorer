@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "OnTimer": {
+      "type": null,
+      "documentation": null
+    },
+    "sTimerName": {
+      "type": null,
+      "documentation": null
+    },
+    "Params": {
+      "type": null,
+      "documentation": null
+    },
+    "fTickTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

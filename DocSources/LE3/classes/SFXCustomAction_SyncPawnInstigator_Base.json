@@ -1,0 +1,227 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "MarkerOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SyncPartner": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "SyncActionName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InteractionStartTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "PartnerCustomAction": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPartnerDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "SyncCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bFinishedCustomAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasStartedInteraction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMoveSyncPawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHideTargetWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectsFriendlies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockTargetRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisablePartnerCollisionOnMove": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreCameraHiding": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanMoveToMarker": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPartnerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanMoveToMarker(BioPawn SyncPartnerPawn)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteraction()"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "CanInteractWithPawn": {
+      "documentation": null,
+      "signature_members": {
+        "OtherPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanInteractWithPawn(BioPawn OtherPawn)"
+    },
+    "CheckReadyToStartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckReadyToStartInteraction()"
+    },
+    "ClientMoveToMarkersAllowedDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientMoveToMarkersAllowedDelay()"
+    },
+    "ClientTeleportToMarkers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientTeleportToMarkers()"
+    },
+    "DebugSocketRelativeLocation": {
+      "documentation": null,
+      "signature_members": {
+        "InSocketName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugSocketRelativeLocation(Name InSocketName)"
+    },
+    "GetVictimPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetVictimPawn()"
+    },
+    "InteractionStartTimedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InteractionStartTimedOut()"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "IsReadyToStartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReadyToStartInteraction()"
+    },
+    "MessageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MessageEvent(Name EventName, Object Sender)"
+    },
+    "MoveToMarkers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveToMarkers()"
+    },
+    "NonSyncedAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NonSyncedAction()"
+    },
+    "OnPartnerLeavingCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPartnerLeavingCustomAction()"
+    },
+    "OnPartnerReachedDestination": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPartnerReachedDestination()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

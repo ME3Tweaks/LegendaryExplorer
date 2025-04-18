@@ -1,0 +1,53 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "FacePosX": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "FaceNegX": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "FacePosY": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "FaceNegY": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "FacePosZ": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "FaceNegZ": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumMips": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsCubemapValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

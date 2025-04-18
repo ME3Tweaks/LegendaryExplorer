@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "OPAS_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPAS_Read": {
+      "value": 1,
+      "documentation": null
+    },
+    "OPAS_Write": {
+      "value": 2,
+      "documentation": null
+    },
+    "OPAS_FinishedRead": {
+      "value": 3,
+      "documentation": null
+    },
+    "OPAS_FinishedWrite": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "PathNode",
+  "package": "SFXGame",
+  "variables": {
+    "bClaimed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

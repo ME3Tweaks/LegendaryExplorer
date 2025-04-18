@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "bTakeImpactDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlaySoundEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlayParticleEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "bDoNotTimeOut": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoKillDummy": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

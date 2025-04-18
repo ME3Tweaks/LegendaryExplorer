@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "COLUMNHEADER_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "COLUMNHEADER_PrimarySort": {
+      "value": 1,
+      "documentation": null
+    },
+    "COLUMNHEADER_SecondarySort": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

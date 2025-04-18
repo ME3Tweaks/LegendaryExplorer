@@ -1,0 +1,73 @@
+{
+  "Members": {
+    "Default": {
+      "type": null,
+      "documentation": null
+    },
+    "Nothing": {
+      "type": null,
+      "documentation": null
+    },
+    "Pawn": {
+      "type": null,
+      "documentation": null
+    },
+    "Vehicle": {
+      "type": null,
+      "documentation": null
+    },
+    "Water": {
+      "type": null,
+      "documentation": null
+    },
+    "GameplayPhysics": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectPhysics": {
+      "type": null,
+      "documentation": null
+    },
+    "Untitled1": {
+      "type": null,
+      "documentation": null
+    },
+    "Untitled2": {
+      "type": null,
+      "documentation": null
+    },
+    "Untitled3": {
+      "type": null,
+      "documentation": null
+    },
+    "Untitled4": {
+      "type": null,
+      "documentation": null
+    },
+    "Cloth": {
+      "type": null,
+      "documentation": null
+    },
+    "FluidDrain": {
+      "type": null,
+      "documentation": null
+    },
+    "SoftBody": {
+      "type": null,
+      "documentation": null
+    },
+    "FracturedMeshPart": {
+      "type": null,
+      "documentation": null
+    },
+    "BlockingVolume": {
+      "type": null,
+      "documentation": null
+    },
+    "DeadPawn": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

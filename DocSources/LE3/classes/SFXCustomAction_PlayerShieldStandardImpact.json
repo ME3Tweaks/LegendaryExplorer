@@ -1,0 +1,56 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Anim1": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "RandPercent": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "EndAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndAction()"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

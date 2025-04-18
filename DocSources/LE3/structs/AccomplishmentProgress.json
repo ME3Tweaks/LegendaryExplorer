@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkedProfileSetting": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

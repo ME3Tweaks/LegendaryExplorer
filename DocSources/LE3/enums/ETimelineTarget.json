@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "TRG_Source": {
+      "value": 0,
+      "documentation": null
+    },
+    "TRG_Target": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

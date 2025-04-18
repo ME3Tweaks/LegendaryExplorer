@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ViewProjectionMatrix": {
+      "type": null,
+      "documentation": null
+    },
+    "WorldspaceViewLocation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

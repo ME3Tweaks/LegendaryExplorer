@@ -1,0 +1,13 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "RadialBlur": {
+      "type": "RadialBlurComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

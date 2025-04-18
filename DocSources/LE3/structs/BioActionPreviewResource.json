@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "nmAction": {
+      "type": null,
+      "documentation": null
+    },
+    "pPartSysCmp": {
+      "type": null,
+      "documentation": null
+    },
+    "pAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimation": {
+      "type": null,
+      "documentation": null
+    },
+    "bEquipped": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

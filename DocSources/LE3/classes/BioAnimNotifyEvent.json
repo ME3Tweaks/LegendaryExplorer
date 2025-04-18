@@ -1,0 +1,17 @@
+{
+  "parent": "AnimNotify",
+  "package": "SFXGame",
+  "variables": {
+    "EventName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IsGlobal": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

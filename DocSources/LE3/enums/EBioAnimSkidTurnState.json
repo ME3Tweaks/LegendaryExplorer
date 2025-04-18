@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "eBioAnimSkid_NoState": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimSkid_StartingLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimSkid_StartingRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimSkid_TurningLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimSkid_TurningRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimSkid_FinishingLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "eBioAnimSkid_FinishingRight": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

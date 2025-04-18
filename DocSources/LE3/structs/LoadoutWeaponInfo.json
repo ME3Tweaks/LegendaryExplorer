@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockPlotId": {
+      "type": null,
+      "documentation": null
+    },
+    "Rating": {
+      "type": null,
+      "documentation": null
+    },
+    "bNotRegularWeaponGUI": {
+      "type": null,
+      "documentation": null
+    },
+    "bStartsUnlocked": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

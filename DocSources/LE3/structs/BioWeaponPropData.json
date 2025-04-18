@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "aWeaponClassPrefixes": {
+      "type": null,
+      "documentation": null
+    },
+    "aWeaponPackages": {
+      "type": null,
+      "documentation": null
+    },
+    "nmWeaponBaseClassName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

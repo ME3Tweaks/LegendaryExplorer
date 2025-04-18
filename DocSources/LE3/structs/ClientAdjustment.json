@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "NewLoc": {
+      "type": null,
+      "documentation": null
+    },
+    "NewVel": {
+      "type": null,
+      "documentation": null
+    },
+    "NewFloor": {
+      "type": null,
+      "documentation": null
+    },
+    "NewBase": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": null,
+      "documentation": null
+    },
+    "newPhysics": {
+      "type": null,
+      "documentation": null
+    },
+    "bAckGoodMove": {
+      "type": null,
+      "documentation": null
+    },
+    "bWarning": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

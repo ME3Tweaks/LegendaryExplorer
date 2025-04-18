@@ -1,0 +1,82 @@
+{
+  "parent": "SFXPowerCustomAction_PassivePower",
+  "package": "SFXGame",
+  "variables": {
+    "ParagonRenegadeModifier": {
+      "type": "PowerData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyGlobalBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyGlobalBonus()"
+    },
+    "GetNegotiationBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNegotiationBonus()"
+    },
+    "ModifyCharmSkill": {
+      "documentation": null,
+      "signature_members": {
+        "fCharmSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyCharmSkill(out float fCharmSkill, optional int nRankToUse)"
+    },
+    "ModifyIntimidateSkill": {
+      "documentation": null,
+      "signature_members": {
+        "fIntimidateSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyIntimidateSkill(out float fIntimidateSkill, optional int nRankToUse)"
+    },
+    "ModifyReputationSkill": {
+      "documentation": null,
+      "signature_members": {
+        "fRepSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyReputationSkill(out float fRepSkill, optional int nRankToUse)"
+    },
+    "RecalculateAllPowerData": {
+      "documentation": null,
+      "signature_members": {
+        "bReset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecalculateAllPowerData(optional bool bReset)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "RootTime": {
+      "type": null,
+      "documentation": null
+    },
+    "HFFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "HFGain": {
+      "type": null,
+      "documentation": null
+    },
+    "MFCutoffFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "MFBandwidth": {
+      "type": null,
+      "documentation": null
+    },
+    "MFGain": {
+      "type": null,
+      "documentation": null
+    },
+    "LFFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "LFGain": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,175 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "AnimGroups": {
+      "type": "AnimGroup",
+      "documentation": null
+    },
+    "ComposePrePassBoneNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ComposePostPassBoneNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RootMorphNodes": {
+      "type": "MorphNodeBase",
+      "documentation": null
+    },
+    "SkelControlLists": {
+      "type": "SkelControlListHead",
+      "documentation": null
+    },
+    "SavedPose": {
+      "type": "BoneAtom",
+      "documentation": null
+    },
+    "bUseSavedPose": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindMorphNode": {
+      "documentation": null,
+      "signature_members": {
+        "InNodeName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MorphNodeBase",
+      "signature": "MorphNodeBase FindMorphNode(Name InNodeName)"
+    },
+    "FindSkelControl": {
+      "documentation": null,
+      "signature_members": {
+        "InControlName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkelControlBase",
+      "signature": "SkelControlBase FindSkelControl(Name InControlName)"
+    },
+    "ForceGroupRelativePosition": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "RelativePosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceGroupRelativePosition(Name GroupName, float RelativePosition)"
+    },
+    "GetGroupIndex": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetGroupIndex(Name GroupName)"
+    },
+    "GetGroupNotifyMaster": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetGroupNotifyMaster(Name GroupName)"
+    },
+    "GetGroupRateScale": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetGroupRateScale(Name GroupName)"
+    },
+    "GetGroupRelativePosition": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetGroupRelativePosition(Name GroupName)"
+    },
+    "GetGroupSynchMaster": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetGroupSynchMaster(Name GroupName)"
+    },
+    "SetAnimGroupForNode": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "bCreateIfNotFound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAnimGroupForNode(AnimNodeSequence SeqNode, Name GroupName, optional bool bCreateIfNotFound)"
+    },
+    "SetGroupRateScale": {
+      "documentation": null,
+      "signature_members": {
+        "GroupName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRateScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGroupRateScale(Name GroupName, float NewRateScale)"
+    },
+    "SetUseSavedPose": {
+      "documentation": null,
+      "signature_members": {
+        "bUseSaved": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUseSavedPose(bool bUseSaved)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

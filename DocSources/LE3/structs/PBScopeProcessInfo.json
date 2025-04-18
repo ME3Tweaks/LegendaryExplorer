@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "OwningBuilding": {
+      "type": null,
+      "documentation": null
+    },
+    "Ruleset": {
+      "type": null,
+      "documentation": null
+    },
+    "RulesetVariation": {
+      "type": null,
+      "documentation": null
+    },
+    "bGenerateLODPoly": {
+      "type": null,
+      "documentation": null
+    },
+    "bPartOfNonRect": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

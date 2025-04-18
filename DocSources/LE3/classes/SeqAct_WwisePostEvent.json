@@ -1,0 +1,20 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "WwiseAudio",
+  "variables": {
+    "WwiseObject": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

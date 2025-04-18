@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "sCommand": {
+      "type": null,
+      "documentation": null
+    },
+    "lstParameters": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

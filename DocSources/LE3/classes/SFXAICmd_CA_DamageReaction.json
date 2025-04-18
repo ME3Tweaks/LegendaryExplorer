@@ -1,0 +1,21 @@
+{
+  "parent": "SFXAICmd_CustomAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetPostCustomActionSleepTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPostCustomActionSleepTime()"
+    },
+    "ShouldFinishRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFinishRotation()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

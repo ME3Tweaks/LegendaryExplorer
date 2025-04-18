@@ -1,0 +1,224 @@
+{
+  "parent": "UIDataStore_GameState",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ProviderTypes": {
+      "type": "GameDataProviderTypes",
+      "documentation": null
+    },
+    "PlayerData": {
+      "type": "PlayerDataProvider",
+      "documentation": null
+    },
+    "TeamData": {
+      "type": "TeamDataProvider",
+      "documentation": null
+    },
+    "__OnAddTeamProvider__Delegate": {
+      "type": "OnAddTeamProvider",
+      "documentation": null
+    },
+    "GameData": {
+      "type": "GameInfoDataProvider",
+      "documentation": null
+    },
+    "bRefreshPlayerDataProviders": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRefreshTeamDataProviders": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyGameSessionEnded()"
+    },
+    "OnAddTeamProvider": {
+      "documentation": null,
+      "signature_members": {
+        "Provider": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAddTeamProvider(TeamDataProvider Provider)"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "AddPlayerDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerDataProvider(PlayerReplicationInfo PRI)"
+    },
+    "AddTeamDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "TI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTeamDataProvider(TeamInfo TI)"
+    },
+    "ClearDataProviders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDataProviders()"
+    },
+    "CreateGameDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "GRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateGameDataProvider(GameReplicationInfo GRI)"
+    },
+    "FindPlayerDataProviderIndex": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindPlayerDataProviderIndex(PlayerReplicationInfo PRI)"
+    },
+    "FindTeamDataProviderIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindTeamDataProviderIndex(TeamInfo TI)"
+    },
+    "GetPlayerDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "PlayerDataProvider",
+      "signature": "PlayerDataProvider GetPlayerDataProvider(PlayerReplicationInfo PRI)"
+    },
+    "GetTeamDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "TI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "TeamDataProvider",
+      "signature": "TeamDataProvider GetTeamDataProvider(TeamInfo TI)"
+    },
+    "NotifyPlayersChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPlayersChanged()"
+    },
+    "NotifyTeamChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyTeamChange()"
+    },
+    "PlayerDataProviderPropertyChange": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerDataProviderPropertyChange(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "RefreshPlayerDataProviders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshPlayerDataProviders()"
+    },
+    "RefreshTeamDataProviders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshTeamDataProviders()"
+    },
+    "RemovePlayerDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePlayerDataProvider(PlayerReplicationInfo PRI)"
+    },
+    "RemoveTeamDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "TI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTeamDataProvider(TeamInfo TI)"
+    },
+    "TeamDataProviderPropertyChange": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TeamDataProviderPropertyChange(UIDataProvider SourceProvider, optional Name PropTag)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

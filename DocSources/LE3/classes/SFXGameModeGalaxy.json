@@ -1,0 +1,140 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "GalaxyCam": {
+      "type": "BioCameraBehaviorGalaxy",
+      "documentation": null
+    },
+    "InstantTransition": {
+      "type": "SFXCameraTransition_GalaxyMap",
+      "documentation": null
+    },
+    "DeadZone": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuyFuel()"
+    },
+    "CanBuyFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBuyFuel()"
+    },
+    "CanExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanExit()"
+    },
+    "HACK_GetCameraMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode HACK_GetCameraMode()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "ScanSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScanSystem()"
+    },
+    "BeginExitGalaxyMap": {
+      "documentation": null,
+      "signature_members": {
+        "resize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginExitGalaxyMap(bool resize)"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetGalaxyMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_GalaxyMap",
+      "signature": "BioSFHandler_GalaxyMap GetGalaxyMap()"
+    },
+    "SetLTriggerLabelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        },
+        "srText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLTriggerLabelVisible(bool bShow, stringref srText)"
+    },
+    "SetRTriggerLabelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        },
+        "srText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRTriggerLabelVisible(bool bShow, stringref srText)"
+    },
+    "StartFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartFuel()"
+    },
+    "StopFuel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopFuel()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,164 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "OnlineEventNotifyTable": {
+      "type": "SFXOnlineEventNotify",
+      "documentation": null
+    },
+    "EventNotifyAddQueue": {
+      "type": "SFXOnlineNotifyQueueInfo",
+      "documentation": null
+    },
+    "EventNotifyRemoveQueue": {
+      "type": "SFXOnlineNotifyQueueInfo",
+      "documentation": null
+    },
+    "__OnEvent__Delegate": {
+      "type": "OnEvent",
+      "documentation": null
+    },
+    "bQueuingEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddSubscriber": {
+      "documentation": null,
+      "signature_members": {
+        "EventType": {
+          "type": null,
+          "documentation": null
+        },
+        "EventCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSubscriber(SFXOnlineEventType EventType, delegate<OnEvent> EventCallback)"
+    },
+    "AddWaiter": {
+      "documentation": null,
+      "signature_members": {
+        "EventType": {
+          "type": null,
+          "documentation": null
+        },
+        "EventCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWaiter(SFXOnlineEventType EventType, delegate<OnEvent> EventCallback)"
+    },
+    "IsSubscribed": {
+      "documentation": null,
+      "signature_members": {
+        "EventType": {
+          "type": null,
+          "documentation": null
+        },
+        "EventCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSubscribed(SFXOnlineEventType EventType, delegate<OnEvent> EventCallback)"
+    },
+    "NotifyCallbacks": {
+      "documentation": null,
+      "signature_members": {
+        "NotifyArray": {
+          "type": null,
+          "documentation": null
+        },
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyCallbacks(array<delegate<OnEvent>> NotifyArray, SFXOnlineEvent Event)"
+    },
+    "NotifySubscribers": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySubscribers(SFXOnlineEvent Event)"
+    },
+    "NotifyWaiters": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWaiters(SFXOnlineEvent Event)"
+    },
+    "OnEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEvent(SFXOnlineEvent Event)"
+    },
+    "RemoveAllSubscribers": {
+      "documentation": null,
+      "signature_members": {
+        "CallbackTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveAllSubscribers(Object CallbackTarget)"
+    },
+    "RemoveAllWaiters": {
+      "documentation": null,
+      "signature_members": {
+        "CallbackTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveAllWaiters(Object CallbackTarget)"
+    },
+    "RemoveSubscriber": {
+      "documentation": null,
+      "signature_members": {
+        "EventType": {
+          "type": null,
+          "documentation": null
+        },
+        "EventCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "RemoveIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSubscriber(SFXOnlineEventType EventType, delegate<OnEvent> EventCallback, optional int RemoveIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

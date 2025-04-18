@@ -1,0 +1,48 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_sWrinkleMaterialIdentifier": {
+      "type": "string",
+      "documentation": null
+    },
+    "TextureOverrides": {
+      "type": "BioWrinkleConfig",
+      "documentation": null
+    },
+    "m_nWrinkleHighestLOD": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseWrinkles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "Tick_Wrinkle": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick_Wrinkle(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

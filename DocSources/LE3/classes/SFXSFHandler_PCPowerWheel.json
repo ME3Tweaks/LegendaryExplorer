@@ -1,0 +1,470 @@
+{
+  "parent": "SFXSFHandler_PowerWheel",
+  "package": "SFXGame",
+  "variables": {
+    "m_aQuickSlotIconInfo": {
+      "type": "SFXPowerIconData",
+      "documentation": null
+    },
+    "m_oCenterWeaponIcon": {
+      "type": "SFXPowerWheelIconWeapon",
+      "documentation": null
+    },
+    "m_oHench1WeaponIcon": {
+      "type": "SFXPowerWheelIconWeapon",
+      "documentation": null
+    },
+    "m_oHench2WeaponIcon": {
+      "type": "SFXPowerWheelIconWeapon",
+      "documentation": null
+    },
+    "m_aQuickSlotIcons": {
+      "type": "SFXGUIValue_QuickSlotPowerIcon",
+      "documentation": null
+    },
+    "m_vMouseDownPos": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_vDragOffsets": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_oDragPowerIcon": {
+      "type": "SFXGUIValue_PowerIcon",
+      "documentation": null
+    },
+    "m_oDragSlotIcon": {
+      "type": "SFXGUIValue_QuickSlotPowerIcon",
+      "documentation": null
+    },
+    "m_nDraggingIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentDropTarget": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fQuickslotIconUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentQuickSlot": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_srMaximizeText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srMinimizeText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fDragStartThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bDashboardWeaponsOpen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDraggingPower": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDraggingKey": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDoingDrag": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bQuickSlotExpanded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bQuickSlotVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEvalQuickSlotPowers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_ShepardPreviousPhysics": {
+      "type": "EPhysics",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "doHotKey": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "doHotKey(int nIndex)"
+    },
+    "InitDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitDisplay()"
+    },
+    "MoveQuickSlotPowerByName": {
+      "documentation": null,
+      "signature_members": {
+        "nSlot": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPowerToMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveQuickSlotPowerByName(int nSlot, Name nmPowerToMove)"
+    },
+    "NewSetQuickSlotPower": {
+      "documentation": null,
+      "signature_members": {
+        "nSlot": {
+          "type": null,
+          "documentation": null
+        },
+        "nDraggingIconID": {
+          "type": null,
+          "documentation": null
+        },
+        "bDraggingPower": {
+          "type": null,
+          "documentation": null
+        },
+        "bSilently": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NewSetQuickSlotPower(int nSlot, int nDraggingIconID, bool bDraggingPower, bool bSilently)"
+    },
+    "RemoveHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveHenchman(BioPawn pPawn)"
+    },
+    "SetMapText": {
+      "documentation": null,
+      "signature_members": {
+        "sText1": {
+          "type": null,
+          "documentation": null
+        },
+        "eIcon1": {
+          "type": null,
+          "documentation": null
+        },
+        "sText2": {
+          "type": null,
+          "documentation": null
+        },
+        "eIcon2": {
+          "type": null,
+          "documentation": null
+        },
+        "sText3": {
+          "type": null,
+          "documentation": null
+        },
+        "eIcon3": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMapText(string sText1, SFXPowerWheelMapButtonIcon eIcon1, optional string sText2, optional SFXPowerWheelMapButtonIcon eIcon2, optional string sText3, optional SFXPowerWheelMapButtonIcon eIcon3)"
+    },
+    "SetupQuickSlotKeys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupQuickSlotKeys()"
+    },
+    "SetupQuickSlotPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupQuickSlotPowers()"
+    },
+    "SetUseText": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUseText(string sText)"
+    },
+    "SetWeaponState": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eNewWeapState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponState(int nWeapIndex, SFXPowerWheelWeaponState eNewWeapState)"
+    },
+    "WheelVisibilityChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WheelVisibilityChanged(bool bVisible)"
+    },
+    "CleanupReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupReferences()"
+    },
+    "ClosePlayerWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClosePlayerWeapons()"
+    },
+    "ExInt_CollapsePlayerWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInt_CollapsePlayerWeapons()"
+    },
+    "ExInt_IconMouseDown": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_IconMouseDown(string sIconID)"
+    },
+    "ExInt_IconMouseUp": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_IconMouseUp(string sIconID)"
+    },
+    "ExInt_IconRollOut": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_IconRollOut(string sIconID)"
+    },
+    "ExInt_IconRollOver": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_IconRollOver(string sIconID)"
+    },
+    "ExpandPlayerWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExpandPlayerWeapons()"
+    },
+    "FindIconIndexFromPath": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        },
+        "nFoundIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerWheelMode",
+      "signature": "SFXPowerWheelMode FindIconIndexFromPath(string sIconID, out int nFoundIcon)"
+    },
+    "HandleQuickSlotMouseDown": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleQuickSlotMouseDown(string sIconID)"
+    },
+    "HandleQuickSlotMouseUp": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleQuickSlotMouseUp(string sIconID)"
+    },
+    "HandleQuickSlotRollOut": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleQuickSlotRollOut(string sIconID)"
+    },
+    "HandleQuickSlotRollOver": {
+      "documentation": null,
+      "signature_members": {
+        "sIconID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleQuickSlotRollOver(string sIconID)"
+    },
+    "HoverQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HoverQuickSlot(int nSlotID)"
+    },
+    "InitPowerIcons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitPowerIcons()"
+    },
+    "LeaveQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LeaveQuickSlot(int nSlotID)"
+    },
+    "OnAllowCameraRotation": {
+      "documentation": null,
+      "signature_members": {
+        "i_bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAllowCameraRotation(bool i_bValue)"
+    },
+    "SelectWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectWeapon(int nWeaponIndex)"
+    },
+    "SetQuickSlotState": {
+      "documentation": null,
+      "signature_members": {
+        "bExpand": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetQuickSlotState(bool bExpand, bool bSkipTransition)"
+    },
+    "SortWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "aWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SortWeapons(BioPawn pPawn, out array<SFXWeapon> aWeapons)"
+    },
+    "SwapHenchmanWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pHench": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapHenchmanWeapon(BioPawn pHench)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

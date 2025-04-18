@@ -1,0 +1,219 @@
+{
+  "parent": "Controller",
+  "package": "Engine",
+  "variables": {
+    "ScriptedMoveTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ScriptedRoute": {
+      "type": "Route",
+      "documentation": null
+    },
+    "ScriptedFocus": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Skill": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScriptedRouteIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAdjustFromWalls": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReverseScriptedRoute": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanFireWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Wpn": {
+          "type": null,
+          "documentation": null
+        },
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanFireWeapon(Weapon Wpn, byte FireModeNum)"
+    },
+    "GetPlayerViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_Location": {
+          "type": null,
+          "documentation": null
+        },
+        "out_rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerViewPoint(out Vector out_Location, out Rotator out_rotation)"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetTeam": {
+      "documentation": null,
+      "signature_members": {
+        "inTeamIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTeam(int inTeamIdx)"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YL": {
+          "type": null,
+          "documentation": null
+        },
+        "out_YPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "GetOrderObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetOrderObject()"
+    },
+    "GetOrders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetOrders()"
+    },
+    "NotifyWeaponFinishedFiring": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFinishedFiring(Weapon W, byte FireMode)"
+    },
+    "NotifyWeaponFired": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFired(Weapon W, byte FireMode)"
+    },
+    "OnAIMoveToActor": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAIMoveToActor(SeqAct_AIMoveToActor Action)"
+    },
+    "PriorityObjective": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PriorityObjective()"
+    },
+    "SetOrders": {
+      "documentation": null,
+      "signature_members": {
+        "NewOrders": {
+          "type": null,
+          "documentation": null
+        },
+        "OrderGiver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOrders(Name NewOrders, Controller OrderGiver)"
+    },
+    "ShouldRefire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRefire()"
+    }
+  },
+  "states": {
+    "ScriptedRouteMove": {
+      "functions": {
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "ScriptedMove": {
+      "functions": {
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

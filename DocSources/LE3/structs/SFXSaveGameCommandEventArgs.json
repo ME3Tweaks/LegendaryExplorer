@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "Descriptor": {
+      "type": null,
+      "documentation": null
+    },
+    "Careers": {
+      "type": null,
+      "documentation": null
+    },
+    "CorruptedCareers": {
+      "type": null,
+      "documentation": null
+    },
+    "AdditionalFreeBytesNeeded": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalFreeBytes": {
+      "type": null,
+      "documentation": null
+    },
+    "PreparedSaveSize": {
+      "type": null,
+      "documentation": null
+    },
+    "bSuccess": {
+      "type": null,
+      "documentation": null
+    },
+    "bRetry": {
+      "type": null,
+      "documentation": null
+    },
+    "bPause": {
+      "type": null,
+      "documentation": null
+    },
+    "bNeedsFreeSpace": {
+      "type": null,
+      "documentation": null
+    },
+    "bTotalFreeBytesSet": {
+      "type": null,
+      "documentation": null
+    },
+    "bPreparedSaveSizeSet": {
+      "type": null,
+      "documentation": null
+    },
+    "Action": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

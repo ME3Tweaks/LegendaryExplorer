@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PET2SM_Emitter": {
+      "value": 0,
+      "documentation": null
+    },
+    "PET2SM_Velocity": {
+      "value": 1,
+      "documentation": null
+    },
+    "PET2SM_Distance": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

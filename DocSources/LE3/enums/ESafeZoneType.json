@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eSZ_TOP": {
+      "value": 0,
+      "documentation": null
+    },
+    "eSZ_BOTTOM": {
+      "value": 1,
+      "documentation": null
+    },
+    "eSZ_LEFT": {
+      "value": 2,
+      "documentation": null
+    },
+    "eSZ_RIGHT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

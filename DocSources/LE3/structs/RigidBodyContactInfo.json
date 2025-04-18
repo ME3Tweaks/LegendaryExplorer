@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ContactPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "ContactNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "ContactPenetration": {
+      "type": null,
+      "documentation": null
+    },
+    "ContactVelocity": {
+      "type": null,
+      "documentation": null
+    },
+    "PhysMaterial": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

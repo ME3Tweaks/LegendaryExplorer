@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Scale3D": {
+      "type": null,
+      "documentation": null
+    },
+    "StaticMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "StandardPSTemplate": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerPSTemplate": {
+      "type": null,
+      "documentation": null
+    },
+    "AccelRate": {
+      "type": null,
+      "documentation": null
+    },
+    "Speed": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxSpeed": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,150 @@
+{
+  "parent": "OnlineStats",
+  "package": "Engine",
+  "variables": {
+    "ColumnIds": {
+      "type": "int",
+      "documentation": null
+    },
+    "Rows": {
+      "type": "OnlineStatsRow",
+      "documentation": null
+    },
+    "ColumnMappings": {
+      "type": "ColumnMetaData",
+      "documentation": null
+    },
+    "ViewName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ViewId": {
+      "type": "int",
+      "documentation": null
+    },
+    "SortColumnId": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalRowsInView": {
+      "type": "int",
+      "documentation": null
+    },
+    "TitleId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayer(string PlayerName, UniqueNetId PlayerID)"
+    },
+    "GetFloatStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "StatColumnNo": {
+          "type": null,
+          "documentation": null
+        },
+        "StatValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, out float StatValue)"
+    },
+    "GetIntStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "StatColumnNo": {
+          "type": null,
+          "documentation": null
+        },
+        "StatValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, out int StatValue)"
+    },
+    "GetRankForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRankForPlayer(UniqueNetId PlayerID)"
+    },
+    "OnReadComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReadComplete()"
+    },
+    "SetFloatStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "StatColumnNo": {
+          "type": null,
+          "documentation": null
+        },
+        "StatValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFloatStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, float StatValue)"
+    },
+    "SetIntStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "StatColumnNo": {
+          "type": null,
+          "documentation": null
+        },
+        "StatValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetIntStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, int StatValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,61 @@
+{
+  "parent": "ParticleModuleUberBase",
+  "package": "Engine",
+  "variables": {
+    "Lifetime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "StartSize": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "StartVelocity": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "StartVelocityRadial": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "ColorOverLife": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "AlphaOverLife": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "StartLocation": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "StartRotation": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "SizeLifeMultiplier": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "StartRotationRate": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "SizeMultiplyX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SizeMultiplyY": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SizeMultiplyZ": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

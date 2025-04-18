@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CSG_Active": {
+      "value": 0,
+      "documentation": null
+    },
+    "CSG_Add": {
+      "value": 1,
+      "documentation": null
+    },
+    "CSG_Subtract": {
+      "value": 2,
+      "documentation": null
+    },
+    "CSG_Intersect": {
+      "value": 3,
+      "documentation": null
+    },
+    "CSG_Deintersect": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

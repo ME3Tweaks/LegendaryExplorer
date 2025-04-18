@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EPSA_Top": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPSA_Bottom": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPSA_Left": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPSA_Right": {
+      "value": 3,
+      "documentation": null
+    },
+    "EPSA_None": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

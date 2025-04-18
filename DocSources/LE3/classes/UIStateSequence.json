@@ -1,0 +1,15 @@
+{
+  "parent": "UISequence",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetOwnerState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIState",
+      "signature": "UIState GetOwnerState()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

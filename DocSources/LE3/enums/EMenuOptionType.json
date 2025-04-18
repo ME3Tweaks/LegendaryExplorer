@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "MENUOT_ComboReadOnly": {
+      "value": 0,
+      "documentation": null
+    },
+    "MENUOT_ComboNumeric": {
+      "value": 1,
+      "documentation": null
+    },
+    "MENUOT_CheckBox": {
+      "value": 2,
+      "documentation": null
+    },
+    "MENUOT_Slider": {
+      "value": 3,
+      "documentation": null
+    },
+    "MENUOT_Spinner": {
+      "value": 4,
+      "documentation": null
+    },
+    "MENUOT_EditBox": {
+      "value": 5,
+      "documentation": null
+    },
+    "MENUOT_CollectionCheckBox": {
+      "value": 6,
+      "documentation": null
+    },
+    "MENUOT_CollapsingList": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

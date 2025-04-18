@@ -1,0 +1,20 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

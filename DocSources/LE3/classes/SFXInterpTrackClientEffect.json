@@ -1,0 +1,32 @@
+{
+  "parent": "InterpTrackToggle",
+  "package": "SFXGame",
+  "variables": {
+    "m_vSpawnParameters": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_bAllowCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bStopAllMatchingEffects": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

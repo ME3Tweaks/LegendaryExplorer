@@ -1,0 +1,181 @@
+{
+  "EnumValues": {
+    "ENEMY_SPAWNED": {
+      "value": 0,
+      "documentation": null
+    },
+    "ENEMY_DIED": {
+      "value": 1,
+      "documentation": null
+    },
+    "SHIELDS_DOWN": {
+      "value": 2,
+      "documentation": null
+    },
+    "PLAYER_DOWNED": {
+      "value": 3,
+      "documentation": null
+    },
+    "REVIVAL_STARTED": {
+      "value": 4,
+      "documentation": null
+    },
+    "REVIVAL_CANCELLED": {
+      "value": 5,
+      "documentation": null
+    },
+    "PLAYER_REVIVED": {
+      "value": 6,
+      "documentation": null
+    },
+    "SHIELD_RESTORED": {
+      "value": 7,
+      "documentation": null
+    },
+    "WEAPON_PICKED_UP": {
+      "value": 8,
+      "documentation": null
+    },
+    "SWITCH_WEAPON": {
+      "value": 9,
+      "documentation": null
+    },
+    "RELOAD": {
+      "value": 10,
+      "documentation": null
+    },
+    "AMMO_PICKED_UP": {
+      "value": 11,
+      "documentation": null
+    },
+    "HEAVY_MELEE": {
+      "value": 12,
+      "documentation": null
+    },
+    "CUSTOM_ACTION_IMPACT": {
+      "value": 13,
+      "documentation": null
+    },
+    "CAST_POWER": {
+      "value": 14,
+      "documentation": null
+    },
+    "POWER_IMPACT": {
+      "value": 15,
+      "documentation": null
+    },
+    "PROJECTILE_CREATED": {
+      "value": 16,
+      "documentation": null
+    },
+    "PROJECTILE_EXPLODED": {
+      "value": 17,
+      "documentation": null
+    },
+    "ANIMATED_REACTION": {
+      "value": 18,
+      "documentation": null
+    },
+    "START_CLIMBING_LADDER": {
+      "value": 19,
+      "documentation": null
+    },
+    "FINISH_CLIMBING_LADDER": {
+      "value": 20,
+      "documentation": null
+    },
+    "Roll": {
+      "value": 21,
+      "documentation": null
+    },
+    "ENTER_COVER": {
+      "value": 22,
+      "documentation": null
+    },
+    "EXIT_COVER": {
+      "value": 23,
+      "documentation": null
+    },
+    "COVER_SLIP": {
+      "value": 24,
+      "documentation": null
+    },
+    "SWAT_TURN": {
+      "value": 25,
+      "documentation": null
+    },
+    "Mantle": {
+      "value": 26,
+      "documentation": null
+    },
+    "GAME_STARTED": {
+      "value": 27,
+      "documentation": null
+    },
+    "WAVE_STARTED": {
+      "value": 28,
+      "documentation": null
+    },
+    "WAVE_COMPLETED": {
+      "value": 29,
+      "documentation": null
+    },
+    "ALL_WAVES_COMPLETED": {
+      "value": 30,
+      "documentation": null
+    },
+    "GAME_OVER": {
+      "value": 31,
+      "documentation": null
+    },
+    "ANNEX_STARTED": {
+      "value": 32,
+      "documentation": null
+    },
+    "ENTER_ANNEX_ZONE": {
+      "value": 33,
+      "documentation": null
+    },
+    "LEAVE_ANNEX_ZONE": {
+      "value": 34,
+      "documentation": null
+    },
+    "ANNEX_COMPLETE": {
+      "value": 35,
+      "documentation": null
+    },
+    "LAG_REPORTED": {
+      "value": 36,
+      "documentation": null
+    },
+    "LOW_FRAMERATE": {
+      "value": 37,
+      "documentation": null
+    },
+    "BANDWIDTH_SATURATED": {
+      "value": 38,
+      "documentation": null
+    },
+    "CUSTOM_ACTION_STARTED": {
+      "value": 39,
+      "documentation": null
+    },
+    "NET_PERF_REPORTED": {
+      "value": 40,
+      "documentation": null
+    },
+    "CUSTOM_EVENT_REPORTED": {
+      "value": 41,
+      "documentation": null
+    },
+    "LOG_SPAM": {
+      "value": 42,
+      "documentation": null
+    },
+    "POWER_SUBSEQUENT_IMPACT": {
+      "value": 43,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

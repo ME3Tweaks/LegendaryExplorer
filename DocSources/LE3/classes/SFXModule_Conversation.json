@@ -1,0 +1,61 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_vCameraFocusPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vProceduralCameraPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rProceduralCameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_pDefaultFaceFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null
+    },
+    "m_fFov": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fNearClip": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDOFFocusInnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDOFFocusDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bDisableFacefx": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInConversation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ScriptIsInConversation": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ScriptIsInConversation(Actor pActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

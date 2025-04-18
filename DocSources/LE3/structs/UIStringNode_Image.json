@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "TexCoords": {
+      "type": null,
+      "documentation": null
+    },
+    "ForcedExtent": {
+      "type": null,
+      "documentation": null
+    },
+    "RenderedImage": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

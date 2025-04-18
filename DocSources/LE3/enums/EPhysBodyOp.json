@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PBO_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PBO_Term": {
+      "value": 1,
+      "documentation": null
+    },
+    "PBO_Disable": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "Anim": {
+      "type": null,
+      "documentation": null
+    },
+    "Anim_Left": {
+      "type": null,
+      "documentation": null
+    },
+    "Anim_Right": {
+      "type": null,
+      "documentation": null
+    },
+    "Anim_Rear": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimPlayRate": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimScale": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimBlendInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimBlendOutTime": {
+      "type": null,
+      "documentation": null
+    },
+    "RandomSegmentDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseDirectionalAnimVariants": {
+      "type": null,
+      "documentation": null
+    },
+    "bRandomSegment": {
+      "type": null,
+      "documentation": null
+    },
+    "bSingleInstance": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

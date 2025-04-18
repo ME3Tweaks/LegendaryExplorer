@@ -1,0 +1,104 @@
+{
+  "parent": "SFXInventoryManager",
+  "package": "SFXGame",
+  "variables": {
+    "AccuracyLastViewRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "InterpRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "Base_Acc_Standing": {
+      "type": "float",
+      "documentation": null
+    },
+    "Base_Acc_Zoom": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_Move": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_ViewTurn": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_Crouched": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_MouseMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_MaxCameraLoss": {
+      "type": "float",
+      "documentation": null
+    },
+    "Base_Interp_Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpMod_Move": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpMul_ViewTurn": {
+      "type": "float",
+      "documentation": null
+    },
+    "Accuracy": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccMod_WeaponFired": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceLastFire": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DebugDrawWeaponAccuracy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugDrawWeaponAccuracy()"
+    },
+    "GetPlayerCrosshairValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlayerCrosshairValue()"
+    },
+    "UpdatePlayerAccuracy": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlayerAccuracy(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

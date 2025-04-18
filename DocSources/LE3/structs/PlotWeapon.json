@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "WeaponClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockPlotId": {
+      "type": null,
+      "documentation": null
+    },
+    "EquippedPlotId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

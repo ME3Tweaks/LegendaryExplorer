@@ -1,0 +1,44 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Preloader": {
+      "type": "BioBinkAsyncPreloader",
+      "documentation": null
+    },
+    "Movies": {
+      "type": "BioLoadingMovie",
+      "documentation": null
+    },
+    "ScreenTip": {
+      "type": "BioSFScreenTip",
+      "documentation": null
+    },
+    "HideScaleform": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RequiresExplicitStop": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlayToCompletion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "StreamFromDisc": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

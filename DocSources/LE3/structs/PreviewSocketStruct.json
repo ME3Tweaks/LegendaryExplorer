@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "DisplayName": {
+      "type": null,
+      "documentation": null
+    },
+    "SocketName": {
+      "type": null,
+      "documentation": null
+    },
+    "PreviewSkelMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "PreviewStaticMesh": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

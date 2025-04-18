@@ -1,0 +1,155 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "MeshScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DesiredEndPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Mesh": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "Trail": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "MeshScaleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TrailWaitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleTimeFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnscaledMeshLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleTimeCount": {
+      "type": "float",
+      "documentation": null
+    },
+    "Lifetime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ActiveState": {
+      "type": "ESFXTracerState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "InitTracer": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredScale": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitTracer(Vector Start, Vector End, Vector DesiredScale, float DesiredSpeed)"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Reuse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reuse()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "StopTracer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopTracer()"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor Other, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

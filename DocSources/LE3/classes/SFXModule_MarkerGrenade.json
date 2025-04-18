@@ -1,0 +1,13 @@
+{
+  "parent": "SFXModule_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "VisibleDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

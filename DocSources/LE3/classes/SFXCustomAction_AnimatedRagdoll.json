@@ -1,0 +1,128 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Start": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_Loop": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "impulse": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AnimInfo": {
+      "type": "SFXAnimSetCookSpec",
+      "documentation": null
+    },
+    "fLoopAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldZVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "bFinishedStartAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "ImpulseForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddImpulse(Vector ImpulseForce)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float DeltaTime)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "CanOverrideMoveWith": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideMoveWith(int OldCustomAction, int NewCustomAction)"
+    },
+    "CheckBeginRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckBeginRecovery()"
+    },
+    "CheckEndRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckEndRecovery()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

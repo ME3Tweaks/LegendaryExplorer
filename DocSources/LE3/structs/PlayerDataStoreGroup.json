@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "DataStores": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerOwner": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

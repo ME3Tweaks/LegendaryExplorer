@@ -1,0 +1,370 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "DeviceCache": {
+      "type": "SFXDeviceIdCache",
+      "documentation": null
+    },
+    "__OnDeviceSelectionComplete__Delegate": {
+      "type": "OnDeviceSelectionComplete",
+      "documentation": null
+    },
+    "__OnProfileDataChanged__Delegate": {
+      "type": "OnProfileDataChanged",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetDeviceSelectionResults": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "DeviceName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetDeviceSelectionResults(byte LocalUserNum, out string DeviceName)"
+    },
+    "IsDeviceValid": {
+      "documentation": null,
+      "signature_members": {
+        "DeviceID": {
+          "type": null,
+          "documentation": null
+        },
+        "SizeNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDeviceValid(int DeviceID, optional int SizeNeeded)"
+    },
+    "OnDeviceSelectionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasBlocked": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeviceSelectionComplete(bool bWasSuccessful, bool bWasBlocked)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnProfileDataChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnProfileDataChanged()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "ShowAchievementsUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowAchievementsUI(byte LocalUserNum)"
+    },
+    "ShowDeviceSelectionUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SizeNeeded": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceShowUI": {
+          "type": null,
+          "documentation": null
+        },
+        "bManageStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowDeviceSelectionUI(byte LocalUserNum, int SizeNeeded, optional bool bForceShowUI, optional bool bManageStorage)"
+    },
+    "ShowFeedbackUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFeedbackUI(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "ShowFriendsInviteUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowFriendsInviteUI(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "ShowGamerCardUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowGamerCardUI(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "ShowInviteUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "InviteText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowInviteUI(byte LocalUserNum, optional string InviteText)"
+    },
+    "UnlockAvatarAward": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "AvatarItemId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockAvatarAward(byte LocalUserNum, int AvatarItemId)"
+    },
+    "AddDeviceSelectionDoneDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "DeviceDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDeviceSelectionDoneDelegate(byte LocalUserNum, delegate<OnDeviceSelectionComplete> DeviceDelegate)"
+    },
+    "AddProfileDataChangedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileDataChangedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddProfileDataChangedDelegate(byte LocalUserNum, delegate<OnProfileDataChanged> ProfileDataChangedDelegate)"
+    },
+    "ClearDeviceSelectionDoneDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "DeviceDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDeviceSelectionDoneDelegate(byte LocalUserNum, delegate<OnDeviceSelectionComplete> DeviceDelegate)"
+    },
+    "ClearProfileDataChangedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileDataChangedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearProfileDataChangedDelegate(byte LocalUserNum, delegate<OnProfileDataChanged> ProfileDataChangedDelegate)"
+    },
+    "ShowContentMarketplaceUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "CategoryMask": {
+          "type": null,
+          "documentation": null
+        },
+        "offerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowContentMarketplaceUI(byte LocalUserNum, optional int CategoryMask, optional int offerId)"
+    },
+    "ShowCustomPlayersUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Players": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Description": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowCustomPlayersUI(byte LocalUserNum, const out array<UniqueNetId> Players, string Title, string Description)"
+    },
+    "ShowMembershipMarketplaceUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowMembershipMarketplaceUI(byte LocalUserNum)"
+    },
+    "ShowMessagesUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowMessagesUI(byte LocalUserNum)"
+    },
+    "ShowPlayersUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowPlayersUI(byte LocalUserNum)"
+    },
+    "UnlockGamerPicture": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PictureId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockGamerPicture(byte LocalUserNum, int PictureId)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

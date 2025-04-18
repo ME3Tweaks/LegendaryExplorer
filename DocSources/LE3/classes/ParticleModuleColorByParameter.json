@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleColorBase",
+  "package": "Engine",
+  "variables": {
+    "ColorParam": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DefaultColor": {
+      "type": "Color",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,157 @@
+{
+  "parent": "Surface",
+  "package": "Engine",
+  "variables": {
+    "Resource": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "UnpackMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnpackMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "LODBias": {
+      "type": "int",
+      "documentation": null
+    },
+    "CachedCombinedLODBias": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumCinematicMipLevels": {
+      "type": "int",
+      "documentation": null
+    },
+    "AdjustBrightness": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustBrightnessCurve": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustVibrance": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustSaturation": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustRGBCurve": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustHue": {
+      "type": "float",
+      "documentation": null
+    },
+    "InternalFormatLODBias": {
+      "type": "int",
+      "documentation": null
+    },
+    "OneBitAlphaThreshold": {
+      "type": "int",
+      "documentation": null
+    },
+    "FadeMipMapChannels": {
+      "type": "FadeMipMapChannelsContainer",
+      "documentation": null
+    },
+    "SRGB": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RGBE": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSourceArtUncompressed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CompressionNoAlpha": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CompressionNone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CompressionNoMipmaps": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CompressionFullDynamicRange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DeferCompression": {
+      "type": "bool",
+      "documentation": null
+    },
+    "NeverStream": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDitherMipMapAlpha": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreserveBorderR": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreserveBorderG": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreserveBorderB": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreserveBorderA": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoTiling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAsyncResourceReleaseHasBeenStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseCinematicMipLevels": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AS16": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CompressionSettings": {
+      "type": "TextureCompressionSettings",
+      "documentation": null
+    },
+    "Filter": {
+      "type": "TextureFilter",
+      "documentation": null
+    },
+    "LODGroup": {
+      "type": "TextureGroup",
+      "documentation": null
+    },
+    "MipGenSettings": {
+      "type": "TextureMipGenSettings",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

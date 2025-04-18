@@ -1,0 +1,101 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {
+    "bCombatStarted": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyEnemyVisible": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeSinceSeen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEnemyVisible(int EnemyIdx, float TimeSinceSeen)"
+    },
+    "NotifyTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTakeHit(Controller instigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "NotifyNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNearMiss(Vector HitLocation)"
+    },
+    "NotifyPendingPowerImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Label": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeBeforeImpact": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Projectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPendingPowerImpact(Name Label, float TimeBeforeImpact, SFXPowerCustomAction Power, SFXProjectile_PowerCustomAction Projectile)"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "Approach": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

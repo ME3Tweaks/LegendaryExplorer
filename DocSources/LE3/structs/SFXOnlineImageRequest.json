@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "mImageName": {
+      "type": null,
+      "documentation": null
+    },
+    "mJob": {
+      "type": null,
+      "documentation": null
+    },
+    "mDynamicImage": {
+      "type": null,
+      "documentation": null
+    },
+    "mCompleted": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

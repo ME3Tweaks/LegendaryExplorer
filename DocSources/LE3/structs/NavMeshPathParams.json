@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Interface": {
+      "type": null,
+      "documentation": null
+    },
+    "SearchExtent": {
+      "type": null,
+      "documentation": null
+    },
+    "SearchStart": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxDropHeight": {
+      "type": null,
+      "documentation": null
+    },
+    "MinWalkableZ": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxHoverDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanMantle": {
+      "type": null,
+      "documentation": null
+    },
+    "bNeedsMantleValidityTest": {
+      "type": null,
+      "documentation": null
+    },
+    "bAbleToSearch": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

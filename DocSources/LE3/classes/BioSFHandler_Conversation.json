@@ -1,0 +1,456 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_aReplyLocations": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_aInvestigateLocations": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nSlotsUsed": {
+      "type": "int",
+      "documentation": null
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "InterruptAppearRenegade": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InterruptDisappearRenegade": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InterruptAppearParagon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InterruptDisappearParagon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_srTextInvestigate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTextReturn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nReplyLocationMiddleLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationTopLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationBottomLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationTopRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationBottomRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nReplyLocationMiddleRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationMiddleLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationTopLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationBottomLeft": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationTopRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationBottomRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInvestigateLocationMiddleRight": {
+      "type": "int",
+      "documentation": null
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nLastArrowPosition": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bDisplayInvestigateSubMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingWheel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingParagonInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingRenegadeInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitor16x9Enforcement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasTriggered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnforcing16x9": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_Enforce16x9": {
+      "documentation": null,
+      "signature_members": {
+        "bTrue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_Enforce16x9(bool bTrue)"
+    },
+    "AS_HideActiveInterrupt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_HideActiveInterrupt()"
+    },
+    "AS_HideWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_HideWheel()"
+    },
+    "AS_SetArrowPosition": {
+      "documentation": null,
+      "signature_members": {
+        "nDegrees": {
+          "type": null,
+          "documentation": null
+        },
+        "bNuiSpeechEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetArrowPosition(int nDegrees, bool bNuiSpeechEnabled)"
+    },
+    "AS_SetParagonInterrupt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_SetParagonInterrupt()"
+    },
+    "AS_SetRenegadeInterrupt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_SetRenegadeInterrupt()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "IsVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisible()"
+    },
+    "NuiSpeechClearOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NuiSpeechClearOptions()"
+    },
+    "NuiSpeechUpdateOptions": {
+      "documentation": null,
+      "signature_members": {
+        "ReplyOptions": {
+          "type": null,
+          "documentation": null
+        },
+        "ReplyOptionPositions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NuiSpeechUpdateOptions(array<stringref> ReplyOptions, array<int> ReplyOptionPositions)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "SelectEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectEntry(int nEntry)"
+    },
+    "SelectInterrupt": {
+      "documentation": null,
+      "signature_members": {
+        "bParagon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectInterrupt(bool bParagon)"
+    },
+    "SetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisible(bool bVal)"
+    },
+    "SkipNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipNode()"
+    },
+    "UpdateConversationOptions": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateConversationOptions(BioConversationController oConversation)"
+    },
+    "AS_SetConversationOptions": {
+      "documentation": null,
+      "signature_members": {
+        "sMiddleRight": {
+          "type": null,
+          "documentation": null
+        },
+        "nMiddleRightMode": {
+          "type": null,
+          "documentation": null
+        },
+        "sBottomRight": {
+          "type": null,
+          "documentation": null
+        },
+        "nBottomRightMode": {
+          "type": null,
+          "documentation": null
+        },
+        "sBottomLeft": {
+          "type": null,
+          "documentation": null
+        },
+        "nBottomLeftMode": {
+          "type": null,
+          "documentation": null
+        },
+        "sMiddleLeft": {
+          "type": null,
+          "documentation": null
+        },
+        "nMiddleLeftMode": {
+          "type": null,
+          "documentation": null
+        },
+        "sTopLeft": {
+          "type": null,
+          "documentation": null
+        },
+        "nTopLeftMode": {
+          "type": null,
+          "documentation": null
+        },
+        "sTopRight": {
+          "type": null,
+          "documentation": null
+        },
+        "nTopRightMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetConversationOptions(string sMiddleRight, int nMiddleRightMode, string sBottomRight, int nBottomRightMode, string sBottomLeft, int nBottomLeftMode, string sMiddleLeft, int nMiddleLeftMode, string sTopLeft, int nTopLeftMode, string sTopRight, int nTopRightMode)"
+    },
+    "GetInvestigateReplyCount": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInvestigateReplyCount(BioConversationController oConversation)"
+    },
+    "GetInvestigateReplyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nInvestigateSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioConvWheelPositions",
+      "signature": "BioConvWheelPositions GetInvestigateReplyLocation(int nInvestigateSlot)"
+    },
+    "GetNumReplies": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumReplies(BioConversationController oConversation)"
+    },
+    "GetReplyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nReplyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioConvWheelPositions",
+      "signature": "BioConvWheelPositions GetReplyLocation(int nReplyCategory)"
+    },
+    "HighlightDefaultConvSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HighlightDefaultConvSegment()"
+    },
+    "InterruptParagon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptParagon()"
+    },
+    "InterruptRenegade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptRenegade()"
+    },
+    "MapGuiStyleToOptionMode": {
+      "documentation": null,
+      "signature_members": {
+        "eGUIStyle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int MapGuiStyleToOptionMode(EConvGUIStyles eGUIStyle)"
+    },
+    "QueueEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueEntry(int nEntry)"
+    },
+    "SelectConversationEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nWheelLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectConversationEntry(BioConvWheelPositions nWheelLocation)"
+    },
+    "SelectConversationSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectConversationSegment()"
+    },
+    "ShowReplyWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowReplyWheel()"
+    },
+    "SkipConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipConversation()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

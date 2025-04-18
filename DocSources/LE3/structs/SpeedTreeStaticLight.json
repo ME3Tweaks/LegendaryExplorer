@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Guid": {
+      "type": null,
+      "documentation": null
+    },
+    "BranchShadowMap": {
+      "type": null,
+      "documentation": null
+    },
+    "FrondShadowMap": {
+      "type": null,
+      "documentation": null
+    },
+    "LeafMeshShadowMap": {
+      "type": null,
+      "documentation": null
+    },
+    "LeafCardShadowMap": {
+      "type": null,
+      "documentation": null
+    },
+    "BillboardShadowMap": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

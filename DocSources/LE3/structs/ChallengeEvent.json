@@ -1,0 +1,105 @@
+{
+  "Members": {
+    "PlayerKit": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerClass": {
+      "type": null,
+      "documentation": null
+    },
+    "MapName": {
+      "type": null,
+      "documentation": null
+    },
+    "RequiredPlayerMedals": {
+      "type": null,
+      "documentation": null
+    },
+    "PartialPlayerMedals": {
+      "type": null,
+      "documentation": null
+    },
+    "RequiredSquadMedals": {
+      "type": null,
+      "documentation": null
+    },
+    "PartialSquadMedals": {
+      "type": null,
+      "documentation": null
+    },
+    "AccomplishmentProgressName": {
+      "type": null,
+      "documentation": null
+    },
+    "KilledEnemyClass": {
+      "type": null,
+      "documentation": null
+    },
+    "ChallengeDamageType": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerName": {
+      "type": null,
+      "documentation": null
+    },
+    "EventStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "EventEndTime": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageSource": {
+      "type": null,
+      "documentation": null
+    },
+    "DifficultyLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "EnemyType": {
+      "type": null,
+      "documentation": null
+    },
+    "NumPlayers": {
+      "type": null,
+      "documentation": null
+    },
+    "bMelee": {
+      "type": null,
+      "documentation": null
+    },
+    "bHeadShot": {
+      "type": null,
+      "documentation": null
+    },
+    "bHeadGib": {
+      "type": null,
+      "documentation": null
+    },
+    "bCombo": {
+      "type": null,
+      "documentation": null
+    },
+    "bBiotic": {
+      "type": null,
+      "documentation": null
+    },
+    "bTech": {
+      "type": null,
+      "documentation": null
+    },
+    "ChallengeType": {
+      "type": null,
+      "documentation": null
+    },
+    "MedalEarned": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

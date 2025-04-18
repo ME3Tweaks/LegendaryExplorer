@@ -1,0 +1,85 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CurrentSessionInfo": {
+      "type": "GameSessionInformation",
+      "documentation": null
+    },
+    "StatsFileName": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlayerList": {
+      "type": "PlayerInformationNew",
+      "documentation": null
+    },
+    "TeamList": {
+      "type": "TeamInformation",
+      "documentation": null
+    },
+    "SupportedEvents": {
+      "type": "GameplayEventMetaData",
+      "documentation": null
+    },
+    "WeaponClassArray": {
+      "type": "WeaponClassEventData",
+      "documentation": null
+    },
+    "DamageClassArray": {
+      "type": "DamageClassEventData",
+      "documentation": null
+    },
+    "ProjectileClassArray": {
+      "type": "ProjectileClassEventData",
+      "documentation": null
+    },
+    "PawnClassArray": {
+      "type": "PawnClassEventData",
+      "documentation": null
+    },
+    "ActorArray": {
+      "type": "string",
+      "documentation": null
+    },
+    "SoundCueArray": {
+      "type": "string",
+      "documentation": null
+    },
+    "Archive": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Header": {
+      "type": "GameplayEventsHeader",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CloseStatsFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseStatsFile()"
+    },
+    "GetFilename": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetFilename()"
+    },
+    "OpenStatsFile": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenStatsFile(string Filename)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

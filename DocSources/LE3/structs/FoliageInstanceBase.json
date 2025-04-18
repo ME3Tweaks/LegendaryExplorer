@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "XAxis": {
+      "type": null,
+      "documentation": null
+    },
+    "YAxis": {
+      "type": null,
+      "documentation": null
+    },
+    "ZAxis": {
+      "type": null,
+      "documentation": null
+    },
+    "DistanceFactorSquared": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

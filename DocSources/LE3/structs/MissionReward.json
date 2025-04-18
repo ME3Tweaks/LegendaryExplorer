@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "MissionName": {
+      "type": null,
+      "documentation": null
+    },
+    "ObjectiveXP": {
+      "type": null,
+      "documentation": null
+    },
+    "CombatXP": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

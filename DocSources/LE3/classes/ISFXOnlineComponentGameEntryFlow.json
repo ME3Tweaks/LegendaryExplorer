@@ -1,0 +1,123 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "SetLoginState": {
+      "documentation": null,
+      "signature_members": {
+        "loginState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLoginState(SFXOnlineUIState loginState)"
+    },
+    "ActivateConnectFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivateConnectFlow()"
+    },
+    "ActivateConnectToMapFlow": {
+      "documentation": null,
+      "signature_members": {
+        "mapPackageName": {
+          "type": null,
+          "documentation": null
+        },
+        "fromGalaxyMap": {
+          "type": null,
+          "documentation": null
+        },
+        "Difficulty": {
+          "type": null,
+          "documentation": null
+        },
+        "objectiveMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateConnectToMapFlow(string mapPackageName, optional bool fromGalaxyMap, optional SFXOnlineGameDifficulty Difficulty, optional int objectiveMode)"
+    },
+    "ActivateInviteFlow": {
+      "documentation": null,
+      "signature_members": {
+        "InviteResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateInviteFlow(const out OnlineGameSearchResult InviteResult)"
+    },
+    "ActivateMPLobbyAccessFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateMPLobbyAccessFlow()"
+    },
+    "GetDeferredGameSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineGameSettings",
+      "signature": "SFXOnlineGameSettings GetDeferredGameSettings()"
+    },
+    "IsInConnectToMapFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInConnectToMapFlow()"
+    },
+    "IsInGalaxyMapFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInGalaxyMapFlow()"
+    },
+    "IsInvitedUserActive": {
+      "documentation": null,
+      "signature_members": {
+        "invitedId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInvitedUserActive(const out UniqueNetId invitedId)"
+    },
+    "IsWaitingForKitSelect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsWaitingForKitSelect()"
+    },
+    "OnConnectToMapFlowCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnConnectToMapFlowCompleted(optional bool Success)"
+    },
+    "OnKitDeployed": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnKitDeployed(bool Success)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

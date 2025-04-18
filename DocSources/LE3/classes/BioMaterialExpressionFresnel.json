@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "Normal": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Power": {
+      "type": "float",
+      "documentation": null
+    },
+    "Inverted": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

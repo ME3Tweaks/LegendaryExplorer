@@ -1,0 +1,25 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "WwiseAudio",
+  "variables": {
+    "Param": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_RTPCHandlers": {
+      "type": "WwiseRTPCForActorHandler",
+      "documentation": null
+    },
+    "Value": {
+      "type": "float",
+      "documentation": null
+    },
+    "Running": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

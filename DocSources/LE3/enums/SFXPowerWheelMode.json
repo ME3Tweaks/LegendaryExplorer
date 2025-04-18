@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PWM_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "PWM_Powers": {
+      "value": 1,
+      "documentation": null
+    },
+    "PWM_Weapons": {
+      "value": 2,
+      "documentation": null
+    },
+    "PWM_PC": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

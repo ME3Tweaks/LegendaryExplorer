@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "AOE_Radius": {
+      "value": 0,
+      "documentation": null
+    },
+    "AOE_Cone": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

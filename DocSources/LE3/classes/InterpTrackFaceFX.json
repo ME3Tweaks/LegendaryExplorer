@@ -1,0 +1,53 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "OverrideAnimSet": {
+      "type": "Override_AnimSet",
+      "documentation": null
+    },
+    "FaceFXAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_aBioMaleAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "m_aBioFemaleAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "FaceFXSeqs": {
+      "type": "FaceFXTrackKey",
+      "documentation": null
+    },
+    "FaceFXSoundCueKeys": {
+      "type": "FaceFXSoundCueKey",
+      "documentation": null
+    },
+    "OverrideAsset": {
+      "type": "Override_Asset",
+      "documentation": null
+    },
+    "CachedActorFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null
+    },
+    "m_nmSFXFindActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bSFXEnableClipToClipBlending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eSFXFindActorMode": {
+      "type": "ESFXFindByTagTypes",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

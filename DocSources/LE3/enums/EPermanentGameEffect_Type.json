@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PermanentGEType_Player": {
+      "value": 0,
+      "documentation": null
+    },
+    "PermanentGEType_Weapon": {
+      "value": 1,
+      "documentation": null
+    },
+    "PermanentGEType_GAWAsset": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

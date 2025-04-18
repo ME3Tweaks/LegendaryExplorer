@@ -1,0 +1,881 @@
+{
+  "parent": "BioCheatManager",
+  "package": "SFXGame",
+  "variables": {
+    "sTreasureLevelOverride": {
+      "type": "string",
+      "documentation": null
+    },
+    "SetupMissionArray": {
+      "type": "SetupMissionData",
+      "documentation": null
+    },
+    "SetupModifierArray": {
+      "type": "SetupModifierData",
+      "documentation": null
+    },
+    "ReplicationTestNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ReplicationTestNameStrings": {
+      "type": "string",
+      "documentation": null
+    },
+    "AutoBotAIControllerName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LastScoreManager": {
+      "type": "SFXScoreManager",
+      "documentation": null
+    },
+    "MPBotsUsedLast": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MPBotsUsedLastPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "bDebugScore": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MPBotsIgnoreHostInternal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugHeadLOD": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AutoLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoLevelUp(Name Command)"
+    },
+    "CreateCareer": {
+      "documentation": null,
+      "signature_members": {
+        "firstName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCareer(string firstName)"
+    },
+    "DebugText": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugText(string S, optional int Duration, optional int Index)"
+    },
+    "FastResumeGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FastResumeGame()"
+    },
+    "ForceLOD": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "LOD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceLOD(string Target, int LOD)"
+    },
+    "SetLanguageForSpeech": {
+      "documentation": null,
+      "signature_members": {
+        "Language": {
+          "type": null,
+          "documentation": null
+        },
+        "UpdateProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLanguageForSpeech(string Language, optional bool UpdateProfile)"
+    },
+    "SetLanguageForText": {
+      "documentation": null,
+      "signature_members": {
+        "Language": {
+          "type": null,
+          "documentation": null
+        },
+        "UpdateProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLanguageForText(string Language, optional bool UpdateProfile)"
+    },
+    "SetLanguageForVO": {
+      "documentation": null,
+      "signature_members": {
+        "Language": {
+          "type": null,
+          "documentation": null
+        },
+        "UpdateProfile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLanguageForVO(string Language, optional bool UpdateProfile)"
+    },
+    "SetPlayerVariable": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerVariable": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerVariable(string PlayerVariable, int Value)"
+    },
+    "GiveWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassStr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Weapon",
+      "signature": "Weapon GiveWeapon(string WeaponClassStr)"
+    },
+    "AT": {
+      "documentation": null,
+      "signature_members": {
+        "newArea": {
+          "type": null,
+          "documentation": null
+        },
+        "StartPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AT(Name newArea, optional Name StartPoint)"
+    },
+    "AuthenticateGAWServer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AuthenticateGAWServer()"
+    },
+    "BlazeDisconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlazeDisconnect()"
+    },
+    "BotsSuperGun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BotsSuperGun()"
+    },
+    "CallRemoteTestNameReplication": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "InConfirmString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CallRemoteTestNameReplication(Name InName, string InConfirmString)"
+    },
+    "CollectorPossess": {
+      "documentation": null,
+      "signature_members": {
+        "TargetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CollectorPossess(optional string TargetName)"
+    },
+    "DebugAllLevels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugAllLevels()"
+    },
+    "DebugBlockingSeekFree": {
+      "documentation": null,
+      "signature_members": {
+        "DoDebug": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugBlockingSeekFree(bool DoDebug)"
+    },
+    "DebugDistance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugDistance()"
+    },
+    "DebugDraw_Distance": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Distance(BioHUD HUD)"
+    },
+    "DebugDraw_LOD": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_LOD(BioHUD HUD)"
+    },
+    "DebugDraw_Projectile": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Projectile(BioHUD HUD)"
+    },
+    "DebugLOD": {
+      "documentation": null,
+      "signature_members": {
+        "bShowHeadLOD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugLOD(optional bool bShowHeadLOD)"
+    },
+    "DebugProjectile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugProjectile()"
+    },
+    "DebugScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugScore()"
+    },
+    "DebugTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugTreasure(string LevelName)"
+    },
+    "DeleteModSaveData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeleteModSaveData()"
+    },
+    "EndGameChoices": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndGameChoices(optional array<EEndGameOption> Options)"
+    },
+    "GAWAuthenticateCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GAWAuthenticateCompleted(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "GetPlotState": {
+      "documentation": null,
+      "signature_members": {
+        "DataType": {
+          "type": null,
+          "documentation": null
+        },
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlotState(string DataType, int Id)"
+    },
+    "GiveBonusPower": {
+      "documentation": null,
+      "signature_members": {
+        "BonusPowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveBonusPower(string BonusPowerClassName)"
+    },
+    "GrantMPCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantMPCredits(int nCredits)"
+    },
+    "GrantMPExperience": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "fXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantMPExperience(string className, float fXP)"
+    },
+    "IncreaseGalaxyAtWarRating": {
+      "documentation": null,
+      "signature_members": {
+        "defaultRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "ZoneID": {
+          "type": null,
+          "documentation": null
+        },
+        "zoneRating": {
+          "type": null,
+          "documentation": null
+        },
+        "zoneAsset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncreaseGalaxyAtWarRating(int defaultRatingIncrease, optional int ZoneID, optional int zoneRating, optional int zoneAsset)"
+    },
+    "ListPlayerVariables": {
+      "documentation": null,
+      "signature_members": {
+        "sSearchString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ListPlayerVariables(optional string sSearchString)"
+    },
+    "MPBots": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MPBots(bool bEnable, optional bool bIgnoreHost)"
+    },
+    "MPBotsClearUsedLast": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MPBotsClearUsedLast()"
+    },
+    "MPBotsDisableTick": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MPBotsDisableTick(BioPawn P)"
+    },
+    "MPBotsGetUsedLastPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn MPBotsGetUsedLastPawn()"
+    },
+    "MPBotsInternal": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MPBotsInternal(bool bEnable)"
+    },
+    "MPBotsLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MPBotsLevelUp(SFXPawn inPawn, int Level)"
+    },
+    "MPBotsUse": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Objective": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MPBotsUse(BioPawn P, Actor Objective)"
+    },
+    "ProfileTreasure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProfileTreasure()"
+    },
+    "ResetMPCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        },
+        "RetainCustomization": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetMPCharacter(string KitName, optional bool RetainCustomization)"
+    },
+    "ResetMPClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "RetainCustomization": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetMPClass(string className, optional bool RetainCustomization)"
+    },
+    "ResetMPData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMPData()"
+    },
+    "ResetMPTutorialMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMPTutorialMessage()"
+    },
+    "SetEndGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "bBrain": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEndGameOptions(optional bool bBrain)"
+    },
+    "SetMission": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "NoTP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMission(Name Command, optional bool NoTP)"
+    },
+    "SetMMBotOptions": {
+      "documentation": null,
+      "signature_members": {
+        "withDisconnections": {
+          "type": null,
+          "documentation": null
+        },
+        "fastForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMMBotOptions(bool withDisconnections, bool fastForward)"
+    },
+    "SetModLevel": {
+      "documentation": null,
+      "signature_members": {
+        "ModClassName": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetModLevel(string ModClassName, int nLevel)"
+    },
+    "SetPlotState": {
+      "documentation": null,
+      "signature_members": {
+        "DataType": {
+          "type": null,
+          "documentation": null
+        },
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlotState(string DataType, int Id, string Value)"
+    },
+    "SetupMission": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Command": {
+          "type": null,
+          "documentation": null
+        },
+        "NoTP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupMission(BioGlobalVariableTable gv, Name Command, optional bool NoTP)"
+    },
+    "SetupModifier": {
+      "documentation": null,
+      "signature_members": {
+        "gv": {
+          "type": null,
+          "documentation": null
+        },
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupModifier(BioGlobalVariableTable gv, Name Command)"
+    },
+    "SetupPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupPlayer()"
+    },
+    "SetWeaponLevels": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponLevels(int Level)"
+    },
+    "ShowNavSightLines": {
+      "documentation": null,
+      "signature_members": {
+        "NavName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowNavSightLines(Name NavName)"
+    },
+    "SimulateHostDisconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SimulateHostDisconnect()"
+    },
+    "SpawnSeeker": {
+      "documentation": null,
+      "signature_members": {
+        "TargetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnSeeker(optional string TargetName)"
+    },
+    "TestNameReplication": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestNameReplication()"
+    },
+    "TestNameReplicationResponse": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "InConfirmString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TestNameReplicationResponse(Name InName, string InConfirmString)"
+    },
+    "ToggleDebugMPPlayerVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleDebugMPPlayerVariables()"
+    },
+    "ToggleFullGuiSoundLogging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleFullGuiSoundLogging()"
+    },
+    "ToggleQASaveLibrary": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleQASaveLibrary()"
+    },
+    "ToggleSkynetSaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleSkynetSaves()"
+    },
+    "UnlockAllBonusPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllBonusPowers()"
+    },
+    "UnlockAllMPKits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllMPKits()"
+    },
+    "UnlockArmorPiece": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorPiece": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockArmorPiece(EArmorTreasurePiece ArmorPiece)"
+    },
+    "UpgradeExternalAsset": {
+      "documentation": null,
+      "signature_members": {
+        "AssetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpgradeExternalAsset(int AssetID)"
+    },
+    "UpgradeExternalAssetCallback": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpgradeExternalAssetCallback(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "UpgradeWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassStr": {
+          "type": null,
+          "documentation": null
+        },
+        "Count": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpgradeWeapon(string WeaponClassStr, optional int Count)"
+    },
+    "ValidateMatchMakingStates": {
+      "documentation": null,
+      "signature_members": {
+        "writeToFile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ValidateMatchMakingStates(bool writeToFile)"
+    },
+    "WeaponSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WeaponSelection()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

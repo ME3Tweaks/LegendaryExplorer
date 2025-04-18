@@ -1,0 +1,213 @@
+{
+  "parent": "SFXCustomAction_ProceduralSync",
+  "package": "SFXGame",
+  "variables": {
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ScreenShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "MeleeImpactParameters": {
+      "type": "AreaEffectParameters",
+      "documentation": null
+    },
+    "Power": {
+      "type": "SFXPowerCustomAction_MeleePassivePower",
+      "documentation": null
+    },
+    "ForceFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "ImpactActorEffect1": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ImpactActorEffect2": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ImpactSoundPlayer": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RBC_BlurInstance": {
+      "type": "RadialBlurComponent",
+      "documentation": null
+    },
+    "BlurScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurOpacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "SyncMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "NonSyncMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPlayMeleedVoc": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ApplyBlurEffect": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnActorImpacted": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnActorImpacted(EPowerResistance Resistance, Actor oImpacted, int nPreviouslyImpacted, Vector HitLocation, Vector HitNormal)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteraction()"
+    },
+    "Breakout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Breakout()"
+    },
+    "ClientDoCustomActionImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomActionImpact(Actor oActor, int ImpactCount, optional bool bFirstTarget, optional Vector HitLocation, optional Vector HitNormal, optional int CustomActionReactionType)"
+    },
+    "GetMeleeImpactParameters": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetMeleeImpactParameters(out AreaEffectParameters ImpactParams)"
+    },
+    "MeleeImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MeleeImpact()"
+    },
+    "NonSyncedAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NonSyncedAction()"
+    },
+    "OnTimelineImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTimelineImpact(Actor Target)"
+    },
+    "StopBlur": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopBlur()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

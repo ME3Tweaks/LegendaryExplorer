@@ -1,0 +1,13 @@
+{
+  "parent": "StaticMeshComponent",
+  "package": "Engine",
+  "variables": {
+    "FoliageSceneProxy": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

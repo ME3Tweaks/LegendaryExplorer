@@ -1,0 +1,315 @@
+{
+  "parent": "BioSFHandler_Options",
+  "package": "SFXGame",
+  "variables": {
+    "KeyBinds": {
+      "type": "KeyBind",
+      "documentation": null
+    },
+    "AliasMap": {
+      "type": "GuiBind",
+      "documentation": null
+    },
+    "UnBindableKeys": {
+      "type": "NonBindableKeyDefinition",
+      "documentation": null
+    },
+    "IncomingKey": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ConfirmDisplayMessageBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "KeyHasBeenBound": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "KeyHasBeenUnbound": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ResetPCBindingsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmResetPCBindingsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelResetPCBindingsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CannotBindConstantKey": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DisplayChangeText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmDisplayChangeText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDisplayChangeText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "RebindWarning": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DisplayChangeTimeoutSeconds": {
+      "type": "int",
+      "documentation": null
+    },
+    "OldAliasIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "CaptureBindIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "CaptureBindNumber": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyPCBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyPCBindings()"
+    },
+    "ApplySettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplySettings()"
+    },
+    "BuildControlBindingList": {
+      "documentation": null,
+      "signature_members": {
+        "optionData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildControlBindingList(GFxValue optionData)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "InitPCBindings": {
+      "documentation": null,
+      "signature_members": {
+        "Defaults": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitPCBindings(bool Defaults)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "EventType": {
+          "type": null,
+          "documentation": null
+        },
+        "AmountDepressed": {
+          "type": null,
+          "documentation": null
+        },
+        "bGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProcessInput(int ControllerId, Name Key, EInputEvent EventType, optional float AmountDepressed, optional bool bGamepad)"
+    },
+    "RefreshGUIBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshGUIBindings()"
+    },
+    "ResetPCToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "lstOptsToReset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetPCToDefaults(const out array<int> lstOptsToReset)"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "sPackedIDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetToDefaults(string sPackedIDs)"
+    },
+    "RevertSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RevertSettings()"
+    },
+    "WillChangeDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WillChangeDisplay()"
+    },
+    "Callback_ConfirmDisplayChange": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDisplayChange(bool bAPressed, int Context)"
+    },
+    "Callback_DisplayChangeTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Callback_DisplayChangeTimeout()"
+    },
+    "Callback_ResetPCBindings": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ResetPCBindings(bool bAPressed, int Context)"
+    },
+    "Callback_ResetPCToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ResetPCToDefaults(bool bAPressed, int Context)"
+    },
+    "CaptureNewBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "BindNumber": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CaptureNewBinding(int BindIndex, int BindNumber)"
+    },
+    "ConfirmDisplayChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmDisplayChange()"
+    },
+    "ConfirmKeybindOverwrite": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmKeybindOverwrite(bool bAPressed, int nContext)"
+    },
+    "Helper_DoPCBindingReset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Helper_DoPCBindingReset()"
+    },
+    "MovieLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MovieLoaded()"
+    },
+    "ResetPCBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPCBindings()"
+    },
+    "SaveAndExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveAndExit()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

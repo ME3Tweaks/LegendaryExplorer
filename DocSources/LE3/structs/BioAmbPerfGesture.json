@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "nmGestureName": {
+      "type": null,
+      "documentation": null
+    },
+    "fPlayRate": {
+      "type": null,
+      "documentation": null
+    },
+    "fPlayWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "nWeighting": {
+      "type": null,
+      "documentation": null
+    },
+    "fRetriggerDelay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

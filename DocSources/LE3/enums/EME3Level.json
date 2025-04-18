@@ -1,0 +1,217 @@
+{
+  "EnumValues": {
+    "ME3Level_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ME3Level_ProEar": {
+      "value": 1,
+      "documentation": null
+    },
+    "ME3Level_ProMar": {
+      "value": 2,
+      "documentation": null
+    },
+    "ME3Level_SPRctr": {
+      "value": 3,
+      "documentation": null
+    },
+    "ME3Level_CitHub": {
+      "value": 4,
+      "documentation": null
+    },
+    "ME3Level_Nor": {
+      "value": 5,
+      "documentation": null
+    },
+    "ME3Level_KroGar": {
+      "value": 6,
+      "documentation": null
+    },
+    "ME3Level_OmgJck": {
+      "value": 7,
+      "documentation": null
+    },
+    "ME3Level_SPCer": {
+      "value": 8,
+      "documentation": null
+    },
+    "ME3Level_Kro001": {
+      "value": 9,
+      "documentation": null
+    },
+    "ME3Level_KroN7a": {
+      "value": 10,
+      "documentation": null
+    },
+    "ME3Level_KroGru": {
+      "value": 11,
+      "documentation": null
+    },
+    "ME3Level_KroN7b": {
+      "value": 12,
+      "documentation": null
+    },
+    "ME3Level_SPNov": {
+      "value": 13,
+      "documentation": null
+    },
+    "ME3Level_Kro002": {
+      "value": 14,
+      "documentation": null
+    },
+    "ME3Level_Cat003": {
+      "value": 15,
+      "documentation": null
+    },
+    "ME3Level_CitSam": {
+      "value": 16,
+      "documentation": null
+    },
+    "ME3Level_CerJcb": {
+      "value": 17,
+      "documentation": null
+    },
+    "ME3Level_SPDish": {
+      "value": 18,
+      "documentation": null
+    },
+    "ME3Level_SPTowr": {
+      "value": 19,
+      "documentation": null
+    },
+    "ME3Level_SPSlum": {
+      "value": 20,
+      "documentation": null
+    },
+    "ME3Level_Gth001": {
+      "value": 21,
+      "documentation": null
+    },
+    "ME3Level_GthLeg": {
+      "value": 22,
+      "documentation": null
+    },
+    "ME3Level_GthN7a": {
+      "value": 23,
+      "documentation": null
+    },
+    "ME3Level_Gth002": {
+      "value": 24,
+      "documentation": null
+    },
+    "ME3Level_Cat002": {
+      "value": 25,
+      "documentation": null
+    },
+    "ME3Level_CerMir": {
+      "value": 26,
+      "documentation": null
+    },
+    "ME3Level_Cat004": {
+      "value": 27,
+      "documentation": null
+    },
+    "ME3Level_End001": {
+      "value": 28,
+      "documentation": null
+    },
+    "ME3Level_End002": {
+      "value": 29,
+      "documentation": null
+    },
+    "ME3Level_End003": {
+      "value": 30,
+      "documentation": null
+    },
+    "ME3Level_EricCombat": {
+      "value": 31,
+      "documentation": null
+    },
+    "ME3Level_Cat001": {
+      "value": 32,
+      "documentation": null
+    },
+    "ME3Level_DLC1": {
+      "value": 33,
+      "documentation": null
+    },
+    "ME3Level_DLC2": {
+      "value": 34,
+      "documentation": null
+    },
+    "ME3Level_DLC3": {
+      "value": 35,
+      "documentation": null
+    },
+    "ME3Level_DLC4": {
+      "value": 36,
+      "documentation": null
+    },
+    "ME3Level_DLC5": {
+      "value": 37,
+      "documentation": null
+    },
+    "ME3Level_DLC6": {
+      "value": 38,
+      "documentation": null
+    },
+    "ME3Level_DLC7": {
+      "value": 39,
+      "documentation": null
+    },
+    "ME3Level_DLC8": {
+      "value": 40,
+      "documentation": null
+    },
+    "ME3Level_DLC9": {
+      "value": 41,
+      "documentation": null
+    },
+    "ME3Level_DLC10": {
+      "value": 42,
+      "documentation": null
+    },
+    "ME3Level_DLC11": {
+      "value": 43,
+      "documentation": null
+    },
+    "ME3Level_DLC12": {
+      "value": 44,
+      "documentation": null
+    },
+    "ME3Level_DLC13": {
+      "value": 45,
+      "documentation": null
+    },
+    "ME3Level_DLC14": {
+      "value": 46,
+      "documentation": null
+    },
+    "ME3Level_DLC15": {
+      "value": 47,
+      "documentation": null
+    },
+    "ME3Level_DLC16": {
+      "value": 48,
+      "documentation": null
+    },
+    "ME3Level_DLC17": {
+      "value": 49,
+      "documentation": null
+    },
+    "ME3Level_DLC18": {
+      "value": 50,
+      "documentation": null
+    },
+    "ME3Level_DLC19": {
+      "value": 51,
+      "documentation": null
+    },
+    "ME3Level_DLC20": {
+      "value": 52,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

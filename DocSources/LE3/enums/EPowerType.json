@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PowerType_Instant": {
+      "value": 0,
+      "documentation": null
+    },
+    "PowerType_Projectile": {
+      "value": 1,
+      "documentation": null
+    },
+    "PowerType_Melee": {
+      "value": 2,
+      "documentation": null
+    },
+    "PowerType_Buff": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

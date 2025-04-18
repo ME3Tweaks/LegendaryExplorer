@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "PackagesToLoad": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadedObjects": {
+      "type": null,
+      "documentation": null
+    },
+    "FullyLoadType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

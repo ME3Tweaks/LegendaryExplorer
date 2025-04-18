@@ -1,0 +1,37 @@
+{
+  "parent": "SFXCustomAction_ReachSpecMove",
+  "package": "SFXGame",
+  "variables": {
+    "fClimbSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PreAlignPawnLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreAlignPawnLocation()"
+    },
+    "SetMoveStage": {
+      "documentation": null,
+      "signature_members": {
+        "NextStage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveStage(EMoveStage NextStage)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

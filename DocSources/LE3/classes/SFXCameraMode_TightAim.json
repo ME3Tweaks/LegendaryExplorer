@@ -1,0 +1,36 @@
+{
+  "parent": "SFXCameraMode_Combat",
+  "package": "SFXGame",
+  "variables": {
+    "ZoomData": {
+      "type": "BioCameraZoom",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

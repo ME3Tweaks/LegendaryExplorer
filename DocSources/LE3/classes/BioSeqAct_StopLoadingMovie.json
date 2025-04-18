@@ -1,0 +1,13 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "bDelayStopUntilGameHasRendered": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

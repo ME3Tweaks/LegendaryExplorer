@@ -1,0 +1,97 @@
+{
+  "parent": "BioSkelControlAdditiveLookAt",
+  "package": "SFXGame",
+  "variables": {
+    "m_mControlledRefPose": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "mc_pDefinition": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LastOrigin": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pTargetActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_nTargetBoneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fDelayTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nRootAnimBoneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fPrevAngVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLimitZoneAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bDoAdditive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAnimFirst": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bResetTargetLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisabling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_RootAnimBoneLookAtInverted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_RootAnimBoneUpInverted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTargetReached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRootBoneYawOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasValidLastOrigin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTransitioningFromDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_RootAnimBoneLookAtAxis": {
+      "type": "byte",
+      "documentation": null
+    },
+    "m_RootAnimBoneUpAxis": {
+      "type": "byte",
+      "documentation": null
+    },
+    "nTransitionType": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

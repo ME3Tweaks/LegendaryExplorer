@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "TimeStep": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxSubSteps": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseHardware": {
+      "type": null,
+      "documentation": null
+    },
+    "bFixedTimeStep": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

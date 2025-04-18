@@ -1,0 +1,35 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool Enabled)"
+    },
+    "SetOptions": {
+      "documentation": null,
+      "signature_members": {
+        "withDisconnections": {
+          "type": null,
+          "documentation": null
+        },
+        "fastForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOptions(bool withDisconnections, bool fastForward)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeCover2Actions_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_Lean": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_PopUp": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_PeekSide": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_PeekUp": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_PartialLean": {
+      "value": 5,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_PartialPopUp": {
+      "value": 6,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Actions_Aimback": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

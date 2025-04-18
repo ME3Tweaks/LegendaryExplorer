@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Bold": {
+      "type": null,
+      "documentation": null
+    },
+    "Italic": {
+      "type": null,
+      "documentation": null
+    },
+    "Underline": {
+      "type": null,
+      "documentation": null
+    },
+    "Shadow": {
+      "type": null,
+      "documentation": null
+    },
+    "Strikethrough": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

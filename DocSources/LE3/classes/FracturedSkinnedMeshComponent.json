@@ -1,0 +1,29 @@
+{
+  "parent": "FracturedBaseComponent",
+  "package": "Engine",
+  "variables": {
+    "FragmentTransforms": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "DependentComponents": {
+      "type": "FracturedStaticMeshComponent",
+      "documentation": null
+    },
+    "ComponentSkinResources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bBecameVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFragmentTransformsChanged": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

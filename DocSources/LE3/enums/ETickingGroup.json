@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "TG_PreAsyncWork": {
+      "value": 0,
+      "documentation": null
+    },
+    "TG_DuringAsyncWork": {
+      "value": 1,
+      "documentation": null
+    },
+    "TG_PostAsyncWork": {
+      "value": 2,
+      "documentation": null
+    },
+    "TG_PostUpdateWork": {
+      "value": 3,
+      "documentation": null
+    },
+    "TG_PostDirtyComponentsWork": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

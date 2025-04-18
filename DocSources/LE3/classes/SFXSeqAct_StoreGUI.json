@@ -1,0 +1,85 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "StorefrontClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_StoreGUIHandler": {
+      "type": "SFXGUI_Store",
+      "documentation": null
+    },
+    "m_StoreStockData": {
+      "type": "SFXGUIData_Store",
+      "documentation": null
+    },
+    "m_StoreGUIResource": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "ExitStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitStore()"
+    },
+    "ResetStorefront": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetStorefront()"
+    },
+    "SetupStock": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupStock()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

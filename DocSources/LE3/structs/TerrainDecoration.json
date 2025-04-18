@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Factory": {
+      "type": null,
+      "documentation": null
+    },
+    "MinScale": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxScale": {
+      "type": null,
+      "documentation": null
+    },
+    "Density": {
+      "type": null,
+      "documentation": null
+    },
+    "SlopeRotationBlend": {
+      "type": null,
+      "documentation": null
+    },
+    "RandSeed": {
+      "type": null,
+      "documentation": null
+    },
+    "bRandomlyRotateYaw": {
+      "type": null,
+      "documentation": null
+    },
+    "Instances": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

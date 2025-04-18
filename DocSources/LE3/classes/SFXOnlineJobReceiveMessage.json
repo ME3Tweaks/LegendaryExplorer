@@ -1,0 +1,26 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "nMapId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateReceiveAllMessagesJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineJobReceiveMessage",
+      "signature": "SFXOnlineJobReceiveMessage CreateReceiveAllMessagesJob()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

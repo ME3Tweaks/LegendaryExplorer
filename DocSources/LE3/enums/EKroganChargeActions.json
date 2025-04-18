@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EKC_Start": {
+      "value": 0,
+      "documentation": null
+    },
+    "EKC_Miss": {
+      "value": 1,
+      "documentation": null
+    },
+    "EKC_Hit": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ClassNameID": {
+      "type": null,
+      "documentation": null
+    },
+    "Value": {
+      "type": null,
+      "documentation": null
+    },
+    "bShouldDeactivateAfterMatch": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

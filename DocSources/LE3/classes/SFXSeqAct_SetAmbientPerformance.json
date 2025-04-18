@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmDefaultPoseAnim": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pDefaultPoseSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_pPerfGameData": {
+      "type": "SFXAmbPerfGameData",
+      "documentation": null
+    },
+    "m_bReturnToDefaultPose": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

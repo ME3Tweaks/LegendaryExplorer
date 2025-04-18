@@ -1,0 +1,494 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "PostProcessSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "ButtonCooldownCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "CachedPlayer": {
+      "type": "CachedActorState",
+      "documentation": null
+    },
+    "CachedParty": {
+      "type": "CachedActorState",
+      "documentation": null
+    },
+    "CachedEnemies": {
+      "type": "CachedActorState",
+      "documentation": null
+    },
+    "CachedVehicles": {
+      "type": "CachedActorState",
+      "documentation": null
+    },
+    "CachedNPCs": {
+      "type": "CachedActorState",
+      "documentation": null
+    },
+    "CharacterMeshFilter": {
+      "type": "string",
+      "documentation": null
+    },
+    "FilterMaterialPaths": {
+      "type": "string",
+      "documentation": null
+    },
+    "FilterEffects": {
+      "type": "MaterialEffect",
+      "documentation": null
+    },
+    "ButtonPressTimes": {
+      "type": "float",
+      "documentation": null
+    },
+    "TakePhotoSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PhotoCamFree": {
+      "type": "SFXCameraMode_PhotoFree",
+      "documentation": null
+    },
+    "PhotoCamOrbit": {
+      "type": "SFXCameraMode_PhotoOrbit",
+      "documentation": null
+    },
+    "InstantTransition": {
+      "type": "SFXCameraTransition_GalaxyMap",
+      "documentation": null
+    },
+    "ME_ScreenEffect": {
+      "type": "MaterialEffect",
+      "documentation": null
+    },
+    "CamTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultPP_DOF_Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultPP_DOF_FalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultPP_DOF_BlurKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultPP_DOF_BlurBloomKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseOrbitCam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOldAllowFilmGrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayerHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPartyHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnemiesHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVehiclesHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNPCsHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOldIgnoreMoveInput": {
+      "type": "byte",
+      "documentation": null
+    },
+    "bOldIgnoreLookInput": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "DisableCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCamera()"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "ShowMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMenu()"
+    },
+    "EnableCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableCamera()"
+    },
+    "EnableInputWrapper": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableInputWrapper()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GuiKey": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GuiKey(BioGuiEvents Event)"
+    },
+    "HasCharacterMesh": {
+      "documentation": null,
+      "signature_members": {
+        "TestActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasCharacterMesh(Actor TestActor)"
+    },
+    "HideAttachedActors": {
+      "documentation": null,
+      "signature_members": {
+        "InHiddenActors": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideAttachedActors(out array<CachedActorState> InHiddenActors)"
+    },
+    "InitializeFilters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeFilters()"
+    },
+    "InitializePostProcessSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePostProcessSettings()"
+    },
+    "ResetFilters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetFilters()"
+    },
+    "SetBloomIntensity": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBloomIntensity(float Value)"
+    },
+    "SetBloomThreshold": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBloomThreshold(float Value)"
+    },
+    "SetBrightness": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBrightness(float Value)"
+    },
+    "SetCameraFOV": {
+      "documentation": null,
+      "signature_members": {
+        "NewFOV": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCameraFOV(float NewFOV)"
+    },
+    "SetCameraRoll": {
+      "documentation": null,
+      "signature_members": {
+        "NewRoll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCameraRoll(float NewRoll)"
+    },
+    "SetContrast": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContrast(float Value)"
+    },
+    "SetDOFDistance": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDOFDistance(float Value)"
+    },
+    "SetDOFEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDOFEnabled(bool bValue)"
+    },
+    "SetDOFFStop": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDOFFStop(float Value)"
+    },
+    "SetDOFIntensity": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDOFIntensity(float Value)"
+    },
+    "SetEffectFilter": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectFilter(int Value)"
+    },
+    "SetEnemiesHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnemiesHidden(bool bValue)"
+    },
+    "SetFilmGrainEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFilmGrainEnabled(bool bValue)"
+    },
+    "SetFilmGrainStrength": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFilmGrainStrength(float Value)"
+    },
+    "SetNPCsHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNPCsHidden(bool bValue)"
+    },
+    "SetOrbitCam": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOrbitCam(bool bValue)"
+    },
+    "SetPartyHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPartyHidden(bool bValue)"
+    },
+    "SetPlayerHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerHidden(bool bValue)"
+    },
+    "SetSaturation": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSaturation(float Value)"
+    },
+    "SetVehicleHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVehicleHidden(bool bValue)"
+    },
+    "SetVignetteEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVignetteEnabled(bool bValue)"
+    },
+    "TakePhoto": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TakePhoto()"
+    },
+    "ToggleOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleOptions()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

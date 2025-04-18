@@ -1,0 +1,461 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Bounds": {
+      "type": "BoxSphereBounds",
+      "documentation": null
+    },
+    "Materials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "ClothingAssets": {
+      "type": "ApexClothingAsset",
+      "documentation": null
+    },
+    "Origin": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RotOrigin": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "RefSkeleton": {
+      "type": "int",
+      "documentation": null
+    },
+    "SkeletalDepth": {
+      "type": "int",
+      "documentation": null
+    },
+    "NameIndexMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "LODModels": {
+      "type": "IndirectArray_Mirror",
+      "documentation": null
+    },
+    "RefBasesInvMatrix": {
+      "type": "BoneTransform",
+      "documentation": null
+    },
+    "SkelMirrorTable": {
+      "type": "BoneMirrorInfo",
+      "documentation": null
+    },
+    "SkelMirrorAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "SkelMirrorFlipAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "Sockets": {
+      "type": "SkeletalMeshSocket",
+      "documentation": null
+    },
+    "BoneBreakNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "LODInfo": {
+      "type": "SkeletalMeshLODInfo",
+      "documentation": null
+    },
+    "PerPolyCollisionBones": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AddToParentPerPolyCollisionBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PerPolyBoneKDOPs": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPerPolyUseSoftWeighting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSimpleLineCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSimpleBoxCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceCPUSkinning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseFullPrecisionUVs": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsePackedPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LODBiasPC": {
+      "type": "int",
+      "documentation": null
+    },
+    "LODBiasPS3": {
+      "type": "int",
+      "documentation": null
+    },
+    "LODBiasXbox360": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothMesh": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ClothMeshScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothToGraphicsVertMap": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothMovementScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothMovementScaleGenMode": {
+      "type": "ClothMovementScaleGen",
+      "documentation": null
+    },
+    "ClothToAnimMeshMaxDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLimitClothToAnimMesh": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ClothWeldingMap": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothWeldingDomain": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothWeldedIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceNoWelding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "NumFreeClothVerts": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothIndexBuffer": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothBones": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ClothHierarchyLevels": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEnableClothBendConstraints": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableClothDamping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseClothCOMDamping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ClothStretchStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothBendStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothThickness": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothIterations": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothHierarchicalIterations": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClothFriction": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothRelativeGridSpacing": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothPressure": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothCollisionResponseCoefficient": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothAttachmentResponseCoefficient": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothAttachmentTearFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothSleepLinearVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "HardStretchLimitFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHardStretchLimit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableClothOrthoBendConstraints": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableClothSelfCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableClothPressure": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableClothTwoWayCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ClothSpecialBones": {
+      "type": "ClothSpecialBoneInfo",
+      "documentation": null
+    },
+    "bEnableClothLineChecks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClothMetal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ClothMetalImpulseThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothMetalPenetrationDepth": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothMetalMaxDeformationDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableClothTearing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ClothTearFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClothTearReserve": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEnableValidBounds": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ValidBoundsMin": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ValidBoundsMax": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ClothTornTriMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "SoftBodySurfaceToGraphicsVertMap": {
+      "type": "int",
+      "documentation": null
+    },
+    "SoftBodySurfaceIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "SoftBodyTetraVertsUnscaled": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SoftBodyTetraIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "SoftBodyTetraLinks": {
+      "type": "SoftBodyTetraLink",
+      "documentation": null
+    },
+    "CachedSoftBodyMeshes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CachedSoftBodyMeshScales": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyBones": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SoftBodySpecialBones": {
+      "type": "SoftBodySpecialBoneInfo",
+      "documentation": null
+    },
+    "SoftBodyVolumeStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyStretchingStiffness": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyParticleRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodySolverIterations": {
+      "type": "int",
+      "documentation": null
+    },
+    "SoftBodyFriction": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyRelativeGridSpacing": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodySleepLinearVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableSoftBodySelfCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SoftBodyAttachmentResponse": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyCollisionResponse": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodyDetailLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftBodySubdivisionLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "bSoftBodyIsoSurface": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableSoftBodyDamping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSoftBodyCOMDamping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SoftBodyAttachmentThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableSoftBodyTwoWayCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SoftBodyAttachmentTearFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableSoftBodyLineChecks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GraphicsIndexIsCloth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "int",
+      "documentation": null
+    },
+    "SkelMeshRUID": {
+      "type": "QWord",
+      "documentation": null
+    },
+    "m_VerticesPerBone": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

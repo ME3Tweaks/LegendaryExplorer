@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "sName": {
+      "type": null,
+      "documentation": null
+    },
+    "nID": {
+      "type": null,
+      "documentation": null
+    },
+    "srDesc": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdated": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

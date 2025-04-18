@@ -1,0 +1,359 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Planets": {
+      "type": "BioPlanet",
+      "documentation": null
+    },
+    "aReapersTouchingPlayer": {
+      "type": "SFXGalaxyMapObject",
+      "documentation": null
+    },
+    "SunColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "StarColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "FlareTint": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "ActiveWorld": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fReaperAlertLevel": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReaperControlCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fReaperGraceTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fGameOverFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nScannedPlanets": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bHasMassRelay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowNebula": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bReapersChasePlayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSystemReapersActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bReapersHaveBeenDetected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ReaperControlConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "ReaperControlConditionPlot": {
+      "type": "EBioReaperControlConditionPlotAutoSet",
+      "documentation": null
+    },
+    "ReaperControlConditionName": {
+      "type": "EBioReaperControlConditionAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {
+        "oChild": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddChild(SFXGalaxyMapObject oChild)"
+    },
+    "BuildPlotLabelList": {
+      "documentation": null,
+      "signature_members": {
+        "aPlotNames": {
+          "type": null,
+          "documentation": null
+        },
+        "eMapLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BuildPlotLabelList(out array<stringref> aPlotNames, optional EBioGalaxyMapState eMapLevel)"
+    },
+    "CleanTransientData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanTransientData()"
+    },
+    "GetMassRelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGalaxyMapObject",
+      "signature": "SFXGalaxyMapObject GetMassRelay()"
+    },
+    "IsMassRelay": {
+      "documentation": null,
+      "signature_members": {
+        "o": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMassRelay(SFXGalaxyMapObject o)"
+    },
+    "IsReaper": {
+      "documentation": null,
+      "signature_members": {
+        "o": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsReaper(SFXGalaxyMapObject o)"
+    },
+    "IsReaperControlled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReaperControlled()"
+    },
+    "IsVisitedInMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisitedInMap()"
+    },
+    "LoadSaveData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadSaveData()"
+    },
+    "MapTagIsVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MapTagIsVisible()"
+    },
+    "ObjectLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ObjectLeft()"
+    },
+    "ObjectVisited": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ObjectVisited()"
+    },
+    "PlayerEscapedReapers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerEscapedReapers()"
+    },
+    "PushReapersToEdgeOfSystem": {
+      "documentation": null,
+      "signature_members": {
+        "vCenter": {
+          "type": null,
+          "documentation": null
+        },
+        "fSystemRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PushReapersToEdgeOfSystem(const Vector vCenter, const float fSystemRadius)"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "ResetGlobalReaperAlertLevels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetGlobalReaperAlertLevels()"
+    },
+    "SetSaveData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetSaveData()"
+    },
+    "AddReaperAlertValue": {
+      "documentation": null,
+      "signature_members": {
+        "fReaperValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReaperAlertValue(float fReaperValue)"
+    },
+    "BeginReaperGracePeriod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginReaperGracePeriod()"
+    },
+    "CountObjectsForExploration": {
+      "documentation": null,
+      "signature_members": {
+        "nObjectCount": {
+          "type": null,
+          "documentation": null
+        },
+        "nExploredCount": {
+          "type": null,
+          "documentation": null
+        },
+        "eMapLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CountObjectsForExploration(out int nObjectCount, out int nExploredCount, EBioGalaxyMapState eMapLevel)"
+    },
+    "EndReaperGracePeriod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndReaperGracePeriod()"
+    },
+    "EnumeratePlanets": {
+      "documentation": null,
+      "signature_members": {
+        "Cluster": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnumeratePlanets(SFXCluster Cluster)"
+    },
+    "GetLevelSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetLevelSize()"
+    },
+    "ReaperCaughtPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReaperCaughtPlayer()"
+    },
+    "ReaperChaseEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReaperChaseEnd()"
+    },
+    "ReaperChaseStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReaperChaseStart()"
+    },
+    "ReaperGameOver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReaperGameOver()"
+    },
+    "ReaperTouched": {
+      "documentation": null,
+      "signature_members": {
+        "oReaper": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReaperTouched(SFXGalaxyMapObject oReaper)"
+    },
+    "ReaperUnTouched": {
+      "documentation": null,
+      "signature_members": {
+        "oReaper": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReaperUnTouched(SFXGalaxyMapObject oReaper)"
+    },
+    "SetReaperAlertLevel": {
+      "documentation": null,
+      "signature_members": {
+        "fLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReaperAlertLevel(float fLevel)"
+    },
+    "ShouldCountSystemObjectsForExploration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldCountSystemObjectsForExploration()"
+    },
+    "SystemObjectScanned": {
+      "documentation": null,
+      "signature_members": {
+        "oSrc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SystemObjectScanned(SFXSystemLevelObject oSrc)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,64 @@
+{
+  "parent": "OnlinePlayerStorage",
+  "package": "SFXGame",
+  "variables": {
+    "WriteEventData": {
+      "type": "WriteEvent",
+      "documentation": null
+    },
+    "fMinDelayBetweenWrite": {
+      "type": "float",
+      "documentation": null
+    },
+    "iMaxBytesPerStorage": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetBaseProfileSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetBaseProfileSettings()"
+    },
+    "SetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetToDefaults()"
+    },
+    "Write": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Write(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "AcknowledgeWriteComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AcknowledgeWriteComplete(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

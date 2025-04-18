@@ -1,0 +1,81 @@
+{
+  "parent": "SFXCustomizationInstance",
+  "package": "SFXGame",
+  "variables": {
+    "CasualID": {
+      "type": "int",
+      "documentation": null
+    },
+    "FullBodyID": {
+      "type": "int",
+      "documentation": null
+    },
+    "TorsoID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShoulderID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ArmID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LegID": {
+      "type": "int",
+      "documentation": null
+    },
+    "SpecID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint1ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint2ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternColorID": {
+      "type": "int",
+      "documentation": null
+    },
+    "HelmetID": {
+      "type": "int",
+      "documentation": null
+    },
+    "EmissiveID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseCasualAppearance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CombatAppearance": {
+      "type": "EPlayerAppearanceType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CustomizeMaterialInstance": {
+      "documentation": null,
+      "signature_members": {
+        "MIC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CustomizeMaterialInstance(MaterialInstanceConstant MIC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

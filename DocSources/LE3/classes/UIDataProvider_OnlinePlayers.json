@@ -1,0 +1,31 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "OnPlayersReadComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPlayersReadComplete()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

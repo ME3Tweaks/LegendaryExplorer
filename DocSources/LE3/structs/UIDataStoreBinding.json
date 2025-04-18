@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "MarkupString": {
+      "type": null,
+      "documentation": null
+    },
+    "Subscriber": {
+      "type": null,
+      "documentation": null
+    },
+    "DataStoreName": {
+      "type": null,
+      "documentation": null
+    },
+    "DataStoreField": {
+      "type": null,
+      "documentation": null
+    },
+    "ResolvedDataStore": {
+      "type": null,
+      "documentation": null
+    },
+    "BindingIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "RequiredFieldType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

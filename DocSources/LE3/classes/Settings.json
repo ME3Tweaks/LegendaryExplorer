@@ -1,0 +1,829 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LocalizedSettings": {
+      "type": "LocalizedStringSetting",
+      "documentation": null
+    },
+    "Properties": {
+      "type": "SettingsProperty",
+      "documentation": null
+    },
+    "LocalizedSettingsMappings": {
+      "type": "LocalizedStringSettingMetaData",
+      "documentation": null
+    },
+    "PropertyMappings": {
+      "type": "SettingsPropertyPropertyMetaData",
+      "documentation": null
+    },
+    "__NotifySettingValueUpdated__Delegate": {
+      "type": "NotifySettingValueUpdated",
+      "documentation": null
+    },
+    "__NotifyPropertyValueUpdated__Delegate": {
+      "type": "NotifyPropertyValueUpdated",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AppendContextsToURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendContextsToURL(out string URL)"
+    },
+    "AppendDataBindingsToURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendDataBindingsToURL(out string URL)"
+    },
+    "AppendPropertiesToURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendPropertiesToURL(out string URL)"
+    },
+    "BuildURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildURL(out string URL)"
+    },
+    "EmptySettingsData": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EmptySettingsData(out SettingsData Data)"
+    },
+    "GetFloatProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatProperty(int PropertyId, out float Value)"
+    },
+    "GetIntProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntProperty(int PropertyId, out int Value)"
+    },
+    "GetPropertyAsString": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPropertyAsString(int PropertyId)"
+    },
+    "GetPropertyAsStringByName": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPropertyAsStringByName(Name PropertyName)"
+    },
+    "GetPropertyColumnHeader": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPropertyColumnHeader(int PropertyId)"
+    },
+    "GetPropertyId": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyId(Name PropertyName, out int PropertyId)"
+    },
+    "GetPropertyMappingType": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyMappingType(int PropertyId, out EPropertyValueMappingType OutType)"
+    },
+    "GetPropertyName": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetPropertyName(int PropertyId)"
+    },
+    "GetPropertyRange": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMinValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMaxValue": {
+          "type": null,
+          "documentation": null
+        },
+        "RangeIncrement": {
+          "type": null,
+          "documentation": null
+        },
+        "bFormatAsInt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyRange(int PropertyId, out float OutMinValue, out float OutMaxValue, out float RangeIncrement, out byte bFormatAsInt)"
+    },
+    "GetPropertyType": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ESettingsDataType",
+      "signature": "ESettingsDataType GetPropertyType(int PropertyId)"
+    },
+    "GetPropertyValueId": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyValueId(int PropertyId, out int ValueId)"
+    },
+    "GetQoSAdvertisedProperties": {
+      "documentation": null,
+      "signature_members": {
+        "QoSProps": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetQoSAdvertisedProperties(out array<SettingsProperty> QoSProps)"
+    },
+    "GetQoSAdvertisedStringSettings": {
+      "documentation": null,
+      "signature_members": {
+        "QoSSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetQoSAdvertisedStringSettings(out array<LocalizedStringSetting> QoSSettings)"
+    },
+    "GetRangedPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetRangedPropertyValue(int PropertyId, out float OutValue)"
+    },
+    "GetSettingsDataBlob": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "OutBlob": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSettingsDataBlob(out SettingsData Data, out array<byte> OutBlob)"
+    },
+    "GetSettingsDataDateTime": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "OutInt1": {
+          "type": null,
+          "documentation": null
+        },
+        "OutInt2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSettingsDataDateTime(out SettingsData Data, out int OutInt1, out int OutInt2)"
+    },
+    "GetSettingsDataFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSettingsDataFloat(out SettingsData Data)"
+    },
+    "GetSettingsDataInt": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSettingsDataInt(out SettingsData Data)"
+    },
+    "GetSettingsDataString": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetSettingsDataString(out SettingsData Data)"
+    },
+    "GetStringProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringProperty(int PropertyId, out string Value)"
+    },
+    "GetStringSettingColumnHeader": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStringSettingColumnHeader(int StringSettingId)"
+    },
+    "GetStringSettingId": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingId(Name StringSettingName, out int StringSettingId)"
+    },
+    "GetStringSettingName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStringSettingName(int StringSettingId)"
+    },
+    "GetStringSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingValue(int StringSettingId, out int ValueIndex)"
+    },
+    "GetStringSettingValueByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingValueByName(Name StringSettingName, out int ValueIndex)"
+    },
+    "GetStringSettingValueName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStringSettingValueName(int StringSettingId, int ValueIndex)"
+    },
+    "GetStringSettingValueNameByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStringSettingValueNameByName(Name StringSettingName)"
+    },
+    "GetStringSettingValueNames": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Values": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingValueNames(int StringSettingId, out array<IdToStringMapping> Values)"
+    },
+    "HasProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasProperty(int PropertyId)"
+    },
+    "HasStringSetting": {
+      "documentation": null,
+      "signature_members": {
+        "SettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasStringSetting(int SettingId)"
+    },
+    "IncrementStringSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldWrap": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncrementStringSettingValue(int StringSettingId, int Direction, bool bShouldWrap)"
+    },
+    "IsWildcardStringSetting": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsWildcardStringSetting(int StringSettingId)"
+    },
+    "NotifyPropertyValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPropertyValueUpdated(Name PropertyName)"
+    },
+    "NotifySettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySettingValueUpdated(Name SettingName)"
+    },
+    "SetFloatProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatProperty(int PropertyId, float Value)"
+    },
+    "SetIntProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntProperty(int PropertyId, int Value)"
+    },
+    "SetPropertyFromStringByName": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPropertyFromStringByName(Name PropertyName, const out string NewValue)"
+    },
+    "SetPropertyValueId": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPropertyValueId(int PropertyId, int ValueId)"
+    },
+    "SetRangedPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRangedPropertyValue(int PropertyId, float NewValue)"
+    },
+    "SetSettingsData": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "Data2Copy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsData(out SettingsData Data, out SettingsData Data2Copy)"
+    },
+    "SetSettingsDataBlob": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "InBlob": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataBlob(out SettingsData Data, out array<byte> InBlob)"
+    },
+    "SetSettingsDataDateTime": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "InInt1": {
+          "type": null,
+          "documentation": null
+        },
+        "InInt2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataDateTime(out SettingsData Data, int InInt1, int InInt2)"
+    },
+    "SetSettingsDataFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "InFloat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataFloat(out SettingsData Data, float InFloat)"
+    },
+    "SetSettingsDataInt": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "InInt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataInt(out SettingsData Data, int InInt)"
+    },
+    "SetSettingsDataString": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "InString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataString(out SettingsData Data, string InString)"
+    },
+    "SetStringProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringProperty(int PropertyId, string Value)"
+    },
+    "SetStringSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldAutoAdd": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringSettingValue(int StringSettingId, int ValueIndex, optional bool bShouldAutoAdd)"
+    },
+    "SetStringSettingValueByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldAutoAdd": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringSettingValueByName(Name StringSettingName, int ValueIndex, bool bShouldAutoAdd)"
+    },
+    "SetStringSettingValueFromStringByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStringSettingValueFromStringByName(Name StringSettingName, const out string NewValue)"
+    },
+    "UpdateFromURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        },
+        "Game": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFromURL(const out string URL, GameInfo Game)"
+    },
+    "UpdateProperties": {
+      "documentation": null,
+      "signature_members": {
+        "Props": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldAddIfMissing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateProperties(const out array<SettingsProperty> Props, optional bool bShouldAddIfMissing)"
+    },
+    "UpdateStringSettings": {
+      "documentation": null,
+      "signature_members": {
+        "Settings": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldAddIfMissing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateStringSettings(const out array<LocalizedStringSetting> Settings, optional bool bShouldAddIfMissing)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

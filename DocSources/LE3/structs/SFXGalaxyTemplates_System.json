@@ -1,0 +1,85 @@
+{
+  "Members": {
+    "Planet": {
+      "type": null,
+      "documentation": null
+    },
+    "PlanetCircle": {
+      "type": null,
+      "documentation": null
+    },
+    "PlanetRing": {
+      "type": null,
+      "documentation": null
+    },
+    "Object": {
+      "type": null,
+      "documentation": null
+    },
+    "Arrow": {
+      "type": null,
+      "documentation": null
+    },
+    "AsteroidBelt": {
+      "type": null,
+      "documentation": null
+    },
+    "SystemSphere": {
+      "type": null,
+      "documentation": null
+    },
+    "SystemCard1": {
+      "type": null,
+      "documentation": null
+    },
+    "SystemCard2": {
+      "type": null,
+      "documentation": null
+    },
+    "Emitter": {
+      "type": null,
+      "documentation": null
+    },
+    "Sunlight": {
+      "type": null,
+      "documentation": null
+    },
+    "Sun": {
+      "type": null,
+      "documentation": null
+    },
+    "LensFlare": {
+      "type": null,
+      "documentation": null
+    },
+    "MassRelay": {
+      "type": null,
+      "documentation": null
+    },
+    "MassRelayRed": {
+      "type": null,
+      "documentation": null
+    },
+    "MassRelayVFX": {
+      "type": null,
+      "documentation": null
+    },
+    "FuelDepot": {
+      "type": null,
+      "documentation": null
+    },
+    "Crosshair": {
+      "type": null,
+      "documentation": null
+    },
+    "Camera": {
+      "type": null,
+      "documentation": null
+    },
+    "ReaperArrow": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

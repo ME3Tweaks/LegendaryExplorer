@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Career": {
+      "type": null,
+      "documentation": null
+    },
+    "SaveName": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

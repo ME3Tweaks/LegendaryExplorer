@@ -1,0 +1,69 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_aWoundSpecs": {
+      "type": "BioWoundSpec",
+      "documentation": null
+    },
+    "m_aWounds": {
+      "type": "BioWoundSpec",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanSupportAnotherWound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSupportAnotherWound()"
+    },
+    "CreateBestWound": {
+      "documentation": null,
+      "signature_members": {
+        "HitPart": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateBestWound(Name HitPart, const out Vector HitLocation, Class<DamageType> DamageType, const out Vector Momentum)"
+    },
+    "CreateWound": {
+      "documentation": null,
+      "signature_members": {
+        "WoundIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateWound(int WoundIdx)"
+    },
+    "GetWoundBox": {
+      "documentation": null,
+      "signature_members": {
+        "WoundIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BoxSphereBounds",
+      "signature": "BoxSphereBounds GetWoundBox(int WoundIdx)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

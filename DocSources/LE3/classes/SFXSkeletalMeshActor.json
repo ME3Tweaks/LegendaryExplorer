@@ -1,0 +1,91 @@
+{
+  "parent": "SkeletalMeshActor",
+  "package": "SFXGame",
+  "variables": {
+    "VectorParameters": {
+      "type": "SMAVectorParameter",
+      "documentation": null
+    },
+    "ScalarParameters": {
+      "type": "SMAScalarParameter",
+      "documentation": null
+    },
+    "TextureParameters": {
+      "type": "SMATextureParameter",
+      "documentation": null
+    },
+    "HeadMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HairMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HeadGearMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "MorphHead": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "bAnimFrozen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UpdateSkelWhenNotRendered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasWrinkles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BioBaseRemovedFromWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBaseRemovedFromWorld()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "GetHeadSkelMeshComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent GetHeadSkelMeshComponent()"
+    },
+    "GetPrimarySkelMeshComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent GetPrimarySkelMeshComponent()"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

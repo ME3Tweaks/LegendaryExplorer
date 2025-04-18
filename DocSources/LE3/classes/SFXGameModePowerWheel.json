@@ -1,0 +1,44 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "DisableMoveTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "ShowMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMenu()"
+    },
+    "EnableMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableMovement()"
+    },
+    "ExitPowerWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitPowerWheel()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

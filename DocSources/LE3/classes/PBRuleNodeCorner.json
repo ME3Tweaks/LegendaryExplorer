@@ -1,0 +1,45 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Angles": {
+      "type": "RBCornerAngleInfo",
+      "documentation": null
+    },
+    "CornerSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlatThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CornerShapeOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "RoundTesselation": {
+      "type": "int",
+      "documentation": null
+    },
+    "RoundCurvature": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNoMeshForConcaveCorners": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseAdjacentRulesetForRightGap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CornerType": {
+      "type": "EPBCornerType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

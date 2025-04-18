@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "BoneIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Position": {
+      "type": null,
+      "documentation": null
+    },
+    "Orientation": {
+      "type": null,
+      "documentation": null
+    },
+    "BasesInvMatrix": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "MatInst": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "ParamName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ScalarValue": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

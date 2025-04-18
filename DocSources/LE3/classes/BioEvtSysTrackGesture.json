@@ -1,0 +1,76 @@
+{
+  "parent": "SFXGameActorInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aGestures": {
+      "type": "BioGestureData",
+      "documentation": null
+    },
+    "nmStartingPoseSet": {
+      "type": "Name",
+      "documentation": null
+    },
+    "nmStartingPoseAnim": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fStartPoseOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bARPUGenerated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAutoGenFemaleTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseDynamicAnimsets": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ePoseFilter": {
+      "type": "EBioTrackAllPoseGroups",
+      "documentation": null
+    },
+    "eStartingPose": {
+      "type": "EBioGestureAllPoses",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    },
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

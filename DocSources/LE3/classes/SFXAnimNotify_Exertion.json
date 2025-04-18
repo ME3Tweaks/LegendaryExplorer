@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNotify",
+  "package": "SFXGame",
+  "variables": {
+    "ExertionEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,224 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTargets": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aReticles": {
+      "type": "SFXSF_ReticleBase",
+      "documentation": null
+    },
+    "m_aWeaponReticles": {
+      "type": "SFXGUI_WeaponReticleBase",
+      "documentation": null
+    },
+    "m_aLoadingReticles": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_pCameraManager": {
+      "type": "SFXCameraNativeBase",
+      "documentation": null
+    },
+    "m_pPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "m_pPlayerInput": {
+      "type": "BioPlayerInput",
+      "documentation": null
+    },
+    "m_pPlayerSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "m_oCurrentWeaponReticle": {
+      "type": "SFXGUI_WeaponReticleBase",
+      "documentation": null
+    },
+    "m_fTargetHitIndicatorCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRemainingTargetHitIndicatorCooldownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSFWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSFHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScrn2SF_YOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScrn2SF_YScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScrn2SF_XScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fScreenChangeDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bSelectionInvalidated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bReticleVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetWeaponAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "bClipOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetWeaponAmmo(optional bool bClipOnly)"
+    },
+    "GetWeaponReticleClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<SFXGUI_WeaponReticleBase> GetWeaponReticleClass()"
+    },
+    "LoadWeaponReticle": {
+      "documentation": null,
+      "signature_members": {
+        "oReticleClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadWeaponReticle(Class<SFXGUI_WeaponReticleBase> oReticleClass)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "AS_CleanupReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_CleanupReferences()"
+    },
+    "AS_LoadWeaponReticle": {
+      "documentation": null,
+      "signature_members": {
+        "sID": {
+          "type": null,
+          "documentation": null
+        },
+        "sResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_LoadWeaponReticle(string sID, string sResource)"
+    },
+    "AS_PlayTargetHeadImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_PlayTargetHeadImpact()"
+    },
+    "AS_PlayTargetImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_PlayTargetImpact()"
+    },
+    "CleanupReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupReferences()"
+    },
+    "ExInt_InTransitionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_InTransitionComplete(string sPath)"
+    },
+    "ExInt_OutTransitionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExInt_OutTransitionComplete(string sPath)"
+    },
+    "ExInt_ReticleVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInt_ReticleVisible()"
+    },
+    "OnTargetImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTargetImpact()"
+    },
+    "OnTargetImpactHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTargetImpactHead()"
+    },
+    "WeaponReticleHasLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "oReticleMC": {
+          "type": null,
+          "documentation": null
+        },
+        "sClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponReticleHasLoaded(GFxValue oReticleMC, string sClass)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

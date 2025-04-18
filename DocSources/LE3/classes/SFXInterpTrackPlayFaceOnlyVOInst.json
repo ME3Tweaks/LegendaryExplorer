@@ -1,0 +1,13 @@
+{
+  "parent": "SFXGameActorInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_aFOVOObjects": {
+      "type": "BioSeqAct_FaceOnlyVO",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,160 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "HideBones": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RelativeBoneLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RelativeBoneRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "RelativeBoneScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Mesh": {
+      "type": "Object",
+      "documentation": null
+    },
+    "DestroyedMesh": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PhysMaterialOverride": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "PhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "AttachInstance": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "AttachSocket": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PS_Destruction": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "DestructionSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ArmourName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MaxHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "bMeshStartsHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStartsDetached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeDamaged": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotifyOnHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPassThroughDamage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ActivateEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateEffects(Actor oTarget)"
+    },
+    "AttachToActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AttachToActor(Actor oTarget)"
+    },
+    "DetachFromActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bDestroyed": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachFromActor(Actor oTarget, bool bDestroyed, out TraceHitInfo HitInfo)"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAppearance()"
+    },
+    "UpdateMorphWeights": {
+      "documentation": null,
+      "signature_members": {
+        "SkelMeshComp": {
+          "type": null,
+          "documentation": null
+        },
+        "NewWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMorphWeights(SkeletalMeshComponent SkelMeshComp, float NewWeight)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,55 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "ReferencedMovies": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "KismetMonitored": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CloseRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UnloadOnClose": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Close": {
+      "documentation": null,
+      "signature_members": {
+        "bUnload": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Close(optional bool bUnload)"
+    },
+    "KismetClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KismetClose()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

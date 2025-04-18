@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "PlayerVariableGranted": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "AccomplishmentName": {
+      "type": null,
+      "documentation": null
+    },
+    "EntitlementIDGranted": {
+      "type": null,
+      "documentation": null
+    },
+    "RewardIDGranted": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseNucleusCheck": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "PSTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "SocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bIsExtremeContent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAttach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipIfOwnerIsHidden": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,127 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Message": {
+      "type": "string",
+      "documentation": null
+    },
+    "Title": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnMessageDataLoaded__Delegate": {
+      "type": "OnMessageDataLoaded",
+      "documentation": null
+    },
+    "MovieClip": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "ServerID": {
+      "type": "int",
+      "documentation": null
+    },
+    "DLC_ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bGFxClassLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTelemetryFired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Status": {
+      "type": "MMM_Status",
+      "documentation": null
+    },
+    "MessageType": {
+      "type": "SFXOnlineConnection_MessageType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "GetStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "MMM_Status",
+      "signature": "MMM_Status GetStatus()"
+    },
+    "Load": {
+      "documentation": null,
+      "signature_members": {
+        "aFunction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Load(optional delegate<OnMessageDataLoaded> aFunction)"
+    },
+    "LoadComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadComplete()"
+    },
+    "OnLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLoad()"
+    },
+    "OnLoadComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLoadComplete()"
+    },
+    "OnMessageDataLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "aMessageThatFinishedLoading": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnMessageDataLoaded(SFXGUI_MainMenu_Message aMessageThatFinishedLoading)"
+    },
+    "AS_SetDataLoadStatus": {
+      "documentation": null,
+      "signature_members": {
+        "nStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetDataLoadStatus(int nStatus)"
+    },
+    "OnDisplayed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDisplayed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

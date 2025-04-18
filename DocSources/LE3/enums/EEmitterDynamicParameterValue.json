@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EDPV_UserSet": {
+      "value": 0,
+      "documentation": null
+    },
+    "EDPV_VelocityX": {
+      "value": 1,
+      "documentation": null
+    },
+    "EDPV_VelocityY": {
+      "value": 2,
+      "documentation": null
+    },
+    "EDPV_VelocityZ": {
+      "value": 3,
+      "documentation": null
+    },
+    "EDPV_VelocityMag": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

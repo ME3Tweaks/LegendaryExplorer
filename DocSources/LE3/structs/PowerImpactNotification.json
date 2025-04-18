@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Label": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeBeforeImpact": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

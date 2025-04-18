@@ -1,0 +1,29 @@
+{
+  "parent": "MeshComponent",
+  "package": "Engine",
+  "variables": {
+    "ComponentBaseResources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Asset": {
+      "type": "ApexAsset",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "RenderCommandFence_Mirror",
+      "documentation": null
+    },
+    "WireframeColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bAssetChanged": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

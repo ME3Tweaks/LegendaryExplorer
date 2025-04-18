@@ -1,0 +1,209 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "Animations": {
+      "type": "SFXGUIValue_ManualAnimController",
+      "documentation": null
+    },
+    "LastBleedOutTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTappingPromptVisible": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AbortAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AbortAnimation(EPlayerCountdownTypes AnimType)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "PauseAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseAnimation(EPlayerCountdownTypes AnimType)"
+    },
+    "ResumeAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResumeAnimation(EPlayerCountdownTypes AnimType)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float DeltaTime)"
+    },
+    "ASAbortDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASAbortDeath()"
+    },
+    "ASAbortOtherPlayerRevive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASAbortOtherPlayerRevive()"
+    },
+    "ASAbortThisPlayerRevive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASAbortThisPlayerRevive()"
+    },
+    "ASFinishDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASFinishDeath()"
+    },
+    "ASFinishOtherPlayerRevive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASFinishOtherPlayerRevive()"
+    },
+    "ASFinishThisPlayerRevive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASFinishThisPlayerRevive()"
+    },
+    "ASPlayDeath": {
+      "documentation": null,
+      "signature_members": {
+        "PCText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASPlayDeath(string PCText)"
+    },
+    "ASPlayOtherPlayerRevive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASPlayOtherPlayerRevive()"
+    },
+    "ASPlayThisPlayerRevive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASPlayThisPlayerRevive()"
+    },
+    "OnDeathAborted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDeathAborted()"
+    },
+    "OnDeathFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDeathFinished()"
+    },
+    "OnDeathStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDeathStarted()"
+    },
+    "OnOtherPlayerReviveAborted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOtherPlayerReviveAborted()"
+    },
+    "OnOtherPlayerReviveFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOtherPlayerReviveFinished()"
+    },
+    "OnThisPlayerReviveAborted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnThisPlayerReviveAborted()"
+    },
+    "OnThisPlayerReviveFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnThisPlayerReviveFinished()"
+    },
+    "PlayAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimType": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimationLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnimation(EPlayerCountdownTypes AnimType, float AnimationLength)"
+    },
+    "ShowTappingPrompt": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowTappingPrompt(bool bVisible, optional bool bForce)"
+    },
+    "UpdateEnabledState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateEnabledState()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

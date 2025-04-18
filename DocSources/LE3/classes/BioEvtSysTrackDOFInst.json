@@ -1,0 +1,17 @@
+{
+  "parent": "SFXGameInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_fInterpolateElapsed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurEffect": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

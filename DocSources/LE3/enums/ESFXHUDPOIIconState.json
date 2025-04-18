@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXHUD_POI_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXHUD_POI_On": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXHUD_POI_Activated": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,96 @@
+{
+  "parent": "NxForceField",
+  "package": "Engine",
+  "variables": {
+    "LinearKernel": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Constant": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionMultiplierX": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionMultiplierY": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionMultiplierZ": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PositionTarget": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMultiplierX": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMultiplierY": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMultiplierZ": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityTarget": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Noise": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FalloffLinear": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FalloffQuadratic": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Shape": {
+      "type": "ForceFieldShape",
+      "documentation": null
+    },
+    "DrawComponent": {
+      "type": "ActorComponent",
+      "documentation": null
+    },
+    "RoughExtentX": {
+      "type": "float",
+      "documentation": null
+    },
+    "RoughExtentY": {
+      "type": "float",
+      "documentation": null
+    },
+    "RoughExtentZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "TorusRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "Coordinates": {
+      "type": "FFG_ForceFieldCoordinates",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "eBioAnimTurn_NoTurn": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimTurn_ReqStartLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimTurn_ReqStartRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimTurn_AckStartLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimTurn_AckStartRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimTurn_ProcessLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "eBioAnimTurn_ProcessRight": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

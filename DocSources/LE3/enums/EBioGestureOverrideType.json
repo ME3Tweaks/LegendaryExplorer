@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "DEFAULT_TRACK": {
+      "value": 0,
+      "documentation": null
+    },
+    "FEMALE_PLAYER_TRACK": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

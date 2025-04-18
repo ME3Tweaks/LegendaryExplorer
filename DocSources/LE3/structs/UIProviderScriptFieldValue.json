@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "NetIdValue": {
+      "type": null,
+      "documentation": null
+    },
+    "StringValue": {
+      "type": null,
+      "documentation": null
+    },
+    "ArrayValue": {
+      "type": null,
+      "documentation": null
+    },
+    "RangeValue": {
+      "type": null,
+      "documentation": null
+    },
+    "AtlasCoordinates": {
+      "type": null,
+      "documentation": null
+    },
+    "PropertyTag": {
+      "type": null,
+      "documentation": null
+    },
+    "ImageValue": {
+      "type": null,
+      "documentation": null
+    },
+    "PropertyType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

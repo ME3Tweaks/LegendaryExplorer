@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Locale": {
+      "type": null,
+      "documentation": null
+    },
+    "FontExportName": {
+      "type": null,
+      "documentation": null
+    },
+    "SubstituteFont": {
+      "type": null,
+      "documentation": null
+    },
+    "FontGFxResource": {
+      "type": null,
+      "documentation": null
+    },
+    "ScaleFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "Style": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

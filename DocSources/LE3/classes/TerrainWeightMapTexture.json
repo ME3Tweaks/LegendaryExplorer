@@ -1,0 +1,17 @@
+{
+  "parent": "Texture2D",
+  "package": "Engine",
+  "variables": {
+    "WeightedMaterials": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ParentTerrain": {
+      "type": "Terrain",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

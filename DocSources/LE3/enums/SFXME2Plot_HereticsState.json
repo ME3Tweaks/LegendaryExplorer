@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "Heretics_Rewrite": {
+      "value": 0,
+      "documentation": null
+    },
+    "Heretics_Destroyed": {
+      "value": 1,
+      "documentation": null
+    },
+    "Heretics_NotComplete": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

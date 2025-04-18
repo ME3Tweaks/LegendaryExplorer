@@ -1,0 +1,25 @@
+{
+  "parent": "PathConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "CombatZoneOrigin": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "TowardCombatZone": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TowardCombatZone(BioPawn Pawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "SecondsSinceMidnight": {
+      "type": null,
+      "documentation": null
+    },
+    "Day": {
+      "type": null,
+      "documentation": null
+    },
+    "Month": {
+      "type": null,
+      "documentation": null
+    },
+    "Year": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

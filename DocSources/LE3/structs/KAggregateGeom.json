@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "SphereElems": {
+      "type": null,
+      "documentation": null
+    },
+    "BoxElems": {
+      "type": null,
+      "documentation": null
+    },
+    "SphylElems": {
+      "type": null,
+      "documentation": null
+    },
+    "ConvexElems": {
+      "type": null,
+      "documentation": null
+    },
+    "RenderInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "bSkipCloseAndParallelChecks": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

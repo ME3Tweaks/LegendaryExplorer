@@ -1,0 +1,131 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "TierDetails": {
+      "type": "TierDetails_t",
+      "documentation": null
+    },
+    "TierInfo": {
+      "type": "BioTierInfo",
+      "documentation": null
+    },
+    "DefaultTier": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bReevaluateStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FloorTierIndex": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BackgroundStreamingDone": {
+      "documentation": null,
+      "signature_members": {
+        "Sequences": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BackgroundStreamingDone(const out array<Sequence> Sequences, Pawn PlayerPawn)"
+    },
+    "ConvertPlotStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "fnVirtualChunk": {
+          "type": null,
+          "documentation": null
+        },
+        "aRealChunks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConvertPlotStreaming(Name fnVirtualChunk, out array<PlotStreamingElement> aRealChunks)"
+    },
+    "ForegroundStreamingDone": {
+      "documentation": null,
+      "signature_members": {
+        "Sequences": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForegroundStreamingDone(const out array<Sequence> Sequences, Pawn PlayerPawn)"
+    },
+    "GetFloorTier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioTierInfo",
+      "signature": "BioTierInfo GetFloorTier()"
+    },
+    "GetNumTiers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetNumTiers()"
+    },
+    "GetTier": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTierInfo",
+      "signature": "BioTierInfo GetTier(byte Index)"
+    },
+    "GetTierName": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetTierName(byte Index)"
+    },
+    "RegisterPlotStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStreaming": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterPlotStreaming(const out array<PlotStreamingSet> PlotStreaming)"
+    },
+    "UnregisterPlotStreaming": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStreaming": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterPlotStreaming(const out array<PlotStreamingSet> PlotStreaming)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

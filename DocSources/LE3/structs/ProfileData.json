@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Header": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "Func": {
+      "type": null,
+      "documentation": null
+    },
+    "Utility": {
+      "type": null,
+      "documentation": null
+    },
+    "Keyword": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoTarget": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

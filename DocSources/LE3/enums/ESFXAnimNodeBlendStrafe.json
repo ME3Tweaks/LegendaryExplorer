@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "eSFXAnimNodeBlendStrafe_Forward": {
+      "value": 0,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_ForwardLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_Left": {
+      "value": 2,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_BackwardLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_Backward": {
+      "value": 4,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_BackwardRight": {
+      "value": 5,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_Right": {
+      "value": 6,
+      "documentation": null
+    },
+    "eSFXAnimNodeBlendStrafe_ForwardRight": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

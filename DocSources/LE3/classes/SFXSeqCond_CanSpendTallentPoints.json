@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceCondition",
+  "package": "SFXGameContentLiveKismet",
+  "variables": {
+    "m_Helper": {
+      "type": "SFXPowerLevelUpHelper",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "CanSpendTallentPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSpendTallentPoints()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

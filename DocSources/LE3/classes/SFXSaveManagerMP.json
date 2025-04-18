@@ -1,0 +1,1041 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "DefaultTutorialMessage": {
+      "type": "MPTutorialPromoMessage",
+      "documentation": null
+    },
+    "MPClasses": {
+      "type": "MPClassData",
+      "documentation": null
+    },
+    "MPKits": {
+      "type": "MPKitData",
+      "documentation": null
+    },
+    "Classes": {
+      "type": "SFXMPClassRecord",
+      "documentation": null
+    },
+    "Characters": {
+      "type": "SFXMPCharacterRecord",
+      "documentation": null
+    },
+    "FaceCodes": {
+      "type": "MPFaceCodeData",
+      "documentation": null
+    },
+    "DefaultMPPlayerVariables": {
+      "type": "StartingMPPlayerVariable",
+      "documentation": null
+    },
+    "NewReinforcements": {
+      "type": "NewReinforcementData",
+      "documentation": null
+    },
+    "ValidNewReinforcementCategories": {
+      "type": "EReinforcementGUICategory",
+      "documentation": null
+    },
+    "PendingSaveOperations": {
+      "type": "PendingSaveOperation",
+      "documentation": null
+    },
+    "PendingLoadOperations": {
+      "type": "PendingLoadOperation",
+      "documentation": null
+    },
+    "ActiveMatchConsumablesForOfflineTransfer": {
+      "type": "ActiveMatchConsumable",
+      "documentation": null
+    },
+    "NewlyAffordableStoreItemsPlayerVariableName": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnSaveRecordsDelegate__Delegate": {
+      "type": "OnSaveRecordsDelegate",
+      "documentation": null
+    },
+    "__OnRefreshMPDataDelegate__Delegate": {
+      "type": "OnRefreshMPDataDelegate",
+      "documentation": null
+    },
+    "PlayerVariables": {
+      "type": "Object",
+      "documentation": null
+    },
+    "OnlineSave": {
+      "type": "SFXOnlineSaveGameMP",
+      "documentation": null
+    },
+    "MPMatchResultsData": {
+      "type": "SFXMatchResultsData",
+      "documentation": null
+    },
+    "CurrentCharacter": {
+      "type": "SFXMPCharacterRecord",
+      "documentation": null
+    },
+    "CurrCharacterToModify": {
+      "type": "SFXMPCharacterRecord",
+      "documentation": null
+    },
+    "MaxMPLevelBonus": {
+      "type": "int",
+      "documentation": null
+    },
+    "AvailableCredits": {
+      "type": "int",
+      "documentation": null
+    },
+    "NextPackToConsume": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumCopiesToConsume": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalCreditsSpent": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalPlatformCurrencySpent": {
+      "type": "int",
+      "documentation": null
+    },
+    "SessionCreditsSpent": {
+      "type": "int",
+      "documentation": null
+    },
+    "SessionCreditsEarned": {
+      "type": "int",
+      "documentation": null
+    },
+    "SessionPlatformCurrencySpent": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalGamesPlayed": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalTimePlayed": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastLevelUpTime": {
+      "type": "int",
+      "documentation": null
+    },
+    "srTooNewErrorMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTooNewErrorMessageBoxOK": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableSaving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDebugPlayerVariables": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSaveInProgress": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLoadInProgress": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAllPlayerVariableIDsAndValues": {
+      "documentation": null,
+      "signature_members": {
+        "VariableIDs": {
+          "type": null,
+          "documentation": null
+        },
+        "VariableValues": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllPlayerVariableIDsAndValues(out array<Name> VariableIDs, out array<int> VariableValues)"
+    },
+    "GetCurrentCharacterClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCurrentCharacterClass()"
+    },
+    "GetCurrentCharacterClassLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentCharacterClassLevel()"
+    },
+    "GetCurrentCharacterKit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCurrentCharacterKit()"
+    },
+    "GetCurrentCharacterName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCurrentCharacterName()"
+    },
+    "GetMPPlayerVariableID": {
+      "documentation": null,
+      "signature_members": {
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetMPPlayerVariableID(Name VariableName)"
+    },
+    "GetMPPlayerVariableName": {
+      "documentation": null,
+      "signature_members": {
+        "VariableID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetMPPlayerVariableName(Name VariableID)"
+    },
+    "GetN7Rating": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetN7Rating()"
+    },
+    "GetPlayerVariable": {
+      "documentation": null,
+      "signature_members": {
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPlayerVariable(Name VariableName)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "OnRefreshMPDataDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRefreshMPDataDelegate(int nResult)"
+    },
+    "OnSaveRecordsDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSaveRecordsDelegate(int nResult)"
+    },
+    "QueryPlayerVariables": {
+      "documentation": null,
+      "signature_members": {
+        "VariableNames": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueryPlayerVariables(out array<Name> VariableNames, optional string SearchText)"
+    },
+    "ResetMPPlayerVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMPPlayerVariables()"
+    },
+    "SetPlayerVariable": {
+      "documentation": null,
+      "signature_members": {
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerVariable(Name VariableName, int nValue)"
+    },
+    "SetPlayerVariableFromID": {
+      "documentation": null,
+      "signature_members": {
+        "VariableID": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerVariableFromID(Name VariableID, int nValue)"
+    },
+    "SetupInitialMPCharacters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupInitialMPCharacters()"
+    },
+    "SetupInitialMPPlayerVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupInitialMPPlayerVariables()"
+    },
+    "GetPC": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetPC()"
+    },
+    "AddCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCreditAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "Transaction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCredits(int nCreditAmount, optional string Transaction)"
+    },
+    "AddNewFaceCode": {
+      "documentation": null,
+      "signature_members": {
+        "firstName": {
+          "type": null,
+          "documentation": null
+        },
+        "faceCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNewFaceCode(string firstName, string faceCode)"
+    },
+    "AddNewReinforcement": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNewReinforcement(EReinforcementGUICategory Category, string VariableName)"
+    },
+    "AreAnyCharactersDeployed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AreAnyCharactersDeployed()"
+    },
+    "CanPromoteClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPromoteClass(Name className)"
+    },
+    "ClearCurrentModifiableCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentModifiableCharacter()"
+    },
+    "ClearFaceCodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearFaceCodes()"
+    },
+    "ClearLocalPRIMatchConsumablesForOfflineTransfer": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLocalPRIMatchConsumablesForOfflineTransfer(SFXPRI PRI)"
+    },
+    "ClearNewReinforcement": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearNewReinforcement(EReinforcementGUICategory Category, string VariableName)"
+    },
+    "ClearNewReinforcementCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearNewReinforcementCategory(EReinforcementGUICategory Category)"
+    },
+    "DeployCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "Character": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeployCharacter(SFXMPCharacterRecord Character)"
+    },
+    "FindNewReinforcementIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindNewReinforcementIndex(EReinforcementGUICategory Category, string VariableName)"
+    },
+    "GetAllCharacterRecords": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXMPCharacterRecord",
+      "signature": "array<SFXMPCharacterRecord> GetAllCharacterRecords()"
+    },
+    "GetAllClassRecords": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXMPClassRecord",
+      "signature": "array<SFXMPClassRecord> GetAllClassRecords()"
+    },
+    "GetCharacterRecord": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXMPCharacterRecord",
+      "signature": "SFXMPCharacterRecord GetCharacterRecord(Name KitName)"
+    },
+    "GetCharacterRecords": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXMPCharacterRecord",
+      "signature": "array<SFXMPCharacterRecord> GetCharacterRecords(Name className)"
+    },
+    "GetClassLevel": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetClassLevel(Name className)"
+    },
+    "GetClassPrettyName": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetClassPrettyName(Name BaseClassName)"
+    },
+    "GetClassRecord": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXMPClassRecord",
+      "signature": "SFXMPClassRecord GetClassRecord(Name className)"
+    },
+    "GetCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCredits()"
+    },
+    "GetCurrentModifiableCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXMPCharacterRecord",
+      "signature": "SFXMPCharacterRecord GetCurrentModifiableCharacter()"
+    },
+    "GetCurrentSelectedCharacterRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXMPCharacterRecord",
+      "signature": "SFXMPCharacterRecord GetCurrentSelectedCharacterRecord()"
+    },
+    "GetFaceCodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "MPFaceCodeData",
+      "signature": "array<MPFaceCodeData> GetFaceCodes()"
+    },
+    "GetKitArchetypeReference": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetKitArchetypeReference(Name KitName)"
+    },
+    "GetKitBaseClassPrettyName": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetKitBaseClassPrettyName(Name KitName)"
+    },
+    "GetKitData": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MPKitData",
+      "signature": "MPKitData GetKitData(Name KitName)"
+    },
+    "GetKitDefaultName": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetKitDefaultName(Name KitName)"
+    },
+    "GetLastSelectedCharacterRecordName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetLastSelectedCharacterRecordName()"
+    },
+    "GetMPMatchResultsData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXMatchResultsData",
+      "signature": "SFXMatchResultsData GetMPMatchResultsData()"
+    },
+    "GetNextPackToConsume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNextPackToConsume()"
+    },
+    "GetNumCopiesToConsume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumCopiesToConsume()"
+    },
+    "GetPromotionalMessageData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineMOTDInfo",
+      "signature": "SFXOnlineMOTDInfo GetPromotionalMessageData()"
+    },
+    "GetUniqueCharacterName": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetUniqueCharacterName(Name KitName)"
+    },
+    "HandlePendingOperations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePendingOperations()"
+    },
+    "HasNewReinforcement": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "VariableName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasNewReinforcement(EReinforcementGUICategory Category, string VariableName)"
+    },
+    "HasNewReinforcementCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasNewReinforcementCategory(EReinforcementGUICategory Category)"
+    },
+    "HasNewReinforcementWithSubstringInName": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "Substring": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasNewReinforcementWithSubstringInName(EReinforcementGUICategory Category, string Substring)"
+    },
+    "InitializeCharacterNames": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeCharacterNames()"
+    },
+    "IsCurrentSelectedCharacterRecordValid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCurrentSelectedCharacterRecordValid()"
+    },
+    "IsKitUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsKitUnlocked(Name KitName)"
+    },
+    "IsNewReinforcementCategoryValid": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsNewReinforcementCategoryValid(EReinforcementGUICategory Category)"
+    },
+    "LevelUpClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "fXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LevelUpClass(Name className, float fXP)"
+    },
+    "LoadCharacters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadCharacters()"
+    },
+    "OnTooNewErrorMessageInput": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTooNewErrorMessageInput(bool bAPressed, int nContext)"
+    },
+    "PackConsumed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PackConsumed()"
+    },
+    "PromoteClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PromoteClass(Name className)"
+    },
+    "ReadPlayerStorageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadPlayerStorageComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "RefreshMPData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshMPData()"
+    },
+    "RefreshMPDataFromServer": {
+      "documentation": null,
+      "signature_members": {
+        "RefreshDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshMPDataFromServer(optional delegate<OnRefreshMPDataDelegate> RefreshDelegate)"
+    },
+    "RefreshMPDataFromServerImpl": {
+      "documentation": null,
+      "signature_members": {
+        "RefreshDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshMPDataFromServerImpl(optional delegate<OnRefreshMPDataDelegate> RefreshDelegate)"
+    },
+    "ResetCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        },
+        "RetainCustomization": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetCharacter(Name KitName, bool RetainCustomization)"
+    },
+    "ResetClass": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "RetainCustomization": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetClass(Name className, bool RetainCustomization)"
+    },
+    "ResetMPData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMPData()"
+    },
+    "SaveLocalPRIMatchConsumablesForOfflineTransfer": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveLocalPRIMatchConsumablesForOfflineTransfer(SFXPRI PRI)"
+    },
+    "SaveRecords": {
+      "documentation": null,
+      "signature_members": {
+        "ForceSaveBase": {
+          "type": null,
+          "documentation": null
+        },
+        "SaveDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveRecords(optional bool ForceSaveBase, optional delegate<OnSaveRecordsDelegate> SaveDelegate)"
+    },
+    "SaveRecordsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveRecordsComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "SaveRecordsImpl": {
+      "documentation": null,
+      "signature_members": {
+        "ForceSaveBase": {
+          "type": null,
+          "documentation": null
+        },
+        "SaveDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveRecordsImpl(optional bool ForceSaveBase, optional delegate<OnSaveRecordsDelegate> SaveDelegate)"
+    },
+    "SetCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCreditAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCredits(int nCreditAmount)"
+    },
+    "SetCurrentModifiableCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCurrentModifiableCharacter(Name KitName)"
+    },
+    "SetCurrentSelectedCharacterRecord": {
+      "documentation": null,
+      "signature_members": {
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCurrentSelectedCharacterRecord(Name KitName)"
+    },
+    "SetFaceCodesFromServer": {
+      "documentation": null,
+      "signature_members": {
+        "serverFaceCodes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFaceCodesFromServer(out array<MPFaceCodeData> serverFaceCodes)"
+    },
+    "SetNextPackToConsume": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        },
+        "nCopies": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetNextPackToConsume(int nID, int nCopies)"
+    },
+    "SetSavingDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSavingDisabled(bool bDisabled)"
+    },
+    "ShowDataTooNewError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowDataTooNewError()"
+    },
+    "SubtractCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCreditAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "Transaction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubtractCredits(int nCreditAmount, optional string Transaction)"
+    },
+    "SwitchToLastSelectedCharacterRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SwitchToLastSelectedCharacterRecord()"
+    },
+    "UnlockAllMPKits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllMPKits()"
+    },
+    "VerifyNameIsValid": {
+      "documentation": null,
+      "signature_members": {
+        "CharacterName": {
+          "type": null,
+          "documentation": null
+        },
+        "RecordToIgnore": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ECharacterNameResult",
+      "signature": "ECharacterNameResult VerifyNameIsValid(string CharacterName, optional SFXMPCharacterRecord RecordToIgnore)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

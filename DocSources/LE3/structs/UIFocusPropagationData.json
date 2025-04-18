@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "FirstFocusTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "LastFocusTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "NextFocusTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "PrevFocusTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "bPendingReceiveFocus": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

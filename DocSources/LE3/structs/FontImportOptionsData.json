@@ -1,0 +1,117 @@
+{
+  "Members": {
+    "FontName": {
+      "type": null,
+      "documentation": null
+    },
+    "Chars": {
+      "type": null,
+      "documentation": null
+    },
+    "UnicodeRange": {
+      "type": null,
+      "documentation": null
+    },
+    "CharsFilePath": {
+      "type": null,
+      "documentation": null
+    },
+    "CharsFileWildcard": {
+      "type": null,
+      "documentation": null
+    },
+    "ForegroundColor": {
+      "type": null,
+      "documentation": null
+    },
+    "Height": {
+      "type": null,
+      "documentation": null
+    },
+    "TexturePageWidth": {
+      "type": null,
+      "documentation": null
+    },
+    "TexturePageMaxHeight": {
+      "type": null,
+      "documentation": null
+    },
+    "XPadding": {
+      "type": null,
+      "documentation": null
+    },
+    "YPadding": {
+      "type": null,
+      "documentation": null
+    },
+    "ExtendBoxTop": {
+      "type": null,
+      "documentation": null
+    },
+    "ExtendBoxBottom": {
+      "type": null,
+      "documentation": null
+    },
+    "ExtendBoxRight": {
+      "type": null,
+      "documentation": null
+    },
+    "ExtendBoxLeft": {
+      "type": null,
+      "documentation": null
+    },
+    "Kerning": {
+      "type": null,
+      "documentation": null
+    },
+    "DistanceFieldScaleFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableAntialiasing": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableBold": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableItalic": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableUnderline": {
+      "type": null,
+      "documentation": null
+    },
+    "bAlphaOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bCreatePrintableOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bIncludeASCIIRange": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableDropShadow": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableLegacyMode": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseDistanceFieldAlpha": {
+      "type": null,
+      "documentation": null
+    },
+    "CharacterSet": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,100 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "MarkerType": {
+      "type": "string",
+      "documentation": null
+    },
+    "GUIMarkerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "MarkerOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PawnWithExclusiveVisibility": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "PawnWithExclusiveInvisibility": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "BoneToAttachTo": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MarkerLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activate()"
+    },
+    "CanPawnSeeMarker": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPawnSeeMarker(Pawn P)"
+    },
+    "HandlePostAdd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostAdd()"
+    },
+    "HandlePreRemove": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePreRemove()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "ActiveStateChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActiveStateChanged()"
+    },
+    "Deactivate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivate()"
+    },
+    "DeferredHandlePostAdd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeferredHandlePostAdd()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

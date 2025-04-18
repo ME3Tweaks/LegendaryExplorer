@@ -1,0 +1,416 @@
+{
+  "parent": "OnlineSubsystem",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "GameProtocolVersion": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_IsolatedMatchMakingCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "ComponentClassList": {
+      "type": "SFXOnlineComponentDescription",
+      "documentation": null
+    },
+    "OnlineUIClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "OnlineBotClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "OnlineGameEntryFlowClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "FontPackageName": {
+      "type": "string",
+      "documentation": null
+    },
+    "OnlineComponentList": {
+      "type": "ISFXOnlineComponent",
+      "documentation": null
+    },
+    "TickEvent": {
+      "type": "SFXOnlineEvent_Tick",
+      "documentation": null
+    },
+    "IniVersionId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "GetBioDynamicBuildVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBioDynamicBuildVersion()"
+    },
+    "GetCDKey": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCDKey()"
+    },
+    "GetComponentAchievement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentAchievement",
+      "signature": "ISFXOnlineComponentAchievement GetComponentAchievement()"
+    },
+    "GetComponentAPI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentAPI",
+      "signature": "ISFXOnlineComponentAPI GetComponentAPI()"
+    },
+    "GetComponentAvatarAwardXenon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentAvatarAwardXenon",
+      "signature": "SFXOnlineComponentAvatarAwardXenon GetComponentAvatarAwardXenon()"
+    },
+    "GetComponentCommerce": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentCommerce",
+      "signature": "ISFXOnlineComponentCommerce GetComponentCommerce()"
+    },
+    "GetComponentGalaxyAtWar": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentGalaxyAtWar",
+      "signature": "ISFXOnlineComponentGalaxyAtWar GetComponentGalaxyAtWar()"
+    },
+    "GetComponentGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentGame",
+      "signature": "ISFXOnlineComponentGame GetComponentGame()"
+    },
+    "GetComponentGameEntryFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentGameEntryFlow",
+      "signature": "ISFXOnlineComponentGameEntryFlow GetComponentGameEntryFlow()"
+    },
+    "GetComponentGameFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentGameFlow",
+      "signature": "ISFXOnlineComponentGameFlow GetComponentGameFlow()"
+    },
+    "GetComponentHTTPManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentHTTPManager",
+      "signature": "SFXOnlineComponentHTTPManager GetComponentHTTPManager()"
+    },
+    "GetComponentImageManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentImageManager",
+      "signature": "SFXOnlineComponentImageManager GetComponentImageManager()"
+    },
+    "GetComponentJobQueue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentJobQueue",
+      "signature": "SFXOnlineComponentJobQueue GetComponentJobQueue()"
+    },
+    "GetComponentLeaderboard": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentLeaderboard",
+      "signature": "ISFXOnlineComponentLeaderboard GetComponentLeaderboard()"
+    },
+    "GetComponentLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentLogin",
+      "signature": "ISFXOnlineComponentLogin GetComponentLogin()"
+    },
+    "GetComponentMatchMakingBot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentMatchMakingBot",
+      "signature": "ISFXOnlineComponentMatchMakingBot GetComponentMatchMakingBot()"
+    },
+    "GetComponentMessaging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentMessaging",
+      "signature": "ISFXOnlineComponentMessaging GetComponentMessaging()"
+    },
+    "GetComponentNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentNotification",
+      "signature": "ISFXOnlineComponentNotification GetComponentNotification()"
+    },
+    "GetComponentOrigin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentOrigin",
+      "signature": "SFXOnlineComponentOrigin GetComponentOrigin()"
+    },
+    "GetComponentPlatform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentPlatform",
+      "signature": "ISFXOnlineComponentPlatform GetComponentPlatform()"
+    },
+    "GetComponentStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentStats",
+      "signature": "ISFXOnlineComponentStats GetComponentStats()"
+    },
+    "GetComponentTelemetry": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentTelemetry",
+      "signature": "ISFXOnlineComponentTelemetry GetComponentTelemetry()"
+    },
+    "GetComponentUnrealPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentUnrealPlayer",
+      "signature": "SFXOnlineComponentUnrealPlayer GetComponentUnrealPlayer()"
+    },
+    "GetComponentUnrealPlayerEx": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentUnrealPlayerEx",
+      "signature": "SFXOnlineComponentUnrealPlayerEx GetComponentUnrealPlayerEx()"
+    },
+    "GetComponentUnrealSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentUnrealSystem",
+      "signature": "SFXOnlineComponentUnrealSystem GetComponentUnrealSystem()"
+    },
+    "GetComponentUserInterface": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentUserInterface",
+      "signature": "ISFXOnlineComponentUserInterface GetComponentUserInterface()"
+    },
+    "GetComponentVoiceInterface": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentVoiceInterface",
+      "signature": "SFXOnlineComponentVoiceInterface GetComponentVoiceInterface()"
+    },
+    "GetComponentXenonLiveParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentXenonLiveParty",
+      "signature": "SFXOnlineComponentXenonLiveParty GetComponentXenonLiveParty()"
+    },
+    "GetComponentXMLParser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentXMLParser",
+      "signature": "SFXOnlineComponentXMLParser GetComponentXMLParser()"
+    },
+    "GetCoordinator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentCoordinator",
+      "signature": "SFXOnlineComponentCoordinator GetCoordinator()"
+    },
+    "GetGameProtocolVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetGameProtocolVersion()"
+    },
+    "GetLanguage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLanguage()"
+    },
+    "GetOnlineSubsystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineSubsystem",
+      "signature": "SFXOnlineSubsystem GetOnlineSubsystem()"
+    },
+    "GetPlatform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetPlatform()"
+    },
+    "GetProjectID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetProjectID()"
+    },
+    "GetURL": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetURL()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Init()"
+    },
+    "IsCerberusMember": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCerberusMember()"
+    },
+    "NativeInit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NativeInit()"
+    },
+    "NativeInitOnlineComponent": {
+      "documentation": null,
+      "signature_members": {
+        "componentIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "componentClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NativeInitOnlineComponent(int componentIdx, string componentClassName)"
+    },
+    "ShowKeyboardUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "sTitleText": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescriptionText": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPassword": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldValidate": {
+          "type": null,
+          "documentation": null
+        },
+        "sDefaultText": {
+          "type": null,
+          "documentation": null
+        },
+        "nMaxResultLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowKeyboardUI(byte eLocalUserNum, string sTitleText, string sDescriptionText, optional bool bIsPassword, optional bool bShouldValidate, optional string sDefaultText, optional int nMaxResultLength)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "UpdateGameProtocolVersion": {
+      "documentation": null,
+      "signature_members": {
+        "runTimeVersioning": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateGameProtocolVersion(int runTimeVersioning)"
+    },
+    "GetEnvironment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentBlazeHubEnvironment",
+      "signature": "SFXOnlineComponentBlazeHubEnvironment GetEnvironment()"
+    },
+    "CreateComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreateComponents()"
+    },
+    "InitGameProtocolVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitGameProtocolVersion()"
+    },
+    "SetUnrealInterfaces": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetUnrealInterfaces()"
+    },
+    "ShowConsoleRoutedKeyboardUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "sTitleText": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescriptionText": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPassword": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldValidate": {
+          "type": null,
+          "documentation": null
+        },
+        "sDefaultText": {
+          "type": null,
+          "documentation": null
+        },
+        "nMaxResultLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowConsoleRoutedKeyboardUI(byte eLocalUserNum, string sTitleText, string sDescriptionText, optional bool bIsPassword, optional bool bShouldValidate, optional string sDefaultText, optional int nMaxResultLength)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

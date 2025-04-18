@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Inputs": {
+      "type": null,
+      "documentation": null
+    },
+    "MatchDelegate": {
+      "type": null,
+      "documentation": null
+    },
+    "MatchActor": {
+      "type": null,
+      "documentation": null
+    },
+    "MatchFuncName": {
+      "type": null,
+      "documentation": null
+    },
+    "FailedFuncName": {
+      "type": null,
+      "documentation": null
+    },
+    "RequestName": {
+      "type": null,
+      "documentation": null
+    },
+    "MatchIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "LastMatchTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,134 @@
+{
+  "parent": "AnimObject",
+  "package": "Engine",
+  "variables": {
+    "CachedRootMotionDelta": {
+      "type": "BoneAtom",
+      "documentation": null
+    },
+    "ParentNodes": {
+      "type": "AnimNodeBlendBase",
+      "documentation": null
+    },
+    "CachedBoneAtoms": {
+      "type": "BoneAtom",
+      "documentation": null
+    },
+    "CachedCurveKeys": {
+      "type": "CurveKey",
+      "documentation": null
+    },
+    "NodeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NodeTickTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "NodeCachedAtomsTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "NodeTotalWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "SkelCompIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCachedHasRootMotion": {
+      "type": "int",
+      "documentation": null
+    },
+    "SearchTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "bRelevant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bJustBecameRelevant": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipTickWhenZeroWeight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTickDuringPausedAnims": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CachedNumDesiredBones": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindAnimNode": {
+      "documentation": null,
+      "signature_members": {
+        "InNodeName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "AnimNode",
+      "signature": "AnimNode FindAnimNode(Name InNodeName)"
+    },
+    "OnBecomeRelevant": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnBecomeRelevant()"
+    },
+    "OnCeaseRelevant": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCeaseRelevant()"
+    },
+    "OnInit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInit()"
+    },
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "bLoop": {
+          "type": null,
+          "documentation": null
+        },
+        "Rate": {
+          "type": null,
+          "documentation": null
+        },
+        "StartTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(optional bool bLoop, optional float Rate, optional float StartTime)"
+    },
+    "ReplayAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplayAnim()"
+    },
+    "StopAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnim()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

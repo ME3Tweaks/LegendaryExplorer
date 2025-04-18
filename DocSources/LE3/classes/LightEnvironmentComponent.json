@@ -1,0 +1,43 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "AffectedComponents": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "AffectingDominantLight": {
+      "type": "LightComponent",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceNonCompositeDynamicLights": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bNewEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bNewEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

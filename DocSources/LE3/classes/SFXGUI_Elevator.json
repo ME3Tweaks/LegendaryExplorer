@@ -1,0 +1,226 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "__OnRequestExitDelegate__Delegate": {
+      "type": "OnRequestExitDelegate",
+      "documentation": null
+    },
+    "__OnRequestDestinationDelegate__Delegate": {
+      "type": "OnRequestDestinationDelegate",
+      "documentation": null
+    },
+    "ElevatorData": {
+      "type": "SFXGUIData_Elevator",
+      "documentation": null
+    },
+    "DefaultDestination": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFlashLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsScriptLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDestinationRequested": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ASAddDestination": {
+      "documentation": null,
+      "signature_members": {
+        "KeepAlive": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "SubTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "Desc": {
+          "type": null,
+          "documentation": null
+        },
+        "Image": {
+          "type": null,
+          "documentation": null
+        },
+        "Default": {
+          "type": null,
+          "documentation": null
+        },
+        "Able": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddDestination(bool KeepAlive, string Title, string SubTitle, string Desc, string Image, bool Default, bool Able)"
+    },
+    "ASNativeReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASNativeReady()"
+    },
+    "ASSetTitles": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sAText": {
+          "type": null,
+          "documentation": null
+        },
+        "sBText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTitles(string sTitle, string sSubtitle, string sAText, string sBText)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "InitialElevatorGUIData": {
+          "type": null,
+          "documentation": null
+        },
+        "InitialDefaultDestination": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(SFXGUIData_Elevator InitialElevatorGUIData, optional int InitialDefaultDestination)"
+    },
+    "OnRequestDestinationDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "DestinationID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRequestDestinationDelegate(int DestinationID)"
+    },
+    "OnRequestExitDelegate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRequestExitDelegate()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "ExExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExExit()"
+    },
+    "ExGo": {
+      "documentation": null,
+      "signature_members": {
+        "nRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExGo(int nRequest)"
+    },
+    "ExPullElevatorDestinations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullElevatorDestinations()"
+    },
+    "ExPullElevatorTitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullElevatorTitles()"
+    },
+    "SetOnRequestDestinationCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnRequestDestinationDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnRequestDestinationCallback(delegate<OnRequestDestinationDelegate> fn_OnRequestDestinationDelegate)"
+    },
+    "SetOnRequestExitCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnRequestExitDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnRequestExitCallback(delegate<OnRequestExitDelegate> fn_OnRequestExitDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

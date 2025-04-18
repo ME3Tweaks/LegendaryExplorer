@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "nmLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "nmTreasure": {
+      "type": null,
+      "documentation": null
+    },
+    "nmTech": {
+      "type": null,
+      "documentation": null
+    },
+    "nmRequiredTech": {
+      "type": null,
+      "documentation": null
+    },
+    "nTreasureId": {
+      "type": null,
+      "documentation": null
+    },
+    "ResourcePrice": {
+      "type": null,
+      "documentation": null
+    },
+    "RequiredTechLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "DiscoverTechLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoAnimation": {
+      "type": null,
+      "documentation": null
+    },
+    "bMultiLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "Resource": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

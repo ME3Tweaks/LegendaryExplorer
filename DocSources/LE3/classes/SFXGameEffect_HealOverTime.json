@@ -1,0 +1,25 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "bPercentOfMaxHealth": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

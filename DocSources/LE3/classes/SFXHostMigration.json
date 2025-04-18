@@ -1,0 +1,99 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "bNeedRestoration": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanRestoreWave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanRestoreWave()"
+    },
+    "EnableRestoration": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableRestoration(bool bEnable)"
+    },
+    "GetHostMigration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXHostMigration",
+      "signature": "SFXHostMigration GetHostMigration()"
+    },
+    "GetWaveToRestore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WaveEventInfo",
+      "signature": "WaveEventInfo GetWaveToRestore()"
+    },
+    "HasCompleteAndValidState": {
+      "documentation": null,
+      "signature_members": {
+        "GRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasCompleteAndValidState(SFXGRI GRI)"
+    },
+    "InvalidateAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InvalidateAll()"
+    },
+    "ResetWaveToRestore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetWaveToRestore()"
+    },
+    "RestorePRI": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RestorePRI(SFXPRI PRI)"
+    },
+    "SaveGRI": {
+      "documentation": null,
+      "signature_members": {
+        "GRI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGRI(SFXGRI GRI)"
+    },
+    "SetWaveToRestore": {
+      "documentation": null,
+      "signature_members": {
+        "InWave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaveToRestore(WaveEventInfo InWave)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,169 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "Curve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "AimPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RotationOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "LocationOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "From": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "To": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "TotalTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AimPointDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinAimPointPreservationDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableAimPointPreservation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "InterpMethod": {
+      "type": "EBioInterpolationMethod",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {
+        "OutLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorCameraHook(out Vector OutLocation)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "Trace": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Trace(out Actor HitActor, out Vector HitLocation)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioCheatManager M)"
+    },
+    "CheckLoop": {
+      "documentation": null,
+      "signature_members": {
+        "mode": {
+          "type": null,
+          "documentation": null
+        },
+        "RecurseLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLoop(SFXCameraMode mode, int RecurseLevel)"
+    },
+    "GetCurrentShake": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetCurrentShake()"
+    },
+    "InitializeTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromMode": {
+          "type": null,
+          "documentation": null
+        },
+        "ToMode": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeTransition(SFXCameraMode FromMode, SFXCameraMode ToMode, float Time, bool PreserveTarget)"
+    },
+    "Interpolate": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float Interpolate(float T)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Projectiles": {
+      "type": null,
+      "documentation": null
+    },
+    "ProjectileClass": {
+      "type": null,
+      "documentation": null
+    },
+    "NextIdx": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

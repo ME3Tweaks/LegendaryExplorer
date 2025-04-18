@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "pUniquePlayerId": {
+      "type": null,
+      "documentation": null
+    },
+    "Scope": {
+      "type": null,
+      "documentation": null
+    },
+    "pJobId": {
+      "type": null,
+      "documentation": null
+    },
+    "pExternalData": {
+      "type": null,
+      "documentation": null
+    },
+    "nRequestedRecordsStartRank": {
+      "type": null,
+      "documentation": null
+    },
+    "nRequestedRecordsRange": {
+      "type": null,
+      "documentation": null
+    },
+    "bRequestedCenteredData": {
+      "type": null,
+      "documentation": null
+    },
+    "bRequestedFriendData": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

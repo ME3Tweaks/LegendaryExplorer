@@ -1,0 +1,75 @@
+{
+  "parent": "NavMeshPathConstraint",
+  "package": "Engine",
+  "variables": {
+    "EnvelopeTestPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftStartPenalty": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSoft": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyThrowOutNodesThatLeaveEnvelope": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "StayWithinEnvelopeToLoc": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": null,
+          "documentation": null
+        },
+        "InEnvelopeTestPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "InMaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "InMinDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "bInSoft": {
+          "type": null,
+          "documentation": null
+        },
+        "InSoftStartPenalty": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyTossOutSpecsThatLeave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StayWithinEnvelopeToLoc(NavigationHandle NavHandle, Vector InEnvelopeTestPoint, float InMaxDistance, float InMinDistance, optional bool bInSoft, optional float InSoftStartPenalty, optional bool bOnlyTossOutSpecsThatLeave)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

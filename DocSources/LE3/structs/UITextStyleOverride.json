@@ -1,0 +1,69 @@
+{
+  "Members": {
+    "DrawFont": {
+      "type": null,
+      "documentation": null
+    },
+    "AutoScaling": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawScale": {
+      "type": null,
+      "documentation": null
+    },
+    "SpacingAdjust": {
+      "type": null,
+      "documentation": null
+    },
+    "TextAttributes": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideDrawFont": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideAttributes": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideAlignment": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideClipMode": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideClipAlignment": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideAutoScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideSpacingAdjust": {
+      "type": null,
+      "documentation": null
+    },
+    "TextAlignment": {
+      "type": null,
+      "documentation": null
+    },
+    "ClipMode": {
+      "type": null,
+      "documentation": null
+    },
+    "ClipAlignment": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

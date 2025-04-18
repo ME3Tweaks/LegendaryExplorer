@@ -1,0 +1,64 @@
+{
+  "parent": "WwiseBaseSoundObject",
+  "package": "Engine",
+  "variables": {
+    "FaceFXGroupName": {
+      "type": "string",
+      "documentation": null
+    },
+    "FaceFXAnimName": {
+      "type": "string",
+      "documentation": null
+    },
+    "EditorData": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SoundClass": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FirstNode": {
+      "type": "SoundNode",
+      "documentation": null
+    },
+    "FaceFXAnimSetRef": {
+      "type": "FaceFXAnimSet",
+      "documentation": null
+    },
+    "MaxAudibleDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "VolumeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxConcurrentPlayCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentPlayCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCueDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCueDuration()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

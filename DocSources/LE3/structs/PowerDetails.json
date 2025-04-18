@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Desc": {
+      "type": null,
+      "documentation": null
+    },
+    "Resource": {
+      "type": null,
+      "documentation": null
+    },
+    "State": {
+      "type": null,
+      "documentation": null
+    },
+    "IconFrame": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

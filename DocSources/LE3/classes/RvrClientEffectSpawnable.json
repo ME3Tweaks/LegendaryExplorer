@@ -1,0 +1,20 @@
+{
+  "parent": "RvrClientEffectActor",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnFinished": {
+      "documentation": null,
+      "signature_members": {
+        "pComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFinished(RvrClientEffectComponent pComponent)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

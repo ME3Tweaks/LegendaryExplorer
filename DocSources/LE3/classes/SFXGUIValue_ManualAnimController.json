@@ -1,0 +1,114 @@
+{
+  "parent": "GFxValue",
+  "package": "SFXGame",
+  "variables": {
+    "__OnAnimStarted__Delegate": {
+      "type": "OnAnimStarted",
+      "documentation": null
+    },
+    "__OnAnimAborted__Delegate": {
+      "type": "OnAnimAborted",
+      "documentation": null
+    },
+    "__OnAnimFinished__Delegate": {
+      "type": "OnAnimFinished",
+      "documentation": null
+    },
+    "StartFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "EndFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "ElapsedAnimationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TotalAnimationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "IsActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AbortRequested": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AbortAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AbortAnimation()"
+    },
+    "BeginAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginAnimation(float AnimationLength)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "OnAnimAborted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimAborted()"
+    },
+    "OnAnimFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimFinished()"
+    },
+    "OnAnimStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAnimStarted()"
+    },
+    "PauseAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseAnimation()"
+    },
+    "ResumeAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResumeAnimation()"
+    },
+    "UpdateAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAnimation(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

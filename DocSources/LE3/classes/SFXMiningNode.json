@@ -1,0 +1,48 @@
+{
+  "parent": "SFXPointOfInterest",
+  "package": "SFXGame",
+  "variables": {
+    "PSC_GroundReticle": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ImpulseMinStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpulseMaxStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpulseMinFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpulseMaxFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAlreadyMined": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

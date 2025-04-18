@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "nReplyListIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "fWindowStartTimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "fWindowTimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bActivated": {
+      "type": null,
+      "documentation": null
+    },
+    "eInterruptType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

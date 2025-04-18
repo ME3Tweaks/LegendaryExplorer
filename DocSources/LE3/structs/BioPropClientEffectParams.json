@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "vHitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "vHitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "vRayDir": {
+      "type": null,
+      "documentation": null
+    },
+    "vSpawnValue": {
+      "type": null,
+      "documentation": null
+    },
+    "nmHitBone": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

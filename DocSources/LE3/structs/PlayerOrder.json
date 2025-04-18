@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "vTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "vOriginalCameraLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "rOriginalCameraRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "nmPower": {
+      "type": null,
+      "documentation": null
+    },
+    "oTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "oSwitchWeapon": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

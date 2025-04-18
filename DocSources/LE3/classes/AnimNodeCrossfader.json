@@ -1,0 +1,80 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "Engine",
+  "variables": {
+    "DefaultAnimSeqName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PendingBlendOutTimeOneShot": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDontBlendOutOneShot": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BlendToLoopingAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Rate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BlendToLoopingAnim(Name AnimSeqName, optional float BlendInTime, optional float Rate)"
+    },
+    "GetActiveChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetActiveChild()"
+    },
+    "GetAnimName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAnimName()"
+    },
+    "PlayOneShotAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendInTime": {
+          "type": null,
+          "documentation": null
+        },
+        "BlendOutTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bDontBlendOut": {
+          "type": null,
+          "documentation": null
+        },
+        "Rate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayOneShotAnim(Name AnimSeqName, optional float BlendInTime, optional float BlendOutTime, optional bool bDontBlendOut, optional float Rate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

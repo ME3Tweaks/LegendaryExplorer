@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ConstraintWeights": {
+      "type": null,
+      "documentation": null
+    },
+    "Nav": {
+      "type": null,
+      "documentation": null
+    },
+    "Weight": {
+      "type": null,
+      "documentation": null
+    },
+    "FailedIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

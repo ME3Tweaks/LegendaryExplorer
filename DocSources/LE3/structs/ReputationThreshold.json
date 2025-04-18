@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlotStateID": {
+      "type": null,
+      "documentation": null
+    },
+    "Threshold": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "TRANSFORMSOURCE_World": {
+      "value": 0,
+      "documentation": null
+    },
+    "TRANSFORMSOURCE_Local": {
+      "value": 1,
+      "documentation": null
+    },
+    "TRANSFORMSOURCE_Tangent": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

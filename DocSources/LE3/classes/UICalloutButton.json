@@ -1,0 +1,184 @@
+{
+  "parent": "UILabelButton",
+  "package": "Engine",
+  "variables": {
+    "DefaultMarkupStringTemplate": {
+      "type": "string",
+      "documentation": null
+    },
+    "CalloutDataStoreTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InputAliasTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bSupportsButtonRepeat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayErrorSoundWhenDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IconAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GenerateCompleteCaptionMarkup": {
+      "documentation": null,
+      "signature_members": {
+        "InputAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateCompleteCaptionMarkup(optional Name InputAlias)"
+    },
+    "GetCalloutDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "AlternatePlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIDataStore_InputAlias",
+      "signature": "UIDataStore_InputAlias GetCalloutDataStore(optional LocalPlayer AlternatePlayer)"
+    },
+    "GetCalloutDataStoreName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetCalloutDataStoreName()"
+    },
+    "GetCalloutInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "bCreateIfNecessary": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIEvent_CalloutButtonInputProxy",
+      "signature": "UIEvent_CalloutButtonInputProxy GetCalloutInputProxy(optional bool bCreateIfNecessary)"
+    },
+    "GetCalloutMarkupString": {
+      "documentation": null,
+      "signature_members": {
+        "AlternateInputAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCalloutMarkupString(optional Name AlternateInputAlias)"
+    },
+    "OnReceivedInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnReceivedInputKey(const out InputEventParameters EventParms)"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "RemovedFromParent": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedFromParent(UIScreenObject WidgetOwner)"
+    },
+    "SetInputAlias": {
+      "documentation": null,
+      "signature_members": {
+        "NewInputAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetInputAlias(Name NewInputAlias)"
+    },
+    "SetInputTag": {
+      "documentation": null,
+      "signature_members": {
+        "NewInputAlias": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputTag(Name NewInputAlias)"
+    },
+    "SubscribeToInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "InputProxy": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdateProxyOutputLinks": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SubscribeToInputProxy(UIEvent_CalloutButtonInputProxy InputProxy, optional bool bUpdateProxyOutputLinks, optional int PlayerIndex)"
+    },
+    "UnsubscribeFromInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "InputProxy": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdateProxyOutputLinks": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnsubscribeFromInputProxy(UIEvent_CalloutButtonInputProxy InputProxy, optional bool bUpdateProxyOutputLinks, optional int PlayerIndex)"
+    },
+    "GetPanelOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UICalloutButtonPanel",
+      "signature": "UICalloutButtonPanel GetPanelOwner()"
+    },
+    "VerifyDefaultMarkupString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool VerifyDefaultMarkupString()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

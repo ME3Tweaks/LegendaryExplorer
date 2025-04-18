@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "Trigger": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,314 @@
+{
+  "parent": "Object",
+  "package": "GameFramework",
+  "variables": {
+    "ChildCommand": {
+      "type": "GameAICommand",
+      "documentation": null
+    },
+    "ChildStatus": {
+      "type": "Name",
+      "documentation": null
+    },
+    "GameAIOwner": {
+      "type": "GameAIController",
+      "documentation": null
+    },
+    "Status": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bAllowNewSameClassInstance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReplaceActiveSameClassInstance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreNotifies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPendingPop": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "Paused": {
+      "documentation": null,
+      "signature_members": {
+        "NewCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Paused(GameAICommand NewCommand)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DrawDebug": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebug(HUD H, Name Category)"
+    },
+    "InternalPaused": {
+      "documentation": null,
+      "signature_members": {
+        "NewCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalPaused(GameAICommand NewCommand)"
+    },
+    "InternalPopped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InternalPopped()"
+    },
+    "InternalPrePushed": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalPrePushed(GameAIController AI)"
+    },
+    "InternalPushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InternalPushed()"
+    },
+    "InternalResumed": {
+      "documentation": null,
+      "signature_members": {
+        "OldCommandName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalResumed(Name OldCommandName)"
+    },
+    "InternalTick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalTick(float DeltaTime)"
+    },
+    "ShouldIgnoreNotifies": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldIgnoreNotifies()"
+    },
+    "AllowStateTransitionTo": {
+      "documentation": null,
+      "signature_members": {
+        "StateName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowStateTransitionTo(Name StateName)"
+    },
+    "AllowTransitionTo": {
+      "documentation": null,
+      "signature_members": {
+        "AttemptCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowTransitionTo(Class<GameAICommand> AttemptCommand)"
+    },
+    "GetDebugOverheadText": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "OutText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDebugOverheadText(PlayerController PC, out array<string> OutText)"
+    },
+    "InitCommand": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitCommand(GameAIController AI)"
+    },
+    "InitCommandUserActor": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "UserActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitCommandUserActor(GameAIController AI, Actor UserActor)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "PostPopped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostPopped()"
+    },
+    "PrePushed": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrePushed(GameAIController AI)"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "Resumed": {
+      "documentation": null,
+      "signature_members": {
+        "OldCommandName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Resumed(Name OldCommandName)"
+    }
+  },
+  "states": {
+    "DelaySuccess": {
+      "functions": {},
+      "documentation": null
+    },
+    "DelayFailure": {
+      "functions": {},
+      "documentation": null
+    },
+    "DebugState": {
+      "functions": {
+        "PausedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ContinuedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

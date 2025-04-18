@@ -1,0 +1,48 @@
+{
+  "parent": "SFXInterpTrackMovieBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_sMovieName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_SoundEvent": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "m_fAutoResizeBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bIgnoreShrinking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreGrowing": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

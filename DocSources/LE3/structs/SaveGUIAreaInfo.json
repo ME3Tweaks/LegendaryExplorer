@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ImageName": {
+      "type": null,
+      "documentation": null
+    },
+    "AreaName": {
+      "type": null,
+      "documentation": null
+    },
+    "AreaStrRef": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

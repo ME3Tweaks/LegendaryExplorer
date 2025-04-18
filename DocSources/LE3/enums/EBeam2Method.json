@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PEB2M_Distance": {
+      "value": 0,
+      "documentation": null
+    },
+    "PEB2M_Target": {
+      "value": 1,
+      "documentation": null
+    },
+    "PEB2M_Branch": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

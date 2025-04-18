@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Count": {
+      "type": null,
+      "documentation": null
+    },
+    "CountLow": {
+      "type": null,
+      "documentation": null
+    },
+    "Time": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

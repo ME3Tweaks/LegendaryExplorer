@@ -1,0 +1,243 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ParticleSystemComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "DynamicLightEnvironmentComponent",
+      "documentation": null
+    },
+    "bDestroyOnSystemFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPostUpdateTickGroup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoVFXSound": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCurrentlyActive": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "ResetPSC": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPSC()"
+    },
+    "SetActorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorParameter(Name ParameterName, Actor Param)"
+    },
+    "SetColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColorParameter(Name ParameterName, Color Param)"
+    },
+    "SetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatParameter(Name ParameterName, float Param)"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "bDestroyOnFinish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(ParticleSystem NewTemplate, optional bool bDestroyOnFinish)"
+    },
+    "SetVectorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameter(Name ParameterName, Vector Param)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "HideSelf": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSelf()"
+    },
+    "OnParticleEventGenerator": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleEventGenerator(SeqAct_ParticleEventGenerator Action)"
+    },
+    "OnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "FinishedComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleSystemFinished(ParticleSystemComponent FinishedComponent)"
+    },
+    "OnSetParticleSysParam": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetParticleSysParam(SeqAct_SetParticleSysParam Action)"
+    },
+    "SetExtColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "Red": {
+          "type": null,
+          "documentation": null
+        },
+        "Green": {
+          "type": null,
+          "documentation": null
+        },
+        "Blue": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExtColorParameter(Name ParameterName, byte Red, byte Green, byte Blue, byte Alpha)"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

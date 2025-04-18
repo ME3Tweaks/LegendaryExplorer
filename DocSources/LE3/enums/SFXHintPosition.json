@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXHINTPOS_Top": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXHINTPOS_Middle": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXHINTPOS_Bottom": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "PackageName": {
+      "type": null,
+      "documentation": null
+    },
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "GalaxyAtWarMapPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "MusicEventName": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "PrettyName": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "GalaxyAtWarMapSubtitle": {
+      "type": null,
+      "documentation": null
+    },
+    "EveryoneHasThisMap": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

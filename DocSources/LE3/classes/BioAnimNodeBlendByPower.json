@@ -1,0 +1,24 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "LastTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "NotifyActive": {
+      "type": "EBioAnimNodePowerNotifyActive",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SendPowerNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendPowerNotification()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

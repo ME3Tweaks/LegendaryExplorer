@@ -1,0 +1,80 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_nSelectedItemIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nShiftItemIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "srEmpty": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "PopulateAccomplishmentItemList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateAccomplishmentItemList()"
+    },
+    "PopulateAchivementItemListEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplayIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentAccomplishment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateAchivementItemListEntry(int nDisplayIndex, out Accomplishment CurrentAccomplishment)"
+    },
+    "SetFromMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromMainMenu()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

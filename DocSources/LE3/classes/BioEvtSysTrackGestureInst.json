@@ -1,0 +1,17 @@
+{
+  "parent": "SFXGameActorInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapCachedAnimsets": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_bBelongsToConversation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

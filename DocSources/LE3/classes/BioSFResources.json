@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Sounds": {
+      "type": "BioSFSoundAssetResource",
+      "documentation": null
+    },
+    "LoadScreenTips": {
+      "type": "BioSFScreenTip",
+      "documentation": null
+    },
+    "Movies": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

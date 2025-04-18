@@ -1,0 +1,54 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnJobCompletion__Delegate": {
+      "type": "OnJobCompletion",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGetLeaderboardListJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineJobGetLeaderboardList",
+      "signature": "SFXOnlineJobGetLeaderboardList CreateGetLeaderboardListJob()"
+    },
+    "JobCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobCompleted(byte errorCode)"
+    },
+    "OnJobCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJobCompletion(byte errorCode)"
+    },
+    "ShouldReschedule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldReschedule()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

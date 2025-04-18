@@ -1,0 +1,15 @@
+{
+  "parent": "PathNode",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetDebugAbbrev": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugAbbrev()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

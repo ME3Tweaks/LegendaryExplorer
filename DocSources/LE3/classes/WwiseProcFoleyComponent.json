@@ -1,0 +1,48 @@
+{
+  "parent": "ActorComponent",
+  "package": "WwiseAudio",
+  "variables": {
+    "Info": {
+      "type": "ProcFoleyInfo",
+      "documentation": null
+    },
+    "m_AudioComp": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "m_FoleySound": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "m_fLastMaxVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSmoothFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nProcFoleyRTPCId": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bIsPlaying": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMAX_PROC_FOLEY_BONES": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMAX_PROC_FOLEY_BONES()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

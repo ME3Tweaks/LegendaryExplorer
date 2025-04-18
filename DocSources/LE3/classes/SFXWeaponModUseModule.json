@@ -1,0 +1,66 @@
+{
+  "parent": "SFXModule_SavedUse",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponModClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "UpdateFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStopCustomTicking": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DisabilityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DisabilityCheck()"
+    },
+    "DisableWeaponModUseModule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableWeaponModUseModule()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

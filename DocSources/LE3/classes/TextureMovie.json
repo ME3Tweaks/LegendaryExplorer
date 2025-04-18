@@ -1,0 +1,100 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "Data": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null
+    },
+    "DecoderClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ReleaseCodecFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TextureFileCacheGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "TFCFileGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "Decoder": {
+      "type": "CodecMovie",
+      "documentation": null
+    },
+    "TextureFileCacheName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "Paused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Stopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Looping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AutoPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsDroppingFrames": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null
+    },
+    "MovieStreamSource": {
+      "type": "EMovieStreamSource",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Pause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pause()"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Play()"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

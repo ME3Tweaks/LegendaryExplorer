@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ESFXLanguageSetting_Current": {
+      "value": 0,
+      "documentation": null
+    },
+    "ESFXLanguageSetting_SystemPreferred": {
+      "value": 1,
+      "documentation": null
+    },
+    "ESFXLanguageSetting_SKUDefault": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

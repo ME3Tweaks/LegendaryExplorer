@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "ClusterPlanes": {
+      "type": null,
+      "documentation": null
+    },
+    "ClusterBackgrounds": {
+      "type": null,
+      "documentation": null
+    },
+    "System": {
+      "type": null,
+      "documentation": null
+    },
+    "SystemCircle": {
+      "type": null,
+      "documentation": null
+    },
+    "ClusterSphere": {
+      "type": null,
+      "documentation": null
+    },
+    "ClusterStars": {
+      "type": null,
+      "documentation": null
+    },
+    "FuelElipse": {
+      "type": null,
+      "documentation": null
+    },
+    "Emitter": {
+      "type": null,
+      "documentation": null
+    },
+    "Crosshair": {
+      "type": null,
+      "documentation": null
+    },
+    "Camera": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

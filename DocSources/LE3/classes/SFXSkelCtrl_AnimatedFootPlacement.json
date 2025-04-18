@@ -1,0 +1,45 @@
+{
+  "parent": "SkelControl_CCD_IK",
+  "package": "SFXGame",
+  "variables": {
+    "LockFootLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LockedFootWorldLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LockAlphaBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HitZOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "LockAlphaBlendTimeToGo": {
+      "type": "float",
+      "documentation": null
+    },
+    "LockAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "LockAlphaTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDeltaTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLockFoot": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

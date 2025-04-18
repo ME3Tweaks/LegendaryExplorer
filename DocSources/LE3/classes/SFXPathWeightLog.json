@@ -1,0 +1,56 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "BestWeight": {
+      "type": "NavWeight",
+      "documentation": null
+    },
+    "NavWeights": {
+      "type": "NavWeight",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddNav": {
+      "documentation": null,
+      "signature_members": {
+        "Nav": {
+          "type": null,
+          "documentation": null
+        },
+        "NumConstraints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddNav(NavigationPoint Nav, int NumConstraints)"
+    },
+    "SetNavWeight": {
+      "documentation": null,
+      "signature_members": {
+        "NavIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Weight": {
+          "type": null,
+          "documentation": null
+        },
+        "ConstraintIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bRejected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNavWeight(int NavIndex, float Weight, optional int ConstraintIndex, optional bool bRejected)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

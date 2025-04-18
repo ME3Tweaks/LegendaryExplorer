@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EPowerStatBarFormula_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPowerStatBarFormula_Percent": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPowerStatBarFormula_Distance": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

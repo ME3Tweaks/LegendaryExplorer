@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Command": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Control": {
+      "type": null,
+      "documentation": null
+    },
+    "Shift": {
+      "type": null,
+      "documentation": null
+    },
+    "Alt": {
+      "type": null,
+      "documentation": null
+    },
+    "ModifierIndependent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

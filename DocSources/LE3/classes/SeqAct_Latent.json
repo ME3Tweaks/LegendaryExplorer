@@ -1,0 +1,48 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "LatentActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCancelled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AbortFor": {
+      "documentation": null,
+      "signature_members": {
+        "latentActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bCancel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AbortFor(Actor latentActor, optional bool bCancel)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

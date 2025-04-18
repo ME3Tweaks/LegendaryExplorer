@@ -1,0 +1,13 @@
+{
+  "parent": "SFXGameInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_pDOFTrack": {
+      "type": "BioEvtSysTrackDOF",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

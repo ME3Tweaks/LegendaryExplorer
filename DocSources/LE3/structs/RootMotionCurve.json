@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Curve": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxCurveTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

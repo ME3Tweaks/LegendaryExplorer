@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_pRightArrow": {
+      "type": "Material",
+      "documentation": null
+    },
+    "m_nmValidPoseEnum": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmValidGestureEnum": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmValidGestureFilter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmGestureGroupsEnum": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmValidPoseFilter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmPoseGroupsEnum": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmAllPosesFilter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nOldGestureFilter": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nOldPoseFilter": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bReloadPreviewAnimsets": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowMovingChainKeys": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllPoseGroupsLoaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

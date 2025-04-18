@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "CookedPackage": {
+      "type": null,
+      "documentation": null
+    },
+    "Mesh": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimTree": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimSets": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

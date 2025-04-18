@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "EdgeEnd": {
+      "type": null,
+      "documentation": null
+    },
+    "EdgeStart": {
+      "type": null,
+      "documentation": null
+    },
+    "ScopeAIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "ScopeBIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "EdgeAngle": {
+      "type": null,
+      "documentation": null
+    },
+    "ScopeAEdge": {
+      "type": null,
+      "documentation": null
+    },
+    "ScopeBEdge": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

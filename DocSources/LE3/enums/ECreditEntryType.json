@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CREDIT_Heading": {
+      "value": 0,
+      "documentation": null
+    },
+    "CREDIT_Flashing": {
+      "value": 1,
+      "documentation": null
+    },
+    "CREDIT_Scrolling": {
+      "value": 2,
+      "documentation": null
+    },
+    "CREDIT_Delay": {
+      "value": 3,
+      "documentation": null
+    },
+    "CREDIT_LineBreak": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "FogVolumeActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SimpleLightColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "ApproxFogLightColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "FogMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "DefaultFogVolumeMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "StartDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectsTranslucency": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bSetEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bSetEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

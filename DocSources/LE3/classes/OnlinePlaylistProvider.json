@@ -1,0 +1,29 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "PlaylistGameTypeNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlaylistId": {
+      "type": "int",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsArbitrated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

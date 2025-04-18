@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "oMovieClip": {
+      "type": null,
+      "documentation": null
+    },
+    "nID": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeToLive": {
+      "type": null,
+      "documentation": null
+    },
+    "bVisible": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

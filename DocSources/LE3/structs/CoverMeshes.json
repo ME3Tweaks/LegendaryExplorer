@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Base": {
+      "type": null,
+      "documentation": null
+    },
+    "LeanLeft": {
+      "type": null,
+      "documentation": null
+    },
+    "LeanRight": {
+      "type": null,
+      "documentation": null
+    },
+    "Climb": {
+      "type": null,
+      "documentation": null
+    },
+    "Mantle": {
+      "type": null,
+      "documentation": null
+    },
+    "SlipLeft": {
+      "type": null,
+      "documentation": null
+    },
+    "SlipRight": {
+      "type": null,
+      "documentation": null
+    },
+    "SwatLeft": {
+      "type": null,
+      "documentation": null
+    },
+    "SwatRight": {
+      "type": null,
+      "documentation": null
+    },
+    "PopUp": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerOnly": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

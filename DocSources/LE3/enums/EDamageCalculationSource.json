@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "DamageCalcWeapon": {
+      "value": 0,
+      "documentation": null
+    },
+    "DamageCalcPower": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

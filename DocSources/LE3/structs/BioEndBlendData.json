@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "fEndBlendStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndBlendDuration": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

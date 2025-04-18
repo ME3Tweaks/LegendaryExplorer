@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "MPF_Inactive": {
+      "value": 0,
+      "documentation": null
+    },
+    "MPF_Connect": {
+      "value": 1,
+      "documentation": null
+    },
+    "MPF_ResolvingInvite": {
+      "value": 2,
+      "documentation": null
+    },
+    "MPF_LobbyAccess": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

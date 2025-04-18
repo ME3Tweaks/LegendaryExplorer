@@ -1,0 +1,17 @@
+{
+  "parent": "SFXOutlineGlowActorBase",
+  "package": "SFXGame",
+  "variables": {
+    "EnemyColour": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "HenchmenColour": {
+      "type": "LinearColor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

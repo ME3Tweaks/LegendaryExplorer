@@ -1,0 +1,57 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SRH": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LightingGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "WindDirection": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Branch1Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "Branch2Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "FrondMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LeafCardMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LeafMeshMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "BillboardMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LeafStaticShadowOpacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "WindStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLegacySpeedTree": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

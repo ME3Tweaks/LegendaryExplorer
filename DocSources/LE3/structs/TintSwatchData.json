@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SwatchID": {
+      "type": null,
+      "documentation": null
+    },
+    "SwatchColor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

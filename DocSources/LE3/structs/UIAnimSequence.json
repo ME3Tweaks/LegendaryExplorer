@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "AnimationTracks": {
+      "type": null,
+      "documentation": null
+    },
+    "SequenceRef": {
+      "type": null,
+      "documentation": null
+    },
+    "PlaybackRate": {
+      "type": null,
+      "documentation": null
+    },
+    "LoopMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

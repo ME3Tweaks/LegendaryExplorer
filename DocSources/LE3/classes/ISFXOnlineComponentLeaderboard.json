@@ -1,0 +1,312 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnReadLbListCompleted__Delegate": {
+      "type": "OnReadLbListCompleted",
+      "documentation": null
+    },
+    "__OnGetRankNotificationsCompleted__Delegate": {
+      "type": "OnGetRankNotificationsCompleted",
+      "documentation": null
+    },
+    "__OnResultsRetrieved__Delegate": {
+      "type": "OnResultsRetrieved",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddRankNotificationCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRankNotificationCallback(delegate<OnGetRankNotificationsCompleted> Callback)"
+    },
+    "CancelLeaderboardRequests": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelLeaderboardRequests()"
+    },
+    "GetFriendLeaderboardData": {
+      "documentation": null,
+      "signature_members": {
+        "pLbId": {
+          "type": null,
+          "documentation": null
+        },
+        "funcResultsRetrieved": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetFriendLeaderboardData(int pLbId, delegate<OnResultsRetrieved> funcResultsRetrieved, optional Pointer pExternalData)"
+    },
+    "GetLeaderboardCenteredData": {
+      "documentation": null,
+      "signature_members": {
+        "pLbId": {
+          "type": null,
+          "documentation": null
+        },
+        "nPlayerId": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "funcResultsRetrieved": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetLeaderboardCenteredData(int pLbId, UniqueNetId nPlayerId, int nRankRange, delegate<OnResultsRetrieved> funcResultsRetrieved, optional Pointer pExternalData)"
+    },
+    "GetLeaderboardData": {
+      "documentation": null,
+      "signature_members": {
+        "pLbId": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankStart": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "funcResultsRetrieved": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetLeaderboardData(int pLbId, int nRankStart, int nRankRange, delegate<OnResultsRetrieved> funcResultsRetrieved, optional Pointer pExternalData)"
+    },
+    "GetLeaderboardDefinitions": {
+      "documentation": null,
+      "signature_members": {
+        "aLBDefinitions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLeaderboardDefinitions(out array<LeaderboardDefinition> aLBDefinitions)"
+    },
+    "GetLeaderboardDefinitionTable": {
+      "documentation": null,
+      "signature_members": {
+        "aLBDefTableRows": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLeaderboardDefinitionTable(out array<LeaderboardMapGroup> aLBDefTableRows)"
+    },
+    "GetRankNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetRankNotifications()"
+    },
+    "OnGetRankNotificationsCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "RankBypassNotificationArray": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGetRankNotificationsCompleted(array<RankBypassNotification> RankBypassNotificationArray)"
+    },
+    "OnReadLbListCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadLbListCompleted(byte errorCode)"
+    },
+    "OnResultsRetrieved": {
+      "documentation": null,
+      "signature_members": {
+        "aColumnInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "iTotalRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "uidEntity": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnResultsRetrieved(array<LeaderboardColumn> aColumnInfo, array<LeaderboardRecord> aResults, int iTotalRanks, UniqueNetId uidEntity, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "ReadLeaderboardList": {
+      "documentation": null,
+      "signature_members": {
+        "funcReadLbListCompleted": {
+          "type": null,
+          "documentation": null
+        },
+        "jobIds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadLeaderboardList(delegate<OnReadLbListCompleted> funcReadLbListCompleted, out array<int> jobIds)"
+    },
+    "RemoveRankNotificationCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveRankNotificationCallback(delegate<OnGetRankNotificationsCompleted> Callback)"
+    },
+    "RequestLeaderboardCenteredData": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardDef": {
+          "type": null,
+          "documentation": null
+        },
+        "nPlayerId": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "funcResultsRetrieved": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestLeaderboardCenteredData(LeaderboardDefinition LeaderboardDef, UniqueNetId nPlayerId, int nRankRange, delegate<OnResultsRetrieved> funcResultsRetrieved, optional Pointer pExternalData)"
+    },
+    "RequestLeaderboardData": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardDef": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankStart": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "funcResultsRetrieved": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestLeaderboardData(LeaderboardDefinition LeaderboardDef, int nRankStart, int nRankRange, delegate<OnResultsRetrieved> funcResultsRetrieved, optional Pointer pExternalData)"
+    },
+    "RequestReadLeaderboardList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestReadLeaderboardList()"
+    },
+    "ShowGamerCardForRecord": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Record": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ShowGamerCardForRecord(byte LocalUserNum, const out LeaderboardRecord Record)"
+    },
+    "GetCurrentRankNotificationsArray": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "RankBypassNotification",
+      "signature": "array<RankBypassNotification> GetCurrentRankNotificationsArray()"
+    },
+    "HasNotificationsAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasNotificationsAvailable()"
+    },
+    "RefreshLeaderboardTitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshLeaderboardTitles()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

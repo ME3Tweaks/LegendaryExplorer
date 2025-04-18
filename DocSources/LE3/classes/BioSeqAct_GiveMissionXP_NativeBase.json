@@ -1,0 +1,42 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "CombatToken": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RewardAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "ObjectiveStringRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bSkipNotifications": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCombatExperience": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,365 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "MyCoverEval": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "NearCoverDelayTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "FarCoverDelayTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AggressiveCoverDelayTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ActionDelayTime_Normal": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ActionDelayTime_Aggressive": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ActionDelayTime_FallBack": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AtCover_WeaponRange": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "AtCover_Defensive": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "AtCover_Aggressive": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "AtCover_NearMoveGoal": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "m_fLastCoverEnterTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFireWaitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlankReactionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastTimeDamageCoverDecaySet": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bInvalidatedCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsePeriodicCoverCheck": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyPlayerFocus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPlayerFocus()"
+    },
+    "NotifyCoverDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bAdjacentIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyCoverDisabled(CoverLink Link, int SlotIdx, optional bool bAdjacentIdx)"
+    },
+    "NotifyTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTakeHit(Controller instigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "PawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDied(Pawn inPawn)"
+    },
+    "AcquireCoverGoal": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvaluator": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalActor": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCoverGoal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AcquireCoverGoal(Goal_AtCover GoalEvaluator, Actor GoalActor, out CoverInfo NewCoverGoal)"
+    },
+    "ApplyCoverDecay": {
+      "documentation": null,
+      "signature_members": {
+        "DecayValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCoverDecay(float DecayValue)"
+    },
+    "ClaimCover": {
+      "documentation": null,
+      "signature_members": {
+        "NewCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClaimCover(CoverInfo NewCover)"
+    },
+    "FindNewCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FindNewCover()"
+    },
+    "GetActionDelayTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetActionDelayTime()"
+    },
+    "GetAttackOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "AttackOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAttackOrigin(Actor oTarget, out Vector AttackOrigin)"
+    },
+    "GetCoverDelayTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCoverDelayTime()"
+    },
+    "InitializeCoverConstraints": {
+      "documentation": null,
+      "signature_members": {
+        "Evaluator": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeCoverConstraints(Goal_AtCover Evaluator, Actor GoalActor)"
+    },
+    "IsMovingToCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMovingToCover()"
+    },
+    "MoveToCover": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvaluator": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bUsePeriodicCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowedToFire": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToCover(Goal_AtCover GoalEvaluator, Actor GoalActor, optional bool bUsePeriodicCheck, optional bool bAllowedToFire)"
+    },
+    "NotifyDeathBlow": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDeathBlow(Class<DamageType> DamageType)"
+    },
+    "NotifyKnockedOutOfCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyKnockedOutOfCover()"
+    },
+    "NotifyReachedCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyReachedCover()"
+    },
+    "NotifyStuck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyStuck()"
+    },
+    "NotifyUnsafeCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyUnsafeCover()"
+    },
+    "OnCoverUserEvade": {
+      "documentation": null,
+      "signature_members": {
+        "Seq": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCoverUserEvade(SFXSeqAct_CoverUserEvade Seq)"
+    },
+    "ReactToFlank": {
+      "documentation": null,
+      "signature_members": {
+        "FlankingPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReactToFlank(Pawn FlankingPawn)"
+    },
+    "ReactToNearbyEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "NearbyPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReactToNearbyEnemy(Pawn NearbyPawn)"
+    },
+    "SetCombatMood": {
+      "documentation": null,
+      "signature_members": {
+        "NewMood": {
+          "type": null,
+          "documentation": null
+        },
+        "fDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCombatMood(EAICombatMood NewMood, optional float fDuration)"
+    },
+    "ShouldFindBerserkCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFindBerserkCover()"
+    },
+    "ShouldPathTowardCombatZone": {
+      "documentation": null,
+      "signature_members": {
+        "Evaluator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldPathTowardCombatZone(Goal_AtCover Evaluator)"
+    },
+    "UnClaimCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnClaimCover()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

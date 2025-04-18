@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Time": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetStrength": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

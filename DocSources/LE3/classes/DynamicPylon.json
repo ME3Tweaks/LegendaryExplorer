@@ -1,0 +1,44 @@
+{
+  "parent": "Pylon",
+  "package": "Engine",
+  "variables": {
+    "bMoving": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FlushDynamicEdges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushDynamicEdges()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "RebuildDynamicEdges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RebuildDynamicEdges()"
+    },
+    "StartedMoving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartedMoving()"
+    },
+    "StoppedMoving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StoppedMoving()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

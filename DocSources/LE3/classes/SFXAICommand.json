@@ -1,0 +1,409 @@
+{
+  "parent": "GameAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "__UsePowerDelegate__Delegate": {
+      "type": "UsePowerDelegate",
+      "documentation": null
+    },
+    "__FireWeaponDelegate__Delegate": {
+      "type": "FireWeaponDelegate",
+      "documentation": null
+    },
+    "__MoveToDelegate__Delegate": {
+      "type": "MoveToDelegate",
+      "documentation": null
+    },
+    "SFXChildCommand": {
+      "type": "SFXAICommand",
+      "documentation": null
+    },
+    "bAbortIfChildFailed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "NotifyEnemyVisible": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeSinceSeen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEnemyVisible(int EnemyIdx, float TimeSinceSeen)"
+    },
+    "NotifyHitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyHitWall(Vector HitNormal, Actor Wall)"
+    },
+    "NotifyNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "NewEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNewEnemy(Pawn NewEnemy)"
+    },
+    "OnEnteredPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnEnteredPlaypen()"
+    },
+    "Paused": {
+      "documentation": null,
+      "signature_members": {
+        "NewCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Paused(GameAICommand NewCommand)"
+    },
+    "UpdateMovementActions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMovementActions()"
+    },
+    "NotifyTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTakeHit(Controller instigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "NotifyWeaponFinishedFiring": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFinishedFiring(Weapon W, byte FireMode)"
+    },
+    "CancelCommand": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelCommand(optional int nReason)"
+    },
+    "CanInterruptCurrentCommand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanInterruptCurrentCommand()"
+    },
+    "FireWeaponAtTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckLOS": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceShoot": {
+          "type": null,
+          "documentation": null
+        },
+        "fAttackDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "FireDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FireWeaponAtTarget(Actor oTarget, bool bCheckLOS, bool bForceShoot, float fAttackDuration, optional delegate<FireWeaponDelegate> FireDelegate)"
+    },
+    "FireWeaponDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FireWeaponDelegate(int nReason)"
+    },
+    "MoveToDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToDelegate(int nReason)"
+    },
+    "MoveToGoalExternal": {
+      "documentation": null,
+      "signature_members": {
+        "NewMoveGoal": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceWalk": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToGoalExternal(Actor NewMoveGoal, optional float NewMoveOffset, optional bool bForceWalk, optional delegate<MoveToDelegate> MoveDelegate)"
+    },
+    "NotifyArmourDestroyed": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourPiece": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyArmourDestroyed(Name ArmourPiece, Controller instigatedBy)"
+    },
+    "NotifyArmourHit": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "ArmourPiece": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyArmourHit(float Damage, Name ArmourPiece, Controller instigatedBy, Vector HitLocation, Vector Momentum, optional Class<DamageType> DamageType, optional Actor DamageCauser)"
+    },
+    "NotifyFriendDied": {
+      "documentation": null,
+      "signature_members": {
+        "FriendPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyFriendDied(BioPawn FriendPawn)"
+    },
+    "NotifyMoodChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyMoodChange()"
+    },
+    "NotifyNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNearMiss(Vector HitLocation)"
+    },
+    "NotifyPendingPowerImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Label": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeBeforeImpact": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Projectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPendingPowerImpact(Name Label, float TimeBeforeImpact, SFXPowerCustomAction Power, SFXProjectile_PowerCustomAction Projectile)"
+    },
+    "PeriodicMoveCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PeriodicMoveCheck()"
+    },
+    "Resumed": {
+      "documentation": null,
+      "signature_members": {
+        "OldCommandName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Resumed(Name OldCommandName)"
+    },
+    "ShouldRun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRun()"
+    },
+    "StartFollowingActor": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToFollow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartFollowingActor(Actor ActorToFollow)"
+    },
+    "UsePowerDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UsePowerDelegate(int nReason)"
+    },
+    "UsePowerOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerToUse": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreSuppression": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UsePowerOnTarget(Name nmPowerToUse, Actor oTarget, optional delegate<UsePowerDelegate> PowerDelegate, optional bool bIgnoreSuppression)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PowerClass": {
+      "type": null,
+      "documentation": null
+    },
+    "EvolvedPowerClass": {
+      "type": null,
+      "documentation": null
+    },
+    "Rank": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

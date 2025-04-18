@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "CategoryName": {
+      "type": null,
+      "documentation": null
+    },
+    "SliderName": {
+      "type": null,
+      "documentation": null
+    },
+    "Remappings": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

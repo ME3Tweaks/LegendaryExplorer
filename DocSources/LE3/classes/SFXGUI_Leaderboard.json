@@ -1,0 +1,350 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "LeaderboardGroups": {
+      "type": "LeaderboardMapGroup",
+      "documentation": null
+    },
+    "CachedRecords": {
+      "type": "LeaderboardRecord",
+      "documentation": null
+    },
+    "RequestedData": {
+      "type": "SFXLeaderboardRequestData",
+      "documentation": null
+    },
+    "CurrentData": {
+      "type": "SFXLeaderboardRequestData",
+      "documentation": null
+    },
+    "RecordsPerRequest": {
+      "type": "int",
+      "documentation": null
+    },
+    "RowsInTable": {
+      "type": "int",
+      "documentation": null
+    },
+    "SeamlessRankToMoveTo": {
+      "type": "int",
+      "documentation": null
+    },
+    "SeamlessRankToSelect": {
+      "type": "int",
+      "documentation": null
+    },
+    "StartTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddRecords": {
+      "documentation": null,
+      "signature_members": {
+        "NewRecords": {
+          "type": null,
+          "documentation": null
+        },
+        "NumRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "TopRank": {
+          "type": null,
+          "documentation": null
+        },
+        "RankToMoveTo": {
+          "type": null,
+          "documentation": null
+        },
+        "RankToSelect": {
+          "type": null,
+          "documentation": null
+        },
+        "bFriends": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRecords(array<LeaderboardRecord> NewRecords, int NumRanks, int TopRank, int RankToMoveTo, int RankToSelect, bool bFriends)"
+    },
+    "AS_AddRecords": {
+      "documentation": null,
+      "signature_members": {
+        "records": {
+          "type": null,
+          "documentation": null
+        },
+        "NumRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "TopRank": {
+          "type": null,
+          "documentation": null
+        },
+        "RankToMoveTo": {
+          "type": null,
+          "documentation": null
+        },
+        "RankToSelect": {
+          "type": null,
+          "documentation": null
+        },
+        "bFriends": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_AddRecords(const array<LeaderboardRecord> records, int NumRanks, int TopRank, int RankToMoveTo, int RankToSelect, bool bFriends)"
+    },
+    "AS_ClearHeader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_ClearHeader()"
+    },
+    "AS_ClearRows": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_ClearRows()"
+    },
+    "AS_DefineColumns": {
+      "documentation": null,
+      "signature_members": {
+        "columnDefinitions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_DefineColumns(const array<LeaderboardColumn> columnDefinitions)"
+    },
+    "AS_SetLeaderboardHeaderText": {
+      "documentation": null,
+      "signature_members": {
+        "sNewTitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetLeaderboardHeaderText(string sNewTitle)"
+    },
+    "CancelLeaderboardRequests": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelLeaderboardRequests()"
+    },
+    "ClearRecords": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearRecords()"
+    },
+    "Ext_LeaderboardInitalized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_LeaderboardInitalized()"
+    },
+    "Ext_NextPrimaryIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_NextPrimaryIndex()"
+    },
+    "Ext_NextSecondaryIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_NextSecondaryIndex()"
+    },
+    "Ext_PrevPrimaryIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_PrevPrimaryIndex()"
+    },
+    "Ext_PrevSecondaryIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_PrevSecondaryIndex()"
+    },
+    "Ext_ShowGamerCard": {
+      "documentation": null,
+      "signature_members": {
+        "RowNumber": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Ext_ShowGamerCard(int RowNumber)"
+    },
+    "OnCenteredLeaderboardResultsRetrieved": {
+      "documentation": null,
+      "signature_members": {
+        "aColumnInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "iTotalRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "uidEntity": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCenteredLeaderboardResultsRetrieved(array<LeaderboardColumn> aColumnInfo, array<LeaderboardRecord> aResults, int iTotalRanks, UniqueNetId uidEntity, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "OnLeaderboardResultsRetrieved": {
+      "documentation": null,
+      "signature_members": {
+        "aColumnInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "iTotalRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "uidEntity": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLeaderboardResultsRetrieved(array<LeaderboardColumn> aColumnInfo, array<LeaderboardRecord> aResults, int iTotalRanks, UniqueNetId uidEntity, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "PopulateLeaderboardCenteredData": {
+      "documentation": null,
+      "signature_members": {
+        "PrimaryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "SecondaryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nRange": {
+          "type": null,
+          "documentation": null
+        },
+        "iPlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateLeaderboardCenteredData(int PrimaryIndex, int SecondaryIndex, int nRange, UniqueNetId iPlayerID)"
+    },
+    "PopulateLeaderboardFromRank": {
+      "documentation": null,
+      "signature_members": {
+        "PrimaryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "SecondaryIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nRank": {
+          "type": null,
+          "documentation": null
+        },
+        "nRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateLeaderboardFromRank(int PrimaryIndex, int SecondaryIndex, int nRank, int nRange)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "ExitScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitScreen()"
+    },
+    "Ext_CancelLeaderboardRequests": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_CancelLeaderboardRequests()"
+    },
+    "Ext_GetLeaderboardDataCentredOnLocalPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ext_GetLeaderboardDataCentredOnLocalPlayer()"
+    },
+    "Ext_GetNewLeaderboardData": {
+      "documentation": null,
+      "signature_members": {
+        "Rank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Ext_GetNewLeaderboardData(int Rank)"
+    },
+    "GetLocalUsername": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLocalUsername()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

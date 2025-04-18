@@ -1,0 +1,116 @@
+{
+  "parent": "UIDataStore_Settings",
+  "package": "Engine",
+  "variables": {
+    "GameSettingsCfgList": {
+      "type": "GameSettingsCfg",
+      "documentation": null
+    },
+    "SettingsProviderClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "SelectedIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGame": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateGame(byte ControllerIndex)"
+    },
+    "GetCurrentGameSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineGameSettings",
+      "signature": "OnlineGameSettings GetCurrentGameSettings()"
+    },
+    "GetCurrentProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIDataProvider_Settings",
+      "signature": "UIDataProvider_Settings GetCurrentProvider()"
+    },
+    "MoveToNext": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveToNext()"
+    },
+    "MoveToPrevious": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveToPrevious()"
+    },
+    "OnSettingProviderChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "SettingsName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSettingProviderChanged(UIDataProvider SourceProvider, optional Name SettingsName)"
+    },
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "SetCurrentByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "NewIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentByIndex(int NewIndex)"
+    },
+    "SetCurrentByName": {
+      "documentation": null,
+      "signature_members": {
+        "SettingsName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentByName(Name SettingsName)"
+    },
+    "Unregistered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Unregistered(LocalPlayer PlayerOwner)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Data": {
+      "type": null,
+      "documentation": null
+    },
+    "ArrayNum": {
+      "type": null,
+      "documentation": null
+    },
+    "ArrayMax": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

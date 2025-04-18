@@ -1,0 +1,13 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

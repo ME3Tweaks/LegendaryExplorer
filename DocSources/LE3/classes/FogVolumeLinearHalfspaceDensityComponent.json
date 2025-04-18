@@ -1,0 +1,17 @@
+{
+  "parent": "FogVolumeDensityComponent",
+  "package": "Engine",
+  "variables": {
+    "HalfspacePlane": {
+      "type": "Plane",
+      "documentation": null
+    },
+    "PlaneDistanceFactor": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "SFXGame",
+  "variables": {
+    "SpawnLocationExtents": {
+      "type": "SFXObjectiveSpawnLocationSize",
+      "documentation": null
+    },
+    "LineColor": {
+      "type": "LinearColor",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

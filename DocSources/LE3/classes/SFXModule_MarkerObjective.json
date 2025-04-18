@@ -1,0 +1,13 @@
+{
+  "parent": "SFXModule_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "MarkerIconType": {
+      "type": "EObjectiveMarkerIconType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleLocationPrimitiveBase",
+  "package": "Engine",
+  "variables": {
+    "StartRadius": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

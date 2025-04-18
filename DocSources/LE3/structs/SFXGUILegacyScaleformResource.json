@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "MovieDef": {
+      "type": null,
+      "documentation": null
+    },
+    "MovieView": {
+      "type": null,
+      "documentation": null
+    },
+    "GFxMovie": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

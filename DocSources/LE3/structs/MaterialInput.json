@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Expression": {
+      "type": null,
+      "documentation": null
+    },
+    "Mask": {
+      "type": null,
+      "documentation": null
+    },
+    "MaskR": {
+      "type": null,
+      "documentation": null
+    },
+    "MaskG": {
+      "type": null,
+      "documentation": null
+    },
+    "MaskB": {
+      "type": null,
+      "documentation": null
+    },
+    "MaskA": {
+      "type": null,
+      "documentation": null
+    },
+    "GCC64_Padding": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

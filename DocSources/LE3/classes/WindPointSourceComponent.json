@@ -1,0 +1,17 @@
+{
+  "parent": "WindDirectionalSourceComponent",
+  "package": "Engine",
+  "variables": {
+    "PreviewRadiusComponent": {
+      "type": "DrawSphereComponent",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

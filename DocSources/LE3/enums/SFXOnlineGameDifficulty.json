@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXONLINE_DIFFICULTY_BRONZE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_DIFFICULTY_SILVER": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_DIFFICULTY_GOLD": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

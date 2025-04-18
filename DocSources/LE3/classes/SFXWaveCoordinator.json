@@ -1,0 +1,198 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "ActiveWaves": {
+      "type": "SFXWave",
+      "documentation": null
+    },
+    "PostLoadDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "WavesAreLoading": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDied(BioPawn Pawn, optional BioPawn Killer)"
+    },
+    "BeginWaveLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginWaveLoading()"
+    },
+    "EndWaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndWaves()"
+    },
+    "FinishActiveWaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishActiveWaves()"
+    },
+    "GetEnemyScoreBudget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetEnemyScoreBudget()"
+    },
+    "GetFriendlyCurrentWaveNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetFriendlyCurrentWaveNumber()"
+    },
+    "GetObjectiveCreditBudget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetObjectiveCreditBudget()"
+    },
+    "GetObjectiveScoreBudget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetObjectiveScoreBudget()"
+    },
+    "GetPercentOfWavesCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPercentOfWavesCompleted()"
+    },
+    "GetWaveOfType": {
+      "documentation": null,
+      "signature_members": {
+        "WaveClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWave",
+      "signature": "SFXWave GetWaveOfType(Name WaveClassName)"
+    },
+    "HandleHostMigration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleHostMigration()"
+    },
+    "OnAllWavesFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAllWavesFinished()"
+    },
+    "OnAllWavesFinishedLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAllWavesFinishedLoading()"
+    },
+    "OnWaveFinished": {
+      "documentation": null,
+      "signature_members": {
+        "Wave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWaveFinished(SFXWave Wave)"
+    },
+    "PawnDestroyed": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDestroyed(BioPawn Pawn)"
+    },
+    "PawnDowned": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDowned(BioPawn Pawn)"
+    },
+    "PawnRevived": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnRevived(BioPawn Pawn)"
+    },
+    "PawnSpawned": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnSpawned(BioPawn Pawn)"
+    },
+    "StartNewWave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartNewWave()"
+    },
+    "StartWaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartWaves()"
+    },
+    "SyncClientMatchTimer": {
+      "documentation": null,
+      "signature_members": {
+        "OperationTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SyncClientMatchTimer(float OperationTime)"
+    },
+    "UpdateWaveLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateWaveLoading()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

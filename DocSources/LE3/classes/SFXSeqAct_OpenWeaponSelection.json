@@ -1,0 +1,54 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGameContent",
+  "variables": {
+    "WeaponSelectionMovieInfo": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "MaxWeapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShowAllWeapons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFinished": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "OnMovieClosedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "i_ScreenToClose": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnMovieClosedDelegate(SFXGUIMovie i_ScreenToClose)"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aWeapons": {
+      "type": "SFXWeaponSelectWeaponData",
+      "documentation": null
+    },
+    "m_aMods": {
+      "type": "SFXWeaponModData",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

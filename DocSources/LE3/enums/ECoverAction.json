@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "CA_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "CA_BlindLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "CA_BlindRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "CA_LeanLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "CA_LeanRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "CA_PopUp": {
+      "value": 5,
+      "documentation": null
+    },
+    "CA_BlindUp": {
+      "value": 6,
+      "documentation": null
+    },
+    "CA_PeekLeft": {
+      "value": 7,
+      "documentation": null
+    },
+    "CA_PeekRight": {
+      "value": 8,
+      "documentation": null
+    },
+    "CA_PeekUp": {
+      "value": 9,
+      "documentation": null
+    },
+    "CA_SwatTurn": {
+      "value": 10,
+      "documentation": null
+    },
+    "CA_Aimback": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,92 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnReadStatsGroupListCompleted__Delegate": {
+      "type": "OnReadStatsGroupListCompleted",
+      "documentation": null
+    },
+    "__OnResultsRetrieved__Delegate": {
+      "type": "OnResultsRetrieved",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetFriendsStatsData": {
+      "documentation": null,
+      "signature_members": {
+        "oScope": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "funcResultsRetrieved": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetFriendsStatsData(out LeaderboardStatScope oScope, int nRankRange, delegate<OnResultsRetrieved> funcResultsRetrieved, optional Pointer pExternalData)"
+    },
+    "OnReadStatsGroupListCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadStatsGroupListCompleted(byte errorCode)"
+    },
+    "OnResultsRetrieved": {
+      "documentation": null,
+      "signature_members": {
+        "aColumnInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnResultsRetrieved(array<LeaderboardColumn> aColumnInfo, array<LeaderboardRecord> aResults, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "ReadStatsGroupList": {
+      "documentation": null,
+      "signature_members": {
+        "funcReadStatsGroupListCompleted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ReadStatsGroupList(delegate<OnReadStatsGroupListCompleted> funcReadStatsGroupListCompleted)"
+    },
+    "RequestReadStatsGroupList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestReadStatsGroupList()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,157 @@
+{
+  "parent": "SFXGUIMovieKismet",
+  "package": "SFXGame",
+  "variables": {
+    "ReplacementTextureSymbol": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "AddImageMessage": {
+      "documentation": null,
+      "signature_members": {
+        "aMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddImageMessage(SFXGUI_MainMenu_Message_Image aMessage)"
+    },
+    "AS_AddImageMessage": {
+      "documentation": null,
+      "signature_members": {
+        "strTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "strBody": {
+          "type": null,
+          "documentation": null
+        },
+        "nMessageId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue AS_AddImageMessage(string strTitle, string strBody, int nMessageId)"
+    },
+    "AS_DisplayPendingMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_DisplayPendingMessage()"
+    },
+    "AS_NextMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_NextMessage()"
+    },
+    "AS_PrevMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_PrevMessage()"
+    },
+    "AS_SetConnectButtonState": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetConnectButtonState(string sMessage, optional bool bVisible)"
+    },
+    "AS_SetNextButtonVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetNextButtonVisible(bool bVisible)"
+    },
+    "AS_SetPrevButtonVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetPrevButtonVisible(bool bVisible)"
+    },
+    "AS_SetRepeatingText": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetRepeatingText(string Value)"
+    },
+    "AS_SynchMessageArrays": {
+      "documentation": null,
+      "signature_members": {
+        "OrderedMessageIds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AS_SynchMessageArrays(array<int> OrderedMessageIds)"
+    },
+    "AS_UpdateImageMessage": {
+      "documentation": null,
+      "signature_members": {
+        "strTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "strBody": {
+          "type": null,
+          "documentation": null
+        },
+        "nMessageId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_UpdateImageMessage(string strTitle, string strBody, int nMessageId)"
+    },
+    "UpdateImageMessage": {
+      "documentation": null,
+      "signature_members": {
+        "aMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateImageMessage(SFXGUI_MainMenu_Message_Image aMessage)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

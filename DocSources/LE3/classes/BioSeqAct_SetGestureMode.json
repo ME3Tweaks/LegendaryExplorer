@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ActorTags": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_bForAmbientActing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GestureMode": {
+      "type": "EBioSetGestureModes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

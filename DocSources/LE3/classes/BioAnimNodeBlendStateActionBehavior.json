@@ -1,0 +1,17 @@
+{
+  "parent": "BioAnimNodeBlendStateBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_bPlayedRecoverAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ActionBehavior": {
+      "type": "EBioAnimNodeBlendStateActionBehavior",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BioCaps_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioCaps_Death": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

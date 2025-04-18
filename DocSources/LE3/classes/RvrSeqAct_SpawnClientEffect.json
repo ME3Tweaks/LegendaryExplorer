@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstEffects": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_vSpawnParameters": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

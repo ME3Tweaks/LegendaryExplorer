@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "bModify": {
+      "type": null,
+      "documentation": null
+    },
+    "bScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bLock": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

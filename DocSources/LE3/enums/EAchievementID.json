@@ -1,0 +1,205 @@
+{
+  "EnumValues": {
+    "ACHIEVEMENT_00_PROEAR": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACHIEVEMENT_01_PROMAR": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACHIEVEMENT_02_KROGAR": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACHIEVEMENT_03_KRO001": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACHIEVEMENT_04_KRO002": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACHIEVEMENT_05_KROGRU": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACHIEVEMENT_06_GTH001": {
+      "value": 6,
+      "documentation": null
+    },
+    "ACHIEVEMENT_07_GTH002": {
+      "value": 7,
+      "documentation": null
+    },
+    "ACHIEVEMENT_08_GTHLEG": {
+      "value": 8,
+      "documentation": null
+    },
+    "ACHIEVEMENT_09_CAT003": {
+      "value": 9,
+      "documentation": null
+    },
+    "ACHIEVEMENT_10_CAT002": {
+      "value": 10,
+      "documentation": null
+    },
+    "ACHIEVEMENT_11_CAT004": {
+      "value": 11,
+      "documentation": null
+    },
+    "ACHIEVEMENT_12_CERMIR": {
+      "value": 12,
+      "documentation": null
+    },
+    "ACHIEVEMENT_13_CITSAM": {
+      "value": 13,
+      "documentation": null
+    },
+    "ACHIEVEMENT_14_OMGJCK": {
+      "value": 14,
+      "documentation": null
+    },
+    "ACHIEVEMENT_15_CERJCB": {
+      "value": 15,
+      "documentation": null
+    },
+    "ACHIEVEMENT_16_END001": {
+      "value": 16,
+      "documentation": null
+    },
+    "ACHIEVEMENT_17_END002": {
+      "value": 17,
+      "documentation": null
+    },
+    "ACHIEVEMENT_18_STORE": {
+      "value": 18,
+      "documentation": null
+    },
+    "ACHIEVEMENT_19_ENDGAMEMAX": {
+      "value": 19,
+      "documentation": null
+    },
+    "ACHIEVEMENT_20_FINDSALVAGE": {
+      "value": 20,
+      "documentation": null
+    },
+    "ACHIEVEMENT_21_WEAPONMOD": {
+      "value": 21,
+      "documentation": null
+    },
+    "ACHIEVEMENT_22_POWERCOMBO": {
+      "value": 22,
+      "documentation": null
+    },
+    "ACHIEVEMENT_23_MAXPOWER": {
+      "value": 23,
+      "documentation": null
+    },
+    "ACHIEVEMENT_24_ESCAPEREAPER": {
+      "value": 24,
+      "documentation": null
+    },
+    "ACHIEVEMENT_25_OVERLOADSHIELDS": {
+      "value": 25,
+      "documentation": null
+    },
+    "ACHIEVEMENT_26_ENEMIESFLYING": {
+      "value": 26,
+      "documentation": null
+    },
+    "ACHIEVEMENT_27_ENEMIESONFIRE": {
+      "value": 27,
+      "documentation": null
+    },
+    "ACHIEVEMENT_28_BRUTECHARGE": {
+      "value": 28,
+      "documentation": null
+    },
+    "ACHIEVEMENT_29_GUARDIANMAILSLOT": {
+      "value": 29,
+      "documentation": null
+    },
+    "ACHIEVEMENT_30_HIJACKATLAS": {
+      "value": 30,
+      "documentation": null
+    },
+    "ACHIEVEMENT_31_HARVESTER": {
+      "value": 31,
+      "documentation": null
+    },
+    "ACHIEVEMENT_32_PREPARED": {
+      "value": 32,
+      "documentation": null
+    },
+    "ACHIEVEMENT_33_WEAPONMAXED": {
+      "value": 33,
+      "documentation": null
+    },
+    "ACHIEVEMENT_34_DLC_LEV3": {
+      "value": 34,
+      "documentation": null
+    },
+    "ACHIEVEMENT_35_DLC_OMEGA1": {
+      "value": 35,
+      "documentation": null
+    },
+    "ACHIEVEMENT_36_DLC_CIT4": {
+      "value": 36,
+      "documentation": null
+    },
+    "ACHIEVEMENT_37_DLC_CIT9": {
+      "value": 37,
+      "documentation": null
+    },
+    "ACHIEVEMENT_38_TRILOGY_INSANITYI": {
+      "value": 38,
+      "documentation": null
+    },
+    "ACHIEVEMENT_39_TRILOGY_INSANITYII": {
+      "value": 39,
+      "documentation": null
+    },
+    "ACHIEVEMENT_40_TRILOGY_INSANITYIII": {
+      "value": 40,
+      "documentation": null
+    },
+    "ACHIEVEMENT_41_TRILOGY_PARAMOURI": {
+      "value": 41,
+      "documentation": null
+    },
+    "ACHIEVEMENT_42_TRILOGY_PARAMOURII": {
+      "value": 42,
+      "documentation": null
+    },
+    "ACHIEVEMENT_43_TRILOGY_PARAMOURIII": {
+      "value": 43,
+      "documentation": null
+    },
+    "ACHIEVEMENT_44_TRILOGY_LONGSERVICE": {
+      "value": 44,
+      "documentation": null
+    },
+    "ACHIEVEMENT_45_TRILOGY_RECRUIT": {
+      "value": 45,
+      "documentation": null
+    },
+    "ACHIEVEMENT_46_TRILOGY_SOLDIER": {
+      "value": 46,
+      "documentation": null
+    },
+    "ACHIEVEMENT_47_TRILOGY_VETERAN": {
+      "value": 47,
+      "documentation": null
+    },
+    "ACHIEVEMENT_48_TRILOGY_BRUISER": {
+      "value": 48,
+      "documentation": null
+    },
+    "ACHIEVEMENT_NONE": {
+      "value": 49,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,222 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "GAWRatings": {
+      "type": "GAWZoneGUIData",
+      "documentation": null
+    },
+    "__OnFinished__Delegate": {
+      "type": "OnFinished",
+      "documentation": null
+    },
+    "__OnSwitchScreens__Delegate": {
+      "type": "OnSwitchScreens",
+      "documentation": null
+    },
+    "GAWAssetHandler": {
+      "type": "SFXGAWAssetsHandler",
+      "documentation": null
+    },
+    "srReadinessPercent": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srRatingsError": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srOK": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srGaWTutorialMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bGAWRatingsError": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnFinished()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AS_InitializeScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_InitializeScreen()"
+    },
+    "AS_ScrollDetails": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ScrollDetails(float fValue)"
+    },
+    "AS_SetLoadingClipVisbile": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetLoadingClipVisbile(bool bVisible)"
+    },
+    "AS_SetPercentagesVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisbile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetPercentagesVisible(bool bVisbile)"
+    },
+    "GetFormattedReadinessPercent": {
+      "documentation": null,
+      "signature_members": {
+        "nReadiness": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetFormattedReadinessPercent(int nReadiness)"
+    },
+    "GetGAWRatings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GAWZoneGUIData",
+      "signature": "array<GAWZoneGUIData> GetGAWRatings()"
+    },
+    "GetOverallReadiness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetOverallReadiness()"
+    },
+    "GoBack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GoBack()"
+    },
+    "GoToWarAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GoToWarAssets()"
+    },
+    "HasGAWRatingsError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasGAWRatingsError()"
+    },
+    "OnGAWRequestFinished": {
+      "documentation": null,
+      "signature_members": {
+        "ZoneData": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGAWRequestFinished(array<GAWZoneGUIData> ZoneData, int Level, int errorCode)"
+    },
+    "OnRatingsErrorFinished": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRatingsErrorFinished(bool bAPressed, int nContext)"
+    },
+    "OnSwitchScreens": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSwitchScreens()"
+    },
+    "ShowGAWRatingsRequestError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowGAWRatingsRequestError()"
+    },
+    "ShowTutorial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowTutorial()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

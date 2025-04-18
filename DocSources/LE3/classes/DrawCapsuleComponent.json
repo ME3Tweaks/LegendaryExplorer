@@ -1,0 +1,33 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "CapsuleColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "CapsuleMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "CapsuleHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "CapsuleRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDrawWireCapsule": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawLitCapsule": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

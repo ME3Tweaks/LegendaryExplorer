@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "SFXRomanced_NO_ONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXRomanced_Ashley": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXRomanced_Kaidan": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXRomanced_Liara": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXRomanced_Miranda": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXRomanced_Garrus": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXRomanced_Jacob": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXRomanced_Thane": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXRomanced_Jack": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXRomanced_Tali": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

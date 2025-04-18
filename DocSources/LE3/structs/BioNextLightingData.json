@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "tData": {
+      "type": null,
+      "documentation": null
+    },
+    "pActor": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseThis": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

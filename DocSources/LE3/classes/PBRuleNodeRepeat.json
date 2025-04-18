@@ -1,0 +1,17 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "RepeatMaxSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "RepeatAxis": {
+      "type": "EProcBuildingAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "DoCharactersExist": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoCharactersExist()"
+    },
+    "UpdateCharacterData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCharacterData()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

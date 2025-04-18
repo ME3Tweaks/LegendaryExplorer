@@ -1,0 +1,33 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "BorderWidth": {
+      "type": "int",
+      "documentation": null
+    },
+    "BorderColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "FillColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bFilled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

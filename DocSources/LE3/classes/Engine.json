@@ -1,0 +1,1214 @@
+{
+  "parent": "Subsystem",
+  "package": "Engine",
+  "variables": {
+    "TinyFontName": {
+      "type": "string",
+      "documentation": null
+    },
+    "SmallFontName": {
+      "type": "string",
+      "documentation": null
+    },
+    "MediumFontName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LargeFontName": {
+      "type": "string",
+      "documentation": null
+    },
+    "SubtitleFontName": {
+      "type": "string",
+      "documentation": null
+    },
+    "AdditionalFonts": {
+      "type": "Font",
+      "documentation": null
+    },
+    "AdditionalFontNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "ConsoleClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "GameViewportClientClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DataStoreClientClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LocalPlayerClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultDecalMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultTextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "WireframeMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "EmissiveTexturedMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "GeomMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultFogVolumeMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "TickMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CrossMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VisColorationMaterialInChunkName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VisColorationMaterialLoadChunkName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VisColorationMaterialVisibleChunkName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VisColorationMaterialMasterMapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VisColorationMaterialUnloadedName": {
+      "type": "string",
+      "documentation": null
+    },
+    "BioColorChunkMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "BioTranslucentVolumeMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LevelColorationLitMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LevelColorationUnlitMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LightingTexelDensityName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ShadedLevelColorationLitMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ShadedLevelColorationUnlitMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "RemoveSurfaceMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VertexColorMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterialName_ColorOnly": {
+      "type": "string",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterialName_AlphaAsColor": {
+      "type": "string",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterialName_RedOnly": {
+      "type": "string",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterialName_GreenOnly": {
+      "type": "string",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterialName_BlueOnly": {
+      "type": "string",
+      "documentation": null
+    },
+    "HeatmapMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "BoneWeightMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "TangentColorMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ProcBuildingSimpleMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "BuildingQuadStaticMeshName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LightComplexityColors": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ShaderComplexityColors": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "StatColorMappings": {
+      "type": "StatColorMapping",
+      "documentation": null
+    },
+    "EditorBrushMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultPhysMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "TerrainErrorMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultOnlineSubsystemName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultPostProcessName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ThumbnailSkeletalMeshPostProcessName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ThumbnailParticleSystemPostProcessName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ThumbnailMaterialPostProcessName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultUIScenePostProcessName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultUICaretMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "SceneCaptureReflectActorMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "SceneCaptureCubeActorMaterialName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ScreenDoorNoiseTextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "RandomAngleTextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "RandomNormalTextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "RandomNormalTextureName2": {
+      "type": "string",
+      "documentation": null
+    },
+    "WeightMapPlaceholderTextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LightMapDensityTextureName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LightMapDensityNormalName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultSoundName": {
+      "type": "string",
+      "documentation": null
+    },
+    "GamePlayers": {
+      "type": "LocalPlayer",
+      "documentation": null
+    },
+    "DeferredCommands": {
+      "type": "string",
+      "documentation": null
+    },
+    "NextFrameDeferredCommands": {
+      "type": "string",
+      "documentation": null
+    },
+    "ScoutClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_BioLayerDetails": {
+      "type": "BioLayerDetails",
+      "documentation": null
+    },
+    "TransitionDescription": {
+      "type": "string",
+      "documentation": null
+    },
+    "TransitionGameType": {
+      "type": "string",
+      "documentation": null
+    },
+    "PendingDroppedNotes": {
+      "type": "DropNoteInfo",
+      "documentation": null
+    },
+    "DynamicCoverMeshComponentName": {
+      "type": "string",
+      "documentation": null
+    },
+    "IgnoreSimulatedFuncWarnings": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ConsoleClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "GameViewportClientClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DataStoreClientClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LocalPlayerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "OnlineSubsystemClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "RemoteControlExec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "MobileMaterialEmulator": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LightingOnlyBrightness": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "LightMapDensityVertexMappedColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "LightMapDensitySelectedColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "DefaultSelectedMaterialColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "SelectedMaterialColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "UnselectedMaterialColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "TinyFont": {
+      "type": "Font",
+      "documentation": null
+    },
+    "SmallFont": {
+      "type": "Font",
+      "documentation": null
+    },
+    "MediumFont": {
+      "type": "Font",
+      "documentation": null
+    },
+    "LargeFont": {
+      "type": "Font",
+      "documentation": null
+    },
+    "SubtitleFont": {
+      "type": "Font",
+      "documentation": null
+    },
+    "DefaultMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "DefaultDecalMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "DefaultTexture": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "WireframeMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "EmissiveTexturedMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "GeomMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "DefaultFogVolumeMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "TickMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "CrossMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VisColorationMaterialInChunk": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VisColorationMaterialLoadChunk": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VisColorationMaterialVisibleChunk": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VisColorationMaterialMasterMap": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VisColorationMaterialUnloaded": {
+      "type": "Material",
+      "documentation": null
+    },
+    "BioColorChunkMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "BioTranslucentVolumeMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "LevelColorationLitMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "LevelColorationUnlitMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "LightingTexelDensityMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "ShadedLevelColorationLitMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "ShadedLevelColorationUnlitMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "RemoveSurfaceMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VertexColorMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterial_ColorOnly": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterial_AlphaAsColor": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterial_RedOnly": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterial_GreenOnly": {
+      "type": "Material",
+      "documentation": null
+    },
+    "VertexColorViewModeMaterial_BlueOnly": {
+      "type": "Material",
+      "documentation": null
+    },
+    "HeatmapMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "BoneWeightMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "TangentColorMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "ProcBuildingSimpleMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "BuildingQuadStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "EditorBrushMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "DefaultPhysMaterial": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "TerrainErrorMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "DefaultPostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "ThumbnailSkeletalMeshPostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "ThumbnailParticleSystemPostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "ThumbnailMaterialPostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "DefaultUIScenePostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "DefaultUICaretMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "SceneCaptureReflectActorMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "SceneCaptureCubeActorMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "ScreenDoorNoiseTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "RandomAngleTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "RandomNormalTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "RandomNormalTexture2": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "WeightMapPlaceholderTexture": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "LightMapDensityTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "LightMapDensityNormal": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "DefaultSound": {
+      "type": "SoundNodeWave",
+      "documentation": null
+    },
+    "Client": {
+      "type": "Client",
+      "documentation": null
+    },
+    "GameViewport": {
+      "type": "GameViewportClient",
+      "documentation": null
+    },
+    "DebugManager": {
+      "type": "DebugManager",
+      "documentation": null
+    },
+    "m_pUnitTestFramework": {
+      "type": "BioTestFramework",
+      "documentation": null
+    },
+    "PostDepthOnHair": {
+      "type": "int",
+      "documentation": null
+    },
+    "EnableHairVelocityPass": {
+      "type": "int",
+      "documentation": null
+    },
+    "ProcBuildingLODColorTexelsPerWorldUnit": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProcBuildingLODLightingTexelsPerWorldUnit": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxProcBuildingLODColorTextureSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxProcBuildingLODLightingTextureSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxRMSDForCombiningMappings": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxPixelShaderAdditiveComplexityCount": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinTextureDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdealTextureDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTextureDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "TexelDensityViewFlags": {
+      "type": "int",
+      "documentation": null
+    },
+    "MinLightMapDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdealLightMapDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxLightMapDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "RenderLightMapDensityGrayscaleScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "RenderLightMapDensityColorScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "TerrainMaterialMaxTextureCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "TerrainTessellationCheckCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "TerrainTessellationCheckDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeBetweenPurgingPendingKillObjects": {
+      "type": "float",
+      "documentation": null
+    },
+    "TickCycles": {
+      "type": "int",
+      "documentation": null
+    },
+    "GameCycles": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClientCycles": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxVarianceShadowAttenuation": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSmoothedFrameRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinSmoothedFrameRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "C_WorldBox": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_BrushWire": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_AddWire": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_SubtractWire": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_SemiSolidWire": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_NonSolidWire": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_WireBackground": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_ScaleBoxHi": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_VolumeCollision": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_BSPCollision": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_OrthoBackground": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_Volume": {
+      "type": "Color",
+      "documentation": null
+    },
+    "C_BrushShape": {
+      "type": "Color",
+      "documentation": null
+    },
+    "StreamingDistanceFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "MeshLODRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraRotationThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraTranslationThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PrimitiveProbablyVisibleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PercentUnoccludedRequeries": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxOcclusionPixelsFraction": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFluidNumVerts": {
+      "type": "int",
+      "documentation": null
+    },
+    "FluidSimulationTimeLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxParticleResize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxParticleResizeWarn": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxParticleVertexMemory": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxParticleSpriteCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxParticleSubUVCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "BeginUPTryCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "NetClientTicksPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTrackedOcclusionIncrement": {
+      "type": "float",
+      "documentation": null
+    },
+    "TrackedOcclusionStepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableTranslucentHairPass": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UseProcBuildingLODTextureCropping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ForcePowerOfTwoProcBuildingLODTextures": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCombineSimilarMappings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderLightMapDensityGrayscale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSound": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKeyLightShadowsOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseTextureStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseBackgroundLevelStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSubtitlesEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSubtitlesForcedOff": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSmoothFrameRate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HACK_UseTickFrequency": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldGenerateSimpleLightmaps": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceStaticTerrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DisplayLazyLoadErrors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSaveInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceCPUSkinning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsePostProcessEffects": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnScreenKismetWarnings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableKismetLogging": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowMatureLanguage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderTerrainCollisionAsOverlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisablePhysXHardwareSupport": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPauseOnLossOfFocus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckParticleRenderSize": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableColorClear": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAreConstraintsDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasPendingGlobalReattach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseMobileEmulation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableOnScreenDebugMessages": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableOnScreenDebugMessagesDisplay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressMapWarnings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCookSeparateSharedMPGameContent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BioUnTexCompressSetting": {
+      "type": "EBioUnTexCompressSetting",
+      "documentation": null
+    },
+    "TransitionType": {
+      "type": "ETransitionType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddOverlay": {
+      "documentation": null,
+      "signature_members": {
+        "Font": {
+          "type": null,
+          "documentation": null
+        },
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "ScaleX": {
+          "type": null,
+          "documentation": null
+        },
+        "ScaleY": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsCentered": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOverlay(Font Font, string Text, float X, float Y, float ScaleX, float ScaleY, bool bIsCentered)"
+    },
+    "AddOverlayWrapped": {
+      "documentation": null,
+      "signature_members": {
+        "Font": {
+          "type": null,
+          "documentation": null
+        },
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "ScaleX": {
+          "type": null,
+          "documentation": null
+        },
+        "ScaleY": {
+          "type": null,
+          "documentation": null
+        },
+        "WrapWidth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOverlayWrapped(Font Font, string Text, float X, float Y, float ScaleX, float ScaleY, float WrapWidth)"
+    },
+    "BioShowDebugMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioShowDebugMessageBox(string sMessage)"
+    },
+    "FlushAsyncLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushAsyncLoading()"
+    },
+    "GetAdditionalFont": {
+      "documentation": null,
+      "signature_members": {
+        "AdditionalFontIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Font",
+      "signature": "Font GetAdditionalFont(int AdditionalFontIndex)"
+    },
+    "GetAudioDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AudioDevice",
+      "signature": "AudioDevice GetAudioDevice()"
+    },
+    "GetBuildDate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetBuildDate()"
+    },
+    "GetCurrentWorldInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WorldInfo",
+      "signature": "WorldInfo GetCurrentWorldInfo()"
+    },
+    "GetEngine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Engine",
+      "signature": "Engine GetEngine()"
+    },
+    "GetLargeFont": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Font",
+      "signature": "Font GetLargeFont()"
+    },
+    "GetLastMovieName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLastMovieName()"
+    },
+    "GetMediumFont": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Font",
+      "signature": "Font GetMediumFont()"
+    },
+    "GetMemoryStatus": {
+      "documentation": null,
+      "signature_members": {
+        "allocated": {
+          "type": null,
+          "documentation": null
+        },
+        "available": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetMemoryStatus(out int allocated, out int available)"
+    },
+    "GetSmallFont": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Font",
+      "signature": "Font GetSmallFont()"
+    },
+    "GetSubtitleFont": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Font",
+      "signature": "Font GetSubtitleFont()"
+    },
+    "GetTinyFont": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Font",
+      "signature": "Font GetTinyFont()"
+    },
+    "IsEditor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEditor()"
+    },
+    "IsGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsGame()"
+    },
+    "IsShip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsShip()"
+    },
+    "IsSplitScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSplitScreen()"
+    },
+    "PlayLoadMapMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PlayLoadMapMovie()"
+    },
+    "RemoveAllOverlays": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllOverlays()"
+    },
+    "StopMovie": {
+      "documentation": null,
+      "signature_members": {
+        "bDelayStopUntilGameHasRendered": {
+          "type": null,
+          "documentation": null
+        },
+        "bSFXForceStop": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopMovie(bool bDelayStopUntilGameHasRendered, optional bool bSFXForceStop)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_sSliderName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

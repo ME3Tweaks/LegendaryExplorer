@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialInterface",
+  "package": "Engine",
+  "variables": {
+    "DefaultMaterialInstances": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_lstParents": {
+      "type": "RvrMultiplexorEntry",
+      "documentation": null
+    },
+    "m_nmParentNameParameter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pDefaultMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "ReentrantFlag": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "LargeImage": {
+      "type": null,
+      "documentation": null
+    },
+    "SmallImage": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemDesc": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotUnlockID": {
+      "type": null,
+      "documentation": null
+    },
+    "AButtonText": {
+      "type": null,
+      "documentation": null
+    },
+    "BButtonText": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

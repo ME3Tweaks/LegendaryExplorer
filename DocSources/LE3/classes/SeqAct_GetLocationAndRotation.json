@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RotationVector": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SocketOrBoneName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

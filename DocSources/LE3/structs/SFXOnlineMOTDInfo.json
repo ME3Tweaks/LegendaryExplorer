@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Message": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "TrackingID": {
+      "type": null,
+      "documentation": null
+    },
+    "Priority": {
+      "type": null,
+      "documentation": null
+    },
+    "BWEntId": {
+      "type": null,
+      "documentation": null
+    },
+    "offerId": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

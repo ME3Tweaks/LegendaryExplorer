@@ -1,0 +1,156 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MapAssetData": {
+      "type": "SFXMapAssetData",
+      "documentation": null
+    },
+    "CharacterMapData": {
+      "type": "SFXCharacterMapData",
+      "documentation": null
+    },
+    "MapLocationData": {
+      "type": "SFXMapLocationData",
+      "documentation": null
+    },
+    "__SortLocationMapData__Delegate": {
+      "type": "SortLocationMapData",
+      "documentation": null
+    },
+    "RefPoint1_Image_Px": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RefPoint1_Unreal_UU": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RefPoint2_Image_Px": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RefPoint2_Unreal_UU": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "UUCoorAtPxOrigin": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OverrideGroupID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PxPerUU": {
+      "type": "float",
+      "documentation": null
+    },
+    "Floor": {
+      "type": "SFXAreaMapLayout",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAssetPaths": {
+      "documentation": null,
+      "signature_members": {
+        "TargetFloor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXMapAssetData",
+      "signature": "array<SFXMapAssetData> GetAssetPaths(SFXAreaMapLayout TargetFloor)"
+    },
+    "GetCharacterData": {
+      "documentation": null,
+      "signature_members": {
+        "TargetFloor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCharacterMapData",
+      "signature": "array<SFXCharacterMapData> GetCharacterData(SFXAreaMapLayout TargetFloor)"
+    },
+    "GetLocationData": {
+      "documentation": null,
+      "signature_members": {
+        "TargetFloor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXMapLocationData",
+      "signature": "array<SFXMapLocationData> GetLocationData(SFXAreaMapLayout TargetFloor)"
+    },
+    "GetPixelCoordinates": {
+      "documentation": null,
+      "signature_members": {
+        "UU_X": {
+          "type": null,
+          "documentation": null
+        },
+        "UU_Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Px": {
+          "type": null,
+          "documentation": null
+        },
+        "Py": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPixelCoordinates(float UU_X, float UU_Y, out float Px, out float Py)"
+    },
+    "GetPxPerUU": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPxPerUU()"
+    },
+    "GetUUCordAtPxOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "UU_X": {
+          "type": null,
+          "documentation": null
+        },
+        "UU_Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUUCordAtPxOrigin(out float UU_X, out float UU_Y)"
+    },
+    "ReCalculate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReCalculate()"
+    },
+    "SortLocationMapData": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int SortLocationMapData(SFXMapLocationData A, SFXMapLocationData B)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

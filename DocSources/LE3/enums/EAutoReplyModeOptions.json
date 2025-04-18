@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ARMO_All_Decisions": {
+      "value": 0,
+      "documentation": null
+    },
+    "ARMO_Major_Decisions": {
+      "value": 1,
+      "documentation": null
+    },
+    "ARMO_No_Decisions": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

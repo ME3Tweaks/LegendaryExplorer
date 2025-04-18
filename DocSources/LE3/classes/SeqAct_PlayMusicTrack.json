@@ -1,0 +1,13 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "MusicTrack": {
+      "type": "MusicTrackStruct",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

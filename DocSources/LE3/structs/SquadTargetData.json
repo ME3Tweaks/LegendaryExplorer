@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "vLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "oTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "nActionIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "nSquadIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeOut": {
+      "type": null,
+      "documentation": null
+    },
+    "bHidden": {
+      "type": null,
+      "documentation": null
+    },
+    "bActive": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

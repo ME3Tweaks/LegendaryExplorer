@@ -1,0 +1,197 @@
+{
+  "parent": "OnlineGameSettings",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "invitedUserId": {
+      "type": "UniqueNetId",
+      "documentation": null
+    },
+    "MasterMapList": {
+      "type": "MPMapInfo",
+      "documentation": null
+    },
+    "AvailableMaps": {
+      "type": "string",
+      "documentation": null
+    },
+    "PrivacyTypes": {
+      "type": "MPPrivacyInfo",
+      "documentation": null
+    },
+    "EnemyTypes": {
+      "type": "MPEnemyInfo",
+      "documentation": null
+    },
+    "ChallengeTypes": {
+      "type": "MPChallengeInfo",
+      "documentation": null
+    },
+    "AnyMapImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "AnyEnemyImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "AnyChallengeImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "mME3MapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "srAnyMap": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAnyEnemy": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAnyChallenge": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "EnemyType": {
+      "type": "int",
+      "documentation": null
+    },
+    "mMapIsRequired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mCreateNewMatch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mFromGalaxyMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Difficulty": {
+      "type": "SFXOnlineGameDifficulty",
+      "documentation": null
+    },
+    "mPrivacySetting": {
+      "type": "EMatchPrivacySetting",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Copy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineGameSettings",
+      "signature": "SFXOnlineGameSettings Copy()"
+    },
+    "GetMapByServerMapID": {
+      "documentation": null,
+      "signature_members": {
+        "serverMapID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MPMapInfo",
+      "signature": "MPMapInfo GetMapByServerMapID(string serverMapID)"
+    },
+    "GetMasterMapID": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetMasterMapID(string PackageName)"
+    },
+    "GetPrivacy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EMatchPrivacySetting",
+      "signature": "EMatchPrivacySetting GetPrivacy()"
+    },
+    "SetPrivacy": {
+      "documentation": null,
+      "signature_members": {
+        "privacy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPrivacy(EMatchPrivacySetting privacy)"
+    },
+    "ValidateMapName": {
+      "documentation": null,
+      "signature_members": {
+        "MapName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidateMapName(string MapName)"
+    },
+    "EnsureMatchSettingsAreValid": {
+      "documentation": null,
+      "signature_members": {
+        "eType": {
+          "type": null,
+          "documentation": null
+        },
+        "PrivacySetting": {
+          "type": null,
+          "documentation": null
+        },
+        "MapSetting": {
+          "type": null,
+          "documentation": null
+        },
+        "EnemySetting": {
+          "type": null,
+          "documentation": null
+        },
+        "ChallengeSetting": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnsureMatchSettingsAreValid(EPersonalMatchSettingsType eType, out int PrivacySetting, out int MapSetting, out int EnemySetting, out int ChallengeSetting)"
+    },
+    "GetMapByID": {
+      "documentation": null,
+      "signature_members": {
+        "MapId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MPMapInfo",
+      "signature": "MPMapInfo GetMapByID(int MapId)"
+    },
+    "GetMapByPackageName": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MPMapInfo",
+      "signature": "MPMapInfo GetMapByPackageName(string PackageName)"
+    },
+    "ToString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string ToString()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

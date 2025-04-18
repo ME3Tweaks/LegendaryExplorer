@@ -1,0 +1,13 @@
+{
+  "parent": "NxTornadoForceField",
+  "package": "Engine",
+  "variables": {
+    "RenderComponent": {
+      "type": "DrawCapsuleComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

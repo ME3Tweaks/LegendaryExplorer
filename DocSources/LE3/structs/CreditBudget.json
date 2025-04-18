@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Player": {
+      "type": null,
+      "documentation": null
+    },
+    "CreditsRewarded": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

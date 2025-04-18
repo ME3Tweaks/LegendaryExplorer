@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "HordeWaveType": {
+      "type": null,
+      "documentation": null
+    },
+    "Trigger": {
+      "type": null,
+      "documentation": null
+    },
+    "WaveNumber": {
+      "type": null,
+      "documentation": null
+    },
+    "HordeWaveIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "OperationWaveIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "SupplyDropWaveIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "WavesAreLoading": {
+      "type": null,
+      "documentation": null
+    },
+    "WaveEvent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

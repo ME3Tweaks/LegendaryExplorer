@@ -1,0 +1,47 @@
+{
+  "parent": "SFXCustomAction_ReachSpecMove",
+  "package": "SFXGame",
+  "variables": {
+    "LadderAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "fClimbDownSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "PreAlignPawnLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreAlignPawnLocation()"
+    },
+    "SetMoveStage": {
+      "documentation": null,
+      "signature_members": {
+        "NextStage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveStage(EMoveStage NextStage)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

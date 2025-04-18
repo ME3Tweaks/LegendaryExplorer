@@ -1,0 +1,87 @@
+{
+  "parent": "SFXModule",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "SFXTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXTakeDamage(float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, Controller instigatedBy, optional Actor DamageCauser)"
+    },
+    "SFXTakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "HurtOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXTakeRadiusDamage(float Damage, float DamageRadius, bool bFullDamage, Vector HurtOrigin, float Momentum, Class<DamageType> DamageType, Controller instigatedBy, Actor DamageCauser, optional TraceHitInfo HitInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

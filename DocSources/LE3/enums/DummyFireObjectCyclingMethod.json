@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "DFOCM_Sequential": {
+      "value": 0,
+      "documentation": null
+    },
+    "DFOCM_Random": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

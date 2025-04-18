@@ -1,0 +1,15 @@
+{
+  "parent": "BioSFHandler_Achievement",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

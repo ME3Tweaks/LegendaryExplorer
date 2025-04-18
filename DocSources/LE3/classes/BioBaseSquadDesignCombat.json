@@ -1,0 +1,24 @@
+{
+  "parent": "BioBaseSquadDesign",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AddMember": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckPlaypens": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddMember(Pawn Pawn, optional bool bCheckPlaypens)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

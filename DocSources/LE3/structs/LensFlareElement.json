@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "LFMaterialIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Scaling": {
+      "type": null,
+      "documentation": null
+    },
+    "AxisScaling": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "Color": {
+      "type": null,
+      "documentation": null
+    },
+    "Alpha": {
+      "type": null,
+      "documentation": null
+    },
+    "Offset": {
+      "type": null,
+      "documentation": null
+    },
+    "DistMap_Scale": {
+      "type": null,
+      "documentation": null
+    },
+    "DistMap_Color": {
+      "type": null,
+      "documentation": null
+    },
+    "DistMap_Alpha": {
+      "type": null,
+      "documentation": null
+    },
+    "LFMaterials": {
+      "type": null,
+      "documentation": null
+    },
+    "Size": {
+      "type": null,
+      "documentation": null
+    },
+    "ElementName": {
+      "type": null,
+      "documentation": null
+    },
+    "RayDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseSourceDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bNormalizeRadialDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bModulateColorBySource": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

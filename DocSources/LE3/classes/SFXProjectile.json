@@ -1,0 +1,495 @@
+{
+  "parent": "Projectile",
+  "package": "SFXGame",
+  "variables": {
+    "ReplicatedInitInfo": {
+      "type": "ReplicatedInit",
+      "documentation": null
+    },
+    "ReplicatedExplosionInfo": {
+      "type": "ReplicatedExplosion",
+      "documentation": null
+    },
+    "ProjectileOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Mesh": {
+      "type": "MeshComponent",
+      "documentation": null
+    },
+    "ProjEffectsTrail": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ProjEffectsHead": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ProjEffectsTrailTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ProjEffectsHeadTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "CE_ProjectileTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "BounceSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "TargetProjectile": {
+      "type": "SFXProjectile",
+      "documentation": null
+    },
+    "ProjEffectsTrailWaitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LatestExplodeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplodeTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoefficientOfRestitution": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoefficientOfFriction": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplodeSpeedThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PredictionInitialSpeedGain": {
+      "type": "float",
+      "documentation": null
+    },
+    "PredictionMaxSpeedGain": {
+      "type": "float",
+      "documentation": null
+    },
+    "PredictionSpeedInterpolationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "PredictionAccelerationRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "NetInitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InitEventEndReplicationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionEventEndReplicationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSuppressAudio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShuttingDown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEffectLightActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bArcing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBouncing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopAiming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientPredictProjectile": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientPredictionActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientPredictionTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGotAPredictionTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreMultiplayerWaveEndCleanup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPooled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LastReplicatedInitInfoTrigger": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        },
+        "WallComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "Direction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector Direction)"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Reuse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reuse()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "SpawnImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactEffect(Vector HitLocation, Vector HitNormal)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "GetDamageRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamageRadius()"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor Other, Vector HitLocation, Vector HitNormal)"
+    },
+    "ApplyExternalForce": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyExternalForce()"
+    },
+    "Bounce": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Bounce(Actor HitActor, Vector HitLocation, Vector HitNormal)"
+    },
+    "GetDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamage()"
+    },
+    "GetMomentum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMomentum()"
+    },
+    "IsShuttingDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsShuttingDown()"
+    },
+    "IsTargettedProjectile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTargettedProjectile()"
+    },
+    "ProjEffectsTrailFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProjEffectsTrailFinished(ParticleSystemComponent PSC)"
+    },
+    "ReplicatedExplosionUpdated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicatedExplosionUpdated()"
+    },
+    "ReplicatedInitUpdated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicatedInitUpdated()"
+    },
+    "ReplicateExplode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateExplode(Vector HitLocation, Vector HitNormal)"
+    },
+    "ReplicateInit": {
+      "documentation": null,
+      "signature_members": {
+        "Direction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateInit(Vector Direction)"
+    },
+    "SetPredictedInitialSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPredictedInitialSpeed()"
+    },
+    "SetPrediction": {
+      "documentation": null,
+      "signature_members": {
+        "Active": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsATarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPrediction(bool Active, bool bIsATarget)"
+    },
+    "SetPredictionTarget": {
+      "documentation": null,
+      "signature_members": {
+        "NewTargetProjectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPredictionTarget(SFXProjectile NewTargetProjectile)"
+    },
+    "SetProjectileHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bHide": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetProjectileHidden(bool bHide)"
+    },
+    "ShutdownPostEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutdownPostEffects()"
+    },
+    "SpawnFlightEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnFlightEffects()"
+    },
+    "Tick_Prediction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick_Prediction(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

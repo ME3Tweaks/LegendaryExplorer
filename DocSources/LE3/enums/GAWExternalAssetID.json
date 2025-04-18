@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GAWExternalAssetID_Multiplayer": {
+      "value": 0,
+      "documentation": null
+    },
+    "GAWExternalAssetID_Iphone": {
+      "value": 1,
+      "documentation": null
+    },
+    "GAWExternalAssetID_FaceBook": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

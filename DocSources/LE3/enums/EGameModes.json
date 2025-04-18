@@ -1,0 +1,105 @@
+{
+  "EnumValues": {
+    "GameMode_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "GameMode_Vehicle": {
+      "value": 1,
+      "documentation": null
+    },
+    "GameMode_Atlas": {
+      "value": 2,
+      "documentation": null
+    },
+    "GameMode_PowerWheel": {
+      "value": 3,
+      "documentation": null
+    },
+    "GameMode_WeaponWheel": {
+      "value": 4,
+      "documentation": null
+    },
+    "GameMode_Command": {
+      "value": 5,
+      "documentation": null
+    },
+    "GameMode_InjuredShepard": {
+      "value": 6,
+      "documentation": null
+    },
+    "GameMode_Conversation": {
+      "value": 7,
+      "documentation": null
+    },
+    "GameMode_Cinematic": {
+      "value": 8,
+      "documentation": null
+    },
+    "GameMode_GUI": {
+      "value": 9,
+      "documentation": null
+    },
+    "GameMode_Movie": {
+      "value": 10,
+      "documentation": null
+    },
+    "GameMode_Galaxy": {
+      "value": 11,
+      "documentation": null
+    },
+    "GameMode_Orbital": {
+      "value": 12,
+      "documentation": null
+    },
+    "GameMode_MultiLand": {
+      "value": 13,
+      "documentation": null
+    },
+    "GameMode_Photo": {
+      "value": 14,
+      "documentation": null
+    },
+    "GameMode_CheatMenu": {
+      "value": 15,
+      "documentation": null
+    },
+    "GameMode_AIDebug": {
+      "value": 16,
+      "documentation": null
+    },
+    "GameMode_Prototyping": {
+      "value": 17,
+      "documentation": null
+    },
+    "GameMode_DreamSequence": {
+      "value": 18,
+      "documentation": null
+    },
+    "GameMode_IllusiveManConflict": {
+      "value": 19,
+      "documentation": null
+    },
+    "GameMode_Spectator": {
+      "value": 20,
+      "documentation": null
+    },
+    "GameMode_Dying": {
+      "value": 21,
+      "documentation": null
+    },
+    "GameMode_FlyCam": {
+      "value": 22,
+      "documentation": null
+    },
+    "GameMode_ReplicationDebug": {
+      "value": 23,
+      "documentation": null
+    },
+    "GameMode_Lobby": {
+      "value": 24,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

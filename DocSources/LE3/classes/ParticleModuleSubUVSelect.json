@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleSubUVBase",
+  "package": "Engine",
+  "variables": {
+    "SubImageSelectRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "GalaxyMapState_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "GalaxyMapState_Galaxy": {
+      "value": 1,
+      "documentation": null
+    },
+    "GalaxyMapState_Cluster": {
+      "value": 2,
+      "documentation": null
+    },
+    "GalaxyMapState_System": {
+      "value": 3,
+      "documentation": null
+    },
+    "GalaxyMapState_Planet": {
+      "value": 4,
+      "documentation": null
+    },
+    "GalaxyMapState_PlanetScan": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

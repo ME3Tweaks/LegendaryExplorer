@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "KeyScope": {
+      "type": null,
+      "documentation": null
+    },
+    "StartKeyScopeValue": {
+      "type": null,
+      "documentation": null
+    },
+    "EndKeyScopeValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

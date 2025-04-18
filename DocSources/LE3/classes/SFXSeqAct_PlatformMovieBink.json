@@ -1,0 +1,13 @@
+{
+  "parent": "BioSeqAct_MovieBink",
+  "package": "SFXGame",
+  "variables": {
+    "Platforms": {
+      "type": "EMoviePlatform",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

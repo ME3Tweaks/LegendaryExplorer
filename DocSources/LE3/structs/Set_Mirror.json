@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Elements": {
+      "type": null,
+      "documentation": null
+    },
+    "InlineHash": {
+      "type": null,
+      "documentation": null
+    },
+    "Hash": {
+      "type": null,
+      "documentation": null
+    },
+    "HashSize": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

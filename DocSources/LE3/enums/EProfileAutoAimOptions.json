@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PAAO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PAAO_On": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

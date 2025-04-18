@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleOrientationBase",
+  "package": "Engine",
+  "variables": {
+    "LockAxisFlags": {
+      "type": "EParticleAxisLock",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,84 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PartyMembersList": {
+      "type": "OnlinePartyMember",
+      "documentation": null
+    },
+    "NatTypes": {
+      "type": "string",
+      "documentation": null
+    },
+    "NickNameCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "NatTypeCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsLocalCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsInPartyVoiceCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsTalkingCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsInGameSessionCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsPlayingThisGameCol": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "RefreshMembersList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshMembersList()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

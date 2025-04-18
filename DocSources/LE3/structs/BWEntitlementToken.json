@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "sKey": {
+      "type": null,
+      "documentation": null
+    },
+    "sName": {
+      "type": null,
+      "documentation": null
+    },
+    "sValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

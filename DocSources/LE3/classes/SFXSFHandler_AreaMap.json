@@ -1,0 +1,238 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_PostProcessEffect": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "LocationIcons": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_bFromBrowserWheel": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "bFromBrowserWheel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(bool bFromBrowserWheel)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ShowHint": {
+      "documentation": null,
+      "signature_members": {
+        "HintName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowHint(Name HintName)"
+    },
+    "AddDOFEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddDOFEffect()"
+    },
+    "ASOnBeginClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASOnBeginClose()"
+    },
+    "ASOnStartScrollLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASOnStartScrollLeft()"
+    },
+    "ASOnStartScrollRight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASOnStartScrollRight()"
+    },
+    "ASScrollDrawer": {
+      "documentation": null,
+      "signature_members": {
+        "nScroll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASScrollDrawer(float nScroll)"
+    },
+    "ASSetMapData": {
+      "documentation": null,
+      "signature_members": {
+        "NewMapAssetList": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMapLayoutList": {
+          "type": null,
+          "documentation": null
+        },
+        "NewDrawerTextList": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMapIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetMapData(array<string> NewMapAssetList, array<string> NewMapLayoutList, array<string> NewDrawerTextList, int NewMapIndex)"
+    },
+    "ASSetPlayerLocRot": {
+      "documentation": null,
+      "signature_members": {
+        "nPxX": {
+          "type": null,
+          "documentation": null
+        },
+        "nPxY": {
+          "type": null,
+          "documentation": null
+        },
+        "nRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetPlayerLocRot(float nPxX, float nPxY, float nRotation)"
+    },
+    "ASSetTriggerDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "bShowingBumpers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTriggerDisplay(bool bShowingBumpers)"
+    },
+    "CloseMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseMap()"
+    },
+    "GetDrawerText": {
+      "documentation": null,
+      "signature_members": {
+        "oMapData": {
+          "type": null,
+          "documentation": null
+        },
+        "Floor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDrawerText(SFXAreaMapData oMapData, SFXAreaMapLayout Floor)"
+    },
+    "OnBeginClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnBeginClose()"
+    },
+    "PauseMenuAdditionalProcessing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseMenuAdditionalProcessing()"
+    },
+    "ProcessPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "oMapData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessPlayer(SFXAreaMapData oMapData)"
+    },
+    "RemoveDOFEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveDOFEffect()"
+    },
+    "ScrollLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScrollLeft()"
+    },
+    "ScrollRight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScrollRight()"
+    },
+    "SetMap": {
+      "documentation": null,
+      "signature_members": {
+        "oMapData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMap(SFXAreaMapData oMapData)"
+    },
+    "ShowAreaMapCharactersHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowAreaMapCharactersHint()"
+    },
+    "ShowAreaMapHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowAreaMapHint()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

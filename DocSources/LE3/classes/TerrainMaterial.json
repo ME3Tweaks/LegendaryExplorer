@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LocalToMapping": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "FoliageMeshes": {
+      "type": "TerrainFoliageMesh",
+      "documentation": null
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "DisplacementMap": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "MappingScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MappingRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "MappingPanU": {
+      "type": "float",
+      "documentation": null
+    },
+    "MappingPanV": {
+      "type": "float",
+      "documentation": null
+    },
+    "DisplacementScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MappingType": {
+      "type": "ETerrainMappingType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

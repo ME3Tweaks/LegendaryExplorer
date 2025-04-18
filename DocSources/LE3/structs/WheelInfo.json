@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "LocationOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "RotationOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "LastFramePosition": {
+      "type": null,
+      "documentation": null
+    },
+    "TravelRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "Wheel": {
+      "type": null,
+      "documentation": null
+    },
+    "GroundLevelIndicator": {
+      "type": null,
+      "documentation": null
+    },
+    "Radius": {
+      "type": null,
+      "documentation": null
+    },
+    "bRightWheel": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanTurn": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

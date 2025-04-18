@@ -1,0 +1,21 @@
+{
+  "parent": "SeqAct_LevelStreamingBase",
+  "package": "Engine",
+  "variables": {
+    "Levels": {
+      "type": "LevelStreamingNameCombo",
+      "documentation": null
+    },
+    "bUnloadAllOtherLevels": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

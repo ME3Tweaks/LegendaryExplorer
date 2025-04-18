@@ -1,0 +1,30 @@
+{
+  "parent": "SFXSimpleUseModule",
+  "package": "SFXGame",
+  "variables": {
+    "AimNodes": {
+      "type": "Name",
+      "documentation": null
+    },
+    "AimAssistRegions": {
+      "type": "AimAssistBox",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "IsDefaultActionPossible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDefaultActionPossible()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

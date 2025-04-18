@@ -1,0 +1,135 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mModuleCount": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_mModuleMax": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_mHighestPriorityHiddenModules": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_mLowestPriorityActiveModules": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_mEffects": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_nTotalEffectCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nMaxTotalEffects": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CountModule": {
+      "documentation": null,
+      "signature_members": {
+        "pModule": {
+          "type": null,
+          "documentation": null
+        },
+        "bInc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CountModule(RvrClientEffectModuleInstance pModule, bool bInc)"
+    },
+    "FlushAllPools": {
+      "documentation": null,
+      "signature_members": {
+        "bPreserveRunningEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FlushAllPools(bool bPreserveRunningEffects)"
+    },
+    "Prime": {
+      "documentation": null,
+      "signature_members": {
+        "pTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "nMin": {
+          "type": null,
+          "documentation": null
+        },
+        "nMax": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Prime(RvrClientEffectInterface pTemplate, int nMin, int nMax)"
+    },
+    "RecomputePriorities": {
+      "documentation": null,
+      "signature_members": {
+        "pClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecomputePriorities(Class<Object> pClass)"
+    },
+    "ResetAllPools": {
+      "documentation": null,
+      "signature_members": {
+        "bSpawnableOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetAllPools(optional bool bSpawnableOnly)"
+    },
+    "ShouldReactivate": {
+      "documentation": null,
+      "signature_members": {
+        "pModule": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldReactivate(RvrClientEffectModuleInstance pModule)"
+    },
+    "UpdatePriorities": {
+      "documentation": null,
+      "signature_members": {
+        "pModule": {
+          "type": null,
+          "documentation": null
+        },
+        "bActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePriorities(RvrClientEffectModuleInstance pModule, bool bActivate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

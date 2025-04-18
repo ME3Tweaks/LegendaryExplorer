@@ -1,0 +1,84 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAttackDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTotalTimeRunning": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nReason": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCheckLOS": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceShoot": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CancelFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelFire()"
+    },
+    "FireWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FireWeapon(Actor pTarget)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "FireWeaponCallback": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FireWeaponCallback(int nReason)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

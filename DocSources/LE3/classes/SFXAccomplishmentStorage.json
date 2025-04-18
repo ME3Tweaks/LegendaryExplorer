@@ -1,0 +1,310 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ServerCompletionString": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerProgressString": {
+      "type": "string",
+      "documentation": null
+    },
+    "ProgressValues": {
+      "type": "int",
+      "documentation": null
+    },
+    "ServerRewardLevelString": {
+      "type": "string",
+      "documentation": null
+    },
+    "RewardLevelValues": {
+      "type": "int",
+      "documentation": null
+    },
+    "ServerCompletionTimesString": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerCompletionTimes2String": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerCompletionTimes3String": {
+      "type": "string",
+      "documentation": null
+    },
+    "CachedOnlinePlayerStorage": {
+      "type": "SFXOnlinePlayerStorage",
+      "documentation": null
+    },
+    "CurrentChallengePoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "ChallengeSystemVersionNumber": {
+      "type": "int",
+      "documentation": null
+    },
+    "IsInvalid": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "MinProgressValuesLength": {
+          "type": null,
+          "documentation": null
+        },
+        "MinRewardValuesLength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(int MinProgressValuesLength, int MinRewardValuesLength)"
+    },
+    "StringArrayToIntArray": {
+      "documentation": null,
+      "signature_members": {
+        "Strings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "array<int> StringArrayToIntArray(const out array<string> Strings)"
+    },
+    "Write": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Write(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "AcknowledgeWriteComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AcknowledgeWriteComplete(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "GetCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentIsComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCompletion(const out array<int> AccomplishmentIsComplete)"
+    },
+    "GetCompletionTimes": {
+      "documentation": null,
+      "signature_members": {
+        "CompletionStrings": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentCompletionTimes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCompletionTimes(out array<string> CompletionStrings, const out array<int> AccomplishmentCompletionTimes)"
+    },
+    "GetCurrentReward": {
+      "documentation": null,
+      "signature_members": {
+        "nRewardID": {
+          "type": null,
+          "documentation": null
+        },
+        "nRewardLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCurrentReward(out int nRewardID, out int nRewardLevel)"
+    },
+    "GetProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetProgress()"
+    },
+    "GetRewardLevel": {
+      "documentation": null,
+      "signature_members": {
+        "RewardID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRewardLevel(int RewardID)"
+    },
+    "GetRewardLevels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetRewardLevels()"
+    },
+    "LoadCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadCompleted()"
+    },
+    "ReadFromProfileSettings": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentManager": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentProfileSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadFromProfileSettings(SFXAccomplishmentManager AccomplishmentManager, SFXProfileSettings CurrentProfileSettings)"
+    },
+    "ReadFromStorage": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadFromStorage(SFXAccomplishmentManager AccomplishmentManager)"
+    },
+    "SaveCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveCompleted()"
+    },
+    "SetCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentData": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentIsComplete": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCompletion(out array<Accomplishment> AccomplishmentData, out array<int> AccomplishmentIsComplete)"
+    },
+    "SetCompletionTimes": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentCompletionTimes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCompletionTimes(out array<int> AccomplishmentCompletionTimes)"
+    },
+    "SetCurrentReward": {
+      "documentation": null,
+      "signature_members": {
+        "nRewardID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentReward(int nRewardID)"
+    },
+    "SetProgress": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetProgress(const out array<AccomplishmentProgress> AccomplishmentProgressData)"
+    },
+    "SetRewardLevels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SetRewardLevels()"
+    },
+    "UnlockRewardLevel": {
+      "documentation": null,
+      "signature_members": {
+        "RewardID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockRewardLevel(int RewardID)"
+    },
+    "UpdateFromAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "bChallengeSystemEnabled": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentIsComplete": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentProgressData": {
+          "type": null,
+          "documentation": null
+        },
+        "AccomplishmentCompletionTimes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFromAccomplishments(bool bChallengeSystemEnabled, const out array<int> AccomplishmentIsComplete, const out array<AccomplishmentProgress> AccomplishmentProgressData, const out array<int> AccomplishmentCompletionTimes)"
+    },
+    "UpdateServerValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateServerValue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

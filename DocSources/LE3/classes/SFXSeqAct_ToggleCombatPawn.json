@@ -1,0 +1,64 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "frame": {
+      "type": "QWord",
+      "documentation": null
+    },
+    "ForcedCasualAppearanceID": {
+      "type": "int",
+      "documentation": null
+    },
+    "State": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseCasualAppearance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCreateAndShowWeapons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowLoadingIcon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFastSwitch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNewCombatPawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInjuredPawn": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GatherPawnParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GatherPawnParameters()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "TogglePawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TogglePawn()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

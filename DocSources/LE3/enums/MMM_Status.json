@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "MMM_DataUnloaded": {
+      "value": 0,
+      "documentation": null
+    },
+    "MMM_DataLoading": {
+      "value": 1,
+      "documentation": null
+    },
+    "MMM_DataLoadFailed": {
+      "value": 2,
+      "documentation": null
+    },
+    "MMM_DataLoadSuccess": {
+      "value": 3,
+      "documentation": null
+    },
+    "MMM_DataLoadProcessed": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

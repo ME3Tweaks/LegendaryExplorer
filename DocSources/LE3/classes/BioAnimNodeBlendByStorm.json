@@ -1,0 +1,21 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "MovementSync": {
+      "type": "BioAnimMovementSync",
+      "documentation": null
+    },
+    "Idle2StormBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Storm2IdleBlendDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

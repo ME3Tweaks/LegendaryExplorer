@@ -1,0 +1,42 @@
+{
+  "parent": "Keypoint",
+  "package": "WwiseAudio",
+  "variables": {
+    "AudioEvent": {
+      "type": "WwiseEventPair",
+      "documentation": null
+    },
+    "AudioComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DrawEmitter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawEmitter()"
+    },
+    "HideEmitter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideEmitter()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SourceName": {
+      "type": null,
+      "documentation": null
+    },
+    "param1": {
+      "type": null,
+      "documentation": null
+    },
+    "param2": {
+      "type": null,
+      "documentation": null
+    },
+    "param3": {
+      "type": null,
+      "documentation": null
+    },
+    "messageId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

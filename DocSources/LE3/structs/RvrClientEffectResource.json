@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Effect": {
+      "type": null,
+      "documentation": null
+    },
+    "Priority": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

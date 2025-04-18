@@ -1,0 +1,90 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "EventList": {
+      "type": "SFXOnlineEvent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddEvent(SFXOnlineEvent oEvent)"
+    },
+    "FindEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindEvent(SFXOnlineEvent oEvent)"
+    },
+    "GetAllPendingEvents": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": null,
+          "documentation": null
+        },
+        "PendingEvents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAllPendingEvents(SFXOnlineEventType eEventType, out array<SFXOnlineEvent> PendingEvents)"
+    },
+    "GetEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetEvent(SFXOnlineEvent oEvent)"
+    },
+    "GetEventAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nEventIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetEventAtIndex(int nEventIndex)"
+    },
+    "GetNextTimedOutEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetNextTimedOutEvent()"
+    },
+    "RemoveEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveEvent(SFXOnlineEvent oEvent)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

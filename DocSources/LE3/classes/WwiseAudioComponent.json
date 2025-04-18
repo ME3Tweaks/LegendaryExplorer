@@ -1,0 +1,502 @@
+{
+  "parent": "ActorComponent",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_fLastObstructionUpdate": {
+      "type": "Double",
+      "documentation": null
+    },
+    "Callbacks": {
+      "type": "WwiseComponentCallbackInfo",
+      "documentation": null
+    },
+    "m_pNotifyCriticalSection": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WwiseEvents": {
+      "type": "Object",
+      "documentation": null
+    },
+    "location": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Orientation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ComponentLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ComponentOrientation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CachedLastPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CachedLastOrientation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_OwnerSkelMeshComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "m_ComponentGroup": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nAttachBoneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Cleaned": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fDistanceToListener": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxAudible3DSoundDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nMaxAudible3DSoundEventPlayingID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOf3DSoundsPlaying": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOfSoundsUseAttenuation": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOfSoundsWithUserDefinedPositioning": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOfEventsUsingOrientationRTPC": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOfEventsUsingDistanceRTPC": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fDotToListener": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTargetOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTargetObstruction": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentObstruction": {
+      "type": "float",
+      "documentation": null
+    },
+    "ObstructionUpdateSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseOwnerLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableEnvAudio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableObstructionOcclusion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsRegistered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_b3D": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateComponentFromScript": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        },
+        "Label": {
+          "type": null,
+          "documentation": null
+        },
+        "ComponentGroup": {
+          "type": null,
+          "documentation": null
+        },
+        "AttachBone": {
+          "type": null,
+          "documentation": null
+        },
+        "bRegister": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseAudioComponent",
+      "signature": "WwiseAudioComponent CreateComponentFromScript(Actor pActor, optional string Label, optional Name ComponentGroup, optional Name AttachBone, optional bool bRegister)"
+    },
+    "FindPlayingID": {
+      "documentation": null,
+      "signature_members": {
+        "BaseSound": {
+          "type": null,
+          "documentation": null
+        },
+        "StopEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindPlayingID(WwiseBaseSoundObject BaseSound, optional WwiseEvent StopEvent)"
+    },
+    "GetDistanceToListener": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDistanceToListener()"
+    },
+    "GetEnvironmentalAudioEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetEnvironmentalAudioEnabled()"
+    },
+    "GetMicPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetMicPosition()"
+    },
+    "GetObstructionOcclusionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetObstructionOcclusionEnabled()"
+    },
+    "IsEventPlaying": {
+      "documentation": null,
+      "signature_members": {
+        "WwisePlayingID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEventPlaying(int WwisePlayingID)"
+    },
+    "IsPlaying": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlaying(optional WwiseBaseSoundObject Event)"
+    },
+    "KillSound": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KillSound(WwiseEvent Event)"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {
+        "Base": {
+          "type": null,
+          "documentation": null
+        },
+        "bTrackPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Play(WwiseBaseSoundObject Base, optional bool bTrackPosition)"
+    },
+    "PlayWwiseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "AudioEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "bTrackPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayWwiseEvent(WwiseEventPair AudioEvent, optional bool bTrackPosition)"
+    },
+    "PostGlobalEvent": {
+      "documentation": null,
+      "signature_members": {
+        "GlobalEventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PostGlobalEvent(Name GlobalEventName)"
+    },
+    "RegisterGameObject": {
+      "documentation": null,
+      "signature_members": {
+        "GameObjectName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterGameObject(optional string GameObjectName)"
+    },
+    "Set2D": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Set2D()"
+    },
+    "Set3D": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Set3D()"
+    },
+    "SetDrawMic": {
+      "documentation": null,
+      "signature_members": {
+        "bDraw": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDrawMic(bool bDraw)"
+    },
+    "SetEnvironmentalAudioEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "i_bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnvironmentalAudioEnabled(bool i_bValue)"
+    },
+    "SetGlobalRTPCFromScript": {
+      "documentation": null,
+      "signature_members": {
+        "in_pszRtpcName": {
+          "type": null,
+          "documentation": null
+        },
+        "in_value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetGlobalRTPCFromScript(string in_pszRtpcName, float in_value)"
+    },
+    "SetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLocation(Vector NewLocation)"
+    },
+    "SetObstructionOcclusionEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "i_bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObstructionOcclusionEnabled(bool i_bValue)"
+    },
+    "SetRTPCWithHandler": {
+      "documentation": null,
+      "signature_members": {
+        "RTPCHandler": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRTPCWithHandler(out WwiseRTPCForActorHandler RTPCHandler, float fValue)"
+    },
+    "SetWwiseRTPC": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWwiseRTPC(string sName, float fValue)"
+    },
+    "SetWwiseRTPCs": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWwiseRTPCs(array<string> sName, array<float> fValue)"
+    },
+    "SetWwiseSwitch": {
+      "documentation": null,
+      "signature_members": {
+        "sGroup": {
+          "type": null,
+          "documentation": null
+        },
+        "sState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWwiseSwitch(string sGroup, string sState)"
+    },
+    "SetWwiseTrigger": {
+      "documentation": null,
+      "signature_members": {
+        "sTrigger": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWwiseTrigger(string sTrigger)"
+    },
+    "SoundPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Base": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float SoundPosition(WwiseBaseSoundObject Base)"
+    },
+    "SoundPositionByID": {
+      "documentation": null,
+      "signature_members": {
+        "WwisePlayingID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float SoundPositionByID(int WwisePlayingID)"
+    },
+    "StaticPostGlobalEventFromScript": {
+      "documentation": null,
+      "signature_members": {
+        "GlobalEventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StaticPostGlobalEventFromScript(Name GlobalEventName)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {
+        "Base": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Stop(WwiseBaseSoundObject Base)"
+    },
+    "StopAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StopAll()"
+    },
+    "StopWwiseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "AudioEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopWwiseEvent(WwiseEventPair AudioEvent)"
+    },
+    "UnregisterGameObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnregisterGameObject()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

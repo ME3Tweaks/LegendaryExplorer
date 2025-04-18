@@ -1,0 +1,109 @@
+{
+  "Members": {
+    "Types": {
+      "type": null,
+      "documentation": null
+    },
+    "WatchList": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnPoints": {
+      "type": null,
+      "documentation": null
+    },
+    "VarLinkDescs": {
+      "type": null,
+      "documentation": null
+    },
+    "AutoDebugText": {
+      "type": null,
+      "documentation": null
+    },
+    "ObscuredSpawnProjectileClass": {
+      "type": null,
+      "documentation": null
+    },
+    "ObscuredSpawnOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "Squad": {
+      "type": null,
+      "documentation": null
+    },
+    "ActorTag": {
+      "type": null,
+      "documentation": null
+    },
+    "ClusterVisibilityDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentCluster": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnTotal": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxAlive": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnedCount": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnPointIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxSpawnDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "MinSpawnDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "TeamIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoAcquireEnemy": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoNotifyEnemy": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableFriendlyNotifications": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableAI": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanDropAmmo": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableShadowCasting": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

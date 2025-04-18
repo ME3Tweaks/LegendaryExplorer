@@ -1,0 +1,25 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "PredefinedWaveForm": {
+      "type": "Class",
+      "documentation": null
+    },
+    "WaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "EffectRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCheckForBasedPlayer": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "SkelControlLookAt",
+  "package": "SFXGame",
+  "variables": {
+    "MaxAngleUpDown": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSeparateUpDownLimit": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

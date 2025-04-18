@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "PlayAudioComp": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

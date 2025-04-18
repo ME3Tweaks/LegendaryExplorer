@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Asset": {
+      "type": null,
+      "documentation": null
+    },
+    "GroupID": {
+      "type": null,
+      "documentation": null
+    },
+    "Floor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

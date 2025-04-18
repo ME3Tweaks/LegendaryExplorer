@@ -1,0 +1,78 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MaterialOverrides": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "MeshRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "MeshRotationSpeed": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "MeshResource": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "SkeletalMeshResource": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "MeshScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAccumulatedRotationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoAppearance": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "pGalaxy": {
+          "type": null,
+          "documentation": null
+        },
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(BioCameraBehaviorGalaxy pGalaxy, float fDeltaT)"
+    },
+    "OnObjectSpawned": {
+      "documentation": null,
+      "signature_members": {
+        "oObjectActor": {
+          "type": null,
+          "documentation": null
+        },
+        "pGalaxy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnObjectSpawned(Actor oObjectActor, BioCameraBehaviorGalaxy pGalaxy)"
+    },
+    "RequiresActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequiresActor()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

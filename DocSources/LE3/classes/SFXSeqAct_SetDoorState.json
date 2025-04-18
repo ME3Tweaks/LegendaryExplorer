@@ -1,0 +1,68 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_Door": {
+      "type": "SFXDoor",
+      "documentation": null
+    },
+    "ActivatedStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWaitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bInstantTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceFireSuccess": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "SetDoorState": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnableDoor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDoorState(ESFXDoorState ToState, bool bEnableDoor)"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,57 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "Mesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "Pitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "Roll": {
+      "type": "float",
+      "documentation": null
+    },
+    "Yaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "CastShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DoCollisions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowMotionBlur": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideMaterial": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCameraFacing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MeshAlignment": {
+      "type": "EMeshScreenAlignment",
+      "documentation": null
+    },
+    "AxisLockOption": {
+      "type": "EParticleAxisLock",
+      "documentation": null
+    },
+    "CameraFacingOption": {
+      "type": "EMeshCameraFacingOptions",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

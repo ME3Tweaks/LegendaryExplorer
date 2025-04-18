@@ -1,0 +1,74 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "lstTimers": {
+      "type": "BioTimer",
+      "documentation": null
+    },
+    "__BioTimerDelegate__Delegate": {
+      "type": "BioTimerDelegate",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaT)"
+    },
+    "AddTimer": {
+      "documentation": null,
+      "signature_members": {
+        "TimerDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "Params": {
+          "type": null,
+          "documentation": null
+        },
+        "fTime": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sTimerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTimer(delegate<BioTimerDelegate> TimerDelegate, Object Params, float fTime, optional string i_sTimerName)"
+    },
+    "BioTimerDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioTimerDelegate(Object Params)"
+    },
+    "KillTimer": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTimerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KillTimer(string i_sTimerName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

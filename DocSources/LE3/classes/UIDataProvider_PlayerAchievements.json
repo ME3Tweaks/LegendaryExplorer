@@ -1,0 +1,122 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Achievements": {
+      "type": "AchievementDetails",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaxTotalGamerScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxTotalGamerScore()"
+    },
+    "GetTotalGamerScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTotalGamerScore()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "GetAchievementDetails": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "OutAchievementDetails": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAchievementDetails(const int AchievementId, out AchievementDetails OutAchievementDetails)"
+    },
+    "GetAchievementIconPathName": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        },
+        "bReturnLockedIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAchievementIconPathName(int AchievementId, optional bool bReturnLockedIcon)"
+    },
+    "OnPlayerAchievementsChanged": {
+      "documentation": null,
+      "signature_members": {
+        "TitleId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPlayerAchievementsChanged(int TitleId)"
+    },
+    "OnPlayerAchievementUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPlayerAchievementUnlocked(bool bWasSuccessful)"
+    },
+    "PopulateAchievementIcons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateAchievementIcons()"
+    },
+    "UpdateAchievements": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAchievements()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

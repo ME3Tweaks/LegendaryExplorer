@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "OwningPylon": {
+      "type": null,
+      "documentation": null
+    },
+    "PolyId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

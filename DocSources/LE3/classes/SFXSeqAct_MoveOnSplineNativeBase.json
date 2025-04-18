@@ -1,0 +1,29 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "m_bSFXCreatedBeforeStuntActorLocationChange": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MoveActor": {
+      "documentation": null,
+      "signature_members": {
+        "Actor": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveActor(Actor Actor, Vector NewLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CET_ShutOffAll": {
+      "value": 0,
+      "documentation": null
+    },
+    "CET_StopCharge": {
+      "value": 1,
+      "documentation": null
+    },
+    "CET_StartCharge": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

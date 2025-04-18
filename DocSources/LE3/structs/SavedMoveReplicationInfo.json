@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ForcedLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "PC": {
+      "type": null,
+      "documentation": null
+    },
+    "ReplicatedMoves": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceNewLocation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

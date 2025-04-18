@@ -1,0 +1,215 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "lstPages": {
+      "type": "BWPageStruct",
+      "documentation": null
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_Helper": {
+      "type": "SFXPowerLevelUpHelper",
+      "documentation": null
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "srExitConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMainMenuConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancel": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_SetArrowPosition": {
+      "documentation": null,
+      "signature_members": {
+        "nDegrees": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetArrowPosition(int nDegrees)"
+    },
+    "DetermineJournalCodexUpdateStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineJournalCodexUpdateStatus()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "ShowSelectedPanel": {
+      "documentation": null,
+      "signature_members": {
+        "nPanel": {
+          "type": null,
+          "documentation": null
+        },
+        "oManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSelectedPanel(int nPanel, optional SFXGUIInteraction oManager)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "AS_SetButtonAdvanceSwap": {
+      "documentation": null,
+      "signature_members": {
+        "bMenuAdvanceSwapped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetButtonAdvanceSwap(bool bMenuAdvanceSwapped)"
+    },
+    "AS_SetResourceCounts": {
+      "documentation": null,
+      "signature_members": {
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        },
+        "nMedigel": {
+          "type": null,
+          "documentation": null
+        },
+        "nGrenades": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetResourceCounts(int nCredits, int nMedigel, int nGrenades)"
+    },
+    "CloseBrowser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseBrowser()"
+    },
+    "DetermineSquadUpdateStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineSquadUpdateStatus()"
+    },
+    "ExitGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitGame()"
+    },
+    "InitializeBrowser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeBrowser()"
+    },
+    "MainMenuConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MainMenuConfirm(bool bAPressed, int nContext)"
+    },
+    "PhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PhotoMode()"
+    },
+    "RedirectTag": {
+      "documentation": null,
+      "signature_members": {
+        "fnTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name RedirectTag(Name fnTag)"
+    },
+    "SelectSegment": {
+      "documentation": null,
+      "signature_members": {
+        "nSegment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectSegment(int nSegment)"
+    },
+    "SetResourceValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetResourceValues()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

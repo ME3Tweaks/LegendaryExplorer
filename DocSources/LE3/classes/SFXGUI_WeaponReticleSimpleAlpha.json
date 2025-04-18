@@ -1,0 +1,25 @@
+{
+  "parent": "SFXGUI_WeaponReticleSimple",
+  "package": "SFXGame",
+  "variables": {
+    "ReticleOpacity": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ResetReticle": {
+      "documentation": null,
+      "signature_members": {
+        "bUnsubscribe": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetReticle(optional bool bUnsubscribe)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

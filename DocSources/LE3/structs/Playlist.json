@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "ConfiguredGames": {
+      "type": null,
+      "documentation": null
+    },
+    "LocalizationString": {
+      "type": null,
+      "documentation": null
+    },
+    "ContentIds": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "PlaylistId": {
+      "type": null,
+      "documentation": null
+    },
+    "TeamSize": {
+      "type": null,
+      "documentation": null
+    },
+    "TeamCount": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsArbitrated": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableDedicatedServerSearches": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

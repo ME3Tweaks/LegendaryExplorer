@@ -1,0 +1,77 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Variations": {
+      "type": "PBVariationInfo",
+      "documentation": null
+    },
+    "DefaultRoofMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "DefaultFloorMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "DefaultNonRectWallMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LODCubemap": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "InteriorTexture": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "RootRule": {
+      "type": "PBRuleNodeBase",
+      "documentation": null
+    },
+    "RoofZOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "NotRoofZOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "FloorZOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "NotFloorZOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "RoofPolyInset": {
+      "type": "float",
+      "documentation": null
+    },
+    "FloorPolyInset": {
+      "type": "float",
+      "documentation": null
+    },
+    "BuildingLODSpecular": {
+      "type": "float",
+      "documentation": null
+    },
+    "RoofEdgeScopeRaise": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEnableInteriorTexture": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLODOnlyRoof": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

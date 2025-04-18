@@ -1,0 +1,33 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "SphereColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "SphereMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "SphereRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereSides": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDrawWireSphere": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawLitSphere": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

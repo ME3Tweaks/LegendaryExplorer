@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "AimInput_Pawn": {
+      "value": 0,
+      "documentation": null
+    },
+    "AimInput_Vehicle": {
+      "value": 1,
+      "documentation": null
+    },
+    "AimInput_Kismet": {
+      "value": 2,
+      "documentation": null
+    },
+    "AimInput_PawnMotion": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

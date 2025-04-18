@@ -1,0 +1,51 @@
+{
+  "parent": "NavMeshPathConstraint",
+  "package": "Engine",
+  "variables": {
+    "InitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MinDistBetweenEdgeTypes": {
+      "type": "float",
+      "documentation": null
+    },
+    "EdgeType": {
+      "type": "ENavMeshEdgeType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "EnforceMinDist": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": null,
+          "documentation": null
+        },
+        "InMinDist": {
+          "type": null,
+          "documentation": null
+        },
+        "InEdgeType": {
+          "type": null,
+          "documentation": null
+        },
+        "LastLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnforceMinDist(NavigationHandle NavHandle, float InMinDist, ENavMeshEdgeType InEdgeType, optional Vector LastLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

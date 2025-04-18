@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Player": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalPowerAssistValue": {
+      "type": null,
+      "documentation": null
+    },
+    "LastScoreTime": {
+      "type": null,
+      "documentation": null
+    },
+    "LastScoreSourceName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

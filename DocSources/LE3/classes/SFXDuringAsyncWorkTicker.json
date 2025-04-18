@@ -1,0 +1,323 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "QueuedImpactPSCs": {
+      "type": "SFXDuringAsyncWorkQueuedImpactPSC",
+      "documentation": null
+    },
+    "QueuedImpactDecals": {
+      "type": "SFXDuringAsyncWorkQueuedImpactDecal",
+      "documentation": null
+    },
+    "QueuedTracers": {
+      "type": "SFXDuringAsyncWorkQueuedTracer",
+      "documentation": null
+    },
+    "QueuedEffects": {
+      "type": "SFXDuringAsyncWorkQueuedEffect",
+      "documentation": null
+    },
+    "PSCCullDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DecalCullDistanceBase": {
+      "type": "float",
+      "documentation": null
+    },
+    "TracerCullDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "LocalPlayerCullDistanceBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNoQueuedImpactPSCs": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoQueuedImpactDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoQueuedTracers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoQueuedEffects": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseLocalPawnLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoPSCCull": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoDecalCull": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoTracerCull": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoEffectCull": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetEffectLifetime": {
+      "documentation": null,
+      "signature_members": {
+        "Emit": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectLifetime(Emitter Emit, float Lifetime)"
+    },
+    "SpawnEffectAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Effect": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnEffectAtLocation(Actor inInstigator, ParticleSystem Effect, Vector EffectLocation, Rotator EffectRotation, optional float Lifetime, optional float Scale)"
+    },
+    "SpawnImpactDecal": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalMaterial": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalWidth": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalHeight": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalFarPlane": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalNoClip": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalFadeTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalFadingParameters": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactDecal(Actor inInstigator, MaterialInterface ImpactDecalMaterial, const out ImpactInfo Impact, float ImpactDecalWidth, float ImpactDecalHeight, float ImpactDecalFarPlane, bool ImpactDecalNoClip, float ImpactDecalFadeTime, const out array<Name> ImpactDecalFadingParameters)"
+    },
+    "SpawnImpactDecalAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalMaterial": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalWidth": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalHeight": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalFarPlane": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalNoClip": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalFadeTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactDecalFadingParameters": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactDecalAtLocation(Actor inInstigator, MaterialInterface ImpactDecalMaterial, Vector ImpactLocation, Vector ImpactNormal, float ImpactDecalWidth, float ImpactDecalHeight, float ImpactDecalFarPlane, bool ImpactDecalNoClip, float ImpactDecalFadeTime, optional const out array<Name> ImpactDecalFadingParameters)"
+    },
+    "SpawnImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Effect": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactEffect(Actor inInstigator, ParticleSystem Effect, const out ImpactInfo Impact, float ImpactScale)"
+    },
+    "SpawnImpactEffectAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Effect": {
+          "type": null,
+          "documentation": null
+        },
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "HitComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "HitBoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "VectorParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "VectorParameter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnImpactEffectAtLocation(Actor inInstigator, ParticleSystem Effect, Actor HitActor, Vector HitLocation, Vector HitNormal, PrimitiveComponent HitComponent, Name HitBoneName, optional float Scale, optional Name VectorParameterName, optional Vector VectorParameter)"
+    },
+    "SpawnTracer": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "TracerMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "TracerVFX": {
+          "type": null,
+          "documentation": null
+        },
+        "TracerScale3D": {
+          "type": null,
+          "documentation": null
+        },
+        "TracerSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "TracerSpawnOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnTracer(Actor inInstigator, StaticMesh TracerMesh, ParticleSystem TracerVFX, Vector TracerScale3D, float TracerSpeed, float TracerSpawnOffset, Vector StartLocation, Vector HitLocation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

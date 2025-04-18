@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "NotifyName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SFXFONT_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXFONT_Italic": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXFONT_Bold": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXFONT_BoldItalic": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXFONT_FauxItalic": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXFONT_FauxBold": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXFONT_FauxBoldItalic": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

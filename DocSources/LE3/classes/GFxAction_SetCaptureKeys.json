@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "GFxUI",
+  "variables": {
+    "CaptureKeys": {
+      "type": "Name",
+      "documentation": null
+    },
+    "movie": {
+      "type": "GFxMovie",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

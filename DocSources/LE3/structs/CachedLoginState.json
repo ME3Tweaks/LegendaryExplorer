@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "OnlineXuid": {
+      "type": null,
+      "documentation": null
+    },
+    "OfflineXuid": {
+      "type": null,
+      "documentation": null
+    },
+    "LoginStatus": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

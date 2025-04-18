@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "ExpressionGUID": {
+      "type": null,
+      "documentation": null
+    },
+    "ParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "StartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "CycleTime": {
+      "type": null,
+      "documentation": null
+    },
+    "OffsetTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bLoop": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoActivate": {
+      "type": null,
+      "documentation": null
+    },
+    "bNormalizeTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bOffsetFromEnd": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "BIO_POWER_RESOURCE_VFX_PLAYER_CRUST": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_PLAYER_MATERIAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_TARGET_CRUST": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_TARGET_MATERIAL": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_FRAMEBUFFER": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_TRAVELLING": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_IMPACT": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_WORLD_IMPACT": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_RELEASE": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_VFX_CASTING_BEAM": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_CASTING": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIO_POWER_RESOURCE_RELEASE": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

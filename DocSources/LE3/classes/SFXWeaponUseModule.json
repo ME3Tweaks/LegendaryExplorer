@@ -1,0 +1,136 @@
+{
+  "parent": "SFXModule_SavedUse",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "DynamicLightEnvironmentComponent",
+      "documentation": null
+    },
+    "PickupMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "WeaponSelectionMovieInfo": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "GUI_WeaponSelection": {
+      "type": "SFXGUI_WeaponSelection",
+      "documentation": null
+    },
+    "PickupSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "UpgradeLevels_Normal": {
+      "type": "int",
+      "documentation": null
+    },
+    "UpgradeLevels_NewGamePlus": {
+      "type": "int",
+      "documentation": null
+    },
+    "NewGamePlusID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "UpdateFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStopCustomTicking": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DisabilityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DisabilityCheck()"
+    },
+    "DisableWeaponUseModule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableWeaponUseModule()"
+    },
+    "StartWeaponSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartWeaponSelection()"
+    },
+    "WeaponAwardUIAction": {
+      "documentation": null,
+      "signature_members": {
+        "oUI": {
+          "type": null,
+          "documentation": null
+        },
+        "nSelection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponAwardUIAction(BioSFHandler_MessageBox oUI, int nSelection)"
+    },
+    "WeaponUseModuleInit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WeaponUseModuleInit()"
+    },
+    "WeaponUseModuleOnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponUseModuleOnUsed(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

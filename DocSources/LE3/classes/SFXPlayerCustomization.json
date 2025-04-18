@@ -1,0 +1,225 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "CasualAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "FullBodyAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "FullBodyHelmetAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "TorsoAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "ShoulderAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "ArmAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "LegAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "HelmetAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "SpecAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "Tint1Appearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "Tint2Appearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "PatternAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "PatternColorAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "EmissiveAppearances": {
+      "type": "CustomizableElement",
+      "documentation": null
+    },
+    "FemaleIconicHeadMesh": {
+      "type": "string",
+      "documentation": null
+    },
+    "MaleIconicHeadMesh": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleCustomMorphHead": {
+      "type": "string",
+      "documentation": null
+    },
+    "MaleCustomMorphHead": {
+      "type": "string",
+      "documentation": null
+    },
+    "MaleIconicFaceFXAsset": {
+      "type": "string",
+      "documentation": null
+    },
+    "MaleMorphHeadFaceFXAsset": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleIconicFaceFXAsset": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemaleMorphHeadFaceFXAsset": {
+      "type": "string",
+      "documentation": null
+    },
+    "Scars": {
+      "type": "ScarInfo",
+      "documentation": null
+    },
+    "IconicFemaleMaterialOverride": {
+      "type": "BioMaterialOverride",
+      "documentation": null
+    },
+    "CosmeticSurgeryPlotID": {
+      "type": "int",
+      "documentation": null
+    },
+    "CosmeticSUrgeryPlotID_ME3": {
+      "type": "int",
+      "documentation": null
+    },
+    "N7ArmourName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "N7ArmourDescription": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaterialOverride": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "Meshes": {
+          "type": null,
+          "documentation": null
+        },
+        "Element": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInstance",
+      "signature": "MaterialInstance GetMaterialOverride(int Id, bool bIsFemale, out array<CustomizableElement> Meshes, out CustomizableElement Element)"
+    },
+    "ApplyScarParameters": {
+      "documentation": null,
+      "signature_members": {
+        "Scar": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "InHead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyScarParameters(ScarInfo Scar, bool bIsFemale, SkeletalMeshComponent InHead)"
+    },
+    "FindIconicMaterialOverride": {
+      "documentation": null,
+      "signature_members": {
+        "bIsFemale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioMaterialOverride",
+      "signature": "BioMaterialOverride FindIconicMaterialOverride(bool bIsFemale)"
+    },
+    "GetHelmetMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "Part": {
+          "type": null,
+          "documentation": null
+        },
+        "Meshes": {
+          "type": null,
+          "documentation": null
+        },
+        "Element": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetHelmetMesh(int Id, bool bIsFemale, EHelmetPart Part, out array<CustomizableElement> Meshes, out CustomizableElement Element)"
+    },
+    "GetMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsFemale": {
+          "type": null,
+          "documentation": null
+        },
+        "Meshes": {
+          "type": null,
+          "documentation": null
+        },
+        "Element": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetMesh(int Id, bool bIsFemale, out array<CustomizableElement> Meshes, out CustomizableElement Element)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

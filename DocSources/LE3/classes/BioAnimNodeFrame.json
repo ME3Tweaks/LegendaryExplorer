@@ -1,0 +1,28 @@
+{
+  "parent": "AnimNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_FrameBoneData": {
+      "type": "BoneAtom",
+      "documentation": null
+    },
+    "m_bIsFrameDataValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCaptureOnRelevant": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CaptureAnimFrame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CaptureAnimFrame()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

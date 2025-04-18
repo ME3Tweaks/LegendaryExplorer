@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EXPSourceType_SimpleDeath": {
+      "value": 0,
+      "documentation": null
+    },
+    "EXPSourceType_SkillUse": {
+      "value": 1,
+      "documentation": null
+    },
+    "EXPSourceType_QuestCompletion": {
+      "value": 2,
+      "documentation": null
+    },
+    "EXPSourceType_Generic": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

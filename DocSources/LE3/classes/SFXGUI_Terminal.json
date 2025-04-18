@@ -1,0 +1,204 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "OnRequestActionCallbacks": {
+      "type": "OnRequestActionDelegate",
+      "documentation": null
+    },
+    "__OnRequestExitCallback__Delegate": {
+      "type": "OnRequestExitCallback",
+      "documentation": null
+    },
+    "__OnRequestActionDelegate__Delegate": {
+      "type": "OnRequestActionDelegate",
+      "documentation": null
+    },
+    "TerminalData": {
+      "type": "SFXGUIData_Terminal",
+      "documentation": null
+    },
+    "bIsFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFlashLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsScriptLoaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ASAddSelectionTitles": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sDesc": {
+          "type": null,
+          "documentation": null
+        },
+        "bDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddSelectionTitles(string sTitle, string sDesc, bool bDisabled)"
+    },
+    "ASSetTitles": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sAText": {
+          "type": null,
+          "documentation": null
+        },
+        "sBText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTitles(string sTitle, string sAText, string sBText)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "InitialTerminalGUIData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(SFXGUIData_Terminal InitialTerminalGUIData)"
+    },
+    "OnRequestActionDelegate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRequestActionDelegate()"
+    },
+    "OnRequestExitCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRequestExitCallback()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "PostInit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInit()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AddOnRequestActionDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnRequestActionDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOnRequestActionDelegate(delegate<OnRequestActionDelegate> fn_OnRequestActionDelegate)"
+    },
+    "ASSetIsAptTerminal": {
+      "documentation": null,
+      "signature_members": {
+        "isApt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetIsAptTerminal(bool isApt)"
+    },
+    "ClearActionDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearActionDelegates()"
+    },
+    "ExPostLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPostLoad()"
+    },
+    "ExRequestAction": {
+      "documentation": null,
+      "signature_members": {
+        "nRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExRequestAction(int nRequest)"
+    },
+    "ExRequestLogoff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExRequestLogoff()"
+    },
+    "SetOnRequestExitCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnRequestExitDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnRequestExitCallback(delegate<OnRequestExitCallback> fn_OnRequestExitDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

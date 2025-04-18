@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "SourceBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneFlipAxis": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

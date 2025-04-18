@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "ParamValue": {
+      "type": null,
+      "documentation": null
+    },
+    "ParamName": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseEmitterTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bSpawnTimeOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bScaleVelocityByParamValue": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueMethod": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

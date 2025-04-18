@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "CurveName": {
+      "type": null,
+      "documentation": null
+    },
+    "CurveObject": {
+      "type": null,
+      "documentation": null
+    },
+    "CurveColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bHideCurve": {
+      "type": null,
+      "documentation": null
+    },
+    "bColorCurve": {
+      "type": null,
+      "documentation": null
+    },
+    "bFloatingPointColorCurve": {
+      "type": null,
+      "documentation": null
+    },
+    "bClamp": {
+      "type": null,
+      "documentation": null
+    },
+    "ClampLow": {
+      "type": null,
+      "documentation": null
+    },
+    "ClampHigh": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

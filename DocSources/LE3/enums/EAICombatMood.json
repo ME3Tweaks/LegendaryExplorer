@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "AI_NoMood": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_Unaware": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_Fallback": {
+      "value": 2,
+      "documentation": null
+    },
+    "AI_Normal": {
+      "value": 3,
+      "documentation": null
+    },
+    "AI_Aggressive": {
+      "value": 4,
+      "documentation": null
+    },
+    "AI_Berserk": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

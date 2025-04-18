@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Position": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedBaseLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedBaseRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedTransPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "Base": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

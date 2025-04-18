@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "RotationOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "PositionOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "Tag": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

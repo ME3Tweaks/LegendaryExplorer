@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "FEATURE_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "FEATURE_MINERAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "FEATURE_LABEL": {
+      "value": 2,
+      "documentation": null
+    },
+    "FEATURE_PROBES": {
+      "value": 3,
+      "documentation": null
+    },
+    "FEATURE_ARTIFACT": {
+      "value": 4,
+      "documentation": null
+    },
+    "FEATURE_LANDINGSITE": {
+      "value": 5,
+      "documentation": null
+    },
+    "FEATURE_ANOMOLY": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

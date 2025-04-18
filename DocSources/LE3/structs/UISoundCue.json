@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SoundName": {
+      "type": null,
+      "documentation": null
+    },
+    "SoundToPlay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

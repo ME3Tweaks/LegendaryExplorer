@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "HitColumn": {
+      "type": null,
+      "documentation": null
+    },
+    "HitRow": {
+      "type": null,
+      "documentation": null
+    },
+    "ResizeColumn": {
+      "type": null,
+      "documentation": null
+    },
+    "ResizeRow": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

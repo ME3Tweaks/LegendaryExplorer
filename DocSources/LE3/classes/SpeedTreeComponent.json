@@ -1,0 +1,136 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "RotationOnlyMatrix": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "StaticLights": {
+      "type": "SpeedTreeStaticLight",
+      "documentation": null
+    },
+    "BranchLightMap": {
+      "type": "LightMapRef",
+      "documentation": null
+    },
+    "FrondLightMap": {
+      "type": "LightMapRef",
+      "documentation": null
+    },
+    "LeafMeshLightMap": {
+      "type": "LightMapRef",
+      "documentation": null
+    },
+    "LeafCardLightMap": {
+      "type": "LightMapRef",
+      "documentation": null
+    },
+    "BillboardLightMap": {
+      "type": "LightMapRef",
+      "documentation": null
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null
+    },
+    "SpeedTree": {
+      "type": "SpeedTree",
+      "documentation": null
+    },
+    "Branch1Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "Branch2Material": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "FrondMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LeafCardMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LeafMeshMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "BillboardMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "Lod3DStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "Lod3DEnd": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodBillboardStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodBillboardEnd": {
+      "type": "float",
+      "documentation": null
+    },
+    "LodLevelOverride": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseLeafCards": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseLeafMeshes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseBranches": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseFronds": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseBillboards": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "MeshType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInterface",
+      "signature": "MaterialInterface GetMaterial(ESpeedTreeMeshType MeshType)"
+    },
+    "SetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "MeshType": {
+          "type": null,
+          "documentation": null
+        },
+        "Material": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterial(ESpeedTreeMeshType MeshType, MaterialInterface Material)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

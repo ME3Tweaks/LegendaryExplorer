@@ -1,0 +1,203 @@
+{
+  "parent": "DamageType",
+  "package": "SFXGame",
+  "variables": {
+    "HitReactions": {
+      "type": "HitReactionSet",
+      "documentation": null
+    },
+    "Resistance": {
+      "type": "ResistanceInfo",
+      "documentation": null
+    },
+    "ShieldHitFFWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "CE_DeathEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_PlayerFrameBufferEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "DeathSoundEffect": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WoundPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "HeadGibChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeathEffectPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "Range_Melee": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Short": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Medium": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range_Long": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlinchChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlinchDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "SourceDisplayName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bSpawnWeaponImpacts": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreShields": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPartBasedDamageDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHealthDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDamagesFriends": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanGibHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsMelee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCausesNormalizedDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesDamageScaling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreDamageGating": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysPlayHitReact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCriticalHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMPKillDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCausesRagdoll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCausesRagdollOnDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableAIControl": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bImmediateDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoresCoverDirection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoShake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCorpseDestroyedOnDeath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FalloffType": {
+      "type": "ESFXDamageFalloffType",
+      "documentation": null
+    },
+    "WoundDamage": {
+      "type": "EWoundDamage",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalculateDamageMultiplier": {
+      "documentation": null,
+      "signature_members": {
+        "DamageCalc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateDamageMultiplier(out DamageCalculationAlgorithm DamageCalc)"
+    },
+    "CanPlayDeathEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayDeathEffect(BioPawn Target, optional Controller Killer)"
+    },
+    "ResetDamageCalc": {
+      "documentation": null,
+      "signature_members": {
+        "DamageCalc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetDamageCalc(out DamageCalculationAlgorithm DamageCalc)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

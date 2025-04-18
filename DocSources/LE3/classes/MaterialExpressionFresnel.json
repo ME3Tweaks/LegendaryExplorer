@@ -1,0 +1,17 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Normal": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Exponent": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

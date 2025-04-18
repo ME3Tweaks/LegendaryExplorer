@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ATTACK_SUCCESS": {
+      "value": 0,
+      "documentation": null
+    },
+    "ATTACK_FAIL": {
+      "value": 1,
+      "documentation": null
+    },
+    "ATTACK_FAIL_RELOADING": {
+      "value": 2,
+      "documentation": null
+    },
+    "ATTACK_FAIL_NO_LOS": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

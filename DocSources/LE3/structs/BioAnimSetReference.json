@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "pAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nRefCount": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Origin": {
+      "type": null,
+      "documentation": null
+    },
+    "BoxExtent": {
+      "type": null,
+      "documentation": null
+    },
+    "SphereRadius": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

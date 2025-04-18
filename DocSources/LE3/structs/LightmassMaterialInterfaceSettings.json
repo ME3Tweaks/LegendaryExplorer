@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "EmissiveBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "DiffuseBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "SpecularBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "ExportResolutionScale": {
+      "type": null,
+      "documentation": null
+    },
+    "DistanceFieldPenumbraScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideEmissiveBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideDiffuseBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideSpecularBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideExportResolutionScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideDistanceFieldPenumbraScale": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

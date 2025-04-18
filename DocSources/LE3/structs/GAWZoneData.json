@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "srZoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "srZoneDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneDisplayNumber": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

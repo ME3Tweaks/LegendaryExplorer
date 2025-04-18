@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "GameDataProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerDataProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "TeamDataProviderClass": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

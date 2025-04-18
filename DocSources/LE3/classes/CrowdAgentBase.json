@@ -1,0 +1,20 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IInterface_NavigationHandle": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyPathChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPathChanged()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

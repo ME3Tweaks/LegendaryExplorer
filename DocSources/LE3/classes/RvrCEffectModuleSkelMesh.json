@@ -1,0 +1,33 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_pSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_pAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_nmAnimSeq": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bParentToPrimary": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstantiateMaterials": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

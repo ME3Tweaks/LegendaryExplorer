@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PXIO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PXIO_On": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

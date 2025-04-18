@@ -1,0 +1,54 @@
+{
+  "parent": "SFXAICmd_AcquireCover",
+  "package": "SFXGame",
+  "variables": {
+    "OriginalCoverLink": {
+      "type": "CoverLink",
+      "documentation": null
+    },
+    "bInitialPlayerOrder": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AcquireCoverNearHoldLoc": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalEvaluator": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayerOrder": {
+          "type": null,
+          "documentation": null
+        },
+        "bUsePeriodicCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowedToFire": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AcquireCoverNearHoldLoc(SFXAI_Henchman AI, Goal_AtCover GoalEvaluator, Actor GoalActor, bool bPlayerOrder, optional bool bUsePeriodicCheck, optional bool bAllowedToFire)"
+    }
+  },
+  "states": {
+    "FindingCoverNearHold": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

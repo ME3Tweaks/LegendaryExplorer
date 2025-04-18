@@ -1,0 +1,34 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "BaseTag": {
+      "type": "string",
+      "documentation": null
+    },
+    "LiftOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MyLift": {
+      "type": "InterpActor",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetBaseByTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetBaseByTag()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

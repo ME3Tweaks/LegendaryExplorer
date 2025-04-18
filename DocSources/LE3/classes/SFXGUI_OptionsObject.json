@@ -1,0 +1,82 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "OptionId": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyOptionValue": {
+      "documentation": null,
+      "signature_members": {
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyOptionValue(int nValue)"
+    },
+    "ConstructRadioGroupOption": {
+      "documentation": null,
+      "signature_members": {
+        "Option": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConstructRadioGroupOption(out RadioGroupOption Option)"
+    },
+    "ConstructSliderOption": {
+      "documentation": null,
+      "signature_members": {
+        "Option": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConstructSliderOption(out SliderOption Option)"
+    },
+    "ConstructTextSliderOption": {
+      "documentation": null,
+      "signature_members": {
+        "Option": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConstructTextSliderOption(out TextSliderOption Option)"
+    },
+    "GetOptionValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetOptionValue()"
+    },
+    "OptionIsAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OptionIsAvailable()"
+    },
+    "ResetToDefault": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefault()"
+    },
+    "SaveOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveOption()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

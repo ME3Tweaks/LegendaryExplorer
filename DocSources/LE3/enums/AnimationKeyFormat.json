@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "AKF_ConstantKeyLerp": {
+      "value": 0,
+      "documentation": null
+    },
+    "AKF_VariableKeyLerp": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,87 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oPlayer": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "f00_Vixen": {
+      "type": "float",
+      "documentation": null
+    },
+    "f01_Leading": {
+      "type": "float",
+      "documentation": null
+    },
+    "f02_Convict": {
+      "type": "float",
+      "documentation": null
+    },
+    "f03_Geth": {
+      "type": "float",
+      "documentation": null
+    },
+    "f04_Thief": {
+      "type": "float",
+      "documentation": null
+    },
+    "f05_Garrus": {
+      "type": "float",
+      "documentation": null
+    },
+    "f06_Assassin": {
+      "type": "float",
+      "documentation": null
+    },
+    "f07_Tali": {
+      "type": "float",
+      "documentation": null
+    },
+    "f08_Professor": {
+      "type": "float",
+      "documentation": null
+    },
+    "f09_Grunt": {
+      "type": "float",
+      "documentation": null
+    },
+    "f10_Mystic": {
+      "type": "float",
+      "documentation": null
+    },
+    "f11_Veteran": {
+      "type": "float",
+      "documentation": null
+    },
+    "nHench1": {
+      "type": "int",
+      "documentation": null
+    },
+    "nHench2": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetHenchID": {
+      "documentation": null,
+      "signature_members": {
+        "Tag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetHenchID(Name Tag)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

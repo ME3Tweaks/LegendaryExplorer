@@ -1,0 +1,13 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "m_bInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

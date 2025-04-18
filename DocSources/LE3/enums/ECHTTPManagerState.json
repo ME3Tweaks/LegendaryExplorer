@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "HTTP_MANAGER_STATE_IDLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "HTTP_MANAGER_STATE_DOWNLOAD": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

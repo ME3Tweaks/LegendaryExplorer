@@ -1,0 +1,41 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "GameEffects": {
+      "type": "SFXGameEffect",
+      "documentation": null
+    },
+    "EffectListLocked": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePreRemove": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePreRemove()"
+    },
+    "RemoveAllEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllEffects()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaSeconds)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

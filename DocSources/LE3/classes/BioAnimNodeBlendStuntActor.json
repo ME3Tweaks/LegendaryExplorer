@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "m_nCurrentAnimNode": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

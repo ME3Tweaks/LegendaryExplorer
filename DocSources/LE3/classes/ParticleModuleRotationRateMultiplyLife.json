@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleRotationRateBase",
+  "package": "Engine",
+  "variables": {
+    "LifeMultiplier": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

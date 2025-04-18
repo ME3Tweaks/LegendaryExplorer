@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "AnimInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName": {
+      "type": null,
+      "documentation": null
+    },
+    "Weight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,76 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumMips": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsResolveTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": null,
+          "documentation": null
+        },
+        "InSizeY": {
+          "type": null,
+          "documentation": null
+        },
+        "InFormat": {
+          "type": null,
+          "documentation": null
+        },
+        "InIsResolveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Texture2DDynamic",
+      "signature": "Texture2DDynamic Create(int InSizeX, int InSizeY, optional EPixelFormat InFormat, optional bool InIsResolveTarget)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": null,
+          "documentation": null
+        },
+        "InSizeY": {
+          "type": null,
+          "documentation": null
+        },
+        "InFormat": {
+          "type": null,
+          "documentation": null
+        },
+        "InIsResolveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(int InSizeX, int InSizeY, optional EPixelFormat InFormat, optional bool InIsResolveTarget)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

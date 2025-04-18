@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Names": {
+      "type": null,
+      "documentation": null
+    },
+    "FontScale": {
+      "type": null,
+      "documentation": null
+    },
+    "Columns": {
+      "type": null,
+      "documentation": null
+    },
+    "StartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "HoldTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": null,
+      "documentation": null
+    },
+    "DelayTime": {
+      "type": null,
+      "documentation": null
+    },
+    "BreakSpace": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

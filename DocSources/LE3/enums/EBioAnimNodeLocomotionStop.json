@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeLocomotionStop_LeftFoot": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionStop_RightFoot": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

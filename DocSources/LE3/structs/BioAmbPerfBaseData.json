@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "tPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "nmPropAction": {
+      "type": null,
+      "documentation": null
+    },
+    "fPropActionTimeDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnterEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "bExitEvent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

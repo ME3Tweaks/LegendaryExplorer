@@ -1,0 +1,53 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aRealPriorities": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_aLinkedHenchVars": {
+      "type": "SFXSeqVar_Hench",
+      "documentation": null
+    },
+    "m_nmObjValueTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bBiggest": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSmallest": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFirst": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSecond": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPriorityMatchRequired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLinkedDataBuilt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCalculatedValue": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCalculatedTag": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

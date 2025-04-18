@@ -1,0 +1,417 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "UseSucceeded": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "UseFailed": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CameraSetup": {
+      "type": "SFXCameraSetup",
+      "documentation": null
+    },
+    "InputDelayStormExit": {
+      "type": "float",
+      "documentation": null
+    },
+    "InputDelayTightAimExit": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverCamAlign": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "UsePower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        },
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UsePower(Name PowerName, SFXPawn User)"
+    },
+    "NextWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextWeapon()"
+    },
+    "PrevWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevWeapon()"
+    },
+    "CanEnterCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CanEnterCover()"
+    },
+    "CanLeaveCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CanLeaveCover()"
+    },
+    "ClimbCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClimbCover()"
+    },
+    "DisableWalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableWalking()"
+    },
+    "EnableWalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableWalking()"
+    },
+    "FindCover": {
+      "documentation": null,
+      "signature_members": {
+        "FoundCover": {
+          "type": null,
+          "documentation": null
+        },
+        "bWideCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindCover(out CovPosInfo FoundCover, bool bWideCheck)"
+    },
+    "FindPlayerCover_Internal": {
+      "documentation": null,
+      "signature_members": {
+        "FoundCover": {
+          "type": null,
+          "documentation": null
+        },
+        "bWideCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindPlayerCover_Internal(out CovPosInfo FoundCover, bool bWideCheck)"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetSnapTarget": {
+      "documentation": null,
+      "signature_members": {
+        "TargetSlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetSlotPct": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSnapTarget(optional out int TargetSlotIdx, optional out float TargetSlotPct, optional out ECoverDirection TargetDir)"
+    },
+    "HasCoverTurn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasCoverTurn()"
+    },
+    "HoldAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HoldAction()"
+    },
+    "MantleCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MantleCover()"
+    },
+    "PressAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PressAction()"
+    },
+    "ResetSelectionMaterialParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetSelectionMaterialParams()"
+    },
+    "ShouldAllowTightAim": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldAllowTightAim(Pawn inPawn)"
+    },
+    "ShouldUseScope": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUseScope(Pawn inPawn)"
+    },
+    "StopTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopTightAim()"
+    },
+    "StormOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StormOff()"
+    },
+    "StormOn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StormOn()"
+    },
+    "SwitchToBackup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwitchToBackup()"
+    },
+    "TapAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TapAction()"
+    },
+    "TightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TightAim()"
+    },
+    "TransitionToFutureSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Time": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransitionToFutureSlot(float Time, CoverSlotMarker Target)"
+    },
+    "TryAcquireCover": {
+      "documentation": null,
+      "signature_members": {
+        "bWideCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "bTestOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryAcquireCover(optional bool bWideCheck, optional bool bTestOnly)"
+    },
+    "TryCoverAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryCoverAction()"
+    },
+    "TryCoverSlip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryCoverSlip()"
+    },
+    "TryCoverTurn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryCoverTurn()"
+    },
+    "TryExitCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryExitCover()"
+    },
+    "TryExitLadder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryExitLadder()"
+    },
+    "TryForwardRoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryForwardRoll()"
+    },
+    "TryHeavyMelee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryHeavyMelee()"
+    },
+    "TryHolster": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryHolster()"
+    },
+    "TryMelee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryMelee()"
+    },
+    "TryReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryReload()"
+    },
+    "TryRoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryRoll()"
+    },
+    "TrySnap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TrySnap()"
+    },
+    "TryStandingJump": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryStandingJump()"
+    },
+    "TrySwapWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TrySwapWeapon()"
+    },
+    "TrySwatTurn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TrySwatTurn()"
+    },
+    "TryUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TryUsePower(int Power)"
+    },
+    "TurnOffTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffTightAim()"
+    },
+    "TurnStormOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnStormOff()"
+    },
+    "UseAbility": {
+      "documentation": null,
+      "signature_members": {
+        "Ability": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UseAbility(int Ability)"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Used()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "StateClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "StateInputAliases": {
+      "type": null,
+      "documentation": null
+    },
+    "State": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

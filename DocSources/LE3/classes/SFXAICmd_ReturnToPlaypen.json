@@ -1,0 +1,49 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "CancelCommand": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelCommand(optional int nReason)"
+    },
+    "MoveToPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MoveToPlaypen()"
+    },
+    "NotifyMoodChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyMoodChange()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "ReturningToPlaypen": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

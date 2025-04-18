@@ -1,0 +1,77 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aConnectedActors": {
+      "type": "SFXConvActorVar",
+      "documentation": null
+    },
+    "Conv": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "m_pConvController": {
+      "type": "BioConversationController",
+      "documentation": null
+    },
+    "m_pOwner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fInterruptRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "DelayTimeAfterLoadingScreen": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPostLoadingScreenDelayTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bNoGestures": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFOVOMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLookAtActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableLookAtRangeCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableDelayUntilPreload": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableProceduralFoley": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowStartingIfAlreadyActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSubtitleHasPriority": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPreLoading": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayRequested": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

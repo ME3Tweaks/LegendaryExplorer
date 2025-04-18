@@ -1,0 +1,106 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "LevelTreasure": {
+      "type": "TD",
+      "documentation": null
+    },
+    "ArmorTreasure": {
+      "type": "ArmorTreasureData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CurrentLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name CurrentLevel()"
+    },
+    "GetArmorTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "OutArmorTreasure": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetArmorTreasure(out array<ArmorTreasureData> OutArmorTreasure)"
+    },
+    "GetLevelData": {
+      "documentation": null,
+      "signature_members": {
+        "tData": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLevelData(out TD tData, optional string Level)"
+    },
+    "HasConditionalGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "TREASURE": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasConditionalGAWAsset(string TREASURE, optional string Level)"
+    },
+    "HasTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "TREASURE": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasTreasure(string TREASURE, optional string Level)"
+    },
+    "IsArmorUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "Armor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsArmorUnlocked(EArmorTreasurePiece Armor)"
+    },
+    "IsTreasureUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "TREASURE": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTreasureUnlocked(string TREASURE, optional string Level)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

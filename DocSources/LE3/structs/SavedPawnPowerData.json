@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Powers": {
+      "type": null,
+      "documentation": null
+    },
+    "Pawn": {
+      "type": null,
+      "documentation": null
+    },
+    "TalentPoints": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

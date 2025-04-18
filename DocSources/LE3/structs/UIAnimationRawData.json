@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "DestAsColor": {
+      "type": null,
+      "documentation": null
+    },
+    "DestAsRotator": {
+      "type": null,
+      "documentation": null
+    },
+    "DestAsVector": {
+      "type": null,
+      "documentation": null
+    },
+    "DestAsNotify": {
+      "type": null,
+      "documentation": null
+    },
+    "DestAsFloat": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

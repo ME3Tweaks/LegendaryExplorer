@@ -1,0 +1,31 @@
+{
+  "parent": "SFXCameraMode_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {
+        "OutLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorCameraHook(out Vector OutLocation)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fTimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fTimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

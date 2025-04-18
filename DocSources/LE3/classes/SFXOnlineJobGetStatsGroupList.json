@@ -1,0 +1,48 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnJobCompletion__Delegate": {
+      "type": "OnJobCompletion",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGetStatsGroupListJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineJobGetStatsGroupList",
+      "signature": "SFXOnlineJobGetStatsGroupList CreateGetStatsGroupListJob()"
+    },
+    "JobCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobCompleted(byte errorCode)"
+    },
+    "OnJobCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJobCompletion(byte errorCode)"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

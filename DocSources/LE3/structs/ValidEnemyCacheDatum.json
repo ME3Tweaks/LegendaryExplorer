@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "EnemyCover": {
+      "type": null,
+      "documentation": null
+    },
+    "EnemyPawn": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

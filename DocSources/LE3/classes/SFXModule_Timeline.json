@@ -1,0 +1,213 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "Timelines": {
+      "type": "SFXTimelineData",
+      "documentation": null
+    },
+    "__AOEEvalFunc__Delegate": {
+      "type": "AOEEvalFunc",
+      "documentation": null
+    },
+    "__InputHandler__Delegate": {
+      "type": "InputHandler",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AOEEvalFunc": {
+      "documentation": null,
+      "signature_members": {
+        "ChkOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AOEEvalFunc(Actor ChkOwner, Actor ChkTarget)"
+    },
+    "HandlePreRemove": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePreRemove()"
+    },
+    "InputHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InputHandler()"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects, SFXTimelineData Data)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "AddTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "FuncOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "Source": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTimeline(SFXTimelineData Data, optional Object FuncOwner, optional Actor Source, optional Actor Target)"
+    },
+    "ApplyTimelineEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyTimelineEffect(SFXTimelineData Data, int idx)"
+    },
+    "CleanupTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CleanupTimeline(SFXTimelineData Data)"
+    },
+    "GetTargetActor": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetTargetActor(SFXTimelineData Data, int idx)"
+    },
+    "GetTargetPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPlayerController",
+      "signature": "SFXPlayerController GetTargetPlayer(SFXTimelineData Data, int idx)"
+    },
+    "RemoveAllTimelines": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllTimelines()"
+    },
+    "RemoveTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTimeline(SFXTimelineData Data)"
+    },
+    "SpawnTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "FuncOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "Source": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXTimelineData",
+      "signature": "SFXTimelineData SpawnTimeline(SFXTimelineData Template, optional Object FuncOwner, optional Actor Source, optional Actor Target)"
+    },
+    "UpdateTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTimeline(SFXTimelineData Data, float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

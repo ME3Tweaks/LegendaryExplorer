@@ -1,0 +1,45 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "CylinderColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "CylinderMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "CylinderRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "CylinderTopRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "CylinderHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "CylinderHeightOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "CylinderSides": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDrawWireCylinder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDrawLitCylinder": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Items": {
+      "type": null,
+      "documentation": null
+    },
+    "LevelName": {
+      "type": null,
+      "documentation": null
+    },
+    "nCredits": {
+      "type": null,
+      "documentation": null
+    },
+    "nXP": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

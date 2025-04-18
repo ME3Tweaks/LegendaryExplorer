@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "UseNoise": {
+      "type": null,
+      "documentation": null
+    },
+    "NoiseScale": {
+      "type": null,
+      "documentation": null
+    },
+    "NoisePercent": {
+      "type": null,
+      "documentation": null
+    },
+    "MinHeight": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxHeight": {
+      "type": null,
+      "documentation": null
+    },
+    "MinSlope": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxSlope": {
+      "type": null,
+      "documentation": null
+    },
+    "Alpha": {
+      "type": null,
+      "documentation": null
+    },
+    "Material": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

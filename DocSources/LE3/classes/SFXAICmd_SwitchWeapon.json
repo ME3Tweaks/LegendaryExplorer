@@ -1,0 +1,58 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "NextWeapon": {
+      "type": "SFXWeapon",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SwitchWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "oWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SwitchWeapon(SFXAI_Core AI, SFXWeapon oWeapon)"
+    },
+    "ChangeWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeWeapons()"
+    },
+    "IsWeaponSwitching": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsWeaponSwitching()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "SwitchingWeapons": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

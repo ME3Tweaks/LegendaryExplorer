@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "OR_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "OR_ORBIT": {
+      "value": 1,
+      "documentation": null
+    },
+    "OR_ASTEROID": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

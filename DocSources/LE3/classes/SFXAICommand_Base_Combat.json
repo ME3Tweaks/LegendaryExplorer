@@ -1,0 +1,102 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "InitialTransitionCheckTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "TransitionCheckTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "bFiringWeapon": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetInitialTransitionCheckTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetInitialTransitionCheckTime()"
+    },
+    "GetTransitionCheckTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTransitionCheckTime()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "Resumed": {
+      "documentation": null,
+      "signature_members": {
+        "OldCommandName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Resumed(Name OldCommandName)"
+    },
+    "StopSustainedFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopSustainedFire()"
+    }
+  },
+  "states": {
+    "SustainedWeaponFire": {
+      "functions": {
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "InCombat": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

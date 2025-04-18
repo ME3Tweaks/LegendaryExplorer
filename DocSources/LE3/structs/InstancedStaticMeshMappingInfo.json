@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Mapping": {
+      "type": null,
+      "documentation": null
+    },
+    "LightMap": {
+      "type": null,
+      "documentation": null
+    },
+    "LightmapTexture": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowmapTexture": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

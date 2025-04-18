@@ -1,0 +1,65 @@
+{
+  "parent": "Emitter",
+  "package": "SFXGame",
+  "variables": {
+    "bPooled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(ParticleSystem Template)"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Reuse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reuse()"
+    },
+    "OnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "FinishedComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleSystemFinished(ParticleSystemComponent FinishedComponent)"
+    },
+    "SetLifetime": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLifetime(float Seconds)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleEventReceiverBase",
+  "package": "Engine",
+  "variables": {
+    "bStopSpawning": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

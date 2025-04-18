@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CBLT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CBLT_DockLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "CBLT_DockRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "CBLT_Centered": {
+      "value": 3,
+      "documentation": null
+    },
+    "CBLT_Justified": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

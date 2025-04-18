@@ -1,0 +1,129 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aParameters": {
+      "type": "RvrCEParameterDistribution",
+      "documentation": null
+    },
+    "m_pInstanceClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_nmTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_fDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDrawScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimeScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nSortBias": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxBehindDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fActivationValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nLoops": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSoftStopsAreHard": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIgnoreSoftStops": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bExclusiveOnTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLocalPlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEndOnInstigatorDestroy": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHideInstigatorOnEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSinglePlayerOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bOnVisibleInstigatorOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsCoolDownModule": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCapsFailKillsEffect": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowPendingMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLooping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLoopsAreHard": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSupportsInfiniteDuration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eModuleTickGroup": {
+      "type": "EModuleTickGroup",
+      "documentation": null
+    },
+    "m_eActivationOperation": {
+      "type": "EValueModifierOperation",
+      "documentation": null
+    },
+    "m_eActivationSelection": {
+      "type": "EValueModifierSelection",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

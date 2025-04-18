@@ -1,0 +1,17 @@
+{
+  "parent": "TextureRenderTarget",
+  "package": "Engine",
+  "variables": {
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

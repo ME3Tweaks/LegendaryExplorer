@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "SFXGame",
+  "variables": {
+    "BlendDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

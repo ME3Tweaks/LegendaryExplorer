@@ -1,0 +1,116 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "mAuthHTTPRequest": {
+      "type": "SFXOnlineHTTPRequest",
+      "documentation": null
+    },
+    "mSecondHTTPRequest": {
+      "type": "SFXOnlineHTTPRequest",
+      "documentation": null
+    },
+    "mBlazeErrorCode": {
+      "type": "int",
+      "documentation": null
+    },
+    "bKickedOffAuthRequest": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKickedOffSecondRequest": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AuthenticateHTTP": {
+      "documentation": null,
+      "signature_members": {
+        "token": {
+          "type": null,
+          "documentation": null
+        },
+        "tokenType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AuthenticateHTTP(string token, int tokenType)"
+    },
+    "AuthenticateHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AuthenticateHTTPResult()"
+    },
+    "AuthorizationFailed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AuthorizationFailed()"
+    },
+    "GetAuthToken": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetAuthToken()"
+    },
+    "HandleSecondHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSecondHTTPResult()"
+    },
+    "JobFailedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobFailedHandler(OnlineJobErrorCode errorCode)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "QueueSecondHTTPRequest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QueueSecondHTTPRequest()"
+    },
+    "ShouldReschedule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldReschedule()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Tick()"
+    },
+    "TickInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TickInternal()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

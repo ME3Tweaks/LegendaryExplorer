@@ -1,0 +1,13 @@
+{
+  "parent": "Volume",
+  "package": "SFXGame",
+  "variables": {
+    "CombatZoneGuid": {
+      "type": "Guid",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

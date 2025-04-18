@@ -1,0 +1,64 @@
+{
+  "parent": "SFXSelectionModule",
+  "package": "SFXGame",
+  "variables": {
+    "__OnUsed__Delegate": {
+      "type": "OnUsed",
+      "documentation": null
+    },
+    "fUseRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStickForward": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDeactivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayUseAnimation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "IsDefaultActionPossible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDefaultActionPossible()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    },
+    "ReInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReInitialize(Actor oHost)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

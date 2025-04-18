@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "StyleName": {
+      "type": null,
+      "documentation": null
+    },
+    "MeshName": {
+      "type": null,
+      "documentation": null
+    },
+    "ScalpMorphName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aHairTextures": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aHairScalars": {
+      "type": null,
+      "documentation": null
+    },
+    "HairMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "ScalpMorphWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "HairType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

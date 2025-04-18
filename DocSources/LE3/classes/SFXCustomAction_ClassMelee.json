@@ -1,0 +1,161 @@
+{
+  "parent": "SFXCustomAction_SyncPawnInstigator_Base",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Attacker": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_Victim": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PowerClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AnimInfo": {
+      "type": "SFXAnimSetCookSpec",
+      "documentation": null
+    },
+    "Power": {
+      "type": "SFXPowerCustomAction_MeleePassivePower",
+      "documentation": null
+    },
+    "SyncAttackTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "AnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "AttackerBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AttackerBlendOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "VictimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "VictimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "bApplyDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eVictimRootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteraction()"
+    },
+    "GetAttackerAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAttackerAnim(out BodyStance Stance)"
+    },
+    "GetVictimAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetVictimAnim(out BodyStance Stance)"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "InterruptThisCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptThisCustomAction()"
+    },
+    "NonSyncedAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NonSyncedAction()"
+    },
+    "OnPartnerLeavingCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPartnerLeavingCustomAction()"
+    },
+    "OnPartnerReachedDestination": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPartnerReachedDestination()"
+    },
+    "StartMeleeAttack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMeleeAttack()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "SyncAttack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SyncAttack()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

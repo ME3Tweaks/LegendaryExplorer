@@ -1,0 +1,107 @@
+{
+  "parent": "OnlinePlayerStorage",
+  "package": "Engine",
+  "variables": {
+    "ProfileSettingIds": {
+      "type": "int",
+      "documentation": null
+    },
+    "DefaultSettings": {
+      "type": "OnlineProfileSetting",
+      "documentation": null
+    },
+    "OwnerMappings": {
+      "type": "IdToStringMapping",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AppendVersionToReadIds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AppendVersionToReadIds()"
+    },
+    "AppendVersionToSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AppendVersionToSettings()"
+    },
+    "GetProfileSettingDefaultFloat": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "DefaultFloat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingDefaultFloat(int ProfileSettingId, out float DefaultFloat)"
+    },
+    "GetProfileSettingDefaultId": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "DefaultId": {
+          "type": null,
+          "documentation": null
+        },
+        "ListIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingDefaultId(int ProfileSettingId, out int DefaultId, out int ListIndex)"
+    },
+    "GetProfileSettingDefaultInt": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "DefaultInt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingDefaultInt(int ProfileSettingId, out int DefaultInt)"
+    },
+    "GetVersionNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetVersionNumber()"
+    },
+    "ModifyAvailableProfileSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ModifyAvailableProfileSettings()"
+    },
+    "SetDefaultVersionNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultVersionNumber()"
+    },
+    "SetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetToDefaults()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

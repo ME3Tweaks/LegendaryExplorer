@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Normal": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "ParticleTime": {
+      "type": null,
+      "documentation": null
+    },
+    "Time": {
+      "type": null,
+      "documentation": null
+    },
+    "Item": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

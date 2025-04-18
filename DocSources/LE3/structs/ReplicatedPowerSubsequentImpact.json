@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerType": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomActionReactionType": {
+      "type": null,
+      "documentation": null
+    },
+    "ImpactCount": {
+      "type": null,
+      "documentation": null
+    },
+    "DoCallback": {
+      "type": null,
+      "documentation": null
+    },
+    "TriggerCounter": {
+      "type": null,
+      "documentation": null
+    },
+    "Duration": {
+      "type": null,
+      "documentation": null
+    },
+    "Delay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

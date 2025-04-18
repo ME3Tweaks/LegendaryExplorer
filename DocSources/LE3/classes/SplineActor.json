@@ -1,0 +1,220 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "SplineVelocityOverTime": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "Connections": {
+      "type": "SplineConnection",
+      "documentation": null
+    },
+    "LinksFrom": {
+      "type": "SplineActor",
+      "documentation": null
+    },
+    "SplineActorTangent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "nextOrdered": {
+      "type": "SplineActor",
+      "documentation": null
+    },
+    "prevOrdered": {
+      "type": "SplineActor",
+      "documentation": null
+    },
+    "previousPath": {
+      "type": "SplineActor",
+      "documentation": null
+    },
+    "SplineColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bestPathWeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "visitedWeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDisableDestination": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlreadyVisited": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddConnectionTo": {
+      "documentation": null,
+      "signature_members": {
+        "NextActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddConnectionTo(SplineActor NextActor)"
+    },
+    "BreakAllConnections": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BreakAllConnections()"
+    },
+    "BreakAllConnectionsFrom": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BreakAllConnectionsFrom()"
+    },
+    "BreakConnectionTo": {
+      "documentation": null,
+      "signature_members": {
+        "NextActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakConnectionTo(SplineActor NextActor)"
+    },
+    "FindSplineComponentTo": {
+      "documentation": null,
+      "signature_members": {
+        "NextActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SplineComponent",
+      "signature": "SplineComponent FindSplineComponentTo(SplineActor NextActor)"
+    },
+    "FindSplinePathTo": {
+      "documentation": null,
+      "signature_members": {
+        "Goal": {
+          "type": null,
+          "documentation": null
+        },
+        "OutRoute": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindSplinePathTo(SplineActor Goal, out array<SplineActor> OutRoute)"
+    },
+    "FindTargetForComponent": {
+      "documentation": null,
+      "signature_members": {
+        "SplineComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SplineActor",
+      "signature": "SplineActor FindTargetForComponent(SplineComponent SplineComp)"
+    },
+    "GetAllConnectedSplineActors": {
+      "documentation": null,
+      "signature_members": {
+        "OutSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllConnectedSplineActors(out array<SplineActor> OutSet)"
+    },
+    "GetBestConnectionInDirection": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredDir": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseLinksFrom": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SplineActor",
+      "signature": "SplineActor GetBestConnectionInDirection(Vector DesiredDir, optional bool bUseLinksFrom)"
+    },
+    "GetRandomConnection": {
+      "documentation": null,
+      "signature_members": {
+        "bUseLinksFrom": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SplineActor",
+      "signature": "SplineActor GetRandomConnection(optional bool bUseLinksFrom)"
+    },
+    "GetWorldSpaceTangent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetWorldSpaceTangent()"
+    },
+    "IsConnectedTo": {
+      "documentation": null,
+      "signature_members": {
+        "NextActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckForDisableDestination": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsConnectedTo(SplineActor NextActor, bool bCheckForDisableDestination)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "UpdateConnectedSplineComponents": {
+      "documentation": null,
+      "signature_members": {
+        "bFinish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateConnectedSplineComponents(bool bFinish)"
+    },
+    "UpdateSplineComponents": {
+      "documentation": null,
+      "signature_members": {
+        "bFinish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSplineComponents(bool bFinish)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

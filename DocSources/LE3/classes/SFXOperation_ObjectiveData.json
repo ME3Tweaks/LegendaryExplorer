@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ObjectiveType": {
+      "type": "string",
+      "documentation": null
+    },
+    "AssetPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "RequiredSpawnTags": {
+      "type": "string",
+      "documentation": null
+    },
+    "MeshAssets": {
+      "type": "SFXOperation_ObjectiveMeshInfo",
+      "documentation": null
+    },
+    "ChosenMeshUniqueString": {
+      "type": "string",
+      "documentation": null
+    },
+    "MinDistanceFromPlayerForSpawn": {
+      "type": "float",
+      "documentation": null
+    },
+    "PerformVisibilityCheckForSpawn": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanSelectedMeshSpawnAtLocation": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSelectedMeshSpawnAtLocation(SFXOperation_ObjectiveSpawnPoint SpawnPoint)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

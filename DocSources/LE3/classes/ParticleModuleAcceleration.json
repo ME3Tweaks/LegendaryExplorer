@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleAccelerationBase",
+  "package": "Engine",
+  "variables": {
+    "AccelerationRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "bApplyOwnerScale": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

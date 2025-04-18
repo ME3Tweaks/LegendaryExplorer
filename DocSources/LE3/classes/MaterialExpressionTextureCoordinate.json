@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "CoordinateIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "UTiling": {
+      "type": "float",
+      "documentation": null
+    },
+    "VTiling": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnMirrorU": {
+      "type": "bool",
+      "documentation": null
+    },
+    "UnMirrorV": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

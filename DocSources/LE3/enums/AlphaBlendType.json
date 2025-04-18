@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "ABT_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "ABT_Cubic": {
+      "value": 1,
+      "documentation": null
+    },
+    "ABT_Sinusoidal": {
+      "value": 2,
+      "documentation": null
+    },
+    "ABT_EaseInOutExponent2": {
+      "value": 3,
+      "documentation": null
+    },
+    "ABT_EaseInOutExponent3": {
+      "value": 4,
+      "documentation": null
+    },
+    "ABT_EaseInOutExponent4": {
+      "value": 5,
+      "documentation": null
+    },
+    "ABT_EaseInOutExponent5": {
+      "value": 6,
+      "documentation": null
+    },
+    "ABT_EaseIn": {
+      "value": 7,
+      "documentation": null
+    },
+    "ABT_EaseOut": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

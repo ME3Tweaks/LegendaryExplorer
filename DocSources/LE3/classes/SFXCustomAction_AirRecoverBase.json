@@ -1,0 +1,69 @@
+{
+  "parent": "SFXCustomAction_ReachSpecMove",
+  "package": "SFXGame",
+  "variables": {
+    "FlightAccel": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTimedOut": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDestination": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetDestination()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "DestTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestTimeout()"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "PlayStartAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayStartAnimation()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

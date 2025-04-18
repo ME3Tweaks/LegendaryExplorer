@@ -1,0 +1,53 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_vDestinationLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rDestinationRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_fRotationTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReachedPrecisePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedPrecisePosition()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "SetDestination": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "rRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "fRotationTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDestination(Vector vLocation, Rotator rRotation, float fRotationTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

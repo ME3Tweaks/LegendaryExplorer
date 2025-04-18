@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FindActorByTag": {
+      "value": 0,
+      "documentation": null
+    },
+    "FindActorByNode": {
+      "value": 1,
+      "documentation": null
+    },
+    "UseGroupActor": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

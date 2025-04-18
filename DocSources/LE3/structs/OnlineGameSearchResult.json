@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlatformData": {
+      "type": null,
+      "documentation": null
+    },
+    "GameSettings": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

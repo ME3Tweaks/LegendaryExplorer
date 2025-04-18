@@ -1,0 +1,77 @@
+{
+  "parent": "SFXOnlineJobGaWHTTPRequest",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnGetMessagesComplete__Delegate": {
+      "type": "OnGetMessagesComplete",
+      "documentation": null
+    },
+    "mMsgType": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGaWGetMessagesJob": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPGetMessages",
+      "signature": "SFXOnlineJobGaWHTTPGetMessages CreateGaWGetMessagesJob(int msgType, delegate<OnGetMessagesComplete> RequestCompleteDelegate)"
+    },
+    "HandleSecondHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSecondHTTPResult()"
+    },
+    "JobFailedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobFailedHandler(OnlineJobErrorCode errorCode)"
+    },
+    "OnGetMessagesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Messages": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGetMessagesComplete(array<MessageEntry> Messages, int errorCode)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "QueueSecondHTTPRequest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QueueSecondHTTPRequest()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

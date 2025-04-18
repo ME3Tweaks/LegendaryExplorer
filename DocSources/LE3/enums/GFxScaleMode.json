@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SM_NoScale": {
+      "value": 0,
+      "documentation": null
+    },
+    "SM_ShowAll": {
+      "value": 1,
+      "documentation": null
+    },
+    "SM_ExactFit": {
+      "value": 2,
+      "documentation": null
+    },
+    "SM_NoBorder": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

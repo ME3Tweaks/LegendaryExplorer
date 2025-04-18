@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SKILL_GAME_DIFFICULTY_EASY": {
+      "value": 0,
+      "documentation": null
+    },
+    "SKILL_GAME_DIFFICULTY_MEDIUM": {
+      "value": 1,
+      "documentation": null
+    },
+    "SKILL_GAME_DIFFICULTY_HARD": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

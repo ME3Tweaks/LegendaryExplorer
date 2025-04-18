@@ -1,0 +1,13 @@
+{
+  "parent": "BioGestChainNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildren": {
+      "type": "BioGestChainNode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

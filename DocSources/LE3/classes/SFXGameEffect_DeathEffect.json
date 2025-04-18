@@ -1,0 +1,29 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "PlayExclusivelyForDamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CE_DeathEffectTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "DeathSoundEffect": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCorpseDestroyed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

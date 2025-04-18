@@ -1,0 +1,36 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DamageInterval": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "DoDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoDamage()"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

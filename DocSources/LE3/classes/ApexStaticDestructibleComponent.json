@@ -1,0 +1,17 @@
+{
+  "parent": "ApexStaticComponent",
+  "package": "Engine",
+  "variables": {
+    "ApexDestructibleActor": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ApexDestructiblePreview": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

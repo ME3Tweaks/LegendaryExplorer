@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BSCbt_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSCbt_CoverSwitch": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSCbt_CoverDirection": {
+      "value": 2,
+      "documentation": null
+    },
+    "BSCbt_CoverState": {
+      "value": 3,
+      "documentation": null
+    },
+    "BSCbt_CoverBlocked": {
+      "value": 4,
+      "documentation": null
+    },
+    "BSCbt_CombatSwitch": {
+      "value": 5,
+      "documentation": null
+    },
+    "BSCbt_CoverPredictDirection": {
+      "value": 6,
+      "documentation": null
+    },
+    "BSCbt_CoverBlockType": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

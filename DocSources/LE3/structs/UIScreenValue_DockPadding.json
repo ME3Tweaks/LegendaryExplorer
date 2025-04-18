@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PaddingValue": {
+      "type": null,
+      "documentation": null
+    },
+    "PaddingScaleType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

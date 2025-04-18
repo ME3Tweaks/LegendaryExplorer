@@ -1,0 +1,401 @@
+{
+  "parent": "SVehicle",
+  "package": "SFXGame",
+  "variables": {
+    "AimDir": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DesiredAimDir": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Claim": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "Loadout": {
+      "type": "SFXLoadoutData",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "oSkelControlGun": {
+      "type": "SkelControlLookAt",
+      "documentation": null
+    },
+    "oSkelControlShield": {
+      "type": "SkelControlLookAt",
+      "documentation": null
+    },
+    "DriverAnimInfo": {
+      "type": "SFXAnimSetCookSpec",
+      "documentation": null
+    },
+    "MountingPoint": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TurretLoopStart": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "TurretLoopStop": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PreviousCameraPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxPitchAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadarRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadarFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "YawClamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "TrackSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "SearchSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TooCloseDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "EligibleAIRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerDamageReduction": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxYawSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWeaponFiring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowedToLeave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAICanUse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFiring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceTightAim": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddDefaultInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddDefaultInventory()"
+    },
+    "DriverLeave": {
+      "documentation": null,
+      "signature_members": {
+        "bForceLeave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverLeave(bool bForceLeave)"
+    },
+    "GetViewRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetViewRotation()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UpdateForMovingBase": {
+      "documentation": null,
+      "signature_members": {
+        "BaseActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateForMovingBase(Actor BaseActor)"
+    },
+    "ImpactWithPower": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactWithPower(EPowerResistance Resistance, Pawn Caster, Vector HitLocation, Vector HitNormal, float Damage, Vector Force, Class<DamageType> DamageType)"
+    },
+    "CanEnterVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanEnterVehicle(Pawn P)"
+    },
+    "DriverDied": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverDied(Class<DamageType> DamageType)"
+    },
+    "DriverEnter": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverEnter(Pawn P)"
+    },
+    "IsPendingFire": {
+      "documentation": null,
+      "signature_members": {
+        "InFiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPendingFire(byte InFiringMode)"
+    },
+    "PlaceExitingDriver": {
+      "documentation": null,
+      "signature_members": {
+        "ExitingDriver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaceExitingDriver(optional Pawn ExitingDriver)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutViewRot": {
+          "type": null,
+          "documentation": null
+        },
+        "OutDeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator OutViewRot, out Rotator OutDeltaRot)"
+    },
+    "TryToDrive": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryToDrive(Pawn P)"
+    },
+    "AIIdleNotification": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AIIdleNotification(SFXAI_Core C)"
+    },
+    "AITryToDriveMe": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AITryToDriveMe(Pawn P)"
+    },
+    "CanBeDrivenBy": {
+      "documentation": null,
+      "signature_members": {
+        "PossibleDriver": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeDrivenBy(SFXPawn PossibleDriver)"
+    },
+    "ClaimTurret": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClaimTurret(Controller C)"
+    },
+    "GetRandomRotForTurretScan": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetRandomRotForTurretScan(SFXAI_Core C)"
+    },
+    "IsWithinRotationClamps": {
+      "documentation": null,
+      "signature_members": {
+        "Loc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsWithinRotationClamps(Vector Loc)"
+    },
+    "TurretClampYaw": {
+      "documentation": null,
+      "signature_members": {
+        "Rot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TurretClampYaw(out Rotator Rot)"
+    },
+    "UnclaimTurret": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnclaimTurret(Controller C)"
+    },
+    "UpdateAIController": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAIController(SFXAI_Core C, float DeltaTime)"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Used(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

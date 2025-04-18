@@ -1,0 +1,406 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "MovieResource": {
+      "type": "SFXGUILegacyScaleformResource",
+      "documentation": null
+    },
+    "lstQueuedCommands": {
+      "type": "BioSFQueuedCommand",
+      "documentation": null
+    },
+    "oPanel": {
+      "type": "SFXGUIMovieLegacyAdapter",
+      "documentation": null
+    },
+    "oParentManager": {
+      "type": "SFXGUIInteraction",
+      "documentation": null
+    },
+    "nHandlerID": {
+      "type": "int",
+      "documentation": null
+    },
+    "bSetGameMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreGCOnPanelCleanup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPipeDirectInputToGFx": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eGameMode": {
+      "type": "EGameModes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetDefaultHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUIMovie",
+      "signature": "SFXGUIMovie GetDefaultHandler()"
+    },
+    "GetStageViewportOffset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector2D",
+      "signature": "Vector2D GetStageViewportOffset()"
+    },
+    "GetVariableFloat": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetVariableFloat(string sPath)"
+    },
+    "GotoFrameAndPlay": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "nFrame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoFrameAndPlay(string sPath, int nFrame)"
+    },
+    "GotoFrameAndStop": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "nFrame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoFrameAndStop(string sPath, int nFrame)"
+    },
+    "GotoLabelAndPlay": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "sLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoLabelAndPlay(string sPath, string sLabel)"
+    },
+    "GotoLabelAndStop": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "sLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoLabelAndStop(string sPath, string sLabel)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "InvokeMethod": {
+      "documentation": null,
+      "signature_members": {
+        "sMethodName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeMethod(string sMethodName)"
+    },
+    "InvokeMethodArgs": {
+      "documentation": null,
+      "signature_members": {
+        "sMethodName": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeMethodArgs(string sMethodName, const out array<ASParams> lstArguments)"
+    },
+    "IsMouseShown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMouseShown()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "QueueCommand": {
+      "documentation": null,
+      "signature_members": {
+        "stQueuedCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueCommand(const out BioSFQueuedCommand stQueuedCommand)"
+    },
+    "SendMouseToScaleForm": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMouseToScaleForm(byte nEvent)"
+    },
+    "SetClipHeight": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "fHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipHeight(string sPath, float fHeight)"
+    },
+    "SetClipLocation": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipLocation(string sPath, float fX, float fY)"
+    },
+    "SetClipVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipVisibility(string sPath, bool bVisible)"
+    },
+    "SetClipWidth": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "fWidth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipWidth(string sPath, float fWidth)"
+    },
+    "SetEventsDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEventsDisabled(bool bDisabled)"
+    },
+    "SetExternalTextureOnPanel": {
+      "documentation": null,
+      "signature_members": {
+        "Resource": {
+          "type": null,
+          "documentation": null
+        },
+        "Texture": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetExternalTextureOnPanel(string Resource, Texture Texture)"
+    },
+    "SetInputDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bDisabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDisabled(bool bDisabled)"
+    },
+    "SetMouseShown": {
+      "documentation": null,
+      "signature_members": {
+        "showIt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseShown(optional bool showIt)"
+    },
+    "SetMovieVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMovieVisibility(bool bVisible)"
+    },
+    "SetTextFieldText": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        },
+        "bHTML": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextFieldText(string sPath, string sText, optional bool bHTML)"
+    },
+    "SetVariableFloat": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": null,
+          "documentation": null
+        },
+        "fVar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableFloat(string sPath, float fVar)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleButtonHelpRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonHelpRefresh(bool usingGamepad)"
+    },
+    "SetMenuAdvanceSwapped": {
+      "documentation": null,
+      "signature_members": {
+        "bSwapped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMenuAdvanceSwapped(bool bSwapped)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

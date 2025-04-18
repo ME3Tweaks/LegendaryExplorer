@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Group": {
+      "type": null,
+      "documentation": null
+    },
+    "TrackIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "KeyIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "UnsnappedPosition": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

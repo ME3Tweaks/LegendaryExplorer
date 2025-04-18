@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AimProfile_Rifle": {
+      "value": 0,
+      "documentation": null
+    },
+    "AimProfile_Pistol": {
+      "value": 1,
+      "documentation": null
+    },
+    "AimProfile_PistolShield": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

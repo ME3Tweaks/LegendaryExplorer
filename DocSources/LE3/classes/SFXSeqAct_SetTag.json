@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContentLiveKismet",
+  "variables": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "UniqueTag": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

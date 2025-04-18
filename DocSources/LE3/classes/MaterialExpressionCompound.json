@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "MaterialExpressions": {
+      "type": "MaterialExpression",
+      "documentation": null
+    },
+    "Caption": {
+      "type": "string",
+      "documentation": null
+    },
+    "bExpanded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

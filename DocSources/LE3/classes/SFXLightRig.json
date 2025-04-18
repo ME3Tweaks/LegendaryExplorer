@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LightEnvironment": {
+      "type": "SHVectorRGB",
+      "documentation": null
+    },
+    "NonShadowedLightEnvironment": {
+      "type": "SHVectorRGB",
+      "documentation": null
+    },
+    "KeyLightModifier": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "FillLightModifier": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "AmbientLightModifier": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "TotalShadowIntensity": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "ShadowDirection": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "InSourceEnv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(BioDynamicLightEnvironmentComponent InSourceEnv)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

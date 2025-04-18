@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "AccomplishmentName": {
+      "type": null,
+      "documentation": null
+    },
+    "AccomplishmentProgressName": {
+      "type": null,
+      "documentation": null
+    },
+    "Goal": {
+      "type": null,
+      "documentation": null
+    },
+    "Interval": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "MPDescription": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

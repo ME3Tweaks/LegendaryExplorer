@@ -1,0 +1,26 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "StopsProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopsProjectile(Projectile P)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

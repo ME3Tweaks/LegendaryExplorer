@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "lstTaskHistory": {
+      "type": null,
+      "documentation": null
+    },
+    "nQuestAdded": {
+      "type": null,
+      "documentation": null
+    },
+    "nActiveGoal": {
+      "type": null,
+      "documentation": null
+    },
+    "bQuestUpdated": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

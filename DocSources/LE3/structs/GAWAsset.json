@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "AssetName": {
+      "type": null,
+      "documentation": null
+    },
+    "ImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "NotificationImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "ModTargets": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockPlotStates": {
+      "type": null,
+      "documentation": null
+    },
+    "DebugConditionalDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "GUICategoryID": {
+      "type": null,
+      "documentation": null
+    },
+    "StartingStrength": {
+      "type": null,
+      "documentation": null
+    },
+    "GUIName": {
+      "type": null,
+      "documentation": null
+    },
+    "GUIDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentStrength": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxStrength": {
+      "type": null,
+      "documentation": null
+    },
+    "ConflictZoneID": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsExploration": {
+      "type": null,
+      "documentation": null
+    },
+    "bShowNotificationOnAward": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "SubType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

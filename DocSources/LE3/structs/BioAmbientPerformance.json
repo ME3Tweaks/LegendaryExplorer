@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "nmGroup": {
+      "type": null,
+      "documentation": null
+    },
+    "nmPropName": {
+      "type": null,
+      "documentation": null
+    },
+    "nmOriginalName": {
+      "type": null,
+      "documentation": null
+    },
+    "bValidForDLCOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bSuppressDamage": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

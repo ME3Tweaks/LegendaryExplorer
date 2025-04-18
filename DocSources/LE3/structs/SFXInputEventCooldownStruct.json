@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "fCooldown": {
+      "type": null,
+      "documentation": null
+    },
+    "EventId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

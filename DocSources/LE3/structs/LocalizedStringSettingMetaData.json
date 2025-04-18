@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ColumnHeaderText": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueMappings": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

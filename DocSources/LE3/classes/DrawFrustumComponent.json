@@ -1,0 +1,33 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "FrustumColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "FrustumAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrustumAspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrustumStartDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrustumEndDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "Texture": {
+      "type": "Texture",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

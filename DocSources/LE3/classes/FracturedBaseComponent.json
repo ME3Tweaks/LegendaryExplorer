@@ -1,0 +1,98 @@
+{
+  "parent": "StaticMeshComponent",
+  "package": "Engine",
+  "variables": {
+    "VisibleFragments": {
+      "type": "byte",
+      "documentation": null
+    },
+    "ComponentBaseResources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "RenderCommandFence_Mirror",
+      "documentation": null
+    },
+    "NumResourceIndices": {
+      "type": "int",
+      "documentation": null
+    },
+    "ComponentIndexBufferSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "bResetStaticMesh": {
+      "type": "int",
+      "documentation": null
+    },
+    "bVisibilityHasChanged": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVisibilityReset": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialVisibilityValue": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseDynamicIndexBuffer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseDynamicIBWithHiddenFragments": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetNumFragments": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumFragments()"
+    },
+    "GetNumVisibleFragments": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumVisibleFragments()"
+    },
+    "GetVisibleFragments": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "array<byte> GetVisibleFragments()"
+    },
+    "IsFragmentVisible": {
+      "documentation": null,
+      "signature_members": {
+        "FragmentIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFragmentVisible(int FragmentIndex)"
+    },
+    "SetStaticMesh": {
+      "documentation": null,
+      "signature_members": {
+        "NewMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStaticMesh(StaticMesh NewMesh, optional bool bForce)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

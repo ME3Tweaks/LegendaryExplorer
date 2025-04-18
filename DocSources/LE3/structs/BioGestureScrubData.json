@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "aGestPins": {
+      "type": null,
+      "documentation": null
+    },
+    "nmNextPoseSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmNextPoseAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "fCurPoseTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fNextPoseTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fTransitionTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fCurPoseWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "fTransitionWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "fNextPoseWeight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

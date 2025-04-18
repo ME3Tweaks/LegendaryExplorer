@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "ActorToReBase": {
+      "type": null,
+      "documentation": null
+    },
+    "NewBase": {
+      "type": null,
+      "documentation": null
+    },
+    "SkelComponent": {
+      "type": null,
+      "documentation": null
+    },
+    "NewFloor": {
+      "type": null,
+      "documentation": null
+    },
+    "AttachName": {
+      "type": null,
+      "documentation": null
+    },
+    "bNotifyActor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

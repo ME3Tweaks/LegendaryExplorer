@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Text": {
+      "type": null,
+      "documentation": null
+    },
+    "Label": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultValue": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxValue": {
+      "type": null,
+      "documentation": null
+    },
+    "StepSize": {
+      "type": null,
+      "documentation": null
+    },
+    "bHidden": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

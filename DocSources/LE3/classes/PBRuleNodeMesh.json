@@ -1,0 +1,32 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "PartialOccludedBuildingMesh": {
+      "type": "BuildingMeshInfo",
+      "documentation": null
+    },
+    "BuildingMeshes": {
+      "type": "BuildingMeshInfo",
+      "documentation": null
+    },
+    "bDoOcclusionTest": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockAll": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PickRandomBuildingMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int PickRandomBuildingMesh()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

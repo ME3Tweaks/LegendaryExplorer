@@ -1,0 +1,43 @@
+{
+  "parent": "SFXGUIValue_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "MarkerScale": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "Player": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "FadeInExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "DisplayRange": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(const out SFXGUISceneView SceneView)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

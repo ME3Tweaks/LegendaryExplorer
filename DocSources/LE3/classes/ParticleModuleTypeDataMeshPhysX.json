@@ -1,0 +1,29 @@
+{
+  "parent": "ParticleModuleTypeDataMesh",
+  "package": "Engine",
+  "variables": {
+    "RenderInstance": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VerticalLod": {
+      "type": "PhysXEmitterVerticalLodProperties",
+      "documentation": null
+    },
+    "PhysXParSys": {
+      "type": "PhysXParticleSystem",
+      "documentation": null
+    },
+    "FluidRotationCoefficient": {
+      "type": "float",
+      "documentation": null
+    },
+    "PhysXRotationMethod": {
+      "type": "EPhysXMeshRotationMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

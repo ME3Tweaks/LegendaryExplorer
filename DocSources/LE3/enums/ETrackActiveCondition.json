@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "ETAC_Always": {
+      "value": 0,
+      "documentation": null
+    },
+    "ETAC_GoreEnabled": {
+      "value": 1,
+      "documentation": null
+    },
+    "ETAC_GoreDisabled": {
+      "value": 2,
+      "documentation": null
+    },
+    "ETAC_BioFemalePlayer": {
+      "value": 3,
+      "documentation": null
+    },
+    "ETAC_BioMalePlayer": {
+      "value": 4,
+      "documentation": null
+    },
+    "ETAC_BioSingleHandWeapon": {
+      "value": 5,
+      "documentation": null
+    },
+    "ETAC_BioDualHandWeapon": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

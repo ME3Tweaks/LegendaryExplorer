@@ -1,0 +1,105 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_SpawnRate": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_Lifetime": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_Offset": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "m_Rotation": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "m_CopyDelay": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_lstMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_pActorClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_pSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_nmEffectsMaterial": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_nmAnimSeq": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nNumActors": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bCopyPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopyRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPositionSmoothing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopyAnimation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopySkeletalMesh": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopyMaterialParams": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopyAttachments": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopyAttachmentAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDontMove": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHideFirstFrame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSendTimeParam": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstantiateOtherMaterials": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,57 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "m_nStartingResource": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPhase2Resource": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPhase2Time": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bCompleted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRewardOnTimeFail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_CompletionState": {
+      "type": "ESkillGameComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnCancel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCancel()"
+    },
+    "OnFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnFailure()"
+    },
+    "OnSuccess": {
+      "documentation": null,
+      "signature_members": {
+        "nRemainingResources": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSuccess(int nRemainingResources)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

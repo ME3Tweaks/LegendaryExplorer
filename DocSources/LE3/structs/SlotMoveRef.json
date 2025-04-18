@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Dest": {
+      "type": null,
+      "documentation": null
+    },
+    "Poly": {
+      "type": null,
+      "documentation": null
+    },
+    "Direction": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,26 @@
+{
+  "parent": "BioSFHandler_ChoiceGUI",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ScrollText": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollText(float fValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

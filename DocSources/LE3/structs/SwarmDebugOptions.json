@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "bDistributionEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceContentExport": {
+      "type": null,
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

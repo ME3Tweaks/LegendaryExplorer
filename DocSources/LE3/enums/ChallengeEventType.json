@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "CET_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CET_EnemyKill": {
+      "value": 1,
+      "documentation": null
+    },
+    "CET_EnemyScoreKill": {
+      "value": 2,
+      "documentation": null
+    },
+    "CET_DamageScore": {
+      "value": 3,
+      "documentation": null
+    },
+    "CET_MatchCompletion": {
+      "value": 4,
+      "documentation": null
+    },
+    "CET_WavesCompleted": {
+      "value": 5,
+      "documentation": null
+    },
+    "CET_Medal": {
+      "value": 6,
+      "documentation": null
+    },
+    "CET_Power": {
+      "value": 7,
+      "documentation": null
+    },
+    "CET_Assist": {
+      "value": 8,
+      "documentation": null
+    },
+    "CET_Revive": {
+      "value": 9,
+      "documentation": null
+    },
+    "CET_Promotion": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

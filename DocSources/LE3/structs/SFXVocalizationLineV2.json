@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "Recipient": {
+      "type": null,
+      "documentation": null
+    },
+    "ThirdParam": {
+      "type": null,
+      "documentation": null
+    },
+    "DebugText": {
+      "type": null,
+      "documentation": null
+    },
+    "Sound": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

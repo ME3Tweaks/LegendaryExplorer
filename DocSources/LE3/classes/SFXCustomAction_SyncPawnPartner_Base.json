@@ -1,0 +1,117 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "APSBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "APSTimeline": {
+      "type": "SFXTimelineData",
+      "documentation": null
+    },
+    "InstigatorCustomAction": {
+      "type": "int",
+      "documentation": null
+    },
+    "APSThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "APSIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "bSendReachedDestinationEvent": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReachedPrecisePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedPrecisePosition()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "ButtonPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ButtonPressed()"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "CanInteractWithPawn": {
+      "documentation": null,
+      "signature_members": {
+        "OtherPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanInteractWithPawn(BioPawn OtherPawn)"
+    },
+    "CloseInputWindow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseInputWindow()"
+    },
+    "InteractionStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InteractionStarted()"
+    },
+    "MessageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MessageEvent(Name EventName, Object Sender)"
+    },
+    "ReplicateMashSuccess": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateMashSuccess(BioPawn Pawn)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

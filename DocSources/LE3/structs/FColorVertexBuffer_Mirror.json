@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "VertexData": {
+      "type": null,
+      "documentation": null
+    },
+    "Data": {
+      "type": null,
+      "documentation": null
+    },
+    "Stride": {
+      "type": null,
+      "documentation": null
+    },
+    "NumVertices": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

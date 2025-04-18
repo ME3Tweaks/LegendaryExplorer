@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsWildcard": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

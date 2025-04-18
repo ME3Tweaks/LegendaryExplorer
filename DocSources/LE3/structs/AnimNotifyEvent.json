@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Comment": {
+      "type": null,
+      "documentation": null
+    },
+    "Notify": {
+      "type": null,
+      "documentation": null
+    },
+    "Time": {
+      "type": null,
+      "documentation": null
+    },
+    "Duration": {
+      "type": null,
+      "documentation": null
+    },
+    "bIgnoreWeightThreshold": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerType": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomActionReactionType": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerComboTypeUniqueID": {
+      "type": null,
+      "documentation": null
+    },
+    "TriggerCounter": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerRank": {
+      "type": null,
+      "documentation": null
+    },
+    "MiscFlags": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

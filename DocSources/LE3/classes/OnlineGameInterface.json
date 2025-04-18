@@ -1,0 +1,864 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnRegisterPlayerComplete__Delegate": {
+      "type": "OnRegisterPlayerComplete",
+      "documentation": null
+    },
+    "__OnUpdateOnlineGameComplete__Delegate": {
+      "type": "OnUpdateOnlineGameComplete",
+      "documentation": null
+    },
+    "__OnDestroyOnlineGameComplete__Delegate": {
+      "type": "OnDestroyOnlineGameComplete",
+      "documentation": null
+    },
+    "__OnFindOnlineGamesComplete__Delegate": {
+      "type": "OnFindOnlineGamesComplete",
+      "documentation": null
+    },
+    "__OnCancelFindOnlineGamesComplete__Delegate": {
+      "type": "OnCancelFindOnlineGamesComplete",
+      "documentation": null
+    },
+    "__OnJoinOnlineGameComplete__Delegate": {
+      "type": "OnJoinOnlineGameComplete",
+      "documentation": null
+    },
+    "__OnCreateOnlineGameComplete__Delegate": {
+      "type": "OnCreateOnlineGameComplete",
+      "documentation": null
+    },
+    "__OnUnregisterPlayerComplete__Delegate": {
+      "type": "OnUnregisterPlayerComplete",
+      "documentation": null
+    },
+    "__OnStartOnlineGameComplete__Delegate": {
+      "type": "OnStartOnlineGameComplete",
+      "documentation": null
+    },
+    "__OnEndOnlineGameComplete__Delegate": {
+      "type": "OnEndOnlineGameComplete",
+      "documentation": null
+    },
+    "__OnArbitrationRegistrationComplete__Delegate": {
+      "type": "OnArbitrationRegistrationComplete",
+      "documentation": null
+    },
+    "__OnGameInviteAccepted__Delegate": {
+      "type": "OnGameInviteAccepted",
+      "documentation": null
+    },
+    "__OnQuickMatchComplete__Delegate": {
+      "type": "OnQuickMatchComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AcceptGameInvite": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AcceptGameInvite(byte LocalUserNum, Name SessionName)"
+    },
+    "CancelFindOnlineGames": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CancelFindOnlineGames()"
+    },
+    "CreateOnlineGame": {
+      "documentation": null,
+      "signature_members": {
+        "HostingPlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewGameSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateOnlineGame(byte HostingPlayerNum, Name SessionName, OnlineGameSettings NewGameSettings)"
+    },
+    "DestroyOnlineGame": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DestroyOnlineGame(Name SessionName)"
+    },
+    "EndOnlineGame": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EndOnlineGame(Name SessionName)"
+    },
+    "FindOnlineGames": {
+      "documentation": null,
+      "signature_members": {
+        "SearchingPlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindOnlineGames(byte SearchingPlayerNum, OnlineGameSearch SearchSettings)"
+    },
+    "ForceCleanUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ForceCleanUp()"
+    },
+    "GetResolvedConnectString": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "ConnectInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResolvedConnectString(Name SessionName, out string ConnectInfo)"
+    },
+    "JoinOnlineGame": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredGame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool JoinOnlineGame(byte PlayerNum, Name SessionName, const out OnlineGameSearchResult DesiredGame)"
+    },
+    "OnArbitrationRegistrationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnArbitrationRegistrationComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnCancelFindOnlineGamesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCancelFindOnlineGamesComplete(bool bWasSuccessful)"
+    },
+    "OnCreateOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreateOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnDestroyOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDestroyOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnEndOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEndOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnFindOnlineGamesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFindOnlineGamesComplete(bool bWasSuccessful)"
+    },
+    "OnGameInviteAccepted": {
+      "documentation": null,
+      "signature_members": {
+        "InviteResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameInviteAccepted(const out OnlineGameSearchResult InviteResult)"
+    },
+    "OnJoinOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJoinOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnQuickMatchComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Result": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnQuickMatchComplete(byte Result)"
+    },
+    "OnRegisterPlayerComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegisterPlayerComplete(Name SessionName, UniqueNetId PlayerID, bool bWasSuccessful)"
+    },
+    "OnStartOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnStartOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "OnUnregisterPlayerComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUnregisterPlayerComplete(Name SessionName, UniqueNetId PlayerID, bool bWasSuccessful)"
+    },
+    "OnUpdateOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdateOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "QuickMatch": {
+      "documentation": null,
+      "signature_members": {
+        "quickMatchSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QuickMatch(optional OnlineGameSettings quickMatchSettings)"
+    },
+    "RegisterPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasInvited": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterPlayer(Name SessionName, UniqueNetId PlayerID, bool bWasInvited)"
+    },
+    "StartOnlineGame": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartOnlineGame(Name SessionName)"
+    },
+    "UnregisterPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterPlayer(Name SessionName, UniqueNetId PlayerID)"
+    },
+    "UpdateOnlineGame": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "UpdatedGameSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldRefreshOnlineData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOnlineGame(Name SessionName, OnlineGameSettings UpdatedGameSettings, optional bool bShouldRefreshOnlineData)"
+    },
+    "BindPlatformSpecificSessionToSearch": {
+      "documentation": null,
+      "signature_members": {
+        "SearchingPlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SearchSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "PlatformSpecificInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BindPlatformSpecificSessionToSearch(byte SearchingPlayerNum, OnlineGameSearch SearchSettings, byte PlatformSpecificInfo[80])"
+    },
+    "FreeSearchResults": {
+      "documentation": null,
+      "signature_members": {
+        "Search": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FreeSearchResults(optional OnlineGameSearch Search)"
+    },
+    "ReadPlatformSpecificSessionInfo": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredGame": {
+          "type": null,
+          "documentation": null
+        },
+        "PlatformSpecificInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadPlatformSpecificSessionInfo(const out OnlineGameSearchResult DesiredGame, out byte PlatformSpecificInfo[80])"
+    },
+    "AddArbitrationRegistrationCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ArbitrationRegistrationCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddArbitrationRegistrationCompleteDelegate(delegate<OnArbitrationRegistrationComplete> ArbitrationRegistrationCompleteDelegate)"
+    },
+    "AddCancelFindOnlineGamesCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "CancelFindOnlineGamesCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCancelFindOnlineGamesCompleteDelegate(delegate<OnCancelFindOnlineGamesComplete> CancelFindOnlineGamesCompleteDelegate)"
+    },
+    "AddCreateOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "CreateOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCreateOnlineGameCompleteDelegate(delegate<OnCreateOnlineGameComplete> CreateOnlineGameCompleteDelegate)"
+    },
+    "AddDestroyOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "DestroyOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDestroyOnlineGameCompleteDelegate(delegate<OnDestroyOnlineGameComplete> DestroyOnlineGameCompleteDelegate)"
+    },
+    "AddEndOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "EndOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEndOnlineGameCompleteDelegate(delegate<OnEndOnlineGameComplete> EndOnlineGameCompleteDelegate)"
+    },
+    "AddFindOnlineGamesCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FindOnlineGamesCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFindOnlineGamesCompleteDelegate(delegate<OnFindOnlineGamesComplete> FindOnlineGamesCompleteDelegate)"
+    },
+    "AddGameInviteAcceptedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "GameInviteAcceptedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGameInviteAcceptedDelegate(byte LocalUserNum, delegate<OnGameInviteAccepted> GameInviteAcceptedDelegate)"
+    },
+    "AddJoinOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "JoinOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddJoinOnlineGameCompleteDelegate(delegate<OnJoinOnlineGameComplete> JoinOnlineGameCompleteDelegate)"
+    },
+    "AddQuickMatchCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "QuickMatchCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddQuickMatchCompleteDelegate(delegate<OnQuickMatchComplete> QuickMatchCompleteDelegate)"
+    },
+    "AddRegisterPlayerCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "RegisterPlayerCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRegisterPlayerCompleteDelegate(delegate<OnRegisterPlayerComplete> RegisterPlayerCompleteDelegate)"
+    },
+    "AddStartOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "StartOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddStartOnlineGameCompleteDelegate(delegate<OnStartOnlineGameComplete> StartOnlineGameCompleteDelegate)"
+    },
+    "AddUnregisterPlayerCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "UnregisterPlayerCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddUnregisterPlayerCompleteDelegate(delegate<OnUnregisterPlayerComplete> UnregisterPlayerCompleteDelegate)"
+    },
+    "AddUpdateOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "UpdateOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddUpdateOnlineGameCompleteDelegate(delegate<OnUpdateOnlineGameComplete> UpdateOnlineGameCompleteDelegate)"
+    },
+    "ClearArbitrationRegistrationCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ArbitrationRegistrationCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearArbitrationRegistrationCompleteDelegate(delegate<OnArbitrationRegistrationComplete> ArbitrationRegistrationCompleteDelegate)"
+    },
+    "ClearCancelFindOnlineGamesCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "CancelFindOnlineGamesCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearCancelFindOnlineGamesCompleteDelegate(delegate<OnCancelFindOnlineGamesComplete> CancelFindOnlineGamesCompleteDelegate)"
+    },
+    "ClearCreateOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "CreateOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearCreateOnlineGameCompleteDelegate(delegate<OnCreateOnlineGameComplete> CreateOnlineGameCompleteDelegate)"
+    },
+    "ClearDestroyOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "DestroyOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDestroyOnlineGameCompleteDelegate(delegate<OnDestroyOnlineGameComplete> DestroyOnlineGameCompleteDelegate)"
+    },
+    "ClearEndOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "EndOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearEndOnlineGameCompleteDelegate(delegate<OnEndOnlineGameComplete> EndOnlineGameCompleteDelegate)"
+    },
+    "ClearFindOnlineGamesCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FindOnlineGamesCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearFindOnlineGamesCompleteDelegate(delegate<OnFindOnlineGamesComplete> FindOnlineGamesCompleteDelegate)"
+    },
+    "ClearGameInviteAcceptedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "GameInviteAcceptedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearGameInviteAcceptedDelegate(byte LocalUserNum, delegate<OnGameInviteAccepted> GameInviteAcceptedDelegate)"
+    },
+    "ClearJoinOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "JoinOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearJoinOnlineGameCompleteDelegate(delegate<OnJoinOnlineGameComplete> JoinOnlineGameCompleteDelegate)"
+    },
+    "ClearQuickMatchCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "QuickMatchCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearQuickMatchCompleteDelegate(delegate<OnQuickMatchComplete> QuickMatchCompleteDelegate)"
+    },
+    "ClearRegisterPlayerCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "RegisterPlayerCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearRegisterPlayerCompleteDelegate(delegate<OnRegisterPlayerComplete> RegisterPlayerCompleteDelegate)"
+    },
+    "ClearStartOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "StartOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearStartOnlineGameCompleteDelegate(delegate<OnStartOnlineGameComplete> StartOnlineGameCompleteDelegate)"
+    },
+    "ClearUnregisterPlayerCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "UnregisterPlayerCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearUnregisterPlayerCompleteDelegate(delegate<OnUnregisterPlayerComplete> UnregisterPlayerCompleteDelegate)"
+    },
+    "ClearUpdateOnlineGameCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "UpdateOnlineGameCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearUpdateOnlineGameCompleteDelegate(delegate<OnUpdateOnlineGameComplete> UpdateOnlineGameCompleteDelegate)"
+    },
+    "GetArbitratedPlayers": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "OnlineArbitrationRegistrant",
+      "signature": "array<OnlineArbitrationRegistrant> GetArbitratedPlayers(Name SessionName)"
+    },
+    "GetGameSearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineGameSearch",
+      "signature": "OnlineGameSearch GetGameSearch()"
+    },
+    "GetGameSettings": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "OnlineGameSettings",
+      "signature": "OnlineGameSettings GetGameSettings(Name SessionName)"
+    },
+    "QueryNonAdvertisedData": {
+      "documentation": null,
+      "signature_members": {
+        "StartAt": {
+          "type": null,
+          "documentation": null
+        },
+        "NumberToQuery": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QueryNonAdvertisedData(int StartAt, int NumberToQuery)"
+    },
+    "ReadPlatformSpecificSessionInfoBySessionName": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlatformSpecificInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadPlatformSpecificSessionInfoBySessionName(Name SessionName, out byte PlatformSpecificInfo[80])"
+    },
+    "RecalculateSkillRating": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "Players": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RecalculateSkillRating(Name SessionName, const out array<UniqueNetId> Players)"
+    },
+    "RegisterForArbitration": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterForArbitration(Name SessionName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

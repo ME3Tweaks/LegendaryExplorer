@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "SpecParam": {
+      "type": null,
+      "documentation": null
+    },
+    "SpecPwrParam": {
+      "type": null,
+      "documentation": null
+    },
+    "EnvMapParam": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

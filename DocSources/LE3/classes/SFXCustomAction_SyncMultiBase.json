@@ -1,0 +1,74 @@
+{
+  "parent": "SFXCustomAction_SyncMultiPawnInstigator_Base",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Instigator": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "InstigatorPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "InstigatorBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InstigatorBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteraction()"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "StartAllTargetAnims": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartAllTargetAnims()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

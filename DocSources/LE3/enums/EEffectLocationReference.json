@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "ELR_Actor": {
+      "value": 0,
+      "documentation": null
+    },
+    "ELR_Bone": {
+      "value": 1,
+      "documentation": null
+    },
+    "ELR_Socket": {
+      "value": 2,
+      "documentation": null
+    },
+    "ELR_HitBone": {
+      "value": 3,
+      "documentation": null
+    },
+    "ELR_TargetSocket": {
+      "value": 4,
+      "documentation": null
+    },
+    "ELR_TargetBone": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

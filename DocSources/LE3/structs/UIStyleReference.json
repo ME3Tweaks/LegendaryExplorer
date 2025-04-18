@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "RequiredStyleClass": {
+      "type": null,
+      "documentation": null
+    },
+    "AssignedStyleID": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultStyleTag": {
+      "type": null,
+      "documentation": null
+    },
+    "ResolvedStyle": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,141 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AllowTransitionTo": {
+      "documentation": null,
+      "signature_members": {
+        "AttemptCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowTransitionTo(Class<GameAICommand> AttemptCommand)"
+    },
+    "CancelCommand": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelCommand(optional int nReason)"
+    },
+    "FireWeaponAtTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckLOS": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceShoot": {
+          "type": null,
+          "documentation": null
+        },
+        "fAttackDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "FireDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FireWeaponAtTarget(Actor oTarget, bool bCheckLOS, bool bForceShoot, float fAttackDuration, optional delegate<FireWeaponDelegate> FireDelegate)"
+    },
+    "MoveToGoalExternal": {
+      "documentation": null,
+      "signature_members": {
+        "NewMoveGoal": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceWalk": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToGoalExternal(Actor NewMoveGoal, optional float NewMoveOffset, optional bool bForceWalk, optional delegate<MoveToDelegate> MoveDelegate)"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "StartFollowingActor": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToFollow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartFollowingActor(Actor ActorToFollow)"
+    },
+    "UseInteractionPoint": {
+      "documentation": null,
+      "signature_members": {
+        "InteractionPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "fFidelityTimeout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UseInteractionPoint(Actor InteractionPoint, float fFidelityTimeout)"
+    },
+    "UsePowerOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerToUse": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreSuppression": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UsePowerOnTarget(Name nmPowerToUse, Actor oTarget, optional delegate<UsePowerDelegate> PowerDelegate, optional bool bIgnoreSuppression)"
+    }
+  },
+  "states": {
+    "Disabled": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

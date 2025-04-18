@@ -1,0 +1,214 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "FixedRelativeBoundingBox": {
+      "type": "BioRwBox",
+      "documentation": null
+    },
+    "Emitters": {
+      "type": "ParticleEmitter",
+      "documentation": null
+    },
+    "LODDistances": {
+      "type": "float",
+      "documentation": null
+    },
+    "LODSettings": {
+      "type": "ParticleSystemLOD",
+      "documentation": null
+    },
+    "SoloTracking": {
+      "type": "LODSoloTrack",
+      "documentation": null
+    },
+    "CustomOcclusionBounds": {
+      "type": "Box",
+      "documentation": null
+    },
+    "ThumbnailAngle": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "MacroUVPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PreviewComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "CurveEdSetup": {
+      "type": "InterpCurveEdSetup",
+      "documentation": null
+    },
+    "UpdateTime_FPS": {
+      "type": "float",
+      "documentation": null
+    },
+    "UpdateTime_Delta": {
+      "type": "float",
+      "documentation": null
+    },
+    "WarmupTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ThumbnailDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ThumbnailWarmup": {
+      "type": "float",
+      "documentation": null
+    },
+    "LODDistanceCheckTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LODDistanceMultiplayerBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "EditorLODSetting": {
+      "type": "int",
+      "documentation": null
+    },
+    "SecondsBeforeInactive": {
+      "type": "float",
+      "documentation": null
+    },
+    "Delay": {
+      "type": "float",
+      "documentation": null
+    },
+    "DelayLow": {
+      "type": "float",
+      "documentation": null
+    },
+    "MacroUVRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bOrientZAxisTowardCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRegenerateLODDuplicate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseFixedRelativeBoundingBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BioLockLowestLODToHighest": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldResetPeakCounts": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasPhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBioDependsOnPhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseRealtimeThumbnail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ThumbnailImageOutOfDate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipSpawnCountCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseDelayRange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SystemUpdateMode": {
+      "type": "EParticleSystemUpdateMode",
+      "documentation": null
+    },
+    "LODMethod": {
+      "type": "ParticleSystemLODMethod",
+      "documentation": null
+    },
+    "OcclusionBoundsMethod": {
+      "type": "EParticleSystemOcclusionBoundsMethod",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCurrentLODMethod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ParticleSystemLODMethod",
+      "signature": "ParticleSystemLODMethod GetCurrentLODMethod()"
+    },
+    "GetLODDistance": {
+      "documentation": null,
+      "signature_members": {
+        "LODLevelIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetLODDistance(int LODLevelIndex)"
+    },
+    "GetLODLevelCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetLODLevelCount()"
+    },
+    "GetMaxLifespan": {
+      "documentation": null,
+      "signature_members": {
+        "InComponentDelay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetMaxLifespan(float InComponentDelay)"
+    },
+    "SetCurrentLODMethod": {
+      "documentation": null,
+      "signature_members": {
+        "InMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentLODMethod(ParticleSystemLODMethod InMethod)"
+    },
+    "SetLODDistance": {
+      "documentation": null,
+      "signature_members": {
+        "LODLevelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetLODDistance(int LODLevelIndex, float InDistance)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

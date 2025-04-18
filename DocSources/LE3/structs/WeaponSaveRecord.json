@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "WeaponClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "AmmoPowerName": {
+      "type": null,
+      "documentation": null
+    },
+    "AmmoPowerSourceTag": {
+      "type": null,
+      "documentation": null
+    },
+    "AmmoUsedCount": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalAmmo": {
+      "type": null,
+      "documentation": null
+    },
+    "bLastWeapon": {
+      "type": null,
+      "documentation": null
+    },
+    "bCurrentWeapon": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

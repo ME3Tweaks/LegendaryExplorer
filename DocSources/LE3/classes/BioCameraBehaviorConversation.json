@@ -1,0 +1,137 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_vFixedCamPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rFixedCamRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_vProceduralCamPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_rProceduralCamRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_tDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null
+    },
+    "m_rRotationOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ViewSource": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pIdleCamAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_fNearPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "CAMERA_FOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLateralOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fIdleCamTimeIndex": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_idleCamAnimIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bDOFSettingDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIdleCamEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ForcePOV": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForcePOV()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "InternalModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

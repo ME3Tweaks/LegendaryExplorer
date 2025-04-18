@@ -1,0 +1,13 @@
+{
+  "parent": "PointLightComponent",
+  "package": "Engine",
+  "variables": {
+    "bUseVSMShadows": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

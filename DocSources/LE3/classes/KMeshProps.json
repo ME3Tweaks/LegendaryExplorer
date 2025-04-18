@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "COMNudge": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AggGeom": {
+      "type": "KAggregateGeom",
+      "documentation": null
+    },
+    "UmbraBoundsExtension": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

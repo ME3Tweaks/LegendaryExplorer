@@ -1,0 +1,180 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "Mips": {
+      "type": "IndirectArray_Mirror",
+      "documentation": null
+    },
+    "SystemMemoryData": {
+      "type": "byte",
+      "documentation": null
+    },
+    "ResourceMem": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TextureFileCacheGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "TFCFileGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "TFCFileGuidHiRes": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "TextureFileCacheName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "OriginalSizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "OriginalSizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "ForceMiplevelsToBeResident": {
+      "type": "int",
+      "documentation": null
+    },
+    "ForceMipLevelsToBeResidentTimestamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "HiResMipCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "RequestedMips": {
+      "type": "int",
+      "documentation": null
+    },
+    "ResidentMips": {
+      "type": "int",
+      "documentation": null
+    },
+    "PendingMipChangeRequestStatus": {
+      "type": "ThreadSafeCounter",
+      "documentation": null
+    },
+    "MipTailBaseIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "FirstResourceMemMip": {
+      "type": "int",
+      "documentation": null
+    },
+    "BioMipMapCompressionSetting": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentScreenSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentDistanceFromCameraSq": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentScreenSizeOld": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentDistanceFromCameraSqOld": {
+      "type": "float",
+      "documentation": null
+    },
+    "StreamingLinkIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Timer": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsStreamable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasCancelationPending": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasBeenLoadedFromPersistentArchive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGlobalForceMipLevelsToBeResident": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConfigForceMiplevelsToBeResident": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": null,
+          "documentation": null
+        },
+        "InSizeY": {
+          "type": null,
+          "documentation": null
+        },
+        "InFormat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Texture2D",
+      "signature": "Texture2D Create(int InSizeX, int InSizeY, optional EPixelFormat InFormat)"
+    },
+    "SetForceMipLevelsToBeResident": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": null,
+          "documentation": null
+        },
+        "CinematicTextureGroups": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceMipLevelsToBeResident(float Seconds, optional int CinematicTextureGroups)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

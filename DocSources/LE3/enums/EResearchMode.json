@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "MODE_RESEARCH_TOP": {
+      "value": 0,
+      "documentation": null
+    },
+    "MODE_RESEARCH_WEAPON": {
+      "value": 1,
+      "documentation": null
+    },
+    "MODE_RESEARCH_ARMOR": {
+      "value": 2,
+      "documentation": null
+    },
+    "MODE_RESEARCH_SHIP": {
+      "value": 3,
+      "documentation": null
+    },
+    "MODE_RESEARCH_GEAR": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

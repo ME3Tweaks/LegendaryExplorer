@@ -1,0 +1,41 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "Brightness": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "ColorOverLife": {
+      "type": "RawDistributionVector",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_pLightClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_bCastShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCastStaticShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCastDynamicShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCastCompositeShadow": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

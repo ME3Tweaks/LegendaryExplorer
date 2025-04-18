@@ -1,0 +1,194 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "AllowMatchmaking": {
+      "documentation": null,
+      "signature_members": {
+        "bAllow": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdateServer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AllowMatchmaking(bool bAllow, bool bUpdateServer)"
+    },
+    "GetPlayerCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPlayerCount()"
+    },
+    "GetSFXGameSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineGameSettings",
+      "signature": "SFXOnlineGameSettings GetSFXGameSettings()"
+    },
+    "IsHostMigrationInProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsHostMigrationInProgress()"
+    },
+    "IsInvalidHost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInvalidHost()"
+    },
+    "IsPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlaying()"
+    },
+    "IsReadyForConnections": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReadyForConnections()"
+    },
+    "KickPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KickPlayer(UniqueNetId PlayerID)"
+    },
+    "LeaveGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeaveGame()"
+    },
+    "OnConnectionError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OnConnectionError()"
+    },
+    "OnHostAddressResolved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OnHostAddressResolved()"
+    },
+    "PerformCallRestrictedFunction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformCallRestrictedFunction()"
+    },
+    "SetCallRestrictedFunctionMode": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCallRestrictedFunctionMode(bool bEnable)"
+    },
+    "SetHostViabilityEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHostViabilityEnabled(bool Enabled)"
+    },
+    "SetMPDLCInfo": {
+      "documentation": null,
+      "signature_members": {
+        "allAvailableDLCs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMPDLCInfo(out array<MPDLCInfo> allAvailableDLCs)"
+    },
+    "SetMultiplayerTargetVersion": {
+      "documentation": null,
+      "signature_members": {
+        "protocolVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMultiplayerTargetVersion(int protocolVersion)"
+    },
+    "SetServerMatchMakingRulesVersion": {
+      "documentation": null,
+      "signature_members": {
+        "serverRulesVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetServerMatchMakingRulesVersion(int serverRulesVersion)"
+    },
+    "UpdateGameProtocolVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGameProtocolVersion()"
+    },
+    "GetMultiplayer_MissingDLCs": {
+      "documentation": null,
+      "signature_members": {
+        "missingDLCs": {
+          "type": null,
+          "documentation": null
+        },
+        "bInvitee": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetMultiplayer_MissingDLCs(out array<MPDLCInfo> missingDLCs, bool bInvitee)"
+    },
+    "IsOnLatestMultiplayerVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsOnLatestMultiplayerVersion()"
+    },
+    "SetKickedOutOfGame": {
+      "documentation": null,
+      "signature_members": {
+        "wasKicked": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetKickedOutOfGame(bool wasKicked)"
+    },
+    "WasKickedOutOfGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WasKickedOutOfGame()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

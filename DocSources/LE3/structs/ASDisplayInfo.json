@@ -1,0 +1,93 @@
+{
+  "Members": {
+    "X": {
+      "type": null,
+      "documentation": null
+    },
+    "Y": {
+      "type": null,
+      "documentation": null
+    },
+    "Z": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "XRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "YRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "XScale": {
+      "type": null,
+      "documentation": null
+    },
+    "YScale": {
+      "type": null,
+      "documentation": null
+    },
+    "ZScale": {
+      "type": null,
+      "documentation": null
+    },
+    "Alpha": {
+      "type": null,
+      "documentation": null
+    },
+    "visible": {
+      "type": null,
+      "documentation": null
+    },
+    "hasX": {
+      "type": null,
+      "documentation": null
+    },
+    "hasY": {
+      "type": null,
+      "documentation": null
+    },
+    "hasZ": {
+      "type": null,
+      "documentation": null
+    },
+    "hasRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "hasXRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "hasYRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "hasXScale": {
+      "type": null,
+      "documentation": null
+    },
+    "hasYScale": {
+      "type": null,
+      "documentation": null
+    },
+    "hasZScale": {
+      "type": null,
+      "documentation": null
+    },
+    "hasAlpha": {
+      "type": null,
+      "documentation": null
+    },
+    "hasVisible": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

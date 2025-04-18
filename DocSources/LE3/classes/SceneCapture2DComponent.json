@@ -1,0 +1,76 @@
+{
+  "parent": "SceneCaptureComponent",
+  "package": "Engine",
+  "variables": {
+    "ViewMatrix": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "ProjMatrix": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "TextureTarget": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null
+    },
+    "FieldOfView": {
+      "type": "float",
+      "documentation": null
+    },
+    "NearPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "FarPlane": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUpdateMatrices": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetCaptureParameters": {
+      "documentation": null,
+      "signature_members": {
+        "NewTextureTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "NewFOV": {
+          "type": null,
+          "documentation": null
+        },
+        "NewNearPlane": {
+          "type": null,
+          "documentation": null
+        },
+        "NewFarPlane": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptureParameters(optional TextureRenderTarget2D NewTextureTarget, optional float NewFOV, optional float NewNearPlane, optional float NewFarPlane)"
+    },
+    "SetView": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetView(Vector NewLocation, Rotator NewRotation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

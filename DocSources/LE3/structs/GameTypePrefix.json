@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Prefix": {
+      "type": null,
+      "documentation": null
+    },
+    "GameType": {
+      "type": null,
+      "documentation": null
+    },
+    "AdditionalGameTypes": {
+      "type": null,
+      "documentation": null
+    },
+    "ForcedObjects": {
+      "type": null,
+      "documentation": null
+    },
+    "OverrideCommonPackage": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsesCommonPackage": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsMultiplayer": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

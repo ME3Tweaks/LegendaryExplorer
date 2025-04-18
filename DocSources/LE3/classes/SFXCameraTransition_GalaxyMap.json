@@ -1,0 +1,43 @@
+{
+  "parent": "SFXCameraMode_Interpolate",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "InitializeTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromMode": {
+          "type": null,
+          "documentation": null
+        },
+        "ToMode": {
+          "type": null,
+          "documentation": null
+        },
+        "Time": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeTransition(SFXCameraMode FromMode, SFXCameraMode ToMode, float Time, bool PreserveTarget)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

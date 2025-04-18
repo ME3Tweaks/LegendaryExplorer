@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "RootMotion": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Anim": {
+      "type": null,
+      "documentation": null
+    },
+    "Weight": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasRootMotion": {
+      "type": null,
+      "documentation": null
+    },
+    "bMirrorSkeleton": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsAdditive": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

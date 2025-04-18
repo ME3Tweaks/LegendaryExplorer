@@ -1,0 +1,45 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapAnimSetReference": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_aNewGestureData": {
+      "type": "BioGestDataKey",
+      "documentation": null
+    },
+    "m_fGestureBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nGestureState": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bTransitioning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bGesturePlaying": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetPoseRMRotation": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPoseRMRotation(bool bEnabled)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

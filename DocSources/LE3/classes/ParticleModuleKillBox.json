@@ -1,0 +1,25 @@
+{
+  "parent": "ParticleModuleKillBase",
+  "package": "Engine",
+  "variables": {
+    "LowerLeftCornerRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "UpperRightCornerRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "bAbsolute": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKillInside": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ViewLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "ViewDir": {
+      "type": null,
+      "documentation": null
+    },
+    "InViewer": {
+      "type": null,
+      "documentation": null
+    },
+    "Viewer": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

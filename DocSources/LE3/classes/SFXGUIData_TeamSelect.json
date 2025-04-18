@@ -1,0 +1,69 @@
+{
+  "parent": "SFXGameChoiceGUIData",
+  "package": "SFXGame",
+  "variables": {
+    "HenchIdentities": {
+      "type": "SelectIdentity",
+      "documentation": null
+    },
+    "SelectAppearances": {
+      "type": "AppearanceSet",
+      "documentation": null
+    },
+    "PowerInfos": {
+      "type": "PowerInfo",
+      "documentation": null
+    },
+    "SelectInfos": {
+      "type": "SelectInfo",
+      "documentation": null
+    },
+    "DefaultImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "SelectName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "srSelectTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultAButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultBButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultXButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultYButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPartyConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPartyCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPartyQuestion": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srInfoExit": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

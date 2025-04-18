@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "IT_XAxis": {
+      "value": 0,
+      "documentation": null
+    },
+    "IT_YAxis": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

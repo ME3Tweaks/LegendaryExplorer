@@ -1,0 +1,47 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_bIsFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OptionsGUIMode": {
+      "type": "EOptionsGuiMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "onScreenClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onScreenClosed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

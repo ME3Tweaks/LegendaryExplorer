@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_fMaxThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fSmoothingFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bStart": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LMET_UE3": {
+      "value": 0,
+      "documentation": null
+    },
+    "LMET_Vector": {
+      "value": 1,
+      "documentation": null
+    },
+    "LMET_Simple": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

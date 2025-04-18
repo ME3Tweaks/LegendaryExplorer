@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ParamDataType_Ambiguous": {
+      "value": 0,
+      "documentation": null
+    },
+    "ParamDataType_Float": {
+      "value": 1,
+      "documentation": null
+    },
+    "ParamDataType_Vector": {
+      "value": 2,
+      "documentation": null
+    },
+    "ParamDataType_ColorWithAlpha": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

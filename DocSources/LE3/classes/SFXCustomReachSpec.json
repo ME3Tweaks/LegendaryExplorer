@@ -1,0 +1,13 @@
+{
+  "parent": "AdvancedReachSpec",
+  "package": "SFXGame",
+  "variables": {
+    "BlockingPawn": {
+      "type": "Pawn",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

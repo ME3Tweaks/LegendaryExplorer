@@ -1,0 +1,174 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Owner": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Instigator": {
+      "type": "Controller",
+      "documentation": null
+    },
+    "Causer": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Category": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "EffectValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPreventGibs": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreventEatable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DurationType": {
+      "type": "EDurationType",
+      "documentation": null
+    },
+    "BonusFormula": {
+      "type": "EBonusFormula",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "CheckOwnerInstigator": {
+      "documentation": null,
+      "signature_members": {
+        "Attacker": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Controller",
+      "signature": "Controller CheckOwnerInstigator(Controller Attacker)"
+    },
+    "ComputeCustomEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeCustomEffectValue(out float Value)"
+    },
+    "LoadGameEffectClass": {
+      "documentation": null,
+      "signature_members": {
+        "GEClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXGameEffect> LoadGameEffectClass(string GEClassName)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "OnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatEnd()"
+    },
+    "OnPaused": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPaused()"
+    },
+    "OnUnpaused": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnpaused()"
+    },
+    "SpawnWeaponImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "inInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactParticleSystem": {
+          "type": null,
+          "documentation": null
+        },
+        "UseImpactNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "UseGodBone": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnWeaponImpactVFX(Actor inInstigator, ImpactInfo Impact, ParticleSystem ImpactParticleSystem, optional bool UseImpactNormal, optional bool UseGodBone, optional float DrawScale)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

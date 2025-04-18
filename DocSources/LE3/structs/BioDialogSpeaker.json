@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "sSpeakerTag": {
+      "type": null,
+      "documentation": null
+    },
+    "aSpeaker": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

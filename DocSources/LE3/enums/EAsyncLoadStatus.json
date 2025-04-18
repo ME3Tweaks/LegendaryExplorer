@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ASYNC_LOAD_ERROR": {
+      "value": 0,
+      "documentation": null
+    },
+    "ASYNC_LOAD_STARTED": {
+      "value": 1,
+      "documentation": null
+    },
+    "ASYNC_LOAD_INPROGRESS": {
+      "value": 2,
+      "documentation": null
+    },
+    "ASYNC_LOAD_COMPLETE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

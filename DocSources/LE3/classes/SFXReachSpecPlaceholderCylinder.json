@@ -1,0 +1,13 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "PawnsToIgnore": {
+      "type": "Pawn",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

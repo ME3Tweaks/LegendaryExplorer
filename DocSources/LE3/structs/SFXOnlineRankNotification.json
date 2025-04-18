@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "FriendPersonaName": {
+      "type": null,
+      "documentation": null
+    },
+    "MapId": {
+      "type": null,
+      "documentation": null
+    },
+    "bBeaten": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "NavigationTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "ForcedNavigationTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "bNullOverride": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

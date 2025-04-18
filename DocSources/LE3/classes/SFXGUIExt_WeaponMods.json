@@ -1,0 +1,582 @@
+{
+  "parent": "SFXGUIMovieExtension",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentAllowedMods": {
+      "type": "int",
+      "documentation": null
+    },
+    "ModAttachSounds": {
+      "type": "ModAttachSoundInfo",
+      "documentation": null
+    },
+    "ModMeshActors": {
+      "type": "DynamicSMActor_Spawnable",
+      "documentation": null
+    },
+    "WeaponModBaseGripColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "WeaponModBaseBodyColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "WeaponModBaseEmissiveColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "m_oModControlMovieInfo": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_oModStatsMovieInfo": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "WeaponSelect": {
+      "type": "SFXGUI_WeaponSelection",
+      "documentation": null
+    },
+    "DataManager": {
+      "type": "SFXWeaponUIDataManager",
+      "documentation": null
+    },
+    "Kismet": {
+      "type": "SFXSeqAct_LaunchWeaponSelection",
+      "documentation": null
+    },
+    "CurrentChosenMods": {
+      "type": "int",
+      "documentation": null
+    },
+    "WeaponMeshActor": {
+      "type": "SkeletalMeshActorSpawnable",
+      "documentation": null
+    },
+    "CurrentMods": {
+      "type": "int",
+      "documentation": null
+    },
+    "ModStatsDisplay": {
+      "type": "SFXGUIMovie",
+      "documentation": null
+    },
+    "ModModsDisplay": {
+      "type": "SFXGUIMovie",
+      "documentation": null
+    },
+    "ModifyColorSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DefaultAttachSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CurrentModifyWeaponID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fPreviousMipLevelFadingValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "ModLeftButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ModRightButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ModifyWeaponText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srUnavailable": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MinDisplayBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "MipFadingRestoreFrameDelay": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumRemainingFramesToMipFadingRestore": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShowAllMods": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentModSelectionIsValid": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitorWeaponLoadIn": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAdded()"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "Setup": {
+      "documentation": null,
+      "signature_members": {
+        "modStatsRT": {
+          "type": null,
+          "documentation": null
+        },
+        "modControlRT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Setup(TextureRenderTarget2D modStatsRT, TextureRenderTarget2D modControlRT)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "ApplyCurrentWeaponMod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyCurrentWeaponMod()"
+    },
+    "AS_Mod_SetWeaponName": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_Mod_SetWeaponName(string sName)"
+    },
+    "AS_ModAddWeaponStat": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        },
+        "fBonus": {
+          "type": null,
+          "documentation": null
+        },
+        "fCompare": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ModAddWeaponStat(string sName, float fValue, float fBonus, float fCompare)"
+    },
+    "AS_ModClearWeaponStatsDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_ModClearWeaponStatsDisplay()"
+    },
+    "AS_ModInitModDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_ModInitModDisplay()"
+    },
+    "AS_ModSetModDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sImgPath": {
+          "type": null,
+          "documentation": null
+        },
+        "nModIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nLeftOption": {
+          "type": null,
+          "documentation": null
+        },
+        "nRightOption": {
+          "type": null,
+          "documentation": null
+        },
+        "nNumOptions": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsAvailable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ModSetModDisplay(int nDisplay, string sName, string sImgPath, int nModIndex, int nLeftOption, int nRightOption, int nNumOptions, bool bIsAvailable)"
+    },
+    "AS_ModSetModText": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sDesc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ModSetModText(string sName, string sDesc)"
+    },
+    "AS_SetScreensVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetScreensVisible(bool bVisible)"
+    },
+    "AttachModToWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "eModSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachModToWeapon(WeaponUIModSlot eModSlot)"
+    },
+    "ChangeView": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeView()"
+    },
+    "ClearModVisualization": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearModVisualization(WeaponUIModSlot eSlot)"
+    },
+    "ExitWeaponModUI": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullShutdown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExitWeaponModUI(optional bool bForce, optional bool bFullShutdown)"
+    },
+    "GetModAttachSound": {
+      "documentation": null,
+      "signature_members": {
+        "nModIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetModAttachSound(int nModIndex)"
+    },
+    "InitializeModModsDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeModModsDisplay()"
+    },
+    "InitializeModStatsDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeModStatsDisplay()"
+    },
+    "IsCurrentModSelectionValid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCurrentModSelectionValid()"
+    },
+    "ModMeshLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "eModSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModMeshLoaded(WeaponUIModSlot eModSlot)"
+    },
+    "ModUIDisplayModInfo": {
+      "documentation": null,
+      "signature_members": {
+        "nCurrentModIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModUIDisplayModInfo(int nCurrentModIndex)"
+    },
+    "ModUIDisplayModInfoFromModIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nModIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModUIDisplayModInfoFromModIndex(int nModIndex)"
+    },
+    "ModUISelectMod": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "nDesiredModIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModUISelectMod(int nDisplay, int nDesiredModIndex)"
+    },
+    "MonitorWeaponLoadIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MonitorWeaponLoadIn()"
+    },
+    "OnWeaponMeshLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponMeshLoaded()"
+    },
+    "OnWeaponModSlot1MeshLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponModSlot1MeshLoaded()"
+    },
+    "OnWeaponModSlot2MeshLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponModSlot2MeshLoaded()"
+    },
+    "OpenModifyUIForWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenModifyUIForWeapon()"
+    },
+    "SaveWeaponMods": {
+      "documentation": null,
+      "signature_members": {
+        "nmWeaponClass": {
+          "type": null,
+          "documentation": null
+        },
+        "nmModClass1": {
+          "type": null,
+          "documentation": null
+        },
+        "nmModClass2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveWeaponMods(Name nmWeaponClass, Name nmModClass1, Name nmModClass2)"
+    },
+    "SetWeaponMaterialColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "nmParam": {
+          "type": null,
+          "documentation": null
+        },
+        "Clr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponMaterialColorParameter(Name nmParam, LinearColor Clr)"
+    },
+    "SetWeaponModBodyColor": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponModBodyColor(int nLevel)"
+    },
+    "SetWeaponModEmissiveColor": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponModEmissiveColor(int nLevel)"
+    },
+    "SetWeaponModGripColor": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponModGripColor(int nLevel)"
+    },
+    "UpdateModMeshDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "eModSlot": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateModMeshDisplay(WeaponUIModSlot eModSlot, optional int nLevel)"
+    },
+    "UpdateModUIModsDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "nOtherIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateModUIModsDisplay(int nDisplay, int nOtherIndex)"
+    },
+    "UpdateModUIModsDisplays": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UpdateModUIModsDisplays()"
+    },
+    "UpdateModVisualization": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateModVisualization(WeaponUIModSlot eSlot)"
+    },
+    "UpdateWeaponMeshDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWeaponMeshDisplay(int nWeapIndex)"
+    },
+    "UpdateWeaponModStatsDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWeaponModStatsDisplay(int nWeapIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

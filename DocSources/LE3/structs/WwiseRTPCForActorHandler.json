@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_sRTPCName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_actor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_currentValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

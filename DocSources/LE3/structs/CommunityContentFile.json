@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "Owner": {
+      "type": null,
+      "documentation": null
+    },
+    "LocalFilePath": {
+      "type": null,
+      "documentation": null
+    },
+    "ContentId": {
+      "type": null,
+      "documentation": null
+    },
+    "FileId": {
+      "type": null,
+      "documentation": null
+    },
+    "ContentType": {
+      "type": null,
+      "documentation": null
+    },
+    "FileSize": {
+      "type": null,
+      "documentation": null
+    },
+    "DownloadCount": {
+      "type": null,
+      "documentation": null
+    },
+    "AverageRating": {
+      "type": null,
+      "documentation": null
+    },
+    "RatingCount": {
+      "type": null,
+      "documentation": null
+    },
+    "LastRatingGiven": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

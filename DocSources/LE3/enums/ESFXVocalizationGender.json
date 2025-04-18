@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXVocalizationGender_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationGender_Male": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationGender_Female": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

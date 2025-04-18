@@ -1,0 +1,316 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CanvasToScreen": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "InvCanvasToScreen": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "RenderViewport": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ActiveSkin": {
+      "type": "UISkin",
+      "documentation": null
+    },
+    "MousePosition": {
+      "type": "IntPoint",
+      "documentation": null
+    },
+    "ActiveControl": {
+      "type": "UIObject",
+      "documentation": null
+    },
+    "DataStoreManager": {
+      "type": "DataStoreClient",
+      "documentation": null
+    },
+    "OpacityParameter": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "OpacityParameterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "UIScenePostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "bEnablePostProcess": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ChangeActiveSkin": {
+      "documentation": null,
+      "signature_members": {
+        "NewActiveSkin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeActiveSkin(UISkin NewActiveSkin)"
+    },
+    "ChangeMouseCursor": {
+      "documentation": null,
+      "signature_members": {
+        "CursorName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeMouseCursor(Name CursorName)"
+    },
+    "CloseScene": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": null,
+          "documentation": null
+        },
+        "bCloseChildScenes": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceCloseImmediately": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CloseScene(UIScene Scene, optional bool bCloseChildScenes, optional bool bForceCloseImmediately)"
+    },
+    "CloseSceneAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "SceneStackIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bCloseChildScenes": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceCloseImmediately": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CloseSceneAtIndex(int SceneStackIndex, optional bool bCloseChildScenes, optional bool bForceCloseImmediately)"
+    },
+    "GetCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetCanvasToScreen(optional const UIObject Widget)"
+    },
+    "GetInverseCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetInverseCanvasToScreen(optional const UIObject Widget)"
+    },
+    "InitializeScene": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "InitializedScene": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializeScene(UIScene Scene, optional LocalPlayer SceneOwner, optional out UIScene InitializedScene)"
+    },
+    "InitializeSceneClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeSceneClient()"
+    },
+    "InsertScene": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredInsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Scene": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "OpenedScene": {
+          "type": null,
+          "documentation": null
+        },
+        "ActualInsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "ForcedPriority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InsertScene(int DesiredInsertIndex, UIScene Scene, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional out int ActualInsertIndex, optional byte ForcedPriority)"
+    },
+    "IsSceneInitialized": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSceneInitialized(UIScene Scene)"
+    },
+    "IsUIActive": {
+      "documentation": null,
+      "signature_members": {
+        "Flags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUIActive(optional int Flags)"
+    },
+    "OpenScene": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "OpenedScene": {
+          "type": null,
+          "documentation": null
+        },
+        "ForcedPriority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenScene(UIScene Scene, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional byte ForcedPriority)"
+    },
+    "ReplaceScene": {
+      "documentation": null,
+      "signature_members": {
+        "SceneInstanceToReplace": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneToOpen": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "OpenedScene": {
+          "type": null,
+          "documentation": null
+        },
+        "ForcedPriority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceScene(UIScene SceneInstanceToReplace, UIScene SceneToOpen, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional byte ForcedPriority)"
+    },
+    "ReplaceSceneAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "IndexOfSceneToReplace": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneToOpen": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "OpenedScene": {
+          "type": null,
+          "documentation": null
+        },
+        "ForcedPriority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceSceneAtIndex(int IndexOfSceneToReplace, UIScene SceneToOpen, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional byte ForcedPriority)"
+    },
+    "SetMousePosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewMouseX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMouseY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMousePosition(int NewMouseX, int NewMouseY)"
+    },
+    "UpdateCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCanvasToScreen()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

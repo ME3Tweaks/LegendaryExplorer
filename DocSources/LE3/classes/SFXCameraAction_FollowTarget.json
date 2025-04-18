@@ -1,0 +1,76 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "TargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "UnderneathMode": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "ReenableMovement": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {
+        "OutLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorCameraHook(out Vector OutLocation)"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "HasLoop": {
+      "documentation": null,
+      "signature_members": {
+        "CurMode": {
+          "type": null,
+          "documentation": null
+        },
+        "CheckingMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasLoop(SFXCameraMode CurMode, SFXCameraMode CheckingMode)"
+    },
+    "SetUnderneathMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewUnderneathMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUnderneathMode(SFXCameraMode NewUnderneathMode)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

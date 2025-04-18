@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DurationType_Instant": {
+      "value": 0,
+      "documentation": null
+    },
+    "DurationType_Temporary": {
+      "value": 1,
+      "documentation": null
+    },
+    "DurationType_Permanent": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

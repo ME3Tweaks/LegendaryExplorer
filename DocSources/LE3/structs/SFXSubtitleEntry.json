@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "sSubtitle": {
+      "type": null,
+      "documentation": null
+    },
+    "pRefObject": {
+      "type": null,
+      "documentation": null
+    },
+    "pActor": {
+      "type": null,
+      "documentation": null
+    },
+    "colFontColor": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "fDelayStarting": {
+      "type": null,
+      "documentation": null
+    },
+    "bAlert": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasPriority": {
+      "type": null,
+      "documentation": null
+    },
+    "eRenderMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

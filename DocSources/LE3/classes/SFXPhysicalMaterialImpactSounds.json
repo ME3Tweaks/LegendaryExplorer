@@ -1,0 +1,129 @@
+{
+  "parent": "SFXPhysicalMaterialBase",
+  "package": "SFXGame",
+  "variables": {
+    "HeavyPistol": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HeavyPistol_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AutoPistol": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AutoPistol_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HandCannon": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HandCannon_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SMG": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SMG_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Shotgun": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Shotgun_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HeavyShotgun": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "HeavyShotgun_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FlakGun": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FlakGun_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AssaultRifle": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AssaultRifle_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Needler": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Needler_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Machinegun": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Machinegun_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SniperRifle": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SniperRifle_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AntiMatRifle": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "AntiMatRifle_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "MassCannon": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "MassCannon_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ParticleBeam": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ParticleBeam_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "GraalShotgun": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "GraalShotgun_Player": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

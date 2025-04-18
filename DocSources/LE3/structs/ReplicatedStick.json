@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "StuckActor": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Reaction": {
+      "type": null,
+      "documentation": null
+    },
+    "Trigger": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,367 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnReadFriendsContentListComplete__Delegate": {
+      "type": "OnReadFriendsContentListComplete",
+      "documentation": null
+    },
+    "__OnUploadContentComplete__Delegate": {
+      "type": "OnUploadContentComplete",
+      "documentation": null
+    },
+    "__OnDownloadContentComplete__Delegate": {
+      "type": "OnDownloadContentComplete",
+      "documentation": null
+    },
+    "__OnGetContentPayloadComplete__Delegate": {
+      "type": "OnGetContentPayloadComplete",
+      "documentation": null
+    },
+    "__OnReadContentListComplete__Delegate": {
+      "type": "OnReadContentListComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DownloadContent": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FileToDownload": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DownloadContent(byte PlayerNum, const out CommunityContentFile FileToDownload)"
+    },
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Init()"
+    },
+    "AddDownloadContentCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "DownloadContentCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDownloadContentCompleteDelegate(delegate<OnDownloadContentComplete> DownloadContentCompleteDelegate)"
+    },
+    "AddGetContentPayloadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "GetContentPayloadCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGetContentPayloadCompleteDelegate(delegate<OnGetContentPayloadComplete> GetContentPayloadCompleteDelegate)"
+    },
+    "AddReadContentListCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadContentListCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadContentListCompleteDelegate(delegate<OnReadContentListComplete> ReadContentListCompleteDelegate)"
+    },
+    "AddReadFriendsContentListCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadFriendsContentListCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadFriendsContentListCompleteDelegate(delegate<OnReadFriendsContentListComplete> ReadFriendsContentListCompleteDelegate)"
+    },
+    "AddUploadContentCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "UploadContentCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddUploadContentCompleteDelegate(delegate<OnUploadContentComplete> UploadContentCompleteDelegate)"
+    },
+    "ClearDownloadContentCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "DownloadContentCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDownloadContentCompleteDelegate(delegate<OnDownloadContentComplete> DownloadContentCompleteDelegate)"
+    },
+    "ClearGetContentPayloadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "GetContentPayloadCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearGetContentPayloadCompleteDelegate(delegate<OnGetContentPayloadComplete> GetContentPayloadCompleteDelegate)"
+    },
+    "ClearReadContentListCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadContentListCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadContentListCompleteDelegate(delegate<OnReadContentListComplete> ReadContentListCompleteDelegate)"
+    },
+    "ClearReadFriendsContentListCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadFriendsContentListCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadFriendsContentListCompleteDelegate(delegate<OnReadFriendsContentListComplete> ReadFriendsContentListCompleteDelegate)"
+    },
+    "ClearUploadContentCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "UploadContentCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearUploadContentCompleteDelegate(delegate<OnUploadContentComplete> UploadContentCompleteDelegate)"
+    },
+    "GetContentList": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "ContentFiles": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetContentList(byte PlayerNum, out array<CommunityContentFile> ContentFiles)"
+    },
+    "GetContentPayload": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FileDownloaded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetContentPayload(byte PlayerNum, const out CommunityContentFile FileDownloaded)"
+    },
+    "GetFriendsContentList": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friend": {
+          "type": null,
+          "documentation": null
+        },
+        "ContentFiles": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFriendsContentList(byte PlayerNum, const out OnlineFriend Friend, out array<CommunityContentFile> ContentFiles)"
+    },
+    "OnDownloadContentComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "FileDownloaded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDownloadContentComplete(bool bWasSuccessful, CommunityContentFile FileDownloaded)"
+    },
+    "OnGetContentPayloadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "FileDownloaded": {
+          "type": null,
+          "documentation": null
+        },
+        "Payload": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGetContentPayloadComplete(bool bWasSuccessful, CommunityContentFile FileDownloaded, const out array<byte> Payload)"
+    },
+    "OnReadContentListComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadContentListComplete(bool bWasSuccessful)"
+    },
+    "OnReadFriendsContentListComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadFriendsContentListComplete(bool bWasSuccessful)"
+    },
+    "OnUploadContentComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "UploadedFile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUploadContentComplete(bool bWasSuccessful, CommunityContentFile UploadedFile)"
+    },
+    "RateContent": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "FileToRate": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRating": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RateContent(byte PlayerNum, const out CommunityContentFile FileToRate, int NewRating)"
+    },
+    "ReadContentList": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "StartAt": {
+          "type": null,
+          "documentation": null
+        },
+        "NumToRead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadContentList(byte PlayerNum, optional int StartAt, optional int NumToRead)"
+    },
+    "ReadFriendsContentList": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Friends": {
+          "type": null,
+          "documentation": null
+        },
+        "StartAt": {
+          "type": null,
+          "documentation": null
+        },
+        "NumToRead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadFriendsContentList(byte PlayerNum, const out array<OnlineFriend> Friends, optional int StartAt, optional int NumToRead)"
+    },
+    "UploadContent": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Payload": {
+          "type": null,
+          "documentation": null
+        },
+        "MetaData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadContent(byte PlayerNum, const out array<byte> Payload, const out CommunityContentMetadata MetaData)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

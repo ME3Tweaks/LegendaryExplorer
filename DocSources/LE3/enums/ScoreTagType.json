@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ScoreTagType_Kill": {
+      "value": 0,
+      "documentation": null
+    },
+    "ScoreTagType_Assist": {
+      "value": 1,
+      "documentation": null
+    },
+    "ScoreTagType_Objective": {
+      "value": 2,
+      "documentation": null
+    },
+    "ScoreTagType_Medal": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,400 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ZoomSnapCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "CombatCam": {
+      "type": "SFXCameraMode_Combat",
+      "documentation": null
+    },
+    "RollCam": {
+      "type": "SFXCameraMode_Roll",
+      "documentation": null
+    },
+    "CombatTightAim": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "ExploreCam": {
+      "type": "SFXCameraMode_Explore",
+      "documentation": null
+    },
+    "CombatStormCam": {
+      "type": "SFXCameraMode_CombatStorm",
+      "documentation": null
+    },
+    "ExploreStormCam": {
+      "type": "SFXCameraMode_ExploreStorm",
+      "documentation": null
+    },
+    "SSCombatCam": {
+      "type": "SFXCameraMode_SplitScreenCombat",
+      "documentation": null
+    },
+    "JumpCam": {
+      "type": "SFXCameraMode_JumpStart",
+      "documentation": null
+    },
+    "EnterCoverCam": {
+      "type": "SFXCameraMode_EnterCover",
+      "documentation": null
+    },
+    "MeleeCam": {
+      "type": "SFXCameraMode_Melee",
+      "documentation": null
+    },
+    "LadderUp": {
+      "type": "SFXCameraMode_LadderUp",
+      "documentation": null
+    },
+    "LadderDown": {
+      "type": "SFXCameraMode_LadderDown",
+      "documentation": null
+    },
+    "HitReact": {
+      "type": "SFXCameraMode_HitReaction",
+      "documentation": null
+    },
+    "ZoomSnapTransition": {
+      "type": "SFXCameraTransition_ZoomSnap",
+      "documentation": null
+    },
+    "DefaultCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "DefaultStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PeekLeftCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PeekLeftStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PeekRightCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PeekRightStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "DefaultAimback": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "AimbackTightAim": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "BlindLeftCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "BlindLeftStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "BlindRightCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "BlindRightStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "BlindUp": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PopUp": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "LeanLeftCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "LeanLeftStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "LeanRightCrouch": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "LeanRightStand": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PowerCoverPopup": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PowerCoverMidLeanLeft": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PowerCoverMidLeanRight": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PowerCoverStdLeanLeft": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "PowerCoverStdLeanRight": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "SprintTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SprintFastTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultAimTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultAimTransitionExit": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultCombatTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverEnter": {
+      "type": "float",
+      "documentation": null
+    },
+    "LeanCoverTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverSlowTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SniperZoomTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ZoomSnapTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PeekTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormEntranceTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "VehicleTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fCustomCameraTransitionIn": {
+      "type": "float",
+      "documentation": null
+    },
+    "fCustomCameraTransitionOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCustomCameraMode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAimbackCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAimbackCameraMode(BioPlayerController PC, out SFXCameraMode NewCameraMode, out float TransitionTime)"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(BioPlayerController PC, SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetCombatCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCombatCamera()"
+    },
+    "GetCoverCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCoverCameraMode(BioPlayerController PC, SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetCustomCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "fCustomTransitionTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCustomCameraMode(BioPlayerController PC, out SFXCameraMode NewCameraMode, out float fCustomTransitionTime)"
+    },
+    "GetExploreCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetExploreCameraMode(BioPlayerController PC, out SFXCameraMode NewCameraMode, out float TransitionTime)"
+    },
+    "GetStandingCombatCamera": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStandingCombatCamera(BioPlayerController PC, SFXCameraMode OldCameraMode, out SFXCameraMode NewCameraMode, out float TransitionTime)"
+    },
+    "GetTransitionTime": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTransitionTime(out SFXCameraMode OldCameraMode, out SFXCameraMode NewCameraMode, out float TransitionTime)"
+    },
+    "ShouldUseScope": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldUseScope(Pawn inPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

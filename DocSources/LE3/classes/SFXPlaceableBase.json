@@ -1,0 +1,80 @@
+{
+  "parent": "InterpActor",
+  "package": "SFXGame",
+  "variables": {
+    "MyGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "bIsDeactivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsDestroyed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ActivatePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivatePlaceable()"
+    },
+    "DeactivatePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivatePlaceable()"
+    },
+    "GetDebugStrings": {
+      "documentation": null,
+      "signature_members": {
+        "DebugStrings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDebugStrings(out array<string> DebugStrings)"
+    },
+    "GetDifficultyDebugStrings": {
+      "documentation": null,
+      "signature_members": {
+        "DifficultyDebugStrings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDifficultyDebugStrings(out array<string> DifficultyDebugStrings)"
+    },
+    "PlaceableDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlaceableDestroyed()"
+    },
+    "ResetPlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPlaceable()"
+    },
+    "SetDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDestroyed()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

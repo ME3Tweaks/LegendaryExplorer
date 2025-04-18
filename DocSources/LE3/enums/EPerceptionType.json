@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "PT_Sight": {
+      "value": 0,
+      "documentation": null
+    },
+    "PT_Heard": {
+      "value": 1,
+      "documentation": null
+    },
+    "PT_HurtBy": {
+      "value": 2,
+      "documentation": null
+    },
+    "PT_NotifySight": {
+      "value": 3,
+      "documentation": null
+    },
+    "PT_Force": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

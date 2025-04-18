@@ -1,0 +1,13 @@
+{
+  "parent": "SFXCustomReachSpec",
+  "package": "SFXGame",
+  "variables": {
+    "LeapHeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

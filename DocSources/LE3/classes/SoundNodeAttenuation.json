@@ -1,0 +1,49 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "dBAttenuationAtMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadiusMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadiusMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "LPFRadiusMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "LPFRadiusMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAttenuate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSpatialize": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAttenuateWithLPF": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DistanceAlgorithm": {
+      "type": "SoundDistanceModel",
+      "documentation": null
+    },
+    "DistanceType": {
+      "type": "ESoundDistanceCalc",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,103 @@
+{
+  "parent": "SFXGUI_OptionsObject",
+  "package": "SFXGame",
+  "variables": {
+    "Languages": {
+      "type": "LanguageOptionInfo",
+      "documentation": null
+    },
+    "nCurrentValue": {
+      "type": "int",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LanguageType": {
+      "type": "ESFXLanguageContentType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyOptionValue": {
+      "documentation": null,
+      "signature_members": {
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyOptionValue(int nValue)"
+    },
+    "ConstructTextSliderOption": {
+      "documentation": null,
+      "signature_members": {
+        "Option": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConstructTextSliderOption(out TextSliderOption Option)"
+    },
+    "GetAvailableSKULanguages": {
+      "documentation": null,
+      "signature_members": {
+        "aReturnLangs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableSKULanguages(out array<LanguageOptionInfo> aReturnLangs)"
+    },
+    "GetLanguage": {
+      "documentation": null,
+      "signature_members": {
+        "bGetDefault": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLanguage(optional bool bGetDefault)"
+    },
+    "GetOptionValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetOptionValue()"
+    },
+    "OptionIsAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OptionIsAvailable()"
+    },
+    "ResetToDefault": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefault()"
+    },
+    "RebuildSliderOptions": {
+      "documentation": null,
+      "signature_members": {
+        "SelectedLanguageCode": {
+          "type": null,
+          "documentation": null
+        },
+        "Option": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RebuildSliderOptions(string SelectedLanguageCode, out TextSliderOption Option)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

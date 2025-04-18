@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "aTrans": {
+      "type": null,
+      "documentation": null
+    },
+    "aGests": {
+      "type": null,
+      "documentation": null
+    },
+    "nPoseChangeChance": {
+      "type": null,
+      "documentation": null
+    },
+    "nPlayGestureChance": {
+      "type": null,
+      "documentation": null
+    },
+    "fChoiceTimeDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnterEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "bExitEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnterTransDoneEvent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

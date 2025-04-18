@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "DelayedWriteDelegates": {
+      "type": null,
+      "documentation": null
+    },
+    "LocalUserNum": {
+      "type": null,
+      "documentation": null
+    },
+    "LastWriteTimestamp": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

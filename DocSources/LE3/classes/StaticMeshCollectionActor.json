@@ -1,0 +1,17 @@
+{
+  "parent": "StaticMeshActorBase",
+  "package": "Engine",
+  "variables": {
+    "StaticMeshComponents": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "MaxStaticMeshComponents": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

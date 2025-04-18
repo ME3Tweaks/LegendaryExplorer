@@ -1,0 +1,193 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Reaction": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_ReactionExplore": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "PS_Impact": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "fAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fReactionDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ImpactScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAnimLooping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowAnimInterrupt": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRagdollOnFinish": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRotateOnHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDeathReaction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ERootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayImpact": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector HitLocation, Vector HitNormal, int BoneIndex, bool bPlayImpact, Class<SFXDamageType> DamageType)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "ActivateImpactEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateImpactEmitter(Vector HitLocation, Vector HitNormal, Name BoneName, Class<SFXDamageType> DamageType)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "CheckForRagdollRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckForRagdollRecovery()"
+    },
+    "OnCustomActionTimeUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCustomActionTimeUp()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

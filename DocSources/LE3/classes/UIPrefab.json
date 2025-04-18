@@ -1,0 +1,29 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "OriginalWidth": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "OriginalHeight": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "PrefabVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "InternalPrefabVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "ModificationCounter": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

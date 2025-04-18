@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "AlphaIn": {
+      "type": null,
+      "documentation": null
+    },
+    "AlphaOut": {
+      "type": null,
+      "documentation": null
+    },
+    "AlphaTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendTime": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendTimeToGo": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

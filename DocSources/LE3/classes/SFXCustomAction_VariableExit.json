@@ -1,0 +1,81 @@
+{
+  "parent": "SFXCustomAction_SyncBase_Loop",
+  "package": "SFXGame",
+  "variables": {
+    "BS_InstigatorEnd2": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_VictimEnd2": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "SuccessTimeline": {
+      "type": "SFXTimelineData",
+      "documentation": null
+    },
+    "InstigatorBlendOutTime2": {
+      "type": "float",
+      "documentation": null
+    },
+    "VictimBlendOutTime2": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "MessageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MessageEvent(Name EventName, Object Sender)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

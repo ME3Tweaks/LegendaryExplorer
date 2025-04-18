@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "UIORIENT_Horizontal": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIORIENT_Vertical": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

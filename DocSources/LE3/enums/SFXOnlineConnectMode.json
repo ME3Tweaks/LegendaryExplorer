@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "SFXONLINE_CM_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_CM_IMPLICIT": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_CM_EXPLICIT": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_CM_SILENT": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_CM_FORCEDAUTOMATIC": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

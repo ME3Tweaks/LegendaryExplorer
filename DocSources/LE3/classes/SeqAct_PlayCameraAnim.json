@@ -1,0 +1,67 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "CameraAnim": {
+      "type": "CameraAnim",
+      "documentation": null
+    },
+    "UserDefinedSpaceActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "BlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Rate": {
+      "type": "float",
+      "documentation": null
+    },
+    "IntensityScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLoop": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRandomStartTime": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

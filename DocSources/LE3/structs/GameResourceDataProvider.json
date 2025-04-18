@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ProviderClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "ProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "ProviderTag": {
+      "type": null,
+      "documentation": null
+    },
+    "bExpandProviders": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

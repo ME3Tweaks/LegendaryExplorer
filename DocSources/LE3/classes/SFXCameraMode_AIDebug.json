@@ -1,0 +1,64 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "HookOffsetList": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CurrentOffsetIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "NewOffsetIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "BlendTimeRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "TotalBlendTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeSeconds)"
+    },
+    "ChangeOffset": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeOffset(int idx)"
+    },
+    "DecOffset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecOffset()"
+    },
+    "IncOffset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncOffset()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

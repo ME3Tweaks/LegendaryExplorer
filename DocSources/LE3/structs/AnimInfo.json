@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "AnimSeqName": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimSeq": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimLinkupIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

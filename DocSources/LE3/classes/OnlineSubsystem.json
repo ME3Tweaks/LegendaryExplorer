@@ -1,0 +1,346 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "NamedInterfaces": {
+      "type": "NamedInterface",
+      "documentation": null
+    },
+    "NamedInterfaceDefs": {
+      "type": "NamedInterfaceDef",
+      "documentation": null
+    },
+    "Sessions": {
+      "type": "NamedSession",
+      "documentation": null
+    },
+    "AccountInterface": {
+      "type": "OnlineAccountInterface",
+      "documentation": null
+    },
+    "PlayerInterface": {
+      "type": "OnlinePlayerInterface",
+      "documentation": null
+    },
+    "PlayerInterfaceEx": {
+      "type": "OnlinePlayerInterfaceEx",
+      "documentation": null
+    },
+    "SystemInterface": {
+      "type": "OnlineSystemInterface",
+      "documentation": null
+    },
+    "GameInterface": {
+      "type": "OnlineGameInterface",
+      "documentation": null
+    },
+    "ContentInterface": {
+      "type": "OnlineContentInterface",
+      "documentation": null
+    },
+    "VoiceInterface": {
+      "type": "OnlineVoiceInterface",
+      "documentation": null
+    },
+    "StatsInterface": {
+      "type": "OnlineStatsInterface",
+      "documentation": null
+    },
+    "NewsInterface": {
+      "type": "OnlineNewsInterface",
+      "documentation": null
+    },
+    "PartyChatInterface": {
+      "type": "OnlinePartyChatInterface",
+      "documentation": null
+    },
+    "BuildIdOverride": {
+      "type": "int",
+      "documentation": null
+    },
+    "AsyncMinCompletionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseBuildIdOverride": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AreUniqueNetIdsEqual": {
+      "documentation": null,
+      "signature_members": {
+        "NetIdA": {
+          "type": null,
+          "documentation": null
+        },
+        "NetIdB": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AreUniqueNetIdsEqual(const out UniqueNetId NetIdA, const out UniqueNetId NetIdB)"
+    },
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "GetBioDynamicBuildVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBioDynamicBuildVersion()"
+    },
+    "GetBioStaticBuildVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBioStaticBuildVersion()"
+    },
+    "GetBuildUniqueId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBuildUniqueId()"
+    },
+    "GetNamedInterface": {
+      "documentation": null,
+      "signature_members": {
+        "InterfaceName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object GetNamedInterface(Name InterfaceName)"
+    },
+    "GetNumSupportedLogins": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumSupportedLogins()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Init()"
+    },
+    "PostInit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PostInit()"
+    },
+    "SetAccountInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAccountInterface(Object NewInterface)"
+    },
+    "SetContentInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetContentInterface(Object NewInterface)"
+    },
+    "SetGameInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetGameInterface(Object NewInterface)"
+    },
+    "SetNamedInterface": {
+      "documentation": null,
+      "signature_members": {
+        "InterfaceName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNamedInterface(Name InterfaceName, Object NewInterface)"
+    },
+    "SetNewsInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetNewsInterface(Object NewInterface)"
+    },
+    "SetPartyChatInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPartyChatInterface(Object NewInterface)"
+    },
+    "SetPlayerInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPlayerInterface(Object NewInterface)"
+    },
+    "SetPlayerInterfaceEx": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPlayerInterfaceEx(Object NewInterface)"
+    },
+    "SetStatsInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStatsInterface(Object NewInterface)"
+    },
+    "SetSystemInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSystemInterface(Object NewInterface)"
+    },
+    "SetVoiceInterface": {
+      "documentation": null,
+      "signature_members": {
+        "NewInterface": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVoiceInterface(Object NewInterface)"
+    },
+    "StringToUniqueNetId": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueNetIdString": {
+          "type": null,
+          "documentation": null
+        },
+        "out_UniqueId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StringToUniqueNetId(string UniqueNetIdString, out UniqueNetId out_UniqueId)"
+    },
+    "UniqueNetIdToString": {
+      "documentation": null,
+      "signature_members": {
+        "IdToConvert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string UniqueNetIdToString(const out UniqueNetId IdToConvert)"
+    },
+    "DumpGameSettings": {
+      "documentation": null,
+      "signature_members": {
+        "GameSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DumpGameSettings(const OnlineGameSettings GameSettings)"
+    },
+    "DumpNetIds": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": null,
+          "documentation": null
+        },
+        "DebugLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DumpNetIds(const out array<UniqueNetId> Players, string DebugLabel)"
+    },
+    "DumpSessionState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpSessionState()"
+    },
+    "DumpVoiceRegistration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpVoiceRegistration()"
+    },
+    "SetDebugSpewLevel": {
+      "documentation": null,
+      "signature_members": {
+        "DebugSpewLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDebugSpewLevel(int DebugSpewLevel)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,27 @@
+{
+  "parent": "SFXOnlineComponentBlazeLogin",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "GetDefaultBiowareEmailAllowed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetDefaultBiowareEmailAllowed()"
+    },
+    "HasInternetConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasInternetConnection()"
+    },
+    "Show1stPartyServiceLoginImp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Show1stPartyServiceLoginImp()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

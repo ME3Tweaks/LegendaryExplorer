@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Curve": {
+      "type": null,
+      "documentation": null
+    },
+    "Identifier": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalTime": {
+      "type": null,
+      "documentation": null
+    },
+    "Time": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

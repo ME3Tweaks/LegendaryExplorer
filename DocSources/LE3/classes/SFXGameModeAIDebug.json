@@ -1,0 +1,261 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "VTTransParms": {
+      "type": "ViewTargetTransitionParams",
+      "documentation": null
+    },
+    "TotalWeightLog": {
+      "type": "SFXPathWeightLog",
+      "documentation": null
+    },
+    "DebugTarget": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "TopLeft": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "AICamera": {
+      "type": "SFXCameraMode_AIDebug",
+      "documentation": null
+    },
+    "CurrentConstraintIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "TitleColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "DrawWhite": {
+      "type": "Color",
+      "documentation": null
+    },
+    "DrawRed": {
+      "type": "Color",
+      "documentation": null
+    },
+    "DrawOrange": {
+      "type": "Color",
+      "documentation": null
+    },
+    "DrawGreen": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowAITarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowAIPath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowDecisionLog": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bViewingConstraintEvals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLoggingAllAI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUnPauseOnExit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowLegend": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "NextPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextPawn()"
+    },
+    "Option": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Option(string Param)"
+    },
+    "ZoomCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ZoomCamera()"
+    },
+    "Eval": {
+      "documentation": null,
+      "signature_members": {
+        "param1": {
+          "type": null,
+          "documentation": null
+        },
+        "param2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Eval(string param1, optional int param2)"
+    },
+    "DisableAllCoverLogging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableAllCoverLogging()"
+    },
+    "DrawAIHUD": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawAIHUD(BioHUD H)"
+    },
+    "EnableAllCoverLogging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableAllCoverLogging()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "KeepPaused": {
+      "documentation": null,
+      "signature_members": {
+        "bKeepPaused": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KeepPaused(bool bKeepPaused)"
+    },
+    "PauseAI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseAI()"
+    },
+    "PrettyFloat": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        },
+        "decimals": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrettyFloat(float F, optional int decimals)"
+    },
+    "PrevPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevPawn()"
+    },
+    "ToggleAIPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleAIPause()"
+    },
+    "ToggleLegend": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleLegend()"
+    },
+    "UnpauseAI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnpauseAI()"
+    },
+    "UnzoomCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnzoomCamera()"
+    },
+    "ViewConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ViewConstraint(int Param)"
+    },
+    "ViewCoverEval": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ViewCoverEval()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

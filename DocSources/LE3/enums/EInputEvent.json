@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "IE_Pressed": {
+      "value": 0,
+      "documentation": null
+    },
+    "IE_Released": {
+      "value": 1,
+      "documentation": null
+    },
+    "IE_Repeat": {
+      "value": 2,
+      "documentation": null
+    },
+    "IE_DoubleClick": {
+      "value": 3,
+      "documentation": null
+    },
+    "IE_Axis": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

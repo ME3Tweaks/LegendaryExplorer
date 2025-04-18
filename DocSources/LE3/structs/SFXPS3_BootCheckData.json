@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "DirName": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "Attributes": {
+      "type": null,
+      "documentation": null
+    },
+    "hddFreeSizeKB": {
+      "type": null,
+      "documentation": null
+    },
+    "sizeKB": {
+      "type": null,
+      "documentation": null
+    },
+    "sysSizeKB": {
+      "type": null,
+      "documentation": null
+    },
+    "Commerce2Userdata": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

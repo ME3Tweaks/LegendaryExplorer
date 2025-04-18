@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "NodeEnd": {
+      "value": 0,
+      "documentation": null
+    },
+    "NodeStart": {
+      "value": 1,
+      "documentation": null
+    },
+    "StartConversationScript": {
+      "value": 2,
+      "documentation": null
+    },
+    "EndConversationScript": {
+      "value": 3,
+      "documentation": null
+    },
+    "SwitchFromFullToAmbient": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

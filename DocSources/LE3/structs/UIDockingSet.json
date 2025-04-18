@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "TargetWidget": {
+      "type": null,
+      "documentation": null
+    },
+    "DockPadding": {
+      "type": null,
+      "documentation": null
+    },
+    "OwnerWidget": {
+      "type": null,
+      "documentation": null
+    },
+    "bLockWidthWhenDocked": {
+      "type": null,
+      "documentation": null
+    },
+    "bLockHeightWhenDocked": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetFace": {
+      "type": null,
+      "documentation": null
+    },
+    "bResolved": {
+      "type": null,
+      "documentation": null
+    },
+    "bLinking": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

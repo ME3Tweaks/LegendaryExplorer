@@ -1,0 +1,46 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "AudioData": {
+      "type": "SFXGalaxyAudioData",
+      "documentation": null
+    },
+    "PlanetTemplates": {
+      "type": "SFXGalaxyTemplates_Planet",
+      "documentation": null
+    },
+    "ClusterTemplates": {
+      "type": "SFXGalaxyTemplates_Cluster",
+      "documentation": null
+    },
+    "SystemTemplates": {
+      "type": "SFXGalaxyTemplates_System",
+      "documentation": null
+    },
+    "GalaxyTemplates": {
+      "type": "SFXGalaxyTemplates_Galaxy",
+      "documentation": null
+    },
+    "ScanningTemplates": {
+      "type": "SFXGalaxyTemplates_SystemScanning",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CachePersistentLevelReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CachePersistentLevelReferences()"
+    },
+    "ClearPersistentLevelReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearPersistentLevelReferences()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

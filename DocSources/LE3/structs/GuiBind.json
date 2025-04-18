@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Keys": {
+      "type": null,
+      "documentation": null
+    },
+    "KeysLocName": {
+      "type": null,
+      "documentation": null
+    },
+    "Subordinates": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "bCategory": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

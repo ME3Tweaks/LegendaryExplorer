@@ -1,0 +1,21 @@
+{
+  "parent": "UIStyle_Data",
+  "package": "Engine",
+  "variables": {
+    "AdjustmentType": {
+      "type": "UIImageAdjustmentData",
+      "documentation": null
+    },
+    "Coordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null
+    },
+    "DefaultImage": {
+      "type": "Surface",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

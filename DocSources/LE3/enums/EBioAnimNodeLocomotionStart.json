@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeLocomotionStart_ForwardRight": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionStart_ForwardLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionStart_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionStart_Left": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionStart_BackwardRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionStart_BackwardLeft": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

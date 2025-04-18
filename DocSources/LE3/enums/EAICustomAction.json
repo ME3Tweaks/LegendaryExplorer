@@ -1,0 +1,941 @@
+{
+  "EnumValues": {
+    "CA_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CA_Ragdoll": {
+      "value": 1,
+      "documentation": null
+    },
+    "CA_AnimRagdoll_Singularity": {
+      "value": 2,
+      "documentation": null
+    },
+    "CA_SyncAttackVictim": {
+      "value": 3,
+      "documentation": null
+    },
+    "CA_Use": {
+      "value": 4,
+      "documentation": null
+    },
+    "CA_Revive": {
+      "value": 5,
+      "documentation": null
+    },
+    "CA_PickUpWeapon": {
+      "value": 6,
+      "documentation": null
+    },
+    "CA_BovineFortitude": {
+      "value": 7,
+      "documentation": null
+    },
+    "CA_Frozen": {
+      "value": 8,
+      "documentation": null
+    },
+    "CA_Reload": {
+      "value": 9,
+      "documentation": null
+    },
+    "CA_MountedGunReload": {
+      "value": 10,
+      "documentation": null
+    },
+    "CA_HolsterWeapon": {
+      "value": 11,
+      "documentation": null
+    },
+    "CA_DrawWeapon": {
+      "value": 12,
+      "documentation": null
+    },
+    "CA_EnterVehicle": {
+      "value": 13,
+      "documentation": null
+    },
+    "CA_ExitVehicle": {
+      "value": 14,
+      "documentation": null
+    },
+    "CA_SpawnEntrance": {
+      "value": 15,
+      "documentation": null
+    },
+    "CA_PrecisionMove": {
+      "value": 16,
+      "documentation": null
+    },
+    "CA_HackDoor": {
+      "value": 17,
+      "documentation": null
+    },
+    "CA_OmniWave": {
+      "value": 18,
+      "documentation": null
+    },
+    "CA_ActivateWeaponFlashlight": {
+      "value": 19,
+      "documentation": null
+    },
+    "CA_LookAt_Mantle": {
+      "value": 20,
+      "documentation": null
+    },
+    "CA_LookAt_MidCoverSlip": {
+      "value": 21,
+      "documentation": null
+    },
+    "CA_LookAt_StdCoverSlip": {
+      "value": 22,
+      "documentation": null
+    },
+    "CA_LookAt_MidSwatTurn": {
+      "value": 23,
+      "documentation": null
+    },
+    "CA_LookAt_StdSwatTurn": {
+      "value": 24,
+      "documentation": null
+    },
+    "CA_MP_RetrieveFlag": {
+      "value": 25,
+      "documentation": null
+    },
+    "CA_MP_DisarmBomb": {
+      "value": 26,
+      "documentation": null
+    },
+    "CA_MP_AnnexHack": {
+      "value": 27,
+      "documentation": null
+    },
+    "CA_GapJump": {
+      "value": 28,
+      "documentation": null
+    },
+    "CA_StandingGapJump": {
+      "value": 29,
+      "documentation": null
+    },
+    "CA_JumpDown": {
+      "value": 30,
+      "documentation": null
+    },
+    "CA_MantleOver": {
+      "value": 31,
+      "documentation": null
+    },
+    "CA_EarlyMantleOver": {
+      "value": 32,
+      "documentation": null
+    },
+    "CA_MantleUp": {
+      "value": 33,
+      "documentation": null
+    },
+    "CA_MantleDown": {
+      "value": 34,
+      "documentation": null
+    },
+    "CA_SlotToSlot": {
+      "value": 35,
+      "documentation": null
+    },
+    "CA_CoverSlipLeft": {
+      "value": 36,
+      "documentation": null
+    },
+    "CA_CoverSlipLeftStanding": {
+      "value": 37,
+      "documentation": null
+    },
+    "CA_CoverSlipRight": {
+      "value": 38,
+      "documentation": null
+    },
+    "CA_CoverSlipRightStanding": {
+      "value": 39,
+      "documentation": null
+    },
+    "CA_Cover90TurnRight": {
+      "value": 40,
+      "documentation": null
+    },
+    "CA_Cover90TurnRightStanding": {
+      "value": 41,
+      "documentation": null
+    },
+    "CA_Cover90TurnLeft": {
+      "value": 42,
+      "documentation": null
+    },
+    "CA_Cover90TurnLeftStanding": {
+      "value": 43,
+      "documentation": null
+    },
+    "CA_SwatTurnLeft": {
+      "value": 44,
+      "documentation": null
+    },
+    "CA_SwatTurnRight": {
+      "value": 45,
+      "documentation": null
+    },
+    "CA_LadderClimbUp": {
+      "value": 46,
+      "documentation": null
+    },
+    "CA_LadderClimbDown": {
+      "value": 47,
+      "documentation": null
+    },
+    "CA_BoostDown": {
+      "value": 48,
+      "documentation": null
+    },
+    "CA_BoostUp": {
+      "value": 49,
+      "documentation": null
+    },
+    "CA_ClimbUpWall": {
+      "value": 50,
+      "documentation": null
+    },
+    "CA_ClimbDownWall": {
+      "value": 51,
+      "documentation": null
+    },
+    "CA_LeapHumanoid": {
+      "value": 52,
+      "documentation": null
+    },
+    "CA_LeapLarge": {
+      "value": 53,
+      "documentation": null
+    },
+    "CA_RollLeft": {
+      "value": 54,
+      "documentation": null
+    },
+    "CA_RollRight": {
+      "value": 55,
+      "documentation": null
+    },
+    "CA_RollForward": {
+      "value": 56,
+      "documentation": null
+    },
+    "CA_RollBackward": {
+      "value": 57,
+      "documentation": null
+    },
+    "CA_ClassMelee": {
+      "value": 58,
+      "documentation": null
+    },
+    "CA_MantleMelee": {
+      "value": 59,
+      "documentation": null
+    },
+    "CA_BackTakeDown": {
+      "value": 60,
+      "documentation": null
+    },
+    "CA_InfiltratorCloakPunch": {
+      "value": 61,
+      "documentation": null
+    },
+    "CA_MidCoverMeleeGrab": {
+      "value": 62,
+      "documentation": null
+    },
+    "CA_MidCoverMeleeOver": {
+      "value": 63,
+      "documentation": null
+    },
+    "CA_StdCoverMeleeLeft": {
+      "value": 64,
+      "documentation": null
+    },
+    "CA_StdCoverMeleeRight": {
+      "value": 65,
+      "documentation": null
+    },
+    "CA_CoverMeleeRight": {
+      "value": 66,
+      "documentation": null
+    },
+    "CA_CoverMeleeLeft": {
+      "value": 67,
+      "documentation": null
+    },
+    "CA_HvyStdCoverMeleeLeft": {
+      "value": 68,
+      "documentation": null
+    },
+    "CA_HvyStdCoverMeleeRight": {
+      "value": 69,
+      "documentation": null
+    },
+    "CA_HvyCoverMeleeRight": {
+      "value": 70,
+      "documentation": null
+    },
+    "CA_HvyCoverMeleeLeft": {
+      "value": 71,
+      "documentation": null
+    },
+    "CA_HeavyStdCoverMeleeRight": {
+      "value": 72,
+      "documentation": null
+    },
+    "CA_StormPunch": {
+      "value": 73,
+      "documentation": null
+    },
+    "CA_BioticStormPunch": {
+      "value": 74,
+      "documentation": null
+    },
+    "CA_RifleMeleeOne": {
+      "value": 75,
+      "documentation": null
+    },
+    "CA_RifleMeleeTwo": {
+      "value": 76,
+      "documentation": null
+    },
+    "CA_RifleMeleeThree": {
+      "value": 77,
+      "documentation": null
+    },
+    "CA_PistolMeleeOne": {
+      "value": 78,
+      "documentation": null
+    },
+    "CA_PistolMeleeTwo": {
+      "value": 79,
+      "documentation": null
+    },
+    "CA_PistolMeleeThree": {
+      "value": 80,
+      "documentation": null
+    },
+    "CA_Reaction_Standard": {
+      "value": 81,
+      "documentation": null
+    },
+    "CA_Reaction_StandardII": {
+      "value": 82,
+      "documentation": null
+    },
+    "CA_Reaction_StandardForward": {
+      "value": 83,
+      "documentation": null
+    },
+    "CA_Reaction_StandardLeft": {
+      "value": 84,
+      "documentation": null
+    },
+    "CA_Reaction_StandardRight": {
+      "value": 85,
+      "documentation": null
+    },
+    "CA_Reaction_StandardKnee": {
+      "value": 86,
+      "documentation": null
+    },
+    "CA_Reaction_Stagger": {
+      "value": 87,
+      "documentation": null
+    },
+    "CA_Reaction_StaggerII": {
+      "value": 88,
+      "documentation": null
+    },
+    "CA_Reaction_StaggerForward": {
+      "value": 89,
+      "documentation": null
+    },
+    "CA_Reaction_StaggerLeft": {
+      "value": 90,
+      "documentation": null
+    },
+    "CA_Reaction_StaggerRight": {
+      "value": 91,
+      "documentation": null
+    },
+    "CA_Reaction_Knockback": {
+      "value": 92,
+      "documentation": null
+    },
+    "CA_Reaction_KnockbackForward": {
+      "value": 93,
+      "documentation": null
+    },
+    "CA_Reaction_KnockbackLeft": {
+      "value": 94,
+      "documentation": null
+    },
+    "CA_Reaction_KnockbackRight": {
+      "value": 95,
+      "documentation": null
+    },
+    "CA_Reaction_Meleed": {
+      "value": 96,
+      "documentation": null
+    },
+    "CA_Reaction_MeleedForward": {
+      "value": 97,
+      "documentation": null
+    },
+    "CA_Reaction_MeleedLeft": {
+      "value": 98,
+      "documentation": null
+    },
+    "CA_Reaction_MeleedRight": {
+      "value": 99,
+      "documentation": null
+    },
+    "CA_Reaction_ShieldBreach": {
+      "value": 100,
+      "documentation": null
+    },
+    "CA_Reaction_FlinchLight": {
+      "value": 101,
+      "documentation": null
+    },
+    "CA_Reaction_FlinchHeavy": {
+      "value": 102,
+      "documentation": null
+    },
+    "CA_Reaction_OnFire": {
+      "value": 103,
+      "documentation": null
+    },
+    "CA_Reaction_OnFireII": {
+      "value": 104,
+      "documentation": null
+    },
+    "CA_Reaction_GreatPain": {
+      "value": 105,
+      "documentation": null
+    },
+    "CA_Reaction_GreatPainII": {
+      "value": 106,
+      "documentation": null
+    },
+    "CA_Reaction_Freezing": {
+      "value": 107,
+      "documentation": null
+    },
+    "CA_Reaction_FreezingII": {
+      "value": 108,
+      "documentation": null
+    },
+    "CA_Reaction_FreezingIII": {
+      "value": 109,
+      "documentation": null
+    },
+    "CA_Reaction_LargeStagger": {
+      "value": 110,
+      "documentation": null
+    },
+    "CA_Reaction_LargeStandard": {
+      "value": 111,
+      "documentation": null
+    },
+    "CA_Reaction_LargeStandardForward": {
+      "value": 112,
+      "documentation": null
+    },
+    "CA_Reaction_LargeStandardLeft": {
+      "value": 113,
+      "documentation": null
+    },
+    "CA_Reaction_LargeStandardRight": {
+      "value": 114,
+      "documentation": null
+    },
+    "CA_ACTMNT_ExplosionBack": {
+      "value": 115,
+      "documentation": null
+    },
+    "CA_ACTMNT_ExplosionFront": {
+      "value": 116,
+      "documentation": null
+    },
+    "CA_ACTMNT_ExplosionLeft": {
+      "value": 117,
+      "documentation": null
+    },
+    "CA_ACTMNT_ExplosionRight": {
+      "value": 118,
+      "documentation": null
+    },
+    "CA_ACTMNT_ShieldFace": {
+      "value": 119,
+      "documentation": null
+    },
+    "CA_DeathReaction_Standard": {
+      "value": 120,
+      "documentation": null
+    },
+    "CA_DeathReaction_HeadShot": {
+      "value": 121,
+      "documentation": null
+    },
+    "CA_DeathReaction_HitLeftArm": {
+      "value": 122,
+      "documentation": null
+    },
+    "CA_DeathReaction_HitRightArm": {
+      "value": 123,
+      "documentation": null
+    },
+    "CA_DeathReaction_HeavyHitLeftArm": {
+      "value": 124,
+      "documentation": null
+    },
+    "CA_DeathReaction_HeavyHitRightArm": {
+      "value": 125,
+      "documentation": null
+    },
+    "CA_DeathReaction_HitLeftLeg": {
+      "value": 126,
+      "documentation": null
+    },
+    "CA_DeathReaction_HitRightLeg": {
+      "value": 127,
+      "documentation": null
+    },
+    "CA_DeathReaction_Stomach": {
+      "value": 128,
+      "documentation": null
+    },
+    "CA_DeathReaction_Knockback": {
+      "value": 129,
+      "documentation": null
+    },
+    "CA_DeathReaction_Corkscrew": {
+      "value": 130,
+      "documentation": null
+    },
+    "CA_DeathReaction_FlinchDeath": {
+      "value": 131,
+      "documentation": null
+    },
+    "CA_Power": {
+      "value": 132,
+      "documentation": null
+    },
+    "CA_AI_Melee": {
+      "value": 133,
+      "documentation": null
+    },
+    "CA_AI_Melee2": {
+      "value": 134,
+      "documentation": null
+    },
+    "CA_AI_SyncMelee": {
+      "value": 135,
+      "documentation": null
+    },
+    "CA_AI_KillingBlow": {
+      "value": 136,
+      "documentation": null
+    },
+    "CA_Engineer_DeployTurret": {
+      "value": 137,
+      "documentation": null
+    },
+    "CA_Engineer_Repair": {
+      "value": 138,
+      "documentation": null
+    },
+    "CA_Engineer_Breach": {
+      "value": 139,
+      "documentation": null
+    },
+    "CA_Cannibal_ConsumeBody": {
+      "value": 140,
+      "documentation": null
+    },
+    "CA_Marauder_BuffAllies": {
+      "value": 141,
+      "documentation": null
+    },
+    "CA_Marauder_Breach": {
+      "value": 142,
+      "documentation": null
+    },
+    "CA_Marauder_BuffedByMarauder": {
+      "value": 143,
+      "documentation": null
+    },
+    "CA_Swarmer_Spawn": {
+      "value": 144,
+      "documentation": null
+    },
+    "CA_KaiLeng_Vortex": {
+      "value": 145,
+      "documentation": null
+    },
+    "CA_KaiLeng_SuperVortex": {
+      "value": 146,
+      "documentation": null
+    },
+    "CA_Phantom_Shield": {
+      "value": 147,
+      "documentation": null
+    },
+    "CA_Phantom_AirRecover": {
+      "value": 148,
+      "documentation": null
+    },
+    "CA_Roar": {
+      "value": 149,
+      "documentation": null
+    },
+    "CA_Brute_Block": {
+      "value": 150,
+      "documentation": null
+    },
+    "CA_Brute_Charge": {
+      "value": 151,
+      "documentation": null
+    },
+    "CA_Harvester_TakeOff": {
+      "value": 152,
+      "documentation": null
+    },
+    "CA_Harvester_Land": {
+      "value": 153,
+      "documentation": null
+    },
+    "CA_Harvester_EnterAim": {
+      "value": 154,
+      "documentation": null
+    },
+    "CA_Harvester_LeaveAim": {
+      "value": 155,
+      "documentation": null
+    },
+    "CA_Harvester_FlyingDeath": {
+      "value": 156,
+      "documentation": null
+    },
+    "CA_Guardian_ShieldBash": {
+      "value": 157,
+      "documentation": null
+    },
+    "CA_Guardian_Breach": {
+      "value": 158,
+      "documentation": null
+    },
+    "CA_Guardian_LoseShield": {
+      "value": 159,
+      "documentation": null
+    },
+    "CA_Guardian_Stagger": {
+      "value": 160,
+      "documentation": null
+    },
+    "CA_Atlas_Smoke": {
+      "value": 161,
+      "documentation": null
+    },
+    "CA_Atlas_Block": {
+      "value": 162,
+      "documentation": null
+    },
+    "CA_Atlas_OpenCockpitDeath": {
+      "value": 163,
+      "documentation": null
+    },
+    "CA_Atlas_CloseCockpitCombat": {
+      "value": 164,
+      "documentation": null
+    },
+    "CA_Atlas_OpenCockpitIdle": {
+      "value": 165,
+      "documentation": null
+    },
+    "CA_Atlas_CloseCockpitIdle": {
+      "value": 166,
+      "documentation": null
+    },
+    "CA_Atlas_DriverEnter": {
+      "value": 167,
+      "documentation": null
+    },
+    "CA_Atlas_DriverExit": {
+      "value": 168,
+      "documentation": null
+    },
+    "CA_Banshee_Blast": {
+      "value": 169,
+      "documentation": null
+    },
+    "CA_Banshee_AOEBlast": {
+      "value": 170,
+      "documentation": null
+    },
+    "CA_Banshee_Shield": {
+      "value": 171,
+      "documentation": null
+    },
+    "CA_Banshee_Phase": {
+      "value": 172,
+      "documentation": null
+    },
+    "CA_Banshee_Breach": {
+      "value": 173,
+      "documentation": null
+    },
+    "CA_Ravager_SpawnSwarmers": {
+      "value": 174,
+      "documentation": null
+    },
+    "CA_Ravager_PopSacks": {
+      "value": 175,
+      "documentation": null
+    },
+    "CA_Idle_StandGuard": {
+      "value": 176,
+      "documentation": null
+    },
+    "CA_Idle_InspectWeapon": {
+      "value": 177,
+      "documentation": null
+    },
+    "CA_Idle_InspectOmniTool": {
+      "value": 178,
+      "documentation": null
+    },
+    "CA_Idle_OmniToolScan": {
+      "value": 179,
+      "documentation": null
+    },
+    "CA_Idle_UseConsole": {
+      "value": 180,
+      "documentation": null
+    },
+    "CA_Idle_Talking": {
+      "value": 181,
+      "documentation": null
+    },
+    "CA_Idle_Talking2": {
+      "value": 182,
+      "documentation": null
+    },
+    "CA_Idle_Talking3": {
+      "value": 183,
+      "documentation": null
+    },
+    "CA_Idle_Listening": {
+      "value": 184,
+      "documentation": null
+    },
+    "CA_Idle_Listening2": {
+      "value": 185,
+      "documentation": null
+    },
+    "CA_Idle_Listening3": {
+      "value": 186,
+      "documentation": null
+    },
+    "CA_Idle_Centurion": {
+      "value": 187,
+      "documentation": null
+    },
+    "CA_Idle_GuardPose": {
+      "value": 188,
+      "documentation": null
+    },
+    "CA_Idle_SniperSweep": {
+      "value": 189,
+      "documentation": null
+    },
+    "CA_Idle_SwordFlourish": {
+      "value": 190,
+      "documentation": null
+    },
+    "CA_Idle_Cannibal": {
+      "value": 191,
+      "documentation": null
+    },
+    "CA_Idle_Brute": {
+      "value": 192,
+      "documentation": null
+    },
+    "CA_Idle_Husk": {
+      "value": 193,
+      "documentation": null
+    },
+    "CA_Idle_Ravager": {
+      "value": 194,
+      "documentation": null
+    },
+    "CA_Idle_Banshee": {
+      "value": 195,
+      "documentation": null
+    },
+    "CA_OmniTool": {
+      "value": 196,
+      "documentation": null
+    },
+    "CA_StandTyping": {
+      "value": 197,
+      "documentation": null
+    },
+    "CA_DesignerSpecified": {
+      "value": 198,
+      "documentation": null
+    },
+    "CA_BeckonFront": {
+      "value": 199,
+      "documentation": null
+    },
+    "CA_BeckonRear": {
+      "value": 200,
+      "documentation": null
+    },
+    "CA_OmniToolCrouch": {
+      "value": 201,
+      "documentation": null
+    },
+    "CA_Crouch": {
+      "value": 202,
+      "documentation": null
+    },
+    "CA_InteractLow": {
+      "value": 203,
+      "documentation": null
+    },
+    "CA_StandIdle": {
+      "value": 204,
+      "documentation": null
+    },
+    "CA_DLC1": {
+      "value": 205,
+      "documentation": null
+    },
+    "CA_DLC2": {
+      "value": 206,
+      "documentation": null
+    },
+    "CA_DLC3": {
+      "value": 207,
+      "documentation": null
+    },
+    "CA_DLC4": {
+      "value": 208,
+      "documentation": null
+    },
+    "CA_DLC5": {
+      "value": 209,
+      "documentation": null
+    },
+    "CA_DLC6": {
+      "value": 210,
+      "documentation": null
+    },
+    "CA_DLC7": {
+      "value": 211,
+      "documentation": null
+    },
+    "CA_DLC8": {
+      "value": 212,
+      "documentation": null
+    },
+    "CA_DLC9": {
+      "value": 213,
+      "documentation": null
+    },
+    "CA_DLC10": {
+      "value": 214,
+      "documentation": null
+    },
+    "CA_DLC11": {
+      "value": 215,
+      "documentation": null
+    },
+    "CA_DLC12": {
+      "value": 216,
+      "documentation": null
+    },
+    "CA_DLC13": {
+      "value": 217,
+      "documentation": null
+    },
+    "CA_DLC14": {
+      "value": 218,
+      "documentation": null
+    },
+    "CA_DLC15": {
+      "value": 219,
+      "documentation": null
+    },
+    "CA_DLC16": {
+      "value": 220,
+      "documentation": null
+    },
+    "CA_DLC17": {
+      "value": 221,
+      "documentation": null
+    },
+    "CA_DLC18": {
+      "value": 222,
+      "documentation": null
+    },
+    "CA_DLC19": {
+      "value": 223,
+      "documentation": null
+    },
+    "CA_DLC20": {
+      "value": 224,
+      "documentation": null
+    },
+    "CA_DLC21": {
+      "value": 225,
+      "documentation": null
+    },
+    "CA_DLC22": {
+      "value": 226,
+      "documentation": null
+    },
+    "CA_DLC23": {
+      "value": 227,
+      "documentation": null
+    },
+    "CA_DLC24": {
+      "value": 228,
+      "documentation": null
+    },
+    "CA_DLC25": {
+      "value": 229,
+      "documentation": null
+    },
+    "CA_DLC26": {
+      "value": 230,
+      "documentation": null
+    },
+    "CA_DLC27": {
+      "value": 231,
+      "documentation": null
+    },
+    "CA_DLC28": {
+      "value": 232,
+      "documentation": null
+    },
+    "CA_DLC29": {
+      "value": 233,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

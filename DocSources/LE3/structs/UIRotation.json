@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "TransformMatrix": {
+      "type": null,
+      "documentation": null
+    },
+    "AnchorPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "AnchorType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

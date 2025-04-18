@@ -1,0 +1,268 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapGlobalCooldowns": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_aReservations": {
+      "type": "PowerReservation",
+      "documentation": null
+    },
+    "m_nCurrentReservationID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AreActorsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "oFirstActor": {
+          "type": null,
+          "documentation": null
+        },
+        "oSecondActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AreActorsFriendly(Actor oFirstActor, Actor oSecondActor)"
+    },
+    "CanImpactActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanImpactActor(Actor oActor)"
+    },
+    "CheckLOSToActor": {
+      "documentation": null,
+      "signature_members": {
+        "oSourceActor": {
+          "type": null,
+          "documentation": null
+        },
+        "oDestinationActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vStartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "fMaxRange": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreFriendlies": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnorePawns": {
+          "type": null,
+          "documentation": null
+        },
+        "oHitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vHitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vHitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLOSToActor(Actor oSourceActor, Actor oDestinationActor, Vector vStartLocation, float fMaxRange, bool bIgnoreFriendlies, bool bIgnorePawns, out Actor oHitActor, out Vector vHitLocation, out Vector vHitNormal)"
+    },
+    "CheckLOSToLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oSourceActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vStartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vEndLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "fMaxRange": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnoreFriendlies": {
+          "type": null,
+          "documentation": null
+        },
+        "oHitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vHitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vHitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "fIgnoreCoverDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLOSToLocation(Actor oSourceActor, Vector vStartLocation, Vector vEndLocation, float fMaxRange, bool bIgnoreFriendlies, out Actor oHitActor, out Vector vHitLocation, out Vector vHitNormal, float fIgnoreCoverDistance)"
+    },
+    "ChooseTargetForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChooseTargetForPlayer(SFXPower oPower, out Actor oTarget, out Vector vTargetLocation)"
+    },
+    "ClearReservation": {
+      "documentation": null,
+      "signature_members": {
+        "nReservationID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReservation(int nReservationID)"
+    },
+    "GetGlobalCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetGlobalCooldown(Name nmPower)"
+    },
+    "GetStartLocationForLOSCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "vStartLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStartLocationForLOSCheck(Pawn Caster, out Vector vStartLocation)"
+    },
+    "MakeReservation": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceSuccess": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int MakeReservation(SFXPowerCustomActionBase oPower, Pawn oPawn, optional bool bForceSuccess)"
+    },
+    "SetGlobalCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "fCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGlobalCooldown(Name nmPower, float fCooldown)"
+    },
+    "StartReservation": {
+      "documentation": null,
+      "signature_members": {
+        "nReservationID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartReservation(int nReservationID)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "TickGlobalCooldowns": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickGlobalCooldowns(float fDeltaTime)"
+    },
+    "TickReservations": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickReservations(float fDeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

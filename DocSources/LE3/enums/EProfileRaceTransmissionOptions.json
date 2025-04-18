@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PRTO_Auto": {
+      "value": 0,
+      "documentation": null
+    },
+    "PRTO_Manual": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "SFXNav_BlockingPathNode",
+  "package": "SFXGame",
+  "variables": {
+    "BoostDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "BoostDistX": {
+      "type": "float",
+      "documentation": null
+    },
+    "BoostDistZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTopNode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

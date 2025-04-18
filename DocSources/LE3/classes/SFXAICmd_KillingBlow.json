@@ -1,0 +1,42 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {
+    "ToTarget": {
+      "type": "Rotator",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsInStompRange": {
+      "documentation": null,
+      "signature_members": {
+        "StompTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInStompRange(Pawn StompTarget)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "KillMyFoes": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

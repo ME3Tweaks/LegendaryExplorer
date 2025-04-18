@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "Direction": {
+      "type": null,
+      "documentation": null
+    },
+    "Caster": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetActor": {
+      "type": null,
+      "documentation": null
+    },
+    "TravelSpeed": {
+      "type": null,
+      "documentation": null
+    },
+    "Radius": {
+      "type": null,
+      "documentation": null
+    },
+    "Power": {
+      "type": null,
+      "documentation": null
+    },
+    "Trigger": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

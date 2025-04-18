@@ -1,0 +1,89 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "FocusPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OldFocusPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "FStop": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlurKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxNearBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxFarBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "ModulateBlurColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "FocusInnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "FocusDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpolateSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpolateElapsed": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldFStop": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldBlurKernelSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldMaxNearBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldMaxFarBlurAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldModulateBlurColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "OldFocusInnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldFocusDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

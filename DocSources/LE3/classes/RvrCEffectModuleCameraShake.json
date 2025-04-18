@@ -1,0 +1,45 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "Shake": {
+      "type": "CameraShake",
+      "documentation": null
+    },
+    "ShakeScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialShake_InnerRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialShake_OuterRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "RadialShake_Falloff": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDoControllerVibration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRadialShake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOrientTowardRadialEpicenter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

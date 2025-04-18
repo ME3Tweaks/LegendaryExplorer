@@ -1,0 +1,256 @@
+{
+  "parent": "BioSFHandler_Splash",
+  "package": "SFXGame",
+  "variables": {
+    "connectingMessageBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "fLegalTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "fShowLegalTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "srNotificationAdvanceOrigin": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNotifificationOriginDRMFail": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNotificationOptionQuitGame": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConnectingToOrigin": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConfirmNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancelNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srStartText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srLegalText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDemo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bPressedStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingForOrigin": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AdvanceScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdvanceScreen()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "Callback_LoginComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bIsOpening": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_LoginComplete(bool bIsOpening)"
+    },
+    "Callback_NoLoginStart": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_NoLoginStart(bool bAPressed, int Context)"
+    },
+    "CheckLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckLogin()"
+    },
+    "DisplayNoProfileConfirmation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayNoProfileConfirmation()"
+    },
+    "FadeLegal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeLegal()"
+    },
+    "FadeToBlack": {
+      "documentation": null,
+      "signature_members": {
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FadeToBlack(bool bSkipTransition)"
+    },
+    "InitSplashScreen": {
+      "documentation": null,
+      "signature_members": {
+        "nStartText": {
+          "type": null,
+          "documentation": null
+        },
+        "nLegalText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitSplashScreen(int nStartText, int nLegalText)"
+    },
+    "OnHandleOriginErrorUserResponse": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnHandleOriginErrorUserResponse(bool bAPressed, int nContext)"
+    },
+    "OnTransitionInComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTransitionInComplete()"
+    },
+    "OnTransitionOutComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTransitionOutComplete()"
+    },
+    "SetBackgroundMovie": {
+      "documentation": null,
+      "signature_members": {
+        "movie": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBackgroundMovie(TextureMovie movie)"
+    },
+    "StartTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "bShowLegal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartTimeout(bool bShowLegal)"
+    },
+    "TransitionIn": {
+      "documentation": null,
+      "signature_members": {
+        "bShowLegal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransitionIn(bool bShowLegal)"
+    },
+    "TransitionOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransitionOut()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

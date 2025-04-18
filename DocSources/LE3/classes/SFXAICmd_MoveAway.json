@@ -1,0 +1,63 @@
+{
+  "parent": "SFXAICmd_MoveToGoal",
+  "package": "SFXGame",
+  "variables": {
+    "MaxBackAwayDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyPathConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ApplyPathConstraints()"
+    },
+    "FinishPathGeneration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishPathGeneration()"
+    },
+    "GetFirstMoveTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetFirstMoveTarget()"
+    },
+    "MoveAway": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "AvoidTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "fMaxBackAwayDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowedToFire": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowPartialPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveAway(SFXAI_Core AI, Actor AvoidTarget, optional float NewMoveOffset, optional float fMaxBackAwayDistance, optional bool bInAllowedToFire, optional bool bInAllowPartialPath)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

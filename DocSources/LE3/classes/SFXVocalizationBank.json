@@ -1,0 +1,75 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Vocalizations": {
+      "type": "SFXVocalizationRole",
+      "documentation": null
+    },
+    "VocalizationsV2": {
+      "type": "SFXVocalizationEventV2",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MakeEntry": {
+      "documentation": null,
+      "signature_members": {
+        "Role": {
+          "type": null,
+          "documentation": null
+        },
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Variation": {
+          "type": null,
+          "documentation": null
+        },
+        "Sound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MakeEntry(Name Role, Name Event, Name Type, Name Variation, WwiseEvent Sound)"
+    },
+    "EnsureArrays": {
+      "documentation": null,
+      "signature_members": {
+        "i": {
+          "type": null,
+          "documentation": null
+        },
+        "J": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnsureArrays(int i, int J)"
+    },
+    "ImportBadOldType": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Variation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ImportBadOldType(out Name Type, out Name Variation)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

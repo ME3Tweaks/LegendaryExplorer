@@ -1,0 +1,36 @@
+{
+  "parent": "GameInfo",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "DoLoggedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoLoggedIn()"
+    },
+    "InitGame": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": null,
+          "documentation": null
+        },
+        "ErrorMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitGame(string Options, out string ErrorMessage)"
+    },
+    "RegisterServer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterServer()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

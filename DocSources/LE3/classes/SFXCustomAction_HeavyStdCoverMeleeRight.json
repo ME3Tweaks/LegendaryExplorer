@@ -1,0 +1,64 @@
+{
+  "parent": "SFXCustomAction_ClassMelee",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "BackToPeek": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BackToPeek()"
+    },
+    "ClientDoCustomActionImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomActionImpact(Actor oActor, int ImpactCount, optional bool bFirstTarget, optional Vector HitLocation, optional Vector HitNormal, optional int CustomActionReactionType)"
+    },
+    "GetVictimPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetVictimPawn()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

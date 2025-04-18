@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Enemy": {
+      "type": null,
+      "documentation": null
+    },
+    "bVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bSeen": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasLOS": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

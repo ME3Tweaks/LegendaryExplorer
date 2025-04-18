@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "nName": {
+      "type": null,
+      "documentation": null
+    },
+    "sValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

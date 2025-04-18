@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ParamType_FaceValue": {
+      "value": 0,
+      "documentation": null
+    },
+    "ParamType_Location": {
+      "value": 1,
+      "documentation": null
+    },
+    "ParamType_Normal": {
+      "value": 2,
+      "documentation": null
+    },
+    "ParamType_ScreenLocation": {
+      "value": 3,
+      "documentation": null
+    },
+    "ParamType_ScreenNormal": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

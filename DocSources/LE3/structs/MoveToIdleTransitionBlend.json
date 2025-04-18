@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "ChildName": {
+      "type": null,
+      "documentation": null
+    },
+    "SyncGroupMin": {
+      "type": null,
+      "documentation": null
+    },
+    "SyncGroupMax": {
+      "type": null,
+      "documentation": null
+    },
+    "TransitionDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "TransitionTime": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendOutTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

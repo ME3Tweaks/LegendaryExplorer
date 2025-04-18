@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackFloatBase",
+  "package": "SFXGame",
+  "variables": {
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pParentEffect": {
+      "type": "Object",
+      "documentation": null
+    },
+    "InterpValue": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

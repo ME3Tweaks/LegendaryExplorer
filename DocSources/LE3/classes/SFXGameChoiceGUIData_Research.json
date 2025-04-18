@@ -1,0 +1,57 @@
+{
+  "parent": "SFXGameChoiceGUIData",
+  "package": "SFXGame",
+  "variables": {
+    "Tech": {
+      "type": "TechData",
+      "documentation": null
+    },
+    "Research": {
+      "type": "TechData",
+      "documentation": null
+    },
+    "m_srTechTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTechSubTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTechAText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTechBText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResearchTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResearchSubTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResearchAText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResearchBText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResearchErrorTooExpensive": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResearchErrorCanNotLearn": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "InitialVel": {
+      "type": null,
+      "documentation": null
+    },
+    "InitialAngVel": {
+      "type": null,
+      "documentation": null
+    },
+    "ChunkIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bExplosion": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

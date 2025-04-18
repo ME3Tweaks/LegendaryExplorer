@@ -1,0 +1,133 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ClusterOffsets": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SpawnSets": {
+      "type": "AISpawnInfo",
+      "documentation": null
+    },
+    "SpawnPoints": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SubSpawns": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "PendingSpawnedPawns": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "SpawnerActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ProjectileStartLocation": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "DefaultSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "NumDeadThreshold": {
+      "type": "int",
+      "documentation": null
+    },
+    "DeadCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAllSpawned": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllDead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAbortSpawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnteredCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResetDeadLinkCount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bActivatedDeadLink": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreventSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SpawnSelectionType": {
+      "type": "ESpawnSortType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddSpawnedPawnToCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSpawnedPawnToCustomAction(BioPawn NewPawn)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "PlaySpawnedAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlaySpawnedAnimation()"
+    },
+    "SpawnObscuringEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Set": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Projectile",
+      "signature": "Projectile SpawnObscuringEffect(AISpawnInfo Set)"
+    },
+    "NotifyCombatEntered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyCombatEntered()"
+    },
+    "RemoveFromWatchList": {
+      "documentation": null,
+      "signature_members": {
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFromWatchList(Pawn TargetPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

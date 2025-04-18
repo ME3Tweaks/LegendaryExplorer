@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "KEYBOARD_STANDARD": {
+      "value": 0,
+      "documentation": null
+    },
+    "KEYBOARD_EMAIL": {
+      "value": 1,
+      "documentation": null
+    },
+    "KEYBOARD_PASSWORD": {
+      "value": 2,
+      "documentation": null
+    },
+    "KEYBOARD_CODE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

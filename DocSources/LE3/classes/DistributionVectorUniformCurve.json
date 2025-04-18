@@ -1,0 +1,33 @@
+{
+  "parent": "DistributionVector",
+  "package": "Engine",
+  "variables": {
+    "ConstantCurve": {
+      "type": "InterpCurveTwoVectors",
+      "documentation": null
+    },
+    "bLockAxes1": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockAxes2": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseExtremes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MirrorFlags": {
+      "type": "EDistributionVectorMirrorFlags",
+      "documentation": null
+    },
+    "LockedAxes": {
+      "type": "EDistributionVectorLockFlags",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

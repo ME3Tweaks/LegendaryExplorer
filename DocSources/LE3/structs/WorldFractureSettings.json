@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "ChanceOfPhysicsChunkOverride": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxExplosionChunkSize": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxDamageChunkSize": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxNumFacturedChunksToSpawnInAFrame": {
+      "type": null,
+      "documentation": null
+    },
+    "FractureExplosionVelScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableChanceOfPhysicsChunkOverride": {
+      "type": null,
+      "documentation": null
+    },
+    "bLimitExplosionChunkSize": {
+      "type": null,
+      "documentation": null
+    },
+    "bLimitDamageChunkSize": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

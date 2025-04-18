@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "fCurTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fIntervalTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fNextInterval": {
+      "type": null,
+      "documentation": null
+    },
+    "bIncrementing": {
+      "type": null,
+      "documentation": null
+    },
+    "bIntervalTriggered": {
+      "type": null,
+      "documentation": null
+    },
+    "bCompleted": {
+      "type": null,
+      "documentation": null
+    },
+    "bRunning": {
+      "type": null,
+      "documentation": null
+    },
+    "bActive": {
+      "type": null,
+      "documentation": null
+    },
+    "bFirstUpdate": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

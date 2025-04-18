@@ -1,0 +1,232 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Lifetime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DrawColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "PosY": {
+      "type": "float",
+      "documentation": null
+    },
+    "FontSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsSpecial": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsUnique": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsPartiallyUnique": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsConsoleMessage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBeep": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCountInstances": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetString": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "bPRI1HUD": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetString(optional int Switch, optional bool bPRI1HUD, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "ClientReceive": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceive(PlayerController P, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "GetColor": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI_2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color GetColor(optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "GetConsoleColor": {
+      "documentation": null,
+      "signature_members": {
+        "RelatedPRI_1": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Color",
+      "signature": "Color GetConsoleColor(PlayerReplicationInfo RelatedPRI_1)"
+    },
+    "GetFontSize": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI1": {
+          "type": null,
+          "documentation": null
+        },
+        "RelatedPRI2": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetFontSize(int Switch, PlayerReplicationInfo RelatedPRI1, PlayerReplicationInfo RelatedPRI2, PlayerReplicationInfo LocalPlayer)"
+    },
+    "GetLifeTime": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetLifeTime(int Switch)"
+    },
+    "GetPos": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        },
+        "myHUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPos(int Switch, HUD myHUD)"
+    },
+    "IsConsoleMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsConsoleMessage(int Switch)"
+    },
+    "IsKeyObjectiveMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsKeyObjectiveMessage(int Switch)"
+    },
+    "PartiallyDuplicates": {
+      "documentation": null,
+      "signature_members": {
+        "Switch1": {
+          "type": null,
+          "documentation": null
+        },
+        "Switch2": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject1": {
+          "type": null,
+          "documentation": null
+        },
+        "OptionalObject2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PartiallyDuplicates(int Switch1, int Switch2, Object OptionalObject1, Object OptionalObject2)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

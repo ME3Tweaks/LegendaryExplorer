@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "PlaySound": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "ApplyNode": {
+      "type": "SoundNode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

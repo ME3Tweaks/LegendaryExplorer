@@ -1,0 +1,37 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetStoreQualification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAttachSlot",
+      "signature": "EAttachSlot GetStoreQualification()"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

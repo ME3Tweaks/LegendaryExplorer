@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EAG_EPM_SUBMIT": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAG_EPM_EMAIL_PSWD": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAG_EPM_CANCEL": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

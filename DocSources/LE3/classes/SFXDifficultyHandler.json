@@ -1,0 +1,234 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Level1DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null
+    },
+    "Level2DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null
+    },
+    "Level3DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null
+    },
+    "Level4DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null
+    },
+    "Level5DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null
+    },
+    "CurrentLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPlayerLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "DifficultyScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "StoppingPowerScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutHenchDamageScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutAIDamageScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmmoPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "GrenadesPerDrop": {
+      "type": "int",
+      "documentation": null
+    },
+    "DownedDistanceRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldRegenPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldRegenDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "PartialShieldRegenDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverDamageReduction": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoCoverDamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReviveDamageReductionLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReviveDamageReductionAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSwarmers": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerPartyHealthGateDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerPartyShieldGateDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNeedsUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentDifficulty": {
+      "type": "EDifficultyOptions",
+      "documentation": null
+    },
+    "NormalizedDifficulty": {
+      "type": "EDifficultyOptions",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetBool": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBool(Name PropertyName, Name DifficultyCategory)"
+    },
+    "GetFloat": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloat(Name PropertyName, Name DifficultyCategory)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Update()"
+    },
+    "GetDifficultyHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXDifficultyHandler",
+      "signature": "SFXDifficultyHandler GetDifficultyHandler()"
+    },
+    "GetFloatAtDifficulty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "Difficulty": {
+          "type": null,
+          "documentation": null
+        },
+        "Score": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatAtDifficulty(Name PropertyName, Name DifficultyCategory, EDifficultyOptions Difficulty, float Score)"
+    },
+    "GetFloatNormalized": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatNormalized(Name PropertyName, Name DifficultyCategory)"
+    },
+    "GetMaxFloat": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetMaxFloat(Name PropertyName, Name DifficultyCategory)"
+    },
+    "GetMinFloat": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetMinFloat(Name PropertyName, Name DifficultyCategory)"
+    },
+    "UpdateDifficultyScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateDifficultyScore()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

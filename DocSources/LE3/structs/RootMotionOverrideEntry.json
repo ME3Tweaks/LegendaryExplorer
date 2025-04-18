@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Node": {
+      "type": null,
+      "documentation": null
+    },
+    "RMMode": {
+      "type": null,
+      "documentation": null
+    },
+    "RMRMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

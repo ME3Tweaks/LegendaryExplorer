@@ -1,0 +1,37 @@
+{
+  "parent": "BioPropertyEditorPropertyNode",
+  "package": "SFXGame",
+  "variables": {
+    "prop": {
+      "type": "Property",
+      "documentation": null
+    },
+    "StepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "floatVal": {
+      "type": "float",
+      "documentation": null
+    },
+    "otherVal": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "getDisplayText": {
+      "documentation": null,
+      "signature_members": {
+        "selectable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string getDisplayText(bool selectable)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,89 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_vModifierParameter": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pModule": {
+      "type": "RvrClientEffectModule",
+      "documentation": null
+    },
+    "m_pComponent": {
+      "type": "RvrClientEffectComponent",
+      "documentation": null
+    },
+    "m_fDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDrawScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimeScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fActivationValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAccumulatedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nLoopsSoFar": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPrimed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bStopRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasBeenActivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHidInstigator": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCounted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHiddenDueToCapsFail": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

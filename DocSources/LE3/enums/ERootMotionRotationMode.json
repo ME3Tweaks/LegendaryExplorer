@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "RMRM_Ignore": {
+      "value": 0,
+      "documentation": null
+    },
+    "RMRM_RotateActor": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "sPath": {
+      "type": null,
+      "documentation": null
+    },
+    "sID": {
+      "type": null,
+      "documentation": null
+    },
+    "fBoundary": {
+      "type": null,
+      "documentation": null
+    },
+    "bHenchIcon": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

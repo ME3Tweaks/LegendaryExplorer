@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "EnemyType": {
+      "type": null,
+      "documentation": null
+    },
+    "MinCount": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxCount": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxPerWave": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

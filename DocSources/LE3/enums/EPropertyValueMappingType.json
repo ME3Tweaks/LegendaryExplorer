@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PVMT_RawValue": {
+      "value": 0,
+      "documentation": null
+    },
+    "PVMT_PredefinedValues": {
+      "value": 1,
+      "documentation": null
+    },
+    "PVMT_Ranged": {
+      "value": 2,
+      "documentation": null
+    },
+    "PVMT_IdMapped": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

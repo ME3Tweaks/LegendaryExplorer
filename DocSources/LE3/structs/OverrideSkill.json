@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Players": {
+      "type": null,
+      "documentation": null
+    },
+    "Mus": {
+      "type": null,
+      "documentation": null
+    },
+    "Sigmas": {
+      "type": null,
+      "documentation": null
+    },
+    "LeaderboardId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "TriggeredOps": {
+      "type": null,
+      "documentation": null
+    },
+    "InputKeyName": {
+      "type": null,
+      "documentation": null
+    },
+    "InputKeyState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

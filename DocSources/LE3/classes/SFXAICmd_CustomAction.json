@@ -1,0 +1,99 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "bPendingTransition": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "AICommandClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartCustomAction(SFXAI_Core AI, Class<SFXAICmd_CustomAction> AICommandClass)"
+    },
+    "AllowTransitionTo": {
+      "documentation": null,
+      "signature_members": {
+        "AttemptCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowTransitionTo(Class<GameAICommand> AttemptCommand)"
+    },
+    "CanInterruptCurrentCommand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanInterruptCurrentCommand()"
+    },
+    "ExecuteCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ExecuteCustomAction()"
+    },
+    "FinishedCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishedCustomAction()"
+    },
+    "GetPostCustomActionSleepTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPostCustomActionSleepTime()"
+    },
+    "IsCustomActionComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCustomActionComplete()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "ShouldFinishPostRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFinishPostRotation()"
+    },
+    "ShouldFinishRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFinishRotation()"
+    }
+  },
+  "states": {
+    "CustomAction": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

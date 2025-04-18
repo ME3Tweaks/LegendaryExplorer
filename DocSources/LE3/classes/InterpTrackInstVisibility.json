@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null
+    },
+    "Action": {
+      "type": "EVisibilityTrackAction",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

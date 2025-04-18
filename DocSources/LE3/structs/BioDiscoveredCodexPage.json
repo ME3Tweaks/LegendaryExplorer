@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "nPage": {
+      "type": null,
+      "documentation": null
+    },
+    "bNew": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

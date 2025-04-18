@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "FragmentIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Volume": {
+      "type": null,
+      "documentation": null
+    },
+    "Size": {
+      "type": null,
+      "documentation": null
+    },
+    "Depth": {
+      "type": null,
+      "documentation": null
+    },
+    "ParentIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "FirstChildIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "NumChildren": {
+      "type": null,
+      "documentation": null
+    },
+    "MeshIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "BodyIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

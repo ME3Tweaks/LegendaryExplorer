@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "m_aNodes": {
+      "type": "SFXSceneShopNode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

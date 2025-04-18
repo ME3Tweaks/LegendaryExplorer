@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SublevelName": {
+      "type": null,
+      "documentation": null
+    },
+    "ObjectName": {
+      "type": null,
+      "documentation": null
+    },
+    "Value": {
+      "type": null,
+      "documentation": null
+    },
+    "ObjectClass": {
+      "type": null,
+      "documentation": null
+    },
+    "PropertyName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

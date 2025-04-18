@@ -1,0 +1,151 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "RTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LandingSiteMapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "Position": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartEvent": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "StopEvent": {
+      "type": "WwiseBaseSoundObject",
+      "documentation": null
+    },
+    "FeatureMarker": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ParticleComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "FeatureTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "FeatureTransitionParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "LandingSiteText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MarkerScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaledAmount": {
+      "type": "int",
+      "documentation": null
+    },
+    "CritPathFeature": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Hidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FeatureType": {
+      "type": "EFeatureType",
+      "documentation": null
+    },
+    "FeatureTransitionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "FeatureTransitionPlot": {
+      "type": "ESFXPlanetFeatureEventTransitionPlotAutoSet",
+      "documentation": null
+    },
+    "FeatureTransitionName": {
+      "type": "ESFXPlanetFeatureEventTransitionAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BuildPlotLabelList": {
+      "documentation": null,
+      "signature_members": {
+        "aPlotNames": {
+          "type": null,
+          "documentation": null
+        },
+        "eMapLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BuildPlotLabelList(out array<stringref> aPlotNames, optional EBioGalaxyMapState eMapLevel)"
+    },
+    "CleanTransientData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanTransientData()"
+    },
+    "GetFeatureText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetFeatureText()"
+    },
+    "PerformTransition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PerformTransition()"
+    },
+    "EnableFeatureMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableFeatureMarker()"
+    },
+    "EnteredScanMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnteredScanMode()"
+    },
+    "FeatureProbed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FeatureProbed()"
+    },
+    "IsProbeable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsProbeable()"
+    },
+    "LeftScanMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftScanMode()"
+    },
+    "ShouldShowFeatureMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowFeatureMarker()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

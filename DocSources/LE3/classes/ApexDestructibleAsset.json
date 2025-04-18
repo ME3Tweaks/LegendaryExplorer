@@ -1,0 +1,33 @@
+{
+  "parent": "ApexAsset",
+  "package": "Engine",
+  "variables": {
+    "DestructibleParameters": {
+      "type": "NxDestructibleParameters",
+      "documentation": null
+    },
+    "Materials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "CrumbleEmitterName": {
+      "type": "string",
+      "documentation": null
+    },
+    "DustEmitterName": {
+      "type": "string",
+      "documentation": null
+    },
+    "MApexAsset": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bDynamic": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

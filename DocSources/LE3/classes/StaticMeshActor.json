@@ -1,0 +1,24 @@
+{
+  "parent": "StaticMeshActorBase",
+  "package": "Engine",
+  "variables": {
+    "StaticMeshComponent": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "oAudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,56 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ExecuteAttackOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExecuteAttackOrder()"
+    },
+    "ExecuteFollowOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExecuteFollowOrder()"
+    },
+    "ExecuteHoldPositionOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExecuteHoldPositionOrder()"
+    },
+    "ExecutePowerOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExecutePowerOrder()"
+    },
+    "ExecuteSwitchWeaponOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExecuteSwitchWeaponOrder()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "ExecutingOrders": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

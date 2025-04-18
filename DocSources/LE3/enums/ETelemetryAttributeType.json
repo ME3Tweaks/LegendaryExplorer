@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "AttributeType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "AttributeType_String": {
+      "value": 1,
+      "documentation": null
+    },
+    "AttributeType_Int": {
+      "value": 2,
+      "documentation": null
+    },
+    "AttributeType_Float": {
+      "value": 3,
+      "documentation": null
+    },
+    "AttributeType_Bool": {
+      "value": 4,
+      "documentation": null
+    },
+    "AttributeType_ClassName": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

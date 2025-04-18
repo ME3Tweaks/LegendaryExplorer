@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "vTargetLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "oTargetActor": {
+      "type": null,
+      "documentation": null
+    },
+    "nmPower": {
+      "type": null,
+      "documentation": null
+    },
+    "oWeapon": {
+      "type": null,
+      "documentation": null
+    },
+    "bInstantOrder": {
+      "type": null,
+      "documentation": null
+    },
+    "bExecutingOrder": {
+      "type": null,
+      "documentation": null
+    },
+    "bPowerUseIsInstant": {
+      "type": null,
+      "documentation": null
+    },
+    "eOrderType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

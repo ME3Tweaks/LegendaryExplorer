@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PSMA_MeshFaceCameraWithRoll": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSMA_MeshFaceCameraWithSpin": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSMA_MeshFaceCameraWithLockedAxis": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

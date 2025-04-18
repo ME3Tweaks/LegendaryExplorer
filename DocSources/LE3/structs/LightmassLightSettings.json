@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "IndirectLightingScale": {
+      "type": null,
+      "documentation": null
+    },
+    "IndirectLightingSaturation": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowExponent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackWwiseEvent",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_pComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

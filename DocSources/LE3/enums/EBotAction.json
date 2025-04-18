@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BOT_NoAction": {
+      "value": 0,
+      "documentation": null
+    },
+    "BOT_MoveForward": {
+      "value": 1,
+      "documentation": null
+    },
+    "BOT_MoveBackward": {
+      "value": 2,
+      "documentation": null
+    },
+    "BOT_Disconnect": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

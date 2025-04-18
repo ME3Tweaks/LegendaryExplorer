@@ -1,0 +1,605 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "mUserId": {
+      "type": "QWord",
+      "documentation": null
+    },
+    "mPresenceString": {
+      "type": "string",
+      "documentation": null
+    },
+    "mGamePresenceString": {
+      "type": "string",
+      "documentation": null
+    },
+    "mSessionPresenceString": {
+      "type": "string",
+      "documentation": null
+    },
+    "mDisplayName": {
+      "type": "string",
+      "documentation": null
+    },
+    "mFriendsListCache": {
+      "type": "PCFriend",
+      "documentation": null
+    },
+    "mBlockListCache": {
+      "type": "PCFriend",
+      "documentation": null
+    },
+    "mEntitlementCache": {
+      "type": "SFXOnlineEntitlementLookupInfo",
+      "documentation": null
+    },
+    "mOriginVersion": {
+      "type": "string",
+      "documentation": null
+    },
+    "mInviteInfo": {
+      "type": "string",
+      "documentation": null
+    },
+    "mOriginClosedDelegates": {
+      "type": "OnOriginClosedDelegate",
+      "documentation": null
+    },
+    "mOriginAuthKeyDelegates": {
+      "type": "OnOriginAuthKey",
+      "documentation": null
+    },
+    "mWalletBalanceDelegates": {
+      "type": "OnWalletBalanceAvailable",
+      "documentation": null
+    },
+    "mContentId": {
+      "type": "string",
+      "documentation": null
+    },
+    "mMultiplayerId": {
+      "type": "string",
+      "documentation": null
+    },
+    "mCurrencyId": {
+      "type": "string",
+      "documentation": null
+    },
+    "mOfferGroup": {
+      "type": "string",
+      "documentation": null
+    },
+    "mAccessEntitlement": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnOriginClosedDelegate__Delegate": {
+      "type": "OnOriginClosedDelegate",
+      "documentation": null
+    },
+    "__OnOriginAuthKey__Delegate": {
+      "type": "OnOriginAuthKey",
+      "documentation": null
+    },
+    "__OnWalletBalanceAvailable__Delegate": {
+      "type": "OnWalletBalanceAvailable",
+      "documentation": null
+    },
+    "mTitleStringRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "mTimeBetweenOnlineChecks": {
+      "type": "float",
+      "documentation": null
+    },
+    "mCheckoutTimeout": {
+      "type": "int",
+      "documentation": null
+    },
+    "mFriendQueryTimeout": {
+      "type": "int",
+      "documentation": null
+    },
+    "mEntitlementQueryTimeout": {
+      "type": "int",
+      "documentation": null
+    },
+    "mQueryAchievementsTimeOut": {
+      "type": "int",
+      "documentation": null
+    },
+    "mGrantAchievementsTimeOut": {
+      "type": "int",
+      "documentation": null
+    },
+    "mTimeSinceLastOnlineCheck": {
+      "type": "float",
+      "documentation": null
+    },
+    "mDisableOrigin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mServiceStarted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsLoggedIn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsOriginDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsEntitlementCacheAvailable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsPendingConnection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsOverlayUp": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsOverlayEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mOldClient": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mFriendsListUpToDate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mIsOnline": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mPendingInviteJoin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mPresenceState": {
+      "type": "EPCPresenceStates",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddOriginAuthKeyDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "authKeyDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOriginAuthKeyDelegate(delegate<OnOriginAuthKey> authKeyDelegate)"
+    },
+    "AddOriginClosedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "originClosedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOriginClosedDelegate(delegate<OnOriginClosedDelegate> originClosedDelegate)"
+    },
+    "AddWalletBalanceAvailableDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "walletBalanceDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWalletBalanceAvailableDelegate(delegate<OnWalletBalanceAvailable> walletBalanceDelegate)"
+    },
+    "CheckEntitlementCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckEntitlementCache()"
+    },
+    "CheckOnline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckOnline()"
+    },
+    "Checkout": {
+      "documentation": null,
+      "signature_members": {
+        "offerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Checkout(string offerId)"
+    },
+    "CheckSignedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckSignedIn()"
+    },
+    "ClearOriginAuthKeyDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "authKeyDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearOriginAuthKeyDelegate(delegate<OnOriginAuthKey> authKeyDelegate)"
+    },
+    "ClearOriginClosedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "originClosedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearOriginClosedDelegate(delegate<OnOriginClosedDelegate> originClosedDelegate)"
+    },
+    "ClearSessionPresence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ClearSessionPresence()"
+    },
+    "ClearWalletBalanceAvailableDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "walletBalanceDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearWalletBalanceAvailableDelegate(delegate<OnWalletBalanceAvailable> walletBalanceDelegate)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "IsMuted": {
+      "documentation": null,
+      "signature_members": {
+        "personaName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMuted(const out string personaName)"
+    },
+    "JoinPendingGameInvite": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "JoinPendingGameInvite()"
+    },
+    "OnBlazeSignedIn": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnBlazeSignedIn(SFXOnlineEvent oEvent)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnOriginAuthKey": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        },
+        "authKey": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnOriginAuthKey(bool Success, string authKey)"
+    },
+    "OnOriginClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOriginClosed()"
+    },
+    "OnOriginClosedDelegate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOriginClosedDelegate()"
+    },
+    "OnOriginGoesOffline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOriginGoesOffline()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "OnWalletBalanceAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        },
+        "walletBalance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWalletBalanceAvailable(bool Success, int walletBalance)"
+    },
+    "ProcessIGODisplayEvent": {
+      "documentation": null,
+      "signature_members": {
+        "isOpening": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessIGODisplayEvent(bool isOpening)"
+    },
+    "QueryIgoEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool QueryIgoEnabled()"
+    },
+    "QueryOnline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool QueryOnline()"
+    },
+    "RegisterCallbacks": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RegisterCallbacks()"
+    },
+    "RequestAuthToken": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestAuthToken()"
+    },
+    "RequestBlockList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestBlockList()"
+    },
+    "RequestEntitlementCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestEntitlementCache()"
+    },
+    "RequestFriendsList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequestFriendsList()"
+    },
+    "RequestProfileInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestProfileInfo()"
+    },
+    "RequestWalletBalance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestWalletBalance()"
+    },
+    "SetPresenceState": {
+      "documentation": null,
+      "signature_members": {
+        "presence": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPresenceState(EPCPresenceStates presence)"
+    },
+    "SetRichPresence": {
+      "documentation": null,
+      "signature_members": {
+        "presence": {
+          "type": null,
+          "documentation": null
+        },
+        "gamePresence": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRichPresence(string presence, string gamePresence)"
+    },
+    "SetSessionPresence": {
+      "documentation": null,
+      "signature_members": {
+        "SessionId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSessionPresence(string SessionId)"
+    },
+    "ShowCheckoutOverlay": {
+      "documentation": null,
+      "signature_members": {
+        "offerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowCheckoutOverlay(string offerId)"
+    },
+    "ShowFriendsOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShowFriendsOverlay()"
+    },
+    "ShowInviteOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShowInviteOverlay()"
+    },
+    "ShowStoreOverlay": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowStoreOverlay(string categoryId)"
+    },
+    "StartService": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartService()"
+    },
+    "StopService": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StopService()"
+    },
+    "TriggerOriginAuthKeyDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        },
+        "authKey": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerOriginAuthKeyDelegates(bool Success, string authKey)"
+    },
+    "TriggerOriginClosedDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerOriginClosedDelegates()"
+    },
+    "TriggerWalletBalanceAvailableDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "Success": {
+          "type": null,
+          "documentation": null
+        },
+        "balance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerWalletBalanceAvailableDelegates(bool Success, int balance)"
+    },
+    "EnsureSignedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EnsureSignedIn()"
+    },
+    "GrantAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrantAchievement(int AchievementId)"
+    },
+    "IsAchievementGranted": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAchievementGranted(int AchievementId)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

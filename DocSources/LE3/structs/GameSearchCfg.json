@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "SearchResults": {
+      "type": null,
+      "documentation": null
+    },
+    "GameSearchClass": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultGameSettingsClass": {
+      "type": null,
+      "documentation": null
+    },
+    "SearchResultsProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "DesiredSettingsProvider": {
+      "type": null,
+      "documentation": null
+    },
+    "Search": {
+      "type": null,
+      "documentation": null
+    },
+    "SearchName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

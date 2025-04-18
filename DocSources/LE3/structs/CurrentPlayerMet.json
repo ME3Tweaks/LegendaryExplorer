@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "NetId": {
+      "type": null,
+      "documentation": null
+    },
+    "TeamNum": {
+      "type": null,
+      "documentation": null
+    },
+    "Skill": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "GlowInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "bClipText": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableShadow": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

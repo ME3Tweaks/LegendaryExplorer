@@ -1,0 +1,80 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "Filename": {
+      "type": "string",
+      "documentation": null
+    },
+    "ArchivePtr": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bFlushEachWrite": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWantsAsyncWrites": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FileType": {
+      "type": "FWFileType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CloseFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseFile()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Logf": {
+      "documentation": null,
+      "signature_members": {
+        "logString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Logf(coerce string logString)"
+    },
+    "OpenFile": {
+      "documentation": null,
+      "signature_members": {
+        "InFilename": {
+          "type": null,
+          "documentation": null
+        },
+        "InFileType": {
+          "type": null,
+          "documentation": null
+        },
+        "InExtension": {
+          "type": null,
+          "documentation": null
+        },
+        "bUnique": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeTimeStamp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenFile(coerce string InFilename, optional FWFileType InFileType, optional string InExtension, optional bool bUnique, optional bool bIncludeTimeStamp)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

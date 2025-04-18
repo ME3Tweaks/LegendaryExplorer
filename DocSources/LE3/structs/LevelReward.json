@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "ExperienceRequired": {
+      "type": null,
+      "documentation": null
+    },
+    "TalentReward": {
+      "type": null,
+      "documentation": null
+    },
+    "HenchmanTalentReward": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

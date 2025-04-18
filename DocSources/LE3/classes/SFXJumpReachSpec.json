@@ -1,0 +1,17 @@
+{
+  "parent": "SFXCustomReachSpec",
+  "package": "SFXGame",
+  "variables": {
+    "MaxHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "MovePercentToReachMaxHeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

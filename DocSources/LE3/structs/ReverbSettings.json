@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Volume": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyReverb": {
+      "type": null,
+      "documentation": null
+    },
+    "ReverbType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

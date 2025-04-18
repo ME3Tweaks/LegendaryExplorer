@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "TracerScale3D": {
+      "type": null,
+      "documentation": null
+    },
+    "StartLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "TracerMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "TracerVFX": {
+      "type": null,
+      "documentation": null
+    },
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "TracerSpeed": {
+      "type": null,
+      "documentation": null
+    },
+    "TracerSpawnOffset": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

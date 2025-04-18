@@ -1,0 +1,186 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "BuildingMeshCompInfos": {
+      "type": "PBMeshCompInfo",
+      "documentation": null
+    },
+    "BuildingFracMeshCompInfos": {
+      "type": "PBFracMeshCompInfo",
+      "documentation": null
+    },
+    "LODMeshComps": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "OverlappingBuildings": {
+      "type": "ProcBuilding",
+      "documentation": null
+    },
+    "BuildingMaterialParams": {
+      "type": "PBMaterialParam",
+      "documentation": null
+    },
+    "SimpleMeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "LowLODPersistentActor": {
+      "type": "StaticMeshActor",
+      "documentation": null
+    },
+    "CurrentSimpleMeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "CurrentSimpleMeshActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "NumMeshedTopLevelScopes": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxFacadeZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinFacadeZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "SimpleMeshMassiveLODDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RenderToTexturePullBackAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "RoofLightmapRes": {
+      "type": "int",
+      "documentation": null
+    },
+    "NonRectWallLightmapRes": {
+      "type": "int",
+      "documentation": null
+    },
+    "BuildingInstanceVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "bGenerateRoofMesh": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGenerateFloorMesh": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyRulesToRoof": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyRulesToFloor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSplitWallsAtRoofLevels": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSplitWallsAtWallEdges": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bQuickEdited": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBuildingBrushCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugDrawEdgeInfo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugDrawScopes": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BreakFractureComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "BoxMin": {
+          "type": null,
+          "documentation": null
+        },
+        "BoxMax": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakFractureComponent(FracturedStaticMeshComponent Comp, Vector BoxMin, Vector BoxMax)"
+    },
+    "ClearBuildingMeshes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBuildingMeshes()"
+    },
+    "FindComponentsForTopLevelScope": {
+      "documentation": null,
+      "signature_members": {
+        "TopLevelScopeIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "StaticMeshComponent",
+      "signature": "array<StaticMeshComponent> FindComponentsForTopLevelScope(int TopLevelScopeIndex)"
+    },
+    "FindEdgeForTopLevelScope": {
+      "documentation": null,
+      "signature_members": {
+        "TopLevelScopeIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Edge": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindEdgeForTopLevelScope(int TopLevelScopeIndex, EScopeEdge Edge)"
+    },
+    "GetAllGroupedProcBuildings": {
+      "documentation": null,
+      "signature_members": {
+        "OutSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllGroupedProcBuildings(out array<ProcBuilding> OutSet)"
+    },
+    "GetBaseMostBuilding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ProcBuilding",
+      "signature": "ProcBuilding GetBaseMostBuilding()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

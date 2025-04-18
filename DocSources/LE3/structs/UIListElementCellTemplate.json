@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ColumnHeaderText": {
+      "type": null,
+      "documentation": null
+    },
+    "CellDataField": {
+      "type": null,
+      "documentation": null
+    },
+    "CellSize": {
+      "type": null,
+      "documentation": null
+    },
+    "CellPosition": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

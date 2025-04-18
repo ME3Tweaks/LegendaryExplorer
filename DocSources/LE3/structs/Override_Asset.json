@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "fxAsset": {
+      "type": null,
+      "documentation": null
+    },
+    "eAnimGroup": {
+      "type": null,
+      "documentation": null
+    },
+    "eAnimSeq": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

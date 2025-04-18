@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Effect": {
+      "type": null,
+      "documentation": null
+    },
+    "Sound": {
+      "type": null,
+      "documentation": null
+    },
+    "Threshold": {
+      "type": null,
+      "documentation": null
+    },
+    "ReFireDelay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

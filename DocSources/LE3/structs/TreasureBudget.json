@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "LevelId": {
+      "type": null,
+      "documentation": null
+    },
+    "Credits": {
+      "type": null,
+      "documentation": null
+    },
+    "Eezo": {
+      "type": null,
+      "documentation": null
+    },
+    "Palladium": {
+      "type": null,
+      "documentation": null
+    },
+    "Platinum": {
+      "type": null,
+      "documentation": null
+    },
+    "Iridium": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

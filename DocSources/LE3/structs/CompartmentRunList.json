@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "RigidBody": {
+      "type": null,
+      "documentation": null
+    },
+    "Fluid": {
+      "type": null,
+      "documentation": null
+    },
+    "Cloth": {
+      "type": null,
+      "documentation": null
+    },
+    "SoftBody": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

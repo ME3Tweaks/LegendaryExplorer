@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "BS_FullBody": {
+      "value": 0,
+      "documentation": null
+    },
+    "BS_Standing_Upper": {
+      "value": 1,
+      "documentation": null
+    },
+    "BS_Standing_Lower": {
+      "value": 2,
+      "documentation": null
+    },
+    "BS_Standing_Cov_Upper": {
+      "value": 3,
+      "documentation": null
+    },
+    "BS_Standing_Cov_Lean_Upper": {
+      "value": 4,
+      "documentation": null
+    },
+    "BS_Mid_Cov_Upper": {
+      "value": 5,
+      "documentation": null
+    },
+    "BS_Mid_Cov_Lean_Upper": {
+      "value": 6,
+      "documentation": null
+    },
+    "BS_Mid_Cov_Popup_Upper": {
+      "value": 7,
+      "documentation": null
+    },
+    "BS_Standing_Cov_PartLean_Upper": {
+      "value": 8,
+      "documentation": null
+    },
+    "BS_Mid_Cov_PartLean_Upper": {
+      "value": 9,
+      "documentation": null
+    },
+    "BS_Mid_Cov_PartPopup_Upper": {
+      "value": 10,
+      "documentation": null
+    },
+    "BS_Crouching_Upper": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

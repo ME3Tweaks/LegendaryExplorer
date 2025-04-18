@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PACO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PACO_On": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

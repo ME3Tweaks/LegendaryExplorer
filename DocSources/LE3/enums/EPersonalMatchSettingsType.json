@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SETTINGS_FOR_SEARCH": {
+      "value": 0,
+      "documentation": null
+    },
+    "SETTINGS_FOR_CREATE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

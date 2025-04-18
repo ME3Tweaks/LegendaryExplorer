@@ -1,0 +1,33 @@
+{
+  "parent": "SFXSceneShopNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_aValuesToCheck": {
+      "type": "SFXSSPlotValue",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null
+    },
+    "VarType": {
+      "type": "ESFXSSPlotVarType",
+      "documentation": null
+    },
+    "Variable": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

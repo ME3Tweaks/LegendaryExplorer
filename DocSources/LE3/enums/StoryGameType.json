@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GameType_ActionMode": {
+      "value": 0,
+      "documentation": null
+    },
+    "GameType_RPGMode": {
+      "value": 1,
+      "documentation": null
+    },
+    "GameType_StoryMode": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

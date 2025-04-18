@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ECharacterNameResult_AllGood": {
+      "value": 0,
+      "documentation": null
+    },
+    "ECharacterNameResult_NotUnique": {
+      "value": 1,
+      "documentation": null
+    },
+    "ECharacterNameResult_NameTooLong": {
+      "value": 2,
+      "documentation": null
+    },
+    "ECharacterNameResult_Empty": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

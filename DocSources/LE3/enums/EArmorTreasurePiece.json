@@ -1,0 +1,353 @@
+{
+  "EnumValues": {
+    "ArmorTreasure_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_Health": {
+      "value": 1,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_Shield": {
+      "value": 2,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_ShieldRegen": {
+      "value": 3,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_PowerDamage": {
+      "value": 4,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_PowerRecharge": {
+      "value": 5,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_Movement": {
+      "value": 6,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_WeaponDamage": {
+      "value": 7,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_ConstraintDamage": {
+      "value": 8,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_AmmoCapacity": {
+      "value": 9,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_MeleeDamage": {
+      "value": 10,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_Health": {
+      "value": 11,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_Shield": {
+      "value": 12,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_ShieldRegen": {
+      "value": 13,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_PowerDamage": {
+      "value": 14,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_PowerRecharge": {
+      "value": 15,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_Movement": {
+      "value": 16,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_WeaponDamage": {
+      "value": 17,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_ConstraintDamage": {
+      "value": 18,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_AmmoCapacity": {
+      "value": 19,
+      "documentation": null
+    },
+    "ArmorTreasure_Torso_MeleeDamage": {
+      "value": 20,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_Health": {
+      "value": 21,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_Shield": {
+      "value": 22,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_ShieldRegen": {
+      "value": 23,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_PowerDamage": {
+      "value": 24,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_PowerRecharge": {
+      "value": 25,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_Movement": {
+      "value": 26,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_WeaponDamage": {
+      "value": 27,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_ConstraintDamage": {
+      "value": 28,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_AmmoCapacity": {
+      "value": 29,
+      "documentation": null
+    },
+    "ArmorTreasure_Shoulders_MeleeDamage": {
+      "value": 30,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_Health": {
+      "value": 31,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_Shield": {
+      "value": 32,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_ShieldRegen": {
+      "value": 33,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_PowerDamage": {
+      "value": 34,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_PowerRecharge": {
+      "value": 35,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_Movement": {
+      "value": 36,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_WeaponDamage": {
+      "value": 37,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_ConstraintDamage": {
+      "value": 38,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_AmmoCapacity": {
+      "value": 39,
+      "documentation": null
+    },
+    "ArmorTreasure_Legs_MeleeDamage": {
+      "value": 40,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_Health": {
+      "value": 41,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_Shield": {
+      "value": 42,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_ShieldRegen": {
+      "value": 43,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_PowerDamage": {
+      "value": 44,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_PowerRecharge": {
+      "value": 45,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_Movement": {
+      "value": 46,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_WeaponDamage": {
+      "value": 47,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_ConstraintDamage": {
+      "value": 48,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_AmmoCapacity": {
+      "value": 49,
+      "documentation": null
+    },
+    "ArmorTreasure_Arms_MeleeDamage": {
+      "value": 50,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_01": {
+      "value": 51,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_02": {
+      "value": 52,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_03": {
+      "value": 53,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_04": {
+      "value": 54,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_05": {
+      "value": 55,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_06": {
+      "value": 56,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_07": {
+      "value": 57,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_08": {
+      "value": 58,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_09": {
+      "value": 59,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_10": {
+      "value": 60,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_11": {
+      "value": 61,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_12": {
+      "value": 62,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_13": {
+      "value": 63,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_14": {
+      "value": 64,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_15": {
+      "value": 65,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_16": {
+      "value": 66,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_17": {
+      "value": 67,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_18": {
+      "value": 68,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_19": {
+      "value": 69,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_20": {
+      "value": 70,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_21": {
+      "value": 71,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_22": {
+      "value": 72,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_23": {
+      "value": 73,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_24": {
+      "value": 74,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_25": {
+      "value": 75,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_26": {
+      "value": 76,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_27": {
+      "value": 77,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_28": {
+      "value": 78,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_29": {
+      "value": 79,
+      "documentation": null
+    },
+    "ArmorTreasure_DLC_30": {
+      "value": 80,
+      "documentation": null
+    },
+    "ArmorTreasure_CollectorsEdition_1": {
+      "value": 81,
+      "documentation": null
+    },
+    "ArmorTreasure_CollectorsEdition_2": {
+      "value": 82,
+      "documentation": null
+    },
+    "ArmorTreasure_CollectorsEdition_3": {
+      "value": 83,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_Mnemonic": {
+      "value": 84,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_Delumcore": {
+      "value": 85,
+      "documentation": null
+    },
+    "ArmorTreasure_Helmet_Securitel": {
+      "value": 86,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

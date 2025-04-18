@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LoopState_Start": {
+      "value": 0,
+      "documentation": null
+    },
+    "LoopState_Loop": {
+      "value": 1,
+      "documentation": null
+    },
+    "LoopState_End": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

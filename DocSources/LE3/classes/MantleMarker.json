@@ -1,0 +1,13 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "OwningSlot": {
+      "type": "CoverInfo",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

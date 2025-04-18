@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "HelmetPart_Helmet": {
+      "value": 0,
+      "documentation": null
+    },
+    "HelmetPart_Visor": {
+      "value": 1,
+      "documentation": null
+    },
+    "HelmetPart_Breather": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,189 @@
+{
+  "parent": "SVehicleSimBase",
+  "package": "SFXGame",
+  "variables": {
+    "RandForce": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RandTorque": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "OldVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "MaxThrustForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxReverseForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "LongDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxStrafeForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "LatDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "DirectionChangeForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxRiseForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "UpDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnTorqueFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnTorqueMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "TurnDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxYawRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchTorqueFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchTorqueMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "RollTorqueTurnFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "RollTorqueStrafeFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "RollTorqueMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "RollDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "StopThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxRandForce": {
+      "type": "float",
+      "documentation": null
+    },
+    "RandForceInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "StrafeTurnDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "TargetHeading": {
+      "type": "float",
+      "documentation": null
+    },
+    "TargetPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "PitchViewCorrelation": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccumulatedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "StabilizationForceMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentStabilizationMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "StoppedBrakeTorque": {
+      "type": "float",
+      "documentation": null
+    },
+    "HardLimitAirSpeedScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAllowZThrust": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFullThrustOnDirectionChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShouldCutThrustMaxOnImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecentlyHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStrafeAffectsTurnDamping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHeadingInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStabilizeStops": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableWheelsWhenOff": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRepulsorCollisionEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanClimbSlopes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUnPoweredDriving": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

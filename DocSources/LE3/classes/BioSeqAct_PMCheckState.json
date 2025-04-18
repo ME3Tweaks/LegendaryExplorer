@@ -1,0 +1,17 @@
+{
+  "parent": "BioSeqAct_PMBase",
+  "package": "SFXGame",
+  "variables": {
+    "OutValue": {
+      "type": "bool",
+      "documentation": null
+    },
+    "State": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

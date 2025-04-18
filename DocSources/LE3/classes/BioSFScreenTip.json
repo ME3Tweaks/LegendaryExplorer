@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Default_Body": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PC_Body": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PS3_Body": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

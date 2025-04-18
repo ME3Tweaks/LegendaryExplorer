@@ -1,0 +1,57 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "OldLocalToWorld": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "TrailBoneLocations": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FakeVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ChainLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "TrailRelaxation": {
+      "type": "float",
+      "documentation": null
+    },
+    "StretchLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "ThisTimstep": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInvertChainBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLimitStretch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bActorSpaceFakeVel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHadValidStrength": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ChainBoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

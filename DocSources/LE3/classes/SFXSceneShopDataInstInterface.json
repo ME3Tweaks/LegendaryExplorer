@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "m_pSceneGameData": {
+      "type": "SFXSceneShopGameData",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

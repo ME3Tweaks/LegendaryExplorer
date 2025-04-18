@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "sImage": {
+      "type": null,
+      "documentation": null
+    },
+    "sLargeImage": {
+      "type": null,
+      "documentation": null
+    },
+    "nmTech": {
+      "type": null,
+      "documentation": null
+    },
+    "nmResearch": {
+      "type": null,
+      "documentation": null
+    },
+    "srTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srName": {
+      "type": null,
+      "documentation": null
+    },
+    "srMessage": {
+      "type": null,
+      "documentation": null
+    },
+    "srDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "nLevels": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

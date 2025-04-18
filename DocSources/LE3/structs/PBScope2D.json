@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ScopeFrame": {
+      "type": null,
+      "documentation": null
+    },
+    "DimX": {
+      "type": null,
+      "documentation": null
+    },
+    "DimZ": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

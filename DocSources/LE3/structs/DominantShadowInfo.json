@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "WorldToLight": {
+      "type": null,
+      "documentation": null
+    },
+    "LightToWorld": {
+      "type": null,
+      "documentation": null
+    },
+    "LightSpaceImportanceBounds": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowMapSizeX": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowMapSizeY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

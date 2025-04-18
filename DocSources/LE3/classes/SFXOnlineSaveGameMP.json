@@ -1,0 +1,640 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ServerBaseString": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerNewReinforcementsString": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerClassStrings": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerCharacterStrings": {
+      "type": "string",
+      "documentation": null
+    },
+    "ServerFaceCodesString": {
+      "type": "string",
+      "documentation": null
+    },
+    "CachedOnlinePlayerStorage": {
+      "type": "SFXOnlinePlayerStorage",
+      "documentation": null
+    },
+    "DevelopmentVersionNumber": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDebugSaving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseOldSavingSystem": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetMaxPurchaseableItemID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxPurchaseableItemID()"
+    },
+    "GetPurchasableItemID": {
+      "documentation": null,
+      "signature_members": {
+        "className": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPurchasableItemID(const out string className)"
+    },
+    "HexDecodeNumber": {
+      "documentation": null,
+      "signature_members": {
+        "hexToDecode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int HexDecodeNumber(string hexToDecode)"
+    },
+    "HexEncodeNumber": {
+      "documentation": null,
+      "signature_members": {
+        "numToEncode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string HexEncodeNumber(int numToEncode)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "SetBase": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EMPSerializationResult",
+      "signature": "EMPSerializationResult SetBase(out SFXSaveManagerMP MPSaveManager)"
+    },
+    "Write": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Write(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "SetCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "CharacterIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EMPSerializationResult",
+      "signature": "EMPSerializationResult SetCharacter(int CharacterIndex, const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "AcknowledgeWriteComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "WritePlayerStorageCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AcknowledgeWriteComplete(byte LocalUserNum, delegate<OnWritePlayerStorageComplete> WritePlayerStorageCompleteDelegate)"
+    },
+    "DisplayErrorBox": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayErrorBox(string Type)"
+    },
+    "GetBase": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBase(SFXSaveManagerMP MPSaveManager, out string BaseString)"
+    },
+    "GetBase2": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBase2(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "GetCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "CharacterRecord": {
+          "type": null,
+          "documentation": null
+        },
+        "Index": {
+          "type": null,
+          "documentation": null
+        },
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "CharacterString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCharacter(SFXMPCharacterRecord CharacterRecord, int Index, SFXSaveManagerMP MPSaveManager, out string CharacterString)"
+    },
+    "GetCharacter2": {
+      "documentation": null,
+      "signature_members": {
+        "CharacterRecord": {
+          "type": null,
+          "documentation": null
+        },
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "nCharacterIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCharacter2(const out SFXMPCharacterRecord CharacterRecord, const out SFXSaveManagerMP MPSaveManager, int nCharacterIndex)"
+    },
+    "GetCharacterClass": {
+      "documentation": null,
+      "signature_members": {
+        "ClassRecord": {
+          "type": null,
+          "documentation": null
+        },
+        "ClassString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCharacterClass(SFXMPClassRecord ClassRecord, out string ClassString)"
+    },
+    "GetClass2": {
+      "documentation": null,
+      "signature_members": {
+        "ClassRecord": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetClass2(const out SFXMPClassRecord ClassRecord)"
+    },
+    "GetFaceCodes": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetFaceCodes(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "GetNewReinforcements": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetNewReinforcements(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "GetPlayerVariables": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "OutVars": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerVariables(SFXSaveManagerMP MPSaveManager, out string OutVars)"
+    },
+    "GetPlayerVariables2": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPlayerVariables2(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "GetPowers": {
+      "documentation": null,
+      "signature_members": {
+        "Powers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPowers(out array<PowerRecord> Powers)"
+    },
+    "GetPowerString": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPowerString(const PowerRecord Power)"
+    },
+    "GetWeaponMods": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponMods": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetWeaponMods(out array<WeaponModRecord> WeaponMods)"
+    },
+    "GetWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponRecords": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetWeapons(out array<WeaponRecord> WeaponRecords)"
+    },
+    "LoadCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadCompleted()"
+    },
+    "LoadToSaveManager": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadToSaveManager(out SFXSaveManagerMP MPSaveManager)"
+    },
+    "SaveComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveComplete()"
+    },
+    "SetClass": {
+      "documentation": null,
+      "signature_members": {
+        "ClassIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EMPSerializationResult",
+      "signature": "EMPSerializationResult SetClass(int ClassIndex, const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "SetFaceCodes": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EMPSerializationResult",
+      "signature": "EMPSerializationResult SetFaceCodes(out SFXSaveManagerMP MPSaveManager)"
+    },
+    "SetNewReinforcements": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EMPSerializationResult",
+      "signature": "EMPSerializationResult SetNewReinforcements(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "SetPlayerVariables": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerVariableString": {
+          "type": null,
+          "documentation": null
+        },
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPlayerVariables(const out string PlayerVariableString, out SFXSaveManagerMP MPSaveManager)"
+    },
+    "SetPlayerVariablesV18": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerVariableString": {
+          "type": null,
+          "documentation": null
+        },
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPlayerVariablesV18(const out string PlayerVariableString, out SFXSaveManagerMP MPSaveManager)"
+    },
+    "SetPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerString": {
+          "type": null,
+          "documentation": null
+        },
+        "Powers": {
+          "type": null,
+          "documentation": null
+        },
+        "Version": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPowers(const out string PowerString, out array<PowerRecord> Powers, int Version)"
+    },
+    "SetWeaponMods": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponModString": {
+          "type": null,
+          "documentation": null
+        },
+        "WeaponMods": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWeaponMods(const out string WeaponModString, out array<WeaponModRecord> WeaponMods)"
+    },
+    "SetWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponString": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWeapons(const out string WeaponString, out array<WeaponRecord> Weapons)"
+    },
+    "UpdateBaseServerValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBaseServerValue()"
+    },
+    "UpdateBaseValues": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceResaveBase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateBaseValues(SFXSaveManagerMP MPSaveManager, bool bForceResaveBase)"
+    },
+    "UpdateBaseValues2": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "ForceResaveBase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateBaseValues2(const out SFXSaveManagerMP MPSaveManager, bool ForceResaveBase)"
+    },
+    "UpdateCharacterServerValue": {
+      "documentation": null,
+      "signature_members": {
+        "nCharacterIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCharacterServerValue(int nCharacterIndex)"
+    },
+    "UpdateCharacterValues": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCharacterValues(SFXSaveManagerMP MPSaveManager)"
+    },
+    "UpdateCharacterValues2": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCharacterValues2(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "UpdateClassServerValue": {
+      "documentation": null,
+      "signature_members": {
+        "nClassIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateClassServerValue(int nClassIndex)"
+    },
+    "UpdateClassValues": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateClassValues(SFXSaveManagerMP MPSaveManager)"
+    },
+    "UpdateClassValues2": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateClassValues2(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "UpdateFaceCodesServerValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateFaceCodesServerValue()"
+    },
+    "UpdateFaceCodeValues": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFaceCodeValues(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "UpdateFromSaveManager": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        },
+        "ForceResaveBase": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFromSaveManager(const out SFXSaveManagerMP MPSaveManager, optional bool ForceResaveBase)"
+    },
+    "UpdateNewReinforcementsServerValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateNewReinforcementsServerValue()"
+    },
+    "UpdateNewReinforcementsValues": {
+      "documentation": null,
+      "signature_members": {
+        "MPSaveManager": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateNewReinforcementsValues(const out SFXSaveManagerMP MPSaveManager)"
+    },
+    "UpdateServerValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateServerValues()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

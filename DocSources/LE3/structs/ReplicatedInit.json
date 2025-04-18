@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Direction": {
+      "type": null,
+      "documentation": null
+    },
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "Speed": {
+      "type": null,
+      "documentation": null
+    },
+    "Trigger": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

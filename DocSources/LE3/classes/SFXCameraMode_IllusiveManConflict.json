@@ -1,0 +1,116 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "Shake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "YawRange": {
+      "type": "int",
+      "documentation": null
+    },
+    "YawCenter": {
+      "type": "int",
+      "documentation": null
+    },
+    "Debug_Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngleMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngleMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccumulatedYaw": {
+      "type": "float",
+      "documentation": null
+    },
+    "AccumulatedPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "Force": {
+      "type": "float",
+      "documentation": null
+    },
+    "SmoothedSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "Smoothing": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "InitializeFromGameMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeFromGameMode()"
+    },
+    "SmartRLerp": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "Alpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator SmartRLerp(Rotator A, Rotator B, float Alpha)"
+    },
+    "UpdateCameraSprings": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCameraSprings(float DeltaTime)"
+    },
+    "UpdateInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateInput(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

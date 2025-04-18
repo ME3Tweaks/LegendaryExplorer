@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ReferenceWord": {
+      "type": null,
+      "documentation": null
+    },
+    "PhoneticWord": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

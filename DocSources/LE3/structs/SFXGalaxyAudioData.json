@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "BuyFuelSound_PctFullRTPCName": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipHalfFuelVO": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipNoFuelClusterVO": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipNoFuelClusterReturnVO": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipNoFuelSystemVO": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipTravelSound_SpeedRTPCName": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipTravelSound_ThrustRTPCName": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipTravelSound_FuelQtyRTPCName": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipTravelSound_SystemClusterRTPCName": {
+      "type": null,
+      "documentation": null
+    },
+    "ErrorSound": {
+      "type": null,
+      "documentation": null
+    },
+    "BuyFuelSound": {
+      "type": null,
+      "documentation": null
+    },
+    "BuyFuelSoundStop": {
+      "type": null,
+      "documentation": null
+    },
+    "BuyFuelSound_Full": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipOutOfFuel_Start": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipOutOfFuel_Stop": {
+      "type": null,
+      "documentation": null
+    },
+    "BuyProbeSound": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipTravelSound_Start": {
+      "type": null,
+      "documentation": null
+    },
+    "ShipTravelSound_Stop": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

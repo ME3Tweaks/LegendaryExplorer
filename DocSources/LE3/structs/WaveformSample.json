@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Duration": {
+      "type": null,
+      "documentation": null
+    },
+    "LeftAmplitude": {
+      "type": null,
+      "documentation": null
+    },
+    "RightAmplitude": {
+      "type": null,
+      "documentation": null
+    },
+    "LeftFunction": {
+      "type": null,
+      "documentation": null
+    },
+    "RightFunction": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

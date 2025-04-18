@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "REPLY_WHEEL_MIDDLE_RIGHT": {
+      "value": 0,
+      "documentation": null
+    },
+    "REPLY_WHEEL_BOTTOM_RIGHT": {
+      "value": 1,
+      "documentation": null
+    },
+    "REPLY_WHEEL_BOTTOM_LEFT": {
+      "value": 2,
+      "documentation": null
+    },
+    "REPLY_WHEEL_MIDDLE_LEFT": {
+      "value": 3,
+      "documentation": null
+    },
+    "REPLY_WHEEL_TOP_LEFT": {
+      "value": 4,
+      "documentation": null
+    },
+    "REPLY_WHEEL_TOP_RIGHT": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PMLPC_HEIGHTAXIS_X": {
+      "value": 0,
+      "documentation": null
+    },
+    "PMLPC_HEIGHTAXIS_Y": {
+      "value": 1,
+      "documentation": null
+    },
+    "PMLPC_HEIGHTAXIS_Z": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

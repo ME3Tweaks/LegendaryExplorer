@@ -1,0 +1,117 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "DialogLinesMale": {
+      "type": "SimpleDialogLine",
+      "documentation": null
+    },
+    "DialogLinesFemale": {
+      "type": "SimpleDialogLine",
+      "documentation": null
+    },
+    "DialogLines": {
+      "type": "SimpleDialogLine",
+      "documentation": null
+    },
+    "SimpleVOEvents": {
+      "type": "SimpleVOEvent",
+      "documentation": null
+    },
+    "SubtitleColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "LastEventDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "EventReplyLine": {
+          "type": null,
+          "documentation": null
+        },
+        "EventLine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SimpleVOEvent",
+      "signature": "SimpleVOEvent GetEvent(Name EventName, stringref EventReplyLine, stringref EventLine)"
+    },
+    "PlayDialogLine": {
+      "documentation": null,
+      "signature_members": {
+        "DialogLineSr": {
+          "type": null,
+          "documentation": null
+        },
+        "ControllerToPlayOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDialogLine(stringref DialogLineSr, optional BioPlayerController ControllerToPlayOn)"
+    },
+    "PlayDialogLineIndex": {
+      "documentation": null,
+      "signature_members": {
+        "DialogLineIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "ControllerToPlayOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDialogLineIndex(int DialogLineIndex, optional BioPlayerController ControllerToPlayOn)"
+    },
+    "PlayVOEventLine": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "LineIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "ControllerToPlayOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayVOEventLine(Name EventName, int LineIndex, optional SFXPlayerController ControllerToPlayOn)"
+    },
+    "PlayVOEventRandomLine": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "ControllerToPlayOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayVOEventRandomLine(Name EventName, optional SFXPlayerController ControllerToPlayOn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

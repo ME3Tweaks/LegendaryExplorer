@@ -1,0 +1,1112 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_oShepardInfo": {
+      "type": "SFXHUDSquadMemberInfo",
+      "documentation": null
+    },
+    "m_oHench1Info": {
+      "type": "SFXHUDSquadMemberInfo",
+      "documentation": null
+    },
+    "m_oHench2Info": {
+      "type": "SFXHUDSquadMemberInfo",
+      "documentation": null
+    },
+    "MPTargetUIState": {
+      "type": "SFXMPTargetUIState",
+      "documentation": null
+    },
+    "m_sStatusText": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sResistanceText": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aDamageIndicatorPaths": {
+      "type": "SFXHudDmgIndicatorPaths",
+      "documentation": null
+    },
+    "m_aDamageIndicatorAlphas": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentWeaponResource": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_lstQueuedPOIStates": {
+      "type": "ESFXHUDPOIIconState",
+      "documentation": null
+    },
+    "MiniNotifications": {
+      "type": "SFXHUDMiniNotification",
+      "documentation": null
+    },
+    "m_sShields": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sArmour": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sBarrier": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHealth": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sOverheat": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sNoAmmo": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnNotificationCompleted__Delegate": {
+      "type": "OnNotificationCompleted",
+      "documentation": null
+    },
+    "m_CurrentResistances": {
+      "type": "SFXHUDResistances",
+      "documentation": null
+    },
+    "m_ResistanceBarDisplayValues": {
+      "type": "SFXHUDResistances",
+      "documentation": null
+    },
+    "Notification": {
+      "type": "SFXHUDNotification",
+      "documentation": null
+    },
+    "m_pCurrentTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_pPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "m_pPlayerSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "m_pCurrentDisplayTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "WeaponIcon": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "WeaponAmmo": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "WeaponClip": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "GrenadeAmmo": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "TargetName": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "TargetStatus": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "ButtonA": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "TargetBackground": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "HealthBar": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "ArmourBar": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "BioticBar": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "ShieldBar": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "ResistanceText": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "ResistanceBar": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "CenterStatus": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "CenterStatusText": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "OverheatIndicator": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "OverheatIndicatorTextAnim": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "OverheatIndicatorTextAnimText": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "PlayerPowerLeft": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "PlayerPowerRight": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "AmmoFull": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "ActionIcon": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "POI": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MPTargetBarMain": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MPTargetHitDisplay": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "LastAmmoPulseTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentBarCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fCurrentBarBackgroundX": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nNumMiniNotifications": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fEffectivelyZero": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentWeaponIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentWeaponSpareAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentClipAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTimeSinceLastWeaponUpdate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentOverheatValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMiniClipHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMiniClipBaselineY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentGrenadeCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fSuperRegenThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fHealthShieldUpdateDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDamageIndicatorAlphaUpdateDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLowHealthWarning": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fWeaponUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBarAnimRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFullStatFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMiniNotificationAnimTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMiniNotificationPadding": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srStatusBarrierText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srStatusBleedoutText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srStatusHardenedShieldsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srStatusHeavyArmourText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srStatusMinimalDamageText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srStatusSuperRegenText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srShields": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srArmour": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srBarrier": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srHealth": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srOverheat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srNoAmmo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srAmmoFull": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverEnterAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverClimbAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverMantleAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCover90RightAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCover90LeftAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverSlipRightAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverSlipLeftAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverSwatRightAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverSwatLeftAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCoverGrabAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srLadderUpAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srLadderDownAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srGapJumpAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srAtlasSuitAction": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nNotificationBodyLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bInteractive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInRange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bTargetStatusVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bProcessSquadHenchmen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInSquadCommandMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInitializedPlayerResistance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWeaponVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWeaponOverheatBarVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHealthDisplayVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForceUpdateDisplayNextTick": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHadNoAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bGrenadesVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayWeaponOverride": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHideShieldBarWhenFull": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisablePlayerHealth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseMPHealthDisplay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eCurrentActionIcon": {
+      "type": "ESFXHUDActionIcon",
+      "documentation": null
+    },
+    "m_eCurrentPOIState": {
+      "type": "ESFXHUDPOIIconState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_SetNotificationImage": {
+      "documentation": null,
+      "signature_members": {
+        "sResourcePath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetNotificationImage(string sResourcePath)"
+    },
+    "CleanupNativeReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupNativeReferences()"
+    },
+    "ClearMiniNotification": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMiniNotification(int nIndex)"
+    },
+    "ClearNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearNotification()"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetResistances": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "oResistances": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetResistances(Actor pTarget, out SFXHUDResistances oResistances)"
+    },
+    "GetStatusText": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nStatusFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStatusText(BioPawn pTarget, int nStatusFlags)"
+    },
+    "GetTargetStatusFlags": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetTargetStatusFlags(Actor pTarget)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "InitDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitDisplay()"
+    },
+    "OnAspectRatioChanged": {
+      "documentation": null,
+      "signature_members": {
+        "fNewAspectRatio": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAspectRatioChanged(float fNewAspectRatio)"
+    },
+    "OnMiniNotificationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnMiniNotificationComplete(int nID)"
+    },
+    "OnNotificationCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnNotificationCompleted(int nID)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "PlayNuiSpeech_CombatFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "Successful": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Rule": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayNuiSpeech_CombatFeedback(bool Successful, string TargetPawn, stringref Rule)"
+    },
+    "PlayNuiSpeech_ExploreFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "Successful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayNuiSpeech_ExploreFeedback(bool Successful)"
+    },
+    "PlayNuiSpeech_GenericFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "Successful": {
+          "type": null,
+          "documentation": null
+        },
+        "Rule": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayNuiSpeech_GenericFeedback(bool Successful, stringref Rule)"
+    },
+    "RegisterToPowerManager": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterToPowerManager(BioPawn pPawn)"
+    },
+    "RemoveHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveHenchman(BioPawn pPawn)"
+    },
+    "SetTargetNuiSpeechEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetNuiSpeechEnabled(bool bEnabled)"
+    },
+    "SetupHenchPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupHenchPowers()"
+    },
+    "ShouldDisplayWeaponIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldDisplayWeaponIcon()"
+    },
+    "ShowMiniNotification": {
+      "documentation": null,
+      "signature_members": {
+        "oNotifyParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMiniNotification(const out SFXNotification oNotifyParams)"
+    },
+    "ShowNotification": {
+      "documentation": null,
+      "signature_members": {
+        "oNotifyParams": {
+          "type": null,
+          "documentation": null
+        },
+        "nNumRemainingNotifications": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowNotification(const out SFXNotification oNotifyParams, int nNumRemainingNotifications)"
+    },
+    "TargetChanged": {
+      "documentation": null,
+      "signature_members": {
+        "pOldTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "pNewTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TargetChanged(Actor pOldTarget, Actor pNewTarget)"
+    },
+    "UnregisterFromPowerManager": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterFromPowerManager(BioPawn pPawn)"
+    },
+    "UpdateMPResistanceBarDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "fPips": {
+          "type": null,
+          "documentation": null
+        },
+        "oBarClip": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMPResistanceBarDisplay(float fPips, GFxValue oBarClip)"
+    },
+    "UpdatePOIState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePOIState()"
+    },
+    "UpdateResistanceDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "oResistValues": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateResistanceDisplay(SFXHUDResistances oResistValues)"
+    },
+    "UpdateTargetStatusDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "oTargetInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTargetStatusDisplay(const out SFXHUDTargetInfo oTargetInfo)"
+    },
+    "UpdateWeaponDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "pWeap": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWeaponDisplay(bool bVisible, Weapon pWeap)"
+    },
+    "AS_PlayNuiSpeech_ExploreFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_PlayNuiSpeech_ExploreFeedback(bool bSuccessful)"
+    },
+    "AS_PlayNuiSpeech_GenericFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_PlayNuiSpeech_GenericFeedback(bool bSuccessful, string Text)"
+    },
+    "AS_SetTargetName": {
+      "documentation": null,
+      "signature_members": {
+        "sTargetName": {
+          "type": null,
+          "documentation": null
+        },
+        "bHostile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetTargetName(string sTargetName, bool bHostile)"
+    },
+    "AS_SetTargetNuiSpeechEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetTargetNuiSpeechEnabled(bool bEnabled)"
+    },
+    "AS_SetTargetStatus": {
+      "documentation": null,
+      "signature_members": {
+        "sStatus": {
+          "type": null,
+          "documentation": null
+        },
+        "bInteractive": {
+          "type": null,
+          "documentation": null
+        },
+        "bInRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetTargetStatus(string sStatus, bool bInteractive, bool bInRange)"
+    },
+    "CleanupReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupReferences()"
+    },
+    "GetActionIconString": {
+      "documentation": null,
+      "signature_members": {
+        "eActionIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetActionIconString(ESFXHUDActionIcon eActionIcon)"
+    },
+    "HideActionIndicator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideActionIndicator()"
+    },
+    "OnNotificationComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnNotificationComplete()"
+    },
+    "OnPawnPowerUsed": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPawnPowerUsed(SFXPowerCustomAction oPower)"
+    },
+    "PlayTargetHitIndication": {
+      "documentation": null,
+      "signature_members": {
+        "pTargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "fDamage": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayTargetHitIndication(Pawn pTargetPawn, float fDamage, Controller instigatedBy, Class<DamageType> DamageType, Actor DamageCauser)"
+    },
+    "PowerIconCooldownDone": {
+      "documentation": null,
+      "signature_members": {
+        "oPowerIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PowerIconCooldownDone(GFxValue oPowerIcon)"
+    },
+    "PulseFullAmmoMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bGrenade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PulseFullAmmoMessage(bool bGrenade)"
+    },
+    "SetActionIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "eActionIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActionIndicator(ESFXHUDActionIcon eActionIcon)"
+    },
+    "SetCenterStatus": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCenterStatus(string sText)"
+    },
+    "SetOverheat": {
+      "documentation": null,
+      "signature_members": {
+        "fOverheatPct": {
+          "type": null,
+          "documentation": null
+        },
+        "sCenterText": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOverheat(float fOverheatPct, string sCenterText, optional bool bForce)"
+    },
+    "SetPOIHintDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPOIHintDisplay()"
+    },
+    "SetPOIState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPOIState(ESFXHUDPOIIconState eState)"
+    },
+    "SetTargetName": {
+      "documentation": null,
+      "signature_members": {
+        "sTargetName": {
+          "type": null,
+          "documentation": null
+        },
+        "bHostile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetName(string sTargetName, optional bool bHostile)"
+    },
+    "SetTargetStatus": {
+      "documentation": null,
+      "signature_members": {
+        "sStatus": {
+          "type": null,
+          "documentation": null
+        },
+        "bInteractive": {
+          "type": null,
+          "documentation": null
+        },
+        "bInRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetStatus(string sStatus, optional bool bInteractive, optional bool bInRange)"
+    },
+    "UpdateResistanceBarDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "fResistPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "oBarClip": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateResistanceBarDisplay(float fResistPercent, GFxValue oBarClip)"
+    },
+    "UpdateResistanceTextDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "NewResistanceBarText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateResistanceTextDisplay(string NewResistanceBarText)"
+    },
+    "UpdateTargetStatusVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "oTargetInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTargetStatusVisibility(const out SFXHUDTargetInfo oTargetInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

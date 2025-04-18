@@ -1,0 +1,17 @@
+{
+  "parent": "SFXGameInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmFindActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_eFindActorMode": {
+      "type": "ESFXFindByTagTypes",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

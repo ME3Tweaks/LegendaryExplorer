@@ -1,0 +1,44 @@
+{
+  "parent": "SFXSFHandler_HUD",
+  "package": "SFXGame",
+  "variables": {
+    "m_srPOIAction": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetActionIconString": {
+      "documentation": null,
+      "signature_members": {
+        "eActionIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetActionIconString(ESFXHUDActionIcon eActionIcon)"
+    },
+    "SetTargetStatus": {
+      "documentation": null,
+      "signature_members": {
+        "sStatus": {
+          "type": null,
+          "documentation": null
+        },
+        "bInteractive": {
+          "type": null,
+          "documentation": null
+        },
+        "bInRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetStatus(string sStatus, optional bool bInteractive, optional bool bInRange)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sObjectType": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

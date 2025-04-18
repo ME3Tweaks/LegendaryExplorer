@@ -1,0 +1,45 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "InitialVelocity": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DrawScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "SkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "bStartAwake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDamageAppliesImpulse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotifyRigidBodyCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseCompartment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

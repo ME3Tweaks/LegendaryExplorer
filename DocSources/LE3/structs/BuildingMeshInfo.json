@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "MaterialOverrides": {
+      "type": null,
+      "documentation": null
+    },
+    "SectionOverrides": {
+      "type": null,
+      "documentation": null
+    },
+    "Mesh": {
+      "type": null,
+      "documentation": null
+    },
+    "Translation": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "DimX": {
+      "type": null,
+      "documentation": null
+    },
+    "DimZ": {
+      "type": null,
+      "documentation": null
+    },
+    "Chance": {
+      "type": null,
+      "documentation": null
+    },
+    "OverriddenMeshLightMapRes": {
+      "type": null,
+      "documentation": null
+    },
+    "bMeshScaleTranslation": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideMeshLightMapRes": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

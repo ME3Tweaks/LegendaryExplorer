@@ -1,0 +1,65 @@
+{
+  "EnumValues": {
+    "TargetTipText_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "TargetTipText_Talk": {
+      "value": 1,
+      "documentation": null
+    },
+    "TargetTipText_Examine": {
+      "value": 2,
+      "documentation": null
+    },
+    "TargetTipText_Use": {
+      "value": 3,
+      "documentation": null
+    },
+    "TargetTipText_Open": {
+      "value": 4,
+      "documentation": null
+    },
+    "TargetTipText_Salvage": {
+      "value": 5,
+      "documentation": null
+    },
+    "TargetTipText_PickUp": {
+      "value": 6,
+      "documentation": null
+    },
+    "TargetTipText_Bypass": {
+      "value": 7,
+      "documentation": null
+    },
+    "TargetTipText_Support": {
+      "value": 8,
+      "documentation": null
+    },
+    "TargetTipText_Reactivate": {
+      "value": 9,
+      "documentation": null
+    },
+    "TargetTipText_Deactivate": {
+      "value": 10,
+      "documentation": null
+    },
+    "TargetTipText_Activate": {
+      "value": 11,
+      "documentation": null
+    },
+    "TargetTipText_Warn": {
+      "value": 12,
+      "documentation": null
+    },
+    "TargetTipText_Revive": {
+      "value": 13,
+      "documentation": null
+    },
+    "TargetTipText_Wait": {
+      "value": 14,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

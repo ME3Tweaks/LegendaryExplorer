@@ -1,0 +1,67 @@
+{
+  "parent": "SFXGUIValue_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "LocalPlayer": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "MarkerReticleStayUpDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "MarkerTextStayUpDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShouldPlaySpawn": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(const out SFXGUISceneView SceneView)"
+    },
+    "DeferredInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeferredInitialize()"
+    },
+    "FadeOutMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutMarker()"
+    },
+    "PlayOnSpawnSoundEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayOnSpawnSoundEffect()"
+    },
+    "PulseMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PulseMarker()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "FriendID": {
+      "type": null,
+      "documentation": null
+    },
+    "PersonaId": {
+      "type": null,
+      "documentation": null
+    },
+    "FriendName": {
+      "type": null,
+      "documentation": null
+    },
+    "AvatarID": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "TitleId": {
+      "type": null,
+      "documentation": null
+    },
+    "Group": {
+      "type": null,
+      "documentation": null
+    },
+    "PresenceState": {
+      "type": null,
+      "documentation": null
+    },
+    "FriendState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

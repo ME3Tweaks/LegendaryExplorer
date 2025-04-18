@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "X": {
+      "type": null,
+      "documentation": null
+    },
+    "Y": {
+      "type": null,
+      "documentation": null
+    },
+    "Width": {
+      "type": null,
+      "documentation": null
+    },
+    "Lifetime": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnTime": {
+      "type": null,
+      "documentation": null
+    },
+    "Color": {
+      "type": null,
+      "documentation": null
+    },
+    "Grows": {
+      "type": null,
+      "documentation": null
+    },
+    "Shrinks": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

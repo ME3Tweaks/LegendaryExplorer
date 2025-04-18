@@ -1,0 +1,42 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "IdleToDrawBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleToHolsterBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "HolsterToDrawBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "HolsterToIdleBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDisabledIK": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DrawAnimEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawAnimEnd()"
+    },
+    "HolsterAnimEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HolsterAnimEnd()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

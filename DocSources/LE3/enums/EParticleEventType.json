@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EPET_Any": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPET_Spawn": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPET_Death": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPET_Collision": {
+      "value": 3,
+      "documentation": null
+    },
+    "EPET_Kismet": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

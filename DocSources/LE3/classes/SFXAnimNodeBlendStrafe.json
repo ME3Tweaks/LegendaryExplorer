@@ -1,0 +1,37 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "SynchGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MovementSync": {
+      "type": "BioAnimMovementSync",
+      "documentation": null
+    },
+    "BlendSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleRelativePos": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "DirAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "HighestIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

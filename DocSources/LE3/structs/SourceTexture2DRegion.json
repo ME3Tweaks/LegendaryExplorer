@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Texture2D": {
+      "type": null,
+      "documentation": null
+    },
+    "OffsetX": {
+      "type": null,
+      "documentation": null
+    },
+    "OffsetY": {
+      "type": null,
+      "documentation": null
+    },
+    "SizeX": {
+      "type": null,
+      "documentation": null
+    },
+    "SizeY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

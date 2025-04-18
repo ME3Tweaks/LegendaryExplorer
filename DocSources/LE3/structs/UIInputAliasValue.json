@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "InputAliasName": {
+      "type": null,
+      "documentation": null
+    },
+    "ModifierFlagMask": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

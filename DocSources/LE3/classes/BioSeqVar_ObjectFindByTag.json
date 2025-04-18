@@ -1,0 +1,17 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sObjectTagToFind": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bSearchUniqueTag": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

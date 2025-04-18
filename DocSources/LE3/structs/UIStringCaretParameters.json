@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "CaretStyle": {
+      "type": null,
+      "documentation": null
+    },
+    "CaretMaterial": {
+      "type": null,
+      "documentation": null
+    },
+    "CaretWidth": {
+      "type": null,
+      "documentation": null
+    },
+    "CaretPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisplayCaret": {
+      "type": null,
+      "documentation": null
+    },
+    "CaretType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

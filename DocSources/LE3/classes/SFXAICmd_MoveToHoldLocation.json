@@ -1,0 +1,48 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "MoveToHoldLocation": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToHoldLocation(SFXAI_Henchman AI)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "Resumed": {
+      "documentation": null,
+      "signature_members": {
+        "OldCommandName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Resumed(Name OldCommandName)"
+    }
+  },
+  "states": {
+    "MovingToHoldLocation": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

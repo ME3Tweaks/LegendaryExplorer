@@ -1,0 +1,15 @@
+{
+  "parent": "BioSFHandler_MainMenu",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnYButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnYButton()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

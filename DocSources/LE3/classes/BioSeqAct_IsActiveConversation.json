@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Conversation": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "m_bCheckForFovoToo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCheckForFull": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCheckForAmbient": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

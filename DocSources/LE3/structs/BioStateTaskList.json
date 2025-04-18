@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "lstTaskEvals": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

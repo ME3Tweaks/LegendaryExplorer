@@ -1,0 +1,24 @@
+{
+  "parent": "SFXPointOfInterest",
+  "package": "SFXGame",
+  "variables": {
+    "SMC": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisableWeaponModNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableWeaponModNode()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

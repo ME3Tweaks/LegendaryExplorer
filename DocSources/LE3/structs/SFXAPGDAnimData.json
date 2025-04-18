@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nmAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimSeq": {
+      "type": null,
+      "documentation": null
+    },
+    "nPropActionIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

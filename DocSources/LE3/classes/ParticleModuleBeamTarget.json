@@ -1,0 +1,53 @@
+{
+  "parent": "ParticleModuleBeamBase",
+  "package": "Engine",
+  "variables": {
+    "TargetRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "TargetTangentRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "TargetStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "TargetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LockRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTargetAbsolute": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockTargetTangent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockTargetStength": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TargetMethod": {
+      "type": "Beam2SourceTargetMethod",
+      "documentation": null
+    },
+    "TargetTangentMethod": {
+      "type": "Beam2SourceTargetTangentMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

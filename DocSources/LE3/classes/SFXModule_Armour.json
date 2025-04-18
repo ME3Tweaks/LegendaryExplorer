@@ -1,0 +1,247 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "ActiveArmour": {
+      "type": "SFXArmourPiece",
+      "documentation": null
+    },
+    "ReplicatedArmourStates": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "PreviewArmour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreviewArmour()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "AddArmourEntry": {
+      "documentation": null,
+      "signature_members": {
+        "piece": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddArmourEntry(SFXArmourPiece piece)"
+    },
+    "ApplyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamage(out float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, Vector Momentum, Class<SFXDamageType> DamageType, Controller instigatedBy, Actor DamageCauser)"
+    },
+    "ApplyDamageToPiece": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToPiece(int ArmourIndex, float Damage, Controller instigatedBy)"
+    },
+    "AttachAllDynamicArmour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AttachAllDynamicArmour()"
+    },
+    "DestroyAllArmour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestroyAllArmour()"
+    },
+    "DetachAllDynamicArmour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetachAllDynamicArmour()"
+    },
+    "DetachArmourPiece": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourName": {
+          "type": null,
+          "documentation": null
+        },
+        "piece": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DetachArmourPiece(Name ArmourName, out SFXArmourPiece piece)"
+    },
+    "DetachDamagedArmourPiece": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourPiece": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachDamagedArmourPiece(SFXArmourPiece ArmourPiece)"
+    },
+    "GetArmourHealthPct": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetArmourHealthPct(int ArmourIndex)"
+    },
+    "GetArmourHealthPctByName": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetArmourHealthPctByName(Name ArmourName)"
+    },
+    "GetArmourIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourPiece": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetArmourIndex(SFXArmourPiece ArmourPiece)"
+    },
+    "GetArmourPieceByName": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXArmourPiece",
+      "signature": "SFXArmourPiece GetArmourPieceByName(Name ArmourName)"
+    },
+    "HasDynamicArmourToAttach": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasDynamicArmourToAttach()"
+    },
+    "PlayWeaponImpacts": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayWeaponImpacts(SFXWeapon Weapon, out TraceHitInfo HitInfo, out Vector HitLocation)"
+    },
+    "ReplicateArmourPiece": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateArmourPiece(int ArmourIndex)"
+    },
+    "SwapToDamagedArmourPiece": {
+      "documentation": null,
+      "signature_members": {
+        "ArmourPiece": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapToDamagedArmourPiece(SFXArmourPiece ArmourPiece)"
+    },
+    "UpdateReplicatedArmour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateReplicatedArmour()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

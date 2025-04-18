@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "CurrentValue": {
+      "type": null,
+      "documentation": null
+    },
+    "MinValue": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxValue": {
+      "type": null,
+      "documentation": null
+    },
+    "NudgeValue": {
+      "type": null,
+      "documentation": null
+    },
+    "bIntRange": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

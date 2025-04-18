@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "TokenId": {
+      "type": null,
+      "documentation": null
+    },
+    "Data": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

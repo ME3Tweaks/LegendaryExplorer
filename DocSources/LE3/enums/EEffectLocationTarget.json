@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "ELT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ELT_Effect": {
+      "value": 1,
+      "documentation": null
+    },
+    "ELT_Instigator": {
+      "value": 2,
+      "documentation": null
+    },
+    "ELT_HitActor": {
+      "value": 3,
+      "documentation": null
+    },
+    "ELT_Tool": {
+      "value": 4,
+      "documentation": null
+    },
+    "ELT_HitLocation": {
+      "value": 5,
+      "documentation": null
+    },
+    "ELT_HitCharacter": {
+      "value": 6,
+      "documentation": null
+    },
+    "ELT_LocalPlayer": {
+      "value": 7,
+      "documentation": null
+    },
+    "ELT_Camera": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

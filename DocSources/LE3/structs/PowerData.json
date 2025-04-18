@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "DynamicBonuses": {
+      "type": null,
+      "documentation": null
+    },
+    "RankBonuses": {
+      "type": null,
+      "documentation": null
+    },
+    "BaseValue": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Formula": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

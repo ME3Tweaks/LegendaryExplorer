@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ACCSTOR_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACCSTOR_AsAchievement": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACCSTOR_InOnlineStorage": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACCSTOR_InProfileSettings": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

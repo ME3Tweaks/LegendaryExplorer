@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "DamageType": {
+      "type": null,
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "Momentum": {
+      "type": null,
+      "documentation": null
+    },
+    "RadialDamageOrigin": {
+      "type": null,
+      "documentation": null
+    },
+    "instigatedBy": {
+      "type": null,
+      "documentation": null
+    },
+    "PhysicalMaterial": {
+      "type": null,
+      "documentation": null
+    },
+    "Damage": {
+      "type": null,
+      "documentation": null
+    },
+    "HitBoneIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

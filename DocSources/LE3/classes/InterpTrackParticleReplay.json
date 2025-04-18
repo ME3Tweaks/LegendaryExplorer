@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "TrackKeys": {
+      "type": "ParticleReplayTrackKey",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

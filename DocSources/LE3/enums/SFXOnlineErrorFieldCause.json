@@ -1,0 +1,65 @@
+{
+  "EnumValues": {
+    "SFXONLINE_FIELD_ERR_UNKNOWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_INVALID_VALUE": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_ILLEGAL_VALUE": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_MISSING_VALUE": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_DUPLICATE_VALUE": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_INVALID_EMAIL_DOMAIN": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_SPACES_NOT_ALLOWED": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_TOO_SHORT": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_TOO_LONG": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_TOO_YOUNG": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_TOO_OLD": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_ILLEGAL_FOR_COUNTRY": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_BANNED_COUNTRY": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_NOT_ALLOWED": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_ERR_NOT_MATCH": {
+      "value": 14,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

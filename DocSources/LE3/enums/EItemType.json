@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "TYPE_MOD": {
+      "value": 0,
+      "documentation": null
+    },
+    "TYPE_QUEST": {
+      "value": 1,
+      "documentation": null
+    },
+    "TYPE_DECORATION": {
+      "value": 2,
+      "documentation": null
+    },
+    "TYPE_WEAPON": {
+      "value": 3,
+      "documentation": null
+    },
+    "TYPE_WEAPONUPGRADE": {
+      "value": 4,
+      "documentation": null
+    },
+    "TYPE_HELMET": {
+      "value": 5,
+      "documentation": null
+    },
+    "TYPE_TORSO": {
+      "value": 6,
+      "documentation": null
+    },
+    "TYPE_SHOULDERS": {
+      "value": 7,
+      "documentation": null
+    },
+    "TYPE_LEGS": {
+      "value": 8,
+      "documentation": null
+    },
+    "TYPE_ARMS": {
+      "value": 9,
+      "documentation": null
+    },
+    "TYPE_UNIQUEARMOR": {
+      "value": 10,
+      "documentation": null
+    },
+    "TYPE_PARTBASEDARMOR": {
+      "value": 11,
+      "documentation": null
+    },
+    "TYPE_MEDIGEL": {
+      "value": 12,
+      "documentation": null
+    },
+    "TYPE_POWER": {
+      "value": 13,
+      "documentation": null
+    },
+    "TYPE_TALENTRESET": {
+      "value": 14,
+      "documentation": null
+    },
+    "TYPE_INTELREWARD": {
+      "value": 15,
+      "documentation": null
+    },
+    "TYPE_NESTEDCATEGORY": {
+      "value": 16,
+      "documentation": null
+    },
+    "TYPE_RETURN": {
+      "value": 17,
+      "documentation": null
+    },
+    "TYPE_INTELSUMMARY": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

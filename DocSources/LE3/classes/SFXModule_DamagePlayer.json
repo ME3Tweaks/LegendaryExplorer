@@ -1,0 +1,250 @@
+{
+  "parent": "SFXModule_DamageParty",
+  "package": "SFXGame",
+  "variables": {
+    "BleedoutVFXCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "BleedoutSFXCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "BleedOutRTPC": {
+      "type": "string",
+      "documentation": null
+    },
+    "CE_Bleedout_GUID": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "CE_BleedOut": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "MIC_Bleedout": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "WwiseComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "BleedOutEventPair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "HealthRegenPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "SoftMaxHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "SavedHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldPresentationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BleedoutStartThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "InitialBleedoutPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "BleedoutVFXInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentBleedoutVFXParam": {
+      "type": "float",
+      "documentation": null
+    },
+    "BleedoutSFXInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentBleedoutSFXParam": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthRatio": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RecoverFromBleedout": {
+      "documentation": null,
+      "signature_members": {
+        "bResetHealth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecoverFromBleedout(optional bool bResetHealth)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "SFXTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXTakeDamage(float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, Controller instigatedBy, optional Actor DamageCauser)"
+    },
+    "ApplyDamageToHealth": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "AppliedDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToHealth(float Damage, Controller instigatedBy, Class<SFXDamageType> DamageType, Vector HitLocation, out float AppliedDamage)"
+    },
+    "ApplySavedHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplySavedHealth()"
+    },
+    "DisableBleedoutSoundEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableBleedoutSoundEffects()"
+    },
+    "DisableBleedOutVisualEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableBleedOutVisualEffects()"
+    },
+    "GetBleedoutPct": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBleedoutPct()"
+    },
+    "RecomputeHealthSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecomputeHealthSegment()"
+    },
+    "RegenFullHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegenFullHealth()"
+    },
+    "SetCurrentHealth": {
+      "documentation": null,
+      "signature_members": {
+        "NewHealth": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecomputeHealthSegment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentHealth(float NewHealth, optional bool bRecomputeHealthSegment)"
+    },
+    "SetPlayerHealthFromSave": {
+      "documentation": null,
+      "signature_members": {
+        "Health": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerHealthFromSave(float Health)"
+    },
+    "StartBleedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartBleedOut()"
+    },
+    "UpdateBleedoutFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBleedoutFX()"
+    },
+    "WaitForShieldPresentation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WaitForShieldPresentation()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

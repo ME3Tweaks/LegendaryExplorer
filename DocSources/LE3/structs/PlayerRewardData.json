@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "fOriginalExperience": {
+      "type": null,
+      "documentation": null
+    },
+    "fNewExperience": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

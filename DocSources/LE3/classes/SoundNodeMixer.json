@@ -1,0 +1,13 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "InputVolume": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

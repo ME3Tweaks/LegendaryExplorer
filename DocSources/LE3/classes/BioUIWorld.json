@@ -1,0 +1,542 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_CurrentPostProcessSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null
+    },
+    "m_aCommandQueue": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_aoInitialActors": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_sMapFile": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_SpawnedPawnOriginalReferences": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "__UIWorld_DeferredOperator__Delegate": {
+      "type": "UIWorld_DeferredOperator",
+      "documentation": null
+    },
+    "m_pWorld": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_pCriticalSection": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_mSpawnedActorMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_CustomLightingData": {
+      "type": "BioConvLightingData",
+      "documentation": null
+    },
+    "m_fnCameraActorName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pCameraActor": {
+      "type": "CameraActor",
+      "documentation": null
+    },
+    "m_CE_FullBiotic": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_CE_HalfBiotic": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_CE_OmniTool": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "m_oNCHandler": {
+      "type": "BioSFHandler_NewCharacter",
+      "documentation": null
+    },
+    "m_PostProcessChain": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bLoaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddDeferredOperation": {
+      "documentation": null,
+      "signature_members": {
+        "InDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDeferredOperation(delegate<UIWorld_DeferredOperator> InDelegate, optional Object InData)"
+    },
+    "AttachBioticsAndTech": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachBioticsAndTech(BioPawn a_pSourcePawn, Name a_fnClassName)"
+    },
+    "AttachOmnitool": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachOmnitool(BioPawn a_pSourcePawn, bool a_fnClassName)"
+    },
+    "ClearScarFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "PawnToClear": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearScarFromPawn(BioPawn PawnToClear)"
+    },
+    "DestroyPawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DestroyPawn(BioPawn a_pOriginalPawn)"
+    },
+    "ExUpdateHeadGearVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExUpdateHeadGearVisibility(BioPawn pOriginalPawn, bool bVisible)"
+    },
+    "FireDeferredOperation": {
+      "documentation": null,
+      "signature_members": {
+        "InDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FireDeferredOperation(delegate<UIWorld_DeferredOperator> InDelegate, Object InData)"
+    },
+    "FlushPendingCommands": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushPendingCommands()"
+    },
+    "GetSpawnedActor": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetSpawnedActor(BioPawn a_pOriginalPawn)"
+    },
+    "HidePawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HidePawn(BioPawn a_pOriginalPawn, optional bool bHidden)"
+    },
+    "LoadWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadWorld()"
+    },
+    "MovePawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnNewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MovePawn(BioPawn a_pOriginalPawn, Name a_fnNewLocation)"
+    },
+    "PrimeTextures": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrimeTextures(BioPawn a_pSourcePawn)"
+    },
+    "ResetActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetActors()"
+    },
+    "RotatePawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_newRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RotatePawn(BioPawn a_pOriginalPawn, Rotator a_newRot)"
+    },
+    "SetAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "AnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimSet(BioPawn SourcePawn, AnimSet AnimSet)"
+    },
+    "SetBoolVariable": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolVariable(Name a_fnVariableName, bool a_bValue)"
+    },
+    "SetNameVariable": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_nmValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNameVariable(Name a_fnVariableName, Name a_nmValue)"
+    },
+    "SetObjectVariable": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_pValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectVariable(Name a_fnVariableName, Object a_pValue)"
+    },
+    "SpawnActor": {
+      "documentation": null,
+      "signature_members": {
+        "InSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "InActorArchetype": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnVariable": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "InRemoteEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnActor(BioPawn InSourcePawn, Actor InActorArchetype, Name InSpawnLocation, Name InSpawnVariable, AnimSet InAnimSet, Name InRemoteEvent, int InSpawnFlags)"
+    },
+    "SpawnPawn": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnVariable": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "InRemoteEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnPawn(BioPawn InOriginalPawn, Name InSpawnLocation, Name InSpawnVariable, optional AnimSet InAnimSet, optional Name InRemoteEvent, optional int InSpawnFlags)"
+    },
+    "SwapPawn": {
+      "documentation": null,
+      "signature_members": {
+        "a_pSourcePawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnSourceVarName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_pOtherPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_fnOtherVarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapPawn(BioPawn a_pSourcePawn, Name a_fnSourceVarName, BioPawn a_pOtherPawn, Name a_fnOtherVarName)"
+    },
+    "TriggerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "a_fnEventName": {
+          "type": null,
+          "documentation": null
+        },
+        "a_pCaller": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerEvent(Name a_fnEventName, Actor a_pCaller)"
+    },
+    "UIWorld_DeferredOperator": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UIWorld_DeferredOperator(Object InData)"
+    },
+    "UnloadWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnloadWorld()"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "a_pOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "a_AnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "a_Flags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAppearance(BioPawn a_pOriginalPawn, optional AnimSet a_AnimSet, optional int a_Flags)"
+    },
+    "UpdateSpawnedHeadGear": {
+      "documentation": null,
+      "signature_members": {
+        "InActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSpawnedHeadGear(Actor InActor, bool bVisible)"
+    },
+    "CleanupPawn": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginalPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CleanupPawn(BioPawn InOriginalPawn)"
+    },
+    "CleanupUIWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupUIWorld()"
+    },
+    "SpawnPawnImpl": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginalPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnVariable": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSet": {
+          "type": null,
+          "documentation": null
+        },
+        "InRemoteEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "InSpawnFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnPawnImpl(BioPawn InOriginalPawn, Name InSpawnLocation, Name InSpawnVariable, optional AnimSet InAnimSet, optional Name InRemoteEvent, optional int InSpawnFlags)"
+    },
+    "UpdateHeadGearVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateHeadGearVisibility(SFXPawn_PlayerParty inPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

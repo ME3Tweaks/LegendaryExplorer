@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimStart_NoState": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimStart_StartingMove": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimStart_FinishStartMove": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimStart_DoneStartMove": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimStart_RotationUnlocked": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimStart_PlayingMove": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

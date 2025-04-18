@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "AimComponents": {
+      "type": null,
+      "documentation": null
+    },
+    "ProfileName": {
+      "type": null,
+      "documentation": null
+    },
+    "HorizontalRange": {
+      "type": null,
+      "documentation": null
+    },
+    "VerticalRange": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_LU": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_LC": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_LD": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_CU": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_CC": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_CD": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_RU": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_RC": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimName_RD": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Material": {
+      "type": null,
+      "documentation": null
+    },
+    "PhysMaterial": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "HitComponent": {
+      "type": null,
+      "documentation": null
+    },
+    "Item": {
+      "type": null,
+      "documentation": null
+    },
+    "LevelIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

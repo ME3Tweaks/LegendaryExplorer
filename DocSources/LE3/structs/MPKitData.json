@@ -1,0 +1,113 @@
+{
+  "Members": {
+    "KitTextureRef": {
+      "type": null,
+      "documentation": null
+    },
+    "LockedKitTextureRef": {
+      "type": null,
+      "documentation": null
+    },
+    "SmallKitTextureRef": {
+      "type": null,
+      "documentation": null
+    },
+    "ArchetypeRef": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerIconResource": {
+      "type": null,
+      "documentation": null
+    },
+    "RequiredDLCModuleIDs": {
+      "type": null,
+      "documentation": null
+    },
+    "KitName": {
+      "type": null,
+      "documentation": null
+    },
+    "BaseMPClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "srDisplayName": {
+      "type": null,
+      "documentation": null
+    },
+    "srDefaultName": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerIconIndex1": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerIconIndex2": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerIconIndex3": {
+      "type": null,
+      "documentation": null
+    },
+    "srPowerName1": {
+      "type": null,
+      "documentation": null
+    },
+    "srPowerName2": {
+      "type": null,
+      "documentation": null
+    },
+    "srPowerName3": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxNewUnlockLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "bLockedByDefault": {
+      "type": null,
+      "documentation": null
+    },
+    "bPermanentlyLocked": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsePrimaryColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseSecondaryColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsePattern": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsePatternColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsePhong": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseEmissive": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseSkinTone": {
+      "type": null,
+      "documentation": null
+    },
+    "bHideIfLocked": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

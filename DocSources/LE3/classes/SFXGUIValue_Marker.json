@@ -1,0 +1,316 @@
+{
+  "parent": "GFxValue",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentTitle": {
+      "type": "string",
+      "documentation": null
+    },
+    "MarkerRootDI": {
+      "type": "ASDisplayInfo",
+      "documentation": null
+    },
+    "MarkerReticuleFreeArrowClipDI": {
+      "type": "ASDisplayInfo",
+      "documentation": null
+    },
+    "MarkerReticuleClipDI": {
+      "type": "ASDisplayInfo",
+      "documentation": null
+    },
+    "MarkerMiscTextClipAnimDI": {
+      "type": "ASDisplayInfo",
+      "documentation": null
+    },
+    "MarkerTitleTextClipAnimDI": {
+      "type": "ASDisplayInfo",
+      "documentation": null
+    },
+    "ScreenEdgeBorder": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "Actor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SkelMeshComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "MarkerClip": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MarkerReticuleFreeArrowClip": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MarkerReticuleClip": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MarkerIconClip": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MarkerMiscTextClipAnim": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "MarkerTitleTextClipAnim": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "BoneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "UpdateDeltaT": {
+      "type": "float",
+      "documentation": null
+    },
+    "OffscreenDirectionDampenPower": {
+      "type": "float",
+      "documentation": null
+    },
+    "FullyInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MarkerReticuleArrowClipDIDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MarkerMiscTextClipAnimDIDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MarkerTitleTextClipAnimDIDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PreviousIsOffscreen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TitleVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DefaultPawnAimNodeToAttachTo": {
+      "type": "EAimNodes",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_FadeInTitle": {
+      "documentation": null,
+      "signature_members": {
+        "TimeVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_FadeInTitle(float TimeVisible)"
+    },
+    "AS_FadeOutTitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_FadeOutTitle()"
+    },
+    "AS_SetTitleText": {
+      "documentation": null,
+      "signature_members": {
+        "NewTitle": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetTitleText(string NewTitle)"
+    },
+    "CalculateMarkerPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        },
+        "WorldLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenCoords": {
+          "type": null,
+          "documentation": null
+        },
+        "PostProjectCoords": {
+          "type": null,
+          "documentation": null
+        },
+        "LocationIsOffscreen": {
+          "type": null,
+          "documentation": null
+        },
+        "LocationIsBehindView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateMarkerPosition(const out SFXGUISceneView SceneView, const Vector WorldLocation, out Vector2D ScreenCoords, out Vector4 PostProjectCoords, out int LocationIsOffscreen, out int LocationIsBehindView)"
+    },
+    "GetMarkerWorldPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Module": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetMarkerWorldPosition(SFXModule_Marker Module)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(const out SFXGUISceneView SceneView)"
+    },
+    "UpdateReticuleArrows": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerIsOffscreen": {
+          "type": null,
+          "documentation": null
+        },
+        "OffscreenDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateReticuleArrows(bool MarkerIsOffscreen, const out Vector4 OffscreenDirection)"
+    },
+    "AS_FadeIn": {
+      "documentation": null,
+      "signature_members": {
+        "TimeVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_FadeIn(float TimeVisible)"
+    },
+    "AS_FadeInMiscText": {
+      "documentation": null,
+      "signature_members": {
+        "TimeVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_FadeInMiscText(float TimeVisible)"
+    },
+    "AS_FadeOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_FadeOut()"
+    },
+    "AS_FadeOutMiscText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_FadeOutMiscText()"
+    },
+    "AS_SetArrowStyle": {
+      "documentation": null,
+      "signature_members": {
+        "sArrowFrame": {
+          "type": null,
+          "documentation": null
+        },
+        "sOffscreenArrowFrame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetArrowStyle(string sArrowFrame, string sOffscreenArrowFrame)"
+    },
+    "AS_SetText": {
+      "documentation": null,
+      "signature_members": {
+        "NewText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetText(string NewText)"
+    },
+    "FadeOutMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutMarker()"
+    },
+    "HideTitleText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideTitleText()"
+    },
+    "ImmediateInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "NewActor": {
+          "type": null,
+          "documentation": null
+        },
+        "Module": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ImmediateInitialize(Actor NewActor, SFXModule_Marker Module)"
+    },
+    "PulseMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PulseMarker()"
+    },
+    "ShowTitleText": {
+      "documentation": null,
+      "signature_members": {
+        "Title": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowTitleText(const out string Title)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

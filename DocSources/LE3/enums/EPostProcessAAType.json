@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "PostProcessAA_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA0": {
+      "value": 1,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA1": {
+      "value": 2,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA2": {
+      "value": 3,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA3": {
+      "value": 4,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA4": {
+      "value": 5,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA5": {
+      "value": 6,
+      "documentation": null
+    },
+    "PostProcessAA_MLAA": {
+      "value": 7,
+      "documentation": null
+    },
+    "PostProcessAA_SFX_FXAA": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

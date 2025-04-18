@@ -1,0 +1,34 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContentLiveKismet",
+  "variables": {
+    "Index_InSquad": {
+      "type": "int",
+      "documentation": null
+    },
+    "Index_WasInSquad": {
+      "type": "int",
+      "documentation": null
+    },
+    "bSetNotRestore": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "getWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioWorldInfo",
+      "signature": "BioWorldInfo getWorld()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

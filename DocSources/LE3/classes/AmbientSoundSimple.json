@@ -1,0 +1,21 @@
+{
+  "parent": "AmbientSound",
+  "package": "Engine",
+  "variables": {
+    "AmbientProperties": {
+      "type": "SoundNodeAmbient",
+      "documentation": null
+    },
+    "SoundCueInstance": {
+      "type": "SoundCue",
+      "documentation": null
+    },
+    "SoundNodeInstance": {
+      "type": "SoundNodeAmbient",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

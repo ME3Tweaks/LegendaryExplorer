@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "DATATYPE_Property": {
+      "value": 0,
+      "documentation": null
+    },
+    "DATATYPE_Provider": {
+      "value": 1,
+      "documentation": null
+    },
+    "DATATYPE_RangeProperty": {
+      "value": 2,
+      "documentation": null
+    },
+    "DATATYPE_NetIdProperty": {
+      "value": 3,
+      "documentation": null
+    },
+    "DATATYPE_Collection": {
+      "value": 4,
+      "documentation": null
+    },
+    "DATATYPE_ProviderCollection": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "TargetActor": {
+      "type": null,
+      "documentation": null
+    },
+    "ExposedScale": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_pMaterial": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nmTag": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

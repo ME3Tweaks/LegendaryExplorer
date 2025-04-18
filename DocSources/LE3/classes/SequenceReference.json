@@ -1,0 +1,21 @@
+{
+  "parent": "Sequence",
+  "package": "Engine",
+  "variables": {
+    "oSequenceReference": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "oTemplateSequence": {
+      "type": "Sequence",
+      "documentation": null
+    },
+    "oDependentPackage": {
+      "type": "Package",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

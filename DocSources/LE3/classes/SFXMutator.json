@@ -1,0 +1,20 @@
+{
+  "parent": "Mutator",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "SetGameSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "NewSpeed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameSpeed(out float NewSpeed)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

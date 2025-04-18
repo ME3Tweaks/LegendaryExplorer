@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "GAWAssetType_Military": {
+      "value": 0,
+      "documentation": null
+    },
+    "GAWAssetType_Device": {
+      "value": 1,
+      "documentation": null
+    },
+    "GAWAssetType_Intel": {
+      "value": 2,
+      "documentation": null
+    },
+    "GAWAssetType_Artifact": {
+      "value": 3,
+      "documentation": null
+    },
+    "GAWAssetType_Salvage": {
+      "value": 4,
+      "documentation": null
+    },
+    "GAWAssetType_Treasure": {
+      "value": 5,
+      "documentation": null
+    },
+    "GAWAssetType_Modifier": {
+      "value": 6,
+      "documentation": null
+    },
+    "GAWAssetType_Quest": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

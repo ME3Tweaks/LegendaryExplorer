@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nmOldAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "nmNewSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmNewAnim": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

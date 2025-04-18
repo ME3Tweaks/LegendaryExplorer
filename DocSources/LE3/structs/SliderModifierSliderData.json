@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "m_aoSliderData": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fRandWeights": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fRandWeightsTotal": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

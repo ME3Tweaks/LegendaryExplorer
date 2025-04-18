@@ -1,0 +1,52 @@
+{
+  "parent": "SFXOnlineEvent_String",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "m_sImageName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nPriority": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetImageName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetImageName()"
+    },
+    "GetPriority": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPriority()"
+    },
+    "SetImageName": {
+      "documentation": null,
+      "signature_members": {
+        "sImageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetImageName(string sImageName)"
+    },
+    "SetPriority": {
+      "documentation": null,
+      "signature_members": {
+        "nPriority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPriority(int nPriority)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

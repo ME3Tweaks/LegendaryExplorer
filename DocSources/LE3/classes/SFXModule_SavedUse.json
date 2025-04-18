@@ -1,0 +1,42 @@
+{
+  "parent": "SFXSimpleUseModule",
+  "package": "SFXGame",
+  "variables": {
+    "UseModuleGUID": {
+      "type": "Guid",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HasBeenUsed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasBeenUsed()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Used(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

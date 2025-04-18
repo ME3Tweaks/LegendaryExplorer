@@ -1,0 +1,20 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "DiscoveredCodex": {
+      "type": "Map_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

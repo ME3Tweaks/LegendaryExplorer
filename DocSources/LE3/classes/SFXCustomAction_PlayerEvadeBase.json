@@ -1,0 +1,57 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "GetRollDirection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetRollDirection()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "ServerStartCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartCustomAction(int NewAction, optional BioPawn Sync, optional int NewPowerAction)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

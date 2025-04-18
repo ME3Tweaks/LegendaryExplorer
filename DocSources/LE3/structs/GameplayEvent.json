@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlayerEventAndTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "EventNameAndDesc": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "NumIndirectLightingBounces": {
+      "type": "int",
+      "documentation": null
+    },
+    "EnvironmentColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "EnvironmentIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "EmissiveBoost": {
+      "type": "float",
+      "documentation": null
+    },
+    "DiffuseBoost": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpecularBoost": {
+      "type": "float",
+      "documentation": null
+    },
+    "DirectIlluminationOcclusionFraction": {
+      "type": "float",
+      "documentation": null
+    },
+    "IndirectIlluminationOcclusionFraction": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "FullyOccludedSamplesFraction": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxOcclusionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseAmbientOcclusion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVisualizeAmbientOcclusion": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

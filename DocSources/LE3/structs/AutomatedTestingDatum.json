@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "NumberOfMatchesPlayed": {
+      "type": null,
+      "documentation": null
+    },
+    "NumMapListCyclesDone": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

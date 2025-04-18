@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeCover2Transition_Intro": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Transition_Body": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Transition_Outro": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

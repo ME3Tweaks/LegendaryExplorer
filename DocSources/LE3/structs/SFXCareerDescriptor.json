@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Career": {
+      "type": null,
+      "documentation": null
+    },
+    "Saves": {
+      "type": null,
+      "documentation": null
+    },
+    "CorruptedSaves": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

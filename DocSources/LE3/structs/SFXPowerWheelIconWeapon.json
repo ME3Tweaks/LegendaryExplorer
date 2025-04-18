@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "sName": {
+      "type": null,
+      "documentation": null
+    },
+    "sPawnName": {
+      "type": null,
+      "documentation": null
+    },
+    "sDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "sIconResource": {
+      "type": null,
+      "documentation": null
+    },
+    "oWeaponClass": {
+      "type": null,
+      "documentation": null
+    },
+    "oIconMC": {
+      "type": null,
+      "documentation": null
+    },
+    "nWeaponIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "nAmmo": {
+      "type": null,
+      "documentation": null
+    },
+    "bEquipped": {
+      "type": null,
+      "documentation": null
+    },
+    "eWeaponState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

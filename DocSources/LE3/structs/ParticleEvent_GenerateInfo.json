@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "ParticleModuleEventsToSendToGame": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomName": {
+      "type": null,
+      "documentation": null
+    },
+    "Frequency": {
+      "type": null,
+      "documentation": null
+    },
+    "LowFreq": {
+      "type": null,
+      "documentation": null
+    },
+    "ParticleFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "FirstTimeOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "LastTimeOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "UseReflectedImpactVector": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

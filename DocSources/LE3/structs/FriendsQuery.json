@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "UniqueId": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsFriend": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

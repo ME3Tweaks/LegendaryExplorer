@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "MCT_Play": {
+      "value": 0,
+      "documentation": null
+    },
+    "MCT_Stop": {
+      "value": 1,
+      "documentation": null
+    },
+    "MCT_Pause": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

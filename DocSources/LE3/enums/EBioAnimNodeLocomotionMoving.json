@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeLocomotionMoving_Fwd": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionMoving_LeanLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionMoving_LeanRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionMoving_Ascend": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionMoving_Descend": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

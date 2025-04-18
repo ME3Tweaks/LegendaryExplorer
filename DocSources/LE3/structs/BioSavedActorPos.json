@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "vPos": {
+      "type": null,
+      "documentation": null
+    },
+    "rRot": {
+      "type": null,
+      "documentation": null
+    },
+    "pActor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

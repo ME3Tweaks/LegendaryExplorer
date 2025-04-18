@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SceneProcessMode_InitGroupInst": {
+      "value": 0,
+      "documentation": null
+    },
+    "SceneProcessMode_DontCare": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

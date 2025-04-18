@@ -1,0 +1,203 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "AccuracyBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "ZoomAccuracyBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "PelletSpread": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "LatentFire_AimRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "LatentFire_StartLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "TraceExtent": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "StartTraceAdjustDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmmoRestoredPerReload": {
+      "type": "int",
+      "documentation": null
+    },
+    "LatentFireTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LatentFire_CurrentPellet": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DummyFire": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "AttachedTo": {
+          "type": null,
+          "documentation": null
+        },
+        "AimErrorDeg": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DummyFire(byte FireModeNum, Vector TargetLoc, optional Actor AttachedTo, optional float AimErrorDeg, optional Actor TargetActor)"
+    },
+    "CustomFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CustomFire()"
+    },
+    "CalcRemoteImpactEffects": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        },
+        "GivenHitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bViaReplication": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalcRemoteImpactEffects(byte FireModeNum, Vector GivenHitLocation, bool bViaReplication)"
+    },
+    "DrawDebugShotgunCone": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "AimRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugShotgunCone(Vector StartLocation, Rotator AimRot)"
+    },
+    "FinishLatentFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishLatentFire()"
+    },
+    "FirePellets": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "AimRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FirePellets(Vector StartLocation, Rotator AimRotation, byte FireMode)"
+    },
+    "GetStoreQualification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAttachSlot",
+      "signature": "EAttachSlot GetStoreQualification()"
+    },
+    "GetWeaponSpecificDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "DecalEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetWeaponSpecificDecalData(SFXPhysicalMaterialDecals DecalEffects, out float FadeTime)"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    },
+    "PollLatentFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PollLatentFire()"
+    },
+    "ScaleWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleWeapon()"
+    },
+    "ShouldSpawnTracerFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSpawnTracerFX()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

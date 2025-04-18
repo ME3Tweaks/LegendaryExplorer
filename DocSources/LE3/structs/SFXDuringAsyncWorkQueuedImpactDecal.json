@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "Material": {
+      "type": null,
+      "documentation": null
+    },
+    "HitComponent": {
+      "type": null,
+      "documentation": null
+    },
+    "HitBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeTime": {
+      "type": null,
+      "documentation": null
+    },
+    "Width": {
+      "type": null,
+      "documentation": null
+    },
+    "Height": {
+      "type": null,
+      "documentation": null
+    },
+    "FarPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "HitItem": {
+      "type": null,
+      "documentation": null
+    },
+    "HitLevelIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoClip": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

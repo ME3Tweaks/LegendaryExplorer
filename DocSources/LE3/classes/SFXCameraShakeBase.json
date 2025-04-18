@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "TheShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

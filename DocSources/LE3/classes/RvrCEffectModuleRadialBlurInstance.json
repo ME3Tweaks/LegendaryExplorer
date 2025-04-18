@@ -1,0 +1,13 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_pRBComponent": {
+      "type": "RadialBlurComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

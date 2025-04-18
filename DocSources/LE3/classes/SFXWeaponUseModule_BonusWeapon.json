@@ -1,0 +1,26 @@
+{
+  "parent": "SFXWeaponUseModule",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "DisabilityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DisabilityCheck()"
+    },
+    "WeaponUseModuleOnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponUseModuleOnUsed(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

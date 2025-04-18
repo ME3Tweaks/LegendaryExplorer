@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "CurrentMap": {
+      "type": null,
+      "documentation": null
+    },
+    "NextMap": {
+      "type": null,
+      "documentation": null
+    },
+    "NextStart": {
+      "type": null,
+      "documentation": null
+    },
+    "EndGmAct": {
+      "type": null,
+      "documentation": null
+    },
+    "EndGmX": {
+      "type": null,
+      "documentation": null
+    },
+    "EndGmY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

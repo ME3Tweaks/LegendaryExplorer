@@ -1,0 +1,214 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "ProviderChangedNotifies": {
+      "type": "OnDataProviderPropertyChange",
+      "documentation": null
+    },
+    "__OnDataProviderPropertyChange__Delegate": {
+      "type": "OnDataProviderPropertyChange",
+      "documentation": null
+    },
+    "WriteAccessType": {
+      "type": "EProviderAccessType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllowPublishingToField": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowPublishingToField(string FieldName, optional int ArrayIndex)"
+    },
+    "GenerateFillerData": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateFillerData(string DataTag)"
+    },
+    "GenerateScriptMarkupString": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateScriptMarkupString(Name DataTag)"
+    },
+    "GetFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "FieldValue": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFieldValue(string FieldName, out UIProviderScriptFieldValue FieldValue, optional int ArrayIndex)"
+    },
+    "GetProviderFieldType": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ProviderFieldType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProviderFieldType(coerce string DataTag, out EUIDataProviderFieldType out_ProviderFieldType)"
+    },
+    "GetSupportedScriptFields": {
+      "documentation": null,
+      "signature_members": {
+        "out_Fields": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSupportedScriptFields(out array<UIDataProviderField> out_Fields)"
+    },
+    "IsCollectionDataType": {
+      "documentation": null,
+      "signature_members": {
+        "FieldType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCollectionDataType(EUIDataProviderFieldType FieldType)"
+    },
+    "IsProviderDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsProviderDisabled()"
+    },
+    "NotifyPropertyChanged": {
+      "documentation": null,
+      "signature_members": {
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPropertyChanged(optional Name PropTag)"
+    },
+    "OnDataProviderPropertyChange": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDataProviderPropertyChange(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "ParseArrayDelimiter": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ParseArrayDelimiter(out string DataTag)"
+    },
+    "SetFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "FieldValue": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFieldValue(string FieldName, const out UIProviderScriptFieldValue FieldValue, optional int ArrayIndex)"
+    },
+    "AddPropertyNotificationChangeRequest": {
+      "documentation": null,
+      "signature_members": {
+        "InDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowDuplicates": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddPropertyNotificationChangeRequest(delegate<OnDataProviderPropertyChange> InDelegate, optional bool bAllowDuplicates)"
+    },
+    "ParseTagArrayDelimiter": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ParseTagArrayDelimiter(out Name FieldName)"
+    },
+    "RemovePropertyNotificationChangeRequest": {
+      "documentation": null,
+      "signature_members": {
+        "InDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePropertyNotificationChangeRequest(delegate<OnDataProviderPropertyChange> InDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

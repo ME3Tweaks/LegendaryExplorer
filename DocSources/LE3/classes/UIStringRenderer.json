@@ -1,0 +1,24 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "SetTextAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Horizontal": {
+          "type": null,
+          "documentation": null
+        },
+        "Vertical": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextAlignment(EUIAlignment Horizontal, EUIAlignment Vertical)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

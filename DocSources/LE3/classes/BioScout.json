@@ -1,0 +1,13 @@
+{
+  "parent": "Scout",
+  "package": "SFXGame",
+  "variables": {
+    "m_bAggressivePathPruning": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

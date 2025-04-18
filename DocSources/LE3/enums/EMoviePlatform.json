@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "MoviePlatform_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "MoviePlatform_PC": {
+      "value": 1,
+      "documentation": null
+    },
+    "MoviePlatform_PS3": {
+      "value": 2,
+      "documentation": null
+    },
+    "MoviePlatform_Xbox360": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

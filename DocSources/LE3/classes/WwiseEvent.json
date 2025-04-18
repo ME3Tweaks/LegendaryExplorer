@@ -1,0 +1,65 @@
+{
+  "parent": "WwiseBaseSoundObject",
+  "package": "WwiseAudio",
+  "variables": {
+    "Relationships": {
+      "type": "WwiseRelationships",
+      "documentation": null
+    },
+    "Notes": {
+      "type": "string",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "DurationSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "PrepareState": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fMaxAudible3DSoundDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nNumberOf3DSoundsPlaying": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOfSoundsUseAttenuation": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNumberOfSoundsWithUserDefinedPositioning": {
+      "type": "int",
+      "documentation": null
+    },
+    "IsLocalised": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSetup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesOrientationRTPC": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsesDistanceRTPC": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHasEnvironmentalSettings": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

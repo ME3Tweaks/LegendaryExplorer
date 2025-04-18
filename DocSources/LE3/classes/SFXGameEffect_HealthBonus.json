@@ -1,0 +1,41 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "PercentHealthBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEffectValueIsPercent": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "ComputeCustomEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeCustomEffectValue(out float Value)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

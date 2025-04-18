@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LS_NotLoggedIn": {
+      "value": 0,
+      "documentation": null
+    },
+    "LS_UsingLocalProfile": {
+      "value": 1,
+      "documentation": null
+    },
+    "LS_LoggedIn": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

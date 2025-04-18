@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "OJEC_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "OJEC_Cancelled": {
+      "value": 1,
+      "documentation": null
+    },
+    "OJEC_FailedToStart": {
+      "value": 2,
+      "documentation": null
+    },
+    "OJEC_Disconnected": {
+      "value": 3,
+      "documentation": null
+    },
+    "OJEC_System": {
+      "value": 4,
+      "documentation": null
+    },
+    "OJEC_Timeout": {
+      "value": 5,
+      "documentation": null
+    },
+    "OJEC_AuthorizationRequired": {
+      "value": 6,
+      "documentation": null
+    },
+    "OJEC_RecordNotFound": {
+      "value": 7,
+      "documentation": null
+    },
+    "OJEC_TooManyKeys": {
+      "value": 8,
+      "documentation": null
+    },
+    "OJEC_DBError": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

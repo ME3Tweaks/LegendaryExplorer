@@ -1,0 +1,20 @@
+{
+  "parent": "SFXGUI_SplashScreen",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

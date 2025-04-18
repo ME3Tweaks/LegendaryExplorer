@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "EffectGUID": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectInterface": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

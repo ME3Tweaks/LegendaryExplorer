@@ -1,0 +1,21 @@
+{
+  "parent": "SkelControlSingleBone",
+  "package": "SFXGame",
+  "variables": {
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bGenderMatch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFemale": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

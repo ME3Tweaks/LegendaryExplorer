@@ -1,0 +1,247 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MovieStateDelegates": {
+      "type": "LoadingMovieDelegate",
+      "documentation": null
+    },
+    "NativeMovies": {
+      "type": "NativeLoadingMovie",
+      "documentation": null
+    },
+    "AreaLoadTips": {
+      "type": "LoadingLevelTip",
+      "documentation": null
+    },
+    "LoadTips": {
+      "type": "LoadingTip",
+      "documentation": null
+    },
+    "LoadingMovieNames": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultLoadingMovies": {
+      "type": "BioLoadingMovie",
+      "documentation": null
+    },
+    "__LoadingMovieDelegate__Delegate": {
+      "type": "LoadingMovieDelegate",
+      "documentation": null
+    },
+    "MovieSound": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "WWiseGlobalEvent_LoadMute": {
+      "type": "Name",
+      "documentation": null
+    },
+    "WWiseGlobalEvent_LoadUnMute": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FadeOutWwiseEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "nLoopBackFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "srLevelLoadTipStrRef": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinPlayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LoadMovieAudioTimerDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPlayToCompletion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRequireExplicitStop": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResetToDefaultOnPlayLoadMovie": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowLevelLoadTip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStreamFromDisc": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlaybackState": {
+      "type": "LoadingMovieState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetRandomTip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetRandomTip()"
+    },
+    "InitLoadScreenTip": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitLoadScreenTip(string LevelName)"
+    },
+    "IsLoadingMoviePlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLoadingMoviePlaying()"
+    },
+    "LoadingMovieDelegate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadingMovieDelegate()"
+    },
+    "PlayLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": null,
+          "documentation": null
+        },
+        "bForcePlay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayLoadingMovie(string LevelName, optional bool bForcePlay)"
+    },
+    "ResetToDefaultLoadMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaultLoadMovie()"
+    },
+    "SetupLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "Movies": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenTip": {
+          "type": null,
+          "documentation": null
+        },
+        "HideLoadingTip": {
+          "type": null,
+          "documentation": null
+        },
+        "RequiresExplicitStop": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayToCompletion": {
+          "type": null,
+          "documentation": null
+        },
+        "StreamFromDisc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupLoadingMovie(const out array<BioLoadingMovie> Movies, BioSFScreenTip ScreenTip, bool HideLoadingTip, bool RequiresExplicitStop, bool PlayToCompletion, bool StreamFromDisc)"
+    },
+    "SetupNativeLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "Tag": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenTip": {
+          "type": null,
+          "documentation": null
+        },
+        "RequiresExplicitStop": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayToCompletion": {
+          "type": null,
+          "documentation": null
+        },
+        "StreamFromDisc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupNativeLoadingMovie(Name Tag, optional BioSFScreenTip ScreenTip, optional bool RequiresExplicitStop, optional bool PlayToCompletion, optional bool StreamFromDisc)"
+    },
+    "StopLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "bDelayStopUntilGameHasRendered": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopLoadingMovie(optional bool bDelayStopUntilGameHasRendered)"
+    },
+    "TriggerDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "TriggerState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerDelegates(LoadingMovieState TriggerState)"
+    },
+    "RegisterDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "TriggerState": {
+          "type": null,
+          "documentation": null
+        },
+        "InDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterDelegate(LoadingMovieState TriggerState, delegate<LoadingMovieDelegate> InDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

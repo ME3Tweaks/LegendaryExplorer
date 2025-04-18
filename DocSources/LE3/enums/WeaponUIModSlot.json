@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "UIModSlot_1": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIModSlot_2": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

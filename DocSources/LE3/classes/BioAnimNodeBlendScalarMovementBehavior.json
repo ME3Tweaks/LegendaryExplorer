@@ -1,0 +1,41 @@
+{
+  "parent": "BioAnimNodeBlendScalarBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "bUseSprint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSnapshotSpeed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseSnapshotStartSpeed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseLocalSpace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MovementBehavior": {
+      "type": "EBioAnimNodeBlendScalarMovementBehavior",
+      "documentation": null
+    },
+    "MoveAxis": {
+      "type": "EBioAnimNodeBlendScalarMoveAxis",
+      "documentation": null
+    },
+    "AxisDir": {
+      "type": "EBioAnimNodeBlendScalarMoveAxisDir",
+      "documentation": null
+    },
+    "AxisDirMode": {
+      "type": "EBioAnimNodeBlendScalarMoveAxisDirMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

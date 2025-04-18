@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "srCategoryName": {
+      "type": null,
+      "documentation": null
+    },
+    "srCategoryDescription": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

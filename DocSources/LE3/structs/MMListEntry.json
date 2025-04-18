@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "ListID": {
+      "type": null,
+      "documentation": null
+    },
+    "FncOnSelect": {
+      "type": null,
+      "documentation": null
+    },
+    "FncActiveConditional": {
+      "type": null,
+      "documentation": null
+    },
+    "FncNotifyConditional": {
+      "type": null,
+      "documentation": null
+    },
+    "KmtOnSelect": {
+      "type": null,
+      "documentation": null
+    },
+    "Label": {
+      "type": null,
+      "documentation": null
+    },
+    "ShowNotification": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

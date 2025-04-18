@@ -1,0 +1,260 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "__OnFinished__Delegate": {
+      "type": "OnFinished",
+      "documentation": null
+    },
+    "__OnSwitchScreens__Delegate": {
+      "type": "OnSwitchScreens",
+      "documentation": null
+    },
+    "GAWAssetsHandler": {
+      "type": "SFXGAWAssetsHandler",
+      "documentation": null
+    },
+    "srReadinessPercent": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srWarAssetsTutorialMessage": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "ExSetItemRead": {
+      "documentation": null,
+      "signature_members": {
+        "nPrimaryID": {
+          "type": null,
+          "documentation": null
+        },
+        "nSecondaryID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExSetItemRead(int nPrimaryID, int nSecondaryID)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnFinished()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AS_InitializeScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_InitializeScreen()"
+    },
+    "AS_ScrollDetails": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ScrollDetails(float fValue)"
+    },
+    "CategoryHasUnlockedAssets": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CategoryHasUnlockedAssets(int categoryId)"
+    },
+    "GetAssetCategories": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WarAssetCategoryGUIData",
+      "signature": "array<WarAssetCategoryGUIData> GetAssetCategories()"
+    },
+    "GetAssetDetailsText": {
+      "documentation": null,
+      "signature_members": {
+        "AssetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAssetDetailsText(int AssetID)"
+    },
+    "GetAssetImageReference": {
+      "documentation": null,
+      "signature_members": {
+        "AssetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAssetImageReference(int AssetID)"
+    },
+    "GetAssetSummaryText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetAssetSummaryText()"
+    },
+    "GetCategoryDetailsText": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCategoryDetailsText(int categoryId)"
+    },
+    "GetCategoryImageReference": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCategoryImageReference(int categoryId)"
+    },
+    "GetCategoryStrength": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetCategoryStrength(int categoryId)"
+    },
+    "GetEffectiveMilitaryStrength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetEffectiveMilitaryStrength()"
+    },
+    "GetFormattedReadinessPercent": {
+      "documentation": null,
+      "signature_members": {
+        "nReadiness": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetFormattedReadinessPercent(int nReadiness)"
+    },
+    "GetMaxMilitaryStrength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxMilitaryStrength()"
+    },
+    "GetMinMilitaryStrength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMinMilitaryStrength()"
+    },
+    "GetReadinessRating": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetReadinessRating()"
+    },
+    "GetTotalMilitaryStrength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTotalMilitaryStrength()"
+    },
+    "GetWarAssetData": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WarAssetGUIData",
+      "signature": "array<WarAssetGUIData> GetWarAssetData(int categoryId)"
+    },
+    "GoToGalaxyAtWar": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GoToGalaxyAtWar()"
+    },
+    "OnSwitchScreens": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSwitchScreens()"
+    },
+    "ShowTutorial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowTutorial()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

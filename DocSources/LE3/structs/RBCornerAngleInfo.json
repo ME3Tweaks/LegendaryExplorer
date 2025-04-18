@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Angle": {
+      "type": null,
+      "documentation": null
+    },
+    "CornerSize": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "bVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bFading": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "nQuest": {
+      "type": null,
+      "documentation": null
+    },
+    "nTask": {
+      "type": null,
+      "documentation": null
+    },
+    "nConditional": {
+      "type": null,
+      "documentation": null
+    },
+    "nState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

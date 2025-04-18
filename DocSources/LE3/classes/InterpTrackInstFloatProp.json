@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackInstProperty",
+  "package": "Engine",
+  "variables": {
+    "FloatProp": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ResetFloat": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

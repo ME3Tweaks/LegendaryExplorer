@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Extent": {
+      "type": null,
+      "documentation": null
+    },
+    "Padding": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoSizeEnabled": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "sImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "m_ResearchChoices": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "srTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srSubTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srAboutLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "srAboutText": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

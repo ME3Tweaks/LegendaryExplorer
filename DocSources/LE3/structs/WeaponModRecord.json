@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "WeaponModClassNames": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponClassName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

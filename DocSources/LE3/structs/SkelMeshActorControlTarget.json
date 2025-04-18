@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ControlName": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetActor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

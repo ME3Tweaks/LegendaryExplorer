@@ -1,0 +1,491 @@
+{
+  "parent": "Inventory",
+  "package": "SFXGame",
+  "variables": {
+    "MaxShields": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "ShieldRegenDelay": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "ShieldDamageMultiplier": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "__ShieldDestroyedPowerCallback__Delegate": {
+      "type": "ShieldDestroyedPowerCallback",
+      "documentation": null
+    },
+    "ShieldBreachReplicationInfo": {
+      "type": "ShieldBreachReplication",
+      "documentation": null
+    },
+    "ShieldOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PS_Impact": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_Recharged": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PS_Breach": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "PhysMat": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "ShieldsBreakSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ShieldsUpSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PCShieldsUpStopSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ShieldDisplayName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ShieldScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentShields": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldCurrentShields": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxEnemyShieldRecharge": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldRegenTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldRegenPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "AIEnergyShieldGatePct": {
+      "type": "float",
+      "documentation": null
+    },
+    "TOTAL_SHIELD_STEPS": {
+      "type": "int",
+      "documentation": null
+    },
+    "bRechargeable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecentShieldDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Resistance": {
+      "type": "EResistanceType",
+      "documentation": null
+    },
+    "ReplicatedShield": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCurrentShields": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentShields()"
+    },
+    "GetMaxShields": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxShields()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaSeconds)"
+    },
+    "GivenTo": {
+      "documentation": null,
+      "signature_members": {
+        "thisPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bDoNotActivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GivenTo(Pawn thisPawn, optional bool bDoNotActivate)"
+    },
+    "ItemRemovedFromInvManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ItemRemovedFromInvManager()"
+    },
+    "ActivatePSC": {
+      "documentation": null,
+      "signature_members": {
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactScale": {
+          "type": null,
+          "documentation": null
+        },
+        "Offset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivatePSC(ParticleSystem Template, optional float ImpactScale, optional Vector Offset)"
+    },
+    "ActivateWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Template": {
+          "type": null,
+          "documentation": null
+        },
+        "PrimComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateWeaponImpact(SFXWeapon Weapon, out TraceHitInfo HitInfo, out Vector HitLocation, ParticleSystem Template, PrimitiveComponent PrimComp)"
+    },
+    "ApplyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalDamageDone": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamage(out float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, Vector Momentum, Class<SFXDamageType> DamageType, Controller instigatedBy, Actor DamageCauser, out float TotalDamageDone)"
+    },
+    "ApplyDamageToShields": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalDamageDone": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToShields(out float Damage, Class<SFXDamageType> DamageType, Vector Momentum, Vector HitLocation, TraceHitInfo HitInfo, Controller instigatedBy, out float TotalDamageDone)"
+    },
+    "BeginRecharge": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginRecharge()"
+    },
+    "BreachShields": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreachShields(Class<SFXDamageType> DamageType)"
+    },
+    "ClientDeferredBreachShields": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientDeferredBreachShields()"
+    },
+    "ClientDeferredSetResistance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientDeferredSetResistance()"
+    },
+    "GetDamageResistance": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDamageResistance(Class<SFXDamageType> DamageType)"
+    },
+    "GetImpactScale": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetImpactScale(SFXWeapon Weapon, Vector HitLocation)"
+    },
+    "GetMaxShieldStruct": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ScaledFloat",
+      "signature": "ScaledFloat GetMaxShieldStruct()"
+    },
+    "GetShieldRegenDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetShieldRegenDelay()"
+    },
+    "GetShieldRegenRate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetShieldRegenRate()"
+    },
+    "InitializeMaxShields": {
+      "documentation": null,
+      "signature_members": {
+        "NewMaxShields": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeMaxShields(float NewMaxShields)"
+    },
+    "PlayRecharge": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayRecharge()"
+    },
+    "PlayShieldSound": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayShieldSound(SFXWeapon Weapon, TraceHitInfo HitInfo, Vector HitLocation)"
+    },
+    "ReplicateCurrentShields": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicateCurrentShields()"
+    },
+    "ReplicateShieldBreach": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateShieldBreach(Class<SFXDamageType> DamageType)"
+    },
+    "ResetShieldRegenTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetShieldRegenTimer()"
+    },
+    "ScaleShields": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleShields()"
+    },
+    "SetCurrentShields": {
+      "documentation": null,
+      "signature_members": {
+        "NewCurrentShields": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentShields(float NewCurrentShields)"
+    },
+    "SetMaxShields": {
+      "documentation": null,
+      "signature_members": {
+        "NewMaxShields": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxShields(ScaledFloat NewMaxShields)"
+    },
+    "ShieldDestroyedPowerCallback": {
+      "documentation": null,
+      "signature_members": {
+        "ShieldActor": {
+          "type": null,
+          "documentation": null
+        },
+        "Shield": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShieldDestroyedPowerCallback(Actor ShieldActor, SFXShield_Base Shield)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

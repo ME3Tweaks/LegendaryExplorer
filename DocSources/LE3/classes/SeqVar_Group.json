@@ -1,0 +1,21 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "Engine",
+  "variables": {
+    "Actors": {
+      "type": "Object",
+      "documentation": null
+    },
+    "GroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bCachedList": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

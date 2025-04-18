@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "LastTargetLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "LastSrcLocation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

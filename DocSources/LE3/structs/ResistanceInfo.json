@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Shield": {
+      "type": null,
+      "documentation": null
+    },
+    "Armour": {
+      "type": null,
+      "documentation": null
+    },
+    "Biotic": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

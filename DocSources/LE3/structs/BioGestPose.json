@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "nmPose": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimSeq": {
+      "type": null,
+      "documentation": null
+    },
+    "tPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "nmGroup": {
+      "type": null,
+      "documentation": null
+    },
+    "nmFemaleNodeName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,168 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {
+    "SyncPartner": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "MaxPartnerDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "SyncCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DestinationOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStopOnImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHideTargetWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAffectsFriendlies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTryForceLocalSimulation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteraction()"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float DeltaTime)"
+    },
+    "CanInteractWithPawn": {
+      "documentation": null,
+      "signature_members": {
+        "OtherPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanInteractWithPawn(BioPawn OtherPawn)"
+    },
+    "DebugSocketRelativeLocation": {
+      "documentation": null,
+      "signature_members": {
+        "InSocketName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugSocketRelativeLocation(Name InSocketName)"
+    },
+    "GetPawnScore": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPawnScore(BioPawn BP)"
+    },
+    "GetVictimPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetVictimPawn()"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "MessageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MessageEvent(Name EventName, Object Sender)"
+    },
+    "NonSyncedAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NonSyncedAction()"
+    },
+    "OnPartnerLeavingCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPartnerLeavingCustomAction()"
+    },
+    "OnPartnerReachedDestination": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPartnerReachedDestination()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

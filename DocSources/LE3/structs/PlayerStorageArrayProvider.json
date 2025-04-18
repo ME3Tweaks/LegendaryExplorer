@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PlayerStorageName": {
+      "type": null,
+      "documentation": null
+    },
+    "Provider": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerStorageId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

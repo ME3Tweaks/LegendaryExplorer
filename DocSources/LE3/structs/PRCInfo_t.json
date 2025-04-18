@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "sCreditsSection": {
+      "type": null,
+      "documentation": null
+    },
+    "fFadeTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fHoldTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fScrollTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

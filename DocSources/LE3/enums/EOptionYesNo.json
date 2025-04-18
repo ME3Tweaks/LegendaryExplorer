@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "OYN_Yes": {
+      "value": 0,
+      "documentation": null
+    },
+    "OYN_No": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "FLASHCREDIT_FadeIn": {
+      "value": 0,
+      "documentation": null
+    },
+    "FLASHCREDIT_Hold": {
+      "value": 1,
+      "documentation": null
+    },
+    "FLASHCREDIT_FadeOut": {
+      "value": 2,
+      "documentation": null
+    },
+    "FLASHCREDIT_Delay": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

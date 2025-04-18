@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EBoneAxis_All": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBoneAxis_X": {
+      "value": 1,
+      "documentation": null
+    },
+    "EBoneAxis_Y": {
+      "value": 2,
+      "documentation": null
+    },
+    "EBoneAxis_Z": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

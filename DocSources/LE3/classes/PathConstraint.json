@@ -1,0 +1,30 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "NextConstraint": {
+      "type": "PathConstraint",
+      "documentation": null
+    },
+    "CacheIdx": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

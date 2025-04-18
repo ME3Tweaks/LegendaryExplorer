@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "sName": {
+      "type": null,
+      "documentation": null
+    },
+    "oTexture": {
+      "type": null,
+      "documentation": null
+    },
+    "nID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

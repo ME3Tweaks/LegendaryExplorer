@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "ParticlesLodMin": {
+      "type": null,
+      "documentation": null
+    },
+    "ParticlesLodMax": {
+      "type": null,
+      "documentation": null
+    },
+    "PacketsPerPhysXParticleSystemMax": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnLodVsFifoBias": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisableLod": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyCylindricalPacketCulling": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

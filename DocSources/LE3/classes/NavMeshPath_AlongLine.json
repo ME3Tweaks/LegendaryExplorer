@@ -1,0 +1,35 @@
+{
+  "parent": "NavMeshPathConstraint",
+  "package": "Engine",
+  "variables": {
+    "Direction": {
+      "type": "Vector",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "AlongLine": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": null,
+          "documentation": null
+        },
+        "Dir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AlongLine(NavigationHandle NavHandle, Vector Dir)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

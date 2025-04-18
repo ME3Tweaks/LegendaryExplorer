@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "TransformSourceType": {
+      "type": "EMaterialVectorCoordTransformSource",
+      "documentation": null
+    },
+    "TransformType": {
+      "type": "EMaterialVectorCoordTransform",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "sEntityName": {
+      "type": null,
+      "documentation": null
+    },
+    "srMessage": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

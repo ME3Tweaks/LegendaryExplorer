@@ -1,0 +1,36 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "ApplyBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyBonus(SFXWeapon Weapon, optional bool bRemove)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

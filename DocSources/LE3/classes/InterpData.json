@@ -1,0 +1,49 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "InterpGroups": {
+      "type": "InterpGroup",
+      "documentation": null
+    },
+    "m_aBioPreloadData": {
+      "type": "BioResourcePreloadItem",
+      "documentation": null
+    },
+    "CurveEdSetup": {
+      "type": "InterpCurveEdSetup",
+      "documentation": null
+    },
+    "m_pSFXSceneData": {
+      "type": "SFXSceneShopGameData",
+      "documentation": null
+    },
+    "InterpLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "PathBuildTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "EdSectionStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "EdSectionEnd": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nBioCutSceneVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "bShouldBakeAndPrune": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Protocol": {
+      "type": null,
+      "documentation": null
+    },
+    "Host": {
+      "type": null,
+      "documentation": null
+    },
+    "Map": {
+      "type": null,
+      "documentation": null
+    },
+    "Op": {
+      "type": null,
+      "documentation": null
+    },
+    "Portal": {
+      "type": null,
+      "documentation": null
+    },
+    "Port": {
+      "type": null,
+      "documentation": null
+    },
+    "Valid": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

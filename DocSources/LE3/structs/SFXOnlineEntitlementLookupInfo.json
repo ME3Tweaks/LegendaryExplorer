@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "BWEntitlement": {
+      "type": null,
+      "documentation": null
+    },
+    "sGroupName": {
+      "type": null,
+      "documentation": null
+    },
+    "sEntitlementName": {
+      "type": null,
+      "documentation": null
+    },
+    "sProductId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

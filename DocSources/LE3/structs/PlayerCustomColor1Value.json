@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ParameterValue": {
+      "type": null,
+      "documentation": null
+    },
+    "PhongParameterValue": {
+      "type": null,
+      "documentation": null
+    },
+    "ParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "PhongParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "ColorName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,101 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "BlendOut": {
+      "type": "BioAnimCheckBlendOut",
+      "documentation": null
+    },
+    "Intro2BodyBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Body2OutroBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Intro2OutroBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Outro2IntroBlendDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "IntroIsBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OutroIsBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopInputOnBlockingTransitions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRequestedBlendOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanceledBlendOut": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipIntro": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IntroRootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    },
+    "IntroRootRotationMode": {
+      "type": "ERootMotionRotationMode",
+      "documentation": null
+    },
+    "OutroRootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    },
+    "OutroRootRotationMode": {
+      "type": "ERootMotionRotationMode",
+      "documentation": null
+    },
+    "CurrentState": {
+      "type": "EBioAnimNodeCover2Transition",
+      "documentation": null
+    },
+    "RootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    },
+    "RootRotationMode": {
+      "type": "ERootMotionRotationMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IgnorePlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bIgnore": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IgnorePlayerInput(BioPawn pPawn, bool bIgnore)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

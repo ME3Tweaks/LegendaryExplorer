@@ -1,0 +1,55 @@
+{
+  "parent": "SFXGUIValue_PowerIcon",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ClearIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearIcon()"
+    },
+    "Flash": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Flash()"
+    },
+    "GetInfoTextPath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetInfoTextPath()"
+    },
+    "GetStatePath": {
+      "documentation": null,
+      "signature_members": {
+        "ePathState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStatePath(optional SFXPowerWheelPowerState ePathState)"
+    },
+    "Map": {
+      "documentation": null,
+      "signature_members": {
+        "eMapIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Map(SFXPowerWheelMapButtonIcon eMapIcon)"
+    },
+    "SetStateDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetStateDisplay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

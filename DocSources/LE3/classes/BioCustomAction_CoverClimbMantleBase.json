@@ -1,0 +1,139 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_BS_StanceFromExplore": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "m_BS_StanceFromCombat": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "m_BS_StanceFromCover": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "m_fCollisionOffPerioud": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCollisionOffTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bWasInCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_CurrentBodyStance": {
+      "type": "ECoverBodyStanceID",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float fDeltaTime)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "EndPlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndPlayBodyStance(ECoverBodyStanceID StanceID)"
+    },
+    "GetBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        },
+        "out_BodyStance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBodyStance(ECoverBodyStanceID StanceID, out BodyStance out_BodyStance)"
+    },
+    "StartPlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPlayBodyStance(ECoverBodyStanceID StanceID)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "StopPlayBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "StanceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopPlayBodyStance(ECoverBodyStanceID StanceID)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

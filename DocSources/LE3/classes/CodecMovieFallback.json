@@ -1,0 +1,13 @@
+{
+  "parent": "CodecMovie",
+  "package": "Engine",
+  "variables": {
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "ExtractTopZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExtractNotTopZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExtractBottomZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExtractNotBottomZ": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

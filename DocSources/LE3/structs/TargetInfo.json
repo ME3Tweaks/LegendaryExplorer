@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Target": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "Direction": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

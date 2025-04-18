@@ -1,0 +1,328 @@
+{
+  "parent": "SFXPRI_NativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "ScoreLog": {
+      "type": "ScoreEvent",
+      "documentation": null
+    },
+    "LastWeaponDamage": {
+      "type": "DamageCalculationAlgorithm",
+      "documentation": null
+    },
+    "LastPowerDamage": {
+      "type": "DamageCalculationAlgorithm",
+      "documentation": null
+    },
+    "ActiveMatchConsumables": {
+      "type": "ActiveMatchConsumable",
+      "documentation": null
+    },
+    "ReplicatedScoreInfo": {
+      "type": "ScoreInfo",
+      "documentation": null
+    },
+    "TotalPointsAtStartOfWave": {
+      "type": "int",
+      "documentation": null
+    },
+    "PointsEarned": {
+      "type": "float",
+      "documentation": null
+    },
+    "CreditsEarned": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScoreReplicationPeriod": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "AddActiveMatchConsumable": {
+      "documentation": null,
+      "signature_members": {
+        "ClassNameID": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddActiveMatchConsumable(int ClassNameID, float Value)"
+    },
+    "AddCredits": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCredits(float Amount)"
+    },
+    "AddPlayerMedal": {
+      "documentation": null,
+      "signature_members": {
+        "Medal": {
+          "type": null,
+          "documentation": null
+        },
+        "ReplaceMedal": {
+          "type": null,
+          "documentation": null
+        },
+        "bDisplay": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerMedal(int Medal, optional int ReplaceMedal, optional bool bDisplay)"
+    },
+    "AddPoints": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPoints(float Amount)"
+    },
+    "CanSetReadyInLobby": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSetReadyInLobby()"
+    },
+    "FindLocalPRI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXPRI",
+      "signature": "SFXPRI FindLocalPRI()"
+    },
+    "GetActiveMatchConsumable": {
+      "documentation": null,
+      "signature_members": {
+        "ConsumableIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "ConsumableClass": {
+          "type": null,
+          "documentation": null
+        },
+        "ConsumableValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActiveMatchConsumable(int ConsumableIndex, out Name ConsumableClass, out int ConsumableValue)"
+    },
+    "GetActiveMatchConsumables": {
+      "documentation": null,
+      "signature_members": {
+        "OutActiveMatchConsumables": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetActiveMatchConsumables(out array<ActiveMatchConsumable> OutActiveMatchConsumables)"
+    },
+    "GetPlayerChallengeTitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetPlayerChallengeTitle()"
+    },
+    "GetTotalCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTotalCredits()"
+    },
+    "GetTotalPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTotalPoints()"
+    },
+    "GetWeaponLevel": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetWeaponLevel(Name WeaponClassPath)"
+    },
+    "IsMatchConsumableActive": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueConsumableID": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMatchConsumableActive(int UniqueConsumableID, float Value)"
+    },
+    "IsReadyInLobby": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReadyInLobby()"
+    },
+    "OnCharacterChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCharacterChanged()"
+    },
+    "RemoveActiveMatchConsumable": {
+      "documentation": null,
+      "signature_members": {
+        "ClassNameID": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveActiveMatchConsumable(int ClassNameID, float Value)"
+    },
+    "ReplicatedScoreUpdated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicatedScoreUpdated()"
+    },
+    "ReplicateScoreInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicateScoreInfo()"
+    },
+    "SendTelemetryForWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendTelemetryForWeapons()"
+    },
+    "ServerAddActiveMatchConsumable": {
+      "documentation": null,
+      "signature_members": {
+        "ClassNameID": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerAddActiveMatchConsumable(int ClassNameID, float Value)"
+    },
+    "ServerRemoveActiveMatchConsumable": {
+      "documentation": null,
+      "signature_members": {
+        "ClassNameID": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerRemoveActiveMatchConsumable(int ClassNameID, float Value)"
+    },
+    "SetReadyInLobby": {
+      "documentation": null,
+      "signature_members": {
+        "NewReadyState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReadyInLobby(bool NewReadyState)"
+    },
+    "StoreDamageCalculation": {
+      "documentation": null,
+      "signature_members": {
+        "DamageCalc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StoreDamageCalculation(const out DamageCalculationAlgorithm DamageCalc)"
+    },
+    "TriggerNewScoreTag": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerNewScoreTag(int Amount, coerce string Message)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

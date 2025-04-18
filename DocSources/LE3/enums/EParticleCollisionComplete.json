@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "EPCC_Kill": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPCC_Freeze": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPCC_HaltCollisions": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPCC_FreezeTranslation": {
+      "value": 3,
+      "documentation": null
+    },
+    "EPCC_FreezeRotation": {
+      "value": 4,
+      "documentation": null
+    },
+    "EPCC_FreezeMovement": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

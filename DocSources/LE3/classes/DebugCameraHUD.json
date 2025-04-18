@@ -1,0 +1,44 @@
+{
+  "parent": "HUD",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PostRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostRender()"
+    },
+    "DisplayMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "DY": {
+          "type": null,
+          "documentation": null
+        },
+        "MeshComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DisplayMaterials(float X, out float Y, float DY, MeshComponent MeshComp)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

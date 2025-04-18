@@ -1,0 +1,105 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "ShadowMaps": {
+      "type": "ShadowMap2D",
+      "documentation": null
+    },
+    "IrrelevantLights": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "TerrainObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "SectionBaseX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SectionBaseY": {
+      "type": "int",
+      "documentation": null
+    },
+    "SectionSizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SectionSizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "TrueSectionSizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "TrueSectionSizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "LightMap": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PatchBounds": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatchBatches": {
+      "type": "int",
+      "documentation": null
+    },
+    "BatchMaterials": {
+      "type": "int",
+      "documentation": null
+    },
+    "FullBatch": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatchBatchOffsets": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WorkingOffsets": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PatchBatchTriangles": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PatchCachedTessellationValues": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TesselationLevels": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "BVTree": {
+      "type": "TerrainBVTree",
+      "documentation": null
+    },
+    "CollisionVertices": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RBHeightfield": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bDisplayCollisionLevel": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPhysicsMeshDirty": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

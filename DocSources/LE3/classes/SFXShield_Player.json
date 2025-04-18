@@ -1,0 +1,139 @@
+{
+  "parent": "SFXShield_Base",
+  "package": "SFXGame",
+  "variables": {
+    "TimeDilation": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "BreachTimeDilation": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "BreachShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "PS_CriticalHit": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "CE_ShieldBreak": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "PCShieldsBreakSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PCShieldsUpSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ShieldBreakPainVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PartialBreakPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeDilationLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "BreachTimeDilationLength": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "ApplyDamageToShields": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalDamageDone": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToShields(out float Damage, Class<SFXDamageType> DamageType, Vector Momentum, Vector HitLocation, TraceHitInfo HitInfo, Controller instigatedBy, out float TotalDamageDone)"
+    },
+    "BeginRecharge": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginRecharge()"
+    },
+    "BreachShields": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreachShields(Class<SFXDamageType> DamageType)"
+    },
+    "GetShieldRegenDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetShieldRegenDelay()"
+    },
+    "GetShieldRegenRate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetShieldRegenRate()"
+    },
+    "PlayRecharge": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayRecharge()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

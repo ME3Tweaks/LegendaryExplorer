@@ -1,0 +1,37 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "bLevelStartupEventForceOff": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoActivatedWork": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoActivatedWork()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,204 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "EffectsRemovedOnCombo": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DetonationScreenShakeClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DetonationRumbleClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DamageType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "MaxRagdollDmgTypeOverride": {
+      "type": "Class",
+      "documentation": null
+    },
+    "DetonationParameters": {
+      "type": "AreaEffectParameters",
+      "documentation": null
+    },
+    "CrustGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "SourcePower": {
+      "type": "SFXPowerCustomAction",
+      "documentation": null
+    },
+    "CurrentDetonationPower": {
+      "type": "SFXPowerCustomAction",
+      "documentation": null
+    },
+    "DetonationVFX": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "DetonationSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "TargetCrustVFX": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "ComboDamage": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ComboForce": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ComboRadius": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MaxTargets": {
+      "type": "int",
+      "documentation": null
+    },
+    "fPowerRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaximumRagdollTargets": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaximumRagdollTargetsMP": {
+      "type": "int",
+      "documentation": null
+    },
+    "bOnlyOnDeath": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "nPreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(EPowerResistance Resistance, Actor oImpacted, int nPreviouslyImpacted, Vector HitLocation, Vector HitNormal)"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "CalculatePowerRatio": {
+      "documentation": null,
+      "signature_members": {
+        "DetonationPowerRank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculatePowerRatio(float DetonationPowerRank)"
+    },
+    "ClientDoPowerComboImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        },
+        "DetonationPowerRank": {
+          "type": null,
+          "documentation": null
+        },
+        "MiscFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoPowerComboImpact(Actor oActor, int CustomActionReactionType, float DetonationPowerRank, int MiscFlags)"
+    },
+    "GetDamage": {
+      "documentation": null,
+      "signature_members": {
+        "fRatio": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDamage(float fRatio)"
+    },
+    "GetForce": {
+      "documentation": null,
+      "signature_members": {
+        "fRatio": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetForce(float fRatio)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "OnPowerComboDetonated": {
+      "documentation": null,
+      "signature_members": {
+        "DetonationPower": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPowerComboDetonated(SFXPowerCustomAction DetonationPower, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

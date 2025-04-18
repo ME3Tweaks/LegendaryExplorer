@@ -1,0 +1,146 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapUsedMeshProps": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_mapFoundWeapons": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_aBackupAnimSets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_aPropActionQueue": {
+      "type": "BioQueuedAction",
+      "documentation": null
+    },
+    "m_aRetriggerData": {
+      "type": "BioQueuedAction",
+      "documentation": null
+    },
+    "m_tPosePlayingData": {
+      "type": "BioGesturesPosePlaying",
+      "documentation": null
+    },
+    "m_nmDefaultPoseAnim": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pDefaultPoseSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_pPerfGameData": {
+      "type": "SFXAmbPerfGameData",
+      "documentation": null
+    },
+    "m_pAnimSetMgr": {
+      "type": "BioGestureAnimSetMgr",
+      "documentation": null
+    },
+    "m_nCurrentPerfPose": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTimeSinceLastPerfChoice": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nTransPoseIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPlayingGestureIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bInMatinee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bGestIsOneShot": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPerfPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableBlinksAndNoise": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddWeaponData": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pWep": {
+          "type": null,
+          "documentation": null
+        },
+        "bSpawned": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWeaponData(Class<Object> cWeapon, Object pWep, bool bSpawned, bool bCurrentlyEquipped)"
+    },
+    "FindWeaponData": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "nSpawned": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object FindWeaponData(Class<Object> cWeapon, out int nSpawned, bool bCurrentlyEquipped)"
+    },
+    "RemoveWeaponData": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveWeaponData(Class<Object> cWeapon)"
+    },
+    "ScriptGetMainMeshComp": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent ScriptGetMainMeshComp(Actor pActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,332 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnRecognitionComplete__Delegate": {
+      "type": "OnRecognitionComplete",
+      "documentation": null
+    },
+    "__OnPlayerTalkingStateChange__Delegate": {
+      "type": "OnPlayerTalkingStateChange",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddRecognitionCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "RecognitionDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRecognitionCompleteDelegate(byte LocalUserNum, delegate<OnRecognitionComplete> RecognitionDelegate)"
+    },
+    "ClearRecognitionCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "RecognitionDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearRecognitionCompleteDelegate(byte LocalUserNum, delegate<OnRecognitionComplete> RecognitionDelegate)"
+    },
+    "GetRecognitionResults": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Words": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetRecognitionResults(byte LocalUserNum, out array<SpeechRecognizedWord> Words)"
+    },
+    "IsHeadsetPresent": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHeadsetPresent(byte LocalUserNum)"
+    },
+    "IsLocalPlayerTalking": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsLocalPlayerTalking(byte LocalUserNum)"
+    },
+    "IsRemotePlayerTalking": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsRemotePlayerTalking(UniqueNetId PlayerID)"
+    },
+    "MuteAll": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowFriends": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MuteAll(byte LocalUserNum, bool bAllowFriends)"
+    },
+    "MuteRemoteTalker": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MuteRemoteTalker(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "OnPlayerTalkingStateChange": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsTalking": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPlayerTalkingStateChange(UniqueNetId Player, bool bIsTalking)"
+    },
+    "OnRecognitionComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRecognitionComplete()"
+    },
+    "RegisterLocalTalker": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterLocalTalker(byte LocalUserNum)"
+    },
+    "RegisterRemoteTalker": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterRemoteTalker(UniqueNetId PlayerID)"
+    },
+    "SelectVocabulary": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "VocabularyId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectVocabulary(byte LocalUserNum, int VocabularyId)"
+    },
+    "SetRemoteTalkerPriority": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "Priority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRemoteTalkerPriority(byte LocalUserNum, UniqueNetId PlayerID, int Priority)"
+    },
+    "SetSpeechRecognitionObject": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SpeechRecogObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSpeechRecognitionObject(byte LocalUserNum, SpeechRecognition SpeechRecogObj)"
+    },
+    "StartNetworkedVoice": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartNetworkedVoice(byte LocalUserNum)"
+    },
+    "StartSpeechRecognition": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartSpeechRecognition(byte LocalUserNum)"
+    },
+    "StopNetworkedVoice": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopNetworkedVoice(byte LocalUserNum)"
+    },
+    "StopSpeechRecognition": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopSpeechRecognition(byte LocalUserNum)"
+    },
+    "UnmuteAll": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnmuteAll(byte LocalUserNum)"
+    },
+    "UnmuteRemoteTalker": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnmuteRemoteTalker(byte LocalUserNum, UniqueNetId PlayerID)"
+    },
+    "UnregisterLocalTalker": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterLocalTalker(byte LocalUserNum)"
+    },
+    "UnregisterRemoteTalker": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterRemoteTalker(UniqueNetId PlayerID)"
+    },
+    "AddPlayerTalkingDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "TalkerDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerTalkingDelegate(delegate<OnPlayerTalkingStateChange> TalkerDelegate)"
+    },
+    "ClearPlayerTalkingDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "TalkerDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearPlayerTalkingDelegate(delegate<OnPlayerTalkingStateChange> TalkerDelegate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

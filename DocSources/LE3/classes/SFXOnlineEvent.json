@@ -1,0 +1,343 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "ErrorString": {
+      "type": "string",
+      "documentation": null
+    },
+    "EventId": {
+      "type": "int",
+      "documentation": null
+    },
+    "TimeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "EndTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "errorCode": {
+      "type": "int",
+      "documentation": null
+    },
+    "IsUnique": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TimeOutEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EventType": {
+      "type": "SFXOnlineEventType",
+      "documentation": null
+    },
+    "CurrentStatus": {
+      "type": "SFXOnlineEventStatus",
+      "documentation": null
+    },
+    "Outcome": {
+      "type": "SFXOnlineEventStatusFinished",
+      "documentation": null
+    },
+    "ErrorContext": {
+      "type": "SFXOnlineErrorContext",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisableTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableTimeout()"
+    },
+    "DumpEventInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpEventInfo()"
+    },
+    "EnableTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableTimeout()"
+    },
+    "GetEndTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetEndTime()"
+    },
+    "GetErrorCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetErrorCode()"
+    },
+    "GetErrorString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetErrorString()"
+    },
+    "GetEventId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetEventId()"
+    },
+    "GetEventOutcomeAsString": {
+      "documentation": null,
+      "signature_members": {
+        "oEventOutcome": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetEventOutcomeAsString(SFXOnlineEventStatusFinished oEventOutcome)"
+    },
+    "GetEventStatusAsString": {
+      "documentation": null,
+      "signature_members": {
+        "eStatusStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetEventStatusAsString(SFXOnlineEventStatus eStatusStatus)"
+    },
+    "GetEventType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEventType",
+      "signature": "SFXOnlineEventType GetEventType()"
+    },
+    "GetEventTypeAsString": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetEventTypeAsString(SFXOnlineEventType eEventType)"
+    },
+    "GetEventTypeFromString": {
+      "documentation": null,
+      "signature_members": {
+        "sEventString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineEventType",
+      "signature": "SFXOnlineEventType GetEventTypeFromString(string sEventString)"
+    },
+    "GetOutcome": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEventStatusFinished",
+      "signature": "SFXOnlineEventStatusFinished GetOutcome()"
+    },
+    "GetStartTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetStartTime()"
+    },
+    "GetStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEventStatus",
+      "signature": "SFXOnlineEventStatus GetStatus()"
+    },
+    "GetTimeDifference": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimeDifference(optional float CurrentTime)"
+    },
+    "GetTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTimeout()"
+    },
+    "HasTimedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasTimedOut()"
+    },
+    "IsCanceled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCanceled()"
+    },
+    "IsComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsComplete()"
+    },
+    "IsCompleteAndSucceeded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCompleteAndSucceeded()"
+    },
+    "IsInError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInError()"
+    },
+    "IsPending": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPending()"
+    },
+    "IsSucceeded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSucceeded()"
+    },
+    "IsTimeoutEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTimeoutEnabled()"
+    },
+    "SetEndTime": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEndTime(float CurrentTime)"
+    },
+    "SetErrorCode": {
+      "documentation": null,
+      "signature_members": {
+        "nCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetErrorCode(int nCode)"
+    },
+    "SetErrorString": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetErrorString(string sMessage)"
+    },
+    "SetEventId": {
+      "documentation": null,
+      "signature_members": {
+        "nNewEventId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEventId(int nNewEventId)"
+    },
+    "SetEventType": {
+      "documentation": null,
+      "signature_members": {
+        "eNewEventType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEventType(SFXOnlineEventType eNewEventType)"
+    },
+    "SetOutcome": {
+      "documentation": null,
+      "signature_members": {
+        "eStatusFinished": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOutcome(SFXOnlineEventStatusFinished eStatusFinished)"
+    },
+    "SetStartTime": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStartTime(float CurrentTime)"
+    },
+    "SetStatus": {
+      "documentation": null,
+      "signature_members": {
+        "eNewStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStatus(SFXOnlineEventStatus eNewStatus)"
+    },
+    "SetTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "fEventTimeout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTimeout(float fEventTimeout)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(SFXOnlineEvent oEvent)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Placed": {
+      "type": null,
+      "documentation": null
+    },
+    "Spawned": {
+      "type": null,
+      "documentation": null
+    },
+    "UIWorldVar": {
+      "type": null,
+      "documentation": null
+    },
+    "BuildClass": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

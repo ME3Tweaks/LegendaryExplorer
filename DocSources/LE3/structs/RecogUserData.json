@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "UserData": {
+      "type": null,
+      "documentation": null
+    },
+    "ActiveVocabularies": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

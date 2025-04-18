@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "SMO_Add": {
+      "value": 0,
+      "documentation": null
+    },
+    "SMO_Subtract": {
+      "value": 1,
+      "documentation": null
+    },
+    "SMO_Multiply": {
+      "value": 2,
+      "documentation": null
+    },
+    "SMO_Divide": {
+      "value": 3,
+      "documentation": null
+    },
+    "SMO_Exponent": {
+      "value": 4,
+      "documentation": null
+    },
+    "SMO_Modulo": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

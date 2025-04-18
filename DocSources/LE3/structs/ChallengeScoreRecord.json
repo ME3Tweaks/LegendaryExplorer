@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ScoreEvents": {
+      "type": null,
+      "documentation": null
+    },
+    "Player": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "eFBM_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "eFBM_MoveToPlayer": {
+      "value": 1,
+      "documentation": null
+    },
+    "eFBM_TeleportToNearbyNode": {
+      "value": 2,
+      "documentation": null
+    },
+    "eFBM_DirectTeleport": {
+      "value": 3,
+      "documentation": null
+    },
+    "eFBM_TeleportWhileVisible": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

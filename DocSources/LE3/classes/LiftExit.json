@@ -1,0 +1,51 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "MyLiftCenter": {
+      "type": "LiftCenter",
+      "documentation": null
+    },
+    "bExitOnly": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "CanBeReachedFromLiftBy": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeReachedFromLiftBy(Pawn Other)"
+    },
+    "WaitForLift": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WaitForLift(Pawn Other)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

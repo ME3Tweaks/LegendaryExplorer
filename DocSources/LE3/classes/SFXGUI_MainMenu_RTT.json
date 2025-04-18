@@ -1,0 +1,1051 @@
+{
+  "parent": "SFXGUIMovieKismet",
+  "package": "SFXGame",
+  "variables": {
+    "CheckingDataStartTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "Cursor_SeqEntry": {
+      "type": "MMListSequences",
+      "documentation": null
+    },
+    "Display_SeqEntry": {
+      "type": "MMListSequences",
+      "documentation": null
+    },
+    "ListEntries": {
+      "type": "MMListEntry",
+      "documentation": null
+    },
+    "ListSequences": {
+      "type": "MMListSequences",
+      "documentation": null
+    },
+    "Cursor_SeqID": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_MPSelectedMapStr": {
+      "type": "string",
+      "documentation": null
+    },
+    "__MsgBoxInputCallback__Delegate": {
+      "type": "MsgBoxInputCallback",
+      "documentation": null
+    },
+    "m_oMainMenuGuiMessageBoxHandler": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "ExitToMainMenuSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Cursor_SeqStep": {
+      "type": "int",
+      "documentation": null
+    },
+    "Cursor_Heading": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TimeSinceLastListUpdate": {
+      "type": "float",
+      "documentation": null
+    },
+    "ListUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "DLCBeginMountingAttempts": {
+      "type": "int",
+      "documentation": null
+    },
+    "CheckingDataMessageDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckingDataMessageMinimum": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckingDLCMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CheckingSaveDataMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelNoLoginStart": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srExitConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srYes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srOK": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConnect": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNoSpaceForCareer": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srContinueWithoutSaving": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCancelNewCareer": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDemoNetworkRequired": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srViewKinectManual": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srViewKinectManual_Ok": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srViewKinectManual_Cancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bHasSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasNewGamePlusSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCurrentCareerHasSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bComputerOpen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDefaultToFemale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayedNewGameRequested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFemaleSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingForDLC": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingForSaves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingForDigitalRights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingToRefreshDigitalRights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDigitalRightsRefreshActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckForDLCMessage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckingDataComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCheckingDataMessageVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisplayingDLCErrorMessage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsKinectTunerShown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GameType": {
+      "type": "EMM_GameType",
+      "documentation": null
+    },
+    "PendingCommand": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_SetEntry": {
+      "documentation": null,
+      "signature_members": {
+        "bHasHeading": {
+          "type": null,
+          "documentation": null
+        },
+        "oListEntry": {
+          "type": null,
+          "documentation": null
+        },
+        "nListIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetEntry(bool bHasHeading, MMListEntry oListEntry, int nListIndex)"
+    },
+    "ASClearLists": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASClearLists()"
+    },
+    "ASRefreshList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASRefreshList()"
+    },
+    "ASShowPrimaryList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASShowPrimaryList()"
+    },
+    "ASShowSubList": {
+      "documentation": null,
+      "signature_members": {
+        "SublistHeading": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASShowSubList(int SublistHeading)"
+    },
+    "AsynchGameDataRecieved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AsynchGameDataRecieved()"
+    },
+    "BeginEnumerateCareers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginEnumerateCareers()"
+    },
+    "BeginInitDownloadableContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitDownloadableContent()"
+    },
+    "CallListFnc": {
+      "documentation": null,
+      "signature_members": {
+        "Fnc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CallListFnc(Name Fnc)"
+    },
+    "CanShowShowOnlineStorePC": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowShowOnlineStorePC()"
+    },
+    "CanShowShowOnlineStorePS3": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowShowOnlineStorePS3()"
+    },
+    "CanShowShowOnlineStoreXBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowShowOnlineStoreXBox()"
+    },
+    "ConditionalDisplayDLCError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConditionalDisplayDLCError()"
+    },
+    "Connect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Connect()"
+    },
+    "CurrentCareerHasSaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CurrentCareerHasSaves()"
+    },
+    "DLCErrorClosed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DLCErrorClosed(bool bAPressed, int nContext)"
+    },
+    "EndEnumerateCareers": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndEnumerateCareers(SFXSaveGameCommandEventArgs Args)"
+    },
+    "EnterSequence": {
+      "documentation": null,
+      "signature_members": {
+        "SeqID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnterSequence(string SeqID)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents nEventID, optional float fValue)"
+    },
+    "HasNewGamePlusSaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasNewGamePlusSaves()"
+    },
+    "HasSaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasSaves()"
+    },
+    "IsEnumeratingDownloadableContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnumeratingDownloadableContent()"
+    },
+    "IsKinectEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsKinectEnabled()"
+    },
+    "IsValidKinectSpeechLanguageSetup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidKinectSpeechLanguageSetup()"
+    },
+    "MsgBoxInputCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MsgBoxInputCallback(bool bAPressed, int Context)"
+    },
+    "OnLanguageChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLanguageChanged()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "PostAdvance": {
+      "documentation": null,
+      "signature_members": {
+        "tDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostAdvance(float tDelta)"
+    },
+    "RefreshDigitalRightsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshDigitalRightsComplete(int nResult)"
+    },
+    "ShowOnlineStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowOnlineStore()"
+    },
+    "StartMultiplayerFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMultiplayerFlow()"
+    },
+    "UpdateCheckingDataMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Message": {
+          "type": null,
+          "documentation": null
+        },
+        "bShouldDisplayMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateCheckingDataMessage(stringref Message, bool bShouldDisplayMessage)"
+    },
+    "UpdateCheckingDataState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCheckingDataState()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AS_Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_Initialize()"
+    },
+    "AS_MenuBack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_MenuBack()"
+    },
+    "AS_MenuDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_MenuDown()"
+    },
+    "AS_MenuExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_MenuExecute()"
+    },
+    "AS_MenuUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_MenuUp()"
+    },
+    "AS_SetRepeatingText": {
+      "documentation": null,
+      "signature_members": {
+        "strText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetRepeatingText(string strText)"
+    },
+    "BeginNewGame": {
+      "documentation": null,
+      "signature_members": {
+        "bFemaleSelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginNewGame(bool bFemaleSelected)"
+    },
+    "Callback_NoLoginStart": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_NoLoginStart(bool bAPressed, int Context)"
+    },
+    "CanShowExitGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowExitGame()"
+    },
+    "CanShowGameManual": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowGameManual()"
+    },
+    "CanShowMultiplayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowMultiplayer()"
+    },
+    "CanShowXboxLIVE": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowXboxLIVE()"
+    },
+    "CerberusConnectPopupInputCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CerberusConnectPopupInputCallback(bool bAPressed, int Context)"
+    },
+    "CheckCareersMaxedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckCareersMaxedOut()"
+    },
+    "CheckLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckLogin()"
+    },
+    "CloseComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseComputer()"
+    },
+    "DelayedBeginNewGame": {
+      "documentation": null,
+      "signature_members": {
+        "bFemaleSelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DelayedBeginNewGame(bool bFemaleSelected)"
+    },
+    "DisplayInsufficientSpaceMessage": {
+      "documentation": null,
+      "signature_members": {
+        "AdditionalBytesNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayInsufficientSpaceMessage(int AdditionalBytesNeeded)"
+    },
+    "EnterExtrasList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EnterExtrasList()"
+    },
+    "EnterExtrasSequence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterExtrasSequence()"
+    },
+    "EnterList": {
+      "documentation": null,
+      "signature_members": {
+        "SeqEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnterList(MMListSequences SeqEntry)"
+    },
+    "EnterNewGameList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EnterNewGameList()"
+    },
+    "EnterNewGameSequence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterNewGameSequence()"
+    },
+    "EnterRootList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EnterRootList()"
+    },
+    "EnterRootSequence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EnterRootSequence()"
+    },
+    "ExitConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExitConfirm(bool bAPressed, int nContext)"
+    },
+    "ExitGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitGame()"
+    },
+    "HasStartupSequenceDLCMountStepCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasStartupSequenceDLCMountStepCompleted()"
+    },
+    "InsufficientSpaceCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InsufficientSpaceCallback(bool bAPressed, int Context)"
+    },
+    "InternalConnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InternalConnect()"
+    },
+    "IsComputerOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsComputerOpen()"
+    },
+    "LegacyImport": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LegacyImport()"
+    },
+    "LegacyReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LegacyReady()"
+    },
+    "LoadGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadGame()"
+    },
+    "LoadGame_PromptToDisplayKinectManualCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGame_PromptToDisplayKinectManualCompleted(bool bAPressed, int Context)"
+    },
+    "NewGame_PromptToDisplayKinectManualCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NewGame_PromptToDisplayKinectManualCompleted(bool bAPressed, int Context)"
+    },
+    "NewGameFemale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NewGameFemale()"
+    },
+    "NewGameMale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NewGameMale()"
+    },
+    "NewGamePlus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NewGamePlus()"
+    },
+    "NextStep": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextStep()"
+    },
+    "OpenComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenComputer()"
+    },
+    "OpenMainMenuSubMovie": {
+      "documentation": null,
+      "signature_members": {
+        "nmMovieTag": {
+          "type": null,
+          "documentation": null
+        },
+        "bNewInstance": {
+          "type": null,
+          "documentation": null
+        },
+        "bStart": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUIMovie",
+      "signature": "SFXGUIMovie OpenMainMenuSubMovie(Name nmMovieTag, optional bool bNewInstance, optional bool bStart)"
+    },
+    "PrevStep": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PrevStep()"
+    },
+    "PromptToDisplayKinectManual": {
+      "documentation": null,
+      "signature_members": {
+        "aCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PromptToDisplayKinectManual(delegate<MsgBoxInputCallback> aCallback)"
+    },
+    "ResumeGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResumeGame()"
+    },
+    "ResumeGame_PromptToDisplayKinectManualCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResumeGame_PromptToDisplayKinectManualCompleted(bool bAPressed, int Context)"
+    },
+    "ResumeGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResumeGameCallback(bool bWasSuccessful)"
+    },
+    "ReturnFromLoadGui": {
+      "documentation": null,
+      "signature_members": {
+        "bRescanCareers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReturnFromLoadGui(optional bool bRescanCareers)"
+    },
+    "ReturnFromManualGui": {
+      "documentation": null,
+      "signature_members": {
+        "bRescanCareers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReturnFromManualGui(optional bool bRescanCareers)"
+    },
+    "ShowAchievements": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowAchievements()"
+    },
+    "ShowCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowCredits()"
+    },
+    "ShowDemoLoginPopup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowDemoLoginPopup()"
+    },
+    "ShowDemoLoginPopup_Input": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowDemoLoginPopup_Input(bool bAPressed, int nContext)"
+    },
+    "ShowGameManual": {
+      "documentation": null,
+      "signature_members": {
+        "bShowKinectPage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowGameManual(optional bool bShowKinectPage)"
+    },
+    "ShowKinectTuner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowKinectTuner()"
+    },
+    "ShowList": {
+      "documentation": null,
+      "signature_members": {
+        "ListID": {
+          "type": null,
+          "documentation": null
+        },
+        "SublistHeading": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowList(string ListID, optional stringref SublistHeading)"
+    },
+    "ShowOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowOptions()"
+    },
+    "ShowPendingInvites": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowPendingInvites()"
+    },
+    "StartConnectingFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartConnectingFlow()"
+    },
+    "StartNewGameFreeSpaceCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartNewGameFreeSpaceCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "StartNewGameInternal": {
+      "documentation": null,
+      "signature_members": {
+        "bFemaleSelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartNewGameInternal(bool bFemaleSelected)"
+    },
+    "StepSeq": {
+      "documentation": null,
+      "signature_members": {
+        "Step": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StepSeq(int Step)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,601 @@
+{
+  "parent": "SFXSystemLevelObject",
+  "package": "SFXGame",
+  "variables": {
+    "Suns": {
+      "type": "PlanetSun",
+      "documentation": null
+    },
+    "Features": {
+      "type": "SFXPlanetFeature",
+      "documentation": null
+    },
+    "AutoGrantedFeatures": {
+      "type": "SFXPlanetFeature",
+      "documentation": null
+    },
+    "MapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "ImageBackground": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlanetEvent": {
+      "type": "string",
+      "documentation": null
+    },
+    "RingColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "CloudColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "CoronaColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "PreviewImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "PlanetMaterial": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "CloudMaterial": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "ScenePrefab": {
+      "type": "Prefab",
+      "documentation": null
+    },
+    "TextureParam": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "SystemActorStorage": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Description": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ButtonLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MissionBriefing": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ResourceRichness": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlanetRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "Opacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "FringeBloom": {
+      "type": "float",
+      "documentation": null
+    },
+    "RelativeSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "DefaultDisplaySize": {
+      "type": "float",
+      "documentation": null
+    },
+    "TerrainDepthFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPlanetScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnscaledMineralsSum": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlacedMineralsPool": {
+      "type": "float",
+      "documentation": null
+    },
+    "RandomMineralsBase": {
+      "type": "float",
+      "documentation": null
+    },
+    "EezoMineralsBase": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScanBarMaxMineralSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlanetLandCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventTransition": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventTransitionParameter": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlanetEventMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PlanetPlotLabel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PlanetPlotLabelCondition": {
+      "type": "int",
+      "documentation": null
+    },
+    "AlreadyExplored": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LabelAlwaysVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AlwaysShowMapTag": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CritPathPlot": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlanetType": {
+      "type": "EPlanetType",
+      "documentation": null
+    },
+    "OrbitRing": {
+      "type": "EOrbitRingType",
+      "documentation": null
+    },
+    "SystemLevelType": {
+      "type": "ESystemLevelType",
+      "documentation": null
+    },
+    "PlanetLevelType": {
+      "type": "EBioGalaxyMap_PlanetType",
+      "documentation": null
+    },
+    "PlanetLandConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetLandConditionPlot": {
+      "type": "EBioPlanetLandConditionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetLandConditionName": {
+      "type": "EBioPlanetLandConditionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventConditionPlot": {
+      "type": "EBioPlanetEventConditionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetEventConditionName": {
+      "type": "EBioPlanetEventConditionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventTransitionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetEventTransitionPlot": {
+      "type": "EBioPlanetEventTransitionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetEventTransitionName": {
+      "type": "EBioPlanetEventTransitionAutoSet",
+      "documentation": null
+    },
+    "PlanetPlotLabelConditionRegion": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "PlanetPlotLabelConditionPlot": {
+      "type": "EBioPlanetPlotLabelConditionPlotAutoSet",
+      "documentation": null
+    },
+    "PlanetPlotLabelConditionName": {
+      "type": "EBioPlanetPlotLabelConditionAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BuildPlotLabelList": {
+      "documentation": null,
+      "signature_members": {
+        "aPlotNames": {
+          "type": null,
+          "documentation": null
+        },
+        "eMapLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BuildPlotLabelList(out array<stringref> aPlotNames, optional EBioGalaxyMapState eMapLevel)"
+    },
+    "CanBeInteractedWith": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInteractedWith()"
+    },
+    "CanBeScanned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeScanned()"
+    },
+    "CanBeSystemScanned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeSystemScanned()"
+    },
+    "CleanTransientData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanTransientData()"
+    },
+    "CountFeatures": {
+      "documentation": null,
+      "signature_members": {
+        "eFeature": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckUsable": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckProbeable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int CountFeatures(EFeatureType eFeature, bool bCheckUsable, bool bCheckVisible, bool bCheckProbeable)"
+    },
+    "EnterPlanetDetailView": {
+      "documentation": null,
+      "signature_members": {
+        "DetailActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnterPlanetDetailView(Actor DetailActor)"
+    },
+    "EnterScan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterScan()"
+    },
+    "IsSelectable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSelectable()"
+    },
+    "IsVisited": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisited()"
+    },
+    "IsVisitedInMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisitedInMap()"
+    },
+    "LeavePlanetDetailView": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeavePlanetDetailView()"
+    },
+    "LeaveScan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeaveScan()"
+    },
+    "LoadProbeImpacts": {
+      "documentation": null,
+      "signature_members": {
+        "vImpacts": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadProbeImpacts(out array<Vector> vImpacts)"
+    },
+    "MapTagIsVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MapTagIsVisible()"
+    },
+    "ObjectVisited": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ObjectVisited()"
+    },
+    "OnSystemScan": {
+      "documentation": null,
+      "signature_members": {
+        "oScanInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "vScanOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSystemScan(Object oScanInstigator, Vector vScanOrigin)"
+    },
+    "SaveProbeImpact": {
+      "documentation": null,
+      "signature_members": {
+        "vImpact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveProbeImpact(Vector vImpact)"
+    },
+    "SetSystemScannedState": {
+      "documentation": null,
+      "signature_members": {
+        "bScanned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSystemScannedState(bool bScanned)"
+    },
+    "SetVisited": {
+      "documentation": null,
+      "signature_members": {
+        "bVisited": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisited(bool bVisited)"
+    },
+    "ShouldDisplayUnknownTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldDisplayUnknownTag()"
+    },
+    "CountObjectsForExploration": {
+      "documentation": null,
+      "signature_members": {
+        "nObjectCount": {
+          "type": null,
+          "documentation": null
+        },
+        "nExploredCount": {
+          "type": null,
+          "documentation": null
+        },
+        "eMapLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CountObjectsForExploration(out int nObjectCount, out int nExploredCount, EBioGalaxyMapState eMapLevel)"
+    },
+    "GetPlanetDescriptionText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPlanetDescriptionText()"
+    },
+    "GetPlanetMissionText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPlanetMissionText()"
+    },
+    "GetPlanetSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlanetSize()"
+    },
+    "GetPlanetTitleText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPlanetTitleText()"
+    },
+    "GetPlanetViewImage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Texture2D",
+      "signature": "Texture2D GetPlanetViewImage()"
+    },
+    "HasBeenSystemScanned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasBeenSystemScanned()"
+    },
+    "HasFeaturesToCountForExploration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasFeaturesToCountForExploration()"
+    },
+    "IsMultiLand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMultiLand()"
+    },
+    "LoadMultiLandPlanetData": {
+      "documentation": null,
+      "signature_members": {
+        "Planet": {
+          "type": null,
+          "documentation": null
+        },
+        "TempComponents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadMultiLandPlanetData(InterpActor Planet, out array<ParticleSystemComponent> TempComponents)"
+    },
+    "LoadPlanetData": {
+      "documentation": null,
+      "signature_members": {
+        "Planet": {
+          "type": null,
+          "documentation": null
+        },
+        "TempComponents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPlanetData(InterpActor Planet, out array<ParticleSystemComponent> TempComponents)"
+    },
+    "OnDisplayPlanetDetails": {
+      "documentation": null,
+      "signature_members": {
+        "oGUI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisplayPlanetDetails(BioSFHandler_GalaxyMap oGUI)"
+    },
+    "PlanePosToSphere": {
+      "documentation": null,
+      "signature_members": {
+        "vPosition2D": {
+          "type": null,
+          "documentation": null
+        },
+        "SphereRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector PlanePosToSphere(Vector vPosition2D, float SphereRadius)"
+    },
+    "ShouldCountFeature": {
+      "documentation": null,
+      "signature_members": {
+        "oFeatureObj": {
+          "type": null,
+          "documentation": null
+        },
+        "eFeature": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckUsable": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckProbeable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldCountFeature(SFXPlanetFeature oFeatureObj, EFeatureType eFeature, bool bCheckUsable, bool bCheckVisible, bool bCheckProbeable)"
+    },
+    "SphereToPlanePos": {
+      "documentation": null,
+      "signature_members": {
+        "vSphere": {
+          "type": null,
+          "documentation": null
+        },
+        "SphereRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector SphereToPlanePos(Vector vSphere, float SphereRadius)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

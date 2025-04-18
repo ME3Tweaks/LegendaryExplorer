@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "X": {
+      "type": null,
+      "documentation": null
+    },
+    "Y": {
+      "type": null,
+      "documentation": null
+    },
+    "Z": {
+      "type": null,
+      "documentation": null
+    },
+    "Padding": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

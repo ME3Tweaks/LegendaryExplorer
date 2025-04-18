@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "MessageText": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageFont": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageFontScale": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageColor": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageEndTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

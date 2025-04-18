@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EWaitMessage_Generic": {
+      "value": 0,
+      "documentation": null
+    },
+    "EWaitMessage_MatchStarted": {
+      "value": 1,
+      "documentation": null
+    },
+    "EWaitMessage_MatchEnded": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

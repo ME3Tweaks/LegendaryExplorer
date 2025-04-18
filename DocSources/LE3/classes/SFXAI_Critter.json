@@ -1,0 +1,86 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "CritterCommand": {
+      "type": "Class",
+      "documentation": null
+    },
+    "m_vRepulsor": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vCurrentSteeringDirection": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_bUnderAttack": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "NotifyTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTakeHit(Controller instigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "NotifyNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNearMiss(Vector HitLocation)"
+    },
+    "ShouldCancelMove": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldCancelMove(int nReason)"
+    }
+  },
+  "states": {
+    "Critter": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

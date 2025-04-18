@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SFXONLINE_ENEMY_RANDOM": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_ENEMY_CERBERUS": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_ENEMY_GETH": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_ENEMY_REAPER": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

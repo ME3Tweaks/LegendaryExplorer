@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "RELOAD_ANIM_NODE_IDLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "RELOAD_ANIM_NODE_RELOADING": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

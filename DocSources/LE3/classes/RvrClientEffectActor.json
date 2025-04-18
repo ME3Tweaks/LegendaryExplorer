@@ -1,0 +1,106 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_pCEffectComponent": {
+      "type": "RvrClientEffectComponent",
+      "documentation": null
+    },
+    "m_pPool": {
+      "type": "RvrClientEffectPool",
+      "documentation": null
+    },
+    "m_bDestroyOnFinished": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "OnActivateClientEffect": {
+      "documentation": null,
+      "signature_members": {
+        "pAct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActivateClientEffect(RvrSeqAct_ActivateClientEffect pAct)"
+    },
+    "OnFinished": {
+      "documentation": null,
+      "signature_members": {
+        "pComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFinished(RvrClientEffectComponent pComponent)"
+    },
+    "OnSpawnOrLevelLoad": {
+      "documentation": null,
+      "signature_members": {
+        "bCalledFromSpawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSpawnOrLevelLoad(bool bCalledFromSpawn)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "pAct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle pAct)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Prime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Prime()"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "pTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(RvrClientEffectInterface pTemplate)"
+    },
+    "StopEffect": {
+      "documentation": null,
+      "signature_members": {
+        "bAllowCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopEffect(optional bool bAllowCooldown)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

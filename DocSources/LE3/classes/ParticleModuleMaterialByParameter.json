@@ -1,0 +1,17 @@
+{
+  "parent": "ParticleModuleMaterialBase",
+  "package": "Engine",
+  "variables": {
+    "MaterialParameters": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DefaultMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

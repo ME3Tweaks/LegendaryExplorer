@@ -1,0 +1,51 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "Wheels": {
+      "type": "WheelInfo",
+      "documentation": null
+    },
+    "Chassis": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SteeringWheel": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SteeringLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "SuspensionVariance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateWheels": {
+      "documentation": null,
+      "signature_members": {
+        "LocalChassisVelocityX": {
+          "type": null,
+          "documentation": null
+        },
+        "WheelTargetFacing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWheels(float LocalChassisVelocityX, Rotator WheelTargetFacing)"
+    },
+    "ProcessWheels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessWheels()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

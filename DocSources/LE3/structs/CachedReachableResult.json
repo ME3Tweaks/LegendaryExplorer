@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "TimeResultWasCalculated": {
+      "type": null,
+      "documentation": null
+    },
+    "GoalLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "StartLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "GoalActor": {
+      "type": null,
+      "documentation": null
+    },
+    "Result": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

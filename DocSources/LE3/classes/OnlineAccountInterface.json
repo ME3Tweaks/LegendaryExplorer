@@ -1,0 +1,130 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnCreateOnlineAccountCompleted__Delegate": {
+      "type": "OnCreateOnlineAccountCompleted",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddCreateOnlineAccountCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "AccountCreateDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCreateOnlineAccountCompletedDelegate(delegate<OnCreateOnlineAccountCompleted> AccountCreateDelegate)"
+    },
+    "ClearCreateOnlineAccountCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "AccountCreateDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearCreateOnlineAccountCompletedDelegate(delegate<OnCreateOnlineAccountCompleted> AccountCreateDelegate)"
+    },
+    "CreateLocalAccount": {
+      "documentation": null,
+      "signature_members": {
+        "Username": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateLocalAccount(string Username, optional string Password)"
+    },
+    "CreateOnlineAccount": {
+      "documentation": null,
+      "signature_members": {
+        "Username": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        },
+        "EmailAddress": {
+          "type": null,
+          "documentation": null
+        },
+        "ProductKey": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateOnlineAccount(string Username, string Password, string EmailAddress, optional string ProductKey)"
+    },
+    "DeleteLocalAccount": {
+      "documentation": null,
+      "signature_members": {
+        "Username": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeleteLocalAccount(string Username, optional string Password)"
+    },
+    "GetLocalAccountNames": {
+      "documentation": null,
+      "signature_members": {
+        "Accounts": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLocalAccountNames(out array<string> Accounts)"
+    },
+    "OnCreateOnlineAccountCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "ErrorStatus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreateOnlineAccountCompleted(EOnlineAccountCreateStatus ErrorStatus)"
+    },
+    "RenameLocalAccount": {
+      "documentation": null,
+      "signature_members": {
+        "NewUserName": {
+          "type": null,
+          "documentation": null
+        },
+        "OldUserName": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RenameLocalAccount(string NewUserName, string OldUserName, optional string Password)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

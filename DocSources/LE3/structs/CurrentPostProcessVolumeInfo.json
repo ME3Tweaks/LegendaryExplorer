@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "LastSettings": {
+      "type": null,
+      "documentation": null
+    },
+    "LastVolumeUsed": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "LastBlendTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

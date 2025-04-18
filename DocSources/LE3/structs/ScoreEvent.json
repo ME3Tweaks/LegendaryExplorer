@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Text": {
+      "type": null,
+      "documentation": null
+    },
+    "ExpiryTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

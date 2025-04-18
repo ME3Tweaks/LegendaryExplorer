@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "EvolveChoice1": {
+      "value": 0,
+      "documentation": null
+    },
+    "EvolveChoice2": {
+      "value": 1,
+      "documentation": null
+    },
+    "EvolveChoice3": {
+      "value": 2,
+      "documentation": null
+    },
+    "EvolveChoice4": {
+      "value": 3,
+      "documentation": null
+    },
+    "EvolveChoice5": {
+      "value": 4,
+      "documentation": null
+    },
+    "EvolveChoice6": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,44 @@
+{
+  "parent": "NxForceField",
+  "package": "Engine",
+  "variables": {
+    "Kernel": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Shape": {
+      "type": "ForceFieldShape",
+      "documentation": null
+    },
+    "DrawComponent": {
+      "type": "ActorComponent",
+      "documentation": null
+    },
+    "ForceStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelfRotationStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceFalloff": {
+      "type": "ERadialImpulseFalloff",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

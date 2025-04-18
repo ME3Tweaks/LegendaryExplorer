@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PET2SRCM_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "PET2SRCM_Particle": {
+      "value": 1,
+      "documentation": null
+    },
+    "PET2SRCM_Actor": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "oHandler": {
+      "type": null,
+      "documentation": null
+    },
+    "srLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

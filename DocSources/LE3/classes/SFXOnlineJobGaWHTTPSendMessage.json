@@ -1,0 +1,105 @@
+{
+  "parent": "SFXOnlineJobGaWHTTPRequest",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "mSendMsgParam1": {
+      "type": "string",
+      "documentation": null
+    },
+    "mSendMsgParam2": {
+      "type": "string",
+      "documentation": null
+    },
+    "mSendMsgParam3": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnSendMessageComplete__Delegate": {
+      "type": "OnSendMessageComplete",
+      "documentation": null
+    },
+    "mMsgType": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGaWSendMessageJob": {
+      "documentation": null,
+      "signature_members": {
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam1": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam2": {
+          "type": null,
+          "documentation": null
+        },
+        "sendMsgParam3": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPSendMessage",
+      "signature": "SFXOnlineJobGaWHTTPSendMessage CreateGaWSendMessageJob(int msgType, string sendMsgParam1, string sendMsgParam2, string sendMsgParam3, delegate<OnSendMessageComplete> RequestCompleteDelegate)"
+    },
+    "HandleSecondHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSecondHTTPResult()"
+    },
+    "JobFailedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobFailedHandler(OnlineJobErrorCode errorCode)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnSendMessageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "messageId": {
+          "type": null,
+          "documentation": null
+        },
+        "messageIds": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSendMessageComplete(int messageId, array<int> messageIds, int errorCode)"
+    },
+    "QueueSecondHTTPRequest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QueueSecondHTTPRequest()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

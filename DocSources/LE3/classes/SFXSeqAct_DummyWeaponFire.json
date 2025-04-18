@@ -1,0 +1,176 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "MultipleTargetParams": {
+      "type": "DummyFireObjectListParams",
+      "documentation": null
+    },
+    "MultipleOriginParams": {
+      "type": "DummyFireObjectListParams",
+      "documentation": null
+    },
+    "SpawnedWeapon": {
+      "type": "SFXWeapon_NativeBase",
+      "documentation": null
+    },
+    "OriginSocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ReplicatedActor": {
+      "type": "SFXDummyWeaponFireActor",
+      "documentation": null
+    },
+    "ShotsToFire": {
+      "type": "int",
+      "documentation": null
+    },
+    "InaccuracyDegrees": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemainingFireTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShotsFired": {
+      "type": "int",
+      "documentation": null
+    },
+    "bShootUntilStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressMuzzleFlash": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressTracers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressImpactFX": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressAudio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDamagesFriends": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFiring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlignWeaponMeshToSocket": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressCameraShake": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSuppressLineCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FiringMode": {
+      "type": "byte",
+      "documentation": null
+    },
+    "TeamIndex": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AlignWeaponMuzzleToActor": {
+      "documentation": null,
+      "signature_members": {
+        "AlignTo": {
+          "type": null,
+          "documentation": null
+        },
+        "AimAt": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceComponentUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AlignWeaponMuzzleToActor(Actor AlignTo, Actor AimAt, optional bool bForceComponentUpdate)"
+    },
+    "GetMuzzleSocketName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetMuzzleSocketName()"
+    },
+    "SetRemainingTime": {
+      "documentation": null,
+      "signature_members": {
+        "DummyFiringMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRemainingTime(byte DummyFiringMode)"
+    },
+    "SetupSpawnedDummyWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "OriginActor": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupSpawnedDummyWeapon(Actor OriginActor, Actor TargetActor)"
+    },
+    "SpawnDummyWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "OriginActor": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnDummyWeapon(Actor OriginActor, Actor TargetActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

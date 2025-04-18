@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "OnDependency": {
+      "type": null,
+      "documentation": null
+    },
+    "SourceGUI": {
+      "type": null,
+      "documentation": null
+    },
+    "DependentGUI": {
+      "type": null,
+      "documentation": null
+    },
+    "OptContext": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

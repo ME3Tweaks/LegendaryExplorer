@@ -1,0 +1,13 @@
+{
+  "parent": "SFXNav_BlockingPathNode",
+  "package": "SFXGame",
+  "variables": {
+    "ClimbDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

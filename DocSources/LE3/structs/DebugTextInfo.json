@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "DebugText": {
+      "type": null,
+      "documentation": null
+    },
+    "SrcActorOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "SrcActorDesiredOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "SrcActor": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "Duration": {
+      "type": null,
+      "documentation": null
+    },
+    "TextColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bAbsoluteLocation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

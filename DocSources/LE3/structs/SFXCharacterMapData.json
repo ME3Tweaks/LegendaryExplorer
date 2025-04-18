@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "PlotId": {
+      "type": null,
+      "documentation": null
+    },
+    "srCharacter": {
+      "type": null,
+      "documentation": null
+    },
+    "srLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "nValue": {
+      "type": null,
+      "documentation": null
+    },
+    "nConditional": {
+      "type": null,
+      "documentation": null
+    },
+    "nConditionalParam": {
+      "type": null,
+      "documentation": null
+    },
+    "Floor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

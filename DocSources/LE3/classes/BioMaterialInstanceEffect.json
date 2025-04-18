@@ -1,0 +1,13 @@
+{
+  "parent": "PostProcessEffect",
+  "package": "Engine",
+  "variables": {
+    "Material": {
+      "type": "MaterialInstance",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

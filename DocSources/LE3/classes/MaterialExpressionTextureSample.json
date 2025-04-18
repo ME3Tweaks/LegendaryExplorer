@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Coordinates": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Texture": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "bDecompressNormalMap": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,111 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "m_vTargetLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "nmPowerToUse": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oTargetActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bPlayerOrder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTargetSpecified": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ChoosePowerTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChoosePowerTarget(Actor oTargetActor, Vector vTargetLocation)"
+    },
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "UsePower": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseSpecifiedTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bOrdered": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UsePower(SFXAI_Core AI, Name nmPower, optional Actor oTarget, optional Vector vTargetLoc, optional bool bUseSpecifiedTarget, optional bool bOrdered)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "ShouldCancelPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldCancelPower()"
+    },
+    "StartPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartPower()"
+    }
+  },
+  "states": {
+    "UsingPower": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

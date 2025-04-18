@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Normal": {
+      "type": null,
+      "documentation": null
+    },
+    "UsePSysCompLocation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

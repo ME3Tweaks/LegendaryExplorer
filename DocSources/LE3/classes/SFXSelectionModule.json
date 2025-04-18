@@ -1,0 +1,132 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_GameName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_TargetOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nmNonPawnBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LensFlareComp": {
+      "type": "SFXSelectionLensFlareComponent",
+      "documentation": null
+    },
+    "LensFlareTemplate": {
+      "type": "LensFlare",
+      "documentation": null
+    },
+    "TargetSaveBool": {
+      "type": "SeqVar_Bool",
+      "documentation": null
+    },
+    "CombatTargetSaveBool": {
+      "type": "SeqVar_Bool",
+      "documentation": null
+    },
+    "m_srGameName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fSelectionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxSelectionRangeSqr": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCombatTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OldCombatTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OldTargeTable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreFacing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHighPriority": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_TargetTipText": {
+      "type": "ETargetTipText",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetSelectionPoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetSelectionPoint()"
+    },
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "DisableSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableSelection()"
+    },
+    "RestoreSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreSelection()"
+    },
+    "SetCombatTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "bTargetable": {
+          "type": null,
+          "documentation": null
+        },
+        "bSetTargetSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCombatTargetable(bool bTargetable, optional bool bSetTargetSave)"
+    },
+    "SetTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "bTargetable": {
+          "type": null,
+          "documentation": null
+        },
+        "bSetTargetSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetable(bool bTargetable, optional bool bSetTargetSave)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

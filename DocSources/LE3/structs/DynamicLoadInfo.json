@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "ObjectName": {
+      "type": null,
+      "documentation": null
+    },
+    "RemotePlayerWithHandle": {
+      "type": null,
+      "documentation": null
+    },
+    "SeekFreePackageName": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedObjectHandle": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadedLinkerRoot": {
+      "type": null,
+      "documentation": null
+    },
+    "ObjectNetID": {
+      "type": null,
+      "documentation": null
+    },
+    "bReplicate": {
+      "type": null,
+      "documentation": null
+    },
+    "bNetIDHasBeenSet": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

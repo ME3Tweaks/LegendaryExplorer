@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "TierName": {
+      "type": null,
+      "documentation": null
+    },
+    "Color": {
+      "type": null,
+      "documentation": null
+    },
+    "Priority": {
+      "type": null,
+      "documentation": null
+    },
+    "IsEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "IsFloor": {
+      "type": null,
+      "documentation": null
+    },
+    "IsGlobal": {
+      "type": null,
+      "documentation": null
+    },
+    "IsDynamic": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

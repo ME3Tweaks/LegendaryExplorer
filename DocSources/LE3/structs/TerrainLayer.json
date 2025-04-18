@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Setup": {
+      "type": null,
+      "documentation": null
+    },
+    "AlphaMapIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Highlighted": {
+      "type": null,
+      "documentation": null
+    },
+    "WireframeHighlighted": {
+      "type": null,
+      "documentation": null
+    },
+    "Hidden": {
+      "type": null,
+      "documentation": null
+    },
+    "HighlightColor": {
+      "type": null,
+      "documentation": null
+    },
+    "WireframeColor": {
+      "type": null,
+      "documentation": null
+    },
+    "MinX": {
+      "type": null,
+      "documentation": null
+    },
+    "MinY": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxX": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

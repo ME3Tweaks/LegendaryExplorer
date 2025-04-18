@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Stripe1ColorValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe2ColorValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe3ColorValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe1ColorName": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe2ColorName": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe3ColorName": {
+      "type": null,
+      "documentation": null
+    },
+    "ColorName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

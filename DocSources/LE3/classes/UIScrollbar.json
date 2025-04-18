@@ -1,0 +1,325 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "IncrementStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "DecrementStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "MarkerStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "__OnScrollActivity__Delegate": {
+      "type": "OnScrollActivity",
+      "documentation": null
+    },
+    "__OnClickedScrollZone__Delegate": {
+      "type": "OnClickedScrollZone",
+      "documentation": null
+    },
+    "MousePosition": {
+      "type": "UIScreenValue_Position",
+      "documentation": null
+    },
+    "BackgroundImageComponent": {
+      "type": "UIComp_DrawImage",
+      "documentation": null
+    },
+    "IncrementButton": {
+      "type": "UIScrollbarButton",
+      "documentation": null
+    },
+    "DecrementButton": {
+      "type": "UIScrollbarButton",
+      "documentation": null
+    },
+    "MarkerButton": {
+      "type": "UIScrollbarMarkerButton",
+      "documentation": null
+    },
+    "BarWidth": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "MinimumMarkerSize": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "ButtonsExtent": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "NudgeValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "NudgeMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "NudgePercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MarkerPosPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MarkerSizePercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MousePositionDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAddCornerPadding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitializeMarker": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ScrollbarOrientation": {
+      "type": "EUIOrientation",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DragScroll": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DragScroll(UIScrollbarMarkerButton Sender, int PlayerIndex)"
+    },
+    "DragScrollBegin": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DragScrollBegin(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "DragScrollEnd": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DragScrollEnd(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "EnableCornerPadding": {
+      "documentation": null,
+      "signature_members": {
+        "FlagValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableCornerPadding(bool FlagValue)"
+    },
+    "GetMarkerButtonPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMarkerButtonPosition()"
+    },
+    "GetScrollZoneExtent": {
+      "documentation": null,
+      "signature_members": {
+        "ScrollZoneStart": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetScrollZoneExtent(optional out float ScrollZoneStart)"
+    },
+    "GetScrollZoneWidth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetScrollZoneWidth()"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    },
+    "OnClickedScrollZone": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PositionPerc": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnClickedScrollZone(UIScrollbar Sender, float PositionPerc, int PlayerIndex)"
+    },
+    "OnScrollActivity": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PositionChange": {
+          "type": null,
+          "documentation": null
+        },
+        "bPositionMaxed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnScrollActivity(UIScrollbar Sender, float PositionChange, optional bool bPositionMaxed)"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "ScrollDecrement": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollDecrement(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "ScrollIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollIncrement(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "SetMarkerPosition": {
+      "documentation": null,
+      "signature_members": {
+        "PositionPercentage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarkerPosition(float PositionPercentage)"
+    },
+    "SetMarkerSize": {
+      "documentation": null,
+      "signature_members": {
+        "SizePercentage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarkerSize(float SizePercentage)"
+    },
+    "SetNudgeSizePercent": {
+      "documentation": null,
+      "signature_members": {
+        "NudgePercentage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNudgeSizePercent(float NudgePercentage)"
+    },
+    "SetNudgeSizePixels": {
+      "documentation": null,
+      "signature_members": {
+        "NudgePixels": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNudgeSizePixels(float NudgePixels)"
+    },
+    "GetMarkerPosPercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMarkerPosPercent()"
+    },
+    "GetMarkerSizePercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMarkerSizePercent()"
+    },
+    "GetNudgePercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNudgePercent()"
+    },
+    "GetNudgeValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNudgeValue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

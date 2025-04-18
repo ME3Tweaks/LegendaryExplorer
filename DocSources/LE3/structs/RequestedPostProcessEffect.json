@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "pOwner": {
+      "type": null,
+      "documentation": null
+    },
+    "pEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "CombineType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

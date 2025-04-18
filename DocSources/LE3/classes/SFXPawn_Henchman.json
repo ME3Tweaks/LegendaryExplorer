@@ -1,0 +1,278 @@
+{
+  "parent": "SFXPawn_PlayerParty",
+  "package": "SFXGame",
+  "variables": {
+    "ArmorBonuses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "ArmorBonusStrings": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "HenchmenInfo": {
+      "type": "HenchmanInfoStruct",
+      "documentation": null
+    },
+    "m_GUI_Icon": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_nmMappedPower": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PowerUseDelay": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BioBaseRemovedFromWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBaseRemovedFromWorld()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "GetGUIIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Texture2D",
+      "signature": "Texture2D GetGUIIcon()"
+    },
+    "InCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InCombat()"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Resurrect": {
+      "documentation": null,
+      "signature_members": {
+        "PercentOfHealthRegained": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsInstantaneous": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Resurrect(float PercentOfHealthRegained, bool bIsInstantaneous)"
+    },
+    "ValidateRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ValidateRagdoll()"
+    },
+    "ApplyArmorBonuses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyArmorBonuses()"
+    },
+    "CanPlayDeathEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanPlayDeathEffect()"
+    },
+    "CreateWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bEquipWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateWeapon(Class<SFXWeapon> WeaponClass, optional bool bEquipWeapon)"
+    },
+    "CreateWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "ChkLoadout": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceFromEngineLoadout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateWeapons(SFXLoadoutData ChkLoadout, optional bool bForceFromEngineLoadout)"
+    },
+    "GetAttackOrderPower": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAttackOrderPower(out SFXPowerCustomActionBase Power)"
+    },
+    "GetDefaultLoadout": {
+      "documentation": null,
+      "signature_members": {
+        "HTag": {
+          "type": null,
+          "documentation": null
+        },
+        "DLoadout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDefaultLoadout(Name HTag, out Name DLoadout[6])"
+    },
+    "GetScaledLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetScaledLevel()"
+    },
+    "GetUIAppearanceTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetUIAppearanceTag()"
+    },
+    "InitializeHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeHenchman(int DesiredLevel)"
+    },
+    "PlayDeathVocalization": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDeathVocalization(BioPawn Killer)"
+    },
+    "Revive": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Revive(Actor User)"
+    },
+    "ShieldsDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShieldsDown()"
+    },
+    "ShieldsUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShieldsUp()"
+    },
+    "SpawnDefaultWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnDefaultWeapons()"
+    }
+  },
+  "states": {
+    "Downed": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "CanDoCustomAction": {
+          "documentation": null,
+          "signature_members": {
+            "CAction": {
+              "type": null,
+              "documentation": null
+            },
+            "Sync": {
+              "type": null,
+              "documentation": null
+            },
+            "bForced": {
+              "type": null,
+              "documentation": null
+            },
+            "PowerCustomAction": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

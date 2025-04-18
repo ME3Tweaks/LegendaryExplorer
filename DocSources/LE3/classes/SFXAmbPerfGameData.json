@@ -1,0 +1,57 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aPropActions": {
+      "type": "SFXAFGDPropActionData",
+      "documentation": null
+    },
+    "m_aPoses": {
+      "type": "SFXAPGDPose",
+      "documentation": null
+    },
+    "m_aAnimsets": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "m_sWepPropClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nmPropName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pPropResource": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_nStartPoseIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nPropActionIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bEnterEvent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bExitEvent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseDynamicAnimsets": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuppressDamage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

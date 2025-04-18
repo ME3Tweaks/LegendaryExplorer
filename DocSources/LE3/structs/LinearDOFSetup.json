@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "LimitSize": {
+      "type": null,
+      "documentation": null
+    },
+    "bLimited": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

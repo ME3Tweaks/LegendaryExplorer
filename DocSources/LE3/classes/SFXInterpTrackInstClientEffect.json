@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackInstToggle",
+  "package": "SFXGame",
+  "variables": {
+    "m_ID": {
+      "type": "Guid",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

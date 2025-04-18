@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "GFxUI",
+  "variables": {
+    "movie": {
+      "type": "GFxMovie",
+      "documentation": null
+    },
+    "bCaptureInput": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

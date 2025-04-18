@@ -1,0 +1,101 @@
+{
+  "EnumValues": {
+    "TLT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "TLT_Visual": {
+      "value": 1,
+      "documentation": null
+    },
+    "TLT_Sound": {
+      "value": 2,
+      "documentation": null
+    },
+    "TLT_Voc": {
+      "value": 3,
+      "documentation": null
+    },
+    "TLT_Rumble": {
+      "value": 4,
+      "documentation": null
+    },
+    "TLT_ScreenShake": {
+      "value": 5,
+      "documentation": null
+    },
+    "TLT_TimeDilation": {
+      "value": 6,
+      "documentation": null
+    },
+    "TLT_Ragdoll": {
+      "value": 7,
+      "documentation": null
+    },
+    "TLT_Reaction": {
+      "value": 8,
+      "documentation": null
+    },
+    "TLT_Damage": {
+      "value": 9,
+      "documentation": null
+    },
+    "TLT_AOE": {
+      "value": 10,
+      "documentation": null
+    },
+    "TLT_AOEVisiblePawns": {
+      "value": 11,
+      "documentation": null
+    },
+    "TLT_AOESingle": {
+      "value": 12,
+      "documentation": null
+    },
+    "TLT_SyncPartner": {
+      "value": 13,
+      "documentation": null
+    },
+    "TLT_Timeline": {
+      "value": 14,
+      "documentation": null
+    },
+    "TLT_InputOn": {
+      "value": 15,
+      "documentation": null
+    },
+    "TLT_InputOff": {
+      "value": 16,
+      "documentation": null
+    },
+    "TLT_Function": {
+      "value": 17,
+      "documentation": null
+    },
+    "TLT_RadialBlurOn": {
+      "value": 18,
+      "documentation": null
+    },
+    "TLT_RadialBlurOff": {
+      "value": 19,
+      "documentation": null
+    },
+    "TLT_CameraAnim": {
+      "value": 20,
+      "documentation": null
+    },
+    "TLT_ClientEffect": {
+      "value": 21,
+      "documentation": null
+    },
+    "TLT_ClientEffect_Stop": {
+      "value": 22,
+      "documentation": null
+    },
+    "TLT_GameEffect": {
+      "value": 23,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

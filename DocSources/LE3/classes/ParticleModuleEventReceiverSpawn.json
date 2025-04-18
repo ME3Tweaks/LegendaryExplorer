@@ -1,0 +1,29 @@
+{
+  "parent": "ParticleModuleEventReceiverBase",
+  "package": "Engine",
+  "variables": {
+    "InheritVelocityScaleRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "SpawnCount": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "bUseParticleTime": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsePSysLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInheritVelocity": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

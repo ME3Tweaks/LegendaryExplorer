@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "PMRM_Disabled": {
+      "value": 0,
+      "documentation": null
+    },
+    "PMRM_Spherical": {
+      "value": 1,
+      "documentation": null
+    },
+    "PMRM_Box": {
+      "value": 2,
+      "documentation": null
+    },
+    "PMRM_LongBox": {
+      "value": 3,
+      "documentation": null
+    },
+    "PMRM_FlatBox": {
+      "value": 4,
+      "documentation": null
+    },
+    "PMRM_Velocity": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

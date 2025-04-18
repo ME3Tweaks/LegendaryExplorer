@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PlaceableGUID": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsDestroyed": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsDeactivated": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

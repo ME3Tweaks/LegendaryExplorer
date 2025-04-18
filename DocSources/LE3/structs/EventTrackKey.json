@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "EventName": {
+      "type": null,
+      "documentation": null
+    },
+    "Time": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

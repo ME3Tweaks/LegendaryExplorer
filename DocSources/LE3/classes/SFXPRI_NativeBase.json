@@ -1,0 +1,64 @@
+{
+  "parent": "PlayerReplicationInfo",
+  "package": "SFXGame",
+  "variables": {
+    "bSquadUsesPowers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoLogin": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSwapCrossCircle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSwapTriggersShoulders": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHideCinematicHelmetPreference": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ControllerSensitivityConfig": {
+      "type": "EProfileControllerSensitivityOptions",
+      "documentation": null
+    },
+    "TriggerConfig": {
+      "type": "ETriggerConfigOptions",
+      "documentation": null
+    },
+    "StickConfig": {
+      "type": "EStickConfigOptions",
+      "documentation": null
+    },
+    "AimAssistConfig": {
+      "type": "EAimAssistOptions",
+      "documentation": null
+    },
+    "AutoLevelUp": {
+      "type": "EAutoLevelOptions",
+      "documentation": null
+    },
+    "HenchmenHelmetPreference": {
+      "type": "EHenchHelmetOptions",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn GetAPawn()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

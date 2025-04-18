@@ -1,0 +1,8 @@
+{
+  "parent": "SFXPawn_PlayerNonCombat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

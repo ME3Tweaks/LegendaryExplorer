@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "TREASURE_ONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "TREASURE_TWO": {
+      "value": 1,
+      "documentation": null
+    },
+    "TREASURE_THREE": {
+      "value": 2,
+      "documentation": null
+    },
+    "TREASURE_FOUR": {
+      "value": 3,
+      "documentation": null
+    },
+    "TREASURE_FIVE": {
+      "value": 4,
+      "documentation": null
+    },
+    "TREASURE_SIX": {
+      "value": 5,
+      "documentation": null
+    },
+    "TREASURE_SEVEN": {
+      "value": 6,
+      "documentation": null
+    },
+    "TREASURE_EIGHT": {
+      "value": 7,
+      "documentation": null
+    },
+    "TREASURE_NINE": {
+      "value": 8,
+      "documentation": null
+    },
+    "TREASURE_TEN": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "WwiseAudio",
+  "variables": {
+    "Environment": {
+      "type": "string",
+      "documentation": null
+    },
+    "ConvolutionReverbSoundBank": {
+      "type": "WwiseBank",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "fPrimaryControlValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "fOverrideControlValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentEnvironment": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIdResolved": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideLowerPriorityEnvironments": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

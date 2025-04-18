@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "PitchConstraint": {
+      "type": null,
+      "documentation": null
+    },
+    "YawConstraint": {
+      "type": null,
+      "documentation": null
+    },
+    "RollConstraint": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

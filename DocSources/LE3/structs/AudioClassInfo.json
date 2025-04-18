@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "NumResident": {
+      "type": null,
+      "documentation": null
+    },
+    "SizeResident": {
+      "type": null,
+      "documentation": null
+    },
+    "NumRealTime": {
+      "type": null,
+      "documentation": null
+    },
+    "SizeRealTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

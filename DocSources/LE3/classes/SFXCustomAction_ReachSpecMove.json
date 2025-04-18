@@ -1,0 +1,84 @@
+{
+  "parent": "SFXCustomAction_ProceduralMoveBase",
+  "package": "SFXGame",
+  "variables": {
+    "MovementPath": {
+      "type": "ReachSpec",
+      "documentation": null
+    },
+    "BlockingStartCylinder": {
+      "type": "SFXReachSpecPlaceholderCylinder",
+      "documentation": null
+    },
+    "BlockingEndCylinder": {
+      "type": "SFXReachSpecPlaceholderCylinder",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "BlockMoveEndPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BlockMoveEndPoints()"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "PreAlignPawnLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreAlignPawnLocation()"
+    },
+    "RemoveBlockingEndPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveBlockingEndPoints()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

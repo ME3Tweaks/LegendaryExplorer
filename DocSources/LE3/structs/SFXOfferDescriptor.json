@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "grantEntitlementName": {
+      "type": null,
+      "documentation": null
+    },
+    "grantEntitlementGroup": {
+      "type": null,
+      "documentation": null
+    },
+    "externalId": {
+      "type": null,
+      "documentation": null
+    },
+    "Price": {
+      "type": null,
+      "documentation": null
+    },
+    "internalId": {
+      "type": null,
+      "documentation": null
+    },
+    "UserHasIt": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

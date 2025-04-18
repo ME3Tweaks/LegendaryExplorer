@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Filename": {
+      "type": null,
+      "documentation": null
+    },
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "AudioEventPair": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutAudioEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "LoopBackFrame": {
+      "type": null,
+      "documentation": null
+    },
+    "MinPlayTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

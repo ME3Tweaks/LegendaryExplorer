@@ -1,0 +1,41 @@
+{
+  "parent": "BioParticleModuleBase",
+  "package": "SFXGame",
+  "variables": {
+    "RawIntensityVsDistanceDistribution": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "ProgrammaticShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "FrameBufferEffect": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "MaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPlayerImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseIntensityCurve": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayProgrammaticShake": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

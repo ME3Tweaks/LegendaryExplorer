@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ArmorEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectToken": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

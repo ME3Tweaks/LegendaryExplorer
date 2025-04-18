@@ -1,0 +1,89 @@
+{
+  "EnumValues": {
+    "MPMedalType_Invalid": {
+      "value": 0,
+      "documentation": null
+    },
+    "MPMedalType_Kill": {
+      "value": 1,
+      "documentation": null
+    },
+    "MPMedalType_MeleeKill": {
+      "value": 2,
+      "documentation": null
+    },
+    "MPMedalType_OverCoverKill": {
+      "value": 3,
+      "documentation": null
+    },
+    "MPMedalType_Headshot": {
+      "value": 4,
+      "documentation": null
+    },
+    "MPMedalType_AssaultRifle": {
+      "value": 5,
+      "documentation": null
+    },
+    "MPMedalType_SniperRifle": {
+      "value": 6,
+      "documentation": null
+    },
+    "MPMedalType_Shotgun": {
+      "value": 7,
+      "documentation": null
+    },
+    "MPMedalType_Pistol": {
+      "value": 8,
+      "documentation": null
+    },
+    "MPMedalType_SMG": {
+      "value": 9,
+      "documentation": null
+    },
+    "MPMedalType_HeavyWeapon": {
+      "value": 10,
+      "documentation": null
+    },
+    "MPMedalType_Biotics": {
+      "value": 11,
+      "documentation": null
+    },
+    "MPMedalType_Tech": {
+      "value": 12,
+      "documentation": null
+    },
+    "MPMedalType_Revive": {
+      "value": 13,
+      "documentation": null
+    },
+    "MPMedalType_Assist": {
+      "value": 14,
+      "documentation": null
+    },
+    "MPMedalType_Survival": {
+      "value": 15,
+      "documentation": null
+    },
+    "MPMedalType_ChallengeLevel": {
+      "value": 16,
+      "documentation": null
+    },
+    "MPMedalType_Extraction": {
+      "value": 17,
+      "documentation": null
+    },
+    "MPMedalType_Killstreak": {
+      "value": 18,
+      "documentation": null
+    },
+    "MPMedalType_RandomMap": {
+      "value": 19,
+      "documentation": null
+    },
+    "MPMedalType_RandomFaction": {
+      "value": 20,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

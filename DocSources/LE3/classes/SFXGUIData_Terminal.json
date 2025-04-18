@@ -1,0 +1,37 @@
+{
+  "parent": "SFXGameChoiceGUIData",
+  "package": "SFXGame",
+  "variables": {
+    "TerminalItemArray": {
+      "type": "TerminalItemData",
+      "documentation": null
+    },
+    "DefaultImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "TerminalName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "srTerminalTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTerminalDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultAButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultBButtonText": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

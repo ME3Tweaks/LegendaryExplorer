@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "SFXONLINE_MATCHMAKER_IN_PROGRESS": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_MATCHMAKER_CREATE": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_MATCHMAKER_JOIN": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_MATCHMAKER_SEARCH_TIMEOUT": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_MATCHMAKER_FAILED": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

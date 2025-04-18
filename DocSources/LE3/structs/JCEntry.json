@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "pCodexEntry": {
+      "type": null,
+      "documentation": null
+    },
+    "nQuestAdded": {
+      "type": null,
+      "documentation": null
+    },
+    "bQuestComplete": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

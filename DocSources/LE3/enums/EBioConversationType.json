@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIOCONV_NULL": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOCONV_FOVO": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOCONV_Ambient": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOCONV_Full": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

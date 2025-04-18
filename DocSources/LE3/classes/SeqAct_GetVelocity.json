@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "VelocityVect": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "VelocityMag": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

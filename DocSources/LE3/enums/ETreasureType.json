@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "AMMO_TREASURE": {
+      "value": 0,
+      "documentation": null
+    },
+    "MEDIGEL_TREASURE": {
+      "value": 1,
+      "documentation": null
+    },
+    "CREDITS_TREASURE": {
+      "value": 2,
+      "documentation": null
+    },
+    "GRENADE_TREASURE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

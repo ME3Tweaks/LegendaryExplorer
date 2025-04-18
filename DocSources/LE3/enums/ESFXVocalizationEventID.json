@@ -1,0 +1,573 @@
+{
+  "EnumValues": {
+    "SFXVocalizationEvent_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_EnteredCombat": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Attack": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Attack_TargetValid": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Attack_MovingFirst": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Attack_KilledTarget": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_ChangeWeapon": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Move": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Follow": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_TakeCover": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedOrder_Hold": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_CancellingHoldOrder": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_FailedMoveOrder": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Attacking": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Attacking_Henchman": {
+      "value": 14,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_KilledTarget_Henchman": {
+      "value": 15,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_LostSight": {
+      "value": 16,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_EnemySighted": {
+      "value": 17,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_MovingToCover": {
+      "value": 18,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_UsingPower": {
+      "value": 19,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ChangingWeapon": {
+      "value": 20,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Death": {
+      "value": 21,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Death_NonTrivial": {
+      "value": 22,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Death_Henchman": {
+      "value": 23,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedDamage": {
+      "value": 24,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedDamage_LowHealth": {
+      "value": 25,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ReceivedDamage_ExtremelyLowHealth": {
+      "value": 26,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_RequireHealing": {
+      "value": 27,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ShieldsDown": {
+      "value": 28,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_OneEnemyRemaining": {
+      "value": 29,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ZeroEnemiesRemaining": {
+      "value": 30,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Agitation_High": {
+      "value": 31,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Agitation_Medium": {
+      "value": 32,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_GreatPain": {
+      "value": 33,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_OnFire": {
+      "value": 34,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_KnockedBack": {
+      "value": 35,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Falling": {
+      "value": 36,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Tossed": {
+      "value": 37,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Brainwashed": {
+      "value": 38,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Taunt": {
+      "value": 39,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Ambient": {
+      "value": 40,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Failed_ShieldsUp": {
+      "value": 41,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Failed_BarrierUp": {
+      "value": 42,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Failed_ArmorUp": {
+      "value": 43,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_EnergyDrain": {
+      "value": 44,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Reave": {
+      "value": 45,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_ShockWave": {
+      "value": 46,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Crush": {
+      "value": 47,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_CombatDrone": {
+      "value": 48,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Incinerate": {
+      "value": 49,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Lift": {
+      "value": 50,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Pull": {
+      "value": 51,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Singularity": {
+      "value": 52,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Stasis": {
+      "value": 53,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Throw": {
+      "value": 54,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Warp": {
+      "value": 55,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Biotic_Misc": {
+      "value": 56,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_AIHack": {
+      "value": 57,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Fissure": {
+      "value": 58,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Flashbang": {
+      "value": 59,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_NeuralShock": {
+      "value": 60,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Overload": {
+      "value": 61,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Sabotage": {
+      "value": 62,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Tech_Misc": {
+      "value": 63,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Ammo": {
+      "value": 64,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Explosion": {
+      "value": 65,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Melee": {
+      "value": 66,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Projectile": {
+      "value": 67,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Combat_Misc": {
+      "value": 68,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Buff": {
+      "value": 69,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Cloak": {
+      "value": 70,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Regeneration": {
+      "value": 71,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_Resurrection": {
+      "value": 72,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_KroganCharge": {
+      "value": 73,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_KroganResurrection": {
+      "value": 74,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_MultipleAttackers": {
+      "value": 75,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ViolenceAwe": {
+      "value": 76,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Bored": {
+      "value": 77,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DrewWeapon_OutOfCombat": {
+      "value": 78,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_StaredAt": {
+      "value": 79,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Bumped": {
+      "value": 80,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_FriendlyFire": {
+      "value": 81,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Headshot": {
+      "value": 82,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ShootDeadBody": {
+      "value": 83,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_UsedNuclearWeapon": {
+      "value": 84,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_CoverCrateExplosion": {
+      "value": 85,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_HeavyMechGoingToExplode": {
+      "value": 86,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Flanked": {
+      "value": 87,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_UnCloaked": {
+      "value": 88,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_ChargeFailed": {
+      "value": 89,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_BlockedPower": {
+      "value": 90,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_PowerStillOnCooldown": {
+      "value": 91,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Varren_Charge": {
+      "value": 92,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Husk_Charge": {
+      "value": 93,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerStagger": {
+      "value": 94,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerMeleed": {
+      "value": 95,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerMeleedII": {
+      "value": 96,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerMeleedNoRotate": {
+      "value": 97,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerStandardImpact": {
+      "value": 98,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerKnockback": {
+      "value": 99,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_BloodyPlayerStandardImpact": {
+      "value": 100,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_DamageReaction_PlayerOnFire": {
+      "value": 101,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_CollectorPossession": {
+      "value": 102,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_VorchaBloodlust": {
+      "value": 103,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_CausedDamage": {
+      "value": 104,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_LowAmmo": {
+      "value": 105,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_OutOfAmmo": {
+      "value": 106,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Loot_AmmoFound": {
+      "value": 107,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Loot_AmmoFull": {
+      "value": 108,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Loot_TreasureFound": {
+      "value": 109,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Saw_HeavyMech": {
+      "value": 110,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_CollectorGeneral_ReceivedDamage": {
+      "value": 111,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Aggressive_Flank": {
+      "value": 112,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_PraetorianImmune_ReceivedDamage": {
+      "value": 113,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Krogan_ReceivedDamage": {
+      "value": 114,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_CollectorPossessed": {
+      "value": 115,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_Revive": {
+      "value": 116,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_PlayerAssisted": {
+      "value": 117,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_ObjectiveBegin": {
+      "value": 118,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_RequestAssistMelee": {
+      "value": 119,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_RequestAssistRanged": {
+      "value": 120,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_RequestCoveringFire": {
+      "value": 121,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_RangedAssistMelee": {
+      "value": 122,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_RangedAssistRanged": {
+      "value": 123,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_PowerAssist": {
+      "value": 124,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_Combo": {
+      "value": 125,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_Headshot": {
+      "value": 126,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Mutliplayer_Cloaked": {
+      "value": 127,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Multiplayer_Flanking": {
+      "value": 128,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Power_HeavyMelee": {
+      "value": 129,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom1": {
+      "value": 130,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom2": {
+      "value": 131,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom3": {
+      "value": 132,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom4": {
+      "value": 133,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom5": {
+      "value": 134,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom6": {
+      "value": 135,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom7": {
+      "value": 136,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom8": {
+      "value": 137,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_Custom9": {
+      "value": 138,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_PlayerControllingAtlas": {
+      "value": 139,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_EngineerSetUpTurret": {
+      "value": 140,
+      "documentation": null
+    },
+    "SFXVocalizationEvent_EngineerRepairingAtlas": {
+      "value": 141,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EDVLF_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EDVLF_XY": {
+      "value": 1,
+      "documentation": null
+    },
+    "EDVLF_XZ": {
+      "value": 2,
+      "documentation": null
+    },
+    "EDVLF_YZ": {
+      "value": 3,
+      "documentation": null
+    },
+    "EDVLF_XYZ": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

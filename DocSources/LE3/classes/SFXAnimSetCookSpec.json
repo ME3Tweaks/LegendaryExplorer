@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "AnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

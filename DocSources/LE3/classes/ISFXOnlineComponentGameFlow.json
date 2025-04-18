@@ -1,0 +1,250 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "DebugValidateStates": {
+      "documentation": null,
+      "signature_members": {
+        "writeToFile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DebugValidateStates(optional bool writeToFile)"
+    },
+    "GetStateStr": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStateStr()"
+    },
+    "GM_HasCreatedGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasCreatedGame()"
+    },
+    "GM_HasFailedConnecting_QM": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedConnecting_QM()"
+    },
+    "GM_HasFailedJoiningFullGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningFullGame()"
+    },
+    "GM_HasFailedJoiningGameMissingDLCInvitee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningGameMissingDLCInvitee()"
+    },
+    "GM_HasFailedJoiningGameMissingDLCInviter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningGameMissingDLCInviter()"
+    },
+    "GM_HasFailedJoiningGameProtocolMismatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningGameProtocolMismatch()"
+    },
+    "GM_HasFailedJoiningInviterLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasFailedJoiningInviterLeft()"
+    },
+    "GM_HasJoinedGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_HasJoinedGame()"
+    },
+    "GM_IsConnectionErrorSilent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsConnectionErrorSilent()"
+    },
+    "GM_IsInMPMapAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInMPMapAction()"
+    },
+    "GM_IsInMultiplayerFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInMultiplayerFlow()"
+    },
+    "GM_IsInMultiplayerGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsInMultiplayerGame()"
+    },
+    "GM_IsLeavingGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_IsLeavingGame()"
+    },
+    "GM_OnCreateGameSent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnCreateGameSent()"
+    },
+    "GM_OnDisconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnDisconnect()"
+    },
+    "GM_OnEnterMPFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnEnterMPFlow()"
+    },
+    "GM_OnEnterMPGameplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnEnterMPGameplay()"
+    },
+    "GM_OnEnterMPGameResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnEnterMPGameResults()"
+    },
+    "GM_OnExitMPFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnExitMPFlow()"
+    },
+    "GM_OnGameCreated": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccess": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnGameCreated(bool bSuccess)"
+    },
+    "GM_OnGameJoined": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnGameJoined()"
+    },
+    "GM_OnHostAddressResolved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnHostAddressResolved()"
+    },
+    "GM_OnHostMigrationEnded": {
+      "documentation": null,
+      "signature_members": {
+        "bInLobby": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnHostMigrationEnded(bool bInLobby)"
+    },
+    "GM_OnHostMigrationStarted": {
+      "documentation": null,
+      "signature_members": {
+        "bLocalPlayerIsHost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnHostMigrationStarted(bool bLocalPlayerIsHost)"
+    },
+    "GM_OnInviteAborted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteAborted()"
+    },
+    "GM_OnInviteAccepted": {
+      "documentation": null,
+      "signature_members": {
+        "invitedInactiveUser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteAccepted(bool invitedInactiveUser)"
+    },
+    "GM_OnInviteErrorNotified": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteErrorNotified()"
+    },
+    "GM_OnInviteProceed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnInviteProceed()"
+    },
+    "GM_OnLeaveGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnLeaveGame()"
+    },
+    "GM_OnLeaveGameComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnLeaveGameComplete()"
+    },
+    "GM_OnNetworkErrorDismissed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnNetworkErrorDismissed()"
+    },
+    "GM_OnP2PConnectionFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnP2PConnectionFailure()"
+    },
+    "GM_OnProfileSelected": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnProfileSelected()"
+    },
+    "GM_OnQuickMatchSent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GM_OnQuickMatchSent()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

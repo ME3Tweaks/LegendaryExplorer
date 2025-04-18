@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Coordinate": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Time": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "CenterX": {
+      "type": "float",
+      "documentation": null
+    },
+    "CenterY": {
+      "type": "float",
+      "documentation": null
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,85 @@
+{
+  "Members": {
+    "CurrentSlot": {
+      "type": null,
+      "documentation": null
+    },
+    "LeftSlot": {
+      "type": null,
+      "documentation": null
+    },
+    "RightSlot": {
+      "type": null,
+      "documentation": null
+    },
+    "MantleStartLoc": {
+      "type": null,
+      "documentation": null
+    },
+    "MantleEndLoc": {
+      "type": null,
+      "documentation": null
+    },
+    "EstimatedLandingLoc": {
+      "type": null,
+      "documentation": null
+    },
+    "DestLink": {
+      "type": null,
+      "documentation": null
+    },
+    "LeftLink": {
+      "type": null,
+      "documentation": null
+    },
+    "RightLink": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentLink": {
+      "type": null,
+      "documentation": null
+    },
+    "MantleDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentSlotIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "LeftSlotIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "RightSlotIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentSlotPct": {
+      "type": null,
+      "documentation": null
+    },
+    "FallForwardVelocity": {
+      "type": null,
+      "documentation": null
+    },
+    "RootMotionScaleFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultMantleDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bForced": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsOnASlot": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

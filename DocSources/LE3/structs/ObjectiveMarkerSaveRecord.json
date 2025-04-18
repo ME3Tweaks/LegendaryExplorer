@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "MarkerOwnerPath": {
+      "type": null,
+      "documentation": null
+    },
+    "MarkerOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneToAttachTo": {
+      "type": null,
+      "documentation": null
+    },
+    "MarkerLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "MarkerIconType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

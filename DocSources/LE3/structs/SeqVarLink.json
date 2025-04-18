@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "LinkedVariables": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkDesc": {
+      "type": null,
+      "documentation": null
+    },
+    "ExpectedType": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkVar": {
+      "type": null,
+      "documentation": null
+    },
+    "PropertyName": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedProperty": {
+      "type": null,
+      "documentation": null
+    },
+    "MinVars": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxVars": {
+      "type": null,
+      "documentation": null
+    },
+    "bWriteable": {
+      "type": null,
+      "documentation": null
+    },
+    "bModifiesLinkedObject": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowAnyType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

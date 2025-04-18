@@ -1,0 +1,77 @@
+{
+  "Members": {
+    "OcclusionCurveLookupTable": {
+      "type": null,
+      "documentation": null
+    },
+    "StaticLightingLevelScale": {
+      "type": null,
+      "documentation": null
+    },
+    "NumIndirectLightingBounces": {
+      "type": null,
+      "documentation": null
+    },
+    "EnvironmentColor": {
+      "type": null,
+      "documentation": null
+    },
+    "EnvironmentIntensity": {
+      "type": null,
+      "documentation": null
+    },
+    "EmissiveBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "DiffuseBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "SpecularBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "IndirectNormalInfluenceBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "LightEnvironmentIndirectContrastFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "DirectIlluminationOcclusionFraction": {
+      "type": null,
+      "documentation": null
+    },
+    "IndirectIlluminationOcclusionFraction": {
+      "type": null,
+      "documentation": null
+    },
+    "OcclusionExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "FullyOccludedSamplesFraction": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxOcclusionDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseAmbientOcclusion": {
+      "type": null,
+      "documentation": null
+    },
+    "bVisualizeMaterialDiffuse": {
+      "type": null,
+      "documentation": null
+    },
+    "bVisualizeAmbientOcclusion": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

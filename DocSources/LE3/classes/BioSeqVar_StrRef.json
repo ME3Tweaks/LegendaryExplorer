@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "m_sValue": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_srValue": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

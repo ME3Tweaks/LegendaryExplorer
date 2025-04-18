@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "EWeaponStatBarAccuracy": {
+      "value": 0,
+      "documentation": null
+    },
+    "EWeaponStatBarDamage": {
+      "value": 1,
+      "documentation": null
+    },
+    "EWeaponStatBarFireRate": {
+      "value": 2,
+      "documentation": null
+    },
+    "EWeaponStatBarMagSize": {
+      "value": 3,
+      "documentation": null
+    },
+    "EWeaponStatBarWeight": {
+      "value": 4,
+      "documentation": null
+    },
+    "EWeaponStatBarOther": {
+      "value": 5,
+      "documentation": null
+    },
+    "EWeaponStatBar_MAX": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

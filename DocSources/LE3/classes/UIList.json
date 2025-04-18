@@ -1,0 +1,843 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIDataStorePublisher": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "GlobalCellStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "ItemOverlayStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "ColumnHeaderBackgroundStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "DataSource": {
+      "type": "UIDataStoreBinding",
+      "documentation": null
+    },
+    "ColumnHeaderStyle": {
+      "type": "UIStyleReference",
+      "documentation": null
+    },
+    "Items": {
+      "type": "int",
+      "documentation": null
+    },
+    "SelectedItems": {
+      "type": "int",
+      "documentation": null
+    },
+    "__OnSubmitSelection__Delegate": {
+      "type": "OnSubmitSelection",
+      "documentation": null
+    },
+    "__OnListElementsSorted__Delegate": {
+      "type": "OnListElementsSorted",
+      "documentation": null
+    },
+    "__ShouldDisableElement__Delegate": {
+      "type": "ShouldDisableElement",
+      "documentation": null
+    },
+    "__OnOverrideListElementState__Delegate": {
+      "type": "OnOverrideListElementState",
+      "documentation": null
+    },
+    "DataProvider": {
+      "type": "UIListElementProvider",
+      "documentation": null
+    },
+    "RowHeight": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "MinColumnSize": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "ColumnWidth": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "HeaderCellPadding": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "HeaderElementSpacing": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "CellSpacing": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "CellPadding": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null
+    },
+    "VerticalScrollbar": {
+      "type": "UIScrollbar",
+      "documentation": null
+    },
+    "BackgroundImageComponent": {
+      "type": "UIComp_DrawImage",
+      "documentation": null
+    },
+    "SortComponent": {
+      "type": "UIComp_ListElementSorter",
+      "documentation": null
+    },
+    "CellDataComponent": {
+      "type": "UIComp_ListPresenterBase",
+      "documentation": null
+    },
+    "SubmitDataSuccessCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SubmitDataFailedCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DecrementIndexCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IncrementIndexCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SortAscendingCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SortDescendingCue": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Index": {
+      "type": "int",
+      "documentation": null
+    },
+    "TopIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxVisibleItems": {
+      "type": "int",
+      "documentation": null
+    },
+    "ColumnCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "RowCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ResizeColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "SetIndexMutex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ValueChangeNotificationMutex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bEnableMultiSelect": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableVerticalScrollbar": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitializeScrollbars": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDisabledItemSelection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSingleClickSubmission": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUpdateItemUnderCursor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHoverStateOverridesSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceFullPageDisplay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowColumnResizing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisplayDataBindings": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSortingList": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ColumnAutoSizeMode": {
+      "type": "ECellAutoSizeMode",
+      "documentation": null
+    },
+    "RowAutoSizeMode": {
+      "type": "ECellAutoSizeMode",
+      "documentation": null
+    },
+    "CellLinkType": {
+      "type": "ECellLinkType",
+      "documentation": null
+    },
+    "WrapType": {
+      "type": "EListWrapBehavior",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllMutexesDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllMutexesDisabled()"
+    },
+    "CalculateIndexFromCursorLocation": {
+      "documentation": null,
+      "signature_members": {
+        "bRequireValidIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int CalculateIndexFromCursorLocation(optional bool bRequireValidIndex)"
+    },
+    "CanSelectElement": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSelectElement(int ElementIndex)"
+    },
+    "ClearBoundDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBoundDataStores()"
+    },
+    "DecrementAllMutexes": {
+      "documentation": null,
+      "signature_members": {
+        "bDispatchUpdates": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DecrementAllMutexes(optional bool bDispatchUpdates)"
+    },
+    "DisableSetIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableSetIndex()"
+    },
+    "DisableValueChangeNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableValueChangeNotification()"
+    },
+    "EnableColumnHeaderRendering": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldRenderColHeaders": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableColumnHeaderRendering(optional bool bShouldRenderColHeaders)"
+    },
+    "EnableSetIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableSetIndex()"
+    },
+    "EnableValueChangeNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableValueChangeNotification()"
+    },
+    "FindItemIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ItemValue": {
+          "type": null,
+          "documentation": null
+        },
+        "CellIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindItemIndex(string ItemValue, optional int CellIndex)"
+    },
+    "GetBoundDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundDataStores(out array<UIDataStore> out_BoundDataStores)"
+    },
+    "GetClientRegion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector2D",
+      "signature": "Vector2D GetClientRegion()"
+    },
+    "GetColumnWidth": {
+      "documentation": null,
+      "signature_members": {
+        "ColumnIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bColHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "bReturnUnformattedValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetColumnWidth(optional int ColumnIndex, optional bool bColHeader, optional bool bReturnUnformattedValue)"
+    },
+    "GetCurrentItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentItem()"
+    },
+    "GetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDataStoreBinding(optional int BindingIndex)"
+    },
+    "GetElementCellState": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EUIListElementState",
+      "signature": "EUIListElementState GetElementCellState(int ElementIndex)"
+    },
+    "GetElementValue": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "CellIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetElementValue(int ElementIndex, optional int CellIndex)"
+    },
+    "GetItemCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetItemCount()"
+    },
+    "GetMaxNumVisibleColumns": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxNumVisibleColumns()"
+    },
+    "GetMaxNumVisibleRows": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxNumVisibleRows()"
+    },
+    "GetMaxVisibleElementCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxVisibleElementCount()"
+    },
+    "GetResizeColumn": {
+      "documentation": null,
+      "signature_members": {
+        "ClickedCell": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResizeColumn(optional out CellHitDetectionInfo ClickedCell)"
+    },
+    "GetRowHeight": {
+      "documentation": null,
+      "signature_members": {
+        "RowIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bColHeader": {
+          "type": null,
+          "documentation": null
+        },
+        "bReturnUnformattedValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRowHeight(optional int RowIndex, optional bool bColHeader, optional bool bReturnUnformattedValue)"
+    },
+    "GetSelectedItems": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "array<int> GetSelectedItems()"
+    },
+    "GetTotalColumnCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTotalColumnCount()"
+    },
+    "GetTotalRowCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTotalRowCount()"
+    },
+    "IncrementAllMutexes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementAllMutexes()"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    },
+    "IsElementAutoSizingEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsElementAutoSizingEnabled()"
+    },
+    "IsElementEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsElementEnabled(int ElementIndex)"
+    },
+    "IsElementSelected": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsElementSelected(int ElementIndex)"
+    },
+    "IsHotTrackingEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsHotTrackingEnabled()"
+    },
+    "IsSetIndexEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSetIndexEnabled()"
+    },
+    "IsValueChangeNotificationEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValueChangeNotificationEnabled()"
+    },
+    "NavigateIndex": {
+      "documentation": null,
+      "signature_members": {
+        "bIncrementIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bFullPage": {
+          "type": null,
+          "documentation": null
+        },
+        "bHorizontalNavigation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NavigateIndex(bool bIncrementIndex, bool bFullPage, bool bHorizontalNavigation)"
+    },
+    "NotifyDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": null,
+          "documentation": null
+        },
+        "bValuesInvalidated": {
+          "type": null,
+          "documentation": null
+        },
+        "PropertyTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    },
+    "OnListElementsSorted": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnListElementsSorted(UIList Sender)"
+    },
+    "OnOverrideListElementState": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentState": {
+          "type": null,
+          "documentation": null
+        },
+        "NewElementState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EUIListElementState",
+      "signature": "EUIListElementState OnOverrideListElementState(UIList Sender, int ElementIndex, EUIListElementState CurrentState, EUIListElementState NewElementState)"
+    },
+    "OnSubmitSelection": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSubmitSelection(UIList Sender, optional int PlayerIndex)"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "RefreshSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshSubscriberValue(optional int BindingIndex)"
+    },
+    "RemoveElement": {
+      "documentation": null,
+      "signature_members": {
+        "ElementToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int RemoveElement(int ElementToRemove)"
+    },
+    "SaveSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": null,
+          "documentation": null
+        },
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveSubscriberValue(out array<UIDataStore> out_BoundDataStores, optional int BindingIndex)"
+    },
+    "ScrollVertical": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PositionChange": {
+          "type": null,
+          "documentation": null
+        },
+        "bPositionMaxed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ScrollVertical(UIScrollbar Sender, float PositionChange, optional bool bPositionMaxed)"
+    },
+    "SetColumnCount": {
+      "documentation": null,
+      "signature_members": {
+        "NewColumnCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColumnCount(int NewColumnCount)"
+    },
+    "SetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "MarkupText": {
+          "type": null,
+          "documentation": null
+        },
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDataStoreBinding(string MarkupText, optional int BindingIndex)"
+    },
+    "SetElementCellState": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewElementState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetElementCellState(int ElementIndex, EUIListElementState NewElementState)"
+    },
+    "SetHotTracking": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldUpdateItemUnderCursor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHotTracking(bool bShouldUpdateItemUnderCursor)"
+    },
+    "SetIndex": {
+      "documentation": null,
+      "signature_members": {
+        "NewIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bClampValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipNotification": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetIndex(int NewIndex, optional bool bClampValue, optional bool bSkipNotification)"
+    },
+    "SetRowCount": {
+      "documentation": null,
+      "signature_members": {
+        "NewRowCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRowCount(int NewRowCount)"
+    },
+    "SetTopIndex": {
+      "documentation": null,
+      "signature_members": {
+        "NewTopIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bClampValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTopIndex(int NewTopIndex, optional bool bClampValue)"
+    },
+    "ShouldDisableElement": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldDisableElement(UIList Sender, int ElementIndex)"
+    },
+    "ShouldRenderColumnHeaders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRenderColumnHeaders()"
+    },
+    "ClickedScrollZone": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PositionPerc": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClickedScrollZone(UIScrollbar Sender, float PositionPerc, int PlayerIndex)"
+    },
+    "OnStateChanged": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "NewlyActiveState": {
+          "type": null,
+          "documentation": null
+        },
+        "PreviouslyActiveState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnStateChanged(UIScreenObject Sender, int PlayerIndex, UIState NewlyActiveState, optional UIState PreviouslyActiveState)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

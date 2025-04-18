@@ -1,0 +1,21 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "TurnInPlaceNodes": {
+      "type": "BioAnimNodeBlend_TurnInPlace",
+      "documentation": null
+    },
+    "BioPawnOwner": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "ActiveTurnInPlaceNode": {
+      "type": "BioAnimNodeBlend_TurnInPlace",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,197 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aVertexBuffers": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_oOtherMeshes": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_aMorphFeatures": {
+      "type": "MorphFeature",
+      "documentation": null
+    },
+    "m_aFinalSkeleton": {
+      "type": "OffsetBonePos",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_oBaseHead": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_oHairMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "m_oMorphTargetSet": {
+      "type": "MorphTargetSet",
+      "documentation": null
+    },
+    "m_oAnimTree": {
+      "type": "AnimTree",
+      "documentation": null
+    },
+    "m_oMaterialOverrides": {
+      "type": "BioMaterialOverride",
+      "documentation": null
+    },
+    "CurrentMorphFaceContentVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInternalMorphFaceContentVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "bRequiresDynamicUpdates": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyMaterialOverrides": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterialOverrides(SkeletalMeshComponent Mesh)"
+    },
+    "ApplyMaterialOverridesToActor": {
+      "documentation": null,
+      "signature_members": {
+        "InTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterialOverridesToActor(Actor InTarget)"
+    },
+    "ApplyMorph": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyMorph()"
+    },
+    "GetNumVertexBuffers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumVertexBuffers()"
+    },
+    "GetNumVerts": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumVerts(int Buffer)"
+    },
+    "GetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        },
+        "vert": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetPosition(int Buffer, int vert)"
+    },
+    "RefreshBuffers": {
+      "documentation": null,
+      "signature_members": {
+        "BufferIndices": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshBuffers(array<int> BufferIndices)"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        },
+        "vert": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(int Buffer, int vert, Vector V)"
+    },
+    "ApplyMesh": {
+      "documentation": null,
+      "signature_members": {
+        "SkelMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "MeshCmpt": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMesh(SkeletalMesh SkelMesh, SkeletalMeshComponent MeshCmpt)"
+    },
+    "ApplyToActor": {
+      "documentation": null,
+      "signature_members": {
+        "InTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyToActor(Actor InTarget)"
+    },
+    "UpdateActorMeshes": {
+      "documentation": null,
+      "signature_members": {
+        "Mesh": {
+          "type": null,
+          "documentation": null
+        },
+        "HeadMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "HairMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateActorMeshes(SkeletalMeshComponent Mesh, SkeletalMeshComponent HeadMesh, SkeletalMeshComponent HairMesh)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

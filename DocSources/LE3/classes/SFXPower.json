@@ -1,0 +1,436 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ImpactRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "EffectDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null
+    },
+    "Force": {
+      "type": "float",
+      "documentation": null
+    },
+    "Ranks": {
+      "type": "RankInfo",
+      "documentation": null
+    },
+    "RankCosts": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockRequirements": {
+      "type": "UnlockRequirement",
+      "documentation": null
+    },
+    "PowerScriptClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "EvolvedPowerClass1": {
+      "type": "Class",
+      "documentation": null
+    },
+    "EvolvedPowerClass2": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PowerName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BaseName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Animations": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "CastingTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "CooldownTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "GlobalCooldownTime": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MinimumRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MaximumRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "VFXIntensity": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ProjectileSpeed": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ProjectileRadius": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "ConeHalfAngle": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "MyPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "OldPower": {
+      "type": "BioPower",
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Description": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ImpactText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Icon": {
+      "type": "int",
+      "documentation": null
+    },
+    "ReleasePlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "DynamicCooldownBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "DynamicDurationBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "DynamicDamageBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "Rank": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxRank": {
+      "type": "float",
+      "documentation": null
+    },
+    "DelayBeforeFirstUse": {
+      "type": "float",
+      "documentation": null
+    },
+    "DelayBetweenUses": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeUntilNextUse": {
+      "type": "float",
+      "documentation": null
+    },
+    "TalentDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WheelDisplayIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "UsesSharedCooldown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockedByObjects": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AimingIgnoresObstructions": {
+      "type": "bool",
+      "documentation": null
+    },
+    "StopOnFirstHit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CanMoveWhileCasting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DisplayInHUD": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AISelectable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsHenchmenUnique": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DisplayInCharacterRecord": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PowerType": {
+      "type": "EBioPowerType",
+      "documentation": null
+    },
+    "CapabilityType": {
+      "type": "EBioCapabilityTypes",
+      "documentation": null
+    },
+    "Discipline": {
+      "type": "EBioCapMode",
+      "documentation": null
+    },
+    "VocalizationEvent": {
+      "type": "ESFXVocalizationEventID",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetArrayValue": {
+      "documentation": null,
+      "signature_members": {
+        "ArrayValues": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetArrayValue(out array<float> ArrayValues, optional int nRankToUse)"
+    },
+    "GetDescription": {
+      "documentation": null,
+      "signature_members": {
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDescription(int nRankIndex, out string sDescription)"
+    },
+    "GetImpactRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetImpactRadius()"
+    },
+    "GetParsedString": {
+      "documentation": null,
+      "signature_members": {
+        "srValue": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sOutput": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetParsedString(stringref srValue, int nRankIndex, out string sOutput)"
+    },
+    "GetScaledValue": {
+      "documentation": null,
+      "signature_members": {
+        "ValueToScale": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankToUse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetScaledValue(Vector2D ValueToScale, optional int nRankToUse)"
+    },
+    "GetStringFromStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "TheStringRef": {
+          "type": null,
+          "documentation": null
+        },
+        "TheString": {
+          "type": null,
+          "documentation": null
+        },
+        "bParse": {
+          "type": null,
+          "documentation": null
+        },
+        "nParseIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStringFromStringRef(stringref TheStringRef, out string TheString, optional bool bParse, optional int nParseIndex)"
+    },
+    "GetUnlockBlurb": {
+      "documentation": null,
+      "signature_members": {
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sUnlockBlurb": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetUnlockBlurb(int nRankIndex, out string sUnlockBlurb)"
+    },
+    "IsTargetInRange": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTargetInRange(Actor Target)"
+    },
+    "ParseString": {
+      "documentation": null,
+      "signature_members": {
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sParsedString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ParseString(int nRankIndex, out string sParsedString)"
+    },
+    "ProcessToken": {
+      "documentation": null,
+      "signature_members": {
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sToken": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessToken(int nRankIndex, out string sToken)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "GetDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDamage()"
+    },
+    "GetDamageResearchBonus": {
+      "documentation": null,
+      "signature_members": {
+        "fStaticDamageBonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDamageResearchBonus(out float fStaticDamageBonus)"
+    },
+    "GetDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDuration()"
+    },
+    "GetDurationResearchBonus": {
+      "documentation": null,
+      "signature_members": {
+        "fStaticDamageBonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDurationResearchBonus(out float fStaticDamageBonus)"
+    },
+    "GetForce": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetForce()"
+    },
+    "RecalculateCooldownBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecalculateCooldownBonus()"
+    },
+    "RecalculateDamageBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecalculateDamageBonus()"
+    },
+    "RecalculateDurationBonus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecalculateDurationBonus()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

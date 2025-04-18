@@ -1,0 +1,49 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "Engine",
+  "variables": {
+    "Constraints": {
+      "type": "float",
+      "documentation": null
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastChannel": {
+      "type": "int",
+      "documentation": null
+    },
+    "BlendUpTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendDownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendDownPerc": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendUpDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendDownDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendDelayRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseAcceleration": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

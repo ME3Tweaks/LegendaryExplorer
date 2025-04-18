@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "ERotTarget_OppositeRayDir": {
+      "value": 0,
+      "documentation": null
+    },
+    "ERotTarget_RayDir": {
+      "value": 1,
+      "documentation": null
+    },
+    "ERotTarget_AwayFromImpact": {
+      "value": 2,
+      "documentation": null
+    },
+    "ERotTarget_IntoImpact": {
+      "value": 3,
+      "documentation": null
+    },
+    "ERotTarget_World": {
+      "value": 4,
+      "documentation": null
+    },
+    "ERotTarget_Actor": {
+      "value": 5,
+      "documentation": null
+    },
+    "ERotTarget_Bone": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

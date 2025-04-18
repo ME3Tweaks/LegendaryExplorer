@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "PowerClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "BonusPowerID": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotConditionalID": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotStateID": {
+      "type": null,
+      "documentation": null
+    },
+    "srTitle": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

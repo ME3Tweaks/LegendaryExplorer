@@ -1,0 +1,330 @@
+{
+  "parent": "SFXModule_GameEffectManager_NativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponPassiveDamageBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "HeavyWeaponPassiveDamageBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "WeaponPassiveConstraintDamageBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "GlobalCooldownBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "PhysicsDamageTakenBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "NegotiationBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "WeaponModDamageBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "WeaponMatchConsumableDamageBonus": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "RecoilBonus": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "RemoveAllEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllEffects()"
+    },
+    "CreateAndApplyEffect": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "DurationType": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Causer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect CreateAndApplyEffect(Class<SFXGameEffect> EffectClass, Name Category, float Duration, EDurationType DurationType, float EffectValue, optional Controller Instigator, optional Actor Causer)"
+    },
+    "CreateEffect": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "DurationType": {
+          "type": null,
+          "documentation": null
+        },
+        "EffectValue": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        },
+        "Causer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect CreateEffect(Class<SFXGameEffect> EffectClass, Name Category, float Duration, EDurationType DurationType, float EffectValue, optional Controller Instigator, optional Actor Causer)"
+    },
+    "GetFirstEffectOfCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect GetFirstEffectOfCategory(Name Category)"
+    },
+    "GetFirstEffectOfType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect GetFirstEffectOfType(Class<SFXGameEffect> EffectClass)"
+    },
+    "GetFirstEffectOfTypeAndCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGameEffect",
+      "signature": "SFXGameEffect GetFirstEffectOfTypeAndCategory(Class<SFXGameEffect> EffectClass, Name Category)"
+    },
+    "HasEffectOfCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectOfCategory(Name Category)"
+    },
+    "HasEffectOfType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectOfType(Class<SFXGameEffect> EffectClass)"
+    },
+    "HasEffectOfTypeAndCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffectOfTypeAndCategory(Class<SFXGameEffect> EffectClass, Name Category)"
+    },
+    "OnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatEnd()"
+    },
+    "PauseEffectsByType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseEffectsByType(Class<SFXGameEffect> EffectClass)"
+    },
+    "RemoveEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Effect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffect(SFXGameEffect Effect)"
+    },
+    "RemoveEffectAt": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectAt(int Index)"
+    },
+    "RemoveEffectsByCategory": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByCategory(Name Category)"
+    },
+    "RemoveEffectsByDuration": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByDuration(EDurationType Duration)"
+    },
+    "RemoveEffectsByParentType": {
+      "documentation": null,
+      "signature_members": {
+        "ParentClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByParentType(Class<SFXGameEffect> ParentClass)"
+    },
+    "RemoveEffectsByType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByType(Class<SFXGameEffect> EffectClass)"
+    },
+    "RemoveEffectsByTypeAndCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffectsByTypeAndCategory(Class<SFXGameEffect> EffectClass, Name Category)"
+    },
+    "UnpauseEffectsByType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnpauseEffectsByType(Class<SFXGameEffect> EffectClass)"
+    },
+    "UpdateEffectsByCategory": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClasses": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEffectsByCategory(const out array<Class<SFXGameEffect>> EffectClasses, Name Category, Controller Instigator)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

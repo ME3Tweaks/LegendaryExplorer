@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ObjectPropertyName": {
+      "type": null,
+      "documentation": null
+    },
+    "EntryId": {
+      "type": null,
+      "documentation": null
+    },
+    "EntryType": {
+      "type": null,
+      "documentation": null
+    },
+    "ComparisonType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

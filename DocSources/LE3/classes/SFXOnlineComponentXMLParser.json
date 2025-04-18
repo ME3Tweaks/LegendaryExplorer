@@ -1,0 +1,136 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "mXmlSource": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetXMLAttribInteger": {
+      "documentation": null,
+      "signature_members": {
+        "Element": {
+          "type": null,
+          "documentation": null
+        },
+        "attrib": {
+          "type": null,
+          "documentation": null
+        },
+        "intOut": {
+          "type": null,
+          "documentation": null
+        },
+        "skipcount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetXMLAttribInteger(string Element, string attrib, out int intOut, optional int skipcount)"
+    },
+    "GetXMLAttribString": {
+      "documentation": null,
+      "signature_members": {
+        "Element": {
+          "type": null,
+          "documentation": null
+        },
+        "attrib": {
+          "type": null,
+          "documentation": null
+        },
+        "stringOut": {
+          "type": null,
+          "documentation": null
+        },
+        "skipcount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetXMLAttribString(string Element, string attrib, out string stringOut, optional int skipcount)"
+    },
+    "GetXMLInteger": {
+      "documentation": null,
+      "signature_members": {
+        "Element": {
+          "type": null,
+          "documentation": null
+        },
+        "intOut": {
+          "type": null,
+          "documentation": null
+        },
+        "skipcount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetXMLInteger(string Element, out int intOut, optional int skipcount)"
+    },
+    "GetXMLString": {
+      "documentation": null,
+      "signature_members": {
+        "Element": {
+          "type": null,
+          "documentation": null
+        },
+        "stringOut": {
+          "type": null,
+          "documentation": null
+        },
+        "skipcount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetXMLString(string Element, out string stringOut, optional int skipcount)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "StartParsing": {
+      "documentation": null,
+      "signature_members": {
+        "xmlInput": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartParsing(string xmlInput)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

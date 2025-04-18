@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "TheSoundCue": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeInVolumeLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FadeOutVolumeLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoPlay": {
+      "type": null,
+      "documentation": null
+    },
+    "bPersistentAcrossLevels": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

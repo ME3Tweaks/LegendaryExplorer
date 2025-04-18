@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SFXONLINE_BLAZEHUB_DIRTY_ALLOC_DEFAULT": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_BLAZEHUB_DIRTY_ALLOC_BUGSENTRY": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

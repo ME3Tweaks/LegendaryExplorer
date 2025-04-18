@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendByStorm_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByStorm_Storm": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

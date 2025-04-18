@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "EffectClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "EffectValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

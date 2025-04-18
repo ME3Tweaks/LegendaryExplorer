@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "StartU": {
+      "type": null,
+      "documentation": null
+    },
+    "StartV": {
+      "type": null,
+      "documentation": null
+    },
+    "USize": {
+      "type": null,
+      "documentation": null
+    },
+    "VSize": {
+      "type": null,
+      "documentation": null
+    },
+    "TextureIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "VerticalOffset": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

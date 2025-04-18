@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "EPSM_4": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPSM_8": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPSM_16": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPSM_32": {
+      "value": 3,
+      "documentation": null
+    },
+    "EPSM_64": {
+      "value": 4,
+      "documentation": null
+    },
+    "EPSM_128": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

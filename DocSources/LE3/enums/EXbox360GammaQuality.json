@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "XGQ_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "XGQ_High": {
+      "value": 1,
+      "documentation": null
+    },
+    "XGQ_Low": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

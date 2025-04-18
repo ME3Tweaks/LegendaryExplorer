@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aNodeDefinitions": {
+      "type": "BioAnimScalarNodeBehaviorDef",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

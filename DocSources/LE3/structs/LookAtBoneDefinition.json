@@ -1,0 +1,81 @@
+{
+  "Members": {
+    "m_anTargetBones": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nmMasterBoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fLimit": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fUpDownLimit": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fSpeedFactor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fMaxAcceleration": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fMaxDeceleration": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fConversationStrength": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bSeparateUpDownLimit": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bUseUpAxis": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bUpAxisInLocalSpace": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bLookAtInverted": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bUpAxisInverted": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bUseAcceleration": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bUseMasterBone": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nLookAxis": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nUpAxis": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

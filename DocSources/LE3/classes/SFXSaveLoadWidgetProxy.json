@@ -1,0 +1,123 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "LoadingMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SavingMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DeletingMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NetworkMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bShowMessage": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HideLoadingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideLoadingMessage(optional bool bDoTransition)"
+    },
+    "HideNetworkMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideNetworkMessage(optional bool bDoTransition)"
+    },
+    "HideSavingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideSavingMessage(optional bool bDoTransition)"
+    },
+    "ShowDeletingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowDeletingMessage(bool bDoTransition, optional stringref srMessage)"
+    },
+    "ShowLoadingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowLoadingMessage(optional bool bDoTransition, optional stringref srMessage)"
+    },
+    "ShowNetworkMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowNetworkMessage(optional bool bDoTransition, optional stringref srMessage)"
+    },
+    "ShowSavingMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bDoTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSavingMessage(optional bool bDoTransition, optional stringref srMessage)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

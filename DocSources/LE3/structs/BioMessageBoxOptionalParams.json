@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "srKBMText": {
+      "type": null,
+      "documentation": null
+    },
+    "srAText": {
+      "type": null,
+      "documentation": null
+    },
+    "srBText": {
+      "type": null,
+      "documentation": null
+    },
+    "nIconIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoFade": {
+      "type": null,
+      "documentation": null
+    },
+    "bModal": {
+      "type": null,
+      "documentation": null
+    },
+    "bForcePlayersOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "nIconSet": {
+      "type": null,
+      "documentation": null
+    },
+    "m_SkinType": {
+      "type": null,
+      "documentation": null
+    },
+    "m_TextAlign": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

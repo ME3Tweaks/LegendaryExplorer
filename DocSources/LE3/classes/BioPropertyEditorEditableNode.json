@@ -1,0 +1,41 @@
+{
+  "parent": "BioPropertyEditorPropertyNode",
+  "package": "SFXGame",
+  "variables": {
+    "prop": {
+      "type": "Property",
+      "documentation": null
+    },
+    "m_arrayProperty": {
+      "type": "Property",
+      "documentation": null
+    },
+    "integerVal": {
+      "type": "int",
+      "documentation": null
+    },
+    "floatVal": {
+      "type": "float",
+      "documentation": null
+    },
+    "StepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "boolVal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "alreadyEdited": {
+      "type": "bool",
+      "documentation": null
+    },
+    "byteVal": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

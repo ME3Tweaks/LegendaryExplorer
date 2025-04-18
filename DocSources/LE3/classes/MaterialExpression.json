@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "MaterialExpressionEditorX": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaterialExpressionEditorY": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

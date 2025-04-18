@@ -1,0 +1,122 @@
+{
+  "parent": "SFXModule_DamageBase",
+  "package": "SFXGame",
+  "variables": {
+    "MaxHealth": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "CurrentHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "NormalizedHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "LevelScaledHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "TOTAL_HEALTH_STEPS": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastHealthPct": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReplicatedHealth": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCurrentHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentHealth()"
+    },
+    "GetHealthRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetHealthRatio()"
+    },
+    "GetMaxHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxHealth()"
+    },
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "GetMaxHealthStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ScaledFloat",
+      "signature": "ScaledFloat GetMaxHealthStats()"
+    },
+    "InitializeMaxHealth": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeMaxHealth(float Value)"
+    },
+    "ReplicateCurrentHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicateCurrentHealth()"
+    },
+    "SetCurrentHealth": {
+      "documentation": null,
+      "signature_members": {
+        "NewHealth": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecomputeHealthSegment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentHealth(float NewHealth, optional bool bRecomputeHealthSegment)"
+    },
+    "SetMaxHealth": {
+      "documentation": null,
+      "signature_members": {
+        "NewMaxHealth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxHealth(ScaledFloat NewMaxHealth)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "HSC_Kismet": {
+      "value": 0,
+      "documentation": null
+    },
+    "HSC_Conversation": {
+      "value": 1,
+      "documentation": null
+    },
+    "HSC_Cinematic": {
+      "value": 2,
+      "documentation": null
+    },
+    "HSC_UserOptions_Default": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

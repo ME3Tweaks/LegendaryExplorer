@@ -1,0 +1,57 @@
+{
+  "parent": "SeqCond_SwitchBase",
+  "package": "Engine",
+  "variables": {
+    "SupportedValues": {
+      "type": "SwitchObjectCase",
+      "documentation": null
+    },
+    "MetaClass": {
+      "type": "Class",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "InsertValueEntry": {
+      "documentation": null,
+      "signature_members": {
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InsertValueEntry(int InsertIndex)"
+    },
+    "IsFallThruEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "ValueIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFallThruEnabled(int ValueIndex)"
+    },
+    "RemoveValueEntry": {
+      "documentation": null,
+      "signature_members": {
+        "RemoveIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveValueEntry(int RemoveIndex)"
+    },
+    "VerifyDefaultCaseValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerifyDefaultCaseValue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

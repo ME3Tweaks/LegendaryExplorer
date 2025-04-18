@@ -1,0 +1,1205 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_LastEventSent": {
+      "type": "Double",
+      "documentation": null
+    },
+    "NoString": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sRunMessage": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCurrentTest": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCurrentTestCasePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_UserName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_remoteScreenshotPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_remoteSavegamePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sCampaignName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_serverIP": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_FormattedMapName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_LevelName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_TriggerDesignName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_TriggerDesignStateName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_TriggerArtInChunkName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_PlayerWeapon": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_PlayerClass": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sLogString": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_MPEventEmailAddress": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_MPEventSubjectLine": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_QueuedEventsBuffer": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_PlayerLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_PlayerLocationLastInfo": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_sessionID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_sessionStatus": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_gameID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_runID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_runStatus": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentTestPlanID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_Interface": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_enabled": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_KeepAlive": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_port": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_LogStringUsage": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_GameMode": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_online": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_LastPacketTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_testFlags": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_LogLineCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_AnnounceRetryCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_CampaignRetryCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_MultiplayerStartIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_EventDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_QueuedEventsBufferIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_NumQueuedEvents": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_MaxQueuedEvents": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_MaxQueuedMessageLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bSendTPMPackets": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_PlayerInCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_PlayerIsFiring": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_PlayerIsGhosting": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "EventEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EventEnabled(int nEventID)"
+    },
+    "GetFlag": {
+      "documentation": null,
+      "signature_members": {
+        "nFlag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFlag(int nFlag)"
+    },
+    "GetGameID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetGameID()"
+    },
+    "GetGameMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetGameMode()"
+    },
+    "GetLogger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioRemoteLogger",
+      "signature": "BioRemoteLogger GetLogger()"
+    },
+    "GetRemoteSavegamePath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetRemoteSavegamePath()"
+    },
+    "GetRunID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRunID()"
+    },
+    "GetSessionBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSessionBuild()"
+    },
+    "GetSessionID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSessionID()"
+    },
+    "GetSessionStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSessionStatus()"
+    },
+    "GetTPMLoggingEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTPMLoggingEnabled()"
+    },
+    "SendAreaEnteredEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendAreaEnteredEvent()"
+    },
+    "SendAssertEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLineNumber": {
+          "type": null,
+          "documentation": null
+        },
+        "sAssertFileName": {
+          "type": null,
+          "documentation": null
+        },
+        "sAssertMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendAssertEvent(int nLineNumber, string sAssertFileName, string sAssertMessage)"
+    },
+    "SendBugReport": {
+      "documentation": null,
+      "signature_members": {
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "fOrientation": {
+          "type": null,
+          "documentation": null
+        },
+        "nWeaponType": {
+          "type": null,
+          "documentation": null
+        },
+        "nWeaponMod": {
+          "type": null,
+          "documentation": null
+        },
+        "nArmourType": {
+          "type": null,
+          "documentation": null
+        },
+        "nArmourMod": {
+          "type": null,
+          "documentation": null
+        },
+        "sPartyMember1": {
+          "type": null,
+          "documentation": null
+        },
+        "sPartyMember2": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPercievingEnemy": {
+          "type": null,
+          "documentation": null
+        },
+        "sBugDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "sEmailAddress": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendBugReport(float fX, float fY, float fZ, float fOrientation, int nWeaponType, int nWeaponMod, int nArmourType, int nArmourMod, string sPartyMember1, string sPartyMember2, bool bIsPercievingEnemy, string sBugDescription, string sEmailAddress)"
+    },
+    "SendCustomEvent": {
+      "documentation": null,
+      "signature_members": {
+        "sPacketHandler": {
+          "type": null,
+          "documentation": null
+        },
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "sAreaName": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameObject": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nIntVal1": {
+          "type": null,
+          "documentation": null
+        },
+        "nIntVal2": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "nObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPartyMember": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendCustomEvent(string sPacketHandler, int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, int nIntVal1, int nIntVal2, string sString1, string sString2, int nObjectType, bool bIsPartyMember)"
+    },
+    "SendCustomEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "sPacketHandler": {
+          "type": null,
+          "documentation": null
+        },
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "sAreaName": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameObject": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fData0": {
+          "type": null,
+          "documentation": null
+        },
+        "fData1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "nObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPartyMember": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendCustomEventFloat(string sPacketHandler, int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, float fData0, float fData1, string sString1, string sString2, int nObjectType, bool bIsPartyMember)"
+    },
+    "SendDebugEmail": {
+      "documentation": null,
+      "signature_members": {
+        "sEmailDestination": {
+          "type": null,
+          "documentation": null
+        },
+        "sEmailSubject": {
+          "type": null,
+          "documentation": null
+        },
+        "nExceptionType": {
+          "type": null,
+          "documentation": null
+        },
+        "sEmailBody": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendDebugEmail(string sEmailDestination, string sEmailSubject, int nExceptionType, optional string sEmailBody)"
+    },
+    "SendEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "sAreaName": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameObject": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nIntVal1": {
+          "type": null,
+          "documentation": null
+        },
+        "nIntVal2": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "nObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPartyMember": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendEvent(int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, int nIntVal1, int nIntVal2, string sString1, string sString2, int nObjectType, int bIsPartyMember)"
+    },
+    "SendEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "sAreaName": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameObject": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fData0": {
+          "type": null,
+          "documentation": null
+        },
+        "fData1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "nObjectType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsPartyMember": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendEventFloat(int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, float fData0, float fData1, string sString1, string sString2, int nObjectType, int bIsPartyMember)"
+    },
+    "SendFastResumeLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": null,
+          "documentation": null
+        },
+        "fTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bRunningOffMedia": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendFastResumeLoaded(string LevelName, float fTime, bool bRunningOffMedia)"
+    },
+    "SendFPSTest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendFPSTest()"
+    },
+    "SendHardwareInfoMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendHardwareInfoMessage()"
+    },
+    "SendInvalidPlaythrough": {
+      "documentation": null,
+      "signature_members": {
+        "sCheat": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendInvalidPlaythrough(string sCheat)"
+    },
+    "SendLevelLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": null,
+          "documentation": null
+        },
+        "LevelFrom": {
+          "type": null,
+          "documentation": null
+        },
+        "fTime": {
+          "type": null,
+          "documentation": null
+        },
+        "bRunningOffMedia": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendLevelLoaded(string LevelName, string LevelFrom, float fTime, bool bRunningOffMedia)"
+    },
+    "SendMapEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "sString3": {
+          "type": null,
+          "documentation": null
+        },
+        "sString4": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt1": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt2": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt3": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt4": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMapEvent(int nLogEventID, Vector pos, string sString1, string sString2, string sString3, string sString4, int nInt1, int nInt2, int nInt3, int nInt4)"
+    },
+    "SendMPEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eLogEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameObject": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nIntVal1": {
+          "type": null,
+          "documentation": null
+        },
+        "nIntVal2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMPEvent(eventMPEnumID eLogEvent, float fX, float fY, float fZ, string sNameObject, string sNameTarget, int nIntVal1, int nIntVal2)"
+    },
+    "SendMPEventEmail": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "sEventName": {
+          "type": null,
+          "documentation": null
+        },
+        "sEventInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMPEventEmail(int nEventID, string sEventName, string sEventInfo)"
+    },
+    "SendMPEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "eLogEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "fZ": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameObject": {
+          "type": null,
+          "documentation": null
+        },
+        "sNameTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMPEventFloat(eventMPEnumID eLogEvent, float fX, float fY, float fZ, string sNameObject, string sNameTarget, float fData)"
+    },
+    "SendNewCampaignMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendNewCampaignMessage()"
+    },
+    "SendPlayerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "sString3": {
+          "type": null,
+          "documentation": null
+        },
+        "sString4": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt1": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt2": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt3": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt4": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPlayerEvent(int nLogEventID, string sString1, string sString2, string sString3, string sString4, int nInt1, int nInt2, int nInt3, int nInt4)"
+    },
+    "SendPlayerEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "sString1": {
+          "type": null,
+          "documentation": null
+        },
+        "sString2": {
+          "type": null,
+          "documentation": null
+        },
+        "sString3": {
+          "type": null,
+          "documentation": null
+        },
+        "sString4": {
+          "type": null,
+          "documentation": null
+        },
+        "fData0": {
+          "type": null,
+          "documentation": null
+        },
+        "fData1": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt3": {
+          "type": null,
+          "documentation": null
+        },
+        "nInt4": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPlayerEventFloat(int nLogEventID, string sString1, string sString2, string sString3, string sString4, float fData0, float fData1, int nInt3, int nInt4)"
+    },
+    "SendPurpleLevel": {
+      "documentation": null,
+      "signature_members": {
+        "sObjRefName": {
+          "type": null,
+          "documentation": null
+        },
+        "sObjLeakedName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPurpleLevel(string sObjRefName, string sObjLeakedName)"
+    },
+    "SendQAEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nMessageEventId": {
+          "type": null,
+          "documentation": null
+        },
+        "sType": {
+          "type": null,
+          "documentation": null
+        },
+        "sLogMsg": {
+          "type": null,
+          "documentation": null
+        },
+        "sCurrentMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendQAEvent(int nMessageEventId, string sType, string sLogMsg, string sCurrentMessage)"
+    },
+    "SendStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "sStatisticName": {
+          "type": null,
+          "documentation": null
+        },
+        "sOperationType": {
+          "type": null,
+          "documentation": null
+        },
+        "fData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendStatistic(string sStatisticName, string sOperationType, float fData)"
+    },
+    "SendStringLastUsed": {
+      "documentation": null,
+      "signature_members": {
+        "nStringID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendStringLastUsed(int nStringID)"
+    },
+    "SendStrRefNotFound": {
+      "documentation": null,
+      "signature_members": {
+        "nStrRef": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendStrRefNotFound(int nStrRef)"
+    },
+    "SendTextureMemorySacrificed": {
+      "documentation": null,
+      "signature_members": {
+        "nOldTextureMemoryLimit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTextureMemorySacrificed(int nOldTextureMemoryLimit)"
+    },
+    "SendTPMEvent": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTPMEvent(string sMessage)"
+    },
+    "SendTPMMessage": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTPMMessage(string sMessage)"
+    },
+    "SendUnitTestInfo": {
+      "documentation": null,
+      "signature_members": {
+        "testType": {
+          "type": null,
+          "documentation": null
+        },
+        "className": {
+          "type": null,
+          "documentation": null
+        },
+        "methodName": {
+          "type": null,
+          "documentation": null
+        },
+        "successType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendUnitTestInfo(int testType, string className, string methodName, int successType)"
+    },
+    "SetFlag": {
+      "documentation": null,
+      "signature_members": {
+        "nFlag": {
+          "type": null,
+          "documentation": null
+        },
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFlag(int nFlag, bool bVal)"
+    },
+    "SetGameID": {
+      "documentation": null,
+      "signature_members": {
+        "NewGameID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameID(int NewGameID)"
+    },
+    "SetTPMLoggingEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "enable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTPMLoggingEnabled(bool enable)"
+    },
+    "ShortName": {
+      "documentation": null,
+      "signature_members": {
+        "o": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string ShortName(Object o)"
+    },
+    "SkynetScreenshot": {
+      "documentation": null,
+      "signature_members": {
+        "sScreenshotName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SkynetScreenshot(string sScreenshotName)"
+    },
+    "TAdd": {
+      "documentation": null,
+      "signature_members": {
+        "sTestName": {
+          "type": null,
+          "documentation": null
+        },
+        "sTestCaseString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TAdd(string sTestName, string sTestCaseString)"
+    },
+    "ToggleFlag": {
+      "documentation": null,
+      "signature_members": {
+        "nFlag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleFlag(int nFlag)"
+    },
+    "TPMCheckinTestPlan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TPMCheckinTestPlan()"
+    },
+    "TPMCheckoutTestPlan": {
+      "documentation": null,
+      "signature_members": {
+        "nTestPlanID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TPMCheckoutTestPlan(int nTestPlanID)"
+    },
+    "TRun": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TRun(int nResult)"
+    },
+    "SendVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "SpeakerTag": {
+          "type": null,
+          "documentation": null
+        },
+        "Sound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendVocalizationEvent(Name SpeakerTag, Name Sound)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

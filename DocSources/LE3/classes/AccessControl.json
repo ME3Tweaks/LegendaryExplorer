@@ -1,0 +1,291 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "ACDisplayText": {
+      "type": "string",
+      "documentation": null
+    },
+    "ACDescText": {
+      "type": "string",
+      "documentation": null
+    },
+    "IPPolicies": {
+      "type": "string",
+      "documentation": null
+    },
+    "BannedIDs": {
+      "type": "UniqueNetId",
+      "documentation": null
+    },
+    "IPBanned": {
+      "type": "string",
+      "documentation": null
+    },
+    "WrongPassword": {
+      "type": "string",
+      "documentation": null
+    },
+    "NeedPassword": {
+      "type": "string",
+      "documentation": null
+    },
+    "SessionBanned": {
+      "type": "string",
+      "documentation": null
+    },
+    "KickedMsg": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultKickReason": {
+      "type": "string",
+      "documentation": null
+    },
+    "IdleKickReason": {
+      "type": "string",
+      "documentation": null
+    },
+    "AdminPassword": {
+      "type": "string",
+      "documentation": null
+    },
+    "GamePassword": {
+      "type": "string",
+      "documentation": null
+    },
+    "AdminClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "bDontAddDefaultAdmin": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ForceKickPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "KickReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ForceKickPlayer(PlayerController C, string KickReason)"
+    },
+    "KickPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "KickReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KickPlayer(PlayerController C, string KickReason)"
+    },
+    "PreLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": null,
+          "documentation": null
+        },
+        "Address": {
+          "type": null,
+          "documentation": null
+        },
+        "OutError": {
+          "type": null,
+          "documentation": null
+        },
+        "bSpectator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreLogin(string Options, string Address, out string OutError, bool bSpectator)"
+    },
+    "AdminEntered": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdminEntered(PlayerController P)"
+    },
+    "AdminExited": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdminExited(PlayerController P)"
+    },
+    "AdminLogin": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdminLogin(PlayerController P, string Password)"
+    },
+    "AdminLogout": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdminLogout(PlayerController P)"
+    },
+    "CheckIPPolicy": {
+      "documentation": null,
+      "signature_members": {
+        "Address": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckIPPolicy(string Address)"
+    },
+    "GetControllerFromString": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Controller",
+      "signature": "Controller GetControllerFromString(string Target)"
+    },
+    "IsAdmin": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAdmin(PlayerController P)"
+    },
+    "IsIDBanned": {
+      "documentation": null,
+      "signature_members": {
+        "NetId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsIDBanned(const out UniqueNetId NetId)"
+    },
+    "Kick": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Kick(string Target)"
+    },
+    "KickBan": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KickBan(string Target)"
+    },
+    "ParseAdminOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ParseAdminOptions(string Options)"
+    },
+    "RequiresPassword": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequiresPassword()"
+    },
+    "SetAdminPassword": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAdminPassword(string P)"
+    },
+    "SetGamePassword": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGamePassword(string P)"
+    },
+    "ValidLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Username": {
+          "type": null,
+          "documentation": null
+        },
+        "Password": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidLogin(string Username, string Password)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

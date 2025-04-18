@@ -1,0 +1,29 @@
+{
+  "parent": "PointLightComponent",
+  "package": "Engine",
+  "variables": {
+    "PreviewInnerCone": {
+      "type": "DrawLightConeComponent",
+      "documentation": null
+    },
+    "PreviewOuterCone": {
+      "type": "DrawLightConeComponent",
+      "documentation": null
+    },
+    "InnerConeAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "OuterConeAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightShaftConeAngle": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

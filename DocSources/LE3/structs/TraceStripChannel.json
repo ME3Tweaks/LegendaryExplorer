@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "Keys": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawColor": {
+      "type": null,
+      "documentation": null
+    },
+    "nmButton": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAxis": {
+      "type": null,
+      "documentation": null
+    },
+    "Owner": {
+      "type": null,
+      "documentation": null
+    },
+    "nmProperty": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimnode": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedProperty": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedAnimNode": {
+      "type": null,
+      "documentation": null
+    },
+    "fDynamicMax": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

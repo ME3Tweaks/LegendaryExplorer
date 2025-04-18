@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "RFT_Force": {
+      "value": 0,
+      "documentation": null
+    },
+    "RFT_Impulse": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

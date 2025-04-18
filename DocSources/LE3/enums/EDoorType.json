@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "DOOR_Shoot": {
+      "value": 0,
+      "documentation": null
+    },
+    "DOOR_Touch": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

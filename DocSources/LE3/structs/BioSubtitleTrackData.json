@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "nStrRefID": {
+      "type": null,
+      "documentation": null
+    },
+    "fLength": {
+      "type": null,
+      "documentation": null
+    },
+    "bShowAtTop": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseOnlyAsReplyWheelHint": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

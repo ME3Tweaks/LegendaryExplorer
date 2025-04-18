@@ -1,0 +1,931 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "TeamSelectPawns": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentInventoryWeapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "EntryWeaponNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "WeaponActionMethod": {
+      "type": "string",
+      "documentation": null
+    },
+    "SavedWeaponStates": {
+      "type": "WeaponStatesToKeep",
+      "documentation": null
+    },
+    "AppearancePositions": {
+      "type": "SFXWeaponUIPawnPositioning",
+      "documentation": null
+    },
+    "CurrentLoadoutWeapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "BaseRotationOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "BasePositionOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "InitialRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "InitialPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DataManager": {
+      "type": "SFXWeaponUIDataManager",
+      "documentation": null
+    },
+    "WeaponLoadoutTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ChangeWeaponButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SelectWeaponButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ExitButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ReturnToLoadoutText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ModifyWeaponText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "EmptyModSlotText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LoadingDataText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "EmptySlotText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "EncumbranceText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "EncumbranceTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DiscardWeaponMessageText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDiscardWeaponButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MinimumWeaponCountRequirementMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MinimumWeaponCountRequirementPluralMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MinimumWeaponCountAwknowledgementButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StatsButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DescriptionButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponModTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "InstructionText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "EquipButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentlySelectedLoadoutWeapon": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentlySelectedSelectionWeapon": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentPawnID": {
+      "type": "int",
+      "documentation": null
+    },
+    "WeaponActionText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MinDisplayBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "nMinimumRequiredWeapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShowAllWeapons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AutoEquipWhenDone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "InWeaponSelection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LoadoutLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LaunchOnStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSwitchingHenchmen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentLoadoutWeaponType": {
+      "type": "ELoadoutWeapons",
+      "documentation": null
+    },
+    "EntryWeaponGroup": {
+      "type": "ELoadoutWeapons",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "GetBioPawn": {
+      "documentation": null,
+      "signature_members": {
+        "nPawnID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetBioPawn(int nPawnID)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "ApplyPlayerPawnCustomization": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyPlayerPawnCustomization(Object InData)"
+    },
+    "ApplyWeaponLoadout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyWeaponLoadout()"
+    },
+    "AS_AddWeaponStat": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        },
+        "fBonus": {
+          "type": null,
+          "documentation": null
+        },
+        "fCompare": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_AddWeaponStat(string sName, float fValue, float fBonus, float fCompare)"
+    },
+    "AS_ClearWeaponStatsDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_ClearWeaponStatsDisplay()"
+    },
+    "AS_PerformPlayerWeaponAction": {
+      "documentation": null,
+      "signature_members": {
+        "bAccept": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_PerformPlayerWeaponAction(bool bAccept)"
+    },
+    "AS_ScrollInfoText": {
+      "documentation": null,
+      "signature_members": {
+        "fScroll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ScrollInfoText(float fScroll)"
+    },
+    "AS_SelectWeaponSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SelectWeaponSlot(int nSlotID)"
+    },
+    "AS_SetCurrentNameText": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetCurrentNameText(const string sName)"
+    },
+    "AS_SetInventoryWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sDesc": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "bNew": {
+          "type": null,
+          "documentation": null
+        },
+        "nNum": {
+          "type": null,
+          "documentation": null
+        },
+        "nTotal": {
+          "type": null,
+          "documentation": null
+        },
+        "bFlourish": {
+          "type": null,
+          "documentation": null
+        },
+        "sClassPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetInventoryWeapon(string sName, string sDesc, string sIconResource, bool bNew, int nNum, int nTotal, bool bFlourish, string sClassPath)"
+    },
+    "AS_SetLoading": {
+      "documentation": null,
+      "signature_members": {
+        "bLoading": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetLoading(bool bLoading, string sText)"
+    },
+    "AS_SetModDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplay": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sImgPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetModDisplay(int nDisplay, string sName, string sImgPath)"
+    },
+    "AS_SetSlotNewIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nSlot": {
+          "type": null,
+          "documentation": null
+        },
+        "bHasNew": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetSlotNewIcon(int nSlot, bool bHasNew)"
+    },
+    "AS_SetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetVisible(bool bVisible)"
+    },
+    "AS_SetWeaponAction": {
+      "documentation": null,
+      "signature_members": {
+        "sButtonText": {
+          "type": null,
+          "documentation": null
+        },
+        "sCallbackMethodName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetWeaponAction(string sButtonText, string sCallbackMethodName)"
+    },
+    "AS_SetWeaponInfoDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "sWeaponName": {
+          "type": null,
+          "documentation": null
+        },
+        "sWeaponDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "sCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "sWeaponImage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetWeaponInfoDisplay(string sWeaponName, string sWeaponDescription, string sCategory, string sWeaponImage)"
+    },
+    "AS_SetWeaponSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotID": {
+          "type": null,
+          "documentation": null
+        },
+        "nWeaponID": {
+          "type": null,
+          "documentation": null
+        },
+        "sWeaponIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nWeaponIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nNumOtherWeapons": {
+          "type": null,
+          "documentation": null
+        },
+        "bHaveNewWeapons": {
+          "type": null,
+          "documentation": null
+        },
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "bValid": {
+          "type": null,
+          "documentation": null
+        },
+        "bHasModsAvailable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetWeaponSlot(int nSlotID, int nWeaponID, string sWeaponIconResource, int nWeaponIconIndex, int nNumOtherWeapons, bool bHaveNewWeapons, int nCategory, bool bValid, bool bHasModsAvailable)"
+    },
+    "AS_SetWeightDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "nComparePct": {
+          "type": null,
+          "documentation": null
+        },
+        "sBarLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "sInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetWeightDisplay(int nPercent, int nComparePct, string sBarLabel, string sInfo)"
+    },
+    "AS_TeamSetHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_TeamSetHenchman(int nIndex, const string sName, const string sIconResource)"
+    },
+    "AS_TeamSetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_TeamSetVisible(bool bVisible)"
+    },
+    "BuildWeaponLoadout": {
+      "documentation": null,
+      "signature_members": {
+        "nPawnID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildWeaponLoadout(int nPawnID)"
+    },
+    "CanPawnUseWeaponGroup": {
+      "documentation": null,
+      "signature_members": {
+        "nPawnID": {
+          "type": null,
+          "documentation": null
+        },
+        "eWeaponGroupID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPawnUseWeaponGroup(int nPawnID, ELoadoutWeapons eWeaponGroupID)"
+    },
+    "CheckCanEquipWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckCanEquipWeapon(int nWeapCategory)"
+    },
+    "CheckCanSelectWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckCanSelectWeapon(int nWeapCategory)"
+    },
+    "CleanupUIWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupUIWorld()"
+    },
+    "CountCurrentPawnWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int CountCurrentPawnWeapons()"
+    },
+    "CurrentPawnHasWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CurrentPawnHasWeapon()"
+    },
+    "DisplayCurrentWeaponSelection": {
+      "documentation": null,
+      "signature_members": {
+        "bFlourish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayCurrentWeaponSelection(bool bFlourish)"
+    },
+    "DisplayNoEngineMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayNoEngineMessage()"
+    },
+    "GetCurrentHenchTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetCurrentHenchTag()"
+    },
+    "InitializeTeamSelectOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeTeamSelectOverlay()"
+    },
+    "IsMultiPlayerCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMultiPlayerCharacter()"
+    },
+    "Launch": {
+      "documentation": null,
+      "signature_members": {
+        "bPauseGame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Launch(optional bool bPauseGame)"
+    },
+    "MainMovieLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MainMovieLoaded()"
+    },
+    "MakeLoadoutsActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeLoadoutsActive()"
+    },
+    "OnWeaponUIDataLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponUIDataLoaded()"
+    },
+    "PlayerDiscardWeaponCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        },
+        "nChoiceID": {
+          "type": null,
+          "documentation": null
+        },
+        "bCancelled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerDiscardWeaponCallback(BioSFHandler_MessageBox oMsgBox, int nChoiceID, bool bCancelled)"
+    },
+    "PreLoadData": {
+      "documentation": null,
+      "signature_members": {
+        "doneCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreLoadData(delegate<OnDataLoadedDelegate> doneCallback)"
+    },
+    "PromptPlayerToDiscardMPWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PromptPlayerToDiscardMPWeapon(int nWeapCategory)"
+    },
+    "RefreshLoadoutWeaponDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "eWeaponType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshLoadoutWeaponDisplay(ELoadoutWeapons eWeaponType)"
+    },
+    "RestorePowerBonuses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestorePowerBonuses()"
+    },
+    "SelectNextHenchman": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectNextHenchman()"
+    },
+    "SelectNextWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectNextWeapon()"
+    },
+    "SelectPreviousHenchman": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectPreviousHenchman()"
+    },
+    "SelectPrevWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectPrevWeapon()"
+    },
+    "SetCurrentPawnID": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentPawnID(int nID)"
+    },
+    "SetupUIWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupUIWorld()"
+    },
+    "SetWeaponInfoDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponInfoDisplay(int nWeaponIndex, optional int nCategory)"
+    },
+    "SetWeaponModsDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponModsDisplay(int nWeapIndex)"
+    },
+    "SetWeaponStatsDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponStatsDisplay(int nWeapIndex)"
+    },
+    "ShowMinimumRequiredWeaponsMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowMinimumRequiredWeaponsMessage()"
+    },
+    "SwitchToWeaponLoadout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwitchToWeaponLoadout()"
+    },
+    "SwitchToWeaponSelection": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchToWeaponSelection(int nWeaponType)"
+    },
+    "UndoWeaponSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UndoWeaponSelection()"
+    },
+    "UpdateCurrentLoadoutWeaponDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCurrentLoadoutWeaponDisplay()"
+    },
+    "UpdateHenchmenDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateHenchmenDisplay()"
+    },
+    "UpdateUIWorldPawnPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateUIWorldPawnPosition()"
+    },
+    "UpdateWeaponEncumbranceDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateWeaponEncumbranceDisplay()"
+    },
+    "WeaponLoadoutItemChanged": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        },
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponLoadoutItemChanged(int nID, int nCategory)"
+    },
+    "WeaponSelectionItemChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WeaponSelectionItemChanged()"
+    },
+    "WeaponTypeToSlotIndex": {
+      "documentation": null,
+      "signature_members": {
+        "eWeaponType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int WeaponTypeToSlotIndex(ELoadoutWeapons eWeaponType)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

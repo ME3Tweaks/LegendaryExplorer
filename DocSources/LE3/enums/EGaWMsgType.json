@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "GaWMsgType_Zero": {
+      "value": 0,
+      "documentation": null
+    },
+    "GaWMsgType_PlotEvent": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

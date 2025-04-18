@@ -1,0 +1,63 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "IgnoredPowers": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AffectedParameter": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bApplyToBiotics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyToTech": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyToCombat": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyToWeapons": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "ApplyBonus": {
+      "documentation": null,
+      "signature_members": {
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyBonus(bool bRemove)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "RemoveBonuses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveBonuses()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

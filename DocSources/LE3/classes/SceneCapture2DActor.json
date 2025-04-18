@@ -1,0 +1,13 @@
+{
+  "parent": "SceneCaptureActor",
+  "package": "Engine",
+  "variables": {
+    "DrawFrustum": {
+      "type": "DrawFrustumComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,26 @@
+{
+  "parent": "SFXGUI_Store",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

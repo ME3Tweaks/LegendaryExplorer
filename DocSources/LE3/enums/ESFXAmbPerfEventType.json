@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "AmbPerf_UNSET": {
+      "value": 0,
+      "documentation": null
+    },
+    "AmbPerf_PerformanceStart": {
+      "value": 1,
+      "documentation": null
+    },
+    "AmbPerf_PerformanceEnd": {
+      "value": 2,
+      "documentation": null
+    },
+    "AmbPerf_PoseStart": {
+      "value": 3,
+      "documentation": null
+    },
+    "AmbPerf_PoseEnd": {
+      "value": 4,
+      "documentation": null
+    },
+    "AmbPerf_GestureStart": {
+      "value": 5,
+      "documentation": null
+    },
+    "AmbPerf_GestureEnd": {
+      "value": 6,
+      "documentation": null
+    },
+    "AmbPerf_PoseEnterTransDone": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

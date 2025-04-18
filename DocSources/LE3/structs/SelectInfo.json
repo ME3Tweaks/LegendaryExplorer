@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "MemberTag": {
+      "type": null,
+      "documentation": null
+    },
+    "InfoId": {
+      "type": null,
+      "documentation": null
+    },
+    "Ability1ID": {
+      "type": null,
+      "documentation": null
+    },
+    "Ability2ID": {
+      "type": null,
+      "documentation": null
+    },
+    "Ability3ID": {
+      "type": null,
+      "documentation": null
+    },
+    "Ability4ID": {
+      "type": null,
+      "documentation": null
+    },
+    "Ability5ID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

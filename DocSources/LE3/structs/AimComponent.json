@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "LU": {
+      "type": null,
+      "documentation": null
+    },
+    "LC": {
+      "type": null,
+      "documentation": null
+    },
+    "LD": {
+      "type": null,
+      "documentation": null
+    },
+    "CU": {
+      "type": null,
+      "documentation": null
+    },
+    "CC": {
+      "type": null,
+      "documentation": null
+    },
+    "CD": {
+      "type": null,
+      "documentation": null
+    },
+    "RU": {
+      "type": null,
+      "documentation": null
+    },
+    "RC": {
+      "type": null,
+      "documentation": null
+    },
+    "RD": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

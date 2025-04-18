@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "IKProfile_Rifle": {
+      "value": 0,
+      "documentation": null
+    },
+    "IKProfile_Pistol": {
+      "value": 1,
+      "documentation": null
+    },
+    "IKProfile_SMG": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

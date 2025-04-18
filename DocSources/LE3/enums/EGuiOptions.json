@@ -1,0 +1,321 @@
+{
+  "EnumValues": {
+    "OPTION_NULL": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPTION_Difficulty": {
+      "value": 1,
+      "documentation": null
+    },
+    "OPTION_AutoLvlUp": {
+      "value": 2,
+      "documentation": null
+    },
+    "OPTION_Subtitles": {
+      "value": 3,
+      "documentation": null
+    },
+    "OPTION_SquadPower": {
+      "value": 4,
+      "documentation": null
+    },
+    "OPTION_AutoSave": {
+      "value": 5,
+      "documentation": null
+    },
+    "OPTION_ControlBindings": {
+      "value": 6,
+      "documentation": null
+    },
+    "OPTION_MouseInvert": {
+      "value": 7,
+      "documentation": null
+    },
+    "OPTION_MouseSmooth": {
+      "value": 8,
+      "documentation": null
+    },
+    "OPTION_MouseSensitivity": {
+      "value": 9,
+      "documentation": null
+    },
+    "OPTION_Resolution": {
+      "value": 10,
+      "documentation": null
+    },
+    "OPTION_WindowMode": {
+      "value": 11,
+      "documentation": null
+    },
+    "OPTION_Gamma": {
+      "value": 12,
+      "documentation": null
+    },
+    "OPTION_Bloom": {
+      "value": 13,
+      "documentation": null
+    },
+    "OPTION_DynShadows": {
+      "value": 14,
+      "documentation": null
+    },
+    "OPTION_EnvShadows": {
+      "value": 15,
+      "documentation": null
+    },
+    "OPTION_FilmGrain": {
+      "value": 16,
+      "documentation": null
+    },
+    "OPTION_MusicVolume": {
+      "value": 17,
+      "documentation": null
+    },
+    "OPTION_SFXVolume": {
+      "value": 18,
+      "documentation": null
+    },
+    "OPTION_DlgVolume": {
+      "value": 19,
+      "documentation": null
+    },
+    "OPTION_OnlineTelemetry": {
+      "value": 20,
+      "documentation": null
+    },
+    "OPTION_OnlineAutoLogin": {
+      "value": 21,
+      "documentation": null
+    },
+    "OPTION_ControllerRumble": {
+      "value": 22,
+      "documentation": null
+    },
+    "OPTION_InvertYAxis": {
+      "value": 23,
+      "documentation": null
+    },
+    "OPTION_ControllerSensitivity": {
+      "value": 24,
+      "documentation": null
+    },
+    "OPTION_StickConfig": {
+      "value": 25,
+      "documentation": null
+    },
+    "OPTION_TriggerConfig": {
+      "value": 26,
+      "documentation": null
+    },
+    "OPTION_SwapTriggersShoulders": {
+      "value": 27,
+      "documentation": null
+    },
+    "OPTION_MotionBlur": {
+      "value": 28,
+      "documentation": null
+    },
+    "OPTION_AimAssist": {
+      "value": 29,
+      "documentation": null
+    },
+    "OPTION_HideCinematicHelmet": {
+      "value": 30,
+      "documentation": null
+    },
+    "OPTION_HenchHelmetOption": {
+      "value": 31,
+      "documentation": null
+    },
+    "OPTION_ActionUIHints": {
+      "value": 32,
+      "documentation": null
+    },
+    "OPTION_TextLanguage": {
+      "value": 33,
+      "documentation": null
+    },
+    "OPTION_VOLanguage": {
+      "value": 34,
+      "documentation": null
+    },
+    "OPTION_SpeechLanguage": {
+      "value": 35,
+      "documentation": null
+    },
+    "OPTION_MPAutoLvlUp": {
+      "value": 36,
+      "documentation": null
+    },
+    "OPTION_MPVoiceChatInputDevice": {
+      "value": 37,
+      "documentation": null
+    },
+    "OPTION_MPVoiceChatOutputDevice": {
+      "value": 38,
+      "documentation": null
+    },
+    "OPTION_MPVoiceChatVolume": {
+      "value": 39,
+      "documentation": null
+    },
+    "OPTION_MPVoiceChatMode": {
+      "value": 40,
+      "documentation": null
+    },
+    "OPTION_MPVoiceContinueOnLostFocus": {
+      "value": 41,
+      "documentation": null
+    },
+    "OPTION_AutoReplyMode": {
+      "value": 42,
+      "documentation": null
+    },
+    "OPTION_AudioDynamicRange": {
+      "value": 43,
+      "documentation": null
+    },
+    "OPTION_Hints": {
+      "value": 44,
+      "documentation": null
+    },
+    "OPTION_AntiAliasing": {
+      "value": 45,
+      "documentation": null
+    },
+    "OPTION_VerticalSync": {
+      "value": 46,
+      "documentation": null
+    },
+    "OPTION_HDREnabled": {
+      "value": 47,
+      "documentation": null
+    },
+    "OPTION_HDRBrightness": {
+      "value": 48,
+      "documentation": null
+    },
+    "OPTION_HDRContrast": {
+      "value": 49,
+      "documentation": null
+    },
+    "OPTION_DynamicResolution": {
+      "value": 50,
+      "documentation": null
+    },
+    "OPTION_AmbientOcclusion": {
+      "value": 51,
+      "documentation": null
+    },
+    "OPTION_MonitorSelection": {
+      "value": 52,
+      "documentation": null
+    },
+    "OPTION_CappedFramerate": {
+      "value": 53,
+      "documentation": null
+    },
+    "OPTION_CONTENT_1": {
+      "value": 54,
+      "documentation": null
+    },
+    "OPTION_CONTENT_2": {
+      "value": 55,
+      "documentation": null
+    },
+    "OPTION_CONTENT_3": {
+      "value": 56,
+      "documentation": null
+    },
+    "OPTION_CONTENT_4": {
+      "value": 57,
+      "documentation": null
+    },
+    "OPTION_CONTENT_5": {
+      "value": 58,
+      "documentation": null
+    },
+    "OPTION_CONTENT_6": {
+      "value": 59,
+      "documentation": null
+    },
+    "OPTION_CONTENT_7": {
+      "value": 60,
+      "documentation": null
+    },
+    "OPTION_CONTENT_8": {
+      "value": 61,
+      "documentation": null
+    },
+    "OPTION_CONTENT_9": {
+      "value": 62,
+      "documentation": null
+    },
+    "OPTION_CONTENT_10": {
+      "value": 63,
+      "documentation": null
+    },
+    "OPTION_CONTENT_11": {
+      "value": 64,
+      "documentation": null
+    },
+    "OPTION_CONTENT_12": {
+      "value": 65,
+      "documentation": null
+    },
+    "OPTION_CONTENT_13": {
+      "value": 66,
+      "documentation": null
+    },
+    "OPTION_CONTENT_14": {
+      "value": 67,
+      "documentation": null
+    },
+    "OPTION_CONTENT_15": {
+      "value": 68,
+      "documentation": null
+    },
+    "OPTION_CONTENT_16": {
+      "value": 69,
+      "documentation": null
+    },
+    "OPTION_CONTENT_17": {
+      "value": 70,
+      "documentation": null
+    },
+    "OPTION_CONTENT_18": {
+      "value": 71,
+      "documentation": null
+    },
+    "OPTION_CONTENT_19": {
+      "value": 72,
+      "documentation": null
+    },
+    "OPTION_CONTENT_20": {
+      "value": 73,
+      "documentation": null
+    },
+    "OPTION_CONTENT_21": {
+      "value": 74,
+      "documentation": null
+    },
+    "OPTION_CONTENT_22": {
+      "value": 75,
+      "documentation": null
+    },
+    "OPTION_CONTENT_23": {
+      "value": 76,
+      "documentation": null
+    },
+    "OPTION_CONTENT_24": {
+      "value": 77,
+      "documentation": null
+    },
+    "OPTION_CONTENT_25": {
+      "value": 78,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

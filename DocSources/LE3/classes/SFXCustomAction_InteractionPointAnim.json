@@ -1,0 +1,81 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "InteractionPoint": {
+      "type": "SFXNav_InteractionPoint",
+      "documentation": null
+    },
+    "TemporaryAnim": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "UnawareVisionCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnawareAlertness": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUnawareAI": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReachedPrecisePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedPrecisePosition()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "CanOverrideMoveWith": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideMoveWith(int OldCustomAction, int NewCustomAction)"
+    },
+    "StartInteractionAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteractionAnim()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "TriggerEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerEnd()"
+    },
+    "TriggerStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerStart()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "FLI_FireLink": {
+      "value": 0,
+      "documentation": null
+    },
+    "FLI_RejectedFireLink": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

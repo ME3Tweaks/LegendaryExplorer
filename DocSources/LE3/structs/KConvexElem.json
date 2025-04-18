@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "VertexData": {
+      "type": null,
+      "documentation": null
+    },
+    "PermutedVertexData": {
+      "type": null,
+      "documentation": null
+    },
+    "FaceTriData": {
+      "type": null,
+      "documentation": null
+    },
+    "EdgeDirections": {
+      "type": null,
+      "documentation": null
+    },
+    "FaceNormalDirections": {
+      "type": null,
+      "documentation": null
+    },
+    "FacePlaneData": {
+      "type": null,
+      "documentation": null
+    },
+    "ElemBox": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

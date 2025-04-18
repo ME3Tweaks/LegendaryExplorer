@@ -1,0 +1,89 @@
+{
+  "parent": "SFXOnlineJobGaWHTTPRequest",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnGetRatingsComplete__Delegate": {
+      "type": "OnGetRatingsComplete",
+      "documentation": null
+    },
+    "MaxSecurityRating": {
+      "type": "int",
+      "documentation": null
+    },
+    "getWarAssets": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGaWGetRatingsJob": {
+      "documentation": null,
+      "signature_members": {
+        "includeWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPGetRatings",
+      "signature": "SFXOnlineJobGaWHTTPGetRatings CreateGaWGetRatingsJob(bool includeWarAssets, delegate<OnGetRatingsComplete> RequestCompleteDelegate)"
+    },
+    "HandleSecondHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSecondHTTPResult()"
+    },
+    "JobFailedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobFailedHandler(OnlineJobErrorCode errorCode)"
+    },
+    "OnGetRatingsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGetRatingsComplete(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "QueueSecondHTTPRequest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QueueSecondHTTPRequest()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

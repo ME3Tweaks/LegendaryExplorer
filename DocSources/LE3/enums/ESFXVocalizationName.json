@@ -1,0 +1,65 @@
+{
+  "EnumValues": {
+    "SFXVocalizationCharacter_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Shepard": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Garrus": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Tali": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Legion": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Samara": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Morinth": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Jacob": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Miranda": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Grunt": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Mordin": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Thane": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Jack": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Kasumi": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXVocalizationCharacter_Zaeed": {
+      "value": 14,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

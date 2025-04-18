@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BTP_Top": {
+      "value": 0,
+      "documentation": null
+    },
+    "BTP_Bottom": {
+      "value": 1,
+      "documentation": null
+    },
+    "BTP_MessageBox": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

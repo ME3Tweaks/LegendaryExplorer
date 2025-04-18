@@ -1,0 +1,13 @@
+{
+  "parent": "InterpTrackFloatBase",
+  "package": "Engine",
+  "variables": {
+    "bPersistFade": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,96 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_lSelectionsInRange": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oCurrentSelectionTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_oLastSelectionTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "SelectionFlareComp": {
+      "type": "LensFlareComponent",
+      "documentation": null
+    },
+    "TargetSelectionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionMaxRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionFarRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionFarAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionCloseRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectionCloseAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxHighlightRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bCurrentSelectionIsCombatTarget": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindCurrentSelectionTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FindCurrentSelectionTarget()"
+    },
+    "IsSelectable": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSelectable(Actor oTarget)"
+    },
+    "SetSelectionIconMaterialParam": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSelectionIconMaterialParam(Name Param, int Value)"
+    },
+    "UpdateSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSelection()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

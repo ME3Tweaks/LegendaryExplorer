@@ -1,0 +1,33 @@
+{
+  "parent": "Component",
+  "package": "Core",
+  "variables": {
+    "VfTable_FCurveEdInterface": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bCanBeBaked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsDirty": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetFloatValue": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatValue(optional float F)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

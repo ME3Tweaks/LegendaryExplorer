@@ -1,0 +1,21 @@
+{
+  "parent": "BioAnimNodeBlendMultiAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "m_nBlinkState": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fCachedRegularBlinkWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBlinkBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

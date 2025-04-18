@@ -1,0 +1,47 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnJobComplete__Delegate": {
+      "type": "OnJobComplete",
+      "documentation": null
+    },
+    "mRequest": {
+      "type": "SFXOnlineHTTPRequest",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateHTTPRequestJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineJobHTTPRequest",
+      "signature": "SFXOnlineJobHTTPRequest CreateHTTPRequestJob()"
+    },
+    "OnJobComplete": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJobComplete(SFXOnlineHTTPRequest request)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Tick()"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

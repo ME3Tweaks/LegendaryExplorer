@@ -1,0 +1,516 @@
+{
+  "parent": "SFXPawn",
+  "package": "SFXGame",
+  "variables": {
+    "PowerUnlockRequirements": {
+      "type": "PowerUnlockRequirement",
+      "documentation": null
+    },
+    "SquadScreenPowerOrder": {
+      "type": "Class",
+      "documentation": null
+    },
+    "StartingPowerRanks": {
+      "type": "PowerStartingRank",
+      "documentation": null
+    },
+    "AutoLevelUpInfo": {
+      "type": "PowerAutoLevelUp",
+      "documentation": null
+    },
+    "UIWorldArchetype": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Reviver": {
+      "type": "SFXPawn",
+      "documentation": null
+    },
+    "CharacterLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "fTimeToRevive": {
+      "type": "float",
+      "documentation": null
+    },
+    "fPostResInvulnerability": {
+      "type": "float",
+      "documentation": null
+    },
+    "fReviveRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHelmetHidesHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHelmetHidesHair": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHelmetAffectsVO": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHelmetIsFull": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBeingRevived": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecentlyResurrected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDamagedHarvester": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ForcedHelmetState": {
+      "type": "EHelmetState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Resurrect": {
+      "documentation": null,
+      "signature_members": {
+        "PercentOfHealthRegained": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsInstantaneous": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Resurrect(float PercentOfHealthRegained, bool bIsInstantaneous)"
+    },
+    "SetRTPCHelmetIsEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "WwiseComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRTPCHelmetIsEnabled(WwiseAudioComponent WwiseComponent)"
+    },
+    "GetPowerResistance": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EPowerResistance",
+      "signature": "EPowerResistance GetPowerResistance(Pawn Caster, Vector HitLocation, Vector HitNormal, out float Damage, out Vector Force, Class<DamageType> DamageType, out Actor TargetOverride)"
+    },
+    "InGodMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InGodMode()"
+    },
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCalc": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyDamage(out float Damage, Vector Momentum, out DamageCalculationAlgorithm DamageCalc, const out TraceHitInfo HitInfo, Vector HitLocation, Class<SFXDamageType> DamageType, Controller instigatedBy, Actor DamageCauser)"
+    },
+    "ApplyAppropriateModsIfNoneExist": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousWeaponNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyAppropriateModsIfNoneExist(array<Name> PreviousWeaponNames)"
+    },
+    "AttachHelmet": {
+      "documentation": null,
+      "signature_members": {
+        "bAttachHelmet": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdateComponents": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachHelmet(bool bAttachHelmet, optional bool bUpdateComponents)"
+    },
+    "AttemptKillingBlow": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttemptKillingBlow(Pawn Killer)"
+    },
+    "CollapseWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollapseWeapon()"
+    },
+    "EnableUsage": {
+      "documentation": null,
+      "signature_members": {
+        "enable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableUsage(bool enable)"
+    },
+    "ExpandWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExpandWeapon()"
+    },
+    "FadeOutDrawAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutDrawAnim()"
+    },
+    "FadeOutHolsterAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutHolsterAnim()"
+    },
+    "ForceSquadHelmet": {
+      "documentation": null,
+      "signature_members": {
+        "InController": {
+          "type": null,
+          "documentation": null
+        },
+        "InState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceSquadHelmet(EHelmetStateController InController, EHelmetState InState)"
+    },
+    "GetCurrentHelmetState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EHelmetState",
+      "signature": "EHelmetState GetCurrentHelmetState()"
+    },
+    "GetPlayerCountdownMovie": {
+      "documentation": null,
+      "signature_members": {
+        "BioPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUI_PlayerCountdown",
+      "signature": "SFXGUI_PlayerCountdown GetPlayerCountdownMovie(BioPlayerController BioPC)"
+    },
+    "GetUIAppearanceTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetUIAppearanceTag()"
+    },
+    "InitDefaultHelmetState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitDefaultHelmetState()"
+    },
+    "InstancePrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InstancePrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "IsReadyForExecution": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsReadyForExecution(SFXPawn Killer)"
+    },
+    "PlayerRevivedMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerRevivedMessage()"
+    },
+    "RestoreDefaultHelmetState": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RestoreDefaultHelmetState(optional bool bForceUpdate)"
+    },
+    "ResurrectionTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResurrectionTimer()"
+    },
+    "SetExecutioner": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExecutioner(Pawn Killer)"
+    },
+    "SetPowerStartingRanks": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPowerStartingRanks()"
+    },
+    "SetupWeaponAnimations": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "OldWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bDrawOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupWeaponAnimations(SFXWeapon NewWeapon, SFXWeapon OldWeapon, optional bool bDrawOnly)"
+    },
+    "ShieldsDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShieldsDown()"
+    },
+    "ShieldsUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShieldsUp()"
+    },
+    "ShouldShowHelmet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowHelmet()"
+    },
+    "StartRevive": {
+      "documentation": null,
+      "signature_members": {
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartRevive(SFXPawn_PlayerParty TargetPawn)"
+    },
+    "SwapDrawAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwapDrawAnim()"
+    },
+    "SwapHolsterAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwapHolsterAnim()"
+    },
+    "TransferModsToNewWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousWeaponNames": {
+          "type": null,
+          "documentation": null
+        },
+        "NewWeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransferModsToNewWeapon(array<Name> PreviousWeaponNames, Name NewWeaponClass)"
+    },
+    "UpdateReviveHud": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccess": {
+          "type": null,
+          "documentation": null
+        },
+        "bReviverPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateReviveHud(bool bSuccess, bool bReviverPawn)"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Used(Actor User)"
+    }
+  },
+  "states": {
+    "InRagdoll": {
+      "functions": {
+        "ShouldDieOnRagdoll": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Downed": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

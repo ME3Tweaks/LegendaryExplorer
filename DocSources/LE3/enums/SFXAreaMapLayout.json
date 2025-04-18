@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "AM_CitDock": {
+      "value": 0,
+      "documentation": null
+    },
+    "AM_CitEmb": {
+      "value": 1,
+      "documentation": null
+    },
+    "AM_CitHosp": {
+      "value": 2,
+      "documentation": null
+    },
+    "AM_CitPurg": {
+      "value": 3,
+      "documentation": null
+    },
+    "AM_CitCommons": {
+      "value": 4,
+      "documentation": null
+    },
+    "AM_CitCamp": {
+      "value": 5,
+      "documentation": null
+    },
+    "AM_Biop_nor_1": {
+      "value": 6,
+      "documentation": null
+    },
+    "AM_Biop_nor_2": {
+      "value": 7,
+      "documentation": null
+    },
+    "AM_Biop_nor_3": {
+      "value": 8,
+      "documentation": null
+    },
+    "AM_Biop_nor_4": {
+      "value": 9,
+      "documentation": null
+    },
+    "AM_Biop_nor_5": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,925 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "ChosenStoreItem": {
+      "type": "StoreItemData",
+      "documentation": null
+    },
+    "StoreItems": {
+      "type": "StoreItemData",
+      "documentation": null
+    },
+    "UnsortedMPItems_Weapons": {
+      "type": "StoreItemData",
+      "documentation": null
+    },
+    "UnsortedMPItems_Mods": {
+      "type": "StoreItemData",
+      "documentation": null
+    },
+    "m_sResourceCostColorHTML_CanAfford": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sResourceCostColorHTML_CantAfford": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_DefaultStoreHeaderImageRef": {
+      "type": "string",
+      "documentation": null
+    },
+    "ModStringsArray": {
+      "type": "ModStrings",
+      "documentation": null
+    },
+    "CompStats": {
+      "type": "ComparisonStat",
+      "documentation": null
+    },
+    "GlobalStoreDiscounts": {
+      "type": "GlobalStoreDiscount",
+      "documentation": null
+    },
+    "WeaponUpgradeCosts": {
+      "type": "int",
+      "documentation": null
+    },
+    "RespecCosts": {
+      "type": "int",
+      "documentation": null
+    },
+    "Achievement_UniqueArmorPlotIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "Customer": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "StoreGUIData": {
+      "type": "SFXGUIData_Store",
+      "documentation": null
+    },
+    "NestedStoreGUIData": {
+      "type": "SFXGUIData_Store",
+      "documentation": null
+    },
+    "ConfirmationMessageBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "WeaponDataManager": {
+      "type": "SFXWeaponUIDataManager",
+      "documentation": null
+    },
+    "nPurchaseIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "srPurchaseConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPurchaseCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srPurchaseConfirmMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMoreInformation": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srBack": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewFlag": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceTextCredits": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceCostFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srResourceAvailFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nInfoScrollSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "DisplayCap_Mods": {
+      "type": "int",
+      "documentation": null
+    },
+    "DisplayCap_Weapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "ModPriorityModifier": {
+      "type": "int",
+      "documentation": null
+    },
+    "NewGamePlusID": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxWeaponLevel_Normal": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxWeaponLevel_NGP": {
+      "type": "int",
+      "documentation": null
+    },
+    "WeaponLevelIncrease_Normal": {
+      "type": "int",
+      "documentation": null
+    },
+    "WeaponLevelIncrease_NGP": {
+      "type": "int",
+      "documentation": null
+    },
+    "ArmorEffectDescriptionFormatter": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bAllItemsUnlocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAborted": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFlashLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUIIsInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bStopScroll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMessageBoxActivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bResetTalents": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInNestedStore": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ASAddChoiceEntry": {
+      "documentation": null,
+      "signature_members": {
+        "p_index": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceName": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceImageTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceOptionalPanelItemValue": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceColor": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceResource": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ActionText": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "p_DefaultSelection": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Disabled": {
+          "type": null,
+          "documentation": null
+        },
+        "p_DisplayType": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Comp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddChoiceEntry(int p_index, string p_ChoiceName, string p_ChoiceTitle, string p_ChoiceImageTitle, string p_ChoiceDescription, string p_ChoiceOptionalPanelItemValue, int p_ChoiceColor, int p_ChoiceResource, string p_ActionText, string p_ImagePath, bool p_DefaultSelection, bool p_Disabled, EChoiceDisplayType p_DisplayType, string p_Stat1Name, int p_Stat1Base, int p_Stat1Bonus, int p_Stat1Comp, string p_Stat2Name, int p_Stat2Base, int p_Stat2Bonus, int p_Stat2Comp, string p_Stat3Name, int p_Stat3Base, int p_Stat3Bonus, int p_Stat3Comp, string p_Stat4Name, int p_Stat4Base, int p_Stat4Bonus, int p_Stat4Comp, string p_Stat5Name, int p_Stat5Base, int p_Stat5Bonus, int p_Stat5Comp)"
+    },
+    "ASRefreshChoiceEntry": {
+      "documentation": null,
+      "signature_members": {
+        "p_index": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceName": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceImageTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceOptionalPanelItemValue": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceColor": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ChoiceResource": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ActionText": {
+          "type": null,
+          "documentation": null
+        },
+        "p_ImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "p_DefaultSelection": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Disabled": {
+          "type": null,
+          "documentation": null
+        },
+        "p_DisplayType": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat1Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat2Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat3Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat4Comp": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Name": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Base": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "p_Stat5Comp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRefreshChoiceEntry(int p_index, string p_ChoiceName, string p_ChoiceTitle, string p_ChoiceImageTitle, string p_ChoiceDescription, string p_ChoiceOptionalPanelItemValue, int p_ChoiceColor, int p_ChoiceResource, string p_ActionText, string p_ImagePath, bool p_DefaultSelection, bool p_Disabled, EChoiceDisplayType p_DisplayType, string p_Stat1Name, int p_Stat1Base, int p_Stat1Bonus, int p_Stat1Comp, string p_Stat2Name, int p_Stat2Base, int p_Stat2Bonus, int p_Stat2Comp, string p_Stat3Name, int p_Stat3Base, int p_Stat3Bonus, int p_Stat3Comp, string p_Stat4Name, int p_Stat4Base, int p_Stat4Bonus, int p_Stat4Comp, string p_Stat5Name, int p_Stat5Base, int p_Stat5Bonus, int p_Stat5Comp)"
+    },
+    "ASSetInitialListSize": {
+      "documentation": null,
+      "signature_members": {
+        "p_numItems": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetInitialListSize(int p_numItems)"
+    },
+    "ASSetPlatformLayout": {
+      "documentation": null,
+      "signature_members": {
+        "iPlatformId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetPlatformLayout(int iPlatformId)"
+    },
+    "ASSetSelectionIndex": {
+      "documentation": null,
+      "signature_members": {
+        "p_index": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetSelectionIndex(int p_index)"
+    },
+    "ASSetTitles": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sAText": {
+          "type": null,
+          "documentation": null
+        },
+        "sBText": {
+          "type": null,
+          "documentation": null
+        },
+        "sYText": {
+          "type": null,
+          "documentation": null
+        },
+        "nCreditsAvailable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTitles(string sTitle, string sSubtitle, string sAText, string sBText, string sYText, int nCreditsAvailable)"
+    },
+    "GetBButtonText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetBButtonText()"
+    },
+    "GetResourceCount": {
+      "documentation": null,
+      "signature_members": {
+        "nResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResourceCount(int nResource)"
+    },
+    "GetResourceText": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetResourceText(EInventoryResourceTypes eResource)"
+    },
+    "GetWeaponDataStats": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassPath": {
+          "type": null,
+          "documentation": null
+        },
+        "lstDisplayStats": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetWeaponDataStats(Name WeaponClassPath, out array<ComparisonStat> lstDisplayStats)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "InitialStoreChoiceGUIData": {
+          "type": null,
+          "documentation": null
+        },
+        "StoreName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(SFXGUIData_Store InitialStoreChoiceGUIData, Name StoreName, BioPawn PlayerPawn)"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "PrepareStorefront": {
+      "documentation": null,
+      "signature_members": {
+        "bInitFromScratch": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepareStorefront(optional bool bInitFromScratch)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AddBonusPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBonusPower(Class<SFXPowerCustomAction> PowerClass)"
+    },
+    "ASInitializationFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASInitializationFinished()"
+    },
+    "ASScrollInfoText": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASScrollInfoText(float fValue)"
+    },
+    "ASStopInfoScroll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASStopInfoScroll()"
+    },
+    "ConfirmationMessageBoxInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmationMessageBoxInputPressed(bool bAPressed, int nContext)"
+    },
+    "DiscoverStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DiscoverStore()"
+    },
+    "ExBuy": {
+      "documentation": null,
+      "signature_members": {
+        "nListIndexSelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExBuy(int nListIndexSelected)"
+    },
+    "ExExitStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExExitStore()"
+    },
+    "ExPostLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPostLoad()"
+    },
+    "FindPowerClass": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClassString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXPowerCustomAction> FindPowerClass(string PowerClassString)"
+    },
+    "FinishStorePreparation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishStorePreparation()"
+    },
+    "FlagNewItems": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlagNewItems()"
+    },
+    "FloatToString": {
+      "documentation": null,
+      "signature_members": {
+        "Number": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string FloatToString(float Number)"
+    },
+    "GetCalculatedItemCost": {
+      "documentation": null,
+      "signature_members": {
+        "BaseCost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetCalculatedItemCost(int BaseCost)"
+    },
+    "GetItemDisplayVariable": {
+      "documentation": null,
+      "signature_members": {
+        "ItemData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetItemDisplayVariable(StoreItemData ItemData)"
+    },
+    "GetStoreHeaderImageRef": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStoreHeaderImageRef()"
+    },
+    "GetStoreItemImage": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Texture2D",
+      "signature": "Texture2D GetStoreItemImage(string Path)"
+    },
+    "GrantIntelReward": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GrantIntelReward()"
+    },
+    "ItemIsNew": {
+      "documentation": null,
+      "signature_members": {
+        "ItemData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ItemIsNew(StoreItemData ItemData)"
+    },
+    "NestedStockStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NestedStockStore()"
+    },
+    "onScreenClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onScreenClosed()"
+    },
+    "OnWeaponUIDataLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponUIDataLoaded()"
+    },
+    "OutOfStock": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutOfStock()"
+    },
+    "RefreshStoreGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshStoreGUI()"
+    },
+    "ScrollText": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollText(float fValue)"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "ShouldItemBeDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "ItemData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldItemBeDisabled(StoreItemData ItemData)"
+    },
+    "ShowConfirmationMessageBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowConfirmationMessageBox()"
+    },
+    "StockStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StockStore()"
+    },
+    "TalentResetHelper": {
+      "documentation": null,
+      "signature_members": {
+        "PawnName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TalentResetHelper(string PawnName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

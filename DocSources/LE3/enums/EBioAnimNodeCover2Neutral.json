@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeCover2Neutral_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeCover2Neutral_Active": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ResolutionFraction": {
+      "type": null,
+      "documentation": null
+    },
+    "GPUBusyTimeMs": {
+      "type": null,
+      "documentation": null
+    },
+    "GameThreadBusyTimeMs": {
+      "type": null,
+      "documentation": null
+    },
+    "RenderThreadBusyTimeMs": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

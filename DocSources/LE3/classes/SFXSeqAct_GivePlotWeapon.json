@@ -1,0 +1,128 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "srText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAButton": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNoSquadMembers": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ShepardName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSquadListTokens": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bAutoEquip": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowPopup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_Skin": {
+      "type": "SFX_MB_Skin",
+      "documentation": null
+    },
+    "m_TextAlign": {
+      "type": "SFX_MB_TextAlign",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "DisplayMessageBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayMessageBox()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "BuildSquadMemberList": {
+      "documentation": null,
+      "signature_members": {
+        "WClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string BuildSquadMemberList(Class<SFXWeapon> WClass)"
+    },
+    "MessageInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressed(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

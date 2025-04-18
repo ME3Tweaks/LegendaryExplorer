@@ -1,0 +1,169 @@
+{
+  "parent": "LightEnvironmentComponent",
+  "package": "Engine",
+  "variables": {
+    "OverriddenLightComponents": {
+      "type": "LightComponent",
+      "documentation": null
+    },
+    "State": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "OverriddenBounds": {
+      "type": "BoxSphereBounds",
+      "documentation": null
+    },
+    "AmbientShadowColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "AmbientGlow": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "MaxModulatedShadowColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "AmbientShadowSourceDirection": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "InvisibleUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinTimeBetweenFullUpdates": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShadowInterpolationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumVolumeVisibilitySamples": {
+      "type": "int",
+      "documentation": null
+    },
+    "LightDesaturation": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShadowDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ModShadowFadeoutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ModShadowFadeoutExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "DominantShadowTransitionStartDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DominantShadowTransitionEndDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinShadowResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxShadowResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShadowFadeResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "BouncedLightingFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "BouncedLightingDesaturation": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinShadowAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "OverriddenLightingChannels": {
+      "type": "LightingChannelContainer",
+      "documentation": null
+    },
+    "bCastShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCompositeShadowsFromDynamicLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceCompositeAllLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDynamic": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSynthesizeDirectionalLight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSynthesizeSHLight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceAllowLightEnvSphericalHarmonicLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRequiresNonLatentUpdates": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTraceFromClosestBoundsPoint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsCharacterLightEnvironment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideOwnerLightingChannels": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShadowBouncedLight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ShadowFilterQuality": {
+      "type": "EShadowFilterQuality",
+      "documentation": null
+    },
+    "LightShadowMode": {
+      "type": "ELightShadowMode",
+      "documentation": null
+    },
+    "BoundsMethod": {
+      "type": "EDynamicLightEnvironmentBoundsMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

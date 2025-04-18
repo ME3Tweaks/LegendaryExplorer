@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "aPlayer": {
+      "type": null,
+      "documentation": null
+    },
+    "aHench1": {
+      "type": null,
+      "documentation": null
+    },
+    "aHench2": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

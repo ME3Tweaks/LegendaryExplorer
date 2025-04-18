@@ -1,0 +1,26 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "Blur": {
+      "type": "MotionBlurEffect",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

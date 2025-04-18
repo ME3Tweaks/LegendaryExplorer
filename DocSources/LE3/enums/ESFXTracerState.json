@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eSFXTracerState_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eSFXTracerState_ScaleUp": {
+      "value": 1,
+      "documentation": null
+    },
+    "eSFXTracerState_ScaleDown": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

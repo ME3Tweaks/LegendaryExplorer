@@ -1,0 +1,40 @@
+{
+  "parent": "PathNode",
+  "package": "SFXGame",
+  "variables": {
+    "PathBlockingVolume": {
+      "type": "BlockingVolume",
+      "documentation": null
+    },
+    "bRemovedFromInclusionaryList": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "EndPathMove": {
+      "documentation": null,
+      "signature_members": {
+        "Mover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndPathMove(Actor Mover)"
+    },
+    "StartPathMove": {
+      "documentation": null,
+      "signature_members": {
+        "Mover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartPathMove(Actor Mover)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

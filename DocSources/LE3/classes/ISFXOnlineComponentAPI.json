@@ -1,0 +1,27 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "GetCurrentTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentTime()"
+    },
+    "Idle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Idle()"
+    },
+    "ResetLocale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetLocale()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

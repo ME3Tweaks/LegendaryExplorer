@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BIO_SE_ELEMENT_TYPE_INT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_FLOAT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_BOOL": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_FUNCTION": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_LOCAL_INT": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_LOCAL_FLOAT": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_LOCAL_BOOL": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_SUBSTATE": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_SE_ELEMENT_TYPE_CONSEQUENCE": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

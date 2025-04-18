@@ -1,0 +1,69 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "PotentialWaves": {
+      "type": "SFXWave",
+      "documentation": null
+    },
+    "PotentialWavesType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "BioWorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "GeneratePotentialWaveList": {
+      "documentation": null,
+      "signature_members": {
+        "SpecifiedWaveType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GeneratePotentialWaveList(optional Class<SFXWave> SpecifiedWaveType)"
+    },
+    "GetNewWave": {
+      "documentation": null,
+      "signature_members": {
+        "WaveIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "WaveType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWave",
+      "signature": "SFXWave GetNewWave(int WaveIndex, Class<SFXWave> WaveType)"
+    },
+    "GetWaveIndex": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredWaveIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "WaveString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetWaveIndex(optional int DesiredWaveIndex, optional string WaveString)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

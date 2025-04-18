@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "PlayerName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerNum": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerID": {
+      "type": null,
+      "documentation": null
+    },
+    "Ping": {
+      "type": null,
+      "documentation": null
+    },
+    "Score": {
+      "type": null,
+      "documentation": null
+    },
+    "StatsID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

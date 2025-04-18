@@ -1,0 +1,21 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "LoopCountMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "LoopCountMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLoopIndefinitely": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

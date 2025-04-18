@@ -1,0 +1,61 @@
+{
+  "Members": {
+    "StringMessage": {
+      "type": null,
+      "documentation": null
+    },
+    "Message": {
+      "type": null,
+      "documentation": null
+    },
+    "StringFont": {
+      "type": null,
+      "documentation": null
+    },
+    "OptionalObject": {
+      "type": null,
+      "documentation": null
+    },
+    "Switch": {
+      "type": null,
+      "documentation": null
+    },
+    "EndOfLife": {
+      "type": null,
+      "documentation": null
+    },
+    "Lifetime": {
+      "type": null,
+      "documentation": null
+    },
+    "PosY": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawColor": {
+      "type": null,
+      "documentation": null
+    },
+    "FontSize": {
+      "type": null,
+      "documentation": null
+    },
+    "dx": {
+      "type": null,
+      "documentation": null
+    },
+    "DY": {
+      "type": null,
+      "documentation": null
+    },
+    "Count": {
+      "type": null,
+      "documentation": null
+    },
+    "Drawn": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

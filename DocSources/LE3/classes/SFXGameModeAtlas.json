@@ -1,0 +1,115 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "AtlasCam": {
+      "type": "SFXCameraMode_Atlas",
+      "documentation": null
+    },
+    "AtlasTrans": {
+      "type": "SFXCameraTransition_FaceTarget",
+      "documentation": null
+    },
+    "AtlasCamTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InputDelayTightAimExit": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "EnterCommandMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterCommandMenu()"
+    },
+    "EnterPowerWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterPowerWheel()"
+    },
+    "EnterWeaponWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterWeaponWheel()"
+    },
+    "ExitAtlas": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitAtlas()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "TightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TightAim()"
+    },
+    "TryAutoMantle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryAutoMantle()"
+    },
+    "TryHeavyMelee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryHeavyMelee()"
+    },
+    "TryMelee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryMelee()"
+    },
+    "TryReload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryReload()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

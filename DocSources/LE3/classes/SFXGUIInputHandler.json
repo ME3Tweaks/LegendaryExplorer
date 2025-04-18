@@ -1,0 +1,65 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aInputEventCooldowns": {
+      "type": "SFXInputEventCooldownStruct",
+      "documentation": null
+    },
+    "BannedChars": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pEngine": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "MousePositionOverride": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "UDLRInitialCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "UDLRHeldCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "RTT_HitCheckDistance_UU": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_eLastUDLREvent": {
+      "type": "BioGuiEvents",
+      "documentation": null
+    },
+    "m_nLStickX": {
+      "type": "BioThumbstickDir",
+      "documentation": null
+    },
+    "m_nLStickY": {
+      "type": "BioThumbstickDir",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "fTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCooldown(byte nEvent, float fTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Elements": {
+      "type": null,
+      "documentation": null
+    },
+    "AllocationFlags": {
+      "type": null,
+      "documentation": null
+    },
+    "FirstFreeIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "NumFreeIndices": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

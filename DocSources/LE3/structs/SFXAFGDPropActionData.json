@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "nmActionName": {
+      "type": null,
+      "documentation": null
+    },
+    "pPartSys": {
+      "type": null,
+      "documentation": null
+    },
+    "pClientEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeDelay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

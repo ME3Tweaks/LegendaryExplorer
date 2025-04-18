@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "fFocusInnerRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "fFocusDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnable": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

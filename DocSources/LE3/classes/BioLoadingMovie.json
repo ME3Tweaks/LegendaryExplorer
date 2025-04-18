@@ -1,0 +1,37 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MovieName": {
+      "type": "string",
+      "documentation": null
+    },
+    "LoadingMovieWwisePair": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "FadeOutWwiseEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "LoopBackFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinPlayTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

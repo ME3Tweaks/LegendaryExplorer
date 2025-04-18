@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "AI_Range_Melee": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_Range_Short": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_Range_Medium": {
+      "value": 2,
+      "documentation": null
+    },
+    "AI_Range_Long": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,119 @@
+{
+  "parent": "Texture2D",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TimeIntoMovie": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeSinceLastFrame": {
+      "type": "float",
+      "documentation": null
+    },
+    "HorizontalScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "VerticalScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "HorizontalImages": {
+      "type": "int",
+      "documentation": null
+    },
+    "VerticalImages": {
+      "type": "int",
+      "documentation": null
+    },
+    "FrameRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrameTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentRow": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentColumn": {
+      "type": "int",
+      "documentation": null
+    },
+    "RenderOffsetU": {
+      "type": "float",
+      "documentation": null
+    },
+    "RenderOffsetV": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FBMethod": {
+      "type": "TextureFlipBookMethod",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Pause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pause()"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Play()"
+    },
+    "SetCurrentFrame": {
+      "documentation": null,
+      "signature_members": {
+        "Row": {
+          "type": null,
+          "documentation": null
+        },
+        "Col": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentFrame(int Row, int Col)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

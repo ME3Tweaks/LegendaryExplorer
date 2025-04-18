@@ -1,0 +1,341 @@
+{
+  "Members": {
+    "ColorGradingLUT": {
+      "type": null,
+      "documentation": null
+    },
+    "RimShader_Color": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_FocusPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "Scene_HighLights": {
+      "type": null,
+      "documentation": null
+    },
+    "Scene_MidTones": {
+      "type": null,
+      "documentation": null
+    },
+    "Scene_Shadows": {
+      "type": null,
+      "documentation": null
+    },
+    "ColorGrading_LookupTable": {
+      "type": null,
+      "documentation": null
+    },
+    "Bloom_Scale": {
+      "type": null,
+      "documentation": null
+    },
+    "Bloom_Threshold": {
+      "type": null,
+      "documentation": null
+    },
+    "Bloom_Tint": {
+      "type": null,
+      "documentation": null
+    },
+    "Bloom_ScreenBlendThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "Bloom_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_FalloffExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_FStop": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_BlurKernelSize": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_BlurBloomKernelSize": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_MaxNearBlurAmount": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_MaxFarBlurAmount": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_ModulateBlurColor": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_FocusInnerRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_FocusDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "MotionBlur_MaxVelocity": {
+      "type": null,
+      "documentation": null
+    },
+    "MotionBlur_Amount": {
+      "type": null,
+      "documentation": null
+    },
+    "MotionBlur_CameraRotationThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "MotionBlur_CameraTranslationThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "MotionBlur_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "Scene_Desaturation": {
+      "type": null,
+      "documentation": null
+    },
+    "Scene_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "RimShader_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "PP_DesaturationMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "PP_HighlightsMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "PP_MidTonesMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "PP_ShadowsMultiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableBloom": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableDOF": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableMotionBlur": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableSceneEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_AllowAmbientOcclusion": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_OverrideRimShaderColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Bloom_Scale": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Bloom_Threshold": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Bloom_Tint": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Bloom_ScreenBlendThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Bloom_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_FalloffExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_FStop": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_BlurKernelSize": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_BlurBloomKernelSize": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_MaxNearBlurAmount": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_MaxFarBlurAmount": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_ModulateBlurColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_FocusType": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_FocusInnerRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_FocusDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_FocusPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_DOF_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_MotionBlur_MaxVelocity": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_MotionBlur_Amount": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_MotionBlur_FullMotionBlur": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_MotionBlur_CameraRotationThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_MotionBlur_CameraTranslationThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_MotionBlur_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Scene_Desaturation": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Scene_HighLights": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Scene_MidTones": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Scene_Shadows": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_Scene_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_RimShader_Color": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_RimShader_InterpolationDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableBloom": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableDOF": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableMotionBlur": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableSceneEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowAmbientOcclusion": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideRimShaderColor": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableFilmic": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableFilmic": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableVignette": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableVignette": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverride_EnableFilmGrain": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableFilmGrain": {
+      "type": null,
+      "documentation": null
+    },
+    "MotionBlur_FullMotionBlur": {
+      "type": null,
+      "documentation": null
+    },
+    "DOF_FocusType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

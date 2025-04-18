@@ -1,0 +1,97 @@
+{
+  "parent": "SFXCustomAction_InteractionPointAnim",
+  "package": "SFXGame",
+  "variables": {
+    "BS_InteractionStart": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_InteractionLoop": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_InteractionEnd": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "fStartBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStartBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLoopBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLoopBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTriggeredEnd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "InteractionStage": {
+      "type": "EInteractionAnimStage",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "StartInteractionAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartInteractionAnim()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "TriggerEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerEnd()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

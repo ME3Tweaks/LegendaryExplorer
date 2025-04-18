@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "nmStageNode": {
+      "type": null,
+      "documentation": null
+    },
+    "fOrientation": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyOrientation": {
+      "type": null,
+      "documentation": null
+    },
+    "eCurrentStageNode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

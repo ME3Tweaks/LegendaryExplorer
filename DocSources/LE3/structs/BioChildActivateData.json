@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "fFinalWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "fRemainingTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fTotalBlendTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyData": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

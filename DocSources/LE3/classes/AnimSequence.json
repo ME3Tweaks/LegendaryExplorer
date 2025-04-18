@@ -1,0 +1,137 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CompressedByteStream": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Notifies": {
+      "type": "AnimNotifyEvent",
+      "documentation": null
+    },
+    "MetaData": {
+      "type": "AnimMetaData",
+      "documentation": null
+    },
+    "TranslationData": {
+      "type": "TranslationTrack",
+      "documentation": null
+    },
+    "RotationData": {
+      "type": "RotationTrack",
+      "documentation": null
+    },
+    "CurveData": {
+      "type": "CurveTrack",
+      "documentation": null
+    },
+    "CompressedTrackOffsets": {
+      "type": "int",
+      "documentation": null
+    },
+    "AdditiveBasePose": {
+      "type": "RawAnimSequenceTrack",
+      "documentation": null
+    },
+    "TranslationCodec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "RotationCodec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "SequenceName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pBioAnimSetData": {
+      "type": "BioAnimSetData",
+      "documentation": null
+    },
+    "SequenceLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumFrames": {
+      "type": "int",
+      "documentation": null
+    },
+    "RateScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "LargestTrackStreamSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "EncodingPkgVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "UseScore": {
+      "type": "float",
+      "documentation": null
+    },
+    "bNoLoopingInterpolation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRawAnimationBulkDataCached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRawAnimationDirty": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsAdditive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasBeenUsed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasWeightIgnoreNotifies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TranslationCompressionFormat": {
+      "type": "AnimationCompressionFormat",
+      "documentation": null
+    },
+    "RotationCompressionFormat": {
+      "type": "AnimationCompressionFormat",
+      "documentation": null
+    },
+    "KeyEncodingFormat": {
+      "type": "AnimationKeyFormat",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetNotifyTimeByClass": {
+      "documentation": null,
+      "signature_members": {
+        "NotifyClass": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayRate": {
+          "type": null,
+          "documentation": null
+        },
+        "StartPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetNotifyTimeByClass(Class<AnimNotify> NotifyClass, optional float PlayRate, optional float StartPosition)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

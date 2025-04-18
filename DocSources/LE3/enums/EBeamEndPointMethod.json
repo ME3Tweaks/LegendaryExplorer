@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PEBEPM_Calculated": {
+      "value": 0,
+      "documentation": null
+    },
+    "PEBEPM_Distribution": {
+      "value": 1,
+      "documentation": null
+    },
+    "PEBEPM_Distribution_Constant": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

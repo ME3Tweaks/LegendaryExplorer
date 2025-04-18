@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "bCollideActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreEncroachers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CollisionType": {
+      "type": "ECollisionType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

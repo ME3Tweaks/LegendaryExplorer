@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "srName": {
+      "type": null,
+      "documentation": null
+    },
+    "nIconIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "nConditional": {
+      "type": null,
+      "documentation": null
+    },
+    "nState": {
+      "type": null,
+      "documentation": null
+    },
+    "nTargetItems": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,86 @@
+{
+  "parent": "SFXGameActorInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapFoundWeapons": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_mapUsedMeshProps": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_bBelongsToConversation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddWeaponData": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pWep": {
+          "type": null,
+          "documentation": null
+        },
+        "bSpawned": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWeaponData(Class<Object> cWeapon, Object pWep, bool bSpawned, bool bCurrentlyEquipped)"
+    },
+    "FindWeaponData": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "nSpawned": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object FindWeaponData(Class<Object> cWeapon, out int nSpawned, bool bCurrentlyEquipped)"
+    },
+    "GetWeaponName": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetWeaponName(Object pWeaponIn)"
+    },
+    "RemoveWeaponData": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveWeaponData(Class<Object> cWeapon)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

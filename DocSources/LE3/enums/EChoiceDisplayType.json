@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EChoiceDisplayType_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "EChoiceDisplayType_Nested": {
+      "value": 1,
+      "documentation": null
+    },
+    "EChoiceDisplayType_Special": {
+      "value": 2,
+      "documentation": null
+    },
+    "EChoiceDisplayType_None": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "TargetObject": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "CallbackFlags": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

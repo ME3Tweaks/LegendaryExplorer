@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "CP_Start": {
+      "value": 0,
+      "documentation": null
+    },
+    "CP_End": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

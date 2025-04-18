@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "ImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayTime": {
+      "type": null,
+      "documentation": null
+    },
+    "MinDisplayTime": {
+      "type": null,
+      "documentation": null
+    },
+    "NextText": {
+      "type": null,
+      "documentation": null
+    },
+    "PrevText": {
+      "type": null,
+      "documentation": null
+    },
+    "ExitText": {
+      "type": null,
+      "documentation": null
+    },
+    "CanExit": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

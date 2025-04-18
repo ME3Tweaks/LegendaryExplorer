@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "CenterOfMass": {
+      "type": null,
+      "documentation": null
+    },
+    "LinearVelocity": {
+      "type": null,
+      "documentation": null
+    },
+    "AngularVelocity": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

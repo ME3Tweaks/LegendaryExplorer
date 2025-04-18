@@ -1,0 +1,17 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_pStartEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_pStopEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "AnimMetaData_SkelControl",
+  "package": "Engine",
+  "variables": {
+    "KeyFrames": {
+      "type": "TimeModifier",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

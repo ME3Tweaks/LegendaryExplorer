@@ -1,0 +1,13 @@
+{
+  "parent": "MeshComponentFactory",
+  "package": "Engine",
+  "variables": {
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

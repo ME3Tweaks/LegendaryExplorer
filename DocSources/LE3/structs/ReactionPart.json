@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "BoneNames": {
+      "type": null,
+      "documentation": null
+    },
+    "BodyPart": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

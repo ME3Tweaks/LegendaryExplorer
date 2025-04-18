@@ -1,0 +1,185 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "mURL": {
+      "type": "string",
+      "documentation": null
+    },
+    "mConnectionString": {
+      "type": "string",
+      "documentation": null
+    },
+    "mResultBody": {
+      "type": "string",
+      "documentation": null
+    },
+    "mResultBinary": {
+      "type": "byte",
+      "documentation": null
+    },
+    "mResultHeader": {
+      "type": "string",
+      "documentation": null
+    },
+    "mParameters": {
+      "type": "HTTPParameter",
+      "documentation": null
+    },
+    "mHeaderParameters": {
+      "type": "HTTPParameter",
+      "documentation": null
+    },
+    "mResultSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "mResultResponseCode": {
+      "type": "int",
+      "documentation": null
+    },
+    "mPost": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mBinary": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mResultSuccess": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mComplete": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mInProgress": {
+      "type": "bool",
+      "documentation": null
+    },
+    "mRequestType": {
+      "type": "EHTTPRequest",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddHeaderTerminator": {
+      "documentation": null,
+      "signature_members": {
+        "InputString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string AddHeaderTerminator(string InputString)"
+    },
+    "AddParameter": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddParameter(string Key, string Value)"
+    },
+    "AddSubURL": {
+      "documentation": null,
+      "signature_members": {
+        "subUrl": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSubURL(string subUrl)"
+    },
+    "ClearParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearParams()"
+    },
+    "FillDefaultParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FillDefaultParameters()"
+    },
+    "GenerateHeaderParametersString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GenerateHeaderParametersString()"
+    },
+    "GenerateParametersString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GenerateParametersString()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetBaseURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBaseURL(string URL)"
+    },
+    "URLEncodeString": {
+      "documentation": null,
+      "signature_members": {
+        "InputString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string URLEncodeString(string InputString)"
+    },
+    "AddHeaderParameter": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddHeaderParameter(string Key, string Value)"
+    },
+    "SetPost": {
+      "documentation": null,
+      "signature_members": {
+        "post": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPost(bool post)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

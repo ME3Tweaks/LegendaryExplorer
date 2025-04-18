@@ -1,0 +1,143 @@
+{
+  "parent": "SFXPickupFactory",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LastWeaponPickedUp": {
+      "type": "SFXWeapon",
+      "documentation": null
+    },
+    "WeaponSelectionMovieInfo": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "GUI_WeaponSelection": {
+      "type": "SFXGUI_WeaponSelection",
+      "documentation": null
+    },
+    "PickupSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "RespawnTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "AmmoInClip": {
+      "type": "int",
+      "documentation": null
+    },
+    "ReserveAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "UpgradeLevels_Normal": {
+      "type": "int",
+      "documentation": null
+    },
+    "UpgradeLevels_NewGamePlus": {
+      "type": "int",
+      "documentation": null
+    },
+    "NewGamePlusID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "UpdateFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceRespawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopCustomTicking": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DelayRespawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DelayRespawn()"
+    },
+    "GetRespawnTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRespawnTime()"
+    },
+    "InitializePickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePickup()"
+    },
+    "DisabilityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DisabilityCheck()"
+    },
+    "HideDrop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideDrop()"
+    },
+    "StartWeaponSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartWeaponSelection()"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Used(Actor User)"
+    },
+    "WeaponPickupUIAction": {
+      "documentation": null,
+      "signature_members": {
+        "oUI": {
+          "type": null,
+          "documentation": null
+        },
+        "nSelection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponPickupUIAction(BioSFHandler_MessageBox oUI, int nSelection)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

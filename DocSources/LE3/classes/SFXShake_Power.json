@@ -1,0 +1,17 @@
+{
+  "parent": "SFXCameraShakeBase",
+  "package": "SFXGame",
+  "variables": {
+    "MinDetonationShakeDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDetonationShakeDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

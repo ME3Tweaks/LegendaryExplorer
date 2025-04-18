@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LISTWRAP_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "LISTWRAP_Smooth": {
+      "value": 1,
+      "documentation": null
+    },
+    "LISTWRAP_Jump": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

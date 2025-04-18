@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Speaker": {
+      "type": null,
+      "documentation": null
+    },
+    "ReferredTo": {
+      "type": null,
+      "documentation": null
+    },
+    "Time": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

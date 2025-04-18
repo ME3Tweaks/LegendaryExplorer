@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ADR_High": {
+      "value": 0,
+      "documentation": null
+    },
+    "ADR_Low": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

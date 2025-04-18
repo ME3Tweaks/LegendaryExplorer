@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Alias": {
+      "type": null,
+      "documentation": null
+    },
+    "InputDelegate": {
+      "type": null,
+      "documentation": null
+    },
+    "bPress": {
+      "type": null,
+      "documentation": null
+    },
+    "bExclusive": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

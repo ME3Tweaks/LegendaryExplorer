@@ -1,0 +1,25 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "m_aBlendTimeNode": {
+      "type": "BlendTimeFrom",
+      "documentation": null
+    },
+    "m_bHesitateAvailable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFallingAvailable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eCurrentAnimNode": {
+      "type": "EBioActionAnimNode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

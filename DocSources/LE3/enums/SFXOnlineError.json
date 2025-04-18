@@ -1,0 +1,249 @@
+{
+  "EnumValues": {
+    "SFXONLINE_ERR_OK": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_DEFAULT": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_SYSTEM": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_ERR_AUTHORIZATION_REQUIRED": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_TOS_REQUIRED": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_COUNTRY": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_USER": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_PASSWORD": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_MISSING_PASSWORD": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_TOKEN": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_EXPIRED_TOKEN": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_EXISTS": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_TOO_YOUNG": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_NO_ACCOUNT": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_PERSONA_NOT_FOUND": {
+      "value": 14,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_PERSONA_INACTIVE": {
+      "value": 15,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_PMAIL": {
+      "value": 16,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_FIELD": {
+      "value": 17,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_EMAIL": {
+      "value": 18,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_MISSING_EMAIL": {
+      "value": 19,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_STATUS": {
+      "value": 20,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_SESSION_KEY": {
+      "value": 21,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_PERSONA_BANNED": {
+      "value": 22,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_DEACTIVATED": {
+      "value": 23,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_PENDING": {
+      "value": 24,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_BANNED": {
+      "value": 25,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_DISABLED": {
+      "value": 26,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_MISSING_PERSONAID": {
+      "value": 27,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_USER_DOES_NOT_MATCH_PERSONA": {
+      "value": 28,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_USER_INACTIVE": {
+      "value": 29,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_NAME_MISMATCH": {
+      "value": 30,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_PS3_TICKET": {
+      "value": 31,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_NAMESPACE": {
+      "value": 32,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_INVALID_CHARS": {
+      "value": 33,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_TOO_SHORT": {
+      "value": 34,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_TOO_LONG": {
+      "value": 35,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_MUST_BEGIN_WITH_LETTER": {
+      "value": 36,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_MISSING": {
+      "value": 37,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_INVALID": {
+      "value": 38,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_NOT_ALLOWED": {
+      "value": 39,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_NEEDS_SPECIAL_CHARS": {
+      "value": 40,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_ALREADY_EXISTS": {
+      "value": 41,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_NEEDS_CONSENT": {
+      "value": 42,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_FIELD_TOO_YOUNG": {
+      "value": 43,
+      "documentation": null
+    },
+    "SFXONLINE_ERR_DUPLICATE_LOGIN": {
+      "value": 44,
+      "documentation": null
+    },
+    "SFXONLINE_ERR_DISCONNECTED": {
+      "value": 45,
+      "documentation": null
+    },
+    "SFXONLINE_SDK_ERR_SERVER_DISCONNECT": {
+      "value": 46,
+      "documentation": null
+    },
+    "SFXONLINE_SDK_ERR_XBL_DISCONNECT": {
+      "value": 47,
+      "documentation": null
+    },
+    "SFXONLINE_SDK_ERR_PSN_DISCONNECT": {
+      "value": 48,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_NO_MATCHING_INSTANCE": {
+      "value": 49,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_CLIENT_NOT_COMPATIBLE": {
+      "value": 50,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_CLIENT_UNKNOWN": {
+      "value": 51,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_SERVER_DOWN": {
+      "value": 52,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_SERVER_SUNSET": {
+      "value": 53,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_NO_SERVER_CAPACITY": {
+      "value": 54,
+      "documentation": null
+    },
+    "SFXONLINE_SDK_ERR_NO_MULTIPLAYER_PRIVILEGE": {
+      "value": 55,
+      "documentation": null
+    },
+    "SFXONLINE_REDIRECTOR_SERVER_NOT_FOUND": {
+      "value": 56,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_PASSWORD_NOT_MATCH": {
+      "value": 57,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_INVALID_CODE": {
+      "value": 58,
+      "documentation": null
+    },
+    "SFXONLINE_AUTH_ERR_CODE_ALREADY_USED": {
+      "value": 59,
+      "documentation": null
+    },
+    "SFXONLINE_SDK_ERR_MINIMUM_AGE_CHECK_FAILED": {
+      "value": 60,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,65 @@
+{
+  "parent": "UIPropertyDataProvider",
+  "package": "Engine",
+  "variables": {
+    "ProviderTag": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CleanupDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CleanupDataProvider()"
+    },
+    "LoadPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "Widget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPropertyValue(Name PropertyName, UIObject Widget)"
+    },
+    "OnModifiedProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "Widget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnModifiedProperty(Name PropertyName, UIObject Widget)"
+    },
+    "SavePropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": null,
+          "documentation": null
+        },
+        "Widget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePropertyValue(Name PropertyName, UIObject Widget)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

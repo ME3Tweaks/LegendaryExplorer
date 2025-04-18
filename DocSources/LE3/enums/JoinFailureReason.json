@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "JFR_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "JFR_GameFull": {
+      "value": 1,
+      "documentation": null
+    },
+    "JFR_InviterLeft": {
+      "value": 2,
+      "documentation": null
+    },
+    "JFR_ProtocolMismatch": {
+      "value": 3,
+      "documentation": null
+    },
+    "JFR_MissingDLCInviter": {
+      "value": 4,
+      "documentation": null
+    },
+    "JFR_MissingDLCInvitee": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

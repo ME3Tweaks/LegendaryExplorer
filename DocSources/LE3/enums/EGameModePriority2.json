@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ModePriority_Base": {
+      "value": 0,
+      "documentation": null
+    },
+    "ModePriority_CheatMenu": {
+      "value": 1,
+      "documentation": null
+    },
+    "ModePriority_Conversation": {
+      "value": 2,
+      "documentation": null
+    },
+    "ModePriority_Menus": {
+      "value": 3,
+      "documentation": null
+    },
+    "ModePriority_Popup": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

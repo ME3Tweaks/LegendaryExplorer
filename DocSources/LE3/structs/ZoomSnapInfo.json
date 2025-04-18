@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "OuterSnapAngle": {
+      "type": null,
+      "documentation": null
+    },
+    "InnerSnapAngle": {
+      "type": null,
+      "documentation": null
+    },
+    "SnapOffsetMag": {
+      "type": null,
+      "documentation": null
+    },
+    "AimNode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

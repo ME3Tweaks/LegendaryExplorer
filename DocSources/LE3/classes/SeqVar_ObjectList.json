@@ -1,0 +1,31 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "Engine",
+  "variables": {
+    "ObjList": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjectValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Object",
+      "signature": "Object GetObjectValue()"
+    },
+    "SetObjectValue": {
+      "documentation": null,
+      "signature_members": {
+        "NewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectValue(Object NewValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

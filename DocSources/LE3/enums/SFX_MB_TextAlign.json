@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFX_MB_Centered": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFX_MB_Left": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFX_MB_Right": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

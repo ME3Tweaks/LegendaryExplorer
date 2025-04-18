@@ -1,0 +1,17 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_vHitBoneOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nmHitBone": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

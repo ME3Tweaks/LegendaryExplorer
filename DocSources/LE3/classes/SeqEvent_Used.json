@@ -1,0 +1,55 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "InteractText": {
+      "type": "string",
+      "documentation": null
+    },
+    "ClassProximityTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "IgnoredClassProximityTypes": {
+      "type": "Class",
+      "documentation": null
+    },
+    "InteractIcon": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "InteractDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAimToInteract": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVersion": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

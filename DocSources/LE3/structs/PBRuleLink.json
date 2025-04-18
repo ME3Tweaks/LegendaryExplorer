@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "LinkName": {
+      "type": null,
+      "documentation": null
+    },
+    "NextRule": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

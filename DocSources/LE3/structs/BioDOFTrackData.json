@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "vFocusPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "fFalloffExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "fFStop": {
+      "type": null,
+      "documentation": null
+    },
+    "fBlurKernelSize": {
+      "type": null,
+      "documentation": null
+    },
+    "fMaxNearBlurAmount": {
+      "type": null,
+      "documentation": null
+    },
+    "fMaxFarBlurAmount": {
+      "type": null,
+      "documentation": null
+    },
+    "cModulateBlurColor": {
+      "type": null,
+      "documentation": null
+    },
+    "fFocusInnerRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "fFocusDistance": {
+      "type": null,
+      "documentation": null
+    },
+    "fInterpolateSeconds": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnableDOF": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

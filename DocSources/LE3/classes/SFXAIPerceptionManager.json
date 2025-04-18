@@ -1,0 +1,101 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "Noises": {
+      "type": "SFXAIPerceptionNoise",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AutoAcquireEnemies": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoAcquireEnemies(BioAiController AI)"
+    },
+    "AutoNotifyEnemies": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoNotifyEnemies(BioAiController AI)"
+    },
+    "DelayedNoticeEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "Enemy": {
+          "type": null,
+          "documentation": null
+        },
+        "Notification": {
+          "type": null,
+          "documentation": null
+        },
+        "Delay": {
+          "type": null,
+          "documentation": null
+        },
+        "EventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DelayedNoticeEnemy(BioAiController AI, Pawn Enemy, EPerceptionType Notification, float Delay, Name EventName)"
+    },
+    "FillEnemyList": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillEnemyList(BioAiController AI)"
+    },
+    "NoticeEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "Enemy": {
+          "type": null,
+          "documentation": null
+        },
+        "Notification": {
+          "type": null,
+          "documentation": null
+        },
+        "bPerceivedDirectly": {
+          "type": null,
+          "documentation": null
+        },
+        "EventName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NoticeEnemy(BioAiController AI, Pawn Enemy, EPerceptionType Notification, bool bPerceivedDirectly, Name EventName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

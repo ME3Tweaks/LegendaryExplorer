@@ -1,0 +1,21 @@
+{
+  "parent": "InterpGroup",
+  "package": "Engine",
+  "variables": {
+    "m_aBioPreloadData": {
+      "type": "BioResourcePreloadItem",
+      "documentation": null
+    },
+    "m_fSceneLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPlayRate": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

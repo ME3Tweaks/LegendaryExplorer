@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MovementNodes": {
+      "type": "BioAnimMovementSyncNode",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,42 @@
+{
+  "parent": "SFXAICmd_CustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "OriginalMoveTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "OriginalAnchor": {
+      "type": "NavigationPoint",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FinishedCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishedCustomAction()"
+    },
+    "GetCustomActionMovementState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetCustomActionMovementState()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "ShouldFinishRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldFinishRotation()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

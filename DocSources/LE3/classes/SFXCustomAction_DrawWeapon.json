@@ -1,0 +1,53 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Draw": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "fAnimBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fAnimPlaybackRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendType": {
+      "type": "AlphaBlendType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

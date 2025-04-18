@@ -1,0 +1,219 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "BodyMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HeadMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HairMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HeadGearMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "MorphHead": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "BioDynamicLightEnvironmentComponent",
+      "documentation": null
+    },
+    "AimTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bHelmetHidesHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHelmetHidesHair": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUpdateSkelWhenNotRendered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCausesPlayerPortArms": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BeginAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginAnimControl(InterpGroup InInterpGroup)"
+    },
+    "BioBaseRemovedFromWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBaseRemovedFromWorld()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FinishAnimControl(InterpGroup InInterpGroup)"
+    },
+    "GetActorFaceFXAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "FaceFXAsset",
+      "signature": "FaceFXAsset GetActorFaceFXAsset()"
+    },
+    "GetHeadSkelMeshComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent GetHeadSkelMeshComponent()"
+    },
+    "GetPrimarySkelMeshComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent GetPrimarySkelMeshComponent()"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "PlayFootStepSound": {
+      "documentation": null,
+      "signature_members": {
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayFootStepSound(int FootDown)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": null,
+          "documentation": null
+        },
+        "ChannelIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "InAnimSeqName": {
+          "type": null,
+          "documentation": null
+        },
+        "InPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "bFireNotifies": {
+          "type": null,
+          "documentation": null
+        },
+        "bLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "SetHeadGearVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHeadGearVisibility(bool bShow)"
+    },
+    "SFXSetAudioComponentRTPCs": {
+      "documentation": null,
+      "signature_members": {
+        "pWwiseAudioComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXSetAudioComponentRTPCs(ActorComponent pWwiseAudioComponent)"
+    },
+    "StopActorFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopActorFaceFXAnim()"
+    },
+    "OnTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTeleport(SeqAct_Teleport Action)"
+    },
+    "OnSetAimTarget": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetAimTarget(SFXSeqAct_SetAimTarget inAction)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

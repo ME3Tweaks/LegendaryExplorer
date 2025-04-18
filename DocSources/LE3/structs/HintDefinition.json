@@ -1,0 +1,65 @@
+{
+  "Members": {
+    "HintName": {
+      "type": null,
+      "documentation": null
+    },
+    "ClearEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "ClearContext": {
+      "type": null,
+      "documentation": null
+    },
+    "HintFunction": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultText": {
+      "type": null,
+      "documentation": null
+    },
+    "PS3Text": {
+      "type": null,
+      "documentation": null
+    },
+    "PCText": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "CooldownTime": {
+      "type": null,
+      "documentation": null
+    },
+    "UpdateTime": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxDifficulty": {
+      "type": null,
+      "documentation": null
+    },
+    "Enabled": {
+      "type": null,
+      "documentation": null
+    },
+    "ImmediatelyRelevant": {
+      "type": null,
+      "documentation": null
+    },
+    "HintPosition": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

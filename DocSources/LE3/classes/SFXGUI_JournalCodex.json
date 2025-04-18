@@ -1,0 +1,402 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "lstJCQuests": {
+      "type": "JCEntry",
+      "documentation": null
+    },
+    "lstJCCodexPrimary": {
+      "type": "JCEntry",
+      "documentation": null
+    },
+    "lstJCCodexSecondary": {
+      "type": "JCEntry",
+      "documentation": null
+    },
+    "lstImages": {
+      "type": "CodexImageDetails",
+      "documentation": null
+    },
+    "sDefaultCodexImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_pJCDisplayList": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "lstSortLabels": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "lstSortTitles": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_oVoiceOver": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "m_nCurrentDisplayCategory": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentListEntry": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nQuestPrimaryUpdatedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nQuestSecondaryUpdatedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCodexPrimaryUpdatedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCodexSecondaryUpdatedCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessageConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srMarkAllCompleteMessageCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nVoiceOverPage": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTimeUntilVoiceOver": {
+      "type": "float",
+      "documentation": null
+    },
+    "fVoiceOverDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "fVoiceOverCancelFadeOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nUpStamp": {
+      "type": "int",
+      "documentation": null
+    },
+    "TitleText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ExitText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "BackText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CloseSubListText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Tab1Text": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Tab2Text": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Tab3Text": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MarkAllViewedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ViewText": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_AddListItems": {
+      "documentation": null,
+      "signature_members": {
+        "aItems": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_AddListItems(array<JCUIListItem> aItems)"
+    },
+    "AS_EndDisplayList": {
+      "documentation": null,
+      "signature_members": {
+        "nLastEntryID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_EndDisplayList(int nLastEntryID)"
+    },
+    "AS_MarkAllViewedConfirmed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_MarkAllViewedConfirmed()"
+    },
+    "AS_ScrollDetailsAnalog": {
+      "documentation": null,
+      "signature_members": {
+        "fScroll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ScrollDetailsAnalog(float fScroll)"
+    },
+    "AS_SetDetails": {
+      "documentation": null,
+      "signature_members": {
+        "sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "sImgResource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetDetails(string sInfo, string sImgResource)"
+    },
+    "AS_SetSubItems": {
+      "documentation": null,
+      "signature_members": {
+        "aSubItems": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetSubItems(array<JCItem> aSubItems)"
+    },
+    "AS_SetUnreadItemCounts": {
+      "documentation": null,
+      "signature_members": {
+        "nQuestPrimary": {
+          "type": null,
+          "documentation": null
+        },
+        "nQuestSecondary": {
+          "type": null,
+          "documentation": null
+        },
+        "nCodexPrimary": {
+          "type": null,
+          "documentation": null
+        },
+        "nCodexSecondary": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetUnreadItemCounts(int nQuestPrimary, int nQuestSecondary, int nCodexPrimary, int nCodexSecondary)"
+    },
+    "AS_SetupVisualState": {
+      "documentation": null,
+      "signature_members": {
+        "nForceTab": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetupVisualState(int nForceTab)"
+    },
+    "AS_StartDisplayList": {
+      "documentation": null,
+      "signature_members": {
+        "sLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "nListLen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_StartDisplayList(const string sLabel, const string sTitle, int nListLen)"
+    },
+    "ExExitEntries": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExExitEntries()"
+    },
+    "ExExpandEntry": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExExpandEntry()"
+    },
+    "ExFocusOnEntry": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExFocusOnEntry()"
+    },
+    "ExFocusOnSubentry": {
+      "documentation": null,
+      "signature_members": {
+        "nSublistSelection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExFocusOnSubentry(int nSublistSelection)"
+    },
+    "ExFocusOnTab": {
+      "documentation": null,
+      "signature_members": {
+        "nTab": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExFocusOnTab(int nTab)"
+    },
+    "ExInitializeJournal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInitializeJournal()"
+    },
+    "ExMarkAllDataViewed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExMarkAllDataViewed()"
+    },
+    "ExSetItemRead": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        },
+        "nSubID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExSetItemRead(int nID, int nSubID)"
+    },
+    "ExSetLastEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nEntry": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExSetLastEntry(int nEntry)"
+    },
+    "ExSortList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExSortList()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "MarkAllDataViewed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkAllDataViewed(bool bAPressed, int nContext)"
+    },
+    "NativeMarkAllDataViewed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NativeMarkAllDataViewed(bool bAPressed, int nContext)"
+    },
+    "ExPlayEntryVO": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPlayEntryVO()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "aTransData": {
+      "type": null,
+      "documentation": null
+    },
+    "nmStartTrans": {
+      "type": null,
+      "documentation": null
+    },
+    "nPoseChangeChance": {
+      "type": null,
+      "documentation": null
+    },
+    "nPlayGestureChance": {
+      "type": null,
+      "documentation": null
+    },
+    "fChoiceTimeDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "bStartHere": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnterTransDoneEvent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

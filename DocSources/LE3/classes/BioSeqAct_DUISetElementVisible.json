@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "fFadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Element": {
+      "type": "BioDUIElements",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

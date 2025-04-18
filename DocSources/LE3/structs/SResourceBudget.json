@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "nmLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "nCredits": {
+      "type": null,
+      "documentation": null
+    },
+    "nEezo": {
+      "type": null,
+      "documentation": null
+    },
+    "nIridium": {
+      "type": null,
+      "documentation": null
+    },
+    "nPlatinum": {
+      "type": null,
+      "documentation": null
+    },
+    "nPalladium": {
+      "type": null,
+      "documentation": null
+    },
+    "nID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

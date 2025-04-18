@@ -1,0 +1,61 @@
+{
+  "Members": {
+    "sChoiceName": {
+      "type": null,
+      "documentation": null
+    },
+    "sChoiceTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "sChoiceImageTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "sChoiceDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "sActionText": {
+      "type": null,
+      "documentation": null
+    },
+    "m_mapTokenIDToActual": {
+      "type": null,
+      "documentation": null
+    },
+    "oChoiceImage": {
+      "type": null,
+      "documentation": null
+    },
+    "nOptionalPaneItemValue": {
+      "type": null,
+      "documentation": null
+    },
+    "nChoiceID": {
+      "type": null,
+      "documentation": null
+    },
+    "bDefaultSelection": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bNested": {
+      "type": null,
+      "documentation": null
+    },
+    "ChoiceColor": {
+      "type": null,
+      "documentation": null
+    },
+    "eResource": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

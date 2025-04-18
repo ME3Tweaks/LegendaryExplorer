@@ -1,0 +1,383 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnConsumeResult__Delegate": {
+      "type": "OnConsumeResult",
+      "documentation": null
+    },
+    "__OnGrantEntitlementResult__Delegate": {
+      "type": "OnGrantEntitlementResult",
+      "documentation": null
+    },
+    "__OnProcessAutoGrantsComplete__Delegate": {
+      "type": "OnProcessAutoGrantsComplete",
+      "documentation": null
+    },
+    "__OnPromptRedeemCodeResult__Delegate": {
+      "type": "OnPromptRedeemCodeResult",
+      "documentation": null
+    },
+    "__OnPurchaseOfferIdResult__Delegate": {
+      "type": "OnPurchaseOfferIdResult",
+      "documentation": null
+    },
+    "__OnFetchOfferDetailsComplete__Delegate": {
+      "type": "OnFetchOfferDetailsComplete",
+      "documentation": null
+    },
+    "__OnDimeConfigLoaded__Delegate": {
+      "type": "OnDimeConfigLoaded",
+      "documentation": null
+    },
+    "__OnRefreshDigitalRightsResult__Delegate": {
+      "type": "OnRefreshDigitalRightsResult",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ConsumeId": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "nCopies": {
+          "type": null,
+          "documentation": null
+        },
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConsumeId(BWConsumableId Id, optional int nCopies, optional delegate<OnConsumeResult> dCallback)"
+    },
+    "DecryptOfflineEntitlementInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string DecryptOfflineEntitlementInfo()"
+    },
+    "Display1stPartyStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Display1stPartyStore()"
+    },
+    "DumpTestData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpTestData()"
+    },
+    "FetchOfferDetails": {
+      "documentation": null,
+      "signature_members": {
+        "aOffers": {
+          "type": null,
+          "documentation": null
+        },
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FetchOfferDetails(array<BWOfferId> aOffers, delegate<OnFetchOfferDetailsComplete> dCallback)"
+    },
+    "GetConsumableInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "oConsumable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetConsumableInfo(BWConsumableId Id, out BWConsumableInfo oConsumable)"
+    },
+    "GetConsumablesList": {
+      "documentation": null,
+      "signature_members": {
+        "aConsumables": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetConsumablesList(out array<BWConsumableInfo> aConsumables)"
+    },
+    "GetEntitlementInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "oEntitlement": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEntitlementInfo(BWEntitlementId Id, out BWEntitlementInfo oEntitlement)"
+    },
+    "GetEntitlementsList": {
+      "documentation": null,
+      "signature_members": {
+        "aEntitlements": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEntitlementsList(out array<BWEntitlementInfo> aEntitlements)"
+    },
+    "GetOffersList": {
+      "documentation": null,
+      "signature_members": {
+        "aOffers": {
+          "type": null,
+          "documentation": null
+        },
+        "aOfferFilter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetOffersList(out array<BWOfferInfo> aOffers, optional array<BWOfferId> aOfferFilter)"
+    },
+    "GrantEntitlementId": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseNucleusCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrantEntitlementId(BWEntitlementId Id, optional delegate<OnGrantEntitlementResult> dCallback, optional bool bUseNucleusCheck)"
+    },
+    "LoadDimeConfig": {
+      "documentation": null,
+      "signature_members": {
+        "sConfig": {
+          "type": null,
+          "documentation": null
+        },
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadDimeConfig(string sConfig, delegate<OnDimeConfigLoaded> dCallback)"
+    },
+    "NucleusEntitlementsRefreshOffline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NucleusEntitlementsRefreshOffline()"
+    },
+    "OnCodeRedeemed": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCodeRedeemed(CodeRedemptionResult nResult)"
+    },
+    "OnConsumeResult": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "nCopies": {
+          "type": null,
+          "documentation": null
+        },
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnConsumeResult(BWConsumableId Id, int nCopies, int nResult)"
+    },
+    "OnDimeConfigLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDimeConfigLoaded()"
+    },
+    "OnFetchOfferDetailsComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnFetchOfferDetailsComplete()"
+    },
+    "OnGrantEntitlementResult": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGrantEntitlementResult(BWEntitlementId Id, int nResult)"
+    },
+    "OnProcessAutoGrantsComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnProcessAutoGrantsComplete()"
+    },
+    "OnPromptRedeemCodeResult": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPromptRedeemCodeResult(int nResult)"
+    },
+    "OnPurchaseOfferIdResult": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPurchaseOfferIdResult(int nResult)"
+    },
+    "OnRefreshDigitalRightsResult": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRefreshDigitalRightsResult(int nResult)"
+    },
+    "ProcessAutoGrants": {
+      "documentation": null,
+      "signature_members": {
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessAutoGrants(delegate<OnProcessAutoGrantsComplete> dCallback)"
+    },
+    "PromptRedeemCode": {
+      "documentation": null,
+      "signature_members": {
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PromptRedeemCode(delegate<OnPromptRedeemCodeResult> dCallback)"
+    },
+    "PurchaseOfferId": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PurchaseOfferId(BWOfferId Id, delegate<OnPurchaseOfferIdResult> dCallback)"
+    },
+    "RefreshDigitalRights": {
+      "documentation": null,
+      "signature_members": {
+        "dCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshDigitalRights(delegate<OnRefreshDigitalRightsResult> dCallback)"
+    },
+    "StoreOfflineEntitlementInfo": {
+      "documentation": null,
+      "signature_members": {
+        "a_sEncryptedContent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StoreOfflineEntitlementInfo(string a_sEncryptedContent)"
+    },
+    "SubmitRedeemCode": {
+      "documentation": null,
+      "signature_members": {
+        "bContinue": {
+          "type": null,
+          "documentation": null
+        },
+        "strCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitRedeemCode(bool bContinue, const string strCode)"
+    },
+    "GetWalletBalance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetWalletBalance()"
+    },
+    "METR_UpdateDLCEntitlements": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "METR_UpdateDLCEntitlements()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

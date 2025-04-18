@@ -1,0 +1,61 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "AddSequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "NewObj": {
+          "type": null,
+          "documentation": null
+        },
+        "bRecurse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddSequenceObject(SequenceObject NewObj, optional bool bRecurse)"
+    },
+    "GetUIEvents": {
+      "documentation": null,
+      "signature_members": {
+        "out_Events": {
+          "type": null,
+          "documentation": null
+        },
+        "LimitClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUIEvents(out array<UIEvent> out_Events, optional Class<UIEvent> LimitClass)"
+    },
+    "RemoveSequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSequenceObject(SequenceObject ObjectToRemove)"
+    },
+    "RemoveSequenceObjects": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectsToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSequenceObjects(array<SequenceObject> ObjectsToRemove)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

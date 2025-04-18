@@ -1,0 +1,269 @@
+{
+  "parent": "SFXGameModeGalaxy",
+  "package": "SFXGame",
+  "variables": {
+    "TemporaryComponents": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "ReticleRot": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotStart": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotTopLeftClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotBottomRightClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ScanReticleInputMovement": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "ReticleEffect": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    },
+    "LandingSiteFeature": {
+      "type": "SFXPlanetFeature",
+      "documentation": null
+    },
+    "ReticleDegreesPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "InputAttenuation": {
+      "type": "float",
+      "documentation": null
+    },
+    "ControllerInputAttenuation": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReticleScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReticleMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "SelectDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "fRescaleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fInitialScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "fNewScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "fMaxRescaleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bMouseLock": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanLand": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRescaling": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "CanExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanExit()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float DeltaTime)"
+    },
+    "AttemptLand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AttemptLand()"
+    },
+    "BeginExitGalaxyMap": {
+      "documentation": null,
+      "signature_members": {
+        "resize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginExitGalaxyMap(bool resize)"
+    },
+    "DrawLabels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawLabels()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetGameData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSeqAct_MultiLand",
+      "signature": "BioSeqAct_MultiLand GetGameData()"
+    },
+    "GetPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetPlayerController()"
+    },
+    "PlayerIsUsingGamepad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PlayerIsUsingGamepad()"
+    },
+    "RingReticleLeftRight": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RingReticleLeftRight(float Axis)"
+    },
+    "RingReticleUpDown": {
+      "documentation": null,
+      "signature_members": {
+        "Axis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RingReticleUpDown(float Axis)"
+    },
+    "TestLandingCondition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TestLandingCondition()"
+    },
+    "ToggleMouseLock": {
+      "documentation": null,
+      "signature_members": {
+        "bNewMouseLock": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleMouseLock(bool bNewMouseLock)"
+    },
+    "UpdateLabelPositions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLabelPositions()"
+    },
+    "UpdatePlanetScale": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlanetScale(float DeltaTime)"
+    },
+    "UpdateReticle": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateReticle(float fDeltaT)"
+    },
+    "UpdateReticleRotationFromInput": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateReticleRotationFromInput(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

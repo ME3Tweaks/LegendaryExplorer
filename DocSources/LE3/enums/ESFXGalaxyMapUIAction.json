@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "GalaxyAction_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "GalaxyAction_Exit": {
+      "value": 1,
+      "documentation": null
+    },
+    "GalaxyAction_LeavePlanet": {
+      "value": 2,
+      "documentation": null
+    },
+    "GalaxyAction_EnterPlanetScan": {
+      "value": 3,
+      "documentation": null
+    },
+    "GalaxyAction_LeavePlanetScan": {
+      "value": 4,
+      "documentation": null
+    },
+    "GalaxyAction_SystemObjectAction": {
+      "value": 5,
+      "documentation": null
+    },
+    "GalaxyAction_PlanetAction": {
+      "value": 6,
+      "documentation": null
+    },
+    "GalaxyAction_MassRelayJump": {
+      "value": 7,
+      "documentation": null
+    },
+    "GalaxyAction_BuyFuel": {
+      "value": 8,
+      "documentation": null
+    },
+    "GalaxyAction_ClusterSelect": {
+      "value": 9,
+      "documentation": null
+    },
+    "GalaxyAction_SystemSelect": {
+      "value": 10,
+      "documentation": null
+    },
+    "GalaxyAction_MultiLandLand": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

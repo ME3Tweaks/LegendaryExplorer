@@ -1,0 +1,13 @@
+{
+  "parent": "BioPropertyEditorBaseNode",
+  "package": "SFXGame",
+  "variables": {
+    "Filename": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

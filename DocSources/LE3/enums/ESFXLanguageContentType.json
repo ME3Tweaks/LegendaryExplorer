@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ESFXLanguageContentType_Package": {
+      "value": 0,
+      "documentation": null
+    },
+    "ESFXLanguageContentType_Text": {
+      "value": 1,
+      "documentation": null
+    },
+    "ESFXLanguageContentType_Speech": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

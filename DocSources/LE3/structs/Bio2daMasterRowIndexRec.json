@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "pTable": {
+      "type": null,
+      "documentation": null
+    },
+    "nRowIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

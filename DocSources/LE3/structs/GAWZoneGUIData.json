@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ZoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentRating": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneDisplayNumber": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

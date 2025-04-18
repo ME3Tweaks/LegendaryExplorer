@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "MovieClass": {
+      "type": null,
+      "documentation": null
+    },
+    "GFxResource": {
+      "type": null,
+      "documentation": null
+    },
+    "HUDTypeToAutoLoadFor": {
+      "type": null,
+      "documentation": null
+    },
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "CurvePixelError": {
+      "type": null,
+      "documentation": null
+    },
+    "ZOrder": {
+      "type": null,
+      "documentation": null
+    },
+    "UseEdgeAA": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoStart": {
+      "type": null,
+      "documentation": null
+    },
+    "bAutoVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bSwfDevAutoReopen": {
+      "type": null,
+      "documentation": null
+    },
+    "bRequiresScaling": {
+      "type": null,
+      "documentation": null
+    },
+    "Platform": {
+      "type": null,
+      "documentation": null
+    },
+    "StrokeStyle": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

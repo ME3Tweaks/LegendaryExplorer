@@ -1,0 +1,101 @@
+{
+  "parent": "SFXGUI_WeaponReticleBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aCrosshairRawBuffer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_oActualReticle": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_oCrosshairTop": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_oCrosshairRight": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_oCrosshairBottom": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_oCrosshairLeft": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_fCacheCrosshairRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCrosshairBufferIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fCrosshairAccuracyModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCacheTargetInSights": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCrosshairRadius": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCrosshairRadius()"
+    },
+    "PerformReticleHide": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformReticleHide(bool bInstant)"
+    },
+    "PerformReticleShow": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformReticleShow(bool bInstant)"
+    },
+    "TargetCanHitChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bInSights": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TargetCanHitChanged(bool bInSights)"
+    },
+    "AS_TriggerImpactVisualization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_TriggerImpactVisualization()"
+    },
+    "OnReticleLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReticleLoaded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

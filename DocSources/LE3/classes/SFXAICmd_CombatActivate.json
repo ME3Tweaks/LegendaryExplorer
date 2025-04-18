@@ -1,0 +1,37 @@
+{
+  "parent": "SFXAICmd_CustomAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "NotifyNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "NewEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNewEnemy(Pawn NewEnemy)"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "WakeOnNotify": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WakeOnNotify()"
+    }
+  },
+  "states": {
+    "CombatActivate": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

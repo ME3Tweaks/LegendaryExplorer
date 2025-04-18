@@ -1,0 +1,15 @@
+{
+  "parent": "SFXAICmd_FollowActor",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ShouldCancelFollow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldCancelFollow()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

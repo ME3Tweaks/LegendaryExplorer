@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "NotifyName": {
+      "type": null,
+      "documentation": null
+    },
+    "NotifyType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

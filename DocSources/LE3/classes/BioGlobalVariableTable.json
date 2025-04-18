@@ -1,0 +1,782 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "IntVariables": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "FloatVariables": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "BoolVariables": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME1CanonPlotVariables": {
+      "type": "NewGameCanonPlot",
+      "documentation": null
+    },
+    "ME2CanonPlotVariables": {
+      "type": "NewGameCanonPlot",
+      "documentation": null
+    },
+    "ME1ToME3PlotCopy": {
+      "type": "CopyPlot",
+      "documentation": null
+    },
+    "ME2ToME3PlotCopy": {
+      "type": "CopyPlot",
+      "documentation": null
+    },
+    "NewGamePlusPlotsToPersist": {
+      "type": "PlotIdenfitier",
+      "documentation": null
+    },
+    "TimedPlotUnlocks": {
+      "type": "TimedPlotUnlock_t",
+      "documentation": null
+    },
+    "oNameLookupTable": {
+      "type": "Bio2DA",
+      "documentation": null
+    },
+    "ME1PlotTable_IndexOffset": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME1PlotTable_Bool_CutoffIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME1PlotTable_Int_CutoffIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME1PlotTable_Float_CutoffIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_Paragon": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_Renegade": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_ReputationPoints": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_ME2Paragon": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_ME2Renegade": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_Childhood": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_Reputation": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_PersuadeMultiplier": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_Character_Class": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Utility_Player_Info_Female_Player": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Bool_Is_ME2_Import": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Bool_Is_ME1_Import": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3_Plots_Int_ME3_NewGamePlus_Count": {
+      "type": "int",
+      "documentation": null
+    },
+    "PS3DarkHorseME1PlayedPlotCheck_Bool": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__Background_and_Relationships__Kaidan_romance_True": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__Background_and_Relationships__Ashley_romance_True": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__Background_and_Relationships__Liara_romance_True": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__Background_and_Relationships__NoRomance_True": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH2_Virmire__Ash_died": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH2_Virmire__Kaidan_died": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH2_Noveria__Rachni_Alive": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH2_Virmire_Wrex_Died": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH2_Virmire_Ash_Killed_Wrex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Council_Dead": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Council_Alive": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Udina_Chosen": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME2__ME1_Plots_for_ME2__CH4_Star_Citadel__Anderson_chosen": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Kaidan__Romance_Buddy_dialog_count": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Kaidan__Romance_active": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Ash__Romance_Buddy_dialog_count": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Ash__romance_active": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Liara__Romance_Buddy_dialog_count": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Global_Plots__Henchman_Liara__Romance_active": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Virmire__The_Choice__Rescued_Kaidan": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Virmire__The_Choice__Rescued_Ash": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Noveria__Rachni_Queen__Queen_Dealt_With__Queen_Released": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Noveria__Rachni_Queen__Queen_Dealt_With__Queen_eliminated": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Virmire__Krogan_conundrum__Failure__Failure_KilledBy_Player": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Utility__Henchman__InParty__Krogan": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Utility__Henchman__InParty__HumanMale": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__Utility__Henchman__InParty__HumanFemale": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Choice_Is_Made__Save_the_Council": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Choice_Is_Made__Destroy_the_Council": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Chose_ambassador": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH4_Star_Citadel__Final_Choice__Chose_Anderson": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Virmire__Krogan_conundrum__Failure__Failure_KilledBy_Ashley": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME1_Plots_for_ME3__CH2_Virmire__Krogan_conundrum__Failure__Failure_AshKilledWithoutPermission": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Professor_Loyalty__Mission_Complete__Saved_Data": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Professor_Loyalty__Mission_Complete__Destroyed_Data": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Geth_Loyalty__Heretic_Resolution__Blow_Them_Up": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Loyalty_Missions__Geth_Loyalty__Heretic_Resolution__Rewrite_Them": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Act_3__Final_Decision__Work_with_Cerberus": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Act_3__Final_Decision__Destroy_Base": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Vixen": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Leading": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Grunt": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Assassin": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Veteran": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Thief": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Mystic": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Professor": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Geth": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Tali": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Convict": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Utility__Henchmen__In_Party__Garrus": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Henchmen__Vixen__Relationship": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Henchmen__Garrus__Relationship": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Henchmen__Leading__Relationship": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Henchmen__Assassin__Relationship": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Henchmen__Convict__Relationship": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Henchmen__Tali__Relationship": {
+      "type": "int",
+      "documentation": null
+    },
+    "ME3__ME2_Plots_for_ME3__Global__Achievements__ChangedDifficulty": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyCanonPlots": {
+      "documentation": null,
+      "signature_members": {
+        "aCanonPlotVariables": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCanonPlots(array<NewGameCanonPlot> aCanonPlotVariables)"
+    },
+    "ClearAllVariables": {
+      "documentation": null,
+      "signature_members": {
+        "bPersistME1ME2plots": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAllVariables(optional bool bPersistME1ME2plots)"
+    },
+    "CopyME2PlotData": {
+      "documentation": null,
+      "signature_members": {
+        "LegacyImportSaveGame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyME2PlotData(SFXSaveGame LegacyImportSaveGame)"
+    },
+    "CopyPlots": {
+      "documentation": null,
+      "signature_members": {
+        "toCopy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyPlots(array<CopyPlot> toCopy)"
+    },
+    "DoDarkHorseME1PlotCopyAndPlotLogicFix": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoDarkHorseME1PlotCopyAndPlotLogicFix()"
+    },
+    "DoME2PlotImport": {
+      "documentation": null,
+      "signature_members": {
+        "LegacyImportSaveGame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoME2PlotImport(SFXSaveGame LegacyImportSaveGame)"
+    },
+    "DoME3NewGamePlusImport": {
+      "documentation": null,
+      "signature_members": {
+        "NewGamePlusSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoME3NewGamePlusImport(SFXSaveGame NewGamePlusSave)"
+    },
+    "EnumeratePersonalizationVars": {
+      "documentation": null,
+      "signature_members": {
+        "Vars": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnumeratePersonalizationVars(out array<int> Vars)"
+    },
+    "FixME1PlotsDuringME2PlotImport": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FixME1PlotsDuringME2PlotImport()"
+    },
+    "GetBool": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBool(int nIndex)"
+    },
+    "GetBoolByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBoolByName(Name nmLabel)"
+    },
+    "GetFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloat(int nIndex)"
+    },
+    "GetFloatByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatByName(Name nmLabel)"
+    },
+    "GetInt": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInt(int nIndex)"
+    },
+    "GetIntByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetIntByName(Name nmLabel)"
+    },
+    "GetPlayerPlotData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerPlotData(out PlayerInfoEx PlayerData)"
+    },
+    "MergeME1PlotRecord": {
+      "documentation": null,
+      "signature_members": {
+        "me1Plots": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MergeME1PlotRecord(const out ME1PlotTableRecord me1Plots)"
+    },
+    "OnSendMessageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "messageId": {
+          "type": null,
+          "documentation": null
+        },
+        "messageIds": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSendMessageComplete(int messageId, array<int> messageIds, int errorCode)"
+    },
+    "SetBool": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bEvaluateAchievement": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipAllAdditionalProcessing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBool(int nIndex, bool bValue, optional bool bEvaluateAchievement, optional bool bSkipAllAdditionalProcessing)"
+    },
+    "SetBoolByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoolByName(Name nmLabel, bool bValue)"
+    },
+    "SetFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipAllAdditionalProcessing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloat(int nIndex, float fValue, optional bool bSkipAllAdditionalProcessing)"
+    },
+    "SetFloatByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatByName(Name nmLabel, float fValue)"
+    },
+    "SetInt": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipAllAdditionalProcessing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInt(int nIndex, int nValue, optional bool bSkipAllAdditionalProcessing)"
+    },
+    "SetIntByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntByName(Name nmLabel, int nValue)"
+    },
+    "SetNewGamePlotStates": {
+      "documentation": null,
+      "signature_members": {
+        "LegacyImportSaveGame": {
+          "type": null,
+          "documentation": null
+        },
+        "PlusImportSaveGame": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerData": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludePlayerVariables": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNewGamePlotStates(SFXSaveGame LegacyImportSaveGame, SFXSaveGame PlusImportSaveGame, const out PlayerInfoEx PlayerData, optional bool bIncludePlayerVariables)"
+    },
+    "SetPlayerPlotData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerPlotData(const out PlayerInfoEx PlayerData)"
+    },
+    "AddCustomElementListPlotVars": {
+      "documentation": null,
+      "signature_members": {
+        "Elements": {
+          "type": null,
+          "documentation": null
+        },
+        "Vars": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCustomElementListPlotVars(out array<CustomizableElement> Elements, out array<int> Vars)"
+    },
+    "GetStrRefByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetStrRefByName(Name nmLabel)"
+    },
+    "MajorPlot_ME1_RachniiQueenSaved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MajorPlot_ME1_RachniiQueenSaved()"
+    },
+    "MajorPlot_ME1_SavedTheCouncil": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MajorPlot_ME1_SavedTheCouncil()"
+    },
+    "MajorPlot_ME1_VirmireSurvivor_IsAsh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MajorPlot_ME1_VirmireSurvivor_IsAsh()"
+    },
+    "MajorPlot_ME1_WrexStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXME1Plot_WrexState",
+      "signature": "SFXME1Plot_WrexState MajorPlot_ME1_WrexStatus()"
+    },
+    "MajorPlot_ME2_CollectorBaseStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXME2Plot_CollectorBaseState",
+      "signature": "SFXME2Plot_CollectorBaseState MajorPlot_ME2_CollectorBaseStatus()"
+    },
+    "MajorPlot_ME2_DestroyedMaelonsData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MajorPlot_ME2_DestroyedMaelonsData()"
+    },
+    "MajorPlot_ME2_HerteticsStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXME2Plot_HereticsState",
+      "signature": "SFXME2Plot_HereticsState MajorPlot_ME2_HerteticsStatus()"
+    },
+    "MajorPlot_ME2_NumberOfSuicideMissionSurvivors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int MajorPlot_ME2_NumberOfSuicideMissionSurvivors()"
+    },
+    "MajorPlot_ME2_Romance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXRomanced",
+      "signature": "SFXRomanced MajorPlot_ME2_Romance()"
+    },
+    "MajorPlot_ME2_SavedMaelonsData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MajorPlot_ME2_SavedMaelonsData()"
+    },
+    "MajorPolt_ME1_Romance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXRomanced",
+      "signature": "SFXRomanced MajorPolt_ME1_Romance()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

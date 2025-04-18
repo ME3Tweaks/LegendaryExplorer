@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ChannelWeights": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

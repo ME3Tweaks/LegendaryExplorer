@@ -1,0 +1,13 @@
+{
+  "parent": "BioSeqVar_StrRef",
+  "package": "Engine",
+  "variables": {
+    "m_srStringID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

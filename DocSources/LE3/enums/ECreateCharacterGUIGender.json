@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ECreateCharacterGUIGender_Male": {
+      "value": 0,
+      "documentation": null
+    },
+    "ECreateCharacterGUIGender_Female": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

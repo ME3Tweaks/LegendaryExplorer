@@ -1,0 +1,13 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {
+    "WaitingForAnimatedTransition": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

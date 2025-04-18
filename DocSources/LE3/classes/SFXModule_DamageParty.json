@@ -1,0 +1,166 @@
+{
+  "parent": "SFXModule_Damage",
+  "package": "SFXGame",
+  "variables": {
+    "HealthRegenDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastShieldGateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastHealthGateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinShieldGateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinHealthGateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthGateThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentBleedoutState": {
+      "type": "EBleedoutState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RecoverFromBleedout": {
+      "documentation": null,
+      "signature_members": {
+        "bResetHealth": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecoverFromBleedout(optional bool bResetHealth)"
+    },
+    "SFXTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXTakeDamage(float Damage, out TraceHitInfo HitInfo, out Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, Controller instigatedBy, optional Actor DamageCauser)"
+    },
+    "ApplyDamageToHealth": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "AppliedDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyDamageToHealth(float Damage, Controller instigatedBy, Class<SFXDamageType> DamageType, Vector HitLocation, out float AppliedDamage)"
+    },
+    "KillForStasis": {
+      "documentation": null,
+      "signature_members": {
+        "bImmediate": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KillForStasis(bool bImmediate, optional Controller Killer, optional Class<DamageType> DamageType)"
+    },
+    "OnShieldBreached": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnShieldBreached()"
+    },
+    "RegenFullHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegenFullHealth()"
+    },
+    "ResetRegenTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetRegenTimer()"
+    },
+    "StartBleedOut": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartBleedOut()"
+    },
+    "TurnOffHealthGate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffHealthGate()"
+    },
+    "TurnOffShieldGate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffShieldGate()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

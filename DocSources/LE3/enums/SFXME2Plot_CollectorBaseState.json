@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "CollectorBase_Irradiate": {
+      "value": 0,
+      "documentation": null
+    },
+    "CollectorBase_Destroyed": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

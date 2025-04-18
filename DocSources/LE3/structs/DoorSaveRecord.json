@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "DoorGUID": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentState": {
+      "type": null,
+      "documentation": null
+    },
+    "OldState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,54 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "UploadGameplayEventsData": {
+      "documentation": null,
+      "signature_members": {
+        "Events": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadGameplayEventsData(OnlineGameplayEvents Events)"
+    },
+    "UploadProfileData": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerNick": {
+          "type": null,
+          "documentation": null
+        },
+        "ProfileSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadProfileData(UniqueNetId UniqueId, string PlayerNick, OnlineProfileSettings ProfileSettings)"
+    },
+    "UploadHardwareData": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerNick": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadHardwareData(UniqueNetId UniqueId, string PlayerNick)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

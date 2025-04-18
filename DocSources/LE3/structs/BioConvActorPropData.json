@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "mapMeshPropData": {
+      "type": null,
+      "documentation": null
+    },
+    "mapWeaponPropData": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

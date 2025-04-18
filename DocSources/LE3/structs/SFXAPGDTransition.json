@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "fBlendTime": {
+      "type": null,
+      "documentation": null
+    },
+    "nPlayChance": {
+      "type": null,
+      "documentation": null
+    },
+    "nDestPoseIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

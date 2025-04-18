@@ -1,0 +1,15 @@
+{
+  "parent": "SFXSeqAct_AwardTreasure_Base",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

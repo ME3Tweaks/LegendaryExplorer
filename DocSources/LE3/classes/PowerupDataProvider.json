@@ -1,0 +1,20 @@
+{
+  "parent": "InventoryDataProvider",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "IsValidDataSourceClass": {
+      "documentation": null,
+      "signature_members": {
+        "PotentialDataSourceClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidDataSourceClass(Class<Object> PotentialDataSourceClass)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

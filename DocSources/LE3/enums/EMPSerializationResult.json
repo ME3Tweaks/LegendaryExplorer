@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EMPSerializationResult_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "EMPSerializationResult_Failure": {
+      "value": 1,
+      "documentation": null
+    },
+    "EMPSerializationResult_TooOld": {
+      "value": 2,
+      "documentation": null
+    },
+    "EMPSerializationResult_TooNew": {
+      "value": 3,
+      "documentation": null
+    },
+    "EMPSerializationResult_ForcedWipe": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

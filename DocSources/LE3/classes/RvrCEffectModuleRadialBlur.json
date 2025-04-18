@@ -1,0 +1,33 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_pMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_fBlurFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBlurOpacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxCullDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDistanceFalloffExponent": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bRenderAsVelocity": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

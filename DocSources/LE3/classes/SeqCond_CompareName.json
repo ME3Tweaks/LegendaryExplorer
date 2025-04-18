@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceCondition",
+  "package": "Engine",
+  "variables": {
+    "ValueA": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ValueB": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

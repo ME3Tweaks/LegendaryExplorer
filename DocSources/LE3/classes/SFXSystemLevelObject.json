@@ -1,0 +1,136 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "ScanAudio": {
+      "type": "WwiseAudioPair",
+      "documentation": null
+    },
+    "ScanParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "ScanEmitter": {
+      "type": "EmitterSpawnable",
+      "documentation": null
+    },
+    "AudioComponent": {
+      "type": "WwiseAudioComponent",
+      "documentation": null
+    },
+    "SystemActionButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ActiveWorld": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShowOrbitRing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsActualPlanet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowAsScanned": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanBeSystemScanned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeSystemScanned()"
+    },
+    "CleanTransientData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanTransientData()"
+    },
+    "GetSystemActionButtonText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetSystemActionButtonText()"
+    },
+    "ObjectVisited": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ObjectVisited()"
+    },
+    "OnSystemScan": {
+      "documentation": null,
+      "signature_members": {
+        "oScanInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "vScanOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSystemScan(Object oScanInstigator, Vector vScanOrigin)"
+    },
+    "HasBeenScanned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasBeenScanned()"
+    },
+    "HasBeenSystemScanned": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasBeenSystemScanned()"
+    },
+    "PlayAudio": {
+      "documentation": null,
+      "signature_members": {
+        "soundPair": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAudio(WwiseAudioPair soundPair)"
+    },
+    "RemoveSystemScanMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveSystemScanMarker()"
+    },
+    "SetScannedState": {
+      "documentation": null,
+      "signature_members": {
+        "bScanned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScannedState(bool bScanned)"
+    },
+    "SpawnSystemScanMarker": {
+      "documentation": null,
+      "signature_members": {
+        "bPlaySound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnSystemScanMarker(optional bool bPlaySound)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

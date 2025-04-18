@@ -1,0 +1,44 @@
+{
+  "parent": "SFXGameActorInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aLightingKeys": {
+      "type": "BioConvLightingData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    },
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ReplyListNew": {
+      "type": null,
+      "documentation": null
+    },
+    "aSpeakerList": {
+      "type": null,
+      "documentation": null
+    },
+    "nSpeakerIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "nListenerIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "bSkippable": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

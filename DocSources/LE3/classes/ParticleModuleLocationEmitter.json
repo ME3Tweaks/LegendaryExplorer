@@ -1,0 +1,33 @@
+{
+  "parent": "ParticleModuleLocationBase",
+  "package": "Engine",
+  "variables": {
+    "EmitterName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "InheritSourceVelocityScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "InheritSourceRotationScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "InheritSourceVelocity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInheritSourceRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SelectionMethod": {
+      "type": "ELocationEmitterSelectionMethod",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

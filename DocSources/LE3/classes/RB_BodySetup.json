@@ -1,0 +1,77 @@
+{
+  "parent": "KMeshProps",
+  "package": "Engine",
+  "variables": {
+    "CollisionGeom": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CollisionGeomScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PreCachedPhysData": {
+      "type": "KCachedConvexData",
+      "documentation": null
+    },
+    "PreCachedPhysScale": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PhysMaterial": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "MassScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "PreCachedPhysDataVersion": {
+      "type": "int",
+      "documentation": null
+    },
+    "bFixed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockZeroExtent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockNonZeroExtent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableContinuousCollisionDetection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysFullAnimWeight": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConsiderForBounds": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ePartGroup": {
+      "type": "EBioPartGroup",
+      "documentation": null
+    },
+    "SleepFamily": {
+      "type": "ESleepFamily",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Level": {
+      "type": null,
+      "documentation": null
+    },
+    "TREASURE": {
+      "type": null,
+      "documentation": null
+    },
+    "ConditionalGAWAssets": {
+      "type": null,
+      "documentation": null
+    },
+    "UndetectableGAWAssets": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotId": {
+      "type": null,
+      "documentation": null
+    },
+    "Credits": {
+      "type": null,
+      "documentation": null
+    },
+    "AllianceCredits": {
+      "type": null,
+      "documentation": null
+    },
+    "XP": {
+      "type": null,
+      "documentation": null
+    },
+    "LevelEnum": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

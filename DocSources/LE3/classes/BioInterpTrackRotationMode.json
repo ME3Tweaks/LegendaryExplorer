@@ -1,0 +1,38 @@
+{
+  "parent": "SFXGameInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "EventTrack": {
+      "type": "RotationModeTrackKey",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

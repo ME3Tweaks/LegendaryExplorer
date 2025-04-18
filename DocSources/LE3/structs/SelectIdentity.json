@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "MemberTag": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberInPartyPlotLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberAvailablePlotLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberId": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberName": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberDossier": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberValidCID": {
+      "type": null,
+      "documentation": null
+    },
+    "MemberDeadPlotID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

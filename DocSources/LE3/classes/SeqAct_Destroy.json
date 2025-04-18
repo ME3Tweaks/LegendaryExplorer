@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "IgnoreBasedClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "bDestroyBasedActors": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

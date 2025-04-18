@@ -1,0 +1,20 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "StartTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "bShowLegal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartTimeout(bool bShowLegal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

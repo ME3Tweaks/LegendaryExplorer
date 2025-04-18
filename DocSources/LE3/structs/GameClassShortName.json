@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "ShortName": {
+      "type": null,
+      "documentation": null
+    },
+    "GameClassName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,40 @@
+{
+  "parent": "SFXCustomAction_ReachSpecMove",
+  "package": "SFXGame",
+  "variables": {
+    "LeapCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "LeapSpec": {
+      "type": "SFXLeapReachSpecBase",
+      "documentation": null
+    },
+    "LeapSpeed": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayStartAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayStartAnimation()"
+    },
+    "PreAlignPawnLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreAlignPawnLocation()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

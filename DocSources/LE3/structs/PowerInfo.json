@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "PowerName": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerInfoID": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

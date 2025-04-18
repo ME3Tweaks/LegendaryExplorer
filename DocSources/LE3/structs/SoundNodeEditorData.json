@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "NodePosX": {
+      "type": null,
+      "documentation": null
+    },
+    "NodePosY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

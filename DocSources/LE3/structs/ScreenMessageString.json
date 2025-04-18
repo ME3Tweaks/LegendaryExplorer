@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Key": {
+      "type": null,
+      "documentation": null
+    },
+    "ScreenMessage": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayColor": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeToDisplay": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentTimeDisplayed": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

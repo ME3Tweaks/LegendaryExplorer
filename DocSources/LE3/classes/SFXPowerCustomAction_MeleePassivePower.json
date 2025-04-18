@@ -1,0 +1,83 @@
+{
+  "parent": "SFXPowerCustomAction_PassivePower",
+  "package": "SFXGame",
+  "variables": {
+    "MeleeDamage": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "MeleeForce": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "MeleeImpactRadius": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "MeleeConeAngle": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "HeavyMeleeDamage": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "HeavyMeleeForce": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "HeavyMeleeImpactRadius": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "HeavyMeleeConeAngle": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "CoverMeleeImpactRadius": {
+      "type": "PowerData",
+      "documentation": null
+    },
+    "MeleeKillCategory": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnHeavyMeleeKill": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnHeavyMeleeKill(Actor oImpacted)"
+    },
+    "OnRegularMeleeKill": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegularMeleeKill(Actor oImpacted)"
+    },
+    "RecalculateAllPowerData": {
+      "documentation": null,
+      "signature_members": {
+        "bReset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecalculateAllPowerData(optional bool bReset)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

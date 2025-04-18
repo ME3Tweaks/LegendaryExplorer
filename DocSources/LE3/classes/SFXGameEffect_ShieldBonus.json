@@ -1,0 +1,56 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "PercentShieldBonus": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEffectValueIsPercent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRemoveEffectWhenShieldsDown": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float DeltaSeconds)"
+    },
+    "ComputeCustomEffectValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeCustomEffectValue(out float Value)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

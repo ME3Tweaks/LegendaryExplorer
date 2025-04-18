@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "X": {
+      "type": null,
+      "documentation": null
+    },
+    "Y": {
+      "type": null,
+      "documentation": null
+    },
+    "Weight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

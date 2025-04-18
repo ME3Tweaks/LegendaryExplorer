@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Description": {
+      "type": "string",
+      "documentation": null
+    },
+    "bNeedsSkeleton": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TranslationCompressionFormat": {
+      "type": "AnimationCompressionFormat",
+      "documentation": null
+    },
+    "RotationCompressionFormat": {
+      "type": "AnimationCompressionFormat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,86 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Characters": {
+      "type": "SFXMPCharacterRecord",
+      "documentation": null
+    },
+    "className": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null
+    },
+    "XPOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumPromotions": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanPromoteClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanPromoteClass()"
+    },
+    "GetTotalXP": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTotalXP()"
+    },
+    "HasAnyDeployedCharacters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasAnyDeployedCharacters()"
+    },
+    "HaveKitsLeveledUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HaveKitsLeveledUp()"
+    },
+    "LevelUpClass": {
+      "documentation": null,
+      "signature_members": {
+        "fXP": {
+          "type": null,
+          "documentation": null
+        },
+        "Controller": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LevelUpClass(float fXP, BioPlayerController Controller)"
+    },
+    "PromoteClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PromoteClass()"
+    },
+    "ResetClass": {
+      "documentation": null,
+      "signature_members": {
+        "RetainCustomization": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetClass(bool RetainCustomization)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

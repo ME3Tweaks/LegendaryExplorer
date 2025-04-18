@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CHARSET_All": {
+      "value": 0,
+      "documentation": null
+    },
+    "CHARSET_NoSpecial": {
+      "value": 1,
+      "documentation": null
+    },
+    "CHARSET_AlphaOnly": {
+      "value": 2,
+      "documentation": null
+    },
+    "CHARSET_NumericOnly": {
+      "value": 3,
+      "documentation": null
+    },
+    "CHARSET_AlphaNumeric": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

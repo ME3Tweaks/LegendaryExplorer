@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "OriginType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "OriginType_Spacer": {
+      "value": 1,
+      "documentation": null
+    },
+    "OriginType_Colony": {
+      "value": 2,
+      "documentation": null
+    },
+    "OriginType_Earthborn": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

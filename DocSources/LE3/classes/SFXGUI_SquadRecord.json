@@ -1,0 +1,1219 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_ParagonRenegadeBarValues": {
+      "type": "float",
+      "documentation": null
+    },
+    "PowerCache": {
+      "type": "SFXPowerCustomActionBase",
+      "documentation": null
+    },
+    "m_SquadNames": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_SquadIcons": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "m_bPowerLockedStatus": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_SpawnedSquadMembersSource": {
+      "type": "SFXPawn",
+      "documentation": null
+    },
+    "Tutorials": {
+      "type": "OnNewTutorialCallback",
+      "documentation": null
+    },
+    "__OnNewTutorialCallback__Delegate": {
+      "type": "OnNewTutorialCallback",
+      "documentation": null
+    },
+    "__OnDoneTutorialsCallback__Delegate": {
+      "type": "OnDoneTutorialsCallback",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "m_Helper": {
+      "type": "SFXPowerLevelUpHelper",
+      "documentation": null
+    },
+    "m_CurrentPawnIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_RespecMemberIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nUIWorldProcessingFrames": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_InitialHiddenTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srXPFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srSpendTalentPointsMessageXBox": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srParagonRenegadeMessageXBox": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srSpendTalentPointsMessagePC": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srParagonRenegadeMessagePC": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srSpendTalentPointsMessagePS3": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srParagonRenegadeMessagePS3": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srOk": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srRespecMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srRespecCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srShepardLevelClassFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srTalentDescriptionFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srRequiredLevelFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srRankDescriptionFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srFaceCodeFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCostTokenFormat": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCantBuyLocked": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCantBuyCost": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCantBuyBought": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCantBuyRank": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srExitText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srCostText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srScarHint": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_AText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_BText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_XText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_YText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bCloseGUIButtonPressed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCheckingNotifications": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ASNativeReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASNativeReady()"
+    },
+    "ASSetTitles": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sAText": {
+          "type": null,
+          "documentation": null
+        },
+        "sBText": {
+          "type": null,
+          "documentation": null
+        },
+        "sXText": {
+          "type": null,
+          "documentation": null
+        },
+        "sYText": {
+          "type": null,
+          "documentation": null
+        },
+        "sExitText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASSetTitles(string sTitle, string sAText, string sBText, string sXText, string sYText, string sExitText)"
+    },
+    "AutoLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoLevelUp()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "Parameters": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "ApplyCustomization": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCustomization(Object InData)"
+    },
+    "ASAddCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "KeepAlive": {
+          "type": null,
+          "documentation": null
+        },
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "CharName": {
+          "type": null,
+          "documentation": null
+        },
+        "CharClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Face": {
+          "type": null,
+          "documentation": null
+        },
+        "Abbrev": {
+          "type": null,
+          "documentation": null
+        },
+        "Thumb": {
+          "type": null,
+          "documentation": null
+        },
+        "allocated": {
+          "type": null,
+          "documentation": null
+        },
+        "Spendable": {
+          "type": null,
+          "documentation": null
+        },
+        "XP": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "PrettyLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "PctToLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "Health": {
+          "type": null,
+          "documentation": null
+        },
+        "Shield": {
+          "type": null,
+          "documentation": null
+        },
+        "ShieldTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "Pgn": {
+          "type": null,
+          "documentation": null
+        },
+        "Rng": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddCharacter(bool KeepAlive, int MemberIdx, string CharName, string CharClass, string Face, string Abbrev, string Thumb, int allocated, int Spendable, string XP, int Level, string PrettyLevel, int PctToLevel, int Health, int Shield, string ShieldTitle, int Pgn, int Rng)"
+    },
+    "ASAddCharacterPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        },
+        "Desc": {
+          "type": null,
+          "documentation": null
+        },
+        "State": {
+          "type": null,
+          "documentation": null
+        },
+        "IconFrame": {
+          "type": null,
+          "documentation": null
+        },
+        "Resource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddCharacterPower(string PowerName, string Desc, int State, int IconFrame, string Resource)"
+    },
+    "ASAddEvoStat": {
+      "documentation": null,
+      "signature_members": {
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Pct": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "BonusPct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddEvoStat(string Title, int Pct, string TotalTitle, int BonusPct)"
+    },
+    "ASAddPowerEvo": {
+      "documentation": null,
+      "signature_members": {
+        "EvoName": {
+          "type": null,
+          "documentation": null
+        },
+        "Desc": {
+          "type": null,
+          "documentation": null
+        },
+        "EvoRank": {
+          "type": null,
+          "documentation": null
+        },
+        "EvoFile": {
+          "type": null,
+          "documentation": null
+        },
+        "State": {
+          "type": null,
+          "documentation": null
+        },
+        "Cost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASAddPowerEvo(string EvoName, string Desc, int EvoRank, int EvoFile, int State, int Cost)"
+    },
+    "ASOnCloseNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASOnCloseNotifications()"
+    },
+    "ASOnUIWorldProcessed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASOnUIWorldProcessed()"
+    },
+    "ASPostRefresh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASPostRefresh()"
+    },
+    "ASRefreshCharData": {
+      "documentation": null,
+      "signature_members": {
+        "CharIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "CharName": {
+          "type": null,
+          "documentation": null
+        },
+        "CharClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Face": {
+          "type": null,
+          "documentation": null
+        },
+        "Abbrev": {
+          "type": null,
+          "documentation": null
+        },
+        "Thumb": {
+          "type": null,
+          "documentation": null
+        },
+        "allocated": {
+          "type": null,
+          "documentation": null
+        },
+        "Spendable": {
+          "type": null,
+          "documentation": null
+        },
+        "XP": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "PrettyLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "PctToLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "Health": {
+          "type": null,
+          "documentation": null
+        },
+        "Shield": {
+          "type": null,
+          "documentation": null
+        },
+        "ShieldTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "Pgn": {
+          "type": null,
+          "documentation": null
+        },
+        "Rng": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseNewAllocatedPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRefreshCharData(int CharIdx, int MemberIdx, string CharName, string CharClass, string Face, string Abbrev, string Thumb, int allocated, int Spendable, string XP, int Level, string PrettyLevel, int PctToLevel, int Health, int Shield, string ShieldTitle, int Pgn, int Rng, bool bUseNewAllocatedPoints)"
+    },
+    "ASRefreshDataAfterRespec": {
+      "documentation": null,
+      "signature_members": {
+        "nCharIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRefreshDataAfterRespec(int nCharIndex)"
+    },
+    "ASRefreshEvoData": {
+      "documentation": null,
+      "signature_members": {
+        "EvoIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "EvoName": {
+          "type": null,
+          "documentation": null
+        },
+        "Desc": {
+          "type": null,
+          "documentation": null
+        },
+        "RankIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "FileIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "State": {
+          "type": null,
+          "documentation": null
+        },
+        "Cost": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRefreshEvoData(int EvoIdx, string EvoName, string Desc, int RankIdx, int FileIdx, int State, int Cost)"
+    },
+    "ASRefreshPowerData": {
+      "documentation": null,
+      "signature_members": {
+        "PowerIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        },
+        "Desc": {
+          "type": null,
+          "documentation": null
+        },
+        "State": {
+          "type": null,
+          "documentation": null
+        },
+        "IconFrame": {
+          "type": null,
+          "documentation": null
+        },
+        "Resource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRefreshPowerData(int PowerIdx, string PowerName, string Desc, int State, int IconFrame, string Resource)"
+    },
+    "ASRefreshStatData": {
+      "documentation": null,
+      "signature_members": {
+        "StatIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Pct": {
+          "type": null,
+          "documentation": null
+        },
+        "TotalTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "BonusPct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRefreshStatData(int StatIdx, string Title, int Pct, string TotalTitle, int BonusPct)"
+    },
+    "CantBuy": {
+      "documentation": null,
+      "signature_members": {
+        "Explanation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CantBuy(stringref Explanation)"
+    },
+    "ChangeToCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "NextCharacter": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeToCharacter(BioPawn NextCharacter)"
+    },
+    "CleanupCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupCharacter()"
+    },
+    "EvoChoiceIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nFileIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int EvoChoiceIndex(int nRankIndex, int nFileIndex)"
+    },
+    "ExAutoLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExAutoLevelUp()"
+    },
+    "ExBuyRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nEvoIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExBuyRank(int nPowerIndex, int nRankIndex, int nEvoIndex)"
+    },
+    "ExCancelHint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExCancelHint()"
+    },
+    "ExCantBuyBought": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExCantBuyBought()"
+    },
+    "ExCantBuyCost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExCantBuyCost()"
+    },
+    "ExCantBuyLocked": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExCantBuyLocked()"
+    },
+    "ExCantBuyRank": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExCantBuyRank()"
+    },
+    "ExCommit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExCommit()"
+    },
+    "ExOpenNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExOpenNotifications()"
+    },
+    "ExPullCharacters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullCharacters()"
+    },
+    "ExPullEvoStats": {
+      "documentation": null,
+      "signature_members": {
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "RankIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "FileIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExPullEvoStats(int MemberIdx, int PowerIdx, int RankIdx, int FileIdx)"
+    },
+    "ExPullPowerEvos": {
+      "documentation": null,
+      "signature_members": {
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExPullPowerEvos(int MemberIdx, int PowerIdx)"
+    },
+    "ExPullPowers": {
+      "documentation": null,
+      "signature_members": {
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExPullPowers(int MemberIdx)"
+    },
+    "ExPullTitles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExPullTitles()"
+    },
+    "ExRefreshCharData": {
+      "documentation": null,
+      "signature_members": {
+        "BackRef": {
+          "type": null,
+          "documentation": null
+        },
+        "CharRef": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRef": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRef": {
+          "type": null,
+          "documentation": null
+        },
+        "FileRef": {
+          "type": null,
+          "documentation": null
+        },
+        "BarRef": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseNewAllocatedPoints": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExRefreshCharData(int BackRef, int CharRef, int PowerRef, int RankRef, int FileRef, int BarRef, bool bUseNewAllocatedPoints)"
+    },
+    "ExRefreshEvoData": {
+      "documentation": null,
+      "signature_members": {
+        "BackRef": {
+          "type": null,
+          "documentation": null
+        },
+        "CharRef": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRef": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRef": {
+          "type": null,
+          "documentation": null
+        },
+        "FileRef": {
+          "type": null,
+          "documentation": null
+        },
+        "BarRef": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExRefreshEvoData(int BackRef, int CharRef, int PowerRef, int RankRef, int FileRef, int BarRef)"
+    },
+    "ExRefreshPowerData": {
+      "documentation": null,
+      "signature_members": {
+        "BackRef": {
+          "type": null,
+          "documentation": null
+        },
+        "CharRef": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRef": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRef": {
+          "type": null,
+          "documentation": null
+        },
+        "FileRef": {
+          "type": null,
+          "documentation": null
+        },
+        "BarRef": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExRefreshPowerData(int BackRef, int CharRef, int PowerRef, int RankRef, int FileRef, int BarRef)"
+    },
+    "ExRefreshStatData": {
+      "documentation": null,
+      "signature_members": {
+        "BackRef": {
+          "type": null,
+          "documentation": null
+        },
+        "CharRef": {
+          "type": null,
+          "documentation": null
+        },
+        "PowerRef": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRef": {
+          "type": null,
+          "documentation": null
+        },
+        "FileRef": {
+          "type": null,
+          "documentation": null
+        },
+        "BarRef": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExRefreshStatData(int BackRef, int CharRef, int PowerRef, int RankRef, int FileRef, int BarRef)"
+    },
+    "ExRespecTalents": {
+      "documentation": null,
+      "signature_members": {
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExRespecTalents(int MemberIdx)"
+    },
+    "ExShutdownRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExShutdownRecord()"
+    },
+    "ExSnapCharacterFocus": {
+      "documentation": null,
+      "signature_members": {
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExSnapCharacterFocus(int MemberIdx)"
+    },
+    "ExToggleHelmet": {
+      "documentation": null,
+      "signature_members": {
+        "MemberIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ExToggleHelmet(int MemberIdx)"
+    },
+    "ExUndo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExUndo()"
+    },
+    "GetExperienceProgress": {
+      "documentation": null,
+      "signature_members": {
+        "BaseXP": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentXP": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetExperienceProgress(out int BaseXP, out int CurrentXP, out int TargetXP)"
+    },
+    "GetNumMPRespecCards": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumMPRespecCards()"
+    },
+    "InitializeSquadRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeSquadRecord()"
+    },
+    "NextTutorial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextTutorial()"
+    },
+    "OnDoneTutorialsCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDoneTutorialsCallback()"
+    },
+    "OnNewTutorialCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnNewTutorialCallback()"
+    },
+    "OnRespecMessageBoxConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRespecMessageBoxConfirm(bool bAPressed, int nContext)"
+    },
+    "PrepEvoDetails": {
+      "documentation": null,
+      "signature_members": {
+        "MemberPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "RankIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "FileIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Details": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepEvoDetails(SFXPawn MemberPawn, SFXPowerCustomActionBase Power, int RankIdx, int FileIdx, out EvoDetails Details)"
+    },
+    "PrepMemberDetails": {
+      "documentation": null,
+      "signature_members": {
+        "MemberPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "MemberDetails": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepMemberDetails(SFXPawn MemberPawn, out CharDetails MemberDetails)"
+    },
+    "PrepPowerDetails": {
+      "documentation": null,
+      "signature_members": {
+        "MemberPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Details": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepPowerDetails(SFXPawn MemberPawn, SFXPowerCustomActionBase Power, out PowerDetails Details)"
+    },
+    "ProcessRStickAxisInput": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessRStickAxisInput(float fValue)"
+    },
+    "PurchasePowerRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nRankIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nEvoIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PurchasePowerRank(int nPowerIndex, int nRankIndex, int nEvoIndex)"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "ShouldShowMultiplayerCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowMultiplayerCharacter()"
+    },
+    "Tutorial_BuildPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Tutorial_BuildPoints()"
+    },
+    "Tutorial_ParagonRenegade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Tutorial_ParagonRenegade()"
+    },
+    "TutorialConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TutorialConfirm(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

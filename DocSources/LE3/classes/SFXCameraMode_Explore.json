@@ -1,0 +1,15 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

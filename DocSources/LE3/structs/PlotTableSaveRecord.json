@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "BoolVariables": {
+      "type": null,
+      "documentation": null
+    },
+    "IntVariables": {
+      "type": null,
+      "documentation": null
+    },
+    "FloatVariables": {
+      "type": null,
+      "documentation": null
+    },
+    "QuestProgress": {
+      "type": null,
+      "documentation": null
+    },
+    "QuestIDs": {
+      "type": null,
+      "documentation": null
+    },
+    "CodexEntries": {
+      "type": null,
+      "documentation": null
+    },
+    "CodexIDs": {
+      "type": null,
+      "documentation": null
+    },
+    "QuestProgressCounter": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

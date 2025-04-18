@@ -1,0 +1,67 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "FFWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "CurrentSample": {
+      "type": "int",
+      "documentation": null
+    },
+    "ElapsedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScaleAllWaveformsBy": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAllowsForceFeedback": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsPaused": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PauseWaveform": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseWaveform(optional bool bPause)"
+    },
+    "PlayForceFeedbackWaveform": {
+      "documentation": null,
+      "signature_members": {
+        "WaveForm": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayForceFeedbackWaveform(ForceFeedbackWaveform WaveForm)"
+    },
+    "StopForceFeedbackWaveform": {
+      "documentation": null,
+      "signature_members": {
+        "WaveForm": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopForceFeedbackWaveform(optional ForceFeedbackWaveform WaveForm)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

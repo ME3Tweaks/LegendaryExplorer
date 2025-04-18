@@ -1,0 +1,13 @@
+{
+  "parent": "PhysicalMaterialPropertyBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_eImpactClientEffect": {
+      "type": "EClientEffectMaterial",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

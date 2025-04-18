@@ -1,0 +1,189 @@
+{
+  "parent": "Subsystem",
+  "package": "Engine",
+  "variables": {
+    "CurrentTick": {
+      "type": "QWord",
+      "documentation": null
+    },
+    "SoundModeStartTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "SoundModeFadeInStartTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "SoundModeFadeInEndTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "SoundModeEndTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "InteriorStartTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "InteriorEndTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "ExteriorEndTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "InteriorLPFEndTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "ExteriorLPFEndTime": {
+      "type": "Double",
+      "documentation": null
+    },
+    "Sources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "FreeSources": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Listeners": {
+      "type": "Listener",
+      "documentation": null
+    },
+    "AudioComponents": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "CommonAudioPool": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Effects": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "TextToSpeech": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WaveInstanceSourceMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SoundModes": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SoundClasses": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SourceSoundClasses": {
+      "type": "Object",
+      "documentation": null
+    },
+    "CurrentSoundClasses": {
+      "type": "Object",
+      "documentation": null
+    },
+    "DestinationSoundClasses": {
+      "type": "Object",
+      "documentation": null
+    },
+    "ListenerInteriorSettings": {
+      "type": "InteriorSettings",
+      "documentation": null
+    },
+    "BaseSoundModeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CurrentMode": {
+      "type": "SoundMode",
+      "documentation": null
+    },
+    "TestAudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null
+    },
+    "MaxChannels": {
+      "type": "int",
+      "documentation": null
+    },
+    "CommonAudioPoolSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "LowPassFilterResonance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinCompressedDurationEditor": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinCompressedDurationGame": {
+      "type": "float",
+      "documentation": null
+    },
+    "CommonAudioPoolFreeBytes": {
+      "type": "int",
+      "documentation": null
+    },
+    "ListenerVolumeIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "InteriorVolumeInterp": {
+      "type": "float",
+      "documentation": null
+    },
+    "InteriorLPFInterp": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExteriorVolumeInterp": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExteriorLPFInterp": {
+      "type": "float",
+      "documentation": null
+    },
+    "TransientMasterVolume": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bGameWasTicking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "DebugState": {
+      "type": "EDebugState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetSoundMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSoundMode(Name NewMode)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "ClassPathName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CharacterName": {
+      "type": "string",
+      "documentation": null
+    },
+    "CharacterBio": {
+      "type": "string",
+      "documentation": null
+    },
+    "bIsDisabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "IsProviderDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsProviderDisabled()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

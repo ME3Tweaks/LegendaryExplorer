@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "SecondsPerObject": {
+      "type": null,
+      "documentation": null
+    },
+    "ObjectChangeDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeUntilObjectChange": {
+      "type": null,
+      "documentation": null
+    },
+    "DelayTimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentObjIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "bDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "CyclingMethod": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

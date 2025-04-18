@@ -1,0 +1,88 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "QueuedTags": {
+      "type": "SFXGUIScoreTag",
+      "documentation": null
+    },
+    "ActiveScoreTagAnim": {
+      "type": "SFXGUIValue_ManualAnimController",
+      "documentation": null
+    },
+    "LocationX": {
+      "type": "float",
+      "documentation": null
+    },
+    "LocationY": {
+      "type": "float",
+      "documentation": null
+    },
+    "Lifetime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScreenLocationX": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScreenLocationY": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisplayScoreTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayScoreTag()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "AS_SetScoreTagText": {
+      "documentation": null,
+      "signature_members": {
+        "ScoreText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetScoreTagText(string ScoreText)"
+    },
+    "FinishScoreTagClip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishScoreTagClip()"
+    },
+    "QueueScoretag": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueScoretag(int Amount, string Message)"
+    },
+    "UpdateEnabledState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateEnabledState()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

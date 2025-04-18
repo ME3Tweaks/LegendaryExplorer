@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "lstGoals": {
+      "type": null,
+      "documentation": null
+    },
+    "lstTasks": {
+      "type": null,
+      "documentation": null
+    },
+    "lstPlotItems": {
+      "type": null,
+      "documentation": null
+    },
+    "bMission": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

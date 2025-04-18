@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "Effect": {
+      "type": null,
+      "documentation": null
+    },
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "Lifetime": {
+      "type": null,
+      "documentation": null
+    },
+    "Scale": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

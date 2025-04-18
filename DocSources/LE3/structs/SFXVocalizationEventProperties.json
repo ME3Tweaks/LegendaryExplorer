@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Roles": {
+      "type": null,
+      "documentation": null
+    },
+    "ChanceToPlay": {
+      "type": null,
+      "documentation": null
+    },
+    "MinTimeBetweenSec": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeLastPlayed": {
+      "type": null,
+      "documentation": null
+    },
+    "Delay": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxWitnessDistSq": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxDelayedTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bQueueIfBlocked": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanInterrupt": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanPlayIfDead": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanPlayIfRagdolled": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

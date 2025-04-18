@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "DroppedAmmos": {
+      "type": null,
+      "documentation": null
+    },
+    "DroppedAmmoClass": {
+      "type": null,
+      "documentation": null
+    },
+    "NextIdx": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

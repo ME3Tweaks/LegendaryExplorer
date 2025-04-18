@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LoadGuiMode_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "LoadGuiMode_NGPlus": {
+      "value": 1,
+      "documentation": null
+    },
+    "LoadGuiMode_LegacyME2": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

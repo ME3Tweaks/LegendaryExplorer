@@ -1,0 +1,21 @@
+{
+  "parent": "PathNode",
+  "package": "Engine",
+  "variables": {
+    "StartingRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartingHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "bManualSizing": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

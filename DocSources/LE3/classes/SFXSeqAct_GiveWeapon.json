@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponList": {
+      "type": "Class",
+      "documentation": null
+    },
+    "bClearExisting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceReplace": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

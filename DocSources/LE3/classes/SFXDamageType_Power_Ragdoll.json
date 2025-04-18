@@ -1,0 +1,13 @@
+{
+  "parent": "SFXDamageType_Power",
+  "package": "SFXGame",
+  "variables": {
+    "AnimatedPowerRagdollType": {
+      "type": "EAICustomAction",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

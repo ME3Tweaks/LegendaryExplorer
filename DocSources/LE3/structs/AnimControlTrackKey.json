@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "AnimSeqName": {
+      "type": null,
+      "documentation": null
+    },
+    "StartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimStartOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimEndOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "AnimPlayRate": {
+      "type": null,
+      "documentation": null
+    },
+    "bLooping": {
+      "type": null,
+      "documentation": null
+    },
+    "bReverse": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

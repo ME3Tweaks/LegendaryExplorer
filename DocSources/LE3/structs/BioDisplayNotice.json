@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "strTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "nEventType": {
+      "type": null,
+      "documentation": null
+    },
+    "nTimeToLive": {
+      "type": null,
+      "documentation": null
+    },
+    "nIconIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "nContext": {
+      "type": null,
+      "documentation": null
+    },
+    "srTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "nQuantity": {
+      "type": null,
+      "documentation": null
+    },
+    "nQuantMin": {
+      "type": null,
+      "documentation": null
+    },
+    "nQuantMax": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

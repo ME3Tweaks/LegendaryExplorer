@@ -1,0 +1,21 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Translation": {
+      "type": "DistributionVector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "DistributionVector",
+      "documentation": null
+    },
+    "Scale": {
+      "type": "DistributionVector",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

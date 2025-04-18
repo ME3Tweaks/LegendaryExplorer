@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PSA_Square": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSA_Rectangle": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSA_Velocity": {
+      "value": 2,
+      "documentation": null
+    },
+    "PSA_TypeSpecific": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

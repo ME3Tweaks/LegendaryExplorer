@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Building": {
+      "type": null,
+      "documentation": null
+    },
+    "Ruleset": {
+      "type": null,
+      "documentation": null
+    },
+    "NumStaticMeshComponent": {
+      "type": null,
+      "documentation": null
+    },
+    "NumInstancedStaticMeshComponents": {
+      "type": null,
+      "documentation": null
+    },
+    "NumInstancedTris": {
+      "type": null,
+      "documentation": null
+    },
+    "LightmapMemBytes": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowmapMemBytes": {
+      "type": null,
+      "documentation": null
+    },
+    "LODDiffuseMemBytes": {
+      "type": null,
+      "documentation": null
+    },
+    "LODLightingMemBytes": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

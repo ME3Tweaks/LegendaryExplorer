@@ -1,0 +1,13 @@
+{
+  "parent": "SFXSceneShopNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_pLinkedScene": {
+      "type": "SFXSceneGroup",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

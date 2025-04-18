@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "MM_GameType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "MM_GameType_New": {
+      "value": 1,
+      "documentation": null
+    },
+    "MM_GameType_Plus": {
+      "value": 2,
+      "documentation": null
+    },
+    "MM_GameType_Legacy": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

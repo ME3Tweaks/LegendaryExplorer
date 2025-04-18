@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "ComboEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetPawn": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

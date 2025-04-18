@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "OctreeNode": {
+      "type": null,
+      "documentation": null
+    },
+    "BoundingBox": {
+      "type": null,
+      "documentation": null
+    },
+    "BoxCenter": {
+      "type": null,
+      "documentation": null
+    },
+    "Owner": {
+      "type": null,
+      "documentation": null
+    },
+    "OwnerType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

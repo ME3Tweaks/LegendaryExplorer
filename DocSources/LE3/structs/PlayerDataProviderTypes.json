@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "PlayerOwnerDataProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentWeaponDataProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponDataProviderClass": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerupDataProviderClass": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

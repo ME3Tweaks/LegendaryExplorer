@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PVTSO_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PVTSO_On": {
+      "value": 1,
+      "documentation": null
+    },
+    "PVTSO_Both": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

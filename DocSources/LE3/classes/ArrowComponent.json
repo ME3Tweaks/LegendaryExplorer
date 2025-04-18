@@ -1,0 +1,21 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "ArrowColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "ArrowSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTreatAsASprite": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

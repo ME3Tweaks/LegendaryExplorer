@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "PrettyName": {
+      "type": null,
+      "documentation": null
+    },
+    "AlternatePrettyName": {
+      "type": null,
+      "documentation": null
+    },
+    "AlternateHenchNamePlotFlag": {
+      "type": null,
+      "documentation": null
+    },
+    "HenchAcquiredPlotID": {
+      "type": null,
+      "documentation": null
+    },
+    "HenchInSquadPlotID": {
+      "type": null,
+      "documentation": null
+    },
+    "HenchmanImage": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

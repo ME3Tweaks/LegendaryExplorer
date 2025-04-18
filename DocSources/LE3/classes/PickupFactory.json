@@ -1,0 +1,442 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "InventoryType": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PickupMesh": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "ReplacementFactory": {
+      "type": "PickupFactory",
+      "documentation": null
+    },
+    "OriginalFactory": {
+      "type": "PickupFactory",
+      "documentation": null
+    },
+    "RespawnEffectTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDesireability": {
+      "type": "float",
+      "documentation": null
+    },
+    "bOnlyReplicateHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPickupHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPredictRespawns": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSuperItem": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRespawnPaused": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "DetourWeight": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "PathWeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float DetourWeight(Pawn Other, float PathWeight)"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetInitialState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetInitialState()"
+    },
+    "SetPickupMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPickupMesh()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "CheckForErrors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckForErrors()"
+    },
+    "PickedUpBy": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PickedUpBy(Pawn P)"
+    },
+    "DelayRespawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DelayRespawn()"
+    },
+    "GetRespawnTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRespawnTime()"
+    },
+    "GiveTo": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTo(Pawn P)"
+    },
+    "InitializePickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePickup()"
+    },
+    "ReadyToPickup": {
+      "documentation": null,
+      "signature_members": {
+        "MaxWait": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadyToPickup(float MaxWait)"
+    },
+    "RecheckValidTouch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecheckValidTouch()"
+    },
+    "RespawnEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RespawnEffect()"
+    },
+    "SetPickupHidden": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPickupHidden()"
+    },
+    "SetPickupVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPickupVisible()"
+    },
+    "SetRespawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetRespawn()"
+    },
+    "SpawnCopyFor": {
+      "documentation": null,
+      "signature_members": {
+        "Recipient": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnCopyFor(Pawn Recipient)"
+    },
+    "StartSleeping": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartSleeping()"
+    },
+    "StaticPrecache": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StaticPrecache(WorldInfo W)"
+    }
+  },
+  "states": {
+    "Disabled": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SetInitialState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "StartSleeping": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "Reset": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ReadyToPickup": {
+          "documentation": null,
+          "signature_members": {
+            "MaxWait": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Sleeping": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "StartSleeping": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ReadyToPickup": {
+          "documentation": null,
+          "signature_members": {
+            "MaxWait": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "WaitingForMatch": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MatchStarting": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Pickup": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "CheckTouching": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "Touch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            },
+            "OtherComp": {
+              "type": null,
+              "documentation": null
+            },
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            },
+            "HitNormal": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "RecheckValidTouch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ValidTouch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReadyToPickup": {
+          "documentation": null,
+          "signature_members": {
+            "MaxWait": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "DetourWeight": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            },
+            "PathWeight": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

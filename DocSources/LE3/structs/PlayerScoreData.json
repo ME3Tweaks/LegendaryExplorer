@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "UniqueId": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerMedalIDs": {
+      "type": null,
+      "documentation": null
+    },
+    "KitName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerID": {
+      "type": null,
+      "documentation": null
+    },
+    "fScore": {
+      "type": null,
+      "documentation": null
+    },
+    "ClassLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "nTotalXP": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

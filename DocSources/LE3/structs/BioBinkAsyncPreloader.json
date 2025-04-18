@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Callback": {
+      "type": null,
+      "documentation": null
+    },
+    "Context": {
+      "type": null,
+      "documentation": null
+    },
+    "PreloadMovieHandle": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

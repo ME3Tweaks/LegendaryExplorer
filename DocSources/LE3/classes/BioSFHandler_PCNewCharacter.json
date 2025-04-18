@@ -1,0 +1,133 @@
+{
+  "parent": "BioSFHandler_NewCharacter",
+  "package": "SFXGame",
+  "variables": {
+    "fScrollValueMouse": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLookAtThresholdAhead": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLookAtThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLookAtLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHeadLookEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClipboardCopy": {
+      "documentation": null,
+      "signature_members": {
+        "sString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClipboardCopy(string sString)"
+    },
+    "ClipboardPaste": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string ClipboardPaste()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleLookAtLeftRightMouse": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtLeftRightMouse(float fValue)"
+    },
+    "HandleLookAtUpDownMouse": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtUpDownMouse(float fValue)"
+    },
+    "UpdateLookAtTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLookAtTarget()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

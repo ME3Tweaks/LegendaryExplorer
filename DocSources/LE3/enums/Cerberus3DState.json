@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "C3D_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "C3D_RightPanel_Open": {
+      "value": 1,
+      "documentation": null
+    },
+    "C3D_RightPanel_Closed": {
+      "value": 2,
+      "documentation": null
+    },
+    "C3D_RightPanel_Opening": {
+      "value": 3,
+      "documentation": null
+    },
+    "C3D_RightPanel_Closing": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

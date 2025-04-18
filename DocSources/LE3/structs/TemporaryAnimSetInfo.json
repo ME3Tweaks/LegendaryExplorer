@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "TempAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "RefCount": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeLeft": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

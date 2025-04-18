@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "Custom0Tokens": {
+      "type": null,
+      "documentation": null
+    },
+    "Custom1Tokens": {
+      "type": null,
+      "documentation": null
+    },
+    "srModName": {
+      "type": null,
+      "documentation": null
+    },
+    "srModDescription": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

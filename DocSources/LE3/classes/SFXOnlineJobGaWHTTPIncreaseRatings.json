@@ -1,0 +1,101 @@
+{
+  "parent": "SFXOnlineJobGaWHTTPRequest",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "securityRatingIncrease": {
+      "type": "MapEntry",
+      "documentation": null
+    },
+    "warAssetIncrease": {
+      "type": "MapEntry",
+      "documentation": null
+    },
+    "__OnIncreaseRatingsComplete__Delegate": {
+      "type": "OnIncreaseRatingsComplete",
+      "documentation": null
+    },
+    "defaultRatingIncrease": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGaWIncreaseRatingsJob": {
+      "documentation": null,
+      "signature_members": {
+        "inDefaultRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "inSecurityRatingIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "inWarAssetIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGaWHTTPIncreaseRatings",
+      "signature": "SFXOnlineJobGaWHTTPIncreaseRatings CreateGaWIncreaseRatingsJob(int inDefaultRatingIncrease, array<MapEntry> inSecurityRatingIncrease, array<MapEntry> inWarAssetIncrease, delegate<OnIncreaseRatingsComplete> RequestCompleteDelegate)"
+    },
+    "HandleSecondHTTPResult": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleSecondHTTPResult()"
+    },
+    "JobFailedHandler": {
+      "documentation": null,
+      "signature_members": {
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobFailedHandler(OnlineJobErrorCode errorCode)"
+    },
+    "OnIncreaseRatingsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "updatedSecurityRatings": {
+          "type": null,
+          "documentation": null
+        },
+        "updatedWarAssets": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "errorCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnIncreaseRatingsComplete(array<int> updatedSecurityRatings, array<int> updatedWarAssets, int Level, int errorCode)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "QueueSecondHTTPRequest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QueueSecondHTTPRequest()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

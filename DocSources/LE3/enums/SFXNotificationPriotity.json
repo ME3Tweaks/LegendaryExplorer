@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "NOTIFICATIONPRIORITY_UNDEFINED": {
+      "value": 0,
+      "documentation": null
+    },
+    "NOTIFICATIONPRIORITY_NORMAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "NOTIFICATIONPRIORITY_HIGH": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

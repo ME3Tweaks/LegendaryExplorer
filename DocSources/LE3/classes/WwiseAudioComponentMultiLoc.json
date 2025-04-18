@@ -1,0 +1,28 @@
+{
+  "parent": "WwiseAudioComponent",
+  "package": "WwiseAudio",
+  "variables": {
+    "m_Locations": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "CachedMicPos": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "IsDirty": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Set3D": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Set3D()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,15 @@
+{
+  "parent": "Interface",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetAsyncAssetLoader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXAsyncAssetLoader",
+      "signature": "SFXAsyncAssetLoader GetAsyncAssetLoader()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

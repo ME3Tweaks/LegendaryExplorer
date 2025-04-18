@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "UIPEN_White": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIPEN_Black": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIPEN_Grey": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

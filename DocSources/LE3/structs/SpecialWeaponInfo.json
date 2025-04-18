@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "WeaponClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "HenchmanClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockPlotName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "Preloader": {
+      "type": "BioBinkAsyncPreloader",
+      "documentation": null
+    },
+    "MovieName": {
+      "type": "string",
+      "documentation": null
+    },
+    "IsComplete": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

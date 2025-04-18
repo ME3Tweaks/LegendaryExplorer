@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendTurn_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendTurn_TurnLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendTurn_TurnRight": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

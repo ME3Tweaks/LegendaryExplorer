@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Text": {
+      "type": null,
+      "documentation": null
+    },
+    "PRI": {
+      "type": null,
+      "documentation": null
+    },
+    "TextColor": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageLife": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "WordId": {
+      "type": null,
+      "documentation": null
+    },
+    "WordText": {
+      "type": null,
+      "documentation": null
+    },
+    "Confidence": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

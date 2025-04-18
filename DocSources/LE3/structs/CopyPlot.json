@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "nSId": {
+      "type": null,
+      "documentation": null
+    },
+    "nTId": {
+      "type": null,
+      "documentation": null
+    },
+    "nType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

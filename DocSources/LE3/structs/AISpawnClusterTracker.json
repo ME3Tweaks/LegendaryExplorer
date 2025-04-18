@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ClusterPawns": {
+      "type": null,
+      "documentation": null
+    },
+    "ObscuredSpawnProjectile": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentType": {
+      "type": null,
+      "documentation": null
+    },
+    "VisibilityTimer": {
+      "type": null,
+      "documentation": null
+    },
+    "bVisible": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

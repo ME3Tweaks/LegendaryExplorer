@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlayerNickColumnName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerNickName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

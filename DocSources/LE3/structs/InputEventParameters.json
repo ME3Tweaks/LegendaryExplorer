@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "InputKeyName": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "ControllerId": {
+      "type": null,
+      "documentation": null
+    },
+    "InputDelta": {
+      "type": null,
+      "documentation": null
+    },
+    "DeltaTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bAltPressed": {
+      "type": null,
+      "documentation": null
+    },
+    "bCtrlPressed": {
+      "type": null,
+      "documentation": null
+    },
+    "bShiftPressed": {
+      "type": null,
+      "documentation": null
+    },
+    "EventType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

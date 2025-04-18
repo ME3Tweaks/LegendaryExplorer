@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "TotalDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageScoreBudget": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalAssist": {
+      "type": null,
+      "documentation": null
+    },
+    "AssistBudget": {
+      "type": null,
+      "documentation": null
+    },
+    "EnvironmentalDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "LastDamageSource": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

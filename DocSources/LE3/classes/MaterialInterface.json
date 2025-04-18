@@ -1,0 +1,181 @@
+{
+  "parent": "Surface",
+  "package": "Engine",
+  "variables": {
+    "LightmassSettings": {
+      "type": "LightmassMaterialInterfaceSettings",
+      "documentation": null
+    },
+    "m_Guid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "LightingGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "FlattenedTexture": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "ParentRefFence": {
+      "type": "RenderCommandFence_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetEffectsMaterialFractionValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEffectsMaterialFractionValue(out float Value)"
+    },
+    "GetEffectsMaterialNameValue": {
+      "documentation": null,
+      "signature_members": {
+        "EffectName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEffectsMaterialNameValue(out Name EffectName)"
+    },
+    "GetFontParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutFontValue": {
+          "type": null,
+          "documentation": null
+        },
+        "OutFontPage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFontParameterValue(Name ParameterName, out Font OutFontValue, out int OutFontPage)"
+    },
+    "GetMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Material",
+      "signature": "Material GetMaterial()"
+    },
+    "GetPhysicalMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicalMaterial",
+      "signature": "PhysicalMaterial GetPhysicalMaterial()"
+    },
+    "GetScalarCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetScalarCurveParameterValue(Name ParameterName, out InterpCurveFloat OutValue)"
+    },
+    "GetScalarParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetScalarParameterValue(Name ParameterName, out float OutValue)"
+    },
+    "GetTextureParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTextureParameterValue(Name ParameterName, out Texture OutValue)"
+    },
+    "GetVectorCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVectorCurveParameterValue(Name ParameterName, out InterpCurveVector OutValue)"
+    },
+    "GetVectorParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": null,
+          "documentation": null
+        },
+        "OutValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVectorParameterValue(Name ParameterName, out LinearColor OutValue)"
+    },
+    "SetForceMipLevelsToBeResident": {
+      "documentation": null,
+      "signature_members": {
+        "OverrideForceMiplevelsToBeResident": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceMiplevelsToBeResidentValue": {
+          "type": null,
+          "documentation": null
+        },
+        "ForceDuration": {
+          "type": null,
+          "documentation": null
+        },
+        "CinematicTextureGroups": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceMipLevelsToBeResident(bool OverrideForceMiplevelsToBeResident, bool bForceMiplevelsToBeResidentValue, float ForceDuration, optional int CinematicTextureGroups)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

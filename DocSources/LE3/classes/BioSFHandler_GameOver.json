@@ -1,0 +1,150 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "GameOverString": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "BadResumeGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AcceptBadResumeGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "AbleToLoad": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ShowLoadScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowLoadScreen()"
+    },
+    "AS_DisableLoadButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_DisableLoadButton()"
+    },
+    "AS_SetGameOverString": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetGameOverString(string sText)"
+    },
+    "Callback_GotoMainMenu": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_GotoMainMenu(bool bAPressed, int Context)"
+    },
+    "DisplayResumeFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayResumeFailure()"
+    },
+    "GameOverResume_Callback": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GameOverResume_Callback(bool bWasSuccessful)"
+    },
+    "GoToMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GoToMainMenu()"
+    },
+    "GotoMainMenuOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oMovie": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GotoMainMenuOnCloseCallback(SFXGUIMovie oMovie)"
+    },
+    "InitializeGameOver": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeGameOver()"
+    },
+    "LoadLastSave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadLastSave()"
+    },
+    "OpenLoadScreenOnCloseDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "oMovie": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenLoadScreenOnCloseDelegate(SFXGUIMovie oMovie)"
+    },
+    "QuitToMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuitToMainMenu()"
+    },
+    "SetGameOverString": {
+      "documentation": null,
+      "signature_members": {
+        "messageId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameOverString(stringref messageId)"
+    },
+    "StopAnyMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnyMusic()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

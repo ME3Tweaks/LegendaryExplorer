@@ -1,0 +1,25 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_pPSysComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PSystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFinished(ParticleSystemComponent PSystem)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

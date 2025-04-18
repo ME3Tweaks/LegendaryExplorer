@@ -1,0 +1,141 @@
+{
+  "parent": "StaticMesh",
+  "package": "Engine",
+  "variables": {
+    "SourceStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "SourceCoreMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "CoreMeshScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoreMeshScale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CoreMeshOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CoreMeshRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "PlaneBias": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "bSliceUsingCoreCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FragmentDestroyEffect": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "FragmentDestroyEffects": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "FragmentDestroyEffectScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FragmentHealthScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FragmentMinHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "FragmentMaxHealth": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUniformFragmentHealth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ChunkLinVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "ChunkAngVel": {
+      "type": "float",
+      "documentation": null
+    },
+    "ChunkLinHorizontalScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionVelScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCompositeChunksExplodeOnImpact": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFixIsolatedChunks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysBreakOffIsolatedIslands": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSpawnPhysicsChunks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ChanceOfPhysicsChunk": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionChanceOfPhysicsChunk": {
+      "type": "float",
+      "documentation": null
+    },
+    "NormalPhysicsChunkScaleMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "NormalPhysicsChunkScaleMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionPhysicsChunkScaleMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExplosionPhysicsChunkScaleMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinConnectionSupportArea": {
+      "type": "float",
+      "documentation": null
+    },
+    "DynamicOutsideMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "LoseChunkOutsideMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "OutsideMaterialIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

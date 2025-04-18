@@ -1,0 +1,310 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "LastCamLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastMagneticEllipse": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DebugAdhesion_Smoothed": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DebugAdhesion_Final": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DebugAdhesion_Combined": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DebugAdhesion_PerfectAim": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DebugAdhesion_StrafeAssist": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ZoomSnapTarget": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AdhesionSmoothForce": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CurrentAimAssistBoneLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastAdhesionTarget": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "LastFrictionTarget": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "LastZoomSnapTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "CurrentAimAssistTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "GlobalFrictionFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "GlobalAimCorrectionFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "GlobalAdhesionFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "GlobalSweepFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyMovementAdhesionFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDistToTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDistMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDistFromAimZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDistFromAimY": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastFrictionMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastTargetRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastTargetHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdhesionSmoothRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdhesionSmoothMag": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrictionSmoothValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "FrictionSmoothRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentAimAssistSoftMargin": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAdjustedAimFor": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "StartFireLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetAdjustedAimFor(Weapon W, Vector StartFireLoc)"
+    },
+    "CacheCurrentAimAssistTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CacheCurrentAimAssistTarget()"
+    },
+    "DebugDraw_Adhesion": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Adhesion(BioHUD H)"
+    },
+    "DebugDraw_Friction": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Friction(BioHUD H)"
+    },
+    "DebugDraw_Magnetism": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Magnetism(BioHUD H)"
+    },
+    "DebugDraw_ZoomSnap": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_ZoomSnap(BioHUD H)"
+    },
+    "GetMagneticAimCorrection": {
+      "documentation": null,
+      "signature_members": {
+        "StartFireLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "BaseAimRot": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxAngle": {
+          "type": null,
+          "documentation": null
+        },
+        "Threshold": {
+          "type": null,
+          "documentation": null
+        },
+        "Range": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetMagneticAimCorrection(Vector StartFireLoc, Rotator BaseAimRot, float MaxAngle, float Threshold, float Range)"
+    },
+    "GetStickRelativeDot": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenAimOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetStickRelativeDot(Vector ScreenAimOffset)"
+    },
+    "PrintQuat": {
+      "documentation": null,
+      "signature_members": {
+        "Q": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrintQuat(Quat Q)"
+    },
+    "ProcessRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessRotation(float DeltaTime, out Rotator DeltaRot)"
+    },
+    "StripRoll": {
+      "documentation": null,
+      "signature_members": {
+        "Q": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat StripRoll(Quat Q)"
+    },
+    "ViewAdhesion": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator ViewAdhesion(float DeltaTime, SFXWeapon Weapon)"
+    },
+    "ViewFriction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ViewFriction(float DeltaTime, SFXWeapon Weapon)"
+    },
+    "ZoomSnap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ZoomSnap()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "FogVolumeDensityComponent",
+  "package": "Engine",
+  "variables": {
+    "Density": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,175 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "PlayerStorageArrayProviders": {
+      "type": "PlayerStorageArrayProvider",
+      "documentation": null
+    },
+    "Profile": {
+      "type": "OnlinePlayerStorage",
+      "documentation": null
+    },
+    "ProviderName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "bWasErrorLastRead": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "SaveStorageData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SaveStorageData()"
+    },
+    "AddReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "ArrayProviderPropertyChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "PropTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ArrayProviderPropertyChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "ClearReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "OnReadStorageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadStorageComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "OnSettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSettingValueUpdated(Name SettingName)"
+    },
+    "ReadData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    },
+    "RefreshStorageData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshStorageData()"
+    },
+    "WriteData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": null,
+          "documentation": null
+        },
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerStorage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

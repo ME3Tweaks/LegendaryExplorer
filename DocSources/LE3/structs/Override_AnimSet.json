@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "aBioMaleSets": {
+      "type": null,
+      "documentation": null
+    },
+    "aBioFemaleSets": {
+      "type": null,
+      "documentation": null
+    },
+    "fxaAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "eAnimSequence": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

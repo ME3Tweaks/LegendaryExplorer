@@ -1,0 +1,61 @@
+{
+  "Members": {
+    "StaticMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "Material": {
+      "type": null,
+      "documentation": null
+    },
+    "Density": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxDrawRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "MinTransitionRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "MinScale": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxScale": {
+      "type": null,
+      "documentation": null
+    },
+    "MinUniformScale": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxUniformScale": {
+      "type": null,
+      "documentation": null
+    },
+    "MinThinningRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "Seed": {
+      "type": null,
+      "documentation": null
+    },
+    "SwayScale": {
+      "type": null,
+      "documentation": null
+    },
+    "AlphaMapThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "SlopeRotationBlend": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Command": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Control": {
+      "type": null,
+      "documentation": null
+    },
+    "Shift": {
+      "type": null,
+      "documentation": null
+    },
+    "Alt": {
+      "type": null,
+      "documentation": null
+    },
+    "bDebug": {
+      "type": null,
+      "documentation": null
+    },
+    "bIgnoreCtrl": {
+      "type": null,
+      "documentation": null
+    },
+    "bIgnoreShift": {
+      "type": null,
+      "documentation": null
+    },
+    "bIgnoreAlt": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

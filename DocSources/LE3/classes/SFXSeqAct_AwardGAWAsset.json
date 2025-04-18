@@ -1,0 +1,84 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "Text": {
+      "type": "string",
+      "documentation": null
+    },
+    "AssetName": {
+      "type": "string",
+      "documentation": null
+    },
+    "srErrorText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAButton": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWasPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_Skin": {
+      "type": "SFX_MB_Skin",
+      "documentation": null
+    },
+    "m_TextAlign": {
+      "type": "SFX_MB_TextAlign",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "MessageInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressed(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

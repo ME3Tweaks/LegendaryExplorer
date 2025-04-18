@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BleedOutState_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BleedOutState_InBleedOut": {
+      "value": 1,
+      "documentation": null
+    },
+    "BleedOutState_ShieldGate": {
+      "value": 2,
+      "documentation": null
+    },
+    "BleedOutState_HealthGate": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

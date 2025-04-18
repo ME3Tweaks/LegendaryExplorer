@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "InVal": {
+      "type": null,
+      "documentation": null
+    },
+    "OutVal": {
+      "type": null,
+      "documentation": null
+    },
+    "ArriveTangent": {
+      "type": null,
+      "documentation": null
+    },
+    "LeaveTangent": {
+      "type": null,
+      "documentation": null
+    },
+    "InterpMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

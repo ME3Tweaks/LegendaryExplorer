@@ -1,0 +1,53 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ModifierData": {
+      "type": "Slider",
+      "documentation": null
+    },
+    "AdditionalParams": {
+      "type": "AdditionalData",
+      "documentation": null
+    },
+    "MorphCategories": {
+      "type": "Category",
+      "documentation": null
+    },
+    "Textures": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_aDefaultSettings": {
+      "type": "BaseHeads",
+      "documentation": null
+    },
+    "m_aBaseHeads": {
+      "type": "BaseHeads",
+      "documentation": null
+    },
+    "NameHeadIndexMap": {
+      "type": "Object",
+      "documentation": null
+    },
+    "MorphFace": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "MorphAnimTree": {
+      "type": "AnimTree",
+      "documentation": null
+    },
+    "MorphTargetSet": {
+      "type": "MorphTargetSet",
+      "documentation": null
+    },
+    "PlayerIsMale": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

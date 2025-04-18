@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "PageIndices": {
+      "type": null,
+      "documentation": null
+    },
+    "FncChapterExclusion": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "ChapterNum": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Body": {
+      "type": null,
+      "documentation": null
+    },
+    "ConsoleBody": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

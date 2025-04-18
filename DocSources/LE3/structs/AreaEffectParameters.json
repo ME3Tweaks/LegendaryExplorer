@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "ConeDirection": {
+      "type": null,
+      "documentation": null
+    },
+    "HitDirectionOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "ConeAngle": {
+      "type": null,
+      "documentation": null
+    },
+    "ImpactFriends": {
+      "type": null,
+      "documentation": null
+    },
+    "ImpactDeadPawns": {
+      "type": null,
+      "documentation": null
+    },
+    "ImpactPlaceables": {
+      "type": null,
+      "documentation": null
+    },
+    "BlockedByObjects": {
+      "type": null,
+      "documentation": null
+    },
+    "DistancedSorted": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

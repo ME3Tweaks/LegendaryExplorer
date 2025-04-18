@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ResistanceType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ResistanceType_Shield": {
+      "value": 1,
+      "documentation": null
+    },
+    "ResistanceType_Biotic": {
+      "value": 2,
+      "documentation": null
+    },
+    "ResistanceType_Armour": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EGAWZone_InnerCouncil": {
+      "value": 0,
+      "documentation": null
+    },
+    "EGAWZone_Terminus": {
+      "value": 1,
+      "documentation": null
+    },
+    "EGAWZone_Earth": {
+      "value": 2,
+      "documentation": null
+    },
+    "EGAWZone_Council": {
+      "value": 3,
+      "documentation": null
+    },
+    "EGAWZone_Attican": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

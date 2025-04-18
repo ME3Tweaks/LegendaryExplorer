@@ -1,0 +1,41 @@
+{
+  "parent": "ParticleModuleLocationPrimitiveBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aSearchDirections": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "fRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInitialLocationOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMovingLocationOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDirectionRelativeToEmitter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTestActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "eIfNoCollision": {
+      "type": "ELocationNearestSurface",
+      "documentation": null
+    },
+    "eOnCollision": {
+      "type": "EBioParticleCollisionComplete",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

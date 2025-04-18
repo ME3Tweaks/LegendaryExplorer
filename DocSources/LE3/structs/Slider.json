@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "m_sName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aoSliderData": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fRandWeights": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aSliderModifiers": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iValue": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iSteps": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iStringRef": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iDescriptionStringRef": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fRandWeightsTotal": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fRandMin": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fRandMax": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bNotched": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,519 @@
+{
+  "parent": "SFXSFHandler_Save",
+  "package": "SFXGame",
+  "variables": {
+    "CareerList": {
+      "type": "SaveGUICareerRecord",
+      "documentation": null
+    },
+    "CorruptedSaveGames": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null
+    },
+    "ImportPlotTable": {
+      "type": "BioGlobalVariableTable",
+      "documentation": null
+    },
+    "loadingCareerMessageBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null
+    },
+    "LoadGameLoseProgressText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmLoadGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelLoadGameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CharNameText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DeleteCareerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmDeleteCareerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDeleteCareerText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CorruptSaveWarningText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmDeleteCorruptText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelDeleteCorruptText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LoadActionText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CareerActionText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "SearchingForCareers": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewGamePlusLoadCareerConfirmation": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSavedRachniiQueen": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srKilledRachniiQueen": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAshSurvivedVirimire": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srKaidenSurvivedVirimire": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSavedTheCouncil": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSacrificedTheCouncil": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDestroyedMaelonsData": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNotDestroyedMaelonsData": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srWrexAlive": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srWrexDead": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srWrexIgnored": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srHeretics_Rewrite": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srHeretics_Destroyed": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCollectorBase_Irradiate": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCollectorBase_Destroyed": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNumberSurvivors": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME1_SFXRomanced_Ashley": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME1_SFXRomanced_Kaidan": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME1_SFXRomanced_Liara": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME1_SFXRomanced_NO_ONE": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_Tali": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_Jack": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_Thane": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_Jacob": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_Garrus": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_Miranda": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srME2_SFXRomanced_NO_ONE": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentCareerIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bShouldRescanCareers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowingSearchingCharacterOverlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LoadMode": {
+      "type": "ELoadGuiMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_ScrollDetailsAnalog": {
+      "documentation": null,
+      "signature_members": {
+        "fScroll": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ScrollDetailsAnalog(float fScroll)"
+    },
+    "BeginInitializeCareers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitializeCareers()"
+    },
+    "BeginInitializeLoadList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginInitializeLoadList()"
+    },
+    "Callback_ConfirmDeleteCorruptSaves": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDeleteCorruptSaves(bool bAPressed, int Context)"
+    },
+    "CheckForCorruptSaves": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckForCorruptSaves()"
+    },
+    "EndInitializeCareers": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndInitializeCareers(SFXSaveGameCommandEventArgs Args)"
+    },
+    "EndInitializeLoadList": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EndInitializeLoadList(SFXSaveGameCommandEventArgs Args)"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetNewGamePlusSaveSummary": {
+      "documentation": null,
+      "signature_members": {
+        "aSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetNewGamePlusSaveSummary(SFXSaveGame aSave)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HideImportSearchOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideImportSearchOverlay()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "InitImportManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitImportManager()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "ShowImportSearchOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowImportSearchOverlay()"
+    },
+    "Callback_ConfirmDeleteCareer": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "CareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDeleteCareer(bool bAPressed, int CareerIdx)"
+    },
+    "Callback_ConfirmLoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmLoadGame(bool bAPressed, int Context)"
+    },
+    "Callback_ConfirmNGPlusLoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmNGPlusLoadGame(bool bAPressed, int Context)"
+    },
+    "DeleteCareer": {
+      "documentation": null,
+      "signature_members": {
+        "nCareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteCareer(int nCareerIdx)"
+    },
+    "DeleteGame": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteGame(int nIndex)"
+    },
+    "FillCareerListCallback_InitializeLoadList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FillCareerListCallback_InitializeLoadList()"
+    },
+    "GetPlotSummary": {
+      "documentation": null,
+      "signature_members": {
+        "nSaveIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPlotSummary(int nSaveIndex)"
+    },
+    "InitializeLoadList": {
+      "documentation": null,
+      "signature_members": {
+        "CareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeLoadList(optional int CareerIdx)"
+    },
+    "LaunchNGPlusSaveFromCareer": {
+      "documentation": null,
+      "signature_members": {
+        "nCareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LaunchNGPlusSaveFromCareer(int nCareerIdx)"
+    },
+    "LoadGame": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGame(int nIndex)"
+    },
+    "LoadGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGameCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "OnStorageDeviceChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStorageDeviceChanged()"
+    },
+    "QuitToMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuitToMainMenu()"
+    },
+    "ResetGui": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGui(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SaveCommandCallback_InitializeCareers": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveCommandCallback_InitializeCareers(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SelectCareer": {
+      "documentation": null,
+      "signature_members": {
+        "nCareerIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectCareer(int nCareerIdx)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

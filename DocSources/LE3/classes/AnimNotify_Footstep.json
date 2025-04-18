@@ -1,0 +1,13 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {
+    "FootDown": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

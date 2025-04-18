@@ -1,0 +1,371 @@
+{
+  "parent": "Interaction",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_FGlobalDataStoreClientManager": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "AxisInputEmulation": {
+      "type": "UIAxisEmulationData",
+      "documentation": null
+    },
+    "MouseButtonRepeatInfo": {
+      "type": "UIKeyRepeatData",
+      "documentation": null
+    },
+    "UISkinName": {
+      "type": "string",
+      "documentation": null
+    },
+    "UISoundCueNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SupportedDoubleClickKeys": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SceneClientClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CanvasScene": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "WidgetInputAliasLookupTable": {
+      "type": "Object",
+      "documentation": null
+    },
+    "AxisEmulationDefinitions": {
+      "type": "Object",
+      "documentation": null
+    },
+    "SceneClient": {
+      "type": "GameUISceneClient",
+      "documentation": null
+    },
+    "DataStoreManager": {
+      "type": "DataStoreClient",
+      "documentation": null
+    },
+    "UIInputConfig": {
+      "type": "UIInputConfiguration",
+      "documentation": null
+    },
+    "UIJoystickDeadZone": {
+      "type": "float",
+      "documentation": null
+    },
+    "UIAxisMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "AxisRepeatDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "MouseButtonRepeatDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "DoubleClickTriggerSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "DoubleClickPixelTolerance": {
+      "type": "int",
+      "documentation": null
+    },
+    "ToolTipInitialDelaySeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "ToolTipExpirationSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "bProcessInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableToolTips": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFocusOnActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFocusedStateRules": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsUIPrimitiveSceneInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanPlayOnline": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayOnline(int ControllerId)"
+    },
+    "CreateScene": {
+      "documentation": null,
+      "signature_members": {
+        "SceneClass": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SceneTemplate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIScene",
+      "signature": "coerce UIScene CreateScene(Class<UIScene> SceneClass, optional Name SceneTag, optional UIScene SceneTemplate)"
+    },
+    "CreateTransientWidget": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetClass": {
+          "type": null,
+          "documentation": null
+        },
+        "WidgetTag": {
+          "type": null,
+          "documentation": null
+        },
+        "Owner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "coerce UIObject CreateTransientWidget(Class<UIObject> WidgetClass, Name WidgetTag, optional UIObject Owner)"
+    },
+    "GetDataStoreClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "DataStoreClient",
+      "signature": "DataStoreClient GetDataStoreClient()"
+    },
+    "GetLoginStatus": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLoginStatus(int ControllerId)"
+    },
+    "GetNATType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENATType",
+      "signature": "ENATType GetNATType()"
+    },
+    "GetPlayerControllerId": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPlayerControllerId(int PlayerIndex)"
+    },
+    "GetPlayerCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPlayerCount()"
+    },
+    "GetPlayerIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPlayerIndex(int ControllerId)"
+    },
+    "HasLinkConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasLinkConnection()"
+    },
+    "IsGamepadConnected": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGamepadConnected(int ControllerId)"
+    },
+    "IsLoggedIn": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "bRequireOnlineLogin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsLoggedIn(int ControllerId, optional bool bRequireOnlineLogin)"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    },
+    "PlayUISound": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayUISound(Name SoundCueName, optional int PlayerIndex)"
+    },
+    "SetMousePosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewMouseX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMouseY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMousePosition(int NewMouseX, int NewMouseY)"
+    },
+    "NotifyPlayerAdded": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "AddedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerAdded(int PlayerIndex, LocalPlayer AddedPlayer)"
+    },
+    "NotifyPlayerRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "RemovedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerRemoved(int PlayerIndex, LocalPlayer RemovedPlayer)"
+    },
+    "CanAllPlayOnline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanAllPlayOnline()"
+    },
+    "GetConnectedGamepadCount": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerConnectionStatusOverrides": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetConnectedGamepadCount(optional array<bool> ControllerConnectionStatusOverrides)"
+    },
+    "GetLocalPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer GetLocalPlayer(int PlayerIndex)"
+    },
+    "GetLoggedInPlayerCount": {
+      "documentation": null,
+      "signature_members": {
+        "bRequireOnlineLogin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetLoggedInPlayerCount(optional bool bRequireOnlineLogin)"
+    },
+    "GetLowestLoginStatusOfControllers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLowestLoginStatusOfControllers()"
+    },
+    "GetNumGuestsLoggedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumGuestsLoggedIn()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

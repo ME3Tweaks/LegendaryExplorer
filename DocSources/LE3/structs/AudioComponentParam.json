@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ParamName": {
+      "type": null,
+      "documentation": null
+    },
+    "FloatParam": {
+      "type": null,
+      "documentation": null
+    },
+    "WaveParam": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

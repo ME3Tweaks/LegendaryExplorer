@@ -1,0 +1,183 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "Markers": {
+      "type": "SFXGUIValue_Marker",
+      "documentation": null
+    },
+    "ObjectiveTextActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ObjectiveText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "TextStayUpDuration": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AddMarker": {
+      "documentation": null,
+      "signature_members": {
+        "NewMarkerActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMarker(Actor NewMarkerActor)"
+    },
+    "ASAddMarker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GFxValue",
+      "signature": "GFxValue ASAddMarker()"
+    },
+    "ASFadeOutObjectiveText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ASFadeOutObjectiveText()"
+    },
+    "ASPlayObjectiveText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "StayUpDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASPlayObjectiveText(string Text, float StayUpDuration)"
+    },
+    "ASPlayTextPopupAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASPlayTextPopupAnimation(string Text)"
+    },
+    "ASRemoveMarker": {
+      "documentation": null,
+      "signature_members": {
+        "MovieClip": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ASRemoveMarker(GFxValue MovieClip)"
+    },
+    "BeginOnDemandPulse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginOnDemandPulse()"
+    },
+    "ConnectToMarkerManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConnectToMarkerManager()"
+    },
+    "DeferredConnectToMarkerManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeferredConnectToMarkerManager()"
+    },
+    "DelayedGFxInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DelayedGFxInitialize()"
+    },
+    "DisplayObjectiveText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayObjectiveText()"
+    },
+    "DisplayTextPopup": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayTextPopup(string Text)"
+    },
+    "FadeOutMarkers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutMarkers()"
+    },
+    "HideObjectiveText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideObjectiveText()"
+    },
+    "MarkerManagerDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MarkerManagerDestroyed()"
+    },
+    "RemoveMarker": {
+      "documentation": null,
+      "signature_members": {
+        "MarkerActorToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveMarker(Actor MarkerActorToRemove)"
+    },
+    "SetObjectiveText": {
+      "documentation": null,
+      "signature_members": {
+        "NewObjectiveText": {
+          "type": null,
+          "documentation": null
+        },
+        "NewObjectiveTextActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectiveText(stringref NewObjectiveText, Actor NewObjectiveTextActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

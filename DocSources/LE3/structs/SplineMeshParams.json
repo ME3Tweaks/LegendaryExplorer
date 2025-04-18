@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "StartPos": {
+      "type": null,
+      "documentation": null
+    },
+    "StartTangent": {
+      "type": null,
+      "documentation": null
+    },
+    "EndPos": {
+      "type": null,
+      "documentation": null
+    },
+    "EndTangent": {
+      "type": null,
+      "documentation": null
+    },
+    "StartScale": {
+      "type": null,
+      "documentation": null
+    },
+    "StartOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "EndScale": {
+      "type": null,
+      "documentation": null
+    },
+    "EndOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "StartRoll": {
+      "type": null,
+      "documentation": null
+    },
+    "EndRoll": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

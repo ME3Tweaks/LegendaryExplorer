@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "MachineId": {
+      "type": null,
+      "documentation": null
+    },
+    "Trustworthiness": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

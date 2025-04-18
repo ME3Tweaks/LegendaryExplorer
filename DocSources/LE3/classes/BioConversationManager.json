@@ -1,0 +1,157 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapKismetToConversation": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_aPreloadingConversations": {
+      "type": "BioConversationController",
+      "documentation": null
+    },
+    "m_aReadyConversations": {
+      "type": "BioConversationController",
+      "documentation": null
+    },
+    "m_aActiveConversations": {
+      "type": "BioConversationController",
+      "documentation": null
+    },
+    "m_aSimpleDialogPlayers": {
+      "type": "BioSimpleDialog",
+      "documentation": null
+    },
+    "m_bActivatingConversation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AnyConversationsActive": {
+      "documentation": null,
+      "signature_members": {
+        "eConvType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeFull": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeAmbient": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AnyConversationsActive(optional EBioConversationType eConvType, optional bool bIncludeFull, optional bool bIncludeAmbient)"
+    },
+    "GetConversationControllerByResourceID": {
+      "documentation": null,
+      "signature_members": {
+        "nResourceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioConversationController",
+      "signature": "BioConversationController GetConversationControllerByResourceID(int nResourceID)"
+    },
+    "GetFullConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioConversationController",
+      "signature": "BioConversationController GetFullConversation()"
+    },
+    "InterruptAmbientConversations": {
+      "documentation": null,
+      "signature_members": {
+        "sReason": {
+          "type": null,
+          "documentation": null
+        },
+        "pIgnoreConv": {
+          "type": null,
+          "documentation": null
+        },
+        "pOnlyThis": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterruptAmbientConversations(const out string sReason, BioConversation pIgnoreConv, BioConversation pOnlyThis)"
+    },
+    "IsAnyControllerActiveForResourceID": {
+      "documentation": null,
+      "signature_members": {
+        "nResourceID": {
+          "type": null,
+          "documentation": null
+        },
+        "pIgnoreController": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeFull": {
+          "type": null,
+          "documentation": null
+        },
+        "bIncludeAmbient": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAnyControllerActiveForResourceID(int nResourceID, optional BioConversationController pIgnoreController, optional bool bIncludeFull, optional bool bIncludeAmbient)"
+    },
+    "RemoveConversation": {
+      "documentation": null,
+      "signature_members": {
+        "pController": {
+          "type": null,
+          "documentation": null
+        },
+        "sReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveConversation(BioConversationController pController, const out string sReason)"
+    },
+    "AddSimpleDialog": {
+      "documentation": null,
+      "signature_members": {
+        "pNewDialogObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSimpleDialog(BioSimpleDialog pNewDialogObject)"
+    },
+    "GetSimpleDialog": {
+      "documentation": null,
+      "signature_members": {
+        "nEventName": {
+          "type": null,
+          "documentation": null
+        },
+        "srReplyLine": {
+          "type": null,
+          "documentation": null
+        },
+        "srVOLine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioSimpleDialog",
+      "signature": "BioSimpleDialog GetSimpleDialog(Name nEventName, stringref srReplyLine, stringref srVOLine)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

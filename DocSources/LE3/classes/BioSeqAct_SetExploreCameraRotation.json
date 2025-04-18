@@ -1,0 +1,35 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bForceInstant": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "IsCameraExploreMode": {
+      "documentation": null,
+      "signature_members": {
+        "pCameraMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCameraExploreMode(SFXCameraMode pCameraMode)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

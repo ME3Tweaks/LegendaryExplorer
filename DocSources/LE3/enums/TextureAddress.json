@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "TA_Wrap": {
+      "value": 0,
+      "documentation": null
+    },
+    "TA_Clamp": {
+      "value": 1,
+      "documentation": null
+    },
+    "TA_Mirror": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

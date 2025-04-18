@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Wave": {
+      "type": null,
+      "documentation": null
+    },
+    "PitchScale": {
+      "type": null,
+      "documentation": null
+    },
+    "VolumeScale": {
+      "type": null,
+      "documentation": null
+    },
+    "Weight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

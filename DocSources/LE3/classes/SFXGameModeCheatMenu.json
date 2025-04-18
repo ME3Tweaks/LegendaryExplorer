@@ -1,0 +1,86 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "DebugDraw_PropertyEditor": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_PropertyEditor(BioHUD HUD)"
+    },
+    "EndIPE": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndIPE()"
+    },
+    "IPEBack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEBack()"
+    },
+    "IPEDownAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEDownAction()"
+    },
+    "IPEForward": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEForward()"
+    },
+    "IPELeftShoulder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPELeftShoulder()"
+    },
+    "IPELeftTrigger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPELeftTrigger()"
+    },
+    "IPERightShoulder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPERightShoulder()"
+    },
+    "IPERightTrigger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPERightTrigger()"
+    },
+    "IPEUpAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IPEUpAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

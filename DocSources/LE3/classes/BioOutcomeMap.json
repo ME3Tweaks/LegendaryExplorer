@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "OutcomeMapping": {
+      "type": "Map_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "EngineVersion": {
+      "type": null,
+      "documentation": null
+    },
+    "StatsWriterVersion": {
+      "type": null,
+      "documentation": null
+    },
+    "StreamOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "FooterOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalStreamSize": {
+      "type": null,
+      "documentation": null
+    },
+    "FileSize": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

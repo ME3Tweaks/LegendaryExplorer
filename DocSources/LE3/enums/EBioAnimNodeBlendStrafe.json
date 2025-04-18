@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendStrafe_Forward": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendStrafe_Backward": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendStrafe_Left": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendStrafe_Right": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "DCLICK_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "DCLICK_Left": {
+      "value": 1,
+      "documentation": null
+    },
+    "DCLICK_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "DCLICK_Forward": {
+      "value": 3,
+      "documentation": null
+    },
+    "DCLICK_Back": {
+      "value": 4,
+      "documentation": null
+    },
+    "DCLICK_Active": {
+      "value": 5,
+      "documentation": null
+    },
+    "DCLICK_Done": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

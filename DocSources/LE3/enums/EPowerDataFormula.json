@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "BonusIsHardValue": {
+      "value": 1,
+      "documentation": null
+    },
+    "DivideByBonusSum": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,164 @@
+{
+  "parent": "SFXProjectile_PowerCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "FuseSound": {
+      "type": "WwiseEventPairObject",
+      "documentation": null
+    },
+    "GrenadeWarningStartSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "GrenadeWarningStopSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ProjectileSpeedMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProjectileSpeedMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationsPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "SpeedThresholdFuseLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bExploded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSpeedThresholdFuseSet": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        },
+        "WallComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor Other, Vector HitLocation, Vector HitNormal)"
+    },
+    "Bounce": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Bounce(Actor HitActor, Vector HitLocation, Vector HitNormal)"
+    },
+    "FuseDone": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FuseDone()"
+    },
+    "InitializePowerProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": null,
+          "documentation": null
+        },
+        "fTravelSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "fRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializePowerProjectile(Actor oCaster, float fTravelSpeed, float fRadius, SFXPowerCustomAction oPower)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

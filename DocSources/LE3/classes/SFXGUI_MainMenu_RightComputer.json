@@ -1,0 +1,448 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MessagePriorities": {
+      "type": "SFXOnlineConnection_MessageType",
+      "documentation": null
+    },
+    "Messages": {
+      "type": "SFXGUI_MainMenu_Message",
+      "documentation": null
+    },
+    "TickerMessages": {
+      "type": "SFXGUI_MainMenu_Message",
+      "documentation": null
+    },
+    "DisconnectedTickerMessages": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "__OnComputerDisplayRegistered__Delegate": {
+      "type": "OnComputerDisplayRegistered",
+      "documentation": null
+    },
+    "__OnConnectButtonExecuted__Delegate": {
+      "type": "OnConnectButtonExecuted",
+      "documentation": null
+    },
+    "ComputerDisplay": {
+      "type": "SFXGUI_MainMenu_RTT_RC",
+      "documentation": null
+    },
+    "nNextMessageID": {
+      "type": "int",
+      "documentation": null
+    },
+    "nCurrentlySelectedMessageIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "nLastTickerMessageIDDisplayed": {
+      "type": "int",
+      "documentation": null
+    },
+    "nCurrentlyDisplayedTickerMessageIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxNumberOfImages": {
+      "type": "int",
+      "documentation": null
+    },
+    "bComputerOpen": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearNotifications": {
+      "documentation": null,
+      "signature_members": {
+        "MessageTypesToClear": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearNotifications(optional array<SFXOnlineConnection_MessageType> MessageTypesToClear)"
+    },
+    "GetLocalizedNewsItemCount": {
+      "documentation": null,
+      "signature_members": {
+        "nCurrentlySelectedIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocalizedNewsItemCount(int nCurrentlySelectedIndex)"
+    },
+    "OnComputerDisplayRegistered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnComputerDisplayRegistered()"
+    },
+    "OnConnectButtonExecuted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnConnectButtonExecuted()"
+    },
+    "OnResortMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnResortMessages()"
+    },
+    "ResortMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResortMessages()"
+    },
+    "ResortTickerMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResortTickerMessages()"
+    },
+    "FindIndex": {
+      "documentation": null,
+      "signature_members": {
+        "oMessageToFind": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindIndex(SFXGUI_MainMenu_Message oMessageToFind)"
+    },
+    "AddDisconnectedTickerMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddDisconnectedTickerMessages()"
+    },
+    "AddDownloadPromtMessageItem": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sImage": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "nDLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDownloadPromtMessageItem(string i_sTitle, string i_sInfo, string i_sImage, SFXOnlineConnection_MessageType Type, int nDLC_ID, int ServerID)"
+    },
+    "AddNetworkImageMessage": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "nDLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNetworkImageMessage(string i_sTitle, string i_sInfo, string i_sImagePath, SFXOnlineConnection_MessageType Type, int nDLC_ID, int ServerID)"
+    },
+    "AddTickerMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "nDLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTickerMessage(SFXOnlineConnection_MessageType Type, string i_sMessage, int nDLC_ID, int ServerID)"
+    },
+    "AddTickerMessageInternal": {
+      "documentation": null,
+      "signature_members": {
+        "aTickerMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTickerMessageInternal(SFXGUI_MainMenu_Message_Text aTickerMessage)"
+    },
+    "CanLoadImages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanLoadImages()"
+    },
+    "ClearDisconnectedTickerMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDisconnectedTickerMessages()"
+    },
+    "CloseComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseComputer()"
+    },
+    "CountImageMessagesThatAreLoading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int CountImageMessagesThatAreLoading()"
+    },
+    "FailImageAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FailImageAssets()"
+    },
+    "FindMessage": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUI_MainMenu_Message",
+      "signature": "SFXGUI_MainMenu_Message FindMessage(int nID)"
+    },
+    "FindMessageByServerId": {
+      "documentation": null,
+      "signature_members": {
+        "nServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUI_MainMenu_Message",
+      "signature": "SFXGUI_MainMenu_Message FindMessageByServerId(int nServerID)"
+    },
+    "FindTickerMessageByServerId": {
+      "documentation": null,
+      "signature_members": {
+        "nServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUI_MainMenu_Message",
+      "signature": "SFXGUI_MainMenu_Message FindTickerMessageByServerId(int nServerID)"
+    },
+    "GetDisplayComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUI_MainMenu_RTT_RC",
+      "signature": "SFXGUI_MainMenu_RTT_RC GetDisplayComputer()"
+    },
+    "GetNextMessageID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNextMessageID()"
+    },
+    "GetNextTickerMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNextTickerMessage()"
+    },
+    "IsComputerOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsComputerOpen()"
+    },
+    "LoadPendingMessageData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadPendingMessageData()"
+    },
+    "MessageAboutToDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "nMessageId": {
+          "type": null,
+          "documentation": null
+        },
+        "nArrayIndexLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageAboutToDisplay(int nMessageId, int nArrayIndexLocation)"
+    },
+    "NextMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextMessage()"
+    },
+    "OnConnectButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnConnectButton()"
+    },
+    "OnGFXClassLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGFXClassLoaded(int nID)"
+    },
+    "OnImageMessageDataLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "oMessageThatFinishedLoading": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnImageMessageDataLoaded(SFXGUI_MainMenu_Message oMessageThatFinishedLoading)"
+    },
+    "OnShutdown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnShutdown()"
+    },
+    "OpenComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenComputer()"
+    },
+    "OutputMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutputMessages()"
+    },
+    "PrevMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevMessage()"
+    },
+    "SetConnectButtonState": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetConnectButtonState(string sMessage, optional bool bVisible)"
+    },
+    "SetDisplayComputer": {
+      "documentation": null,
+      "signature_members": {
+        "oRC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDisplayComputer(SFXGUI_MainMenu_RTT_RC oRC)"
+    },
+    "SetImageForMessage": {
+      "documentation": null,
+      "signature_members": {
+        "anImageMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetImageForMessage(SFXGUI_MainMenu_Message_Image anImageMessage)"
+    },
+    "StartMessageTicker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMessageTicker()"
+    },
+    "SyncronizeGameAndGFxMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SyncronizeGameAndGFxMessages()"
+    },
+    "UpdateNavigationButtons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateNavigationButtons()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

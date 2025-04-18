@@ -1,0 +1,66 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTextureOverrides": {
+      "type": "TextureParameter",
+      "documentation": null
+    },
+    "m_aColorOverrides": {
+      "type": "ColorParameter",
+      "documentation": null
+    },
+    "m_aScalarOverrides": {
+      "type": "ScalarParameter",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Apply(MeshComponent InComponent)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(MeshComponent InComponent)"
+    },
+    "ApplyOverride": {
+      "documentation": null,
+      "signature_members": {
+        "InTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyOverride(Actor InTarget)"
+    },
+    "UnapplyOverride": {
+      "documentation": null,
+      "signature_members": {
+        "InTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnapplyOverride(Actor InTarget)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

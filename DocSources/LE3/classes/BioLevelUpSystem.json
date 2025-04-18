@@ -1,0 +1,147 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ME2ImportReputationAmount": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AttemptLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "Squad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AttemptLevelUp(BioBaseSquad Squad)"
+    },
+    "AutoLevelUpPowers": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoLevelUpPowers(BioPawn Pawn)"
+    },
+    "GetLevelFromXP": {
+      "documentation": null,
+      "signature_members": {
+        "experience": {
+          "type": null,
+          "documentation": null
+        },
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLevelFromXP(int experience, out int Level)"
+    },
+    "GetMaxLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxLevel()"
+    },
+    "GetTalentPointSum": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "bHenchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetTalentPointSum(int Level, bool bHenchman)"
+    },
+    "GetXPNeededForLevel": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        },
+        "experience": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetXPNeededForLevel(int Level, out int experience)"
+    },
+    "LevelUpBioPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "newLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LevelUpBioPawn(SFXPawn_PlayerParty Pawn, int newLevel)"
+    },
+    "ME2ToME3_ParagonRenegade": {
+      "documentation": null,
+      "signature_members": {
+        "Paragon_ME2": {
+          "type": null,
+          "documentation": null
+        },
+        "Renegade_ME2": {
+          "type": null,
+          "documentation": null
+        },
+        "Paragon_ME3": {
+          "type": null,
+          "documentation": null
+        },
+        "Renegade_ME3": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ME2ToME3_ParagonRenegade(int Paragon_ME2, int Renegade_ME2, out int Paragon_ME3, out int Renegade_ME3)"
+    },
+    "SetME2ImportStartingValues": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerRecord": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetME2ImportStartingValues(out PlayerSaveRecord PlayerRecord)"
+    },
+    "VerifyPlayerTalentPoints": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "VerifyPlayerTalentPoints(SFXPawn Pawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

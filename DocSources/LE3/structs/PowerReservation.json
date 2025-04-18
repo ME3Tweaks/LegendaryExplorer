@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "nID": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeUntilExpiry": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

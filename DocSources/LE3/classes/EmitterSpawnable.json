@@ -1,0 +1,40 @@
+{
+  "parent": "Emitter",
+  "package": "Engine",
+  "variables": {
+    "ParticleTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "bDestroyOnFinish": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(ParticleSystem NewTemplate, optional bool bDestroyOnFinish)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

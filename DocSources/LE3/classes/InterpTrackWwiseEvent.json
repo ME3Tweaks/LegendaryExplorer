@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrack",
+  "package": "WwiseAudio",
+  "variables": {
+    "WwiseEvents": {
+      "type": "WwiseEventTrackKey",
+      "documentation": null
+    },
+    "m_bRequiresPreload": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "StatName": {
+      "type": null,
+      "documentation": null
+    },
+    "ColorMap": {
+      "type": null,
+      "documentation": null
+    },
+    "DisableBlend": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

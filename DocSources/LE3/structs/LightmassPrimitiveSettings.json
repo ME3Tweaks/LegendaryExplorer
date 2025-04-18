@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "bUseTwoSidedLighting": {
+      "type": null,
+      "documentation": null
+    },
+    "bShadowIndirectOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseEmissiveForStaticLighting": {
+      "type": null,
+      "documentation": null
+    },
+    "EmissiveLightFalloffExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "EmissiveLightExplicitInfluenceRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "EmissiveBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "DiffuseBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "SpecularBoost": {
+      "type": null,
+      "documentation": null
+    },
+    "FullyOccludedSamplesFraction": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,1204 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMappingIconPaths": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oPowerIndices": {
+      "type": "SFXPowerWheelPawnIndices",
+      "documentation": null
+    },
+    "m_oWeaponIndices": {
+      "type": "SFXPowerWheelPawnIndices",
+      "documentation": null
+    },
+    "m_oMapTextIcon1": {
+      "type": "SFXPowerWheelButtonIcon",
+      "documentation": null
+    },
+    "m_oMapTextIcon2": {
+      "type": "SFXPowerWheelButtonIcon",
+      "documentation": null
+    },
+    "m_aPowerIconInfo": {
+      "type": "SFXPowerIconData",
+      "documentation": null
+    },
+    "m_aPowerIcons": {
+      "type": "SFXGUIValue_PowerIcon",
+      "documentation": null
+    },
+    "m_aWeaponIcons": {
+      "type": "SFXPowerWheelIconWeapon",
+      "documentation": null
+    },
+    "m_aRadarElementData": {
+      "type": "SFXRadarElementData",
+      "documentation": null
+    },
+    "m_sWheelPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sWheelInnerPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sTitleTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sNameTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sInfoTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sInfoTextBGPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sUseButtonPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sUseTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapButton1Path": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapText1Path": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapButton2Path": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapText2Path": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapText3Path": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapButton3Path": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aRadarIconFramePaths": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sShepardBlockerPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHench1BlockerPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHench2BlockerPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sRadarPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sTeam1StatusTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sTeam1PowerTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHench1PortraitImagePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHench1PortraitMovieClipPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sTeam2StatusTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sTeam2PowerTextPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHench2PortraitImagePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sHench2PortraitMovieClipPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sWheelArrowPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sNuiSpeechIconPath": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sNotSuggestedPrefix": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sNotSuggestedSuffix": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMap1Token": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMap2Token": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMap3Token": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapHench1Token": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sMapHench2Token": {
+      "type": "string",
+      "documentation": null
+    },
+    "__WeaponSort__Delegate": {
+      "type": "WeaponSort",
+      "documentation": null
+    },
+    "m_aWeaponStateFrames": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_vLStickInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_pPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null
+    },
+    "m_pPlayerSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "m_vViewportOffsets": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_pShepardPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_pHench1Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_pHench2Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_pCurrentPlayerSelection": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_vCacheRadarBoundaryTopLeft": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_vCacheRadarBoundaryBottomRight": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_vBoundaryDimensions": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "m_fButtonTextPadding": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMovieWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMovieHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRemainingRadarPulseTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fInfoTextChangeDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRemainingInfoTextChangeDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimeToNextVehicleRadarUpdate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTimeToNextObjectiveUpdate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastProcessedStickAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentProcessedStickAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fThumbstickInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastStickDeflection": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLStickAngleDeltaDeg": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLStickStickyIconAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentPowerIconIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentWeaponIconIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentSelectedWeapon": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fCacheTargetDirection": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCacheNorthDirection": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCachePathDirection": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCacheRadarBoundaryRotation": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srBlocked": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srPawnIncapacitated": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srWeaponSwitching": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srWeaponOverheating": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srWeaponReloading": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srDisplayTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srWeaponWheelDisplayTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srPowerWheelDisplayTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srEquip": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srUse": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srMap": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srOverheated": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srRecharging": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srUnavailable": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srRadarRangeUnits": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srNorthText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srObjective": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fRadarDirectionChangeDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRadarElementLocationChangeDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRadarRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fBoundaryShrinkFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fVehicleRadarUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRadarObjectiveUpdateInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRadarVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRadarOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInOutTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bProcessSquadHenchmen": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanMapPlayerPowers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHavePathAssistGoal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPingPathAssistArrow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInfoTextBackgroundVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDesiredInfoTextBackgroundVisibility": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bWheelArrowVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bObjectiveRadarOn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPulsingRadar": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowUseMapText": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSquadChanged": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_ePowerWheelMode": {
+      "type": "SFXPowerWheelMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanIssueImmediateOrder": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanIssueImmediateOrder(Pawn pPawn)"
+    },
+    "CanIssueQueuedOrder": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanIssueQueuedOrder(Pawn pPawn)"
+    },
+    "CollectRadarElementData": {
+      "documentation": null,
+      "signature_members": {
+        "aRadarData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CollectRadarElementData(out array<SFXRadarElementData> aRadarData)"
+    },
+    "doHotKey": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "doHotKey(int nIndex)"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetCurrentHenchmanOrder": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetCurrentHenchmanOrder(BioPawn pPawn)"
+    },
+    "GetHenchmanMappedPower": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetHenchmanMappedPower(BioPawn pPawn)"
+    },
+    "GetMapBoundaryValues": {
+      "documentation": null,
+      "signature_members": {
+        "vTopLeft": {
+          "type": null,
+          "documentation": null
+        },
+        "vBottomRight": {
+          "type": null,
+          "documentation": null
+        },
+        "fBoundaryRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetMapBoundaryValues(out Vector2D vTopLeft, out Vector2D vBottomRight, out float fBoundaryRotation)"
+    },
+    "GetPawnFromName": {
+      "documentation": null,
+      "signature_members": {
+        "nmPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetPawnFromName(Name nmPawn)"
+    },
+    "GetRadarDirectionValues": {
+      "documentation": null,
+      "signature_members": {
+        "fArrowDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "fNorthDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "fPathingArrowDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetRadarDirectionValues(out float fArrowDirection, out float fNorthDirection, out float fPathingArrowDirection)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HaveHenchmen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HaveHenchmen()"
+    },
+    "HoverPowerIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HoverPowerIcon(int nIconIndex, bool bSkipTransition)"
+    },
+    "HoverWeaponIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HoverWeaponIcon(int nIconIndex, optional bool bForceUpdate)"
+    },
+    "InitDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitDisplay()"
+    },
+    "LeavePowerIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LeavePowerIcon(int nIconIndex, bool bSkipTransition)"
+    },
+    "LeaveWeaponIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LeaveWeaponIcon(int nIconIndex)"
+    },
+    "MapCurrentPower": {
+      "documentation": null,
+      "signature_members": {
+        "eIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MapCurrentPower(SFXPowerWheelMapButtonIcon eIcon)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "PulseRadar": {
+      "documentation": null,
+      "signature_members": {
+        "fPulseTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PulseRadar(float fPulseTime)"
+    },
+    "RadarVisibilityChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "bObjectiveMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RadarVisibilityChanged(bool bVisible, optional bool bObjectiveMode)"
+    },
+    "RemoveHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveHenchman(BioPawn pPawn)"
+    },
+    "SelectCurrentPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectCurrentPower()"
+    },
+    "SetHenchmanMappedPower": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetHenchmanMappedPower(BioPawn pPawn, Name nmPower)"
+    },
+    "SetMappingIcon": {
+      "documentation": null,
+      "signature_members": {
+        "oIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "eNewIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "bClear": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMappingIcon(out SFXPowerWheelButtonIcon oIcon, SFXPowerWheelMapButtonIcon eNewIcon, optional bool bClear)"
+    },
+    "SetMapText": {
+      "documentation": null,
+      "signature_members": {
+        "sText1": {
+          "type": null,
+          "documentation": null
+        },
+        "eIcon1": {
+          "type": null,
+          "documentation": null
+        },
+        "sText2": {
+          "type": null,
+          "documentation": null
+        },
+        "eIcon2": {
+          "type": null,
+          "documentation": null
+        },
+        "sText3": {
+          "type": null,
+          "documentation": null
+        },
+        "eIcon3": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMapText(string sText1, SFXPowerWheelMapButtonIcon eIcon1, optional string sText2, optional SFXPowerWheelMapButtonIcon eIcon2, optional string sText3, optional SFXPowerWheelMapButtonIcon eIcon3)"
+    },
+    "SetupPlayerPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupPlayerPowers()"
+    },
+    "SetupWeaponDisplayForPawn": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "ePawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupWeaponDisplayForPawn(BioPawn pPawn, SFXPowerWheelPawnID ePawn)"
+    },
+    "SetUseText": {
+      "documentation": null,
+      "signature_members": {
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUseText(string sText)"
+    },
+    "SetWeaponState": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eNewWeapState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponState(int nWeapIndex, SFXPowerWheelWeaponState eNewWeapState)"
+    },
+    "SetWeaponType": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sWeaponIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nNewWeapIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponType(int nWeapIndex, string sWeaponIconResource, int nNewWeapIcon)"
+    },
+    "SetWheelVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWheelVisible(bool bVisible)"
+    },
+    "UpdatePowerInformationText": {
+      "documentation": null,
+      "signature_members": {
+        "oIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePowerInformationText(SFXGUIValue_PowerIcon oIcon)"
+    },
+    "UpdateRadarArrows": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateRadarArrows()"
+    },
+    "UpdateRadarDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "bObjectiveMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateRadarDisplay(bool bObjectiveMode)"
+    },
+    "UpdateRadarElementPositions": {
+      "documentation": null,
+      "signature_members": {
+        "aRadarData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateRadarElementPositions(out array<SFXRadarElementData> aRadarData)"
+    },
+    "UpdateRadarMapBoundaries": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateRadarMapBoundaries()"
+    },
+    "UpdateTextDisplayForIcon": {
+      "documentation": null,
+      "signature_members": {
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTextDisplayForIcon(int nIconIndex)"
+    },
+    "UpdateWeaponIconDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "oIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "sAltPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWeaponIconDisplay(SFXPowerWheelIconWeapon oIcon, optional string sAltPath)"
+    },
+    "UsePower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerName": {
+          "type": null,
+          "documentation": null
+        },
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UsePower(Name PowerName, Pawn Pawn)"
+    },
+    "WeaponSort": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int WeaponSort(SFXWeapon A, SFXWeapon B)"
+    },
+    "WheelVisibilityChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WheelVisibilityChanged(bool bVisible)"
+    },
+    "AS_ShowWheel": {
+      "documentation": null,
+      "signature_members": {
+        "bMakeVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowWheel(bool bMakeVisible)"
+    },
+    "CleanupReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CleanupReferences()"
+    },
+    "ExInt_WheelTransitionOutDone": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExInt_WheelTransitionOutDone()"
+    },
+    "HideWeaponIcon": {
+      "documentation": null,
+      "signature_members": {
+        "pPanel": {
+          "type": null,
+          "documentation": null
+        },
+        "Icon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideWeaponIcon(SFXGUIMovieLegacyAdapter pPanel, GFxValue Icon)"
+    },
+    "InitPowerIcons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitPowerIcons()"
+    },
+    "IsPawnBlocked": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPawnBlocked(BioPawn pPawn)"
+    },
+    "OnAllowCameraRotation": {
+      "documentation": null,
+      "signature_members": {
+        "i_bValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAllowCameraRotation(bool i_bValue)"
+    },
+    "SelectCurrentWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectCurrentWeapon()"
+    },
+    "SelectCurrentWheelItem": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectCurrentWheelItem(SFXPowerWheelMode eMode)"
+    },
+    "SelectWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectWeapon(int nWeaponIndex)"
+    },
+    "SetInformationText": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": null,
+          "documentation": null
+        },
+        "sDesc": {
+          "type": null,
+          "documentation": null
+        },
+        "bDisplayNuiSpeechIcon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInformationText(string sName, string sDesc, bool bDisplayNuiSpeechIcon)"
+    },
+    "SetSquadPawnDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "sPortraitImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "sPortraitMovieClipPath": {
+          "type": null,
+          "documentation": null
+        },
+        "HenchPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSquadPawnDisplay(string sPortraitImagePath, string sPortraitMovieClipPath, BioPawn HenchPawn)"
+    },
+    "SetStatusAndPowerText": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "ePawnID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStatusAndPowerText(BioPawn pPawn, SFXPowerWheelPawnID ePawnID)"
+    },
+    "SetWeaponIcon": {
+      "documentation": null,
+      "signature_members": {
+        "pWeap": {
+          "type": null,
+          "documentation": null
+        },
+        "nSlotIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponIcon(SFXWeapon pWeap, int nSlotIndex, BioPawn pPawn)"
+    },
+    "SetWeaponTypeDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "pPanel": {
+          "type": null,
+          "documentation": null
+        },
+        "oIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nNewType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponTypeDisplay(SFXGUIMovieLegacyAdapter pPanel, GFxValue oIcon, string sIconResource, int nNewType)"
+    },
+    "SortWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "aWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SortWeapons(BioPawn pPawn, out array<SFXWeapon> aWeapons)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

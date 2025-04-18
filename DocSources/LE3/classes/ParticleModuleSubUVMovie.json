@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModuleSubUV",
+  "package": "Engine",
+  "variables": {
+    "FrameRate": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "StartingFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseEmitterTime": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

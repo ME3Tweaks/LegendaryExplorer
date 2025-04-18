@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Events": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddTickerEntry": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTickerEntry(string Text)"
+    },
+    "ClearTicker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearTicker()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,89 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Timeline": {
+      "type": "TimelineEffect",
+      "documentation": null
+    },
+    "__AOEEvalFunc__Delegate": {
+      "type": "AOEEvalFunc",
+      "documentation": null
+    },
+    "__InputHandler__Delegate": {
+      "type": "InputHandler",
+      "documentation": null
+    },
+    "Source": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "FuncOwner": {
+      "type": "Object",
+      "documentation": null
+    },
+    "Lifetime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LifetimeLeft": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AOEEvalFunc": {
+      "documentation": null,
+      "signature_members": {
+        "ChkOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "ChkTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AOEEvalFunc(Actor ChkOwner, Actor ChkTarget)"
+    },
+    "InitializeTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "oFuncOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeTimeline(Object oFuncOwner)"
+    },
+    "InputCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Alias": {
+          "type": null,
+          "documentation": null
+        },
+        "bPress": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InputCallback(string Alias, bool bPress)"
+    },
+    "InputHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InputHandler()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

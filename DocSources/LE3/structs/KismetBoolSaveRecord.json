@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "BoolGUID": {
+      "type": null,
+      "documentation": null
+    },
+    "bValue": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

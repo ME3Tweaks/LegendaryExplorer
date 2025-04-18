@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "bHasVoice": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasNetworkedVoice": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsRecognizingSpeech": {
+      "type": null,
+      "documentation": null
+    },
+    "bWasTalking": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsTalking": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsRegistered": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

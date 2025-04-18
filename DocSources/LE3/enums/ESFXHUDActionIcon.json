@@ -1,0 +1,65 @@
+{
+  "EnumValues": {
+    "SFXHUD_Action_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXHUD_Cover_Enter": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXHUD_Cover_Mantle": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXHUD_Cover_Climb": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXHUD_Cover_90DegreeRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXHUD_Cover_90DegreeLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXHUD_Cover_SlipRight": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXHUD_Cover_SlipLeft": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXHUD_Cover_SwatTurnRight": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXHUD_Cover_SwatTurnLeft": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXHUD_Cover_Grab": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXHUD_LadderUp": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXHUD_LadderDown": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXHUD_GapJump": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXHUD_AtlasSuit": {
+      "value": 14,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

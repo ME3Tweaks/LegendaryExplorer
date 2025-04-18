@@ -1,0 +1,58 @@
+{
+  "parent": "UIDataStore_StringBase",
+  "package": "Engine",
+  "variables": {
+    "MenuInputSets": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "MenuInputMapArray": {
+      "type": "UIMenuInputMap",
+      "documentation": null
+    },
+    "PlayerIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindMappingWithFieldName": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "SetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindMappingWithFieldName(optional string FieldName, optional string SetName)"
+    },
+    "GetPlayerOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer GetPlayerOwner()"
+    },
+    "GetStringWithFieldName": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "MappedString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetStringWithFieldName(string FieldName, out string MappedString)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

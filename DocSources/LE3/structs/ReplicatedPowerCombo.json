@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "EffectClass": {
+      "type": null,
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetPawn": {
+      "type": null,
+      "documentation": null
+    },
+    "SourcePowerInstigator": {
+      "type": null,
+      "documentation": null
+    },
+    "TriggerCounter": {
+      "type": null,
+      "documentation": null
+    },
+    "DetonatorPowerID": {
+      "type": null,
+      "documentation": null
+    },
+    "SourcePowerID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

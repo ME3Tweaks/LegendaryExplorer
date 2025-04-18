@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "AchievementName": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "HowTo": {
+      "type": null,
+      "documentation": null
+    },
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "GamerPoints": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsSecret": {
+      "type": null,
+      "documentation": null
+    },
+    "bWasAchievedOnline": {
+      "type": null,
+      "documentation": null
+    },
+    "bWasAchievedOffline": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

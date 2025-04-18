@@ -1,0 +1,117 @@
+{
+  "parent": "PostProcessEffect",
+  "package": "Engine",
+  "variables": {
+    "OcclusionColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "HBAOBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "HBAORadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "HBAOBlurSharpnessX": {
+      "type": "float",
+      "documentation": null
+    },
+    "HBAOBlurSharpnessY": {
+      "type": "float",
+      "documentation": null
+    },
+    "HBAOMeters2ViewSpace": {
+      "type": "float",
+      "documentation": null
+    },
+    "HBAOIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionPower": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionAttenuation": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionFadeoutMinDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "OcclusionFadeoutMaxDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "HaloDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "HaloDistanceScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "HaloOcclusion": {
+      "type": "float",
+      "documentation": null
+    },
+    "EdgeDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "EdgeDistanceScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FilterDistanceScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FilterSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "HistoryConvergenceTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HistoryWeightConvergenceTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HBAO": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SSAO2": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OcclusionQuality": {
+      "type": "EAmbientOcclusionQuality",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

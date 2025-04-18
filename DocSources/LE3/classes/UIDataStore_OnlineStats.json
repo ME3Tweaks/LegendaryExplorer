@@ -1,0 +1,113 @@
+{
+  "parent": "UIDataStore_Remote",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PlayerNickData": {
+      "type": "PlayerNickMetaData",
+      "documentation": null
+    },
+    "RankNameMetaData": {
+      "type": "RankMetaData",
+      "documentation": null
+    },
+    "StatsReadClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "StatsReadObjects": {
+      "type": "OnlineStatsRead",
+      "documentation": null
+    },
+    "StatsInterface": {
+      "type": "OnlineStatsInterface",
+      "documentation": null
+    },
+    "PlayerInterface": {
+      "type": "OnlinePlayerInterface",
+      "documentation": null
+    },
+    "StatsReadName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TotalRowsName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StatsRead": {
+      "type": "OnlineStatsRead",
+      "documentation": null
+    },
+    "CurrentReadType": {
+      "type": "EStatsFetchType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    },
+    "OnReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadComplete(bool bWasSuccessful)"
+    },
+    "RefreshStats": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshStats(byte ControllerIndex)"
+    },
+    "ShowGamercard": {
+      "documentation": null,
+      "signature_members": {
+        "ConrollerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "ListIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowGamercard(byte ConrollerIndex, int ListIndex)"
+    },
+    "SortResultsByRank": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SortResultsByRank()"
+    },
+    "SetStatsReadInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetStatsReadInfo()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

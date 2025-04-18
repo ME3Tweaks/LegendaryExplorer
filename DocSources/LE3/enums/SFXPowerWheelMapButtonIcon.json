@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "PWBI_Icon_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "PWBI_FaceButtonTop": {
+      "value": 1,
+      "documentation": null
+    },
+    "PWBI_FaceButtonLeft": {
+      "value": 2,
+      "documentation": null
+    },
+    "PWBI_DPadLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "PWBI_DPadRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "PWBI_ShoulderLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "PWBI_ShoulderRight": {
+      "value": 6,
+      "documentation": null
+    },
+    "PWBI_TriggerLeft": {
+      "value": 7,
+      "documentation": null
+    },
+    "PWBI_TriggerRight": {
+      "value": 8,
+      "documentation": null
+    },
+    "PWBI_ICON_COUNT": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

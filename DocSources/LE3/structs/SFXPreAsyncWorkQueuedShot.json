@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Impact": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapon": {
+      "type": null,
+      "documentation": null
+    },
+    "NumHits": {
+      "type": null,
+      "documentation": null
+    },
+    "FrameCount": {
+      "type": null,
+      "documentation": null
+    },
+    "bSuppressAudio": {
+      "type": null,
+      "documentation": null
+    },
+    "FiringMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

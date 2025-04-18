@@ -1,0 +1,1127 @@
+{
+  "parent": "GameAIController",
+  "package": "SFXGame",
+  "variables": {
+    "EnemyList": {
+      "type": "EnemyInfo",
+      "documentation": null
+    },
+    "DelayUpdateList": {
+      "type": "DelayUpdateInfo",
+      "documentation": null
+    },
+    "IgnoredTargets": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "IgnoredSquads": {
+      "type": "BioBaseSquad",
+      "documentation": null
+    },
+    "Cover": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "CoverGoal": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "LastCover": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "MovePoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "SpawnFactory": {
+      "type": "SFXSeqAct_AIFactory2",
+      "documentation": null
+    },
+    "FireTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "ForcedTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "PreferredTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "MyBP": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "MoveGoal": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "EnemyListLastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpEnemyLocSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "Response_MinEnemySeenTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Response_MinEnemyHearTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TargetAcquisitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyDistance_Short": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyDistance_Medium": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyDistance_Long": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyDistance_Melee": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fActivateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "AdjustToSlotTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "UnawarePeripheralVision": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDebug_AI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug_AIRange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug_AIEnemyList": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebug_ThreatRadius": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcquireNewCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHighCoverOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReachedMoveGoal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReachedCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableFriendlyNotifications": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUnaware": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AdjustSteeringMoveSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustSteeringMoveSpeed(Vector vSteering)"
+    },
+    "AdjustToSlot": {
+      "documentation": null,
+      "signature_members": {
+        "TargetSlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustToSlot(int TargetSlotIdx)"
+    },
+    "AutoAcquireEnemy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoAcquireEnemy()"
+    },
+    "AutoNotifyEnemy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoNotifyEnemy()"
+    },
+    "CanAISeeByPoints": {
+      "documentation": null,
+      "signature_members": {
+        "ViewLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckSmoke": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanAISeeByPoints(Vector ViewLocation, Vector TestLocation, Rotator ViewRotation, bool bCheckSmoke)"
+    },
+    "CanFireAt": {
+      "documentation": null,
+      "signature_members": {
+        "ChkTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "ViewPt": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseEyeLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanFireAt(Actor ChkTarget, Vector ViewPt, optional bool bUseEyeLocation, optional bool bUseRotation)"
+    },
+    "CanHearPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Heard": {
+          "type": null,
+          "documentation": null
+        },
+        "Loudness": {
+          "type": null,
+          "documentation": null
+        },
+        "DistSq": {
+          "type": null,
+          "documentation": null
+        },
+        "DotSourceToRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "NoiseType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanHearPawn(Pawn Heard, float Loudness, float DistSq, float DotSourceToRotation, Name NoiseType)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "DirectWalkCheck": {
+      "documentation": null,
+      "signature_members": {
+        "vTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DirectWalkCheck(const out Vector vTarget, Actor pTarget)"
+    },
+    "FillEnemyList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FillEnemyList()"
+    },
+    "FindNearestOpenLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vStartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vFoundLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nMaxShellsToCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindNearestOpenLocation(Vector vStartLocation, out Vector vFoundLocation, optional Pawn oTarget, optional int nMaxShellsToCheck)"
+    },
+    "FinishAnimatedTransition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishAnimatedTransition()"
+    },
+    "GetCover": {
+      "documentation": null,
+      "signature_members": {
+        "ChkPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Cover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCover(Pawn ChkPawn, out CoverInfo out_Cover)"
+    },
+    "GetEnemyIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TestPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetEnemyIndex(Pawn TestPawn)"
+    },
+    "GetEnemyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "TestPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "LT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetEnemyLocation(optional Pawn TestPawn, optional ELocationType LT)"
+    },
+    "GetEnemyLocationByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        },
+        "LT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetEnemyLocationByIndex(int idx, optional ELocationType LT)"
+    },
+    "GetFireTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "LT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetFireTargetLocation(optional ELocationType LT)"
+    },
+    "GetLookingDirection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetLookingDirection()"
+    },
+    "GetPawnCover": {
+      "documentation": null,
+      "signature_members": {
+        "ChkPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Cover": {
+          "type": null,
+          "documentation": null
+        },
+        "bOnlyUseCachedCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPawnCover(Pawn ChkPawn, out CoverInfo out_Cover, optional bool bOnlyUseCachedCover)"
+    },
+    "GetPeripheralVision": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPeripheralVision()"
+    },
+    "GetPlayerViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_Location": {
+          "type": null,
+          "documentation": null
+        },
+        "out_rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerViewPoint(out Vector out_Location, out Rotator out_rotation)"
+    },
+    "GetSteeringVector": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSteeringVector(out Vector vSteering)"
+    },
+    "HasLOSToTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fTimeOfHit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasLOSToTarget(Actor pTarget, out float fTimeOfHit)"
+    },
+    "HasValidCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasValidCover()"
+    },
+    "HasValidTarget": {
+      "documentation": null,
+      "signature_members": {
+        "TestTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasValidTarget(optional Actor TestTarget)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "InRange": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InRange(Vector TestLocation, float Distance)"
+    },
+    "InterpEnemyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpEnemyLocation(int idx)"
+    },
+    "InvalidateCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InvalidateCover()"
+    },
+    "IsCoverExposedToAnEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "TestCover": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ExposedScale": {
+          "type": null,
+          "documentation": null
+        },
+        "TestEnemy": {
+          "type": null,
+          "documentation": null
+        },
+        "bActualLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCoverExposedToAnEnemy(const out CoverInfo TestCover, out float out_ExposedScale, optional Pawn TestEnemy, optional bool bActualLocation)"
+    },
+    "IsEnemyVisibleByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEnemyVisibleByIndex(int idx)"
+    },
+    "IsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriendly(Controller Other)"
+    },
+    "IsHostile": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHostile(Controller Other)"
+    },
+    "IsReloading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReloading()"
+    },
+    "IsSwitchingWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSwitchingWeapons()"
+    },
+    "IsTargetInFiringArc": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "fFiringArcAsDot": {
+          "type": null,
+          "documentation": null
+        },
+        "LT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTargetInFiringArc(BioPawn pPawn, Actor pTarget, float fFiringArcAsDot, optional ELocationType LT)"
+    },
+    "IsValidCover": {
+      "documentation": null,
+      "signature_members": {
+        "TestCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidCover(const out CoverInfo TestCover)"
+    },
+    "MapName_Hench_Teleport": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MapName_Hench_Teleport(float X, float Y)"
+    },
+    "MoveToSlot": {
+      "documentation": null,
+      "signature_members": {
+        "vSlotLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToSlot(Vector vSlotLocation)"
+    },
+    "NotifyEnemyVisible": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeSinceSeen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEnemyVisible(int EnemyIdx, float TimeSinceSeen)"
+    },
+    "NotifyNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "NewEnemy": {
+          "type": null,
+          "documentation": null
+        },
+        "bPerceivedDirectly": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNewEnemy(Pawn NewEnemy, bool bPerceivedDirectly, bool bFirstEnemy)"
+    },
+    "NotifyNewEnemyFromFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNewEnemyFromFriendly(Pawn Target)"
+    },
+    "NotifyNoEnemiesPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyNoEnemiesPerceived()"
+    },
+    "OnEnteredPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnEnteredPlaypen()"
+    },
+    "OnEnteringStasis": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnEnteringStasis()"
+    },
+    "OnLeavingStasis": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLeavingStasis()"
+    },
+    "OnLeftPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLeftPlaypen()"
+    },
+    "PlayerActivate": {
+      "documentation": null,
+      "signature_members": {
+        "Target_": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayerActivate(Actor Target_)"
+    },
+    "Possess": {
+      "documentation": null,
+      "signature_members": {
+        "NewPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bVehicleTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Possess(Pawn NewPawn, bool bVehicleTransition)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "SetKnownEnemyInfo": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "EnemyPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "EnemyLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetKnownEnemyInfo(int EnemyIdx, Pawn EnemyPawn, Vector EnemyLoc)"
+    },
+    "SteeringMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SteeringMovement()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UnPossess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnPossess()"
+    },
+    "DrawDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebug(BioHUD HUD)"
+    },
+    "CheckNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "Shooter": {
+          "type": null,
+          "documentation": null
+        },
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "WeapLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "LineDir": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckNearMiss(Pawn Shooter, Weapon W, Vector WeapLoc, Vector LineDir, Vector HitLocation)"
+    },
+    "NotifyKilled": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "Killed": {
+          "type": null,
+          "documentation": null
+        },
+        "KilledPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyKilled(Controller Killer, Controller Killed, Pawn KilledPawn)"
+    },
+    "NotifyTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTakeHit(Controller instigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "PawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDied(Pawn inPawn)"
+    },
+    "AddIgnoredSquad": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddIgnoredSquad(BioBaseSquad oSquad)"
+    },
+    "AddIgnoredTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddIgnoredTarget(Actor oTarget)"
+    },
+    "GetForcedTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetForcedTarget()"
+    },
+    "GetPreferredTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetPreferredTarget()"
+    },
+    "HasAnyEnemies": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasAnyEnemies()"
+    },
+    "HasValidEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "TestEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasValidEnemy(optional Pawn TestEnemy)"
+    },
+    "InMeleeRange": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InMeleeRange(Vector TestLocation)"
+    },
+    "InShortRange": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InShortRange(Vector TestLocation)"
+    },
+    "IsMediumRange": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMediumRange(Vector TestLocation)"
+    },
+    "IsShortRange": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsShortRange(Vector TestLocation)"
+    },
+    "NotifyCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "Attacker": {
+          "type": null,
+          "documentation": null
+        },
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyCastAt(Pawn Attacker, SFXPowerCustomAction Power)"
+    },
+    "NotifyNearMiss": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNearMiss(Vector HitLocation)"
+    },
+    "NotifyNewEnemyBase": {
+      "documentation": null,
+      "signature_members": {
+        "NewEnemy": {
+          "type": null,
+          "documentation": null
+        },
+        "bPerceivedDirectly": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNewEnemyBase(Pawn NewEnemy, bool bPerceivedDirectly, bool bFirstEnemy)"
+    },
+    "OnLastManStanding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLastManStanding()"
+    },
+    "RecordDemoAILog": {
+      "documentation": null,
+      "signature_members": {
+        "LogText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordDemoAILog(coerce string LogText)"
+    },
+    "RemoveIgnoredSquad": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveIgnoredSquad(BioBaseSquad oSquad)"
+    },
+    "RemoveIgnoredTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveIgnoredTarget(Actor oTarget)"
+    },
+    "SetForcedTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForcedTarget(Actor oTarget)"
+    },
+    "SetPreferredTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPreferredTarget(Actor oTarget)"
+    },
+    "TestPlayFlinch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestPlayFlinch()"
+    },
+    "TimeSinceEnemyLocationUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float TimeSinceEnemyLocationUpdate(int idx)"
+    },
+    "TimeSinceEnemyVisible": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float TimeSinceEnemyVisible(int idx)"
+    },
+    "TimeSinceHurtByEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float TimeSinceHurtByEnemy(int idx)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,97 @@
+{
+  "parent": "SFXCharacterClass_NativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponEncumbranceModifiers": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "className": {
+      "type": "string",
+      "documentation": null
+    },
+    "MappedPowers": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PowerUnlockRequirements": {
+      "type": "PowerUnlockRequirement",
+      "documentation": null
+    },
+    "SquadScreenPowerOrder": {
+      "type": "Class",
+      "documentation": null
+    },
+    "StartingPowerRanks": {
+      "type": "PowerStartingRank",
+      "documentation": null
+    },
+    "AutoLevelUpInfo": {
+      "type": "PowerAutoLevelUp",
+      "documentation": null
+    },
+    "Loadout": {
+      "type": "SFXLoadoutData",
+      "documentation": null
+    },
+    "BioticStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "TechStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "CombatStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "srClassName": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassPrimaryDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "srClassSecondaryDesc": {
+      "type": "int",
+      "documentation": null
+    },
+    "BloodColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "RichPresenceContextStringIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "StartingEncumbranceCapacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "EncumbranceMinCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "EncumbranceMaxCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWeapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClassType": {
+      "type": "ECharacterClass",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

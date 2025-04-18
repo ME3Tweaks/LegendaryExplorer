@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "SplitName": {
+      "type": null,
+      "documentation": null
+    },
+    "FixedSize": {
+      "type": null,
+      "documentation": null
+    },
+    "ExpandRatio": {
+      "type": null,
+      "documentation": null
+    },
+    "bFixSize": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

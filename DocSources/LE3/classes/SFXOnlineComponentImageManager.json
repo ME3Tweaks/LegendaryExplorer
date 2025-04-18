@@ -1,0 +1,209 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "mPendingRequests": {
+      "type": "SFXOnlineImageRequest",
+      "documentation": null
+    },
+    "mCompletedRequests": {
+      "type": "SFXOnlineImageRequest",
+      "documentation": null
+    },
+    "mBaseUrl": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnImageRequestCompleted__Delegate": {
+      "type": "OnImageRequestCompleted",
+      "documentation": null
+    },
+    "mMaxImages": {
+      "type": "int",
+      "documentation": null
+    },
+    "mMaxBytes": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearReferences()"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetImage": {
+      "documentation": null,
+      "signature_members": {
+        "ImageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineImageRequest",
+      "signature": "SFXOnlineImageRequest GetImage(string ImageName)"
+    },
+    "OnImageRequestCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnImageRequestCompleted(SFXOnlineImageRequest request)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnJobComplete": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJobComplete(SFXOnlineHTTPRequest request)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "ProcessImage": {
+      "documentation": null,
+      "signature_members": {
+        "imageRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessImage(out SFXOnlineImageRequest imageRequest)"
+    },
+    "SetBaseURL": {
+      "documentation": null,
+      "signature_members": {
+        "BaseUrl": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBaseURL(string BaseUrl)"
+    },
+    "SetMaxBytes": {
+      "documentation": null,
+      "signature_members": {
+        "maxBytes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxBytes(int maxBytes)"
+    },
+    "SetMaxImages": {
+      "documentation": null,
+      "signature_members": {
+        "maxImages": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxImages(int maxImages)"
+    },
+    "StartRequest": {
+      "documentation": null,
+      "signature_members": {
+        "ImageName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineImageRequest",
+      "signature": "SFXOnlineImageRequest StartRequest(string ImageName)"
+    },
+    "RequestImage": {
+      "documentation": null,
+      "signature_members": {
+        "ImageName": {
+          "type": null,
+          "documentation": null
+        },
+        "CompletedCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestImage(string ImageName, delegate<OnImageRequestCompleted> CompletedCallback)"
+    },
+    "AddCompletedRequest": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCompletedRequest(SFXOnlineImageRequest request)"
+    },
+    "AddPendingRequest": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPendingRequest(SFXOnlineImageRequest request)"
+    },
+    "RemoveRequest": {
+      "documentation": null,
+      "signature_members": {
+        "request": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineImageRequest",
+      "signature": "SFXOnlineImageRequest RemoveRequest(SFXOnlineHTTPRequest request)"
+    },
+    "SumTotalSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int SumTotalSize()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

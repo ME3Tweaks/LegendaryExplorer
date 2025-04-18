@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ARR_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "ARR_OOM": {
+      "value": 1,
+      "documentation": null
+    },
+    "ARR_Passed": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

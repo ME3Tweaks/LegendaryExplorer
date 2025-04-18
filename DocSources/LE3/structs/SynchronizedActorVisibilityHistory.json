@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "State": {
+      "type": null,
+      "documentation": null
+    },
+    "CriticalSection": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

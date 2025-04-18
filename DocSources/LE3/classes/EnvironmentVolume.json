@@ -1,0 +1,33 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IInterface_NavMeshPathObstacle": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IInterface_NavMeshPathObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bSplitNavMesh": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetSplitNavMesh": {
+      "documentation": null,
+      "signature_members": {
+        "bNewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSplitNavMesh(bool bNewValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

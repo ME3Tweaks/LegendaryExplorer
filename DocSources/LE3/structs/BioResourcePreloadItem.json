@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "BinkPreloader": {
+      "type": null,
+      "documentation": null
+    },
+    "pObject": {
+      "type": null,
+      "documentation": null
+    },
+    "nKeyIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "fTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bPreloadFired": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

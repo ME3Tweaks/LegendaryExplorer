@@ -1,0 +1,148 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "TableSkelMesh": {
+      "type": "SkeletalMeshActor",
+      "documentation": null
+    },
+    "TableSocket": {
+      "type": "Name",
+      "documentation": null
+    },
+    "ModStatsRenderTexture": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null
+    },
+    "ModControlsRenderTexture": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null
+    },
+    "oMovie": {
+      "type": "SFXGUI_WeaponSelection",
+      "documentation": null
+    },
+    "MaxWeapons": {
+      "type": "int",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ShowAllWeapons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ShowAllMods": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AutoEquipWhenDone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PauseGame": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Prime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Prime()"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaTime)"
+    },
+    "ChangeView": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeView()"
+    },
+    "DataPrimed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DataPrimed()"
+    },
+    "ForcedShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForcedShutDown()"
+    },
+    "SetupModExtension": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupModExtension()"
+    },
+    "SwitchPawn": {
+      "documentation": null,
+      "signature_members": {
+        "NewPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchPawn(Pawn NewPawn)"
+    },
+    "TransitionToWeaponMod": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransitionToWeaponMod()"
+    },
+    "TransitionToWeaponSel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TransitionToWeaponSel()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

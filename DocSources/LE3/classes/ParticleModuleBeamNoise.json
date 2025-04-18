@@ -1,0 +1,89 @@
+{
+  "parent": "ParticleModuleBeamBase",
+  "package": "Engine",
+  "variables": {
+    "NoiseRangeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "NoiseSpeedRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    },
+    "NoiseRangeScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "NoiseTangentStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "NoiseScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "Frequency": {
+      "type": "int",
+      "documentation": null
+    },
+    "Frequency_LowRange": {
+      "type": "int",
+      "documentation": null
+    },
+    "NoiseLockRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoiseLockTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoiseTension": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoiseTessellation": {
+      "type": "int",
+      "documentation": null
+    },
+    "FrequencyDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLowFreq_Enabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNRScaleEmitterTime": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSmooth": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoiseLock": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOscillate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseNoiseTangents": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTargetNoise": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bApplyNoiseScale": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

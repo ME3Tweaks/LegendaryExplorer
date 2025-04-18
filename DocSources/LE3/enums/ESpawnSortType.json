@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SST_Shuffle": {
+      "value": 0,
+      "documentation": null
+    },
+    "SST_Linear": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "Player",
+  "package": "Engine",
+  "variables": {
+    "Children": {
+      "type": "ChildConnection",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "SeenPlayer": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ItemText": {
+      "type": null,
+      "documentation": null
+    },
+    "ParentItem": {
+      "type": null,
+      "documentation": null
+    },
+    "OwnerMenu": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemId": {
+      "type": null,
+      "documentation": null
+    },
+    "ItemType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

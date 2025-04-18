@@ -1,0 +1,57 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "AngleConstraint": {
+      "type": "float",
+      "documentation": null
+    },
+    "EffectorLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "EffectorTranslationFromBone": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "EffectorSpaceBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "NumBones": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxPerBoneIterations": {
+      "type": "int",
+      "documentation": null
+    },
+    "IterationsCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "Precision": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxAngleSteps": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStartFromTail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoTurnOptimization": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EffectorLocationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

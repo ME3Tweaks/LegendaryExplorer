@@ -1,0 +1,88 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_aPackageRequests": {
+      "type": "SFXAsyncPackageRequest",
+      "documentation": null
+    },
+    "m_OnGroupLoadedCallbacks": {
+      "type": "SFXAsyncLoadGroupCallback",
+      "documentation": null
+    },
+    "__OnAsyncGroupLoaded__Delegate": {
+      "type": "OnAsyncGroupLoaded",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AsyncLoadAssets": {
+      "documentation": null,
+      "signature_members": {
+        "nmAsyncGroupTag": {
+          "type": null,
+          "documentation": null
+        },
+        "Assets": {
+          "type": null,
+          "documentation": null
+        },
+        "AsyncGroupLoaded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AsyncLoadAssets(Name nmAsyncGroupTag, const out array<SFXAsyncAssetRequest> Assets, optional delegate<OnAsyncGroupLoaded> AsyncGroupLoaded)"
+    },
+    "ClearAsyncGroup": {
+      "documentation": null,
+      "signature_members": {
+        "nmAsyncGroupTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAsyncGroup(Name nmAsyncGroupTag)"
+    },
+    "GetAssetsForGroup": {
+      "documentation": null,
+      "signature_members": {
+        "nmAsyncGroupTag": {
+          "type": null,
+          "documentation": null
+        },
+        "oAssets": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAssetsForGroup(Name nmAsyncGroupTag, out array<Object> oAssets)"
+    },
+    "IsAsyncGroupLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "nmAsyncGroupTag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAsyncGroupLoaded(Name nmAsyncGroupTag)"
+    },
+    "OnAsyncGroupLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAsyncGroupLoaded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

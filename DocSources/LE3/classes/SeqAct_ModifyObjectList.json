@@ -1,0 +1,13 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "ListEntriesCount": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

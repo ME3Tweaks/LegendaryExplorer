@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "HHO_DefaultOff": {
+      "value": 0,
+      "documentation": null
+    },
+    "HHO_DefaultOn": {
+      "value": 1,
+      "documentation": null
+    },
+    "HHO_ConversationOff": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

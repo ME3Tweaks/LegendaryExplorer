@@ -1,0 +1,17 @@
+{
+  "parent": "Light",
+  "package": "Engine",
+  "variables": {
+    "LightComponents": {
+      "type": "LightComponent",
+      "documentation": null
+    },
+    "MaxLightComponents": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

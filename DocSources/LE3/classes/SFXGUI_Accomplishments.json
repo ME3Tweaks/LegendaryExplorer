@@ -1,0 +1,86 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srReturn": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srBrowse": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srTree": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowChildDetails": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "CanShowChildDetails": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanShowChildDetails()"
+    },
+    "GetAccomplishmentData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AccomplishmentUIData",
+      "signature": "array<AccomplishmentUIData> GetAccomplishmentData()"
+    },
+    "SetFromMainMenu": {
+      "documentation": null,
+      "signature_members": {
+        "FromMainMenu": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFromMainMenu(bool FromMainMenu)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

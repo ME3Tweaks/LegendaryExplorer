@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleSubUVBase",
+  "package": "Engine",
+  "variables": {
+    "SubImageIndex": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

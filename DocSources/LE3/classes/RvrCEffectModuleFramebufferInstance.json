@@ -1,0 +1,26 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_pPostProcessInstance": {
+      "type": "PostProcessChain",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "InstantiateMaterials": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InstantiateMaterials()"
+    },
+    "ResetMaterials": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMaterials()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

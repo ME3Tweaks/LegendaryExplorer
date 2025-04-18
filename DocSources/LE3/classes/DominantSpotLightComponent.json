@@ -1,0 +1,17 @@
+{
+  "parent": "SpotLightComponent",
+  "package": "Engine",
+  "variables": {
+    "DominantLightShadowInfo": {
+      "type": "DominantShadowInfo",
+      "documentation": null
+    },
+    "DominantLightShadowMap": {
+      "type": "Array_Mirror",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

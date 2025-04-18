@@ -1,0 +1,256 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_IISFXOnlineComponentMatchMakingBot": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "mNextActionDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "IdleTimeBetweenActions": {
+      "type": "float",
+      "documentation": null
+    },
+    "ActionProbability_Disconnect": {
+      "type": "float",
+      "documentation": null
+    },
+    "ActionProbability_Back": {
+      "type": "float",
+      "documentation": null
+    },
+    "ActionProbability_Forward": {
+      "type": "float",
+      "documentation": null
+    },
+    "mActivated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SimulateDisconnect": {
+      "type": "bool",
+      "documentation": null
+    },
+    "FastForwardMode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoAction_Disconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoAction_Disconnect()"
+    },
+    "DoAction_GameOver": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_GameOver(byte Action)"
+    },
+    "DoAction_InGame": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_InGame(byte Action)"
+    },
+    "DoAction_Lobby": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_Lobby(byte Action)"
+    },
+    "DoAction_MainMenu": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_MainMenu(byte Action)"
+    },
+    "DoAction_Prompt": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_Prompt(byte Action)"
+    },
+    "DoAction_SelectCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_SelectCharacter(byte Action)"
+    },
+    "DoAction_Splash": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoAction_Splash(byte Action)"
+    },
+    "DoActionForCurrentGUIContext": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoActionForCurrentGUIContext()"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetCurrentContext": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBotGameContext",
+      "signature": "EBotGameContext GetCurrentContext()"
+    },
+    "LaunchCreateMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LaunchCreateMatch()"
+    },
+    "LaunchQuickMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LaunchQuickMatch()"
+    },
+    "MovieNameToGameContext": {
+      "documentation": null,
+      "signature_members": {
+        "MovieName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EBotGameContext",
+      "signature": "EBotGameContext MovieNameToGameContext(Name MovieName)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnQuickMatchComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Result": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnQuickMatchComplete(byte Result)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "PickAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBotAction",
+      "signature": "EBotAction PickAction()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool Enabled)"
+    },
+    "OnCreateMatchComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreateMatchComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "SetOptions": {
+      "documentation": null,
+      "signature_members": {
+        "withDisconnections": {
+          "type": null,
+          "documentation": null
+        },
+        "fastForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOptions(bool withDisconnections, bool fastForward)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

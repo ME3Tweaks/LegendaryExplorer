@@ -1,0 +1,72 @@
+{
+  "parent": "SFXGUI_WeaponReticleBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_oActualReticle": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_oPipRight": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "m_oPipLeft": {
+      "type": "GFxValue",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PerformReticleHide": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformReticleHide(bool bInstant)"
+    },
+    "PerformReticleShow": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformReticleShow(bool bInstant)"
+    },
+    "ResetReticle": {
+      "documentation": null,
+      "signature_members": {
+        "bUnsubscribe": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetReticle(optional bool bUnsubscribe)"
+    },
+    "TargetCanHitChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bInSights": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TargetCanHitChanged(bool bInSights)"
+    },
+    "OnReticleLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReticleLoaded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

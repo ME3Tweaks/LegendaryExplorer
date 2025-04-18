@@ -1,0 +1,56 @@
+{
+  "parent": "BioSFHandler_Conversation",
+  "package": "SFXGame",
+  "variables": {
+    "vMouseInput": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "AccumulationDivisor": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "HighlightDefaultConvSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HighlightDefaultConvSegment()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,181 @@
+{
+  "parent": "BioBaseSquad",
+  "package": "SFXGame",
+  "variables": {
+    "MoveIndicators": {
+      "type": "BioTacticalMoveToIndicator",
+      "documentation": null
+    },
+    "m_playerPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_InitialPlayerPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_fRevivalRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fPercentHealthOnResurrection": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bEngagedHostileAction": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddMember": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckPlaypens": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddMember(Pawn Pawn, optional bool bCheckPlaypens)"
+    },
+    "CombatEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CombatEnded()"
+    },
+    "GetMemberMoveIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioTacticalMoveToIndicator",
+      "signature": "BioTacticalMoveToIndicator GetMemberMoveIndicator(int nIndex)"
+    },
+    "IsFieldingInitialPlayerPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFieldingInitialPlayerPawn()"
+    },
+    "MemberRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberRemoved(Pawn oPawn)"
+    },
+    "NotifyEnemyPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyEnemyPerceived()"
+    },
+    "NotifyNoEnemiesPerceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyNoEnemiesPerceived()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "RemoveMember": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveMember(Pawn pPawn)"
+    },
+    "SetMemberMoveIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "oIndicator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMemberMoveIndicator(int nIndex, BioTacticalMoveToIndicator oIndicator)"
+    },
+    "SetPlayerPawn": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerPawn(BioPawn PlayerPawn)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Killer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Pawn pPawn, Controller Killer)"
+    },
+    "RemoveDyingMember": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveDyingMember(Pawn oPawn)"
+    },
+    "SquadEnterCombatMode": {
+      "documentation": null,
+      "signature_members": {
+        "bEngageEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadEnterCombatMode(optional bool bEngageEnemy)"
+    },
+    "SquadExitCombatMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadExitCombatMode()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

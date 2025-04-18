@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "StartEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "StopEvent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

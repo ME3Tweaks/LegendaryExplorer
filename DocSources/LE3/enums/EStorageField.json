@@ -1,0 +1,369 @@
+{
+  "EnumValues": {
+    "SGF_Base": {
+      "value": 0,
+      "documentation": null
+    },
+    "SGF_Class00": {
+      "value": 1,
+      "documentation": null
+    },
+    "SGF_Class01": {
+      "value": 2,
+      "documentation": null
+    },
+    "SGF_Class02": {
+      "value": 3,
+      "documentation": null
+    },
+    "SGF_Class03": {
+      "value": 4,
+      "documentation": null
+    },
+    "SGF_Class04": {
+      "value": 5,
+      "documentation": null
+    },
+    "SGF_Class05": {
+      "value": 6,
+      "documentation": null
+    },
+    "SGF_Class06": {
+      "value": 7,
+      "documentation": null
+    },
+    "SGF_Class07": {
+      "value": 8,
+      "documentation": null
+    },
+    "SGF_Character00": {
+      "value": 9,
+      "documentation": null
+    },
+    "SGF_Character01": {
+      "value": 10,
+      "documentation": null
+    },
+    "SGF_Character02": {
+      "value": 11,
+      "documentation": null
+    },
+    "SGF_Character03": {
+      "value": 12,
+      "documentation": null
+    },
+    "SGF_Character04": {
+      "value": 13,
+      "documentation": null
+    },
+    "SGF_Character05": {
+      "value": 14,
+      "documentation": null
+    },
+    "SGF_Character06": {
+      "value": 15,
+      "documentation": null
+    },
+    "SGF_Character07": {
+      "value": 16,
+      "documentation": null
+    },
+    "SGF_Character08": {
+      "value": 17,
+      "documentation": null
+    },
+    "SGF_Character09": {
+      "value": 18,
+      "documentation": null
+    },
+    "SGF_Character10": {
+      "value": 19,
+      "documentation": null
+    },
+    "SGF_Character11": {
+      "value": 20,
+      "documentation": null
+    },
+    "SGF_Character12": {
+      "value": 21,
+      "documentation": null
+    },
+    "SGF_Character13": {
+      "value": 22,
+      "documentation": null
+    },
+    "SGF_Character14": {
+      "value": 23,
+      "documentation": null
+    },
+    "SGF_Character15": {
+      "value": 24,
+      "documentation": null
+    },
+    "SGF_Character16": {
+      "value": 25,
+      "documentation": null
+    },
+    "SGF_Character17": {
+      "value": 26,
+      "documentation": null
+    },
+    "SGF_Character18": {
+      "value": 27,
+      "documentation": null
+    },
+    "SGF_Character19": {
+      "value": 28,
+      "documentation": null
+    },
+    "SGF_Character20": {
+      "value": 29,
+      "documentation": null
+    },
+    "SGF_Character21": {
+      "value": 30,
+      "documentation": null
+    },
+    "SGF_Character22": {
+      "value": 31,
+      "documentation": null
+    },
+    "SGF_Character23": {
+      "value": 32,
+      "documentation": null
+    },
+    "SGF_Character24": {
+      "value": 33,
+      "documentation": null
+    },
+    "SGF_Character25": {
+      "value": 34,
+      "documentation": null
+    },
+    "SGF_Character26": {
+      "value": 35,
+      "documentation": null
+    },
+    "SGF_Character27": {
+      "value": 36,
+      "documentation": null
+    },
+    "SGF_Character28": {
+      "value": 37,
+      "documentation": null
+    },
+    "SGF_Character29": {
+      "value": 38,
+      "documentation": null
+    },
+    "SGF_Character30": {
+      "value": 39,
+      "documentation": null
+    },
+    "SGF_Character31": {
+      "value": 40,
+      "documentation": null
+    },
+    "SGF_Character32": {
+      "value": 41,
+      "documentation": null
+    },
+    "SGF_Character33": {
+      "value": 42,
+      "documentation": null
+    },
+    "SGF_Character34": {
+      "value": 43,
+      "documentation": null
+    },
+    "SGF_Character35": {
+      "value": 44,
+      "documentation": null
+    },
+    "SGF_Character36": {
+      "value": 45,
+      "documentation": null
+    },
+    "SGF_Character37": {
+      "value": 46,
+      "documentation": null
+    },
+    "SGF_Character38": {
+      "value": 47,
+      "documentation": null
+    },
+    "SGF_Character39": {
+      "value": 48,
+      "documentation": null
+    },
+    "SGF_Character40": {
+      "value": 49,
+      "documentation": null
+    },
+    "SGF_Character41": {
+      "value": 50,
+      "documentation": null
+    },
+    "SGF_Character42": {
+      "value": 51,
+      "documentation": null
+    },
+    "SGF_Character43": {
+      "value": 52,
+      "documentation": null
+    },
+    "SGF_Character44": {
+      "value": 53,
+      "documentation": null
+    },
+    "SGF_Character45": {
+      "value": 54,
+      "documentation": null
+    },
+    "SGF_Character46": {
+      "value": 55,
+      "documentation": null
+    },
+    "SGF_Character47": {
+      "value": 56,
+      "documentation": null
+    },
+    "SGF_Character48": {
+      "value": 57,
+      "documentation": null
+    },
+    "SGF_Character49": {
+      "value": 58,
+      "documentation": null
+    },
+    "SGF_Character50": {
+      "value": 59,
+      "documentation": null
+    },
+    "SGF_Character51": {
+      "value": 60,
+      "documentation": null
+    },
+    "SGF_Character52": {
+      "value": 61,
+      "documentation": null
+    },
+    "SGF_Character53": {
+      "value": 62,
+      "documentation": null
+    },
+    "SGF_Character54": {
+      "value": 63,
+      "documentation": null
+    },
+    "SGF_Character55": {
+      "value": 64,
+      "documentation": null
+    },
+    "SGF_Character56": {
+      "value": 65,
+      "documentation": null
+    },
+    "SGF_Character57": {
+      "value": 66,
+      "documentation": null
+    },
+    "SGF_Character58": {
+      "value": 67,
+      "documentation": null
+    },
+    "SGF_Character59": {
+      "value": 68,
+      "documentation": null
+    },
+    "SGF_Character60": {
+      "value": 69,
+      "documentation": null
+    },
+    "SGF_Character61": {
+      "value": 70,
+      "documentation": null
+    },
+    "SGF_Character62": {
+      "value": 71,
+      "documentation": null
+    },
+    "SGF_Character63": {
+      "value": 72,
+      "documentation": null
+    },
+    "SGF_Character64": {
+      "value": 73,
+      "documentation": null
+    },
+    "SGF_Character65": {
+      "value": 74,
+      "documentation": null
+    },
+    "SGF_Character66": {
+      "value": 75,
+      "documentation": null
+    },
+    "SGF_Character67": {
+      "value": 76,
+      "documentation": null
+    },
+    "SGF_Character68": {
+      "value": 77,
+      "documentation": null
+    },
+    "SGF_Character69": {
+      "value": 78,
+      "documentation": null
+    },
+    "SGF_Character70": {
+      "value": 79,
+      "documentation": null
+    },
+    "SGF_Character71": {
+      "value": 80,
+      "documentation": null
+    },
+    "SGF_Character72": {
+      "value": 81,
+      "documentation": null
+    },
+    "SGF_Character73": {
+      "value": 82,
+      "documentation": null
+    },
+    "SGF_Character74": {
+      "value": 83,
+      "documentation": null
+    },
+    "SGF_Character75": {
+      "value": 84,
+      "documentation": null
+    },
+    "SGF_Character76": {
+      "value": 85,
+      "documentation": null
+    },
+    "SGF_Character77": {
+      "value": 86,
+      "documentation": null
+    },
+    "SGF_FaceCodes": {
+      "value": 87,
+      "documentation": null
+    },
+    "SGF_NewReinforcements": {
+      "value": 88,
+      "documentation": null
+    },
+    "ASF_Completion": {
+      "value": 89,
+      "documentation": null
+    },
+    "ASF_Progress": {
+      "value": 90,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

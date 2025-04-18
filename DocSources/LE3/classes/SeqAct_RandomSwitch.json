@@ -1,0 +1,13 @@
+{
+  "parent": "SeqAct_Switch",
+  "package": "Engine",
+  "variables": {
+    "AutoDisabledIndices": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "bWaitForVisibleOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitForUnvisibleAndUnloaded": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

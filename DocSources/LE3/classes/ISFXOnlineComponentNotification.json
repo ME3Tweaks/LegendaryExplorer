@@ -1,0 +1,130 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "FetchOfflineEntitlementStoreMappings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FetchOfflineEntitlementStoreMappings()"
+    },
+    "GetDimeInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDimeInfo()"
+    },
+    "GetEntitlementInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEntitlementLookupInfo",
+      "signature": "array<SFXOnlineEntitlementLookupInfo> GetEntitlementInfo()"
+    },
+    "GetMOTDInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineMOTDInfo",
+      "signature": "SFXOnlineMOTDInfo GetMOTDInfo(SFXOnlineConnection_MessageType Type)"
+    },
+    "GetStoreCatalogId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStoreCatalogId()"
+    },
+    "GetTargetOfferId": {
+      "documentation": null,
+      "signature_members": {
+        "nSource": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetTargetOfferId(SFXOnlinePurchaseSource nSource)"
+    },
+    "IsFetchingLiveBinaryINIData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFetchingLiveBinaryINIData()"
+    },
+    "IsLiveINIOutOfDate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLiveINIOutOfDate()"
+    },
+    "PostGetLeaderboardList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostGetLeaderboardList()"
+    },
+    "ReadPlayerStorageCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadPlayerStorageCallback(bool bWasSuccessful)"
+    },
+    "RequestBinaryLiveINIData": {
+      "documentation": null,
+      "signature_members": {
+        "bMainMenu": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestBinaryLiveINIData(bool bMainMenu)"
+    },
+    "RequestData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestData()"
+    },
+    "RequestLiveTlkTable": {
+      "documentation": null,
+      "signature_members": {
+        "bMainMenu": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestLiveTlkTable(bool bMainMenu)"
+    },
+    "RequestServerInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestServerInfo()"
+    },
+    "UpdateMOTDGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMOTDGUI()"
+    },
+    "GetLiveBinaryINIVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetLiveBinaryINIVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

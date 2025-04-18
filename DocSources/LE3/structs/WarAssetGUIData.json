@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "AssetName": {
+      "type": null,
+      "documentation": null
+    },
+    "AssetStrength": {
+      "type": null,
+      "documentation": null
+    },
+    "AssetID": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsNewItem": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

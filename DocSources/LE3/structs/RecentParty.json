@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PartyLeader": {
+      "type": null,
+      "documentation": null
+    },
+    "PartyMembers": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

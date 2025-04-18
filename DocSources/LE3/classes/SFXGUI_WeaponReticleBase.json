@@ -1,0 +1,219 @@
+{
+  "parent": "GFxValue",
+  "package": "SFXGame",
+  "variables": {
+    "m_oMovieResource": {
+      "type": "GFxMovieInfo",
+      "documentation": null
+    },
+    "m_oWeapon": {
+      "type": "SFXWeapon",
+      "documentation": null
+    },
+    "m_fCachedDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCachedAmmo": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCachedZoom": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_srWeaponDistanceUnit": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fWeaponRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bIsVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInShowTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInHideTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitorDistance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitorAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitorZoom": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMonitorCanHitTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCachedCanHitTarget": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bScriptUpdate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSubscribeToImpacts": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DistanceToTargetChanged": {
+      "documentation": null,
+      "signature_members": {
+        "fDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DistanceToTargetChanged(float fDistance)"
+    },
+    "PerformReticleHide": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformReticleHide(bool bInstant)"
+    },
+    "PerformReticleShow": {
+      "documentation": null,
+      "signature_members": {
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PerformReticleShow(bool bInstant)"
+    },
+    "ResetReticle": {
+      "documentation": null,
+      "signature_members": {
+        "bUnsubscribe": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetReticle(optional bool bUnsubscribe)"
+    },
+    "SetReticleVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "bInstant": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReticleVisible(bool bVisible, optional bool bInstant)"
+    },
+    "SetWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "aPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeapon(BioPawn aPawn)"
+    },
+    "TargetCanHitChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bInSights": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TargetCanHitChanged(bool bInSights)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "WeaponAmmoChanged": {
+      "documentation": null,
+      "signature_members": {
+        "nAmmo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponAmmoChanged(int nAmmo)"
+    },
+    "ZoomChanged": {
+      "documentation": null,
+      "signature_members": {
+        "nZoom": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ZoomChanged(int nZoom)"
+    },
+    "OnReticleLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReticleLoaded()"
+    },
+    "OnWeaponImpact": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWeaponImpact()"
+    },
+    "ProcessWeaponImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oWeap": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessWeaponImpact(SFXWeapon oWeap, ImpactInfo HitInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

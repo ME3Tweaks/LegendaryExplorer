@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Angle": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetWeight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

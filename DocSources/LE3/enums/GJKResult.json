@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GJK_Intersect": {
+      "value": 0,
+      "documentation": null
+    },
+    "GJK_NoIntersection": {
+      "value": 1,
+      "documentation": null
+    },
+    "GJK_Fail": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

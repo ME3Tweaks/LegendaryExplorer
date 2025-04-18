@@ -1,0 +1,13 @@
+{
+  "parent": "MaterialExpressionTextureSampleParameter",
+  "package": "Engine",
+  "variables": {
+    "InstanceOverride": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

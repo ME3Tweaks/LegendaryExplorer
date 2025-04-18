@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "AffiliationType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "AffiliationType_GenericMerc": {
+      "value": 1,
+      "documentation": null
+    },
+    "AffiliationType_Reaper": {
+      "value": 2,
+      "documentation": null
+    },
+    "AffiliationType_Cerberus": {
+      "value": 3,
+      "documentation": null
+    },
+    "AffiliationType_Geth": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

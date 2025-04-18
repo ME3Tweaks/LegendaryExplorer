@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SOFTBODYBONE_Fixed": {
+      "value": 0,
+      "documentation": null
+    },
+    "SOFTBODYBONE_BreakableAttachment": {
+      "value": 1,
+      "documentation": null
+    },
+    "SOFTBODYBONE_TwoWayAttachment": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "MapId": {
+      "type": "int",
+      "documentation": null
+    },
+    "PurgeAllMessages": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreatePurgeAllMessagesJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineJobPurgeMessages",
+      "signature": "SFXOnlineJobPurgeMessages CreatePurgeAllMessagesJob()"
+    },
+    "CreatePurgeMessagesJob": {
+      "documentation": null,
+      "signature_members": {
+        "InMapId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobPurgeMessages",
+      "signature": "SFXOnlineJobPurgeMessages CreatePurgeMessagesJob(int InMapId)"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "MaterialExpression",
+      "documentation": null
+    },
+    "BaseProperty": {
+      "type": "EMaterialProperty",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Enabled": {
+      "type": null,
+      "documentation": null
+    },
+    "Base": {
+      "type": null,
+      "documentation": null
+    },
+    "NoiseScale": {
+      "type": null,
+      "documentation": null
+    },
+    "NoiseAmount": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,74 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "HenchmanPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "InteractionPoint": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "fFidelityTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bStartedInteraction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSuccess": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanDoInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanDoInteraction()"
+    },
+    "StartInteraction": {
+      "documentation": null,
+      "signature_members": {
+        "bBusy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartInteraction(out int bBusy)"
+    },
+    "StopInteraction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopInteraction()"
+    },
+    "ReachedInteractionCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedInteractionCallback()"
+    },
+    "StoppedInteractionCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bSuccess": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StoppedInteractionCallback(bool bSuccess)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

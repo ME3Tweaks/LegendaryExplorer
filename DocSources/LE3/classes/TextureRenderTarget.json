@@ -1,0 +1,21 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "bUpdateImmediate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNeedsTwoCopies": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderOnce": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

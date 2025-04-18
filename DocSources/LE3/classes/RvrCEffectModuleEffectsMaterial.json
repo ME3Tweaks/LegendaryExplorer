@@ -1,0 +1,25 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_FractionEnabled": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "m_nmEffect": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_bAllAttachments": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eTarget": {
+      "type": "EEffectLocationTarget",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

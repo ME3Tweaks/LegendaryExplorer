@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ShadowMaps": {
+      "type": null,
+      "documentation": null
+    },
+    "ShadowVertexBuffers": {
+      "type": null,
+      "documentation": null
+    },
+    "LightMap": {
+      "type": null,
+      "documentation": null
+    },
+    "OverrideVertexColors": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

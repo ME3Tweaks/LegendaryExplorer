@@ -1,0 +1,37 @@
+{
+  "parent": "SFXGameInterpTrack",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetGroupLinkedActor": {
+      "documentation": null,
+      "signature_members": {
+        "TrackInst": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetGroupLinkedActor(InterpTrackInst TrackInst)"
+    },
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "GetObjectRef": {
+      "documentation": null,
+      "signature_members": {
+        "FindByTagVar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object GetObjectRef(BioSeqVar_ObjectFindByTag FindByTagVar)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

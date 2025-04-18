@@ -1,0 +1,31 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "bWaitForPlayerSpawn": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "GetPlayerPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetPlayerPawn()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

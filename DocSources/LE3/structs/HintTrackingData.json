@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Times": {
+      "type": null,
+      "documentation": null
+    },
+    "Num": {
+      "type": null,
+      "documentation": null
+    },
+    "LastTime": {
+      "type": null,
+      "documentation": null
+    },
+    "FirstTime": {
+      "type": null,
+      "documentation": null
+    },
+    "QueueHead": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

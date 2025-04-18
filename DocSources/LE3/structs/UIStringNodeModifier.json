@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ModifierStack": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomStyleData": {
+      "type": null,
+      "documentation": null
+    },
+    "BaseStyleData": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentMenuState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

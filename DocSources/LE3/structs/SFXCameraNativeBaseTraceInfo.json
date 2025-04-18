@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "m_vCollVectorLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "m_vCollVectorNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "m_oCollVectorActor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_clrDebugDraw": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bCollDetected": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bCollisionDirty": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bDebugDraw": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

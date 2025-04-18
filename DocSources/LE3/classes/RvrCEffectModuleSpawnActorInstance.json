@@ -1,0 +1,37 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstSpawns": {
+      "type": "RvrClientEffectSpawnedActor",
+      "documentation": null
+    },
+    "m_lstSavedStates": {
+      "type": "RvrClientEffectSavedState",
+      "documentation": null
+    },
+    "m_lstBoneMap": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nSavedStateHead": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nSavedStates": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nRemainingSpawns": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fSpawnPotential": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

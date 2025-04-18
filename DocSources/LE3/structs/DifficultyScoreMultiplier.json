@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Multiplier": {
+      "type": null,
+      "documentation": null
+    },
+    "Difficulty": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

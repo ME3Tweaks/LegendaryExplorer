@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "CategoryName": {
+      "type": null,
+      "documentation": null
+    },
+    "CategoryStrength": {
+      "type": null,
+      "documentation": null
+    },
+    "categoryId": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasNewItems": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

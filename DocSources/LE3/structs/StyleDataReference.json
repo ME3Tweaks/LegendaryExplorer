@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SourceStyleID": {
+      "type": null,
+      "documentation": null
+    },
+    "OwnerStyle": {
+      "type": null,
+      "documentation": null
+    },
+    "SourceStyle": {
+      "type": null,
+      "documentation": null
+    },
+    "SourceState": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomStyleData": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

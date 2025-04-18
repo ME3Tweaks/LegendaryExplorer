@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Language": {
+      "type": null,
+      "documentation": null
+    },
+    "GameplaySessionTimestamp": {
+      "type": null,
+      "documentation": null
+    },
+    "GameplaySessionID": {
+      "type": null,
+      "documentation": null
+    },
+    "GameClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "MapName": {
+      "type": null,
+      "documentation": null
+    },
+    "MapURL": {
+      "type": null,
+      "documentation": null
+    },
+    "AppTitleID": {
+      "type": null,
+      "documentation": null
+    },
+    "PlatformType": {
+      "type": null,
+      "documentation": null
+    },
+    "GameplaySessionStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "GameplaySessionEndTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bGameplaySessionInProgress": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,831 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "__InputCallback__Delegate": {
+      "type": "InputCallback",
+      "documentation": null
+    },
+    "__UpdateCallback__Delegate": {
+      "type": "UpdateCallback",
+      "documentation": null
+    },
+    "__UpdateCallbackEx__Delegate": {
+      "type": "UpdateCallbackEx",
+      "documentation": null
+    },
+    "__ChoiceDialogCallback__Delegate": {
+      "type": "ChoiceDialogCallback",
+      "documentation": null
+    },
+    "__WeaponChoiceCallback__Delegate": {
+      "type": "WeaponChoiceCallback",
+      "documentation": null
+    },
+    "nInputCallbackContext": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fRScrollValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fHintTimeRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "WeaponPickupUITitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponPickupAddToInventoryText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponPickupOpenInventoryText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "WeaponPickupEquipText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bHandleInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowMouse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsModal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForcePlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInitialPlayersOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCached": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bForceVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisplayingHint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCurrentlyActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPausedPriorToWeaponChoice": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AS_HideMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "bSkipFade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_HideMessageBox(bool bSkipFade)"
+    },
+    "AS_SetChoiceDialogOptions": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sCancelText": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption1": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption1ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption1Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption2": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption2ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption2Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption3": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption3ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption3Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetChoiceDialogOptions(const string sMessage, const string sCancelText, const string srOption1, int nOption1ID, bool bOption1Enabled, const string sOption2, int nOption2ID, bool bOption2Enabled, const string sOption3, int nOption3ID, bool bOption3Enabled)"
+    },
+    "AS_ShowChoiceDialog": {
+      "documentation": null,
+      "signature_members": {
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowChoiceDialog(bool bSkipTransition)"
+    },
+    "AS_ShowHintMessage": {
+      "documentation": null,
+      "signature_members": {
+        "sConsoleMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sPCMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        },
+        "nPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowHintMessage(string sConsoleMessage, string sPCMessage, bool usingGamepad, int nPosition)"
+    },
+    "AS_ShowMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sKBMMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sAText": {
+          "type": null,
+          "documentation": null
+        },
+        "sBText": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoFade": {
+          "type": null,
+          "documentation": null
+        },
+        "nIconSet": {
+          "type": null,
+          "documentation": null
+        },
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nSkinType": {
+          "type": null,
+          "documentation": null
+        },
+        "nTextAlign": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowMessageBox(string sMessage, string sKBMMessage, string sAText, string sBText, bool bNoFade, int nIconSet, int nIconIndex, int nSkinType, int nTextAlign)"
+    },
+    "ChoiceDialogCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        },
+        "nChoiceID": {
+          "type": null,
+          "documentation": null
+        },
+        "bCancelled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChoiceDialogCallback(BioSFHandler_MessageBox oMsgBox, int nChoiceID, bool bCancelled)"
+    },
+    "DisplayMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "stParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayMessageBox(stringref srMessage, const out BioMessageBoxOptionalParams stParams)"
+    },
+    "DisplayMessageBoxEx": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "stParams": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayMessageBoxEx(string sMessage, const out BioMessageBoxOptionalParams stParams)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HideMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "bRemove": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipFade": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HideMessageBox(optional bool bRemove, optional bool bSkipFade)"
+    },
+    "InputCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InputCallback(bool bAPressed, int nContext)"
+    },
+    "InvokeNativeCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeNativeCallback(bool bAPressed)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "SetInputDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDelegate(delegate<InputCallback> pDelegate, optional int nContext)"
+    },
+    "SetUpdateDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUpdateDelegate(delegate<UpdateCallback> pDelegate)"
+    },
+    "ShowChoiceDialog": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "srCancelText": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption1": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption1ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption1Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption2": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption2ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption2Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption3": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption3ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption3Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowChoiceDialog(stringref srMessage, stringref srCancelText, stringref srOption1, int nOption1ID, bool bOption1Enabled, stringref srOption2, int nOption2ID, bool bOption2Enabled, optional stringref srOption3, optional int nOption3ID, optional bool bOption3Enabled)"
+    },
+    "ShowChoiceDialogEx": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "sCancelText": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption1": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption1ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption1Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption2": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption2ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption2Enabled": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption3": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption3ID": {
+          "type": null,
+          "documentation": null
+        },
+        "bOption3Enabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowChoiceDialogEx(const string sMessage, const string sCancelText, const string sOption1, int nOption1ID, bool bOption1Enabled, const string sOption2, int nOption2ID, bool bOption2Enabled, optional const string sOption3, optional int nOption3ID, optional bool bOption3Enabled)"
+    },
+    "ShowWeaponChoiceDialog": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srDesc": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption1": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption1ID": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption2": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption2ID": {
+          "type": null,
+          "documentation": null
+        },
+        "srOption3": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption3ID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWeaponChoiceDialog(stringref srTitle, stringref srDesc, const string sIconResource, int nIconIndex, stringref srOption1, int nOption1ID, stringref srOption2, int nOption2ID, stringref srOption3, int nOption3ID)"
+    },
+    "ShowWeaponChoiceDialogEx": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sDesc": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption1": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption1ID": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption2": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption2ID": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption3": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption3ID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWeaponChoiceDialogEx(const string sTitle, const string sDesc, const string sIconResource, int nIconIndex, const string sOption1, int nOption1ID, const string sOption2, int nOption2ID, const string sOption3, int nOption3ID)"
+    },
+    "ShowWeaponChoiceDialogForClass": {
+      "documentation": null,
+      "signature_members": {
+        "oWeapClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWeaponChoiceDialogForClass(Class<SFXWeapon> oWeapClass)"
+    },
+    "UpdateCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCallback(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "UpdateCallbackEx": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        },
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCallbackEx(float fDeltaT, Object oMsgBox)"
+    },
+    "WeaponChoiceCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oMsgBox": {
+          "type": null,
+          "documentation": null
+        },
+        "nChoiceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponChoiceCallback(BioSFHandler_MessageBox oMsgBox, int nChoiceID)"
+    },
+    "AS_SetWeaponChoiceDialogOptions": {
+      "documentation": null,
+      "signature_members": {
+        "sOption1": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption1ID": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption2": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption2ID": {
+          "type": null,
+          "documentation": null
+        },
+        "sOption3": {
+          "type": null,
+          "documentation": null
+        },
+        "nOption3ID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetWeaponChoiceDialogOptions(const string sOption1, int nOption1ID, const string sOption2, int nOption2ID, const string sOption3, int nOption3ID)"
+    },
+    "AS_SetWeaponChoiceDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sDesc": {
+          "type": null,
+          "documentation": null
+        },
+        "sIconResource": {
+          "type": null,
+          "documentation": null
+        },
+        "nIconIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_SetWeaponChoiceDisplay(const string sTitle, const string sDesc, const string sIconResource, int nIconIndex)"
+    },
+    "AS_ShowWeaponChoiceDialog": {
+      "documentation": null,
+      "signature_members": {
+        "bSkipTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ShowWeaponChoiceDialog(bool bSkipTransition)"
+    },
+    "CancelChoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelChoice()"
+    },
+    "ChoiceSelected": {
+      "documentation": null,
+      "signature_members": {
+        "nChoiceID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChoiceSelected(int nChoiceID)"
+    },
+    "CloseChoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseChoice()"
+    },
+    "CloseWeaponChoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseWeaponChoice()"
+    },
+    "DisplayHintMessage": {
+      "documentation": null,
+      "signature_members": {
+        "srConsoleMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "srPCMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "nIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "ePosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayHintMessage(stringref srConsoleMessage, stringref srPCMessage, int nIcon, SFXHintPosition ePosition)"
+    },
+    "InvokeCallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeCallback(bool bAPressed)"
+    },
+    "MessageBoxAPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MessageBoxAPressed()"
+    },
+    "MessageBoxBPressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MessageBoxBPressed()"
+    },
+    "MessageBoxRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MessageBoxRemoved()"
+    },
+    "SetChoiceResultCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetChoiceResultCallback(delegate<ChoiceDialogCallback> oCallback)"
+    },
+    "SetWeaponChoiceResultCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponChoiceResultCallback(delegate<WeaponChoiceCallback> oCallback)"
+    },
+    "ShowWeaponPickupUIForWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "oWeapClass": {
+          "type": null,
+          "documentation": null
+        },
+        "oCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowWeaponPickupUIForWeapon(Class<SFXWeapon> oWeapClass, delegate<WeaponChoiceCallback> oCallback)"
+    },
+    "WeaponChoiceSelected": {
+      "documentation": null,
+      "signature_members": {
+        "nChoice": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponChoiceSelected(int nChoice)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

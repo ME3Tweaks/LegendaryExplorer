@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ReferencedObjects": {
+      "type": "Object",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

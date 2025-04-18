@@ -1,0 +1,68 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "NewCoverGoal": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "CoverEvaluator": {
+      "type": "Goal_AtCover",
+      "documentation": null
+    },
+    "CoverGoalActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bDoPeriodicCoverCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanShoot": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AcquireNewCover": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalEvaluator": {
+          "type": null,
+          "documentation": null
+        },
+        "GoalActor": {
+          "type": null,
+          "documentation": null
+        },
+        "bUsePeriodicCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowedToFire": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AcquireNewCover(SFXAI_Cover AI, Goal_AtCover GoalEvaluator, Actor GoalActor, optional bool bUsePeriodicCheck, optional bool bAllowedToFire)"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "FindingCover": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

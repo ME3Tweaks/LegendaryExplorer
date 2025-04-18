@@ -1,0 +1,49 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "bAutoTargetOwner": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "GetOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScreenObject",
+      "signature": "UIScreenObject GetOwner()"
+    },
+    "GetOwnerScene": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScene",
+      "signature": "UIScene GetOwnerScene()"
+    },
+    "IsValidLevelSequenceObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidLevelSequenceObject()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

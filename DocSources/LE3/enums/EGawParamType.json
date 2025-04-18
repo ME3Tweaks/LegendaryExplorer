@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GawMsgParamType_Bool": {
+      "value": 0,
+      "documentation": null
+    },
+    "GawMsgParamType_Int": {
+      "value": 1,
+      "documentation": null
+    },
+    "GawMsgParamType_Float": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

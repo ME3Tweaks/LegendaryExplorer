@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "SFXOwningScene": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeStamp": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

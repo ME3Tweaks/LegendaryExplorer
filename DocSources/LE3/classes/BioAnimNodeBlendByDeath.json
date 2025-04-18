@@ -1,0 +1,65 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "Head": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LeftArm": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RightArm": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LeftLeg": {
+      "type": "Name",
+      "documentation": null
+    },
+    "RightLeg": {
+      "type": "Name",
+      "documentation": null
+    },
+    "DeathEventName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nHeadRoot": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nLeftArmRoot": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nRightArmRoot": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nLeftLegRoot": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nRightLegRoot": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTimeToRagdoll": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bEventTriggered": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "m_lstEffects": {
+      "type": "EMG_Entry",
+      "documentation": null
+    },
+    "m_Guid": {
+      "type": "Guid",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

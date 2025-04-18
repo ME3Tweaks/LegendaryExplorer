@@ -1,0 +1,29 @@
+{
+  "parent": "SkelControlLimb",
+  "package": "SFXGame",
+  "variables": {
+    "SkelControlProfiles": {
+      "type": "SkelControlProfile",
+      "documentation": null
+    },
+    "CurrentProfile": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetSkelControlProfile": {
+      "documentation": null,
+      "signature_members": {
+        "idx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkelControlProfile(int idx)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

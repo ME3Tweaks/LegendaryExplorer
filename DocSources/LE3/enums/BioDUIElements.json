@@ -1,0 +1,93 @@
+{
+  "EnumValues": {
+    "BIO_DUI_PassiveTimer": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_DUI_PassiveCounter": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_DUI_PassiveText": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_DUI_PassiveBar": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_DUI_PassiveBarMarker1": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_DUI_PassiveBarMarker2": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_DUI_ModalBar": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_DUI_ModalBarMarker1": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_DUI_ModalBarMarker2": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_DUI_ModalCounter": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIO_DUI_ModalTimer": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIO_DUI_ModalText": {
+      "value": 11,
+      "documentation": null
+    },
+    "BIO_DUI_ModalBackground": {
+      "value": 12,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonA": {
+      "value": 13,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonAText": {
+      "value": 14,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonB": {
+      "value": 15,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonBText": {
+      "value": 16,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonX": {
+      "value": 17,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonXText": {
+      "value": 18,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonY": {
+      "value": 19,
+      "documentation": null
+    },
+    "BIO_DUI_ButtonYText": {
+      "value": 20,
+      "documentation": null
+    },
+    "BIO_DUI_ModalBackground2": {
+      "value": 21,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

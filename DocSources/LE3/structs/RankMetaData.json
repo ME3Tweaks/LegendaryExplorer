@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "RankColumnName": {
+      "type": null,
+      "documentation": null
+    },
+    "RankName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

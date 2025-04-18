@@ -1,0 +1,451 @@
+{
+  "parent": "SFXGameActorInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aPropKeys": {
+      "type": "BioPropTrackData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    },
+    "FindPartSysMaxDuration": {
+      "documentation": null,
+      "signature_members": {
+        "pParticleSystem": {
+          "type": null,
+          "documentation": null
+        },
+        "nLooping": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float FindPartSysMaxDuration(ParticleSystem pParticleSystem, out int nLooping)"
+    },
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "GetRightHandSocketName": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetRightHandSocketName(Actor pActor)"
+    },
+    "GetWeaponMesh": {
+      "documentation": null,
+      "signature_members": {
+        "cWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetWeaponMesh(Class<Object> cWeaponIn)"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "PropEquipWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pDataStoreObject": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceSuppressDamage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropEquipWeapon(Class<Object> cWeapon, Object pDataStoreObject, bool bCurrentlyEquipped, optional bool bForceSuppressDamage)"
+    },
+    "PropGetActorWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pDataStoreObject": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        },
+        "bSpawnGeneric": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object PropGetActorWeapon(Class<Object> cWeapon, Object pDataStoreObject, bool bCurrentlyEquipped, optional bool bSpawnGeneric)"
+    },
+    "PropUnequipWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": null,
+          "documentation": null
+        },
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "nSpawned": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropUnequipWeapon(Actor pActor, Object pWeaponIn, int nSpawned)"
+    },
+    "PropUnequipWeaponForInst": {
+      "documentation": null,
+      "signature_members": {
+        "cWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pInst": {
+          "type": null,
+          "documentation": null
+        },
+        "bCurrentlyEquipped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropUnequipWeaponForInst(Class<Object> cWeapon, BioEvtSysTrackPropInst pInst, bool bCurrentlyEquipped)"
+    },
+    "PropWepActionExecuteCollapse": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteCollapse(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteDisableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteDisableIK(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteDummyFireInfiniteOff": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteDummyFireInfiniteOff(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteDummyFireInfiniteOn": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteDummyFireInfiniteOn(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteDummyFireOnce": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteDummyFireOnce(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteDummyFireThrice": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteDummyFireThrice(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteEnableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteEnableIK(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteExpand": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteExpand(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteFire": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteFire(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteFireWithTracer": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteFireWithTracer(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionExecuteReload": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        },
+        "pActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PropWepActionExecuteReload(Object pWeaponIn, Actor pActor)"
+    },
+    "PropWepActionTimingCollapse": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingCollapse(Object pWeaponIn)"
+    },
+    "PropWepActionTimingDisableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingDisableIK(Object pWeaponIn)"
+    },
+    "PropWepActionTimingDummyFireInfiniteOff": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingDummyFireInfiniteOff(Object pWeaponIn)"
+    },
+    "PropWepActionTimingDummyFireInfiniteOn": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingDummyFireInfiniteOn(Object pWeaponIn)"
+    },
+    "PropWepActionTimingDummyFireOnce": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingDummyFireOnce(Object pWeaponIn)"
+    },
+    "PropWepActionTimingDummyFireThrice": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingDummyFireThrice(Object pWeaponIn)"
+    },
+    "PropWepActionTimingEnableIK": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingEnableIK(Object pWeaponIn)"
+    },
+    "PropWepActionTimingExpand": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingExpand(Object pWeaponIn)"
+    },
+    "PropWepActionTimingFire": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingFire(Object pWeaponIn)"
+    },
+    "PropWepActionTimingFireWithTracer": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingFireWithTracer(Object pWeaponIn)"
+    },
+    "PropWepActionTimingReload": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponIn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float PropWepActionTimingReload(Object pWeaponIn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

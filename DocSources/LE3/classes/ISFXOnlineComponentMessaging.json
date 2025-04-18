@@ -1,0 +1,52 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "FetchAllMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FetchAllMessages()"
+    },
+    "FetchAllMessagesViaJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FetchAllMessagesViaJob()"
+    },
+    "PurgeAllMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PurgeAllMessages()"
+    },
+    "PurgeAllMessagesViaJob": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PurgeAllMessagesViaJob()"
+    },
+    "SendMessage": {
+      "documentation": null,
+      "signature_members": {
+        "sendToPersonaNames": {
+          "type": null,
+          "documentation": null
+        },
+        "msgType": {
+          "type": null,
+          "documentation": null
+        },
+        "Params": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMessage(array<string> sendToPersonaNames, SFXOnlineMessageType msgType, optional array<string> Params)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

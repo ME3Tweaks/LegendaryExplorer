@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "ImageURL": {
+      "type": null,
+      "documentation": null
+    },
+    "TrackingID": {
+      "type": null,
+      "documentation": null
+    },
+    "offerId": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "MessageText": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "nmAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimSeq": {
+      "type": null,
+      "documentation": null
+    },
+    "fTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fWeight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

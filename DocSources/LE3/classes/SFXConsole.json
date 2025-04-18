@@ -1,0 +1,304 @@
+{
+  "parent": "Console",
+  "package": "SFXGame",
+  "variables": {
+    "bShift": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "FindNextPropertyMatching": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "PropertyPrefix": {
+          "type": null,
+          "documentation": null
+        },
+        "AfterThisProperty": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string FindNextPropertyMatching(Class<Object> C, string PropertyPrefix, string AfterThisProperty)"
+    },
+    "FindObjectUnqualified": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectName": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object FindObjectUnqualified(string ObjectName, Class<Object> ObjectClass)"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    },
+    "LoadHistory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadHistory()"
+    },
+    "SaveHistory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveHistory()"
+    },
+    "InputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "AmountDepressed": {
+          "type": null,
+          "documentation": null
+        },
+        "bGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InputKey(int ControllerId, Name Key, EInputEvent Event, optional float AmountDepressed, optional bool bGamepad)"
+    },
+    "SaveHistoryToFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveHistoryToFile()"
+    },
+    "CommonInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "Key": {
+          "type": null,
+          "documentation": null
+        },
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "AmountDepressed": {
+          "type": null,
+          "documentation": null
+        },
+        "bGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CommonInputKey(int ControllerId, Name Key, EInputEvent Event, float AmountDepressed, bool bGamepad)"
+    },
+    "FindBreak": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentString": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentStringPos": {
+          "type": null,
+          "documentation": null
+        },
+        "bForward": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindBreak(string CurrentString, int CurrentStringPos, bool bForward)"
+    },
+    "FindNextMatchingAutoComplete": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentString": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentStringPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FindNextMatchingAutoComplete(out string CurrentString, int CurrentStringPos)"
+    },
+    "FindNextMatchingHistory": {
+      "documentation": null,
+      "signature_members": {
+        "outNextHistory": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentString": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentStringPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindNextMatchingHistory(out int outNextHistory, string CurrentString, int CurrentStringPos)"
+    },
+    "GetCameraActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetCameraActor()"
+    },
+    "PreParseCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string PreParseCommand(string Command)"
+    }
+  },
+  "states": {
+    "Say": {
+      "functions": {
+        "PostRender_Console": {
+          "documentation": null,
+          "signature_members": {
+            "Canvas": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "InputKey": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": null,
+              "documentation": null
+            },
+            "Key": {
+              "type": null,
+              "documentation": null
+            },
+            "Event": {
+              "type": null,
+              "documentation": null
+            },
+            "AmountDepressed": {
+              "type": null,
+              "documentation": null
+            },
+            "bGamepad": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Open": {
+      "functions": {
+        "InputKey": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": null,
+              "documentation": null
+            },
+            "Key": {
+              "type": null,
+              "documentation": null
+            },
+            "Event": {
+              "type": null,
+              "documentation": null
+            },
+            "AmountDepressed": {
+              "type": null,
+              "documentation": null
+            },
+            "bGamepad": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Typing": {
+      "functions": {
+        "InputKey": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": null,
+              "documentation": null
+            },
+            "Key": {
+              "type": null,
+              "documentation": null
+            },
+            "Event": {
+              "type": null,
+              "documentation": null
+            },
+            "AmountDepressed": {
+              "type": null,
+              "documentation": null
+            },
+            "bGamepad": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

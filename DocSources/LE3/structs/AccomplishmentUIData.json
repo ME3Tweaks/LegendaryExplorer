@@ -1,0 +1,65 @@
+{
+  "Members": {
+    "AccomplishmentName": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "IconTextureRef": {
+      "type": null,
+      "documentation": null
+    },
+    "ParentName": {
+      "type": null,
+      "documentation": null
+    },
+    "SecondDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "nIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "nPoints": {
+      "type": null,
+      "documentation": null
+    },
+    "nInitialValue": {
+      "type": null,
+      "documentation": null
+    },
+    "nFinalValue": {
+      "type": null,
+      "documentation": null
+    },
+    "nSecondInitialValue": {
+      "type": null,
+      "documentation": null
+    },
+    "nSecondFinalValue": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsCompleted": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsGrinder": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsDoubleGrinder": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

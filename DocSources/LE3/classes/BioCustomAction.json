@@ -1,0 +1,935 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "OverrideList": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AICommand": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PlayerCameraMode": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PreciseDestination": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PreciseRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_oPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_oPC": {
+      "type": "SFXPlayerController",
+      "documentation": null
+    },
+    "m_oAI": {
+      "type": "SFXAI_Core",
+      "documentation": null
+    },
+    "oPlayerCamera": {
+      "type": "SFXCameraMode",
+      "documentation": null
+    },
+    "CurrentTimeline": {
+      "type": "SFXTimelineData",
+      "documentation": null
+    },
+    "TimelineTemplate": {
+      "type": "SFXTimelineData",
+      "documentation": null
+    },
+    "ImpactTimeline": {
+      "type": "SFXTimelineData",
+      "documentation": null
+    },
+    "SpeedModifier": {
+      "type": "float",
+      "documentation": null
+    },
+    "GravityScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastCanDoCustomActionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastFinishedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinTimeBetweenActions": {
+      "type": "float",
+      "documentation": null
+    },
+    "PreciseRotationInterpolationTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageReductionLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "DamageReductionAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "fCameraTransitionIn": {
+      "type": "float",
+      "documentation": null
+    },
+    "fCameraTransitionOut": {
+      "type": "float",
+      "documentation": null
+    },
+    "CheckMoveMaximumVelocitySq": {
+      "type": "float",
+      "documentation": null
+    },
+    "bLockPawnRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBreakFromCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableLook": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisablePhysics": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableLeftHandIK": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreDamage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHideWeapon": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotifyKnockedOutOfCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTurnOffZoom": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTurnOffReticle": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableShooting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowChargeHolding": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableAiming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableCoverAdjust": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableUse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableCustomActionQueuing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockingAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProceduralMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockRotationAfterPreciseRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCameraFocusOnPawn": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLastCanDoCustomAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreInputForCustomAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReachPreciseDestination": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReachedPreciseDestination": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReachPreciseRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReachedPreciseRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStartedCustomAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDamageReduction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPushAICommand": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReplicateCustomAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientPredictCustomAction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceLocalSimulation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCreatesGibs": {
+      "type": "bool",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "ECustomActionPriority",
+      "documentation": null
+    },
+    "VocalizationEvent": {
+      "type": "ESFXVocalizationEventID",
+      "documentation": null
+    },
+    "OriginalRole": {
+      "type": "ENetRole",
+      "documentation": null
+    },
+    "OriginalRemoteRole": {
+      "type": "ENetRole",
+      "documentation": null
+    },
+    "RandomReactionRolled": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AnimNotify": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "NotifyObject": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AnimNotify(AnimNodeSequence SeqNode, BioAnimNotify_CustomAction NotifyObject)"
+    },
+    "CanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanDoCustomAction(optional Pawn SyncPawn, optional bool bForced)"
+    },
+    "ForcePawnRotation": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForcePawnRotation(Pawn P, Rotator NewRotation)"
+    },
+    "GetBasedPosition": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetBasedPosition(out BasedPosition BP)"
+    },
+    "GetFloorLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vStartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vFloorLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloorLocation(Vector vStartLocation, out Vector vFloorLocation)"
+    },
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "NotifyBump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyBump(Actor Other, Vector HitNormal)"
+    },
+    "NotifyHitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Wall": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyHitWall(Vector HitNormal, Actor Wall)"
+    },
+    "PrecacheVFX": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectPool": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrecacheVFX(SFXObjectPool ObjectPool, RvrClientEffectManager ClientEffects)"
+    },
+    "ReachedPrecisePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedPrecisePosition()"
+    },
+    "RelativeToWorldOffset": {
+      "documentation": null,
+      "signature_members": {
+        "InRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "RelativeSpaceOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector RelativeToWorldOffset(Rotator InRotation, Vector RelativeSpaceOffset)"
+    },
+    "ResetFacePreciseRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetFacePreciseRotation()"
+    },
+    "ResetReachPreciseDestination": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetReachPreciseDestination()"
+    },
+    "RootMotionExtracted": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        },
+        "ExtractedRootMotionDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RootMotionExtracted(SkeletalMeshComponent SkelComp, out BoneAtom ExtractedRootMotionDelta)"
+    },
+    "RootMotionModeChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SkelComp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RootMotionModeChanged(SkeletalMeshComponent SkelComp)"
+    },
+    "SetBasedPosition": {
+      "documentation": null,
+      "signature_members": {
+        "BP": {
+          "type": null,
+          "documentation": null
+        },
+        "inLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBasedPosition(out BasedPosition BP, Vector inLoc)"
+    },
+    "SetFacePreciseRotation": {
+      "documentation": null,
+      "signature_members": {
+        "RotationToFace": {
+          "type": null,
+          "documentation": null
+        },
+        "InterpolationTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFacePreciseRotation(Rotator RotationToFace, float InterpolationTime)"
+    },
+    "SetReachPreciseDestination": {
+      "documentation": null,
+      "signature_members": {
+        "DestinationToReach": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetReachPreciseDestination(Vector DestinationToReach)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float DeltaTime)"
+    },
+    "WorldToRelativeOffset": {
+      "documentation": null,
+      "signature_members": {
+        "InRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "WorldSpaceOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector WorldToRelativeOffset(Rotator InRotation, Vector WorldSpaceOffset)"
+    },
+    "ApplyTimeline": {
+      "documentation": null,
+      "signature_members": {
+        "Timeline": {
+          "type": null,
+          "documentation": null
+        },
+        "Source": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyTimeline(SFXTimelineData Timeline, optional Actor Source, optional Actor Target)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "CanInteractWithPawn": {
+      "documentation": null,
+      "signature_members": {
+        "OtherPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanInteractWithPawn(BioPawn OtherPawn)"
+    },
+    "CanOverrideCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "InCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideCustomAction(int OldCustomAction, int InCustomAction)"
+    },
+    "CanOverrideMoveWith": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideMoveWith(int OldCustomAction, int NewCustomAction)"
+    },
+    "CheckMoving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckMoving()"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "ClientDoCustomActionImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomActionImpact(Actor oActor, int ImpactCount, optional bool bFirstTarget, optional Vector HitLocation, optional Vector HitNormal, optional int CustomActionReactionType)"
+    },
+    "ContinueCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ContinueCustomAction()"
+    },
+    "EndThisCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndThisCustomAction()"
+    },
+    "GetAnimsUsedByBodyStance": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        },
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAnimsUsedByBodyStance(BodyStance Stance, out array<Name> UsedAnims)"
+    },
+    "GetCustomActionCamera": {
+      "documentation": null,
+      "signature_members": {
+        "oNewCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "fTransitionIn": {
+          "type": null,
+          "documentation": null
+        },
+        "fTransitionOut": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCustomActionCamera(out SFXCameraMode oNewCameraMode, out float fTransitionIn, out float fTransitionOut)"
+    },
+    "GetCustomActionClass": {
+      "documentation": null,
+      "signature_members": {
+        "CustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<BioCustomAction> GetCustomActionClass(int CustomAction)"
+    },
+    "GetVictimPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetVictimPawn()"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "InterruptThisCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InterruptThisCustomAction()"
+    },
+    "MessageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventName": {
+          "type": null,
+          "documentation": null
+        },
+        "Sender": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MessageEvent(Name EventName, Object Sender)"
+    },
+    "MoveToOffset": {
+      "documentation": null,
+      "signature_members": {
+        "MoveOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToOffset(out Vector MoveOffset)"
+    },
+    "OnTimelineImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTimelineImpact(Actor Target)"
+    },
+    "PauseCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseCustomAction()"
+    },
+    "PawnLeftCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PawnLeftCover()"
+    },
+    "RemoveTimeline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveTimeline()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "ReplicateImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "CustomActionReactionType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateImpact(BioPawn Target, optional int ImpactCount, optional bool bFirstTarget, optional Vector HitLocation, optional Vector HitNormal, optional int CustomActionReactionType)"
+    },
+    "ReplicateInterrupt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicateInterrupt()"
+    },
+    "RotatePlayerCamToFace": {
+      "documentation": null,
+      "signature_members": {
+        "AimPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "fTimeToRotate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RotatePlayerCamToFace(Vector AimPoint, float fTimeToRotate)"
+    },
+    "RotatePlayerCamToFutureDirection": {
+      "documentation": null,
+      "signature_members": {
+        "DestPawnLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "DesiredRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeToRotate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RotatePlayerCamToFutureDirection(Vector DestPawnLoc, Vector DesiredRotation, float TimeToRotate)"
+    },
+    "ServerStartCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartCustomAction(int NewAction, optional BioPawn Sync, optional int NewPowerAction)"
+    },
+    "ShouldReplicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldReplicate()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "TickInput": {
+      "documentation": null,
+      "signature_members": {
+        "Input": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickInput(BioPlayerInput Input, float DeltaTime)"
+    },
+    "TogglePawnCollision": {
+      "documentation": null,
+      "signature_members": {
+        "aPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bToggleOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TogglePawnCollision(BioPawn aPawn, bool bToggleOn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

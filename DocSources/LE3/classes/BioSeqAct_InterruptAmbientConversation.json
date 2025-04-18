@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "IgnoreConversation": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "OnlyInterruptThisConv": {
+      "type": "BioConversation",
+      "documentation": null
+    },
+    "m_bInterruptFovoToo": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

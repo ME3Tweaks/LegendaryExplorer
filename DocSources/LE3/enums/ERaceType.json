@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "RaceType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "RaceType_Humanoid": {
+      "value": 1,
+      "documentation": null
+    },
+    "RaceType_Machine": {
+      "value": 2,
+      "documentation": null
+    },
+    "RaceType_Animal": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

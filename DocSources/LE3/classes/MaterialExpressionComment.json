@@ -1,0 +1,29 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Text": {
+      "type": "string",
+      "documentation": null
+    },
+    "PosX": {
+      "type": "int",
+      "documentation": null
+    },
+    "PosY": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

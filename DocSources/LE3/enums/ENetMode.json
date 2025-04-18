@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "NM_Standalone": {
+      "value": 0,
+      "documentation": null
+    },
+    "NM_DedicatedServer": {
+      "value": 1,
+      "documentation": null
+    },
+    "NM_ListenServer": {
+      "value": 2,
+      "documentation": null
+    },
+    "NM_Client": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

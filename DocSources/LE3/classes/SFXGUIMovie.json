@@ -1,0 +1,1033 @@
+{
+  "parent": "GFxMovie",
+  "package": "SFXGame",
+  "variables": {
+    "m_OnCloseCallbacks": {
+      "type": "OnMovieClosedDelegate",
+      "documentation": null
+    },
+    "m_aPressedKeys": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_aMovieExtensions": {
+      "type": "SFXGUIMovieExtension",
+      "documentation": null
+    },
+    "__OnMovieClosedDelegate__Delegate": {
+      "type": "OnMovieClosedDelegate",
+      "documentation": null
+    },
+    "m_UpdateTimes": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_RenderTimes": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_AdvanceTimes": {
+      "type": "float",
+      "documentation": null
+    },
+    "MouseCaptureRect": {
+      "type": "ScreenRect",
+      "documentation": null
+    },
+    "m_UIWorldMPPawnInitialRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_UIWorldMPPawnInitialLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "nmTag": {
+      "type": "Name",
+      "documentation": null
+    },
+    "oWorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "OpenSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CloseSound": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nUpdateFrame": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nFSCommandHandlerID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fSavedAspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srNuiSpeechCommandFormatting": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MovieAlpha": {
+      "type": "float",
+      "documentation": null
+    },
+    "bCache": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInCache": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInAdvanceCall": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPendingClose": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUnloadInPendingClose": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFocusOnStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDesiresFocus": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bHandleKeyPresses": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseThumbstickAsDPad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRequiresUIWorld": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMouseVisibleWhenFocused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bApplyLeftThumbstickDeadzone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bApplyRightThumbstickDeadzone": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAcceptingFSCommands": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bBeingUnitTested": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShouldSwapMovieOnInputChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ProcessMouseMovementWithRTT": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AllowRTTMouseInputWithLowerZOrder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_InputEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsingGamepad": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ScreenLayout": {
+      "type": "GUILayout",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddExtension": {
+      "documentation": null,
+      "signature_members": {
+        "classObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUIMovieExtension",
+      "signature": "coerce SFXGUIMovieExtension AddExtension(Class<SFXGUIMovieExtension> classObj)"
+    },
+    "AddOnMovieClosedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "i_OnMovieClosedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddOnMovieClosedDelegate(delegate<OnMovieClosedDelegate> i_OnMovieClosedDelegate)"
+    },
+    "AttachToASFunction": {
+      "documentation": null,
+      "signature_members": {
+        "sASObjectPath": {
+          "type": null,
+          "documentation": null
+        },
+        "sASFuncName": {
+          "type": null,
+          "documentation": null
+        },
+        "nmFuncToCall": {
+          "type": null,
+          "documentation": null
+        },
+        "bCallOriginalAS": {
+          "type": null,
+          "documentation": null
+        },
+        "bInsertBeforeAS": {
+          "type": null,
+          "documentation": null
+        },
+        "oCallbackObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachToASFunction(const string sASObjectPath, const string sASFuncName, Name nmFuncToCall, bool bCallOriginalAS, optional bool bInsertBeforeAS, optional Object oCallbackObj)"
+    },
+    "ClearOnMovieClosedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "i_OnMovieClosedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearOnMovieClosedDelegate(delegate<OnMovieClosedDelegate> i_OnMovieClosedDelegate)"
+    },
+    "Close": {
+      "documentation": null,
+      "signature_members": {
+        "Unload": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Close(optional bool Unload)"
+    },
+    "GetBoundKeyString": {
+      "documentation": null,
+      "signature_members": {
+        "sAlias": {
+          "type": null,
+          "documentation": null
+        },
+        "bWrapNonTokenInParentheses": {
+          "type": null,
+          "documentation": null
+        },
+        "eGameMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBoundKeyString(const string sAlias, optional bool bWrapNonTokenInParentheses, optional EGameModes eGameMode)"
+    },
+    "GetEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetEnabled()"
+    },
+    "GetExtension": {
+      "documentation": null,
+      "signature_members": {
+        "classObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUIMovieExtension",
+      "signature": "coerce SFXGUIMovieExtension GetExtension(Class<SFXGUIMovieExtension> classObj)"
+    },
+    "GetGUISceneView": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUISceneView",
+      "signature": "SFXGUISceneView GetGUISceneView()"
+    },
+    "GetInputEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetInputEnabled()"
+    },
+    "GetMovieAspectRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMovieAspectRatio()"
+    },
+    "GetProfileTimes": {
+      "documentation": null,
+      "signature_members": {
+        "fUpdate": {
+          "type": null,
+          "documentation": null
+        },
+        "fRender": {
+          "type": null,
+          "documentation": null
+        },
+        "fAdvance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProfileTimes(out float fUpdate, out float fRender, out float fAdvance)"
+    },
+    "GetRequiresUIWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetRequiresUIWorld()"
+    },
+    "GetSFXUIController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUIInteraction",
+      "signature": "SFXGUIInteraction GetSFXUIController()"
+    },
+    "GetTokenizedUIString": {
+      "documentation": null,
+      "signature_members": {
+        "sr": {
+          "type": null,
+          "documentation": null
+        },
+        "aTokens": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetTokenizedUIString(stringref sr, const out array<SFXTokenMapping> aTokens)"
+    },
+    "GetUIString": {
+      "documentation": null,
+      "signature_members": {
+        "sr": {
+          "type": null,
+          "documentation": null
+        },
+        "bParse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetUIString(stringref sr, optional bool bParse)"
+    },
+    "GetUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetUpdate()"
+    },
+    "GetViewportAspectRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetViewportAspectRatio()"
+    },
+    "GetVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetVisible()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents nEventID, optional float fValue)"
+    },
+    "HasFocus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasFocus()"
+    },
+    "Invoke0": {
+      "documentation": null,
+      "signature_members": {
+        "sFuncPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue Invoke0(string sFuncPath)"
+    },
+    "InvokeOnCloseDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InvokeOnCloseDelegates()"
+    },
+    "IsEnterMenuButtonAssignmentSwapped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnterMenuButtonAssignmentSwapped()"
+    },
+    "IsNuiSpeechEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsNuiSpeechEnabled()"
+    },
+    "IsOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsOpen()"
+    },
+    "IsStickSouthpaw": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStickSouthpaw()"
+    },
+    "IsTriggerShoulderSwapped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTriggerShoulderSwapped()"
+    },
+    "IsTriggerSouthpaw": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTriggerSouthpaw()"
+    },
+    "OnAspectRatioChanged": {
+      "documentation": null,
+      "signature_members": {
+        "fNewAspectRatio": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAspectRatioChanged(float fNewAspectRatio)"
+    },
+    "OnControllerProfileSettingChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnControllerProfileSettingChange()"
+    },
+    "OnLanguageChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLanguageChanged()"
+    },
+    "OnMovieClosedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "i_ScreenToClose": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnMovieClosedDelegate(SFXGUIMovie i_ScreenToClose)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "PlayGuiError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayGuiError()"
+    },
+    "PlayGuiMusic": {
+      "documentation": null,
+      "signature_members": {
+        "nmMusic": {
+          "type": null,
+          "documentation": null
+        },
+        "bRestart": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiMusic(Name nmMusic, optional bool bRestart)"
+    },
+    "PlayGuiSound": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayGuiSound(Name nmSound)"
+    },
+    "PlayGuiVoice": {
+      "documentation": null,
+      "signature_members": {
+        "nmVoice": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiVoice(Name nmVoice)"
+    },
+    "PostAdvance": {
+      "documentation": null,
+      "signature_members": {
+        "tDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostAdvance(float tDelta)"
+    },
+    "PostProjectionToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "vPostProjectPos": {
+          "type": null,
+          "documentation": null
+        },
+        "vScreenLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PostProjectionToScreen(const out Vector4 vPostProjectPos, out Vector2D vScreenLocation)"
+    },
+    "RemoveExtension": {
+      "documentation": null,
+      "signature_members": {
+        "classObj": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveExtension(Class<SFXGUIMovieExtension> classObj)"
+    },
+    "SendMouseEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMouseEvent(BioGuiEvents nEventID)"
+    },
+    "SetAllowFSCommands": {
+      "documentation": null,
+      "signature_members": {
+        "bAllowFSCommands": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllowFSCommands(bool bAllowFSCommands)"
+    },
+    "SetBackgroundAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBackgroundAlpha(float F)"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnabled)"
+    },
+    "SetFocus": {
+      "documentation": null,
+      "signature_members": {
+        "bCapture": {
+          "type": null,
+          "documentation": null
+        },
+        "bFocus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFocus(bool bCapture, optional bool bFocus)"
+    },
+    "SetGameMode": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "eGameMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameMode(bool bEnable, optional EGameModes eGameMode)"
+    },
+    "SetInputEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputEnabled(bool bEnabled)"
+    },
+    "SetMouseVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseVisible(bool bVisible)"
+    },
+    "SetMovieFocus": {
+      "documentation": null,
+      "signature_members": {
+        "Focus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMovieFocus(bool Focus)"
+    },
+    "SetRequiresUIWorld": {
+      "documentation": null,
+      "signature_members": {
+        "bUIWorldRequired": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRequiresUIWorld(bool bUIWorldRequired)"
+    },
+    "SetUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUpdate(bool bUpdate)"
+    },
+    "SetVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisible(bool bVisible)"
+    },
+    "Start": {
+      "documentation": null,
+      "signature_members": {
+        "StartPaused": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Start(optional bool StartPaused)"
+    },
+    "StopGuiMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopGuiMusic()"
+    },
+    "StopGuiSound": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopGuiSound(Name nmSound)"
+    },
+    "StopGuiVoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopGuiVoice()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "UpdateAspectRatio": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": null,
+          "documentation": null
+        },
+        "bHorizontal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float UpdateAspectRatio(optional bool bForce, optional bool bHorizontal)"
+    },
+    "UpdateInputConfigurations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateInputConfigurations()"
+    },
+    "WorldToSafePostProjectionFast": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        },
+        "vWorld": {
+          "type": null,
+          "documentation": null
+        },
+        "vSafePostProjectPos": {
+          "type": null,
+          "documentation": null
+        },
+        "vUnsafePostProjectPos": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnforceScreenEdge": {
+          "type": null,
+          "documentation": null
+        },
+        "vAdditionalScreenEdgeBorderBL": {
+          "type": null,
+          "documentation": null
+        },
+        "vAdditionalScreenEdgeBorderTR": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WorldToSafePostProjectionFast(const out SFXGUISceneView SceneView, const Vector vWorld, out Vector4 vSafePostProjectPos, out Vector4 vUnsafePostProjectPos, optional bool bEnforceScreenEdge, optional const Vector2D vAdditionalScreenEdgeBorderBL, optional const Vector2D vAdditionalScreenEdgeBorderTR)"
+    },
+    "WorldToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "vWorld": {
+          "type": null,
+          "documentation": null
+        },
+        "vScreenLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vPostProject": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnforceScreenEdge": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WorldToScreen(const Vector vWorld, out Vector2D vScreenLocation, out Vector4 vPostProject, optional bool bEnforceScreenEdge)"
+    },
+    "WorldToScreenFast": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        },
+        "vWorld": {
+          "type": null,
+          "documentation": null
+        },
+        "vScreenLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vPostProject": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnforceScreenEdge": {
+          "type": null,
+          "documentation": null
+        },
+        "vAdditionalScreenEdgeBorderBL": {
+          "type": null,
+          "documentation": null
+        },
+        "vAdditionalScreenEdgeBorderTR": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WorldToScreenFast(const out SFXGUISceneView SceneView, const Vector vWorld, out Vector2D vScreenLocation, out Vector4 vPostProject, optional bool bEnforceScreenEdge, optional const Vector2D vAdditionalScreenEdgeBorderBL, optional const Vector2D vAdditionalScreenEdgeBorderTR)"
+    },
+    "Advance": {
+      "documentation": null,
+      "signature_members": {
+        "Time": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Advance(float Time)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "ClearAllDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllDelegates()"
+    },
+    "GetNuiPawnCommandString": {
+      "documentation": null,
+      "signature_members": {
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Rule": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetNuiPawnCommandString(string TargetPawn, string Rule)"
+    },
+    "GetScreenLayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GUILayout",
+      "signature": "GUILayout GetScreenLayout()"
+    },
+    "HandleButtonHelpRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonHelpRefresh(bool usingGamepad)"
+    },
+    "HandleInputConfigurations": {
+      "documentation": null,
+      "signature_members": {
+        "bMenuAdvanceSwapped": {
+          "type": null,
+          "documentation": null
+        },
+        "bStickSouthpaw": {
+          "type": null,
+          "documentation": null
+        },
+        "bTriggerSouthpaw": {
+          "type": null,
+          "documentation": null
+        },
+        "bTriggersShouldersSwapped": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputConfigurations(bool bMenuAdvanceSwapped, bool bStickSouthpaw, bool bTriggerSouthpaw, bool bTriggersShouldersSwapped)"
+    },
+    "IsMPClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMPClient()"
+    },
+    "IsMPGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMPGame()"
+    },
+    "IsUsingGamepad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUsingGamepad()"
+    },
+    "PauseMenuAdditionalProcessing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseMenuAdditionalProcessing()"
+    },
+    "PreloadImages": {
+      "documentation": null,
+      "signature_members": {
+        "Images": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreloadImages(array<string> Images)"
+    },
+    "SetVariableStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": null,
+          "documentation": null
+        },
+        "sr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableStringRef(string Path, stringref sr)"
+    },
+    "StartHandlingKeyPresses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartHandlingKeyPresses()"
+    },
+    "StopHandlingKeyPresses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopHandlingKeyPresses()"
+    },
+    "UIStrRef": {
+      "documentation": null,
+      "signature_members": {
+        "sr": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string UIStrRef(stringref sr)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

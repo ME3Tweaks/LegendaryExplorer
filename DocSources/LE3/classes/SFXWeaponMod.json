@@ -1,0 +1,232 @@
+{
+  "parent": "SFXWeaponMod_NativeBase",
+  "package": "SFXGame",
+  "variables": {
+    "Meshes": {
+      "type": "MeshComponent",
+      "documentation": null
+    },
+    "GameEffectClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "GameEffects": {
+      "type": "WeaponModEffect",
+      "documentation": null
+    },
+    "Reticules": {
+      "type": "Class",
+      "documentation": null
+    },
+    "AimModes": {
+      "type": "SFXWeaponAimMode",
+      "documentation": null
+    },
+    "ModLevelTokens": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotificationImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "LargeNotificationImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "RTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "WeaponModConversions": {
+      "type": "WeaponModStatConversion",
+      "documentation": null
+    },
+    "SocketName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Camera": {
+      "type": "SFXCameraSetup",
+      "documentation": null
+    },
+    "MyWeapon": {
+      "type": "SFXWeapon",
+      "documentation": null
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null
+    },
+    "DisplayName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "FormattedName_ModName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "FormattedName_ModCategory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "Description": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotificationTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "NotificationDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MAX_RANK": {
+      "type": "int",
+      "documentation": null
+    },
+    "bMaterialEmissiveChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMaterialGripColorChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMaterialBodyColorChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsScoped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "WeaponModCategory": {
+      "type": "EWeaponModCategory",
+      "documentation": null
+    },
+    "ToolTipText": {
+      "type": "ETargetTipText",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetGameEffectDisplayValue": {
+      "documentation": null,
+      "signature_members": {
+        "GameEffectIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetGameEffectDisplayValue(int GameEffectIdx)"
+    },
+    "GetModName": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        },
+        "bShortForm": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetModName(int nLevel, optional bool bShortForm)"
+    },
+    "ApplyEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyEffects()"
+    },
+    "GetGameEffectClass": {
+      "documentation": null,
+      "signature_members": {
+        "EffectClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXGameEffect> GetGameEffectClass(Name EffectClassName)"
+    },
+    "GetMaxRank": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxRank()"
+    },
+    "GetModDescription": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetModDescription(int nLevel)"
+    },
+    "IsUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "nUnlockLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUnlocked(out int nUnlockLevel)"
+    },
+    "LoadModClass": {
+      "documentation": null,
+      "signature_members": {
+        "ModClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<SFXWeaponMod> LoadModClass(string ModClassName)"
+    },
+    "OnVisibilityChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnVisibilityChanged(bool bHidden)"
+    },
+    "RemoveEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveEffects()"
+    },
+    "Upgrade": {
+      "documentation": null,
+      "signature_members": {
+        "Instigator": {
+          "type": null,
+          "documentation": null
+        },
+        "bNoNotification": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Upgrade(optional BioPawn Instigator, optional bool bNoNotification)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

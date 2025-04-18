@@ -1,0 +1,45 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "CustomActionClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PowerCustomActionClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "CameraHookOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraArmOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraHookScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraArmScale": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CollectAnimListForCooking": {
+      "documentation": null,
+      "signature_members": {
+        "OutResults": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CollectAnimListForCooking(out array<Name> OutResults)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomActionType": {
+      "type": null,
+      "documentation": null
+    },
+    "ImpactCount": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomActionReactionType": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerCustomActionType": {
+      "type": null,
+      "documentation": null
+    },
+    "bFirstTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "TriggerCounter": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

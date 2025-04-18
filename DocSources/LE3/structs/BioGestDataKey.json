@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "tRawData": {
+      "type": null,
+      "documentation": null
+    },
+    "pChainTree": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseDynamicAnimSets": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,152 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_MoveCoverDestination": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "m_MoveCoverFinalDestination": {
+      "type": "CoverInfo",
+      "documentation": null
+    },
+    "m_oCoverAI": {
+      "type": "SFXAI_Cover",
+      "documentation": null
+    },
+    "m_MoveCoverMarker": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_MovementToSlotStart": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bIsCoverIntermediate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsInitialized": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsInterrupted": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "TargetCoverDir": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetCoverLink": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetCoverSlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(ECoverDirection TargetCoverDir, CoverLink TargetCoverLink, int TargetCoverSlotIdx)"
+    },
+    "ReachedDestination": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedDestination()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "TickCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TickCustomAction(float DeltaTime)"
+    },
+    "CanOverrideCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideCustomAction(int OldCustomAction, int NewCustomAction)"
+    },
+    "DoReStart": {
+      "documentation": null,
+      "signature_members": {
+        "TargetCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoReStart(CoverSlotMarker TargetCover)"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "IsTargetCoverValid": {
+      "documentation": null,
+      "signature_members": {
+        "targetLink": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetSlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTargetCoverValid(CoverLink targetLink, int TargetSlotIdx)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    },
+    "UpdateMoveCoverDestinationSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UpdateMoveCoverDestinationSlot()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

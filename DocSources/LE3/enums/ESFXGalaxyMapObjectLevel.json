@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "GalaxyMapObjType_Undefined": {
+      "value": 0,
+      "documentation": null
+    },
+    "GalaxyMapObjType_GalaxyLevel": {
+      "value": 1,
+      "documentation": null
+    },
+    "GalaxyMapObjType_ClusterLevel": {
+      "value": 2,
+      "documentation": null
+    },
+    "GalaxyMapObjType_SystemLevel": {
+      "value": 3,
+      "documentation": null
+    },
+    "GalaxyMapObjType_PlanetLevel": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

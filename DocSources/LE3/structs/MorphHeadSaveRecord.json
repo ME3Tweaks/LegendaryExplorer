@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "AccessoryMeshes": {
+      "type": null,
+      "documentation": null
+    },
+    "MorphFeatures": {
+      "type": null,
+      "documentation": null
+    },
+    "OffsetBones": {
+      "type": null,
+      "documentation": null
+    },
+    "LOD0Vertices": {
+      "type": null,
+      "documentation": null
+    },
+    "LOD1Vertices": {
+      "type": null,
+      "documentation": null
+    },
+    "LOD2Vertices": {
+      "type": null,
+      "documentation": null
+    },
+    "LOD3Vertices": {
+      "type": null,
+      "documentation": null
+    },
+    "ScalarParameters": {
+      "type": null,
+      "documentation": null
+    },
+    "VectorParameters": {
+      "type": null,
+      "documentation": null
+    },
+    "TextureParameters": {
+      "type": null,
+      "documentation": null
+    },
+    "HairMesh": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

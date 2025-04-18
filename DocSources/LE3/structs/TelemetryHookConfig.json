@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Event": {
+      "type": null,
+      "documentation": null
+    },
+    "AutoFillParameters": {
+      "type": null,
+      "documentation": null
+    },
+    "Channel": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

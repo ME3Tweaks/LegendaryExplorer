@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ActivatorOp": {
+      "type": null,
+      "documentation": null
+    },
+    "Op": {
+      "type": null,
+      "documentation": null
+    },
+    "InputIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "RemainingDelay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

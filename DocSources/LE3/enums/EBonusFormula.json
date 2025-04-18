@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BonusFormula_Add": {
+      "value": 0,
+      "documentation": null
+    },
+    "BonusFormula_Substract": {
+      "value": 1,
+      "documentation": null
+    },
+    "BonusFormula_LargestValue": {
+      "value": 2,
+      "documentation": null
+    },
+    "BonusFormula_Custom": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

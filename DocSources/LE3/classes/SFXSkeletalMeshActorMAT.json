@@ -1,0 +1,65 @@
+{
+  "parent": "SkeletalMeshActorMAT",
+  "package": "SFXGame",
+  "variables": {
+    "VectorParameters": {
+      "type": "SMAVectorParameter",
+      "documentation": null
+    },
+    "ScalarParameters": {
+      "type": "SMAScalarParameter",
+      "documentation": null
+    },
+    "TextureParameters": {
+      "type": "SMATextureParameter",
+      "documentation": null
+    },
+    "HeadMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "HairMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "MorphHead": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "UpdateSkelWhenNotRendered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasWrinkles": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BioBaseRemovedFromWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBaseRemovedFromWorld()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SFXCustomAction_ClassMelee",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "MoveToMarkers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoveToMarkers()"
+    },
+    "NonSyncedAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NonSyncedAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SeqNodes": {
+      "type": null,
+      "documentation": null
+    },
+    "MasterNode": {
+      "type": null,
+      "documentation": null
+    },
+    "GroupName": {
+      "type": null,
+      "documentation": null
+    },
+    "RateScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bFireSlaveNotifies": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

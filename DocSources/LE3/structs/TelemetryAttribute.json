@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "sData": {
+      "type": null,
+      "documentation": null
+    },
+    "nData": {
+      "type": null,
+      "documentation": null
+    },
+    "fData": {
+      "type": null,
+      "documentation": null
+    },
+    "bData": {
+      "type": null,
+      "documentation": null
+    },
+    "bRawJSON": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

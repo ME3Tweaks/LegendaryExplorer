@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_fTime": {
+      "type": null,
+      "documentation": null
+    },
+    "m_eAnimNode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "VfTable": {
+      "type": null,
+      "documentation": null
+    },
+    "lstSiblingIndices": {
+      "type": null,
+      "documentation": null
+    },
+    "nGlobalBool": {
+      "type": null,
+      "documentation": null
+    },
+    "nParentIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "bNewState": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseParam": {
+      "type": null,
+      "documentation": null
+    },
+    "bParentTypeOr": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

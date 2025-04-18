@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "EventLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "EventTime": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerIndexAndYaw": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerPitchAndRoll": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

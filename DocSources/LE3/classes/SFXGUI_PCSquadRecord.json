@@ -1,0 +1,37 @@
+{
+  "parent": "SFXGUI_SquadRecord",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ProcessRStickAxisInput": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessRStickAxisInput(float fValue)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

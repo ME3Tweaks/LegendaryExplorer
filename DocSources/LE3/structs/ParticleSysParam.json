@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "Vector": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Actor": {
+      "type": null,
+      "documentation": null
+    },
+    "Material": {
+      "type": null,
+      "documentation": null
+    },
+    "Scalar": {
+      "type": null,
+      "documentation": null
+    },
+    "Color": {
+      "type": null,
+      "documentation": null
+    },
+    "ParamType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

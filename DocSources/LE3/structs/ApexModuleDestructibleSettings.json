@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "MaxChunkIslandCount": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxRrbActorCount": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxChunkSeparationLOD": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

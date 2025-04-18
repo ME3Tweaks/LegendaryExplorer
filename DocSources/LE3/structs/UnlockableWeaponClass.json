@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "UnlockPlotId": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

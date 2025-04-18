@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PRIVACY_PUBLIC": {
+      "value": 0,
+      "documentation": null
+    },
+    "PRIVACY_PRIVATE": {
+      "value": 1,
+      "documentation": null
+    },
+    "PRIVACY_FRIENDS": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

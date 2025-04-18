@@ -1,0 +1,245 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "mPlayerId": {
+      "type": "UniqueNetId",
+      "documentation": null
+    },
+    "Scope": {
+      "type": "LeaderboardStatScope",
+      "documentation": null
+    },
+    "__OnJobCompletion__Delegate": {
+      "type": "OnJobCompletion",
+      "documentation": null
+    },
+    "__OnResultsRetrieved__Delegate": {
+      "type": "OnResultsRetrieved",
+      "documentation": null
+    },
+    "ExternalData": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "nLeaderboardId": {
+      "type": "int",
+      "documentation": null
+    },
+    "nRankStart": {
+      "type": "int",
+      "documentation": null
+    },
+    "nRankRange": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCenteredLeaderboard": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFriendLeaderboard": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateCenteredLeaderboardJob": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardId": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "ResultsRetrievedDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGetLeaderboardData",
+      "signature": "SFXOnlineJobGetLeaderboardData CreateCenteredLeaderboardJob(int LeaderboardId, UniqueNetId PlayerID, int RankRange, delegate<OnResultsRetrieved> ResultsRetrievedDelegate, optional Pointer pExternalData)"
+    },
+    "CreateFriendLeaderboardJob": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardId": {
+          "type": null,
+          "documentation": null
+        },
+        "ResultsRetrievedDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGetLeaderboardData",
+      "signature": "SFXOnlineJobGetLeaderboardData CreateFriendLeaderboardJob(int LeaderboardId, delegate<OnResultsRetrieved> ResultsRetrievedDelegate, optional Pointer pExternalData)"
+    },
+    "CreateFriendStatsDataJob": {
+      "documentation": null,
+      "signature_members": {
+        "oScope": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "ResultsRetrievedDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGetLeaderboardData",
+      "signature": "SFXOnlineJobGetLeaderboardData CreateFriendStatsDataJob(LeaderboardStatScope oScope, int RankRange, delegate<OnResultsRetrieved> ResultsRetrievedDelegate, optional Pointer pExternalData)"
+    },
+    "CreateLeaderboardJob": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardId": {
+          "type": null,
+          "documentation": null
+        },
+        "RankStart": {
+          "type": null,
+          "documentation": null
+        },
+        "RankRange": {
+          "type": null,
+          "documentation": null
+        },
+        "ResultsRetrievedDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGetLeaderboardData",
+      "signature": "SFXOnlineJobGetLeaderboardData CreateLeaderboardJob(int LeaderboardId, int RankStart, int RankRange, delegate<OnResultsRetrieved> ResultsRetrievedDelegate, optional Pointer pExternalData)"
+    },
+    "JobCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "aColumInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "iTotalRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "uidEntity": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JobCompleted(array<LeaderboardColumn> aColumInfo, array<LeaderboardRecord> aResults, int iTotalRanks, UniqueNetId uidEntity, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "OnJobCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "aColumInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "iTotalRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "uidEntity": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnJobCompletion(array<LeaderboardColumn> aColumInfo, array<LeaderboardRecord> aResults, int iTotalRanks, UniqueNetId uidEntity, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "OnResultsRetrieved": {
+      "documentation": null,
+      "signature_members": {
+        "aColumInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "aResults": {
+          "type": null,
+          "documentation": null
+        },
+        "iTotalRanks": {
+          "type": null,
+          "documentation": null
+        },
+        "uidEntity": {
+          "type": null,
+          "documentation": null
+        },
+        "nErrorCode": {
+          "type": null,
+          "documentation": null
+        },
+        "pExternalData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnResultsRetrieved(array<LeaderboardColumn> aColumInfo, array<LeaderboardRecord> aResults, int iTotalRanks, UniqueNetId uidEntity, LeaderboardStatsError nErrorCode, optional Pointer pExternalData)"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Data": {
+      "type": null,
+      "documentation": null
+    },
+    "RemainingTime": {
+      "type": null,
+      "documentation": null
+    },
+    "InterpExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "InterpMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CHOICECOLOR_Orange": {
+      "value": 0,
+      "documentation": null
+    },
+    "CHOICECOLOR_Red": {
+      "value": 1,
+      "documentation": null
+    },
+    "CHOICECOLOR_Green": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

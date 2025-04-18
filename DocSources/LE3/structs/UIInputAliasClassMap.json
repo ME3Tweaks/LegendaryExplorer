@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "WidgetClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "WidgetStates": {
+      "type": null,
+      "documentation": null
+    },
+    "WidgetClass": {
+      "type": null,
+      "documentation": null
+    },
+    "StateLookupTable": {
+      "type": null,
+      "documentation": null
+    },
+    "StateReverseLookupTable": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

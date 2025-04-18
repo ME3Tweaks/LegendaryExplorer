@@ -1,0 +1,380 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "DifficultyScoreMultipliers": {
+      "type": "DifficultyScoreMultiplier",
+      "documentation": null
+    },
+    "CreditBudgets": {
+      "type": "CreditBudget",
+      "documentation": null
+    },
+    "FactionBonuses": {
+      "type": "XPBonus",
+      "documentation": null
+    },
+    "MapBonuses": {
+      "type": "XPBonus",
+      "documentation": null
+    },
+    "PlayerMedalRecords": {
+      "type": "PlayerMedalRecord",
+      "documentation": null
+    },
+    "SquadMedalRecords": {
+      "type": "int",
+      "documentation": null
+    },
+    "PlayerMedalDefinitions": {
+      "type": "MedalDefinition",
+      "documentation": null
+    },
+    "SquadMedalDefinitions": {
+      "type": "MedalDefinition",
+      "documentation": null
+    },
+    "ExtractedPlayerIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "KillTimeStamps": {
+      "type": "float",
+      "documentation": null
+    },
+    "BioWorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "ScoreMultiplier": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnemyScoreBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "TotalEnemyScoreRewarded": {
+      "type": "float",
+      "documentation": null
+    },
+    "ObjectiveCreditBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "ObjectiveScoreBudget": {
+      "type": "float",
+      "documentation": null
+    },
+    "ObjectiveScoreRewarded": {
+      "type": "float",
+      "documentation": null
+    },
+    "srKillScoreTag": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srAssistScoreTag": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srObjectiveScoreTag": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ScorePerExtractedPlayer": {
+      "type": "float",
+      "documentation": null
+    },
+    "KillstreakMedalWindow": {
+      "type": "float",
+      "documentation": null
+    },
+    "srCreditsEarned": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srBonusCreditsEarned": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srExtractionCreditsEarned": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "LastCreditsEarned": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastBonusCreditsEarned": {
+      "type": "int",
+      "documentation": null
+    },
+    "bPlayerDownedInWave": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DisplayScoreTag": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayScoreTag(SFXPawn_Player Player, float Amount, ScoreTagType Type)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Init()"
+    },
+    "AddCredits": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "RoundToMultipleOf25": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float AddCredits(SFXPawn_Player PlayerPawn, float Amount, optional bool RoundToMultipleOf25)"
+    },
+    "AddScore": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float AddScore(SFXPawn_Player PlayerPawn, float Amount, ScoreType Type)"
+    },
+    "ClearSquadMedalStanding": {
+      "documentation": null,
+      "signature_members": {
+        "MedalType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearSquadMedalStanding(MPMedalType MedalType)"
+    },
+    "GetBaseScoreMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBaseScoreMultiplier()"
+    },
+    "GetBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Bonuses": {
+          "type": null,
+          "documentation": null
+        },
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "GetXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetBonus(const array<XPBonus> Bonuses, int Id, bool GetXP)"
+    },
+    "GetFactionBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "GetXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFactionBonus(int Id, bool GetXP)"
+    },
+    "GetFinalCreditsMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFinalCreditsMultiplier()"
+    },
+    "GetFinalScoreMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFinalScoreMultiplier()"
+    },
+    "GetMapBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "GetXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetMapBonus(int Id, bool GetXP)"
+    },
+    "IncrementMedalStanding": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "MedalType": {
+          "type": null,
+          "documentation": null
+        },
+        "Inc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementMedalStanding(SFXPawn_Player PlayerPawn, MPMedalType MedalType, optional int Inc)"
+    },
+    "NewWaveStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NewWaveStarted()"
+    },
+    "PlayerDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerDown()"
+    },
+    "PlayersExtracted": {
+      "documentation": null,
+      "signature_members": {
+        "ExtractedPlayers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayersExtracted(array<SFXPawn_Player> ExtractedPlayers)"
+    },
+    "ProcessKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killed": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        },
+        "HeadShot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessKill(Pawn Killed, float Damage, Class<SFXDamageType> DamageType, Controller instigatedBy, Actor DamageCauser, bool HeadShot)"
+    },
+    "ShowBonusCreditsEarnedMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowBonusCreditsEarnedMessage()"
+    },
+    "ShowCreditsEarnedMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowCreditsEarnedMessage()"
+    },
+    "ShowExtractionCreditsEarnedMessage": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": null,
+          "documentation": null
+        },
+        "Credits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowExtractionCreditsEarnedMessage(SFXPlayerController PC, float Credits)"
+    },
+    "UpdateKillStreakTracking": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKillStreakTracking(SFXPawn_Player PlayerPawn)"
+    },
+    "WaveCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WaveCompleted()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

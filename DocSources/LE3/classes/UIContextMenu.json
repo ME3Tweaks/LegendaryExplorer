@@ -1,0 +1,186 @@
+{
+  "parent": "UIList",
+  "package": "Engine",
+  "variables": {
+    "MenuItems": {
+      "type": "ContextMenuItem",
+      "documentation": null
+    },
+    "InvokingWidget": {
+      "type": "UIObject",
+      "documentation": null
+    },
+    "bResolvePosition": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearMenuItems": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearMenuItems(UIObject Widget)"
+    },
+    "Close": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Close(optional int PlayerIndex)"
+    },
+    "FindMenuItemIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "ItemToFind": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindMenuItemIndex(UIObject Widget, string ItemToFind)"
+    },
+    "GetAllMenuItems": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "out_MenuItems": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAllMenuItems(UIObject Widget, out array<string> out_MenuItems)"
+    },
+    "GetMenuItem": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "IndexToGet": {
+          "type": null,
+          "documentation": null
+        },
+        "out_MenuItem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetMenuItem(UIObject Widget, int IndexToGet, out string out_MenuItem)"
+    },
+    "InsertMenuItem": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "Item": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "bAllowDuplicates": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InsertMenuItem(UIObject Widget, string Item, optional int InsertIndex, optional bool bAllowDuplicates)"
+    },
+    "IsActiveContextMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsActiveContextMenu()"
+    },
+    "Open": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Open(optional int PlayerIndex)"
+    },
+    "RemoveMenuItem": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "ItemToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveMenuItem(UIObject Widget, string ItemToRemove)"
+    },
+    "RemoveMenuItemAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "IndexToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveMenuItemAtIndex(UIObject Widget, int IndexToRemove)"
+    },
+    "SetMenuItems": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMenuItems": {
+          "type": null,
+          "documentation": null
+        },
+        "bClearExisting": {
+          "type": null,
+          "documentation": null
+        },
+        "InsertIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetMenuItems(UIObject Widget, array<string> NewMenuItems, optional bool bClearExisting, optional int InsertIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

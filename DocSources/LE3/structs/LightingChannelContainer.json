@@ -1,0 +1,113 @@
+{
+  "Members": {
+    "bInitialized": {
+      "type": null,
+      "documentation": null
+    },
+    "BSP": {
+      "type": null,
+      "documentation": null
+    },
+    "Static": {
+      "type": null,
+      "documentation": null
+    },
+    "Dynamic": {
+      "type": null,
+      "documentation": null
+    },
+    "CompositeDynamic": {
+      "type": null,
+      "documentation": null
+    },
+    "Skybox": {
+      "type": null,
+      "documentation": null
+    },
+    "Unnamed_1": {
+      "type": null,
+      "documentation": null
+    },
+    "Unnamed_2": {
+      "type": null,
+      "documentation": null
+    },
+    "Unnamed_3": {
+      "type": null,
+      "documentation": null
+    },
+    "Unnamed_4": {
+      "type": null,
+      "documentation": null
+    },
+    "Unnamed_5": {
+      "type": null,
+      "documentation": null
+    },
+    "Unnamed_6": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_1": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_2": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_3": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_4": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_5": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_6": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_7": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_8": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_9": {
+      "type": null,
+      "documentation": null
+    },
+    "Cinematic_10": {
+      "type": null,
+      "documentation": null
+    },
+    "Gameplay_1": {
+      "type": null,
+      "documentation": null
+    },
+    "Gameplay_2": {
+      "type": null,
+      "documentation": null
+    },
+    "Gameplay_3": {
+      "type": null,
+      "documentation": null
+    },
+    "Gameplay_4": {
+      "type": null,
+      "documentation": null
+    },
+    "Crowd": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

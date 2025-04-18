@@ -1,0 +1,37 @@
+{
+  "parent": "SFXGUI_Option_LanguageBase",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentTextLanguage": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetAvailableSKULanguages": {
+      "documentation": null,
+      "signature_members": {
+        "aReturnLangs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableSKULanguages(out array<LanguageOptionInfo> aReturnLangs)"
+    },
+    "OptionIsAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OptionIsAvailable()"
+    },
+    "SaveOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveOption()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

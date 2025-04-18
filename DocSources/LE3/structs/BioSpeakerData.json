@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "nmSpeakerTag": {
+      "type": null,
+      "documentation": null
+    },
+    "pSpeakerActor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

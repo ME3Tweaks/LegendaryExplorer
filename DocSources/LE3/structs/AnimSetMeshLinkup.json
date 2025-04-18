@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "SkelMeshLinkupRUID": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneToTrackTable": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneUseAnimTranslation": {
+      "type": null,
+      "documentation": null
+    },
+    "ForceUseMeshTranslation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

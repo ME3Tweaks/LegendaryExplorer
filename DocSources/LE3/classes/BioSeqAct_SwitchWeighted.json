@@ -1,0 +1,60 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "fWeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight0": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight1": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight2": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight3": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight4": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight5": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight6": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight7": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight8": {
+      "type": "float",
+      "documentation": null
+    },
+    "fWeight9": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

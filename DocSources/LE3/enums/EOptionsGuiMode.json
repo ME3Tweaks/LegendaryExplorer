@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "GuiMode_BrowserWheel": {
+      "value": 0,
+      "documentation": null
+    },
+    "GuiMode_MainMenu": {
+      "value": 1,
+      "documentation": null
+    },
+    "GuiMode_NewGame": {
+      "value": 2,
+      "documentation": null
+    },
+    "GuiMode_Multiplayer": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

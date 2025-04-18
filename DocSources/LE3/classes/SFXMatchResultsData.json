@@ -1,0 +1,285 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerData": {
+      "type": "PlayerScoreData",
+      "documentation": null
+    },
+    "SquadMedalIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "ExtractedPlayerIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentMatchData": {
+      "type": "MatchData",
+      "documentation": null
+    },
+    "PlayerRewards": {
+      "type": "PlayerRewardData",
+      "documentation": null
+    },
+    "TotalSquadCredits": {
+      "type": "int",
+      "documentation": null
+    },
+    "TotalSquadXP": {
+      "type": "int",
+      "documentation": null
+    },
+    "BonusSquadXP": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddPlayerMedal": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "MedalID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerMedal(int PlayerID, int MedalID)"
+    },
+    "AddSquadMedal": {
+      "documentation": null,
+      "signature_members": {
+        "MedalID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSquadMedal(int MedalID)"
+    },
+    "CleanupInactiveData": {
+      "documentation": null,
+      "signature_members": {
+        "ActiveIDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CleanupInactiveData(out array<int> ActiveIDs)"
+    },
+    "ClearGAWValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearGAWValues()"
+    },
+    "FindPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindPlayer(int PlayerID)"
+    },
+    "ResetData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetData()"
+    },
+    "SetBonusSquadXP": {
+      "documentation": null,
+      "signature_members": {
+        "nBonusXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBonusSquadXP(int nBonusXP)"
+    },
+    "SetMatchResult": {
+      "documentation": null,
+      "signature_members": {
+        "bResult": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMatchResult(bool bResult)"
+    },
+    "SetMatchSettings": {
+      "documentation": null,
+      "signature_members": {
+        "MapId": {
+          "type": null,
+          "documentation": null
+        },
+        "ZoneID": {
+          "type": null,
+          "documentation": null
+        },
+        "GAWZoneIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "GAWOverallIncrease": {
+          "type": null,
+          "documentation": null
+        },
+        "EnemyID": {
+          "type": null,
+          "documentation": null
+        },
+        "DifficultyID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMatchSettings(int MapId, EGAWZone ZoneID, int GAWZoneIncrease, int GAWOverallIncrease, int EnemyID, int DifficultyID)"
+    },
+    "SetMatchTime": {
+      "documentation": null,
+      "signature_members": {
+        "nTotalMatchTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMatchTime(int nTotalMatchTime)"
+    },
+    "SetMatchWaves": {
+      "documentation": null,
+      "signature_members": {
+        "nWaves": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMatchWaves(int nWaves)"
+    },
+    "SetPlayerKit": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "KitName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerKit(int PlayerID, Name KitName)"
+    },
+    "SetPlayerLevel": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "nLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerLevel(int PlayerID, int nLevel)"
+    },
+    "SetPlayerRewardNewExperience": {
+      "documentation": null,
+      "signature_members": {
+        "fXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerRewardNewExperience(float fXP)"
+    },
+    "SetPlayerRewardOriginalExperience": {
+      "documentation": null,
+      "signature_members": {
+        "fXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerRewardOriginalExperience(float fXP)"
+    },
+    "SetPlayerUniqueID": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "UniqueId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerUniqueID(int PlayerID, UniqueNetId UniqueId)"
+    },
+    "SetTotalSquadCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nCredits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTotalSquadCredits(int nCredits)"
+    },
+    "SetTotalSquadXP": {
+      "documentation": null,
+      "signature_members": {
+        "nTotalXP": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTotalSquadXP(int nTotalXP)"
+    },
+    "UpdatePlayerScoreData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerName": {
+          "type": null,
+          "documentation": null
+        },
+        "fScore": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlayerScoreData(int PlayerID, string PlayerName, float fScore)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

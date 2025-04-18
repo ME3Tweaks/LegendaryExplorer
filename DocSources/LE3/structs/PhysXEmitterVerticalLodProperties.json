@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "WeightForFifo": {
+      "type": null,
+      "documentation": null
+    },
+    "WeightForSpawnLod": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnLodRateVsLifeBias": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeFadeoutTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

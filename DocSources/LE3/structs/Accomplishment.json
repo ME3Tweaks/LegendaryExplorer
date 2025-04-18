@@ -1,0 +1,85 @@
+{
+  "Members": {
+    "Icon": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Parent": {
+      "type": null,
+      "documentation": null
+    },
+    "ChallengeGroupName": {
+      "type": null,
+      "documentation": null
+    },
+    "GrinderAccomplishmentName": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "XboxAchievementID": {
+      "type": null,
+      "documentation": null
+    },
+    "XboxAvatarAwardID": {
+      "type": null,
+      "documentation": null
+    },
+    "PS3TrophyID": {
+      "type": null,
+      "documentation": null
+    },
+    "Title": {
+      "type": null,
+      "documentation": null
+    },
+    "Incomplete": {
+      "type": null,
+      "documentation": null
+    },
+    "Complete": {
+      "type": null,
+      "documentation": null
+    },
+    "PointValue": {
+      "type": null,
+      "documentation": null
+    },
+    "NotificationText": {
+      "type": null,
+      "documentation": null
+    },
+    "MPNotificationText": {
+      "type": null,
+      "documentation": null
+    },
+    "VisibilityStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "VisibilityEndTime": {
+      "type": null,
+      "documentation": null
+    },
+    "IsMultiplayerOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bRepeatableChallenge": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkedAchievementID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

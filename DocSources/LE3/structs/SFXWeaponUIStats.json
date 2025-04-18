@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Accuracy": {
+      "type": null,
+      "documentation": null
+    },
+    "Damage": {
+      "type": null,
+      "documentation": null
+    },
+    "FireRate": {
+      "type": null,
+      "documentation": null
+    },
+    "Magazine": {
+      "type": null,
+      "documentation": null
+    },
+    "Weight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleAccelerationBase",
+  "package": "Engine",
+  "variables": {
+    "AccelOverLifeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

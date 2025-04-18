@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "Powers": {
+      "type": null,
+      "documentation": null
+    },
+    "Weapons": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponMods": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadoutWeapons": {
+      "type": null,
+      "documentation": null
+    },
+    "Tag": {
+      "type": null,
+      "documentation": null
+    },
+    "MappedPower": {
+      "type": null,
+      "documentation": null
+    },
+    "CharacterLevel": {
+      "type": null,
+      "documentation": null
+    },
+    "TalentPoints": {
+      "type": null,
+      "documentation": null
+    },
+    "Grenades": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

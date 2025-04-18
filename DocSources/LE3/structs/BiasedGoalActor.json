@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Goal": {
+      "type": null,
+      "documentation": null
+    },
+    "ExtraCost": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

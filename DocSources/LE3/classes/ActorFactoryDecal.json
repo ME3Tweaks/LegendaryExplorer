@@ -1,0 +1,13 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "DecalMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

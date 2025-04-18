@@ -1,0 +1,298 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "BS_Start": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_Loop": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "BS_End": {
+      "type": "BodyStance",
+      "documentation": null
+    },
+    "Destination": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "fEndAnimDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStartBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStartBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLoopBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLoopBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndBlendInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndBlendOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "fStartAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fEndAnimPlayRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLoopTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAlignPawnBeforeMove": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPlayedEndAnim": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDelayReplication": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MoveStage": {
+      "type": "EMoveStage",
+      "documentation": null
+    },
+    "StartBlendType": {
+      "type": "AlphaBlendType",
+      "documentation": null
+    },
+    "LoopBlendType": {
+      "type": "AlphaBlendType",
+      "documentation": null
+    },
+    "EndBlendType": {
+      "type": "AlphaBlendType",
+      "documentation": null
+    },
+    "StartRootBoneX": {
+      "type": "ERootBoneAxis",
+      "documentation": null
+    },
+    "StartRootBoneY": {
+      "type": "ERootBoneAxis",
+      "documentation": null
+    },
+    "StartRootBoneZ": {
+      "type": "ERootBoneAxis",
+      "documentation": null
+    },
+    "EndRootBoneX": {
+      "type": "ERootBoneAxis",
+      "documentation": null
+    },
+    "EndRootBoneY": {
+      "type": "ERootBoneAxis",
+      "documentation": null
+    },
+    "EndRootBoneZ": {
+      "type": "ERootBoneAxis",
+      "documentation": null
+    },
+    "StartRMM": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    },
+    "EndRMM": {
+      "type": "ERootMotionMode",
+      "documentation": null
+    },
+    "StartRootRotationPitch": {
+      "type": "ERootRotationOption",
+      "documentation": null
+    },
+    "StartRootRotationYaw": {
+      "type": "ERootRotationOption",
+      "documentation": null
+    },
+    "StartRootRotationRoll": {
+      "type": "ERootRotationOption",
+      "documentation": null
+    },
+    "EndRootRotationPitch": {
+      "type": "ERootRotationOption",
+      "documentation": null
+    },
+    "EndRootRotationYaw": {
+      "type": "ERootRotationOption",
+      "documentation": null
+    },
+    "EndRootRotationRoll": {
+      "type": "ERootRotationOption",
+      "documentation": null
+    },
+    "StartRMRM": {
+      "type": "ERootMotionRotationMode",
+      "documentation": null
+    },
+    "EndRMRM": {
+      "type": "ERootMotionRotationMode",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetUsedAnimNames": {
+      "documentation": null,
+      "signature_members": {
+        "UsedAnims": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUsedAnimNames(out array<Name> UsedAnims)"
+    },
+    "PlayEndAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayEndAnimation()"
+    },
+    "ReachedPrecisePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedPrecisePosition()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "DestTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DestTimeout()"
+    },
+    "GetBlendInTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBlendInTime()"
+    },
+    "GetBlendOutTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBlendOutTime()"
+    },
+    "GetEndAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetEndAnim(out BodyStance Stance)"
+    },
+    "GetLoopAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetLoopAnim(out BodyStance Stance)"
+    },
+    "GetStartAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Stance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStartAnim(out BodyStance Stance)"
+    },
+    "PlayStartAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayStartAnimation()"
+    },
+    "PreAlignPawnLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreAlignPawnLocation()"
+    },
+    "SetMoveStage": {
+      "documentation": null,
+      "signature_members": {
+        "NextStage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveStage(EMoveStage NextStage)"
+    },
+    "ShouldReplicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldReplicate()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

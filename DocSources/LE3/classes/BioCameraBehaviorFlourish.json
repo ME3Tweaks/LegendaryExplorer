@@ -1,0 +1,65 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "CameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "InterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "DistanceOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "YawSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "DistanceSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInterpToStart": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

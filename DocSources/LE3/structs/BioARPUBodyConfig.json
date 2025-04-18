@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "nmCurveName": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimSet": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAnimSeq": {
+      "type": null,
+      "documentation": null
+    },
+    "fStartBlendDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndBlendDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsesSingleKeyframe": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

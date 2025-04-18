@@ -1,0 +1,24 @@
+{
+  "parent": "UIDataStoreSubscriber",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "SaveSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": null,
+          "documentation": null
+        },
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveSubscriberValue(out array<UIDataStore> out_BoundDataStores, optional int BindingIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

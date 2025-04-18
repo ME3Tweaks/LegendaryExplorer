@@ -1,0 +1,17 @@
+{
+  "parent": "Volume",
+  "package": "WwiseAudio",
+  "variables": {
+    "Settings": {
+      "type": "WwiseEnvironmentSettings",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

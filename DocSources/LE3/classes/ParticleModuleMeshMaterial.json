@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleMaterialBase",
+  "package": "Engine",
+  "variables": {
+    "MeshMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

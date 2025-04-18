@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "WeaponTypes": {
+      "type": null,
+      "documentation": null
+    },
+    "Offset": {
+      "type": null,
+      "documentation": null
+    },
+    "Direction": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

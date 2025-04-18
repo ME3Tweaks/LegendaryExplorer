@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "sVar": {
+      "type": null,
+      "documentation": null
+    },
+    "nVar": {
+      "type": null,
+      "documentation": null
+    },
+    "fVar": {
+      "type": null,
+      "documentation": null
+    },
+    "bVar": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

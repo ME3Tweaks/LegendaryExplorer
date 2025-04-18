@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "GameSettingsClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "URL": {
+      "type": null,
+      "documentation": null
+    },
+    "GameSettings": {
+      "type": null,
+      "documentation": null
+    },
+    "GameSettingId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

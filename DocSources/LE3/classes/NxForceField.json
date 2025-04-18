@@ -1,0 +1,67 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ConvexMeshes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExclusionShapes": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExclusionShapePoses": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ForceField": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "U2NRotation": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ExcludeChannel": {
+      "type": "int",
+      "documentation": null
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bForceActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

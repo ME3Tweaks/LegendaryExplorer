@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "IPT_PC": {
+      "value": 0,
+      "documentation": null
+    },
+    "IPT_360": {
+      "value": 1,
+      "documentation": null
+    },
+    "IPT_PS3": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

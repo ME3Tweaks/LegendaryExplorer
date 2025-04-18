@@ -1,0 +1,17 @@
+{
+  "parent": "CoverGoalConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "ForwardDot": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxWeight": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

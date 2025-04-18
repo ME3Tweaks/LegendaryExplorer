@@ -1,0 +1,135 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnSendPartyGameInvitesComplete__Delegate": {
+      "type": "OnSendPartyGameInvitesComplete",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetPartyMemberInformation": {
+      "documentation": null,
+      "signature_members": {
+        "PartyMembers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPartyMemberInformation(out array<OnlinePartyMember> PartyMembers)"
+    },
+    "OnSendPartyGameInvitesComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSendPartyGameInvitesComplete(bool bWasSuccessful)"
+    },
+    "SendPartyGameInvites": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SendPartyGameInvites(byte LocalUserNum)"
+    },
+    "SetPartyMemberCustomData": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Data1": {
+          "type": null,
+          "documentation": null
+        },
+        "Data2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPartyMemberCustomData(byte LocalUserNum, QWord Data1, QWord Data2)"
+    },
+    "ShowCommunitySessionsUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowCommunitySessionsUI(byte LocalUserNum)"
+    },
+    "ShowPartyUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowPartyUI(byte LocalUserNum)"
+    },
+    "ShowVoiceChannelUI": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowVoiceChannelUI(byte LocalUserNum)"
+    },
+    "AddSendPartyGameInvitesCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SendPartyGameInvitesCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSendPartyGameInvitesCompleteDelegate(byte LocalUserNum, delegate<OnSendPartyGameInvitesComplete> SendPartyGameInvitesCompleteDelegate)"
+    },
+    "ClearSendPartyGameInvitesCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SendPartyGameInvitesCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearSendPartyGameInvitesCompleteDelegate(byte LocalUserNum, delegate<OnSendPartyGameInvitesComplete> SendPartyGameInvitesCompleteDelegate)"
+    },
+    "GetPartyBandwidth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPartyBandwidth()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

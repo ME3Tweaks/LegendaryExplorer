@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "EvolvedChoices": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerName": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentRank": {
+      "type": null,
+      "documentation": null
+    },
+    "WheelDisplayIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

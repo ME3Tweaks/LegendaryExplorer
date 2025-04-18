@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrackFloatBase",
+  "package": "Engine",
+  "variables": {
+    "AnimSeqs": {
+      "type": "AnimControlTrackKey",
+      "documentation": null
+    },
+    "SlotName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "m_mWoundEllipse": {
+      "type": null,
+      "documentation": null
+    },
+    "HitBox": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nmPart": {
+      "type": null,
+      "documentation": null
+    },
+    "HitBoxBone": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pWoundModel": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pBloodTexture": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fEffectDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "m_fEffectRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsActive": {
+      "type": null,
+      "documentation": null
+    },
+    "m_eWoundSeverity": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SFXONLINE_IN_MATCH_MAKING": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_IN_LOBBY": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_IN_LOBBY_LONGTIME": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_IN_GAME_STARTING": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_IN_GAME_MIDGAME": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_IN_GAME_FINISHING": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_IN_UNKNOWN_STATE": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

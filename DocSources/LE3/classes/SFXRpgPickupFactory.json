@@ -1,0 +1,62 @@
+{
+  "parent": "SFXPickupFactory",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "SetInitialState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetInitialState()"
+    },
+    "SetPickupMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPickupMesh()"
+    },
+    "InitializePickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePickup()"
+    },
+    "SetRespawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetRespawn()"
+    },
+    "SpawnCopyFor": {
+      "documentation": null,
+      "signature_members": {
+        "Recipient": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SpawnCopyFor(Pawn Recipient)"
+    },
+    "GetPickupMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PrimitiveComponent",
+      "signature": "PrimitiveComponent GetPickupMesh()"
+    },
+    "HasPickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasPickup()"
+    },
+    "SetTooltips": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetTooltips()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

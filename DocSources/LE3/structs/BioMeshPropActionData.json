@@ -1,0 +1,45 @@
+{
+  "Members": {
+    "sParticleSys": {
+      "type": null,
+      "documentation": null
+    },
+    "sClientEffect": {
+      "type": null,
+      "documentation": null
+    },
+    "tSpawnParams": {
+      "type": null,
+      "documentation": null
+    },
+    "vOffsetLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "rOffsetRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "vOffsetScale": {
+      "type": null,
+      "documentation": null
+    },
+    "nmActionName": {
+      "type": null,
+      "documentation": null
+    },
+    "nmAttachTo": {
+      "type": null,
+      "documentation": null
+    },
+    "bActivate": {
+      "type": null,
+      "documentation": null
+    },
+    "bCooldown": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

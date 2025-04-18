@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "sPreviousFriendRankBlob": {
+      "type": null,
+      "documentation": null
+    },
+    "aRankResults": {
+      "type": null,
+      "documentation": null
+    },
+    "nPreviousLocalUserRank": {
+      "type": null,
+      "documentation": null
+    },
+    "srFriendBeatMe": {
+      "type": null,
+      "documentation": null
+    },
+    "srFriendBeatByMe": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

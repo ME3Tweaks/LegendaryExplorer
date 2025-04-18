@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Bones": {
+      "type": null,
+      "documentation": null
+    },
+    "AreaTag": {
+      "type": null,
+      "documentation": null
+    },
+    "UseNumVertsAsWeights": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

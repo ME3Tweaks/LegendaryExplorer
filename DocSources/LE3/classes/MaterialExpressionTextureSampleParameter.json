@@ -1,0 +1,17 @@
+{
+  "parent": "MaterialExpressionTextureSample",
+  "package": "Engine",
+  "variables": {
+    "ExpressionGUID": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

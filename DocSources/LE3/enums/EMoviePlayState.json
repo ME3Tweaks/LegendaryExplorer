@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EMPS_Play": {
+      "value": 0,
+      "documentation": null
+    },
+    "EMPS_Stop": {
+      "value": 1,
+      "documentation": null
+    },
+    "EMPS_Pause": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "FriendlyName": {
+      "type": null,
+      "documentation": null
+    },
+    "ContentPath": {
+      "type": null,
+      "documentation": null
+    },
+    "ContentPackages": {
+      "type": null,
+      "documentation": null
+    },
+    "ContentFiles": {
+      "type": null,
+      "documentation": null
+    },
+    "UserIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

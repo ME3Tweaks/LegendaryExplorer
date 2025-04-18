@@ -1,0 +1,13 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SkelComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

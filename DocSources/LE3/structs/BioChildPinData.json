@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "aChainedTrees": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndBlendStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndBlendDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "fEndTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlayUntilNext": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseDynAnimSets": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

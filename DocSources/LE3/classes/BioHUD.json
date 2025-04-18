@@ -1,0 +1,1149 @@
+{
+  "parent": "HUD",
+  "package": "SFXGame",
+  "variables": {
+    "DebugDrawList": {
+      "type": "DebugDraw",
+      "documentation": null
+    },
+    "TraceStrips": {
+      "type": "TraceStripChannel",
+      "documentation": null
+    },
+    "DesignerHudText": {
+      "type": "DesignerText",
+      "documentation": null
+    },
+    "DesignerHudBars": {
+      "type": "DesignerBar",
+      "documentation": null
+    },
+    "__DebugDraw__Delegate": {
+      "type": "DebugDraw",
+      "documentation": null
+    },
+    "TraceStripTickColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "m_oActorForInfoDisplay": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "oGUIMaterial": {
+      "type": "Material",
+      "documentation": null
+    },
+    "SafeAreaTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "TraceStripTickInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "TraceStripTimeSeconds": {
+      "type": "float",
+      "documentation": null
+    },
+    "TraceStripDrawHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_ShowCoverLastTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "SafeAreaRatioX": {
+      "type": "float",
+      "documentation": null
+    },
+    "SafeAreaRatioY": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSafeXOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fSafeYOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_textX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_textY": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_lineHeight": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_charWidth": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_leftColumnX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_rightColumnX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_farrightColumnX": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_topRowY": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastSaveStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastSaveEndTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "YellowColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "OrangeColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "DarkGreyColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "FadeTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinFadeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bLockActorInfo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TraceStripsPaused": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowCoverRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bShowClaimedCoverOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisplaySafeArea": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisplayingSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUseGeneratedItemNames": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDesignerHud": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DebugDraw": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw(BioHUD H)"
+    },
+    "DisplayRouteInfo": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "PathColor": {
+          "type": null,
+          "documentation": null
+        },
+        "bDrawPathOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayRouteInfo(Pawn pPawn, Color PathColor, optional bool bDrawPathOnly)"
+    },
+    "DrawCircle": {
+      "documentation": null,
+      "signature_members": {
+        "fX": {
+          "type": null,
+          "documentation": null
+        },
+        "fY": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawCircle(float fX, float fY, float Radius)"
+    },
+    "DrawText": {
+      "documentation": null,
+      "signature_members": {
+        "valueName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        },
+        "LabelColor": {
+          "type": null,
+          "documentation": null
+        },
+        "DataColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawText(string valueName, string Value, optional Color LabelColor, optional Color DataColor)"
+    },
+    "DrawTextWithColor": {
+      "documentation": null,
+      "signature_members": {
+        "valueName": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        },
+        "LabelColor": {
+          "type": null,
+          "documentation": null
+        },
+        "DataColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTextWithColor(string valueName, string Value, Color LabelColor, Color DataColor)"
+    },
+    "DrawTraceStrip": {
+      "documentation": null,
+      "signature_members": {
+        "Chan": {
+          "type": null,
+          "documentation": null
+        },
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "fTimeScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTraceStrip(TraceStripChannel Chan, Vector2D Origin, Vector2D Extent, float fTimeScale)"
+    },
+    "DrawTraceStripBacking": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "fTimeScale": {
+          "type": null,
+          "documentation": null
+        },
+        "fMostRecentTime": {
+          "type": null,
+          "documentation": null
+        },
+        "LineColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTraceStripBacking(Vector2D Origin, Vector2D Extent, float fTimeScale, float fMostRecentTime, LinearColor LineColor)"
+    },
+    "IsFinalReleaseBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFinalReleaseBuild()"
+    },
+    "LoadTestTextStringFromFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string LoadTestTextStringFromFile()"
+    },
+    "PostRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostRender()"
+    },
+    "ProfileAnim": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileAnim(Actor TargetActor)"
+    },
+    "ProfileAnimPreload": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileAnimPreload(Actor TargetActor)"
+    },
+    "ProfileConversation": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileConversation(Actor TargetActor)"
+    },
+    "ProfileConversationBug": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileConversationBug(Actor TargetActor)"
+    },
+    "ProfileConversationExtra": {
+      "documentation": null,
+      "signature_members": {
+        "oCurConv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileConversationExtra(BioConversationController oCurConv)"
+    },
+    "ProfileCover": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileCover(Actor TargetActor)"
+    },
+    "ProfileGestures": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileGestures(Actor TargetActor)"
+    },
+    "ProfileKinect": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileKinect(Actor TargetActor)"
+    },
+    "ProfileLookAt": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileLookAt(Actor TargetActor)"
+    },
+    "ProfileWwise": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProfileWwise(Actor TargetActor)"
+    },
+    "UpdateCover": {
+      "documentation": null,
+      "signature_members": {
+        "bShowRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCover(bool bShowRotation)"
+    },
+    "UpdateTraceStrips": {
+      "documentation": null,
+      "signature_members": {
+        "fBufferTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTraceStrips(float fBufferTime)"
+    },
+    "ViewportDeProject": {
+      "documentation": null,
+      "signature_members": {
+        "LocalPlayerOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "ScreenLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "OutLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "OutDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ViewportDeProject(LocalPlayer LocalPlayerOwner, Vector ScreenLocation, out Vector OutLocation, out Vector OutDirection)"
+    },
+    "DrawEngineHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawEngineHUD()"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawHUD()"
+    },
+    "AddAnimNodeTraceStrip": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "nmAnimnode": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddAnimNodeTraceStrip(Actor TargetActor, Name nmAnimnode, LinearColor DrawColor)"
+    },
+    "AddAxisTraceStrip": {
+      "documentation": null,
+      "signature_members": {
+        "nmAxis": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddAxisTraceStrip(Name nmAxis, LinearColor DrawColor)"
+    },
+    "AddBar": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Lifetime": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "Grows": {
+          "type": null,
+          "documentation": null
+        },
+        "Shrinks": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBar(Name Id, float X, float Y, float Width, optional float Lifetime, optional int C, optional bool Grows, optional bool Shrinks)"
+    },
+    "AddButtonTraceStrip": {
+      "documentation": null,
+      "signature_members": {
+        "nmButton": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddButtonTraceStrip(Name nmButton, LinearColor DrawColor)"
+    },
+    "AddDebugDraw": {
+      "documentation": null,
+      "signature_members": {
+        "DebugDrawFunc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDebugDraw(delegate<DebugDraw> DebugDrawFunc)"
+    },
+    "AddDesignerText": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeOut": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        },
+        "Center": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDesignerText(Name Id, coerce string S, float X, float Y, optional float TimeOut, optional float Scale, optional bool Center)"
+    },
+    "AddPropertyTraceStrip": {
+      "documentation": null,
+      "signature_members": {
+        "TargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "nmProperty": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPropertyTraceStrip(Actor TargetActor, Name nmProperty, LinearColor DrawColor)"
+    },
+    "CDrawSquare": {
+      "documentation": null,
+      "signature_members": {
+        "nSize": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CDrawSquare(int nSize)"
+    },
+    "ClearDebugDraw": {
+      "documentation": null,
+      "signature_members": {
+        "DebugDrawFunc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDebugDraw(delegate<DebugDraw> DebugDrawFunc)"
+    },
+    "ClearTraceStrips": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearTraceStrips()"
+    },
+    "DebugDraw_ActorInfo": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_ActorInfo(BioHUD HUD)"
+    },
+    "DebugDraw_CoverNames": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_CoverNames(BioHUD HUD)"
+    },
+    "DebugDraw_PlayerLocation": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_PlayerLocation(BioHUD HUD)"
+    },
+    "DebugDraw_TraceStrips": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_TraceStrips(BioHUD HUD)"
+    },
+    "DebugDraw_UpdateCover": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_UpdateCover(BioHUD HUD)"
+    },
+    "DisplayActorInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayActorInfo()"
+    },
+    "DisplaySafeArea": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplaySafeArea()"
+    },
+    "DrawDesignerHud": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawDesignerHud()"
+    },
+    "DrawFakeShadowText": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawFakeShadowText(int X, int Y, Color DrawColor, string sText)"
+    },
+    "DUI_ClearAll": {
+      "documentation": null,
+      "signature_members": {
+        "bModal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_ClearAll(bool bModal)"
+    },
+    "DUI_ClearElementPulse": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_ClearElementPulse(BioDUIElements nElement)"
+    },
+    "DUI_SetBarFillDirection": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": null,
+          "documentation": null
+        },
+        "bLeftToRight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetBarFillDirection(bool bModalBar, bool bLeftToRight)"
+    },
+    "DUI_SetBarFillPercent": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": null,
+          "documentation": null
+        },
+        "nPercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetBarFillPercent(bool bModalBar, int nPercent)"
+    },
+    "DUI_SetBarMarkerPoints": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": null,
+          "documentation": null
+        },
+        "nMarker1": {
+          "type": null,
+          "documentation": null
+        },
+        "nMarker2": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetBarMarkerPoints(bool bModalBar, int nMarker1, int nMarker2)"
+    },
+    "DUI_SetCounterValue": {
+      "documentation": null,
+      "signature_members": {
+        "bModalCounter": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetCounterValue(bool bModalCounter, int nValue)"
+    },
+    "DUI_SetElementAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "fAlpha": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementAlpha(BioDUIElements nElement, float fAlpha)"
+    },
+    "DUI_SetElementColor": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "stColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementColor(BioDUIElements nElement, Color stColor)"
+    },
+    "DUI_SetElementText": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "sText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementText(BioDUIElements nElement, string sText)"
+    },
+    "DUI_SetElementVisible": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "fFadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetElementVisible(BioDUIElements nElement, bool bVisible, optional float fFadeTime)"
+    },
+    "DUI_SetQuasarLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetQuasarLayout(bool bShow)"
+    },
+    "DUI_SetTextStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "srText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetTextStringRef(BioDUIElements nElement, stringref srText)"
+    },
+    "DUI_SetTimerDetails": {
+      "documentation": null,
+      "signature_members": {
+        "bModalTimer": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        },
+        "fStartTime": {
+          "type": null,
+          "documentation": null
+        },
+        "fEndTime": {
+          "type": null,
+          "documentation": null
+        },
+        "fInterval": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetTimerDetails(bool bModalTimer, bool bVisible, float fStartTime, float fEndTime, float fInterval)"
+    },
+    "DUI_SetupElementPulse": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": null,
+          "documentation": null
+        },
+        "fMinAlpha": {
+          "type": null,
+          "documentation": null
+        },
+        "fCycleTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DUI_SetupElementPulse(BioDUIElements nElement, float fMinAlpha, float fCycleTime)"
+    },
+    "HasDesignerText": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "S": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasDesignerText(Name Id, optional string S)"
+    },
+    "HideLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideLocation()"
+    },
+    "HideTraceStrips": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideTraceStrips()"
+    },
+    "IsDrawing": {
+      "documentation": null,
+      "signature_members": {
+        "DebugDrawFunc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDrawing(delegate<DebugDraw> DebugDrawFunc)"
+    },
+    "LockActorInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LockActorInfo()"
+    },
+    "RemoveBar": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveBar(Name Id)"
+    },
+    "RemoveDesignerText": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveDesignerText(Name Id)"
+    },
+    "RemoveTraceAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nTrace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTraceAtIndex(int nTrace)"
+    },
+    "SetActorForActorInfo": {
+      "documentation": null,
+      "signature_members": {
+        "nmActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorForActorInfo(Name nmActor)"
+    },
+    "ShowCover": {
+      "documentation": null,
+      "signature_members": {
+        "bShowRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowCover(optional bool bShowRotation)"
+    },
+    "ShowLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowLocation()"
+    },
+    "ShowReachSpecs": {
+      "documentation": null,
+      "signature_members": {
+        "nmNavigationPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowReachSpecs(Name nmNavigationPoint)"
+    },
+    "StartTraceStrips": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartTraceStrips()"
+    },
+    "ToggleCoverNames": {
+      "documentation": null,
+      "signature_members": {
+        "ClaimedCoverOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleCoverNames(optional bool ClaimedCoverOnly)"
+    },
+    "ToggleDebugDraw": {
+      "documentation": null,
+      "signature_members": {
+        "DebugDrawFunc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleDebugDraw(delegate<DebugDraw> DebugDrawFunc)"
+    },
+    "ToggleSafeArea": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleSafeArea()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

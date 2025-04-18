@@ -1,0 +1,17 @@
+{
+  "parent": "InterpActor",
+  "package": "SFXGame",
+  "variables": {
+    "RenderTextureUVChannel": {
+      "type": "int",
+      "documentation": null
+    },
+    "MouseSupport": {
+      "type": "MouseSupportLevel",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

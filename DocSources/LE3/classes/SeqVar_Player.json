@@ -1,0 +1,42 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "Engine",
+  "variables": {
+    "Players": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PlayersPawns": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PlayerIdx": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAllPlayers": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReturnPawns": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdatePlayersList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlayersList()"
+    },
+    "GetObjectValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Object",
+      "signature": "Object GetObjectValue()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

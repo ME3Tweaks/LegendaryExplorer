@@ -1,0 +1,25 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "RotationOffset": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DirDegreesPerSecond": {
+      "type": "float",
+      "documentation": null
+    },
+    "DirAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "SingleAnimAtOrAboveLOD": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

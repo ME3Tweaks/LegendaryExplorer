@@ -1,0 +1,193 @@
+{
+  "Members": {
+    "Actions": {
+      "type": null,
+      "documentation": null
+    },
+    "FireLinks": {
+      "type": null,
+      "documentation": null
+    },
+    "RejectedFireLinks": {
+      "type": null,
+      "documentation": null
+    },
+    "ExposedCoverPackedProperties": {
+      "type": null,
+      "documentation": null
+    },
+    "DangerCoverPackedProperties": {
+      "type": null,
+      "documentation": null
+    },
+    "SlipTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "SlipRefs": {
+      "type": null,
+      "documentation": null
+    },
+    "OverlapClaims": {
+      "type": null,
+      "documentation": null
+    },
+    "MantleTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "LocationOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "RotationOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotOwner": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotMarker": {
+      "type": null,
+      "documentation": null
+    },
+    "SlotValidAfterTime": {
+      "type": null,
+      "documentation": null
+    },
+    "TurnTargetPackedProperties": {
+      "type": null,
+      "documentation": null
+    },
+    "CoverTurnTargetPackedProperties": {
+      "type": null,
+      "documentation": null
+    },
+    "ExtraCost": {
+      "type": null,
+      "documentation": null
+    },
+    "LeanTraceDist": {
+      "type": null,
+      "documentation": null
+    },
+    "bLeanLeft": {
+      "type": null,
+      "documentation": null
+    },
+    "bLeanRight": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceCanPopUp": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanPopUp": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanMantle": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanClimbUp": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceCanCoverSlip_Left": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceCanCoverSlip_Right": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanCoverSlip_Left": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanCoverSlip_Right": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanSwatTurn_Left": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanSwatTurn_Right": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanCoverTurn_Left": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanCoverTurn_Right": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowPopup": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowMantle": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowCoverSlip": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowClimbUp": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowSwatTurn": {
+      "type": null,
+      "documentation": null
+    },
+    "bAllowCoverTurn": {
+      "type": null,
+      "documentation": null
+    },
+    "bForceNoGroundAdjust": {
+      "type": null,
+      "documentation": null
+    },
+    "bPlayerOnly": {
+      "type": null,
+      "documentation": null
+    },
+    "bUnsafeCover": {
+      "type": null,
+      "documentation": null
+    },
+    "bSelected": {
+      "type": null,
+      "documentation": null
+    },
+    "bFailedToFindSurface": {
+      "type": null,
+      "documentation": null
+    },
+    "ForceCoverType": {
+      "type": null,
+      "documentation": null
+    },
+    "CoverType": {
+      "type": null,
+      "documentation": null
+    },
+    "LocationDescription": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

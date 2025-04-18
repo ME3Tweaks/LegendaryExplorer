@@ -1,0 +1,4883 @@
+{
+  "parent": "PlayerController",
+  "package": "SFXGame",
+  "variables": {
+    "m_RadarDataMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_DamageIndicatorDataMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "PhotoModeSpeedCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "MPSeamlessTravelDelayURL": {
+      "type": "string",
+      "documentation": null
+    },
+    "OutlineGlowActors": {
+      "type": "SFXOutlineGlowActorBase",
+      "documentation": null
+    },
+    "EnemyList": {
+      "type": "LocalEnemy",
+      "documentation": null
+    },
+    "StormRTPCName": {
+      "type": "string",
+      "documentation": null
+    },
+    "TutorialIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_AccomplishmentTargets": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_TrilogyAchievementTargets": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "m_anRecoveredRadarIndexes": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_anDestroyedPawnIndexesToRecover": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_aoPotentialRadarObjects": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_aoMapBoundaryObjects": {
+      "type": "BioRadarMapBoundaries",
+      "documentation": null
+    },
+    "m_aoDamageCausers": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "PostProcessPresets": {
+      "type": "PostProcessInfo",
+      "documentation": null
+    },
+    "m_aPPCallbacks": {
+      "type": "BioPPSettingsCallbackData",
+      "documentation": null
+    },
+    "__OnResumeGameComplete__Delegate": {
+      "type": "OnResumeGameComplete",
+      "documentation": null
+    },
+    "__PauseOnExternalUIState__Delegate": {
+      "type": "PauseOnExternalUIState",
+      "documentation": null
+    },
+    "m_aHotKeyDefines": {
+      "type": "SFXHotKeyDefinition",
+      "documentation": null
+    },
+    "CoverShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "m_currentOrder": {
+      "type": "PlayerOrder",
+      "documentation": null
+    },
+    "AimbackBounds": {
+      "type": "BoxSphereBounds",
+      "documentation": null
+    },
+    "CoverAcquireParams": {
+      "type": "CoverAcquisitionParams",
+      "documentation": null
+    },
+    "DirectionalCoverAcquireParams": {
+      "type": "CoverAcquisitionParams",
+      "documentation": null
+    },
+    "CoverVisualizationClientEffectGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "JumpClientEffectGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "LadderUpClientEffectGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "LadderDownClientEffectGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "PushOffCoverDir": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PrePhotoModeRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "m_vLocationRadarArrowPointsTo": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vNavAssistPoint": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastReceivedLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastReceivedAcceleration": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastReceivedRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "DesiredLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastExtrapolatedLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RemoteCameraLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "RemoteCameraRotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ProfileSettings": {
+      "type": "SFXProfileSettings",
+      "documentation": null
+    },
+    "TrilogyProfileSettings": {
+      "type": "SFXTrilogyProfileSettings",
+      "documentation": null
+    },
+    "ZoomData": {
+      "type": "BioCameraZoom",
+      "documentation": null
+    },
+    "FlinchIntervalRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "NoShieldFlinchIntervalRange": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "CoverVisualizationClientEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_Grab": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_Mantle": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_SwatLeft": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_SwatRight": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_HighSwatLeft": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_HighSwatRight": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_SlipRight": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_SlipLeft": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_HighSlipRight": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_HighSlipLeft": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_Jump": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_LadderUp": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_LadderDown": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "StormStartWwiseEvent_M": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "StormPeakWwiseEvent_M": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "StormStartWwiseEvent_F": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "StormPeakWwiseEvent_F": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "StormEndWwiseEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PhotoCollision": {
+      "type": "CylinderComponent",
+      "documentation": null
+    },
+    "m_oRadarMapBoundary": {
+      "type": "BioRadarMapBoundaries",
+      "documentation": null
+    },
+    "GameModeManager2": {
+      "type": "SFXGameModeManager",
+      "documentation": null
+    },
+    "m_oRvrNetClientEffectsInterface": {
+      "type": "RvrComponentPCNetClientEffects",
+      "documentation": null
+    },
+    "HintSystem": {
+      "type": "BioHintSystemBase",
+      "documentation": null
+    },
+    "m_oPlayerSelection": {
+      "type": "BioPlayerSelection",
+      "documentation": null
+    },
+    "MPSeamlessTravelDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "MPSeamlessTravelDelayTriggerTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStickIdleThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStickWalkThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveStickRunThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "MoveWalkModifierBlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeadZoneThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerCoverTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverTransitionCountHold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverBreakTimeThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverBreakTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxCoverEnterDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverCameraTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverSnapScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverUpdateDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormCoverUpdateDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "CoverSlipCamAlign": {
+      "type": "float",
+      "documentation": null
+    },
+    "PushOffCoverDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "PushOffTimeToGo": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastFlinchTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FlinchInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoShieldFlinchInterval": {
+      "type": "float",
+      "documentation": null
+    },
+    "LadderFaceDot": {
+      "type": "float",
+      "documentation": null
+    },
+    "LadderAimDot": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fClimbMantleFaceAngleThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fClimbMantleDistanceThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemappedJoyRight": {
+      "type": "float",
+      "documentation": null
+    },
+    "RemappedJoyUp": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationSensitivityLow": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationSensitivityMedium": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationSensitivityHigh": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldIgnoreMoveCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "NextEnemyToCheckLOS": {
+      "type": "int",
+      "documentation": null
+    },
+    "SawEnemyTypeShoutCooldownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentStormStamina": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormCooldownTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "StormDisabledCounter": {
+      "type": "int",
+      "documentation": null
+    },
+    "PhotoModeTetherDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "PhotoModeCameraSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentPhotoModeMoveSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "KismetNoSaveReason": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "StorageDeviceRemovedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "DLCRemovedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "RestartGame": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ProfileChangedText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ProfileChangedUnrecoverableText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ControllerRemoved": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fLeaveConvPitch": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMoveToDropDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMaxZDifference": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRelativeZUpLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRelativeZDownLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastRadarPassTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastRadarRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRadarRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fRadarFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastRadarFOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nMaxRadarIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nNavAssistMaxNodeLimit": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fBumpCheckTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDamageIndicatorDisplayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_srVehicleExitFailureMsg": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_srVehicleExitAButtonMsg": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fAttackOrderFarAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAttackOrderCloseAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fAttackOrderCloseDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "InvalidServerMovesReceived": {
+      "type": "int",
+      "documentation": null
+    },
+    "NUM_SERVERMOVE_BEFORE_RESET": {
+      "type": "int",
+      "documentation": null
+    },
+    "MOVEREP_DELAY_FRAME": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumberOfFrameSinceLastMoveRep": {
+      "type": "int",
+      "documentation": null
+    },
+    "RemotePlayerPendingCustomAction": {
+      "type": "int",
+      "documentation": null
+    },
+    "RemotePlayerPendingPowerCustomAction": {
+      "type": "int",
+      "documentation": null
+    },
+    "RemotePlayersRotationInterpolationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "BIO_RESET_MAX_POSITION_ERROR_SQUARED": {
+      "type": "float",
+      "documentation": null
+    },
+    "BIO_WARNING_MAX_POSITION_ERROR_SQUARED": {
+      "type": "float",
+      "documentation": null
+    },
+    "MAX_CONSECUTIVE_POSITION_ERROR": {
+      "type": "int",
+      "documentation": null
+    },
+    "ClientTimeoutForPendingCustomActionReset": {
+      "type": "float",
+      "documentation": null
+    },
+    "AutonomousProxyLocationInterpSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "EdgeCoverSlotSnapRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "NumClientPositionError": {
+      "type": "int",
+      "documentation": null
+    },
+    "srOK": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNuiDisconnectError": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bUsePackedMoves": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableSquadCommandExit": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBreakFromCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreferLeanOverPopup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoCoverFromStorm": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCancelStorm": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoLeaveCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReticleHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLockPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CoverRespectsRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCoverGUIShowing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bJumpGUIShowing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLadderGUIShowing": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowActionIcons": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCanMantleOutsideOfCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HasSeenFirstEnemy": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTiredStorming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStormCoolingDown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPhotoModeCameraUnlocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProfileSettingsUpdated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bKismetNoSave": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bIsStoppedForConv": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bEnableCineModeWarning": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDEBUGFlyUpPressed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDEBUGFlyDownPressed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRadarArrow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRadarIsJammed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPermanentWalk": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bToggledWalk": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipPhysicsForOneFrame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMultiplayerCommandMode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bExtrapolationActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bExtrapolationWasActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReceivedNewLocation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableMultiplayerMotionBlur": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RemoteAimAssistActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClientStorming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWantsToStorm": {
+      "type": "byte",
+      "documentation": null
+    },
+    "CurrentVisualization": {
+      "type": "ECoverVisualizations",
+      "documentation": null
+    },
+    "bBoost": {
+      "type": "byte",
+      "documentation": null
+    },
+    "bJump": {
+      "type": "byte",
+      "documentation": null
+    },
+    "bAlternateCamera": {
+      "type": "byte",
+      "documentation": null
+    },
+    "bMine": {
+      "type": "byte",
+      "documentation": null
+    },
+    "m_eCurrentActionIcon": {
+      "type": "ESFXHUDActionIcon",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyTacticalOrders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyTacticalOrders()"
+    },
+    "BioMoveAutonomous": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaRot": {
+          "type": null,
+          "documentation": null
+        },
+        "Move": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioMoveAutonomous(float DeltaTime, Rotator DeltaRot, SavedMove Move)"
+    },
+    "BioServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "RepMoves": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioServerMove(SavedMoveReplicationInfo RepMoves, Vector ClientLocation)"
+    },
+    "CameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "newRotAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newRotFrequency": {
+          "type": null,
+          "documentation": null
+        },
+        "newLocAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newLocFrequency": {
+          "type": null,
+          "documentation": null
+        },
+        "newFOVAmplitude": {
+          "type": null,
+          "documentation": null
+        },
+        "newFOVFrequency": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CameraShake(float Duration, Vector newRotAmplitude, Vector newRotFrequency, Vector newLocAmplitude, Vector newLocFrequency, float newFOVAmplitude, float newFOVFrequency)"
+    },
+    "CancelLastOrderedPower": {
+      "documentation": null,
+      "signature_members": {
+        "oOrderedPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelLastOrderedPower(Pawn oOrderedPawn, Name nmPower)"
+    },
+    "CanPerformClimb": {
+      "documentation": null,
+      "signature_members": {
+        "CoverInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPerformClimb(const out CovPosInfo CoverInfo)"
+    },
+    "CanPerformEnterCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanPerformEnterCover()"
+    },
+    "CanPerformMantle": {
+      "documentation": null,
+      "signature_members": {
+        "CoverInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPerformMantle(const out CovPosInfo CoverInfo)"
+    },
+    "CanRunQueuedOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanRunQueuedOrder()"
+    },
+    "CanSave": {
+      "documentation": null,
+      "signature_members": {
+        "Reason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSave(out string Reason)"
+    },
+    "CanStorm": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanStorm()"
+    },
+    "CanUse": {
+      "documentation": null,
+      "signature_members": {
+        "Selection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUse(Actor Selection)"
+    },
+    "CheckThatGameCanContinue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckThatGameCanContinue()"
+    },
+    "ClearDamageIndicators": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDamageIndicators(Level Level)"
+    },
+    "ClearOnlineDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearOnlineDelegates()"
+    },
+    "ClearPlayerOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearPlayerOrder()"
+    },
+    "ClearServerMoveExtrapolation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearServerMoveExtrapolation()"
+    },
+    "ClientLoadSeekFreeObjectAsync": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectNetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientLoadSeekFreeObjectAsync(int ObjectNetID)"
+    },
+    "ClientPlaySimpleDialogLine": {
+      "documentation": null,
+      "signature_members": {
+        "DialogLineSr": {
+          "type": null,
+          "documentation": null
+        },
+        "DialogPlayerOwner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientPlaySimpleDialogLine(stringref DialogLineSr, Actor DialogPlayerOwner)"
+    },
+    "ClientReleaseSeekFreeObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectNetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReleaseSeekFreeObject(int ObjectNetID)"
+    },
+    "ClientTravel": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": null,
+          "documentation": null
+        },
+        "TravelType": {
+          "type": null,
+          "documentation": null
+        },
+        "bSeamless": {
+          "type": null,
+          "documentation": null
+        },
+        "MapPackageGuid": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientTravel(string URL, ETravelType TravelType, optional bool bSeamless, optional init Guid MapPackageGuid)"
+    },
+    "ClientVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VocEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientVocalizationEvent(SFXVocalizationEvent VocEvent)"
+    },
+    "ComputeClientLocationError": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ComputeClientLocationError(Vector CurrentLocation, Vector NewLocation)"
+    },
+    "ComputeMovementStickAngle": {
+      "documentation": null,
+      "signature_members": {
+        "Mag": {
+          "type": null,
+          "documentation": null
+        },
+        "AngleStick": {
+          "type": null,
+          "documentation": null
+        },
+        "RotWorld": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeMovementStickAngle(out float Mag, out float AngleStick, out Rotator RotWorld)"
+    },
+    "CoverReachable": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CovPosInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CoverReachable(Pawn PlayerPawn, out CovPosInfo out_CovPosInfo)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "DetermineLeanDirection": {
+      "documentation": null,
+      "signature_members": {
+        "BioPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentSlot": {
+          "type": null,
+          "documentation": null
+        },
+        "out_PawnCA": {
+          "type": null,
+          "documentation": null
+        },
+        "out_PawnCD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DetermineLeanDirection(BioPawn BioPawn, out CoverSlot CurrentSlot, out ECoverAction out_PawnCA, out ECoverDirection out_PawnCD)"
+    },
+    "DisableDOF": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableDOF()"
+    },
+    "DisplayNuiSpeech_CombatFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "Successful": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Rule": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayNuiSpeech_CombatFeedback(bool Successful, string TargetPawn, stringref Rule)"
+    },
+    "DisplayNuiSpeech_Disconnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayNuiSpeech_Disconnection()"
+    },
+    "DisplayNuiSpeech_ExploreFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "Successful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayNuiSpeech_ExploreFeedback(bool Successful)"
+    },
+    "DisplayNuiSpeech_GenericFeedback": {
+      "documentation": null,
+      "signature_members": {
+        "Successful": {
+          "type": null,
+          "documentation": null
+        },
+        "Rule": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayNuiSpeech_GenericFeedback(bool Successful, stringref Rule)"
+    },
+    "DoQuickSave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoQuickSave()"
+    },
+    "DownloadableContentWasRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DownloadableContentWasRemoved()"
+    },
+    "DrawCircle": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "fRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "CircleColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawCircle(Vector vLocation, Vector vNormal, float fRadius, Color CircleColor)"
+    },
+    "DrawSelectionReticle": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawSelectionReticle(Vector vLocation)"
+    },
+    "FillCoverPosInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "out_CovPosInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FillCoverPosInfo(CoverLink Link, int SlotIdx, Vector SourceLoc, Vector Direction, float MaxDistance, out CovPosInfo out_CovPosInfo)"
+    },
+    "FindJumpDownPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_JumpDownSpec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindJumpDownPoint(out SFXJumpDownReachSpec out_JumpDownSpec)"
+    },
+    "FindJumpPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_JumpSpec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindJumpPoint(out SFXJumpReachSpec out_JumpSpec)"
+    },
+    "FindLadderNode": {
+      "documentation": null,
+      "signature_members": {
+        "out_LadderSpec": {
+          "type": null,
+          "documentation": null
+        },
+        "MinDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindLadderNode(out SFXLadderReachSpec out_LadderSpec, optional float MinDistance)"
+    },
+    "FindPlayerCover": {
+      "documentation": null,
+      "signature_members": {
+        "out_CovPosInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "MinCameraDotCover": {
+          "type": null,
+          "documentation": null
+        },
+        "MinSlotDotPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "MinPlayerDotCoverOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxHeightFactor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindPlayerCover(out CovPosInfo out_CovPosInfo, Vector Direction, float MaxDistance, float MinCameraDotCover, float MinSlotDotPlayer, float MinPlayerDotCoverOffset, float MaxHeightFactor)"
+    },
+    "FindUberDOFEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "DOFEffect",
+      "signature": "DOFEffect FindUberDOFEffect()"
+    },
+    "GenerateTutorialEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eTutHook": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateTutorialEvent(ETutorialHooks eTutHook)"
+    },
+    "GetAimAssistTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "CamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "CamRot": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "Margin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn GetAimAssistTarget(float MaxDistance, const out Vector CamLoc, const out Rotator CamRot, out Vector TargetLoc, out float Margin)"
+    },
+    "GetBestGoalPoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXNav_GoalPoint",
+      "signature": "SFXNav_GoalPoint GetBestGoalPoint()"
+    },
+    "GetBioPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn GetBioPawn()"
+    },
+    "GetCameraRelativeRotation": {
+      "documentation": null,
+      "signature_members": {
+        "vDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCameraRelativeRotation(out Vector vDirection)"
+    },
+    "GetHenchmanAttackOrderPower": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchman": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetHenchmanAttackOrderPower(Pawn oHenchman, Actor oTarget, out Name nmPowerName)"
+    },
+    "GetHUDMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXSFHandler_HUD",
+      "signature": "SFXSFHandler_HUD GetHUDMovie()"
+    },
+    "GetInputDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetInputDisabled()"
+    },
+    "GetLoginStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLoginStatus()"
+    },
+    "GetPlayerControllerId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPlayerControllerId()"
+    },
+    "GetPlayerViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_Location": {
+          "type": null,
+          "documentation": null
+        },
+        "out_rotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerViewPoint(out Vector out_Location, out Rotator out_rotation)"
+    },
+    "GetRadarFOV": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRadarFOV()"
+    },
+    "GetRadarRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRadarRange()"
+    },
+    "GetSFXUIController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGUIInteraction",
+      "signature": "SFXGUIInteraction GetSFXUIController()"
+    },
+    "GetValidOrderLocation": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "OrderLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetValidOrderLocation(Vector TestLocation, out Vector OrderLocation)"
+    },
+    "GetZoomSnapTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MinDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "AimLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn GetZoomSnapTarget(float MinDistance, float MaxDistance, out Vector AimLocation)"
+    },
+    "GetZoomSnapWeaponInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "idx": {
+          "type": null,
+          "documentation": null
+        },
+        "AimNode": {
+          "type": null,
+          "documentation": null
+        },
+        "OuterSnapAngle": {
+          "type": null,
+          "documentation": null
+        },
+        "InnerSnapAngle": {
+          "type": null,
+          "documentation": null
+        },
+        "OffsetMag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetZoomSnapWeaponInfo(Weapon Weapon, int idx, out EAimNodes AimNode, out float OuterSnapAngle, out float InnerSnapAngle, out float OffsetMag)"
+    },
+    "HandleWalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandleWalking()"
+    },
+    "HenchmanOrderAttackTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchman": {
+          "type": null,
+          "documentation": null
+        },
+        "oTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HenchmanOrderAttackTarget(Pawn oHenchman, Actor oTargetActor, optional ECommandInputMethod eInputMethod)"
+    },
+    "HenchmanOrderFollow": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchman": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HenchmanOrderFollow(Pawn oHenchman, optional ECommandInputMethod eInputMethod)"
+    },
+    "HenchmanOrderHoldPosition": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchman": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HenchmanOrderHoldPosition(Pawn oHenchman, Vector vLocation, optional ECommandInputMethod eInputMethod)"
+    },
+    "HenchmanOrderUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchman": {
+          "type": null,
+          "documentation": null
+        },
+        "oTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "nQueue": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HenchmanOrderUsePower(Pawn oHenchman, Actor oTargetActor, Vector vTargetLocation, Name nmPower, int nQueue, optional ECommandInputMethod eInputMethod)"
+    },
+    "InitializeGammaCorrectionSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeGammaCorrectionSettings()"
+    },
+    "IsCombatTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCombatTargetable(Actor A)"
+    },
+    "IsExploreTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsExploreTargetable(Actor A)"
+    },
+    "IsLookInputIgnored": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLookInputIgnored()"
+    },
+    "IsPlayerPerformingBlockingAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayerPerformingBlockingAction()"
+    },
+    "IsReloading": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReloading()"
+    },
+    "IsTestFrameworkSetupComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTestFrameworkSetupComplete()"
+    },
+    "IsUseCasualAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUseCasualAppearance()"
+    },
+    "IsUsingPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUsingPower()"
+    },
+    "IsZoomed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsZoomed()"
+    },
+    "LeaveCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeaveCover()"
+    },
+    "LerpMovementStickAngle": {
+      "documentation": null,
+      "signature_members": {
+        "RotDesired": {
+          "type": null,
+          "documentation": null
+        },
+        "RotBase": {
+          "type": null,
+          "documentation": null
+        },
+        "RotationSpeed": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaSeconds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int LerpMovementStickAngle(int RotDesired, int RotBase, float RotationSpeed, float DeltaSeconds)"
+    },
+    "LoadPCInputConfiguration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadPCInputConfiguration()"
+    },
+    "LockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LockAccomplishment(Name AccomplishmentName)"
+    },
+    "OnActionStateChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnActionStateChanged()"
+    },
+    "OnResumeGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnResumeGameComplete(bool bWasSuccessful)"
+    },
+    "OnStormStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStormStart()"
+    },
+    "OnStormStop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStormStop()"
+    },
+    "PauseOnExternalUIState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseOnExternalUIState()"
+    },
+    "PlayerTick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerTick(float DeltaTime)"
+    },
+    "Possess": {
+      "documentation": null,
+      "signature_members": {
+        "aPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bVehicleTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Possess(Pawn aPawn, bool bVehicleTransition)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PreClientTravel": {
+      "documentation": null,
+      "signature_members": {
+        "PendingURL": {
+          "type": null,
+          "documentation": null
+        },
+        "TravelType": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsSeamlessTravel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PreClientTravel(string PendingURL, ETravelType TravelType, bool bIsSeamlessTravel)"
+    },
+    "QueueDamageIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueDamageIndicator(Pawn oPawn)"
+    },
+    "QuickCommandAttackTarget": {
+      "documentation": null,
+      "signature_members": {
+        "nSquadIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        },
+        "pDesiredTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QuickCommandAttackTarget(optional int nSquadIndex, optional ECommandInputMethod eInputMethod, optional Actor pDesiredTarget)"
+    },
+    "QuickCommandCoverPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "nSquadIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QuickCommandCoverPlayer(int nSquadIndex, optional ECommandInputMethod eInputMethod)"
+    },
+    "QuickCommandFollowPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "nSquadIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QuickCommandFollowPlayer(optional int nSquadIndex, optional ECommandInputMethod eInputMethod)"
+    },
+    "QuickCommandMoveTo": {
+      "documentation": null,
+      "signature_members": {
+        "nSquadIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        },
+        "vDesiredTargetLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QuickCommandMoveTo(int nSquadIndex, optional ECommandInputMethod eInputMethod, optional Vector vDesiredTargetLocation)"
+    },
+    "RecoverCameraPostCinematic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecoverCameraPostCinematic()"
+    },
+    "RefreshRadarData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshRadarData()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "ResetGoalPriorities": {
+      "documentation": null,
+      "signature_members": {
+        "oGoal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetGoalPriorities(SFXNav_GoalPoint oGoal)"
+    },
+    "ResetPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPlayerController()"
+    },
+    "RestoreHenchmenPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreHenchmenPowers()"
+    },
+    "RestorePlayerAndSquad": {
+      "documentation": null,
+      "signature_members": {
+        "bHolsterWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bDisableAI": {
+          "type": null,
+          "documentation": null
+        },
+        "bResetHenchmenAI": {
+          "type": null,
+          "documentation": null
+        },
+        "bTeleport": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RestorePlayerAndSquad(bool bHolsterWeapon, bool bDisableAI, bool bResetHenchmenAI, bool bTeleport)"
+    },
+    "SaveGame": {
+      "documentation": null,
+      "signature_members": {
+        "SaveIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGame(int SaveIndex, optional delegate<SFXSaveCommandCallback> Callback)"
+    },
+    "SavePCInputConfiguration": {
+      "documentation": null,
+      "signature_members": {
+        "Profile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePCInputConfiguration(SFXProfileSettings Profile)"
+    },
+    "SaveProfile": {
+      "documentation": null,
+      "signature_members": {
+        "checkForDelay": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdateProfileSettingsCache": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveProfile(optional bool checkForDelay, optional bool bUpdateProfileSettingsCache)"
+    },
+    "SawFirstEnemy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SawFirstEnemy()"
+    },
+    "SawNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "CurEnemy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SawNewEnemy(const out LocalEnemy CurEnemy)"
+    },
+    "ScoreZoomSnapTarget": {
+      "documentation": null,
+      "signature_members": {
+        "TestPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "CamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "CamRot": {
+          "type": null,
+          "documentation": null
+        },
+        "AimLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float ScoreZoomSnapTarget(Pawn TestPawn, float MaxDistance, const out Vector CamLoc, const out Rotator CamRot, out Vector AimLocation)"
+    },
+    "SendClientAdjustment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendClientAdjustment()"
+    },
+    "ServerExecuteMove": {
+      "documentation": null,
+      "signature_members": {
+        "Move": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerExecuteMove(SavedMove Move)"
+    },
+    "ServerExecuteMove_AimBack": {
+      "documentation": null,
+      "signature_members": {
+        "Move": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerExecuteMove_AimBack(SavedMove Move)"
+    },
+    "ServerExecuteMove_Cover": {
+      "documentation": null,
+      "signature_members": {
+        "Move": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerExecuteMove_Cover(SavedMove Move)"
+    },
+    "ServerExecuteMove_RootMotion": {
+      "documentation": null,
+      "signature_members": {
+        "Move": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerExecuteMove_RootMotion(SavedMove Move)"
+    },
+    "ServerUpdateClientCorrection": {
+      "documentation": null,
+      "signature_members": {
+        "ClientLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceCorrection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerUpdateClientCorrection(Vector ClientLocation, optional bool bForceCorrection)"
+    },
+    "SetAccomplishmentProgression": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "Progress": {
+          "type": null,
+          "documentation": null
+        },
+        "IsOnlyIncreasing": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAccomplishmentProgression(Name AccomplishmentProgressName, int Progress, optional bool IsOnlyIncreasing, optional BioPawn oTarget)"
+    },
+    "SetInputDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDisabled(bool bVal)"
+    },
+    "SetPostProcessValues": {
+      "documentation": null,
+      "signature_members": {
+        "Preset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPostProcessValues(ETVType Preset)"
+    },
+    "SetRichPresence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetRichPresence()"
+    },
+    "SetZoomed": {
+      "documentation": null,
+      "signature_members": {
+        "bZoomState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZoomed(bool bZoomState)"
+    },
+    "ShippingClientMessage": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "MsgLifeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShippingClientMessage(coerce string S, optional Name Type, optional float MsgLifeTime)"
+    },
+    "ShouldLockOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldLockOnTarget(Actor pTarget)"
+    },
+    "SpawnPlayerCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnPlayerCamera()"
+    },
+    "SquadDrawWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadDrawWeapons()"
+    },
+    "SquadOrderEquipWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "nWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadOrderEquipWeapon(byte nWeapon, Pawn pPawn)"
+    },
+    "SquadOrderUsePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "pPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "nQueue": {
+          "type": null,
+          "documentation": null
+        },
+        "bShowIndicator": {
+          "type": null,
+          "documentation": null
+        },
+        "pDesiredSelectionTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        },
+        "pDesiredTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "vDesiredTargetLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SquadOrderUsePower(Name nmPower, Pawn pPawn, optional int nQueue, optional bool bShowIndicator, optional Actor pDesiredSelectionTarget, optional ECommandInputMethod eInputMethod, optional Actor pDesiredTarget, optional Vector vDesiredTargetLocation)"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartCustomAction(int NewAction, optional BioPawn Sync, optional bool bForced, optional int NewPowerAction)"
+    },
+    "SwitchWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "oWpn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchWeapon(SFXWeapon_NativeBase oWpn)"
+    },
+    "TriggerCoverPlayerFailedVocalization": {
+      "documentation": null,
+      "signature_members": {
+        "Henchman": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerCoverPlayerFailedVocalization(BioPawn Henchman)"
+    },
+    "UnlockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        },
+        "WriteToDisk": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAccomplishment(Name AccomplishmentName, optional bool WriteToDisk)"
+    },
+    "UnlockAccomplishments": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentNames": {
+          "type": null,
+          "documentation": null
+        },
+        "WriteToDisk": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAccomplishments(array<Name> AccomplishmentNames, optional bool WriteToDisk)"
+    },
+    "UnlockAchievement": {
+      "documentation": null,
+      "signature_members": {
+        "AchivementID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockAchievement(int AchivementID)"
+    },
+    "UpdateAccomplishmentProgression": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentProgressName": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAccomplishmentProgression(Name AccomplishmentProgressName, optional BioPawn oTarget)"
+    },
+    "UpdateBinkAudioVolume": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBinkAudioVolume()"
+    },
+    "UpdateEnemyList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateEnemyList()"
+    },
+    "UpdateLocalProfileSettingsCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLocalProfileSettingsCache()"
+    },
+    "UpdateMoveToIndicator": {
+      "documentation": null,
+      "signature_members": {
+        "pSquadPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "vMoveToPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateMoveToIndicator(Pawn pSquadPawn, Vector vMoveToPosition)"
+    },
+    "UpdateTrilogyGrinderStatProgression": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        },
+        "Amount": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTrilogyGrinderStatProgression(int ProfileSettingId, optional int Amount, optional BioPawn oTarget)"
+    },
+    "UpdateTrilogyUniqueStatProgression": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTrilogyUniqueStatProgression(int ProfileSettingId)"
+    },
+    "ValidateCinematicModeOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ValidateCinematicModeOff()"
+    },
+    "ValidatePotentialCover": {
+      "documentation": null,
+      "signature_members": {
+        "SourceLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "OnlyIfBetter": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxHeightFactor": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMinDotFOV": {
+          "type": null,
+          "documentation": null
+        },
+        "OutMaxDistanceSquared": {
+          "type": null,
+          "documentation": null
+        },
+        "OutCovPosInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidatePotentialCover(Vector SourceLoc, Vector Direction, bool OnlyIfBetter, float MaxHeightFactor, out float OutMinDotFOV, out float OutMaxDistanceSquared, out CovPosInfo OutCovPosInfo)"
+    },
+    "AcknowledgePossession": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AcknowledgePossession(Pawn P)"
+    },
+    "CallServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "NewMove": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "OldMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CallServerMove(SavedMove NewMove, Vector ClientLoc, byte ClientRoll, int View, SavedMove OldMove)"
+    },
+    "CanRestartPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanRestartPlayer()"
+    },
+    "ClientSetHUD": {
+      "documentation": null,
+      "signature_members": {
+        "newHUDType": {
+          "type": null,
+          "documentation": null
+        },
+        "newScoringType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientSetHUD(Class<HUD> newHUDType, Class<Scoreboard> newScoringType)"
+    },
+    "ClientSetOnlineStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientSetOnlineStatus()"
+    },
+    "ClientUpdatePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientUpdatePosition()"
+    },
+    "GetAdjustedAimFor": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "StartFireLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetAdjustedAimFor(Weapon W, Vector StartFireLoc)"
+    },
+    "HandlePickup": {
+      "documentation": null,
+      "signature_members": {
+        "Inv": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandlePickup(Inventory Inv)"
+    },
+    "NotifyCoverDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "bAdjacentIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyCoverDisabled(CoverLink Link, int SlotIdx, optional bool bAdjacentIdx)"
+    },
+    "NotifyTakeHit": {
+      "documentation": null,
+      "signature_members": {
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTakeHit(Controller instigatedBy, Vector HitLocation, int Damage, Class<DamageType> DamageType, Vector Momentum)"
+    },
+    "OnControllerChanged": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": null,
+          "documentation": null
+        },
+        "bIsConnected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnControllerChanged(int ControllerId, bool bIsConnected)"
+    },
+    "OnExternalUIChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bIsOpening": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnExternalUIChanged(bool bIsOpening)"
+    },
+    "PawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDied(Pawn inPawn)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator out_ViewRotation, Rotator DeltaRot)"
+    },
+    "QuickLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuickLoad()"
+    },
+    "QuickSave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuickSave()"
+    },
+    "RegisterCustomPlayerDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterCustomPlayerDataStores()"
+    },
+    "RegisterOnlineDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterOnlineDelegates()"
+    },
+    "ReplicateMove": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "newAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "DoubleClickMove": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateMove(float DeltaTime, Vector newAccel, EDoubleClickDir DoubleClickMove, Rotator DeltaRot)"
+    },
+    "SetCinematicMode": {
+      "documentation": null,
+      "signature_members": {
+        "bInCinematicMode": {
+          "type": null,
+          "documentation": null
+        },
+        "bHidePlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "bAffectsHUD": {
+          "type": null,
+          "documentation": null
+        },
+        "bAffectsMovement": {
+          "type": null,
+          "documentation": null
+        },
+        "bAffectsTurning": {
+          "type": null,
+          "documentation": null
+        },
+        "bAffectsButtons": {
+          "type": null,
+          "documentation": null
+        },
+        "SFXAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCinematicMode(bool bInCinematicMode, bool bHidePlayer, bool bAffectsHUD, bool bAffectsMovement, bool bAffectsTurning, bool bAffectsButtons, optional SeqAct_ToggleCinematicMode SFXAction)"
+    },
+    "UnregisterPlayerDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnregisterPlayerDataStores()"
+    },
+    "AcquireCover": {
+      "documentation": null,
+      "signature_members": {
+        "CovInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AcquireCover(CovPosInfo CovInfo)"
+    },
+    "ActivateUseModule": {
+      "documentation": null,
+      "signature_members": {
+        "Selection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateUseModule(Actor Selection)"
+    },
+    "AimBackServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "InAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveMag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AimBackServerMove(float TimeStamp, Vector InAccel, Vector ClientLoc, byte MoveFlags, byte ClientRoll, int View, byte MoveMag)"
+    },
+    "AutoUseFromStorm": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AutoUseFromStorm()"
+    },
+    "BreakFromCover": {
+      "documentation": null,
+      "signature_members": {
+        "BreakDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakFromCover(optional Vector BreakDir)"
+    },
+    "CanQueueOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanQueueOrder()"
+    },
+    "CanStartImmediateOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanStartImmediateOrder()"
+    },
+    "CanUseLadder": {
+      "documentation": null,
+      "signature_members": {
+        "LadderNode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanUseLadder(SFXNav_LadderNode LadderNode)"
+    },
+    "CheckStormToCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckStormToCover()"
+    },
+    "ClientForceLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocY": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientForceLocation(float NewLocX, float NewLocY, float NewLocZ)"
+    },
+    "ClientInvalidCoverClaim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClientInvalidCoverClaim()"
+    },
+    "ClientLockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentUniqueID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientLockAccomplishment(int AccomplishmentUniqueID)"
+    },
+    "ClientResetPlayerController": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocY": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientResetPlayerController(float NewLocX, float NewLocY, float NewLocZ)"
+    },
+    "ClientSetAccomplishmentProgression": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentUniqueID": {
+          "type": null,
+          "documentation": null
+        },
+        "Progress": {
+          "type": null,
+          "documentation": null
+        },
+        "IsOnlyIncreasing": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientSetAccomplishmentProgression(int AccomplishmentUniqueID, int Progress, bool IsOnlyIncreasing)"
+    },
+    "ClientTestNameReplication": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "InConfirmString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientTestNameReplication(Name InName, string InConfirmString)"
+    },
+    "ClientUnlockAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentUniqueID": {
+          "type": null,
+          "documentation": null
+        },
+        "WriteToDisk": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientUnlockAccomplishment(int AccomplishmentUniqueID, optional bool WriteToDisk)"
+    },
+    "ClientUpdateAccomplishmentProgression": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentUniqueID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientUpdateAccomplishmentProgression(int AccomplishmentUniqueID)"
+    },
+    "CoverLog": {
+      "documentation": null,
+      "signature_members": {
+        "Msg": {
+          "type": null,
+          "documentation": null
+        },
+        "Function": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CoverLog(string Msg, coerce string Function)"
+    },
+    "CoverServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "InAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveMag": {
+          "type": null,
+          "documentation": null
+        },
+        "InCoverType": {
+          "type": null,
+          "documentation": null
+        },
+        "InCoverAction": {
+          "type": null,
+          "documentation": null
+        },
+        "InCoverDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "InCurrentSlotDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "bInIsInstationaryCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CoverServerMove(float TimeStamp, Vector InAccel, Vector ClientLoc, byte MoveFlags, byte ClientRoll, int View, byte MoveMag, ECoverType InCoverType, ECoverAction InCoverAction, ECoverDirection InCoverDirection, ECoverDirection InCurrentSlotDirection, bool bInIsInstationaryCover)"
+    },
+    "DebugDraw_CoverCheck": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_CoverCheck(BioHUD HUD)"
+    },
+    "DetectPressAway": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "EndLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DetectPressAway(Vector StartLocation, Vector EndLocation)"
+    },
+    "DetectPressInto": {
+      "documentation": null,
+      "signature_members": {
+        "StartLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "EndLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DetectPressInto(Vector StartLocation, Vector EndLocation)"
+    },
+    "DisableMotionBlur": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableMotionBlur()"
+    },
+    "DisablePhotoModeCameraCollision": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisablePhotoModeCameraCollision()"
+    },
+    "DisableStorm": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableStorm()"
+    },
+    "DispatchCommand": {
+      "documentation": null,
+      "signature_members": {
+        "CommandString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DispatchCommand(string CommandString)"
+    },
+    "DisplayCoverVisualization": {
+      "documentation": null,
+      "signature_members": {
+        "NewVisualization": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayCoverVisualization(RvrClientEffectInterface NewVisualization, RvrClientEffectTarget Target)"
+    },
+    "EnablePhotoModeCameraCollision": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnablePhotoModeCameraCollision()"
+    },
+    "EnableStorm": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableStorm()"
+    },
+    "ForceLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceLocation(Vector NewLocation)"
+    },
+    "GetCoverDirection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ECoverDirection",
+      "signature": "ECoverDirection GetCoverDirection()"
+    },
+    "GetGameModeDefault": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGameModeDefault",
+      "signature": "SFXGameModeDefault GetGameModeDefault()"
+    },
+    "GetPawnCoverAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ECoverAction",
+      "signature": "ECoverAction GetPawnCoverAction()"
+    },
+    "GetPawnCoverType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ECoverType",
+      "signature": "ECoverType GetPawnCoverType()"
+    },
+    "GetRichPresenceClassContextID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRichPresenceClassContextID()"
+    },
+    "GetSensitivityScaling": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSensitivityScaling()"
+    },
+    "GetTrilogyAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        },
+        "TList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTrilogyAccomplishment(Name AccomplishmentName, out array<TrilogyGrinderAchievementData> TList)"
+    },
+    "GetTrilogyGrinderStatProgress": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetTrilogyGrinderStatProgress(Name AccomplishmentName)"
+    },
+    "GiveHenchmanOrder": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchman": {
+          "type": null,
+          "documentation": null
+        },
+        "eOrder": {
+          "type": null,
+          "documentation": null
+        },
+        "oTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "nmPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oWpn": {
+          "type": null,
+          "documentation": null
+        },
+        "nQueue": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveHenchmanOrder(Pawn oHenchman, HenchmanOrderType eOrder, Actor oTargetActor, Vector vTargetLocation, optional Name nmPower, optional SFXWeapon oWpn, optional int nQueue, optional ECommandInputMethod eInputMethod)"
+    },
+    "GrantXP": {
+      "documentation": null,
+      "signature_members": {
+        "XP": {
+          "type": null,
+          "documentation": null
+        },
+        "bSkipNotify": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantXP(float XP, optional bool bSkipNotify)"
+    },
+    "HasCompletedAccomplishment": {
+      "documentation": null,
+      "signature_members": {
+        "AccomplishmentName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasCompletedAccomplishment(Name AccomplishmentName)"
+    },
+    "Internal_AcquireCover": {
+      "documentation": null,
+      "signature_members": {
+        "CovInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Internal_AcquireCover(CovPosInfo CovInfo, byte SlotIdx)"
+    },
+    "Internal_ResetPlayerController": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Internal_ResetPlayerController(Vector NewLocation)"
+    },
+    "InternalSawFirstEnemy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InternalSawFirstEnemy()"
+    },
+    "InternalSawNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalSawNewEnemy(const out BioPawn EnemyPawn)"
+    },
+    "IsCameraAlignedWithCoverSlot": {
+      "documentation": null,
+      "signature_members": {
+        "fThreshold": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCameraAlignedWithCoverSlot(optional float fThreshold)"
+    },
+    "IsInCoverState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInCoverState()"
+    },
+    "IsStormDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStormDisabled()"
+    },
+    "NotifyLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyLoginChange(byte LocalUserNum)"
+    },
+    "NotifyProfileReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyProfileReadComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "NotifyReachedCoverSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "OldSlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyReachedCoverSlot(int SlotIdx, int OldSlotIdx)"
+    },
+    "NotifyReadAchievementsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "TitleId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyReadAchievementsComplete(int TitleId)"
+    },
+    "OnCoverConeProtected": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCoverConeProtected(Weapon W)"
+    },
+    "OnTeleportCameraSync": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTeleportCameraSync(SeqAct_Teleport Action)"
+    },
+    "OrderWeaponSwitch": {
+      "documentation": null,
+      "signature_members": {
+        "oOrderedPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Wpn": {
+          "type": null,
+          "documentation": null
+        },
+        "eInputMethod": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OrderWeaponSwitch(Pawn oOrderedPawn, SFXWeapon Wpn, optional ECommandInputMethod eInputMethod)"
+    },
+    "OverwriteGame": {
+      "documentation": null,
+      "signature_members": {
+        "DeleteIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "SaveIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverwriteGame(int DeleteIndex, int SaveIndex, optional delegate<SFXSaveCommandCallback> Callback)"
+    },
+    "ParallelServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ParallelServerMove(float TimeStamp, int View)"
+    },
+    "PawnFalling": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PawnFalling()"
+    },
+    "PawnLanded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PawnLanded()"
+    },
+    "PlayCoverPresentation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayCoverPresentation()"
+    },
+    "PlayFlinch": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "bFromCoverCone": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayFlinch(Weapon W, bool bFromCoverCone)"
+    },
+    "ProcessCinematicModeHelmetSettings": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessCinematicModeHelmetSettings(BioSeqAct_BioToggleCinematicMode Action)"
+    },
+    "ReenableMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReenableMovement()"
+    },
+    "RemotePlayerResetPendingCustomActionInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemotePlayerResetPendingCustomActionInfo()"
+    },
+    "ResetCoverAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetCoverAction()"
+    },
+    "ResetForcedCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetForcedCooldown()"
+    },
+    "ResetInitialPlayerPawn": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerSquad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetInitialPlayerPawn(BioPlayerSquad PlayerSquad)"
+    },
+    "ResetStormCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetStormCooldown()"
+    },
+    "RestoreMotionBlur": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreMotionBlur()"
+    },
+    "ResumeGame": {
+      "documentation": null,
+      "signature_members": {
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResumeGame(optional delegate<OnResumeGameComplete> Callback)"
+    },
+    "Revive": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Revive(Pawn Other)"
+    },
+    "RootMotionServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "InAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveMag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RootMotionServerMove(float TimeStamp, Vector InAccel, Vector ClientLoc, byte MoveFlags, byte ClientRoll, int View, byte MoveMag)"
+    },
+    "SaveGameEx": {
+      "documentation": null,
+      "signature_members": {
+        "SaveDescriptor": {
+          "type": null,
+          "documentation": null
+        },
+        "Callback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameEx(SFXSaveDescriptor SaveDescriptor, optional delegate<SFXSaveCommandCallback> Callback)"
+    },
+    "SendServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "NewMove": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "OldMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendServerMove(SavedMove NewMove, Vector ClientLoc, byte ClientRoll, int View, SavedMove OldMove)"
+    },
+    "ServerAcquireCover": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "LeftIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "RightIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotPct": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientCoverDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerAcquireCover(CoverLink Link, byte SlotIdx, byte LeftIdx, byte RightIdx, float SlotPct, ECoverDirection ClientCoverDirection, float TimeStamp)"
+    },
+    "ServerSawFirstEnemy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ServerSawFirstEnemy()"
+    },
+    "ServerSawNewEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSawNewEnemy(BioPawn EnemyPawn)"
+    },
+    "ServerStartCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartCustomAction(int NewAction, optional BioPawn Sync, optional int NewPowerAction)"
+    },
+    "ServerStartCustomActionWithDirection": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Direction": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartCustomActionWithDirection(int NewAction, Vector Direction, optional BioPawn Sync, optional int NewPowerAction)"
+    },
+    "ServerStartCustomActionWithNav": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Nav": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartCustomActionWithNav(int NewAction, Object Nav, optional BioPawn Sync, optional int NewPowerAction)"
+    },
+    "ServerStartPowerCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "PowerCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "CamLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "CamDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartPowerCustomAction(int PowerCustomAction, Actor Target, Vector TargetLocation, Vector CamLocation, Vector CamDirection)"
+    },
+    "ServerTestNameReplication": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": null,
+          "documentation": null
+        },
+        "InConfirmString": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerTestNameReplication(Name InName, string InConfirmString)"
+    },
+    "ServerUseLadder": {
+      "documentation": null,
+      "signature_members": {
+        "Ladder": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerUseLadder(SFXNav_LadderNode Ladder)"
+    },
+    "ServerUseSelection": {
+      "documentation": null,
+      "signature_members": {
+        "oActorUsed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerUseSelection(Actor oActorUsed)"
+    },
+    "SetAFKLastActionTime": {
+      "documentation": null,
+      "signature_members": {
+        "isMovementCheck": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAFKLastActionTime(bool isMovementCheck)"
+    },
+    "SetCoverDirection": {
+      "documentation": null,
+      "signature_members": {
+        "NewCoverDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCoverDirection(ECoverDirection NewCoverDirection)"
+    },
+    "SetCurrentChallengeReward": {
+      "documentation": null,
+      "signature_members": {
+        "nRewardIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentChallengeReward(int nRewardIndex)"
+    },
+    "SetDeviceID": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDeviceID(int nID)"
+    },
+    "SetFakePermaCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFakePermaCooldown()"
+    },
+    "SetForcedCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "Cooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForcedCooldown(float Cooldown)"
+    },
+    "SetIsInStationaryCover": {
+      "documentation": null,
+      "signature_members": {
+        "bIsInStationaryCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIsInStationaryCover(bool bIsInStationaryCover)"
+    },
+    "SetPawnCoverAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewCoverAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPawnCoverAction(ECoverAction NewCoverAction)"
+    },
+    "SetPawnCoverType": {
+      "documentation": null,
+      "signature_members": {
+        "NewCoverType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPawnCoverType(ECoverType NewCoverType)"
+    },
+    "SetRichPresenceForIdlePlayers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetRichPresenceForIdlePlayers()"
+    },
+    "SetSpectatorMode": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpectatorMode(bool bOn)"
+    },
+    "SFXClientAdjustPosition": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocY": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocZ": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVelX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVelY": {
+          "type": null,
+          "documentation": null
+        },
+        "NewVelZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXClientAdjustPosition(float TimeStamp, float NewLocX, float NewLocY, float NewLocZ, float NewVelX, float NewVelY, float NewVelZ)"
+    },
+    "SFXShortClientAdjustPosition": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocY": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXShortClientAdjustPosition(float TimeStamp, float NewLocX, float NewLocY, float NewLocZ)"
+    },
+    "SFXWarnAdjustPosition": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocX": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocY": {
+          "type": null,
+          "documentation": null
+        },
+        "NewLocZ": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXWarnAdjustPosition(float TimeStamp, float NewLocX, float NewLocY, float NewLocZ)"
+    },
+    "StandardServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "InAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveMag": {
+          "type": null,
+          "documentation": null
+        },
+        "ControllerState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StandardServerMove(float TimeStamp, Vector InAccel, Vector ClientLoc, byte MoveFlags, byte ClientRoll, int View, byte MoveMag, Name ControllerState)"
+    },
+    "StartCustomActionWithSyncPartner": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartCustomActionWithSyncPartner(int NewAction)"
+    },
+    "StartPowerCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPowerCustomAction(SFXPowerCustomActionBase Power)"
+    },
+    "StorageDeviceChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StorageDeviceChanged()"
+    },
+    "StormingServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "InAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveMag": {
+          "type": null,
+          "documentation": null
+        },
+        "PawnDesiredYaw": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StormingServerMove(float TimeStamp, Vector InAccel, Vector ClientLoc, byte MoveFlags, byte ClientRoll, int View, byte MoveMag, int PawnDesiredYaw)"
+    },
+    "TickCoverVisualization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TickCoverVisualization()"
+    },
+    "TickJumpDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TickJumpDown()"
+    },
+    "ToggleSlowFlyCam": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleSlowFlyCam()"
+    },
+    "TryUse": {
+      "documentation": null,
+      "signature_members": {
+        "Selection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryUse(Actor Selection)"
+    },
+    "TryUseLadder": {
+      "documentation": null,
+      "signature_members": {
+        "LadderNode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryUseLadder(SFXNav_LadderNode LadderNode)"
+    },
+    "UpdateInputConfiguration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateInputConfiguration()"
+    },
+    "UpdateProfileData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateProfileData()"
+    },
+    "UpdateSquadPlayerPawn": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerSquad": {
+          "type": null,
+          "documentation": null
+        },
+        "oBioPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSquadPlayerPawn(BioPlayerSquad PlayerSquad, BioPawn oBioPawn)"
+    },
+    "UpdateUIProfileSettings": {
+      "documentation": null,
+      "signature_members": {
+        "oProfileSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateUIProfileSettings(SFXProfileSettings oProfileSettings)"
+    },
+    "ViewNextPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ViewNextPlayer()"
+    },
+    "WalkingServerMove": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": null,
+          "documentation": null
+        },
+        "InAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveFlags": {
+          "type": null,
+          "documentation": null
+        },
+        "ClientRoll": {
+          "type": null,
+          "documentation": null
+        },
+        "View": {
+          "type": null,
+          "documentation": null
+        },
+        "MoveMag": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WalkingServerMove(float TimeStamp, Vector InAccel, Vector ClientLoc, byte MoveFlags, byte ClientRoll, int View, byte MoveMag)"
+    }
+  },
+  "states": {
+    "PlayerFlying": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerInCover": {
+      "functions": {
+        "StandardServerMove": {
+          "documentation": null,
+          "signature_members": {
+            "TimeStamp": {
+              "type": null,
+              "documentation": null
+            },
+            "InAccel": {
+              "type": null,
+              "documentation": null
+            },
+            "ClientLoc": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveFlags": {
+              "type": null,
+              "documentation": null
+            },
+            "ClientRoll": {
+              "type": null,
+              "documentation": null
+            },
+            "View": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveMag": {
+              "type": null,
+              "documentation": null
+            },
+            "ControllerState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UpdatePlayerPosture": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            },
+            "out_BreakFromCover": {
+              "type": null,
+              "documentation": null
+            },
+            "out_PawnCA": {
+              "type": null,
+              "documentation": null
+            },
+            "out_PawnCD": {
+              "type": null,
+              "documentation": null
+            },
+            "out_PawnMoveCD": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "DetermineCanMoveInCoverDirection": {
+          "documentation": null,
+          "signature_members": {
+            "BioPawn": {
+              "type": null,
+              "documentation": null
+            },
+            "DesiredDirection": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReenableCoverIcons": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "IsInCoverState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerTick": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BreakFromCover": {
+          "documentation": null,
+          "signature_members": {
+            "BreakDir": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerPushOffCover": {
+      "functions": {
+        "PlayerTick": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerInAimBack": {
+      "functions": {
+        "StandardServerMove": {
+          "documentation": null,
+          "signature_members": {
+            "TimeStamp": {
+              "type": null,
+              "documentation": null
+            },
+            "InAccel": {
+              "type": null,
+              "documentation": null
+            },
+            "ClientLoc": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveFlags": {
+              "type": null,
+              "documentation": null
+            },
+            "ClientRoll": {
+              "type": null,
+              "documentation": null
+            },
+            "View": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveMag": {
+              "type": null,
+              "documentation": null
+            },
+            "ControllerState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousState": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerDriving": {
+      "functions": {
+        "NotifyBump": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": null,
+              "documentation": null
+            },
+            "HitNormal": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UpdateRotation": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ServerUse": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerWalking": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ProcessMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            },
+            "newAccel": {
+              "type": null,
+              "documentation": null
+            },
+            "DoubleClickMove": {
+              "type": null,
+              "documentation": null
+            },
+            "DeltaRot": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMoveExplore": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveMag": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveAngle": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveRot": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMoveCombat": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveMag": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMoveStorming": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveMag": {
+              "type": null,
+              "documentation": null
+            },
+            "MoveRot": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UpdateRotation": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerFlyCam": {
+      "functions": {
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UpdateRotation": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "FastFlyCamOff": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "FastFlyCamOn": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "GetSpectatorCameraSpeed": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerPhotoMode": {
+      "functions": {
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UpdateRotation": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "PlayerFalling": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PlayerMove": {
+          "documentation": null,
+          "signature_members": {
+            "DeltaTime": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

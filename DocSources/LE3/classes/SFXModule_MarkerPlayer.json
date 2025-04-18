@@ -1,0 +1,35 @@
+{
+  "parent": "SFXModule_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerIsDown": {
+      "type": "bool",
+      "documentation": null
+    },
+    "PlayerIsDead": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostAdd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostAdd()"
+    },
+    "UpdatePlayerDownState": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayerIsDown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlayerDownState(bool NewPlayerIsDown)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

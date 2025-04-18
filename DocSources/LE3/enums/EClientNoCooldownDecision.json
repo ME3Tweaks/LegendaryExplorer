@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "NoCooldown_NoDecision": {
+      "value": 0,
+      "documentation": null
+    },
+    "NoCooldown_Success": {
+      "value": 1,
+      "documentation": null
+    },
+    "NoCooldown_Failure": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Value": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeDelta": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "Action": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

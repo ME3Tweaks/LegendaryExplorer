@@ -1,0 +1,13 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "WaveParameterName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

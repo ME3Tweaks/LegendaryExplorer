@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "GenericTip": {
+      "type": null,
+      "documentation": null
+    },
+    "PCOverrideTip": {
+      "type": null,
+      "documentation": null
+    },
+    "PS3OverrideTip": {
+      "type": null,
+      "documentation": null
+    },
+    "XBoxOverrideTip": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

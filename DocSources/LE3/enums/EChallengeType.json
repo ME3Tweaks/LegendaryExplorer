@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ChallengeType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ChallengeType_Minion": {
+      "value": 1,
+      "documentation": null
+    },
+    "ChallengeType_Elite": {
+      "value": 2,
+      "documentation": null
+    },
+    "ChallengeType_SubBoss": {
+      "value": 3,
+      "documentation": null
+    },
+    "ChallengeType_Boss": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

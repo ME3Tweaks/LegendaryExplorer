@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "TelemetryKey": {
+      "type": null,
+      "documentation": null
+    },
+    "AddTelemFunc": {
+      "type": null,
+      "documentation": null
+    },
+    "UClass": {
+      "type": null,
+      "documentation": null
+    },
+    "Label": {
+      "type": null,
+      "documentation": null
+    },
+    "Story": {
+      "type": null,
+      "documentation": null
+    },
+    "Max": {
+      "type": null,
+      "documentation": null
+    },
+    "StepSize": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultVal": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

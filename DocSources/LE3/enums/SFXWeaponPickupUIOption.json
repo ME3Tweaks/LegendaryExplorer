@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "WEAPPICKUP_AddToInventory": {
+      "value": 0,
+      "documentation": null
+    },
+    "WEAPPICKUP_OpenInventory": {
+      "value": 1,
+      "documentation": null
+    },
+    "WEAPPICKUP_Equip": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

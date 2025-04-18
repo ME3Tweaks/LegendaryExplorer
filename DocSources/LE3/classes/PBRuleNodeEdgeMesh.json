@@ -1,0 +1,17 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "FlatThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "MainXPullIn": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

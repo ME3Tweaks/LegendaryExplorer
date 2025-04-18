@@ -1,0 +1,20 @@
+{
+  "parent": "SFXCameraMode_Photo",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "UpdateOffset": {
+      "documentation": null,
+      "signature_members": {
+        "location": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateOffset(Vector location)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

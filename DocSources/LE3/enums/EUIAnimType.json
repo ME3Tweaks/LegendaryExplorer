@@ -1,0 +1,73 @@
+{
+  "EnumValues": {
+    "EAT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAT_Position": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAT_PositionOffset": {
+      "value": 2,
+      "documentation": null
+    },
+    "EAT_RelPosition": {
+      "value": 3,
+      "documentation": null
+    },
+    "EAT_Rotation": {
+      "value": 4,
+      "documentation": null
+    },
+    "EAT_RelRotation": {
+      "value": 5,
+      "documentation": null
+    },
+    "EAT_Color": {
+      "value": 6,
+      "documentation": null
+    },
+    "EAT_Opacity": {
+      "value": 7,
+      "documentation": null
+    },
+    "EAT_Visibility": {
+      "value": 8,
+      "documentation": null
+    },
+    "EAT_Scale": {
+      "value": 9,
+      "documentation": null
+    },
+    "EAT_Left": {
+      "value": 10,
+      "documentation": null
+    },
+    "EAT_Top": {
+      "value": 11,
+      "documentation": null
+    },
+    "EAT_Right": {
+      "value": 12,
+      "documentation": null
+    },
+    "EAT_Bottom": {
+      "value": 13,
+      "documentation": null
+    },
+    "EAT_PPBloom": {
+      "value": 14,
+      "documentation": null
+    },
+    "EAT_PPBlurSampleSize": {
+      "value": 15,
+      "documentation": null
+    },
+    "EAT_PPBlurAmount": {
+      "value": 16,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

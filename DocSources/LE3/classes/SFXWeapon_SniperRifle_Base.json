@@ -1,0 +1,100 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "ZoomTimeDilation": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "ZoomTimeDilationDuration": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "OwnerTimeDilationCounterScale": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "ActivateSniperZoomWwiseEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "DeActivateSniperZoomWwiseEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "SniperRifleDamagePenalty": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "SetZoomed": {
+      "documentation": null,
+      "signature_members": {
+        "bState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZoomed(bool bState)"
+    },
+    "GetFireModeBaseDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFireModeBaseDamage()"
+    },
+    "GetStoreQualification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAttachSlot",
+      "signature": "EAttachSlot GetStoreQualification()"
+    },
+    "GetWeaponSpecificDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "DecalEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetWeaponSpecificDecalData(SFXPhysicalMaterialDecals DecalEffects, out float FadeTime)"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    },
+    "ScaleWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScaleWeapon()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

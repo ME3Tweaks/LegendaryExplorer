@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "m_bToggle": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bEnable": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

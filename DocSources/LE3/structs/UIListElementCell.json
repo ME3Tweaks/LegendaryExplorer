@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "CellStyle": {
+      "type": null,
+      "documentation": null
+    },
+    "OwnerList": {
+      "type": null,
+      "documentation": null
+    },
+    "ContainerElementIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "ValueObject": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

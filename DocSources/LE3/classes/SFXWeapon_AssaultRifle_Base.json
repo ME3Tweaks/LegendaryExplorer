@@ -1,0 +1,78 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "ShotsTillMissTracer": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayFireEffects": {
+      "documentation": null,
+      "signature_members": {
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayFireEffects(byte FiringMode, optional Vector HitLocation)"
+    },
+    "GetStoreQualification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAttachSlot",
+      "signature": "EAttachSlot GetStoreQualification()"
+    },
+    "GetWeaponSpecificDecalData": {
+      "documentation": null,
+      "signature_members": {
+        "DecalEffects": {
+          "type": null,
+          "documentation": null
+        },
+        "FadeTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "DecalComponent",
+      "signature": "DecalComponent GetWeaponSpecificDecalData(SFXPhysicalMaterialDecals DecalEffects, out float FadeTime)"
+    },
+    "GetWeaponSpecificImpactEffect": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem GetWeaponSpecificImpactEffect(SFXPhysicalMaterialImpactEffects ImpactEffects)"
+    },
+    "GetWeaponSpecificImpactSound": {
+      "documentation": null,
+      "signature_members": {
+        "ImpactSounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetWeaponSpecificImpactSound(SFXPhysicalMaterialImpactSounds ImpactSounds)"
+    },
+    "ShouldSpawnTracerFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSpawnTracerFX()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

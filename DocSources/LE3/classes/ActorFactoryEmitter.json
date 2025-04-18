@@ -1,0 +1,13 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "ParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

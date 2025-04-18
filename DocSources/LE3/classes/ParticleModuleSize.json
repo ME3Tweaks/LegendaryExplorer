@@ -1,0 +1,13 @@
+{
+  "parent": "ParticleModuleSizeBase",
+  "package": "Engine",
+  "variables": {
+    "StartSizeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

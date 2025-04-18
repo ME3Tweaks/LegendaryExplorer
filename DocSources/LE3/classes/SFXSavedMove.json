@@ -1,0 +1,173 @@
+{
+  "parent": "SavedMove",
+  "package": "SFXGame",
+  "variables": {
+    "ControllerState": {
+      "type": "Name",
+      "documentation": null
+    },
+    "TimeStampMS": {
+      "type": "int",
+      "documentation": null
+    },
+    "PawnDesiredYaw": {
+      "type": "int",
+      "documentation": null
+    },
+    "MoveMag": {
+      "type": "float",
+      "documentation": null
+    },
+    "AimDeltaRotYaw": {
+      "type": "int",
+      "documentation": null
+    },
+    "AimDeltaRotPitch": {
+      "type": "int",
+      "documentation": null
+    },
+    "bIsInStationaryCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWantsToStorm": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStorming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCancelStorm": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWantsToCrouch": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWantsToPortArm": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAimAssistActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsDead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsSniping": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SavedMoveType": {
+      "type": "ESFXSavedMoveType",
+      "documentation": null
+    },
+    "CoverType": {
+      "type": "ECoverType",
+      "documentation": null
+    },
+    "CoverAction": {
+      "type": "ECoverAction",
+      "documentation": null
+    },
+    "CoverDirection": {
+      "type": "ECoverDirection",
+      "documentation": null
+    },
+    "CurrentSlotDirection": {
+      "type": "ECoverDirection",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BioSetFlags": {
+      "documentation": null,
+      "signature_members": {
+        "BioPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioSetFlags(BioPlayerController BioPC)"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "CopyFrom": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyFrom(SFXSavedMove PreviousMove)"
+    },
+    "HasChanges": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasChanges(SFXSavedMove PreviousMove)"
+    },
+    "CompressedFlags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte CompressedFlags()"
+    },
+    "SetFlags": {
+      "documentation": null,
+      "signature_members": {
+        "Flags": {
+          "type": null,
+          "documentation": null
+        },
+        "PC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EDoubleClickDir",
+      "signature": "EDoubleClickDir SetFlags(byte Flags, PlayerController PC)"
+    },
+    "SetMoveFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "newAccel": {
+          "type": null,
+          "documentation": null
+        },
+        "InDoubleClick": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveFor(PlayerController P, float DeltaTime, Vector newAccel, EDoubleClickDir InDoubleClick)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

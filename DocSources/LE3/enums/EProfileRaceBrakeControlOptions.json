@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PRBCO_Trigger": {
+      "value": 0,
+      "documentation": null
+    },
+    "PRBCO_Button": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

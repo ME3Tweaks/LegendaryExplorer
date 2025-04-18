@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "TRANSFORM_World": {
+      "value": 0,
+      "documentation": null
+    },
+    "TRANSFORM_View": {
+      "value": 1,
+      "documentation": null
+    },
+    "TRANSFORM_Local": {
+      "value": 2,
+      "documentation": null
+    },
+    "TRANSFORM_Tangent": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

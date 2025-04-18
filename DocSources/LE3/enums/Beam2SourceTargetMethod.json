@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "PEB2STM_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "PEB2STM_UserSet": {
+      "value": 1,
+      "documentation": null
+    },
+    "PEB2STM_Emitter": {
+      "value": 2,
+      "documentation": null
+    },
+    "PEB2STM_Particle": {
+      "value": 3,
+      "documentation": null
+    },
+    "PEB2STM_Actor": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,150 @@
+{
+  "parent": "UIButton",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIDataStorePublisher": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CaptionDataSource": {
+      "type": "UIDataStoreBinding",
+      "documentation": null
+    },
+    "StringRenderComponent": {
+      "type": "UIComp_DrawString",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearBoundDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBoundDataStores()"
+    },
+    "GetBoundDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundDataStores(out array<UIDataStore> out_BoundDataStores)"
+    },
+    "GetCaption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCaption()"
+    },
+    "GetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDataStoreBinding(optional int BindingIndex)"
+    },
+    "NotifyDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": null,
+          "documentation": null
+        },
+        "bValuesInvalidated": {
+          "type": null,
+          "documentation": null
+        },
+        "PropertyTag": {
+          "type": null,
+          "documentation": null
+        },
+        "SourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    },
+    "RefreshSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshSubscriberValue(optional int BindingIndex)"
+    },
+    "SaveSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": null,
+          "documentation": null
+        },
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveSubscriberValue(out array<UIDataStore> out_BoundDataStores, optional int BindingIndex)"
+    },
+    "SetCaption": {
+      "documentation": null,
+      "signature_members": {
+        "NewText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaption(string NewText)"
+    },
+    "SetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "MarkupText": {
+          "type": null,
+          "documentation": null
+        },
+        "BindingIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDataStoreBinding(string MarkupText, optional int BindingIndex)"
+    },
+    "SetTextAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Horizontal": {
+          "type": null,
+          "documentation": null
+        },
+        "Vertical": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextAlignment(EUIAlignment Horizontal, EUIAlignment Vertical)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

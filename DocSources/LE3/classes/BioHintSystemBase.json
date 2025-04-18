@@ -1,0 +1,520 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aHints": {
+      "type": "HintDefinition",
+      "documentation": null
+    },
+    "m_aNotifications": {
+      "type": "SFXNotification",
+      "documentation": null
+    },
+    "m_aCurrentlyDisplayedMiniNotificationIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_NotificationData": {
+      "type": "SFXNotificationData",
+      "documentation": null
+    },
+    "m_mTrackingData": {
+      "type": "Object",
+      "documentation": null
+    },
+    "m_DefaultImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "m_fMinimumTimeBetweenAnyHints": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCurrentTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCurrentlyDisplayedHint": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nCurrentlyDisplayedNotificationID": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fTimeSinceDisplayPossible": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDisplayDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisabledForTutorial": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bNotificationIsPaused": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddNotification": {
+      "documentation": null,
+      "signature_members": {
+        "oNotification": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification(const out SFXNotification oNotification)"
+    },
+    "AddNotification_AccomplishmentChange": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sBody": {
+          "type": null,
+          "documentation": null
+        },
+        "currentCount": {
+          "type": null,
+          "documentation": null
+        },
+        "totalCount": {
+          "type": null,
+          "documentation": null
+        },
+        "sImage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_AccomplishmentChange(string sTitle, string sSubtitle, string sBody, int currentCount, int totalCount, string sImage)"
+    },
+    "AddNotification_AccomplishmentUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        },
+        "Grinder": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_AccomplishmentUnlocked(const out Accomplishment Data, const out GrinderAccomplishment Grinder)"
+    },
+    "AddNotification_AmmoRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_AmmoRecovery(int nAmount)"
+    },
+    "AddNotification_BonusPower": {
+      "documentation": null,
+      "signature_members": {
+        "PlotStateID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_BonusPower(int PlotStateID)"
+    },
+    "AddNotification_CodexChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddNotification_CodexChange()"
+    },
+    "AddNotification_CreditRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_CreditRecovery(int nAmount)"
+    },
+    "AddNotification_Custom": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplayTime": {
+          "type": null,
+          "documentation": null
+        },
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sSubtitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sBody": {
+          "type": null,
+          "documentation": null
+        },
+        "sImagePath": {
+          "type": null,
+          "documentation": null
+        },
+        "nRemoteEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "nmType": {
+          "type": null,
+          "documentation": null
+        },
+        "nmSound": {
+          "type": null,
+          "documentation": null
+        },
+        "Priority": {
+          "type": null,
+          "documentation": null
+        },
+        "FlourishID": {
+          "type": null,
+          "documentation": null
+        },
+        "nBarPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "nmIcon": {
+          "type": null,
+          "documentation": null
+        },
+        "bMini": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_Custom(float nDisplayTime, string sTitle, string sSubtitle, string sBody, string sImagePath, Name nRemoteEvent, optional Name nmType, optional Name nmSound, optional int Priority, optional int FlourishID, optional int nBarPercent, optional Name nmIcon, optional bool bMini)"
+    },
+    "AddNotification_ElementZeroRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_ElementZeroRecovery(int nAmount)"
+    },
+    "AddNotification_HeavyWeaponAmmoRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_HeavyWeaponAmmoRecovery(int nAmount)"
+    },
+    "AddNotification_IridiumRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_IridiumRecovery(int nAmount)"
+    },
+    "AddNotification_JournalChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddNotification_JournalChange()"
+    },
+    "AddNotification_MedigelRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_MedigelRecovery(int nAmount)"
+    },
+    "AddNotification_PalladiumRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_PalladiumRecovery(int nAmount)"
+    },
+    "AddNotification_ParagonChange": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_ParagonChange(int nAmount)"
+    },
+    "AddNotification_PlatinumRecovery": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_PlatinumRecovery(int nAmount)"
+    },
+    "AddNotification_RenegadeChange": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_RenegadeChange(int nAmount)"
+    },
+    "AddNotification_ReputationChange": {
+      "documentation": null,
+      "signature_members": {
+        "nAmount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNotification_ReputationChange(int nAmount)"
+    },
+    "CacheCurrentState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CacheCurrentState()"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "ClearNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearNotifications()"
+    },
+    "CodexUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CodexUpdate(stringref srTitle, stringref srDescription)"
+    },
+    "GetNotificationData": {
+      "documentation": null,
+      "signature_members": {
+        "nmNotificationType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXNotificationData",
+      "signature": "SFXNotificationData GetNotificationData(Name nmNotificationType)"
+    },
+    "GetPreviousTime": {
+      "documentation": null,
+      "signature_members": {
+        "oData": {
+          "type": null,
+          "documentation": null
+        },
+        "nAge": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPreviousTime(out HintTrackingData oData, int nAge)"
+    },
+    "GetTrackingData": {
+      "documentation": null,
+      "signature_members": {
+        "nmEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "nmContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "HintTrackingData",
+      "signature": "HintTrackingData GetTrackingData(Name nmEvent, optional Name nmContext)"
+    },
+    "HintEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nmEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "nmContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HintEvent(Name nmEvent, optional Name nmContext)"
+    },
+    "HintsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HintsEnabled()"
+    },
+    "IsHintsOptionDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsHintsOptionDisabled()"
+    },
+    "JournalUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "srDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "JournalUpdate(stringref srTitle, stringref srDescription)"
+    },
+    "OnNotificationDisplayCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "nNotificationID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnNotificationDisplayCompleted(int nNotificationID)"
+    },
+    "PopulateNotificationOneParameter": {
+      "documentation": null,
+      "signature_members": {
+        "oNoteData": {
+          "type": null,
+          "documentation": null
+        },
+        "oNotification": {
+          "type": null,
+          "documentation": null
+        },
+        "nParam1": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateNotificationOneParameter(const out SFXNotificationData oNoteData, out SFXNotification oNotification, int nParam1)"
+    },
+    "ShowNotification": {
+      "documentation": null,
+      "signature_members": {
+        "oNotification": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowNotification(const out SFXNotification oNotification)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "TimeSince": {
+      "documentation": null,
+      "signature_members": {
+        "fTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float TimeSince(float fTime)"
+    },
+    "SetNotificationPaused": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNotificationPaused(bool bVal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

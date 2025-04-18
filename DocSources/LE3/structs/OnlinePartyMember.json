@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "UniqueId": {
+      "type": null,
+      "documentation": null
+    },
+    "Data1": {
+      "type": null,
+      "documentation": null
+    },
+    "Data2": {
+      "type": null,
+      "documentation": null
+    },
+    "NickName": {
+      "type": null,
+      "documentation": null
+    },
+    "SessionInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "TitleId": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsLocal": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsInPartyVoice": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsTalking": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsInGameSession": {
+      "type": null,
+      "documentation": null
+    },
+    "LocalUserNum": {
+      "type": null,
+      "documentation": null
+    },
+    "NatType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

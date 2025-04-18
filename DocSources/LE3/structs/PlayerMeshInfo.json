@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "Male": {
+      "type": null,
+      "documentation": null
+    },
+    "MaleVisor": {
+      "type": null,
+      "documentation": null
+    },
+    "MaleFaceplate": {
+      "type": null,
+      "documentation": null
+    },
+    "MaleMaterialOverride": {
+      "type": null,
+      "documentation": null
+    },
+    "Female": {
+      "type": null,
+      "documentation": null
+    },
+    "FemaleVisor": {
+      "type": null,
+      "documentation": null
+    },
+    "FemaleFaceplate": {
+      "type": null,
+      "documentation": null
+    },
+    "FemaleMaterialOverride": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasBreather": {
+      "type": null,
+      "documentation": null
+    },
+    "bHideHead": {
+      "type": null,
+      "documentation": null
+    },
+    "bHideHair": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

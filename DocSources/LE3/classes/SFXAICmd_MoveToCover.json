@@ -1,0 +1,75 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "m_bDoPeriodicCoverCheck": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bAllowedToFire": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyEnemyVisible": {
+      "documentation": null,
+      "signature_members": {
+        "EnemyIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "TimeSinceSeen": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEnemyVisible(int EnemyIdx, float TimeSinceSeen)"
+    },
+    "MoveToCover": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "bInDoPeriodicCoverCheck": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowedToFire": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToCover(SFXAI_Cover AI, optional bool bInDoPeriodicCoverCheck, optional bool bInAllowedToFire)"
+    },
+    "PeriodicCoverValidation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PeriodicCoverValidation()"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "MovingToCover": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

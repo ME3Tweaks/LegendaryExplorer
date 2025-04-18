@@ -1,0 +1,458 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_BlazeUI": {
+      "type": "SFXOnlineComponentUI",
+      "documentation": null
+    },
+    "ConnectionMessageBoxId": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MessagingComputer": {
+      "type": "SFXGUI_MainMenu_RightComputer",
+      "documentation": null
+    },
+    "MenuComputer": {
+      "type": "SFXGUI_MainMenu_RTT",
+      "documentation": null
+    },
+    "srDemo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ActivateCerb": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ConnectTo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ConnectingToCerb": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCerb_ConnectedToCerb": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNotificationOriginSignin": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srFriendBeatMe": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srFriendBeatByMe": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "fTimeSinceLastPendingLoadMessageCheck": {
+      "type": "float",
+      "documentation": null
+    },
+    "fPendingLoadMessageCheckThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "bEARegistrationScreenVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConnectButtonVisible": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bProcessedRankChanges": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_CerbConnectState": {
+      "type": "SFXOnlineUIState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CerberusConnect": {
+      "documentation": null,
+      "signature_members": {
+        "connectMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CerberusConnect(SFXOnlineConnectMode connectMode)"
+    },
+    "ClearNotifications": {
+      "documentation": null,
+      "signature_members": {
+        "MessageTypesToClear": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearNotifications(optional array<SFXOnlineConnection_MessageType> MessageTypesToClear)"
+    },
+    "CloseEANetworking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseEANetworking()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents nEventID, optional float fValue)"
+    },
+    "InitCerberus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitCerberus()"
+    },
+    "IsFromGameEntryFlow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFromGameEntryFlow()"
+    },
+    "OnDisplayNotification": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageData": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Image": {
+          "type": null,
+          "documentation": null
+        },
+        "DLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisplayNotification(SFXOnlineConnection_MessageType Type, string MessageData, string Title, string Image, int DLC_ID, int ServerID)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bVal)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "AddDisconnectedTickerMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddDisconnectedTickerMessages()"
+    },
+    "AddDownloadPromtMessageItem": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sImage": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "nDLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDownloadPromtMessageItem(string i_sTitle, string i_sInfo, string i_sImage, SFXOnlineConnection_MessageType Type, int nDLC_ID, int ServerID)"
+    },
+    "AddNetworkImageMessageItem": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "i_sImage": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "nDLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddNetworkImageMessageItem(string i_sTitle, string i_sInfo, string i_sImage, SFXOnlineConnection_MessageType Type, int nDLC_ID, int ServerID)"
+    },
+    "AddTickerMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "MessageData": {
+          "type": null,
+          "documentation": null
+        },
+        "nDLC_ID": {
+          "type": null,
+          "documentation": null
+        },
+        "ServerID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTickerMessage(SFXOnlineConnection_MessageType Type, string MessageData, int nDLC_ID, int ServerID)"
+    },
+    "ClearAllConnectedNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllConnectedNotifications()"
+    },
+    "ClearDisconnectedTickerMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDisconnectedTickerMessages()"
+    },
+    "CloseMessagingComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseMessagingComputer()"
+    },
+    "MainMenu_FailImageAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MainMenu_FailImageAssets()"
+    },
+    "NextCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextCerberusItem()"
+    },
+    "OnEANetworkingVisibilityChange": {
+      "documentation": null,
+      "signature_members": {
+        "bNewValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEANetworkingVisibilityChange(bool bNewValue)"
+    },
+    "OnMessagingComputerConnectButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnMessagingComputerConnectButton()"
+    },
+    "OnMessagingSystemReady": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnMessagingSystemReady()"
+    },
+    "OnRankMessageReceived": {
+      "documentation": null,
+      "signature_members": {
+        "RankBypassNotifications": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRankMessageReceived(array<RankBypassNotification> RankBypassNotifications)"
+    },
+    "OpenMenuComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenMenuComputer()"
+    },
+    "OpenMessagingComputer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenMessagingComputer()"
+    },
+    "OutputMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutputMessages()"
+    },
+    "PrevCerberusItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevCerberusItem()"
+    },
+    "ProcessRankChangeNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessRankChangeNotifications()"
+    },
+    "QueueConnectingMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueConnectingMessageBox(stringref srMessage)"
+    },
+    "RemoveConnectingMessageBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveConnectingMessageBox()"
+    },
+    "RequestAdditionalNetworkMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RequestAdditionalNetworkMessages()"
+    },
+    "SetConnectButtonState": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": null,
+          "documentation": null
+        },
+        "bVisible": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetConnectButtonState(string sMessage, optional bool bVisible)"
+    },
+    "SetOnlineState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlineState(SFXOnlineUIState eState)"
+    },
+    "UpdateConnectingMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateConnectingMessageBox(stringref srMessage)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

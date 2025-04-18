@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LBS_OK": {
+      "value": 0,
+      "documentation": null
+    },
+    "LBS_FAILED": {
+      "value": 1,
+      "documentation": null
+    },
+    "LBS_LB_RANK_NOT_FOUND": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

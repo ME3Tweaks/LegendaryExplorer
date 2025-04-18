@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "HitReactRange_Invalid": {
+      "value": 0,
+      "documentation": null
+    },
+    "HitReactRange_Melee": {
+      "value": 1,
+      "documentation": null
+    },
+    "HitReactRange_Short": {
+      "value": 2,
+      "documentation": null
+    },
+    "HitReactRange_Medium": {
+      "value": 3,
+      "documentation": null
+    },
+    "HitReactRange_Long": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,1766 @@
+{
+  "parent": "SFXPawn_PlayerParty",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponEncumbranceModifiers": {
+      "type": "ScaledFloat",
+      "documentation": null
+    },
+    "PendingMorphHeadData": {
+      "type": "MorphHeadSaveRecord",
+      "documentation": null
+    },
+    "firstName": {
+      "type": "string",
+      "documentation": null
+    },
+    "PlayerClassName": {
+      "type": "string",
+      "documentation": null
+    },
+    "faceCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sWwiseRTPCNameUseCasual": {
+      "type": "string",
+      "documentation": null
+    },
+    "AsyncAppearanceMeshes": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "PermanentGameEffects": {
+      "type": "PermanentGameEffect",
+      "documentation": null
+    },
+    "EncumbranceCapacityBonuses": {
+      "type": "SFXGameEffect",
+      "documentation": null
+    },
+    "PendingMorphHeadResources": {
+      "type": "SFXAsyncAssetRequest",
+      "documentation": null
+    },
+    "ArmorEffectDescriptions": {
+      "type": "ArmorEffectDescription",
+      "documentation": null
+    },
+    "DetachOnDestroy": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "__AsyncUpdating_OnCompleted__Delegate": {
+      "type": "AsyncUpdating_OnCompleted",
+      "documentation": null
+    },
+    "HitShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "ZoomHitShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "CoverShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "CharacterGUID": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "CamperAverageLoc": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "PlayerCombatVoc": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "PlayerExplorationVoc": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "PlayerStealthVoc": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "GenericPlayerCombatVoc": {
+      "type": "SFXVocalizationBank",
+      "documentation": null
+    },
+    "BaseHelmetMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "OverrideHelmetMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "MalePhys": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "FemalePhys": {
+      "type": "PhysicsAsset",
+      "documentation": null
+    },
+    "PlayerClass": {
+      "type": "SFXCharacterClass",
+      "documentation": null
+    },
+    "ShieldImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "ImpactSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_GUI_Icon": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "AsyncGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PermanentGameEffect_CategoryPrefix": {
+      "type": "Name",
+      "documentation": null
+    },
+    "EncumbranceEffectName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PrimaryWeapon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SecondaryWeapon": {
+      "type": "Name",
+      "documentation": null
+    },
+    "EnterCoverSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "EnterCoverVoc": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "CoverForceFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null
+    },
+    "CoverEnterFoleySound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PopUpDamageMultiplier": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "CasualID": {
+      "type": "int",
+      "documentation": null
+    },
+    "OverrideCasualID": {
+      "type": "int",
+      "documentation": null
+    },
+    "FullBodyID": {
+      "type": "int",
+      "documentation": null
+    },
+    "TorsoID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShoulderID": {
+      "type": "int",
+      "documentation": null
+    },
+    "ArmID": {
+      "type": "int",
+      "documentation": null
+    },
+    "LegID": {
+      "type": "int",
+      "documentation": null
+    },
+    "SpecID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint1ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "Tint2ID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternID": {
+      "type": "int",
+      "documentation": null
+    },
+    "PatternColorID": {
+      "type": "int",
+      "documentation": null
+    },
+    "HelmetID": {
+      "type": "int",
+      "documentation": null
+    },
+    "EmissiveID": {
+      "type": "int",
+      "documentation": null
+    },
+    "OverrideHelmetID": {
+      "type": "int",
+      "documentation": null
+    },
+    "BaseHelmetData": {
+      "type": "HelmetMetaData",
+      "documentation": null
+    },
+    "OverrideHelmetData": {
+      "type": "HelmetMetaData",
+      "documentation": null
+    },
+    "OutOfAmmoTimestamp": {
+      "type": "float",
+      "documentation": null
+    },
+    "OutOfAmmoSwapThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "TotalXP": {
+      "type": "float",
+      "documentation": null
+    },
+    "CampingTickCounter": {
+      "type": "int",
+      "documentation": null
+    },
+    "CampingTolerance": {
+      "type": "float",
+      "documentation": null
+    },
+    "CamperBusterDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "EncumbranceCapacity": {
+      "type": "float",
+      "documentation": null
+    },
+    "EncumbranceMinCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "EncumbranceMaxCooldown": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurrentWeaponEncumbrance": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastCoverEnterDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "PopUpDamageMultiplierDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTotalReputation": {
+      "type": "int",
+      "documentation": null
+    },
+    "ParagonScarBias": {
+      "type": "float",
+      "documentation": null
+    },
+    "FullParagonScarBiasValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoParagonScarBiasValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseCasualAppearance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsingOverrideHelmet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFullHelmetRequired": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsFullAmmo": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOverrideHideScars": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreHeadOffsetsInMeshMerge": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInPersonalization": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAsyncUpdatingAppearance": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanRoll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCannotUseCover": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCanBeStopped": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasPendingSavedMorphHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasPendingExistingMorphHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CombatAppearance": {
+      "type": "EPlayerAppearanceType",
+      "documentation": null
+    },
+    "Origin": {
+      "type": "EOriginType",
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": "ENotorietyType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "BioBaseRemovedFromWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBaseRemovedFromWorld()"
+    },
+    "CollectAnimListForCooking": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "OutResults": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CollectAnimListForCooking(BioPawn Pawn, out array<Name> OutResults)"
+    },
+    "CopyPawnAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyPawnAppearance(BioPawn SourcePawn)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "GetGUIIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Texture2D",
+      "signature": "Texture2D GetGUIIcon()"
+    },
+    "IsTestFrameworkSetupComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTestFrameworkSetupComplete()"
+    },
+    "NotifyFinishedCoverAlign": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyFinishedCoverAlign()"
+    },
+    "OutsideWorldBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OutsideWorldBounds()"
+    },
+    "PlayHit": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayHit(float Damage, Controller instigatedBy, Vector HitLocation, Class<DamageType> DamageType, Vector Momentum, TraceHitInfo HitInfo, Pawn DamageCauser)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PreClientTravel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreClientTravel()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SyncPawnAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "SourcePawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SyncPawnAppearance(BioPawn SourcePawn)"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAppearance()"
+    },
+    "ApplyAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAppearance()"
+    },
+    "ImpactWithPower": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactWithPower(EPowerResistance Resistance, Pawn Caster, Vector HitLocation, Vector HitNormal, float Damage, Vector Force, Class<DamageType> DamageType)"
+    },
+    "Died": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Died(Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "HandleMomentum": {
+      "documentation": null,
+      "signature_members": {
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleMomentum(Vector Momentum, Vector HitLocation, Class<DamageType> DamageType, optional TraceHitInfo HitInfo)"
+    },
+    "ModifyDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCalc": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "instigatedBy": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyDamage(out float Damage, Vector Momentum, out DamageCalculationAlgorithm DamageCalc, const out TraceHitInfo HitInfo, Vector HitLocation, Class<SFXDamageType> DamageType, Controller instigatedBy, Actor DamageCauser)"
+    },
+    "PlayDying": {
+      "documentation": null,
+      "signature_members": {
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLoc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayDying(Class<DamageType> DamageType, Vector HitLoc)"
+    },
+    "PossessedBy": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": null,
+          "documentation": null
+        },
+        "bVehicleTransition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PossessedBy(Controller C, bool bVehicleTransition)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator out_ViewRotation, out Rotator out_DeltaRot)"
+    },
+    "AbortAsyncUpdateAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AbortAsyncUpdateAppearance()"
+    },
+    "AddDetachOnDestroyObject": {
+      "documentation": null,
+      "signature_members": {
+        "MeshToAdd": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDetachOnDestroyObject(SkeletalMeshComponent MeshToAdd)"
+    },
+    "AddMeshForTexturePrestream": {
+      "documentation": null,
+      "signature_members": {
+        "PrestreamMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent AddMeshForTexturePrestream(SkeletalMesh PrestreamMesh)"
+    },
+    "AddPlayerInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddPlayerInventory()"
+    },
+    "AddWeaponEncumbranceBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Bonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddWeaponEncumbranceBonus(SFXGameEffect Bonus)"
+    },
+    "ApplyAppropriateModsIfNoneExist": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousWeaponNames": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyAppropriateModsIfNoneExist(array<Name> PreviousWeaponNames)"
+    },
+    "ApplyBonuses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyBonuses()"
+    },
+    "ApplyCustomizationToActor": {
+      "documentation": null,
+      "signature_members": {
+        "InTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "InSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "UIWorldConfigFlags": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCustomizationToActor(Actor InTarget, optional SFXCustomizationInstance InSettings, optional int UIWorldConfigFlags)"
+    },
+    "ApplyPendingMorphHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyPendingMorphHead()"
+    },
+    "ApplyPermanentPlayerGameEffect": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplyPermanentPlayerGameEffect(Name UniqueName)"
+    },
+    "ApplyWeaponEncumbrance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyWeaponEncumbrance()"
+    },
+    "AsyncUpdating_OnCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "LoadedAssets": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AsyncUpdating_OnCompleted(out array<Object> LoadedAssets)"
+    },
+    "AutoMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoMap()"
+    },
+    "AutoMapPC": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoMapPC()"
+    },
+    "AutoMapXbox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoMapXbox()"
+    },
+    "BackupWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "PreferredWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXWeapon",
+      "signature": "SFXWeapon BackupWeapon(optional SFXWeapon PreferredWeapon)"
+    },
+    "BuildHelmetMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "bUseFullArmourHelmets": {
+          "type": null,
+          "documentation": null
+        },
+        "HelmetDetails": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh BuildHelmetMesh(int Id, bool bUseFullArmourHelmets, out HelmetMetaData HelmetDetails)"
+    },
+    "CalculateScarIndex": {
+      "documentation": null,
+      "signature_members": {
+        "bHideScars": {
+          "type": null,
+          "documentation": null
+        },
+        "CharmSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "IntimidateSkill": {
+          "type": null,
+          "documentation": null
+        },
+        "ReputationSkill": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int CalculateScarIndex(bool bHideScars, int CharmSkill, int IntimidateSkill, int ReputationSkill)"
+    },
+    "CanMergeHeayvWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "ChkWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanMergeHeayvWeapon(SFXWeapon ChkWeapon, SFXWeapon NewWeapon)"
+    },
+    "ClearAsyncAssetLoader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAsyncAssetLoader()"
+    },
+    "ConstructedPermanentGECategoryName": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name ConstructedPermanentGECategoryName(Name UniqueName)"
+    },
+    "CreateTemporaryCustomizationInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXCustomizationInstance",
+      "signature": "SFXCustomizationInstance CreateTemporaryCustomizationInstance()"
+    },
+    "CreateWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClass": {
+          "type": null,
+          "documentation": null
+        },
+        "bEquipWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateWeapon(Class<SFXWeapon> WeaponClass, optional bool bEquipWeapon)"
+    },
+    "CreateWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "ChkLoadout": {
+          "type": null,
+          "documentation": null
+        },
+        "bForceFromEngineLoadout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateWeapons(SFXLoadoutData ChkLoadout, optional bool bForceFromEngineLoadout)"
+    },
+    "EnqueueExistingMorphHead": {
+      "documentation": null,
+      "signature_members": {
+        "InMorphHead": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnqueueExistingMorphHead(BioMorphFace InMorphHead)"
+    },
+    "EnqueueIconicHeadForLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnqueueIconicHeadForLoad()"
+    },
+    "EnqueueMorphHeadForLoad": {
+      "documentation": null,
+      "signature_members": {
+        "InRecord": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnqueueMorphHeadForLoad(MorphHeadSaveRecord InRecord)"
+    },
+    "EnsureMIC": {
+      "documentation": null,
+      "signature_members": {
+        "MeshCmpt": {
+          "type": null,
+          "documentation": null
+        },
+        "MatIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInstanceConstant",
+      "signature": "MaterialInstanceConstant EnsureMIC(SkeletalMeshComponent MeshCmpt, optional int MatIdx)"
+    },
+    "EquipWeaponToPlayerAndSquad": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EquipWeaponToPlayerAndSquad(Class<SFXWeapon> NewWeaponClass)"
+    },
+    "FindOverrideHelmet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int FindOverrideHelmet()"
+    },
+    "FindPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerCustomActionBase",
+      "signature": "SFXPowerCustomActionBase FindPower(Name nmPowerClass)"
+    },
+    "GetApperanceAssetsForAsyncLoad": {
+      "documentation": null,
+      "signature_members": {
+        "Assets": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetApperanceAssetsForAsyncLoad(out array<SFXAsyncAssetRequest> Assets)"
+    },
+    "GetArmorEffectDescription": {
+      "documentation": null,
+      "signature_members": {
+        "ArmorEffects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetArmorEffectDescription(array<string> ArmorEffects)"
+    },
+    "GetBaseHelmetElement": {
+      "documentation": null,
+      "signature_members": {
+        "OutElement": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBaseHelmetElement(out CustomizableElement OutElement)"
+    },
+    "GetBaseHelmetID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBaseHelmetID()"
+    },
+    "GetCharmSkill": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCharmSkill()"
+    },
+    "GetCurrentScarStruct": {
+      "documentation": null,
+      "signature_members": {
+        "bHideScars": {
+          "type": null,
+          "documentation": null
+        },
+        "Scar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCurrentScarStruct(bool bHideScars, out ScarInfo Scar)"
+    },
+    "GetFullName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetFullName()"
+    },
+    "GetGameEffects": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Meshes": {
+          "type": null,
+          "documentation": null
+        },
+        "Effects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetGameEffects(int Id, out array<CustomizableElement> Meshes, out array<Class<SFXGameEffect>> Effects)"
+    },
+    "GetHelmetApperanceAssetsForAsyncLoad": {
+      "documentation": null,
+      "signature_members": {
+        "Assets": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHelmetApperanceAssetsForAsyncLoad(out array<SFXAsyncAssetRequest> Assets)"
+    },
+    "GetHelmetGameEffects": {
+      "documentation": null,
+      "signature_members": {
+        "Effects": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHelmetGameEffects(out array<Class<SFXGameEffect>> Effects)"
+    },
+    "GetHelmetMeshAssetRequest": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Part": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayToSearch": {
+          "type": null,
+          "documentation": null
+        },
+        "Element": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXAsyncAssetRequest",
+      "signature": "SFXAsyncAssetRequest GetHelmetMeshAssetRequest(int Id, EHelmetPart Part, const out array<CustomizableElement> ArrayToSearch, out CustomizableElement Element)"
+    },
+    "GetHelmetMeshAssetRequestByElement": {
+      "documentation": null,
+      "signature_members": {
+        "Element": {
+          "type": null,
+          "documentation": null
+        },
+        "Part": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXAsyncAssetRequest",
+      "signature": "SFXAsyncAssetRequest GetHelmetMeshAssetRequestByElement(out CustomizableElement Element, EHelmetPart Part)"
+    },
+    "GetIntimidateSkill": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetIntimidateSkill()"
+    },
+    "GetKnockbackReactions": {
+      "documentation": null,
+      "signature_members": {
+        "Angle": {
+          "type": null,
+          "documentation": null
+        },
+        "SideAngle": {
+          "type": null,
+          "documentation": null
+        },
+        "OutActions": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetKnockbackReactions(float Angle, float SideAngle, out array<EAICustomAction> OutActions)"
+    },
+    "GetLastNameStringRef": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetLastNameStringRef()"
+    },
+    "GetMeshAssetRequest": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Meshes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXAsyncAssetRequest",
+      "signature": "SFXAsyncAssetRequest GetMeshAssetRequest(int Id, out array<CustomizableElement> Meshes)"
+    },
+    "GetParagonRenegadePercentage": {
+      "documentation": null,
+      "signature_members": {
+        "ParagonPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "RenegadePercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetParagonRenegadePercentage(out float ParagonPercent, out float RenegadePercent)"
+    },
+    "GetReputationSkill": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetReputationSkill()"
+    },
+    "GetScaledLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetScaledLevel()"
+    },
+    "GetUIAppearanceTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetUIAppearanceTag()"
+    },
+    "GetWeaponEncumbranceCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "Encumbrance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetWeaponEncumbranceCooldown(float Encumbrance)"
+    },
+    "GiveWeaponToPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "bDeleteTossedWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveWeaponToPlayer(SFXWeapon NewWeapon, optional bool bDeleteTossedWeapons)"
+    },
+    "HasPendingMorphData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasPendingMorphData()"
+    },
+    "InitDefaultHelmetState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitDefaultHelmetState()"
+    },
+    "InitializePlayerVoc": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePlayerVoc()"
+    },
+    "InternalGetParagonRenegadePercentage": {
+      "documentation": null,
+      "signature_members": {
+        "Paragon": {
+          "type": null,
+          "documentation": null
+        },
+        "ParagonOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "Renegade": {
+          "type": null,
+          "documentation": null
+        },
+        "Reputation": {
+          "type": null,
+          "documentation": null
+        },
+        "ParagonPercent": {
+          "type": null,
+          "documentation": null
+        },
+        "RenegadePercent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalGetParagonRenegadePercentage(float Paragon, float ParagonOffset, float Renegade, float Reputation, out float ParagonPercent, out float RenegadePercent)"
+    },
+    "IsUpdatingAppearanceAsync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUpdatingAppearanceAsync()"
+    },
+    "KillAndFreeze": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": null,
+          "documentation": null
+        },
+        "dmgType": {
+          "type": null,
+          "documentation": null
+        },
+        "Cause": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KillAndFreeze(Controller Killer, Class<DamageType> dmgType, string Cause)"
+    },
+    "LoadCharacterClassData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadCharacterClassData()"
+    },
+    "OnAsyncAppearanceTexturesPreloaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAsyncAppearanceTexturesPreloaded()"
+    },
+    "OnAsyncAssetsLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAsyncAssetsLoaded()"
+    },
+    "PlayCoverPresentation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayCoverPresentation()"
+    },
+    "PlayerCoverAcquired": {
+      "documentation": null,
+      "signature_members": {
+        "CovInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "SlotIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerCoverAcquired(CovPosInfo CovInfo, byte SlotIdx)"
+    },
+    "PrestreamTexturesRequiredForAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrestreamTexturesRequiredForAppearance()"
+    },
+    "RemoveDetachOnDestroyObject": {
+      "documentation": null,
+      "signature_members": {
+        "MeshToRemove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveDetachOnDestroyObject(SkeletalMeshComponent MeshToRemove)"
+    },
+    "RemoveWeaponEncumbranceBonus": {
+      "documentation": null,
+      "signature_members": {
+        "Bonus": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveWeaponEncumbranceBonus(SFXGameEffect Bonus)"
+    },
+    "RequiresFullHelmet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequiresFullHelmet()"
+    },
+    "ResetPendingMorphData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPendingMorphData()"
+    },
+    "ResetSkeletalMesh": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "InMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetSkeletalMesh(SkeletalMeshComponent InComponent, SkeletalMesh InMesh)"
+    },
+    "RestoreDefaultHelmetState": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RestoreDefaultHelmetState(optional bool bForceUpdate)"
+    },
+    "SetFaceFXAsset": {
+      "documentation": null,
+      "signature_members": {
+        "dynamicLoadPath": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFaceFXAsset(string dynamicLoadPath)"
+    },
+    "ShouldShowHUDGrenadeCounter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldShowHUDGrenadeCounter()"
+    },
+    "ShouldTossWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "ChkWeapon": {
+          "type": null,
+          "documentation": null
+        },
+        "NewWeapon": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldTossWeapon(SFXWeapon ChkWeapon, SFXWeapon NewWeapon)"
+    },
+    "SPCamperBuster": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SPCamperBuster()"
+    },
+    "SwitchToBackupWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SwitchToBackupWeapon()"
+    },
+    "TransferModsToNewWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousWeaponNames": {
+          "type": null,
+          "documentation": null
+        },
+        "NewWeaponClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TransferModsToNewWeapon(array<Name> PreviousWeaponNames, Name NewWeaponClass)"
+    },
+    "UpdateAppearanceAsync": {
+      "documentation": null,
+      "signature_members": {
+        "CompletedDelegate": {
+          "type": null,
+          "documentation": null
+        },
+        "bBlockForAssetLoad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAppearanceAsync(optional delegate<AsyncUpdating_OnCompleted> CompletedDelegate, optional bool bBlockForAssetLoad)"
+    },
+    "UpdateBodyAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBodyAppearance()"
+    },
+    "UpdateGameEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGameEffects()"
+    },
+    "UpdateHairAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateHairAppearance()"
+    },
+    "UpdateHeadAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateHeadAppearance()"
+    },
+    "UpdateHelmetComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateHelmetComponent()"
+    },
+    "UpdateMappedPowerDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMappedPowerDisplay()"
+    },
+    "UpdateMaterialParameters": {
+      "documentation": null,
+      "signature_members": {
+        "InSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "InTargetActor": {
+          "type": null,
+          "documentation": null
+        },
+        "InHeadMesh": {
+          "type": null,
+          "documentation": null
+        },
+        "bHideScars": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMaterialParameters(SFXCustomizationInstance InSettings, Actor InTargetActor, SkeletalMeshComponent InHeadMesh, bool bHideScars)"
+    },
+    "UpdateMeshComponent": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "InMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMeshComponent(SkeletalMeshComponent InComponent, SkeletalMesh InMesh)"
+    },
+    "UpdateParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateParameters()"
+    },
+    "UpdatePlayerLoadoutInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlayerLoadoutInfo()"
+    },
+    "UpdatePrimaryAndSecondaryWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeaponName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePrimaryAndSecondaryWeapons(optional Name NewWeaponName)"
+    },
+    "UpdateWeaponEncumbrance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateWeaponEncumbrance()"
+    },
+    "UpdateWeaponVisibility_DEPRECATED": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateWeaponVisibility_DEPRECATED()"
+    },
+    "UseReviveConsumablePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UseReviveConsumablePower()"
+    },
+    "ValidateAppearanceIDs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ValidateAppearanceIDs()"
+    }
+  },
+  "states": {
+    "Downed": {
+      "functions": {
+        "OnEnterRagdoll": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "Died": {
+          "documentation": null,
+          "signature_members": {
+            "Killer": {
+              "type": null,
+              "documentation": null
+            },
+            "DamageType": {
+              "type": null,
+              "documentation": null
+            },
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "TakeDamage": {
+          "documentation": null,
+          "signature_members": {
+            "DamageAmount": {
+              "type": null,
+              "documentation": null
+            },
+            "EventInstigator": {
+              "type": null,
+              "documentation": null
+            },
+            "HitLocation": {
+              "type": null,
+              "documentation": null
+            },
+            "Momentum": {
+              "type": null,
+              "documentation": null
+            },
+            "DamageType": {
+              "type": null,
+              "documentation": null
+            },
+            "HitInfo": {
+              "type": null,
+              "documentation": null
+            },
+            "DamageCauser": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BreathTimer": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Ragdoll": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Dying": {
+      "functions": {
+        "Timer": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

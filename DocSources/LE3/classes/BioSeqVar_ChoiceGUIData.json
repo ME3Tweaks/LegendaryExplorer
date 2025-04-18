@@ -1,0 +1,13 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_ChoiceData": {
+      "type": "SFXGameChoiceGUIData",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

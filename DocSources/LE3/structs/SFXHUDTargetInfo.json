@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "sName": {
+      "type": null,
+      "documentation": null
+    },
+    "sStatus": {
+      "type": null,
+      "documentation": null
+    },
+    "Resistances": {
+      "type": null,
+      "documentation": null
+    },
+    "nStatusFlags": {
+      "type": null,
+      "documentation": null
+    },
+    "bInteractive": {
+      "type": null,
+      "documentation": null
+    },
+    "bHostile": {
+      "type": null,
+      "documentation": null
+    },
+    "bInRange": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

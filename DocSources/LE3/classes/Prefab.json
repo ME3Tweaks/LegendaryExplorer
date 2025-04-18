@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "PrefabArchetypes": {
+      "type": "Object",
+      "documentation": null
+    },
+    "PrefabSequence": {
+      "type": "PrefabSequence",
+      "documentation": null
+    },
+    "PrefabVersion": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

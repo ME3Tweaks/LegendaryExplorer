@@ -1,0 +1,145 @@
+{
+  "parent": "SFXCustomAction_ProceduralMoveBase",
+  "package": "SFXGame",
+  "variables": {
+    "MyMantleInfo": {
+      "type": "MantleInfo",
+      "documentation": null
+    },
+    "PlaceholderCylinder": {
+      "type": "SFXReachSpecPlaceholderCylinder",
+      "documentation": null
+    },
+    "PlaceholderCylinder2": {
+      "type": "SFXReachSpecPlaceholderCylinder",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayEndAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayEndAnimation()"
+    },
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "AdaptJumpToPathing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdaptJumpToPathing()"
+    },
+    "AdjustLoopPlayRate": {
+      "documentation": null,
+      "signature_members": {
+        "FallDuration": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustLoopPlayRate(float FallDuration)"
+    },
+    "BodyStanceAnimEndNotification": {
+      "documentation": null,
+      "signature_members": {
+        "SeqNode": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayedTime": {
+          "type": null,
+          "documentation": null
+        },
+        "ExcessTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BodyStanceAnimEndNotification(AnimNodeSequence SeqNode, float PlayedTime, float ExcessTime)"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "InternalCanDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "SyncPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InternalCanDoCustomAction(BioPawn SyncPawn, bool bForced)"
+    },
+    "PlayLoopAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayLoopAnimation()"
+    },
+    "PlayStartAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayStartAnimation()"
+    },
+    "PreAlignPawnLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreAlignPawnLocation()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "ServerStartCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "NewAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Sync": {
+          "type": null,
+          "documentation": null
+        },
+        "NewPowerAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerStartCustomAction(int NewAction, optional BioPawn Sync, optional int NewPowerAction)"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

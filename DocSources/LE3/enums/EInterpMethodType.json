@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "IMT_UseFixedTangentEvalAndNewAutoTangents": {
+      "value": 0,
+      "documentation": null
+    },
+    "IMT_UseFixedTangentEval": {
+      "value": 1,
+      "documentation": null
+    },
+    "IMT_UseBrokenTangentEval": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

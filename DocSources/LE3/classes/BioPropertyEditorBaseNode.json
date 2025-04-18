@@ -1,0 +1,77 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sNodeDisplayName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_aChildren": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_aTraversedStack": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_sParentGenName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_oTop": {
+      "type": "BioInGamePropertyEditor",
+      "documentation": null
+    },
+    "m_oParent": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null
+    },
+    "m_nCurrentlySelectedChild": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nScrollBoxFirstIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nScrollBoxSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_colour": {
+      "type": "Color",
+      "documentation": null
+    },
+    "m_nGeneration": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "getColour": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color getColour()"
+    },
+    "getDisplayText": {
+      "documentation": null,
+      "signature_members": {
+        "selectable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string getDisplayText(bool selectable)"
+    },
+    "GetSelectablesParent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPropertyEditorBaseNode",
+      "signature": "BioPropertyEditorBaseNode GetSelectablesParent()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

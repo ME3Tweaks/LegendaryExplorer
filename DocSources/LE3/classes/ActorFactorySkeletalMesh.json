@@ -1,0 +1,21 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "SkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null
+    },
+    "AnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "AnimSequenceName": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

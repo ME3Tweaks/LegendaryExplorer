@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ADJUST_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ADJUST_Normal": {
+      "value": 1,
+      "documentation": null
+    },
+    "ADJUST_Justified": {
+      "value": 2,
+      "documentation": null
+    },
+    "ADJUST_Bound": {
+      "value": 3,
+      "documentation": null
+    },
+    "ADJUST_Stretch": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

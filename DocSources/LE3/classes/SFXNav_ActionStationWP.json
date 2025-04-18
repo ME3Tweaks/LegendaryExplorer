@@ -1,0 +1,20 @@
+{
+  "parent": "SFXNav_WayPoint",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnPawnReachedWayPoint": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnPawnReachedWayPoint(Pawn oPawn)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

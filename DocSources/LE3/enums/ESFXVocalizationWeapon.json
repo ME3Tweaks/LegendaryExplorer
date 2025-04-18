@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SFXVocalizationWeapon_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXVocalizationWeapon_Pistol": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXVocalizationWeapon_SMG": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXVocalizationWeapon_AssaultRifle": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXVocalizationWeapon_Shotgun": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXVocalizationWeapon_SniperRifle": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXVocalizationWeapon_HeavyWeapon": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

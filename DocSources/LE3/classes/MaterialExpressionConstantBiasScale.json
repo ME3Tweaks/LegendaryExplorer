@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Bias": {
+      "type": "float",
+      "documentation": null
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

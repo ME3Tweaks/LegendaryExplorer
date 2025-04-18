@@ -1,0 +1,37 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "AllowTransitionTo": {
+      "documentation": null,
+      "signature_members": {
+        "AttemptCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowTransitionTo(Class<GameAICommand> AttemptCommand)"
+    },
+    "CanInterruptCurrentCommand": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanInterruptCurrentCommand()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    }
+  },
+  "states": {
+    "Fallen": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

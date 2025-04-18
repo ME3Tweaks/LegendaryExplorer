@@ -1,0 +1,33 @@
+{
+  "parent": "WwiseFile",
+  "package": "WwiseAudio",
+  "variables": {
+    "Children": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Bundle": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Parent": {
+      "type": "WwiseBank",
+      "documentation": null
+    },
+    "IsLocalised": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsLoaded": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GenerateDefinition": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

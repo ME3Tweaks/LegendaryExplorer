@@ -1,0 +1,1111 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_sMaleName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_sFemaleName": {
+      "type": "string",
+      "documentation": null
+    },
+    "sImportedFaceCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "sCustomFaceCode": {
+      "type": "string",
+      "documentation": null
+    },
+    "lstClassAnimSetRefs": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "lstCharacterClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "lstSpawnableClasses": {
+      "type": "Class",
+      "documentation": null
+    },
+    "BonusTalents": {
+      "type": "BonusTalentData",
+      "documentation": null
+    },
+    "UnlockedBonusTalents": {
+      "type": "BonusTalentData",
+      "documentation": null
+    },
+    "NewGameStartingCodexEntries": {
+      "type": "int",
+      "documentation": null
+    },
+    "MalePregeneratedHeadCodes": {
+      "type": "string",
+      "documentation": null
+    },
+    "FemalePregeneratedHeadCodes": {
+      "type": "string",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "lstTemplates": {
+      "type": "TemplateGenderPair",
+      "documentation": null
+    },
+    "m_nmAllianceComputerPleaseLogin": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmClassAnimSet": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MaleDataSource": {
+      "type": "SFXMorphFaceFrontEndDataSource",
+      "documentation": null
+    },
+    "FemaleDataSource": {
+      "type": "SFXMorphFaceFrontEndDataSource",
+      "documentation": null
+    },
+    "CE_SchematicEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "SchematicAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "oKeyboard": {
+      "type": "SFXGUIHelper_ConsoleKeyboard",
+      "documentation": null
+    },
+    "CurrentMorphFace": {
+      "type": "BioMorphFace",
+      "documentation": null
+    },
+    "m_oBioMorphFrontEnd": {
+      "type": "BioMorphFaceFrontEnd",
+      "documentation": null
+    },
+    "fLookAtUpDownValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "fLookAtLeftRightValue": {
+      "type": "float",
+      "documentation": null
+    },
+    "srCustomMaleName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srCustomFemaleName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewCharConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewCharCancel": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNewCharQuestion": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srFacialCategoryDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSetName": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSetCode": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srFailedToFindFaceCode": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_nDefaultOrigin": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDefaultNotoriety": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nDefaultClass": {
+      "type": "int",
+      "documentation": null
+    },
+    "srNameTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nMaxNameLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "srCodeTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "nMaxCodeLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nInfoScrollSpeed": {
+      "type": "int",
+      "documentation": null
+    },
+    "NoSaveDevice": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmSelectDevice": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelSelectDevice": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CurrentPregeneratedHeadIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "ImportedCharmSkill": {
+      "type": "int",
+      "documentation": null
+    },
+    "ImportedIntimidateSkill": {
+      "type": "int",
+      "documentation": null
+    },
+    "CurrentScarIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "bLookAtLeftRightNulling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLookAtUpDownNulling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bZoomedInOnFace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOpenedFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSpecialTriggerDeviceSelection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipCharacterCreation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bXboxStorageDeviceSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMaleSelected": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bStopScroll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AssumeUIBlocking": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCustomShepard": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bValidateImportedHead": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ImportedCosmeticSurgery": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_ePlotChoice": {
+      "type": "EPlotChoice",
+      "documentation": null
+    },
+    "m_nDataOrigin": {
+      "type": "EDataOrigin",
+      "documentation": null
+    },
+    "m_nCurrentTemplate": {
+      "type": "BioNewCharacterTemplates",
+      "documentation": null
+    },
+    "m_nLastInitializedTemplate": {
+      "type": "BioNewCharacterTemplates",
+      "documentation": null
+    },
+    "CurrentLookAtTarget": {
+      "type": "NewCharacterLookAtTarget",
+      "documentation": null
+    },
+    "NextLookAtTarget": {
+      "type": "NewCharacterLookAtTarget",
+      "documentation": null
+    },
+    "SelectedGameType": {
+      "type": "StoryGameType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearEffects()"
+    },
+    "GenderTemplatePawn": {
+      "documentation": null,
+      "signature_members": {
+        "BNCT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn GenderTemplatePawn(BioNewCharacterTemplates BNCT)"
+    },
+    "GetCharacterClassByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<Object> GetCharacterClassByName(Name nmClass)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": null,
+          "documentation": null
+        },
+        "lstArguments": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleSliderChange": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        },
+        "nSlider": {
+          "type": null,
+          "documentation": null
+        },
+        "nValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSliderChange(int nCategory, int nSlider, int nValue)"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    },
+    "OnDeviceSelectionComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasBlocked": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeviceSelectionComplete(bool bWasSuccessful, bool bWasBlocked)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "ProcessExternalStates": {
+      "documentation": null,
+      "signature_members": {
+        "BWI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessExternalStates(BioWorldInfo BWI)"
+    },
+    "Setup3DModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Setup3DModel()"
+    },
+    "TriggerClassOverlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerClassOverlay()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "Update3DModelByClass": {
+      "documentation": null,
+      "signature_members": {
+        "nmClass": {
+          "type": null,
+          "documentation": null
+        },
+        "pTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "nTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "bUpdate": {
+          "type": null,
+          "documentation": null
+        },
+        "bForce": {
+          "type": null,
+          "documentation": null
+        },
+        "bAttachVFXandUpdatePose": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update3DModelByClass(Name nmClass, BioPawn pTemplate, BioNewCharacterTemplates nTemplate, bool bUpdate, optional bool bForce, optional bool bAttachVFXandUpdatePose)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AddKismetNamedObject": {
+      "documentation": null,
+      "signature_members": {
+        "KismetVariableName": {
+          "type": null,
+          "documentation": null
+        },
+        "ObjectValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddKismetNamedObject(Name KismetVariableName, Object ObjectValue)"
+    },
+    "ApplyManualScar": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyManualScar(Object InData)"
+    },
+    "ApplyNewCode": {
+      "documentation": null,
+      "signature_members": {
+        "sInputCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyNewCode(string sInputCode)"
+    },
+    "AS_ConfirmCharacterCreationEnd": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AS_ConfirmCharacterCreationEnd(bool bAPressed)"
+    },
+    "AS_InitializeScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AS_InitializeScreen()"
+    },
+    "CalculateCurrentScar": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CalculateCurrentScar()"
+    },
+    "Callback_NoDevice": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_NoDevice(bool bAPressed, int Context)"
+    },
+    "ChooseStorageDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChooseStorageDevice()"
+    },
+    "ChooseStorageDevice_Fallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChooseStorageDevice_Fallback()"
+    },
+    "ClearCurrentCareer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentCareer()"
+    },
+    "ClearModels": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearModels()"
+    },
+    "ConfirmCharacterCreationEnd": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmCharacterCreationEnd(bool bAPressed, int nContext)"
+    },
+    "ConfirmComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmComplete()"
+    },
+    "ConfirmDeviceSelection_Fallback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmDeviceSelection_Fallback(bool bAPressed, int nContext)"
+    },
+    "DisableSchematicAnim": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableSchematicAnim(Object InData)"
+    },
+    "DoCategoryReset": {
+      "documentation": null,
+      "signature_members": {
+        "nCategory": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCategoryReset(int nCategory)"
+    },
+    "EnableSchematicAnim": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableSchematicAnim(Object InData)"
+    },
+    "EnsureMICs": {
+      "documentation": null,
+      "signature_members": {
+        "InActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EnsureMICs(Actor InActor)"
+    },
+    "FinalCommit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinalCommit()"
+    },
+    "GetAllUnlockedBonusTalentInfo": {
+      "documentation": null,
+      "signature_members": {
+        "aUnlockedBonusTalentInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllUnlockedBonusTalentInfo(out array<BonusTalentData> aUnlockedBonusTalentInfo)"
+    },
+    "GetBestBonusTalentID": {
+      "documentation": null,
+      "signature_members": {
+        "ClassLabel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetBestBonusTalentID(Name ClassLabel)"
+    },
+    "GetGender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ECreateCharacterGUIGender",
+      "signature": "ECreateCharacterGUIGender GetGender()"
+    },
+    "GetSpawnableClassIndexFromClass": {
+      "documentation": null,
+      "signature_members": {
+        "aClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSpawnableClassIndexFromClass(Class<Object> aClass)"
+    },
+    "HandleLookAtLeftRight": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtLeftRight(float fValue)"
+    },
+    "HandleLookAtUpDown": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtUpDown(float fValue)"
+    },
+    "HandleRotate": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleRotate(float fValue)"
+    },
+    "InsertDefaultPregeneratedHead": {
+      "documentation": null,
+      "signature_members": {
+        "InCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InsertDefaultPregeneratedHead(string InCode)"
+    },
+    "KeyboardCodeEntryComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bOK": {
+          "type": null,
+          "documentation": null
+        },
+        "sCode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KeyboardCodeEntryComplete(bool bOK, const string sCode)"
+    },
+    "KeyboardNameEntryComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bOK": {
+          "type": null,
+          "documentation": null
+        },
+        "sName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "KeyboardNameEntryComplete(bool bOK, const string sName)"
+    },
+    "OnCreatePlaceholderCareer": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreatePlaceholderCareer(SFXSaveGameCommandEventArgs Args)"
+    },
+    "OnDeviceSelectionComplete_Fallback": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": null,
+          "documentation": null
+        },
+        "bWasBlocked": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeviceSelectionComplete_Fallback(bool bWasSuccessful, bool bWasBlocked)"
+    },
+    "OnUIUnblock": {
+      "documentation": null,
+      "signature_members": {
+        "Unblocked": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUIUnblock(bool Unblocked)"
+    },
+    "PopulateCustomFaceList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateCustomFaceList()"
+    },
+    "RefitBonusTalent": {
+      "documentation": null,
+      "signature_members": {
+        "BonusTalent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RefitBonusTalent(Name BonusTalent)"
+    },
+    "ResetLookAt": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetLookAt()"
+    },
+    "ScrollText": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollText(float fValue)"
+    },
+    "SelectNextPregeneratedHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectNextPregeneratedHead()"
+    },
+    "SelectPreviousPregeneratedHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectPreviousPregeneratedHead()"
+    },
+    "SetBackgroundMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Material": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBackgroundMaterial(MaterialInterface Material)"
+    },
+    "SetClassClientEffects": {
+      "documentation": null,
+      "signature_members": {
+        "CE_FullBiotic": {
+          "type": null,
+          "documentation": null
+        },
+        "CE_HalfBiotic": {
+          "type": null,
+          "documentation": null
+        },
+        "CE_OmniTool": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClassClientEffects(RvrClientEffectInterface CE_FullBiotic, RvrClientEffectInterface CE_HalfBiotic, RvrClientEffectInterface CE_OmniTool)"
+    },
+    "SetCustomModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetCustomModel()"
+    },
+    "SetCustomName": {
+      "documentation": null,
+      "signature_members": {
+        "sMaleName": {
+          "type": null,
+          "documentation": null
+        },
+        "sFemaleName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCustomName(string sMaleName, string sFemaleName)"
+    },
+    "SetGameTypeSettings": {
+      "documentation": null,
+      "signature_members": {
+        "GameType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameTypeSettings(int GameType)"
+    },
+    "SetMaleSelected": {
+      "documentation": null,
+      "signature_members": {
+        "bSelected": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaleSelected(bool bSelected)"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "SetPlotChoices": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPlotChoices()"
+    },
+    "SetSchematicResources": {
+      "documentation": null,
+      "signature_members": {
+        "CE_NewSchematicEffect": {
+          "type": null,
+          "documentation": null
+        },
+        "NewSchematicAnimSet": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSchematicResources(RvrClientEffectInterface CE_NewSchematicEffect, AnimSet NewSchematicAnimSet)"
+    },
+    "SetSliderPositions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetSliderPositions()"
+    },
+    "SetSquadMemberPlotChoice": {
+      "documentation": null,
+      "signature_members": {
+        "nChoice": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSquadMemberPlotChoice(int nChoice)"
+    },
+    "SetUIPawnCasual": {
+      "documentation": null,
+      "signature_members": {
+        "bCasual": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUIPawnCasual(bool bCasual)"
+    },
+    "SetupSummary": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupSummary()"
+    },
+    "SpawnPawns": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnPawns()"
+    },
+    "StartGameWithCustomCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "playerSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartGameWithCustomCharacter(const out array<string> playerSettings)"
+    },
+    "StartGameWithIconicCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "lstSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartGameWithIconicCharacter(const out array<string> lstSettings)"
+    },
+    "Update3DModel": {
+      "documentation": null,
+      "signature_members": {
+        "nTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "SwapoutPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update3DModel(BioNewCharacterTemplates nTemplate, BioPawn SwapoutPawn)"
+    },
+    "Update3DModelState": {
+      "documentation": null,
+      "signature_members": {
+        "nTemplate": {
+          "type": null,
+          "documentation": null
+        },
+        "PrevPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update3DModelState(BioNewCharacterTemplates nTemplate, BioPawn PrevPawn)"
+    },
+    "UpdateBonusTalentList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBonusTalentList()"
+    },
+    "UpdateCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCode()"
+    },
+    "UpdateCurrentMorphAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCurrentMorphAppearance()"
+    },
+    "UpdateCustomClassChoice": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerClass": {
+          "type": null,
+          "documentation": null
+        },
+        "Row": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCustomClassChoice(Class<SFXCharacterClass> PlayerClass, int Row)"
+    },
+    "UpdateCustomClassList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCustomClassList()"
+    },
+    "UpdateLookAtTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateLookAtTarget()"
+    },
+    "UpdateUIWorldMorphFace": {
+      "documentation": null,
+      "signature_members": {
+        "InData": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateUIWorldMorphFace(Object InData)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

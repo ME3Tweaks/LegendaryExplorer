@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "fRangeLowerRatio": {
+      "type": null,
+      "documentation": null
+    },
+    "fRangeUpperRatio": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

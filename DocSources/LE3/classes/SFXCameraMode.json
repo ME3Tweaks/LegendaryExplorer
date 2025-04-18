@@ -1,0 +1,356 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ViewTarget": {
+      "type": "TViewTarget",
+      "documentation": null
+    },
+    "m_pov": {
+      "type": "TPOV",
+      "documentation": null
+    },
+    "Offset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HookOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastHookPos": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "CameraTargetDir": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "HookName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "CameraName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Input": {
+      "type": "SFXCameraInput",
+      "documentation": null
+    },
+    "LastCameraCollisionActor": {
+      "type": "Name",
+      "documentation": null
+    },
+    "FOV": {
+      "type": "float",
+      "documentation": null
+    },
+    "AspectRatio": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeToRecenter": {
+      "type": "float",
+      "documentation": null
+    },
+    "RotationSpeedLimit": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "RecenterStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bIsCameraShakeEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCollisionEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInstantTransition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bConstrainAspectRatio": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecenterCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFirstPerson": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCameraRubberBand": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowSpectate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecenterCameraNew": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoCancelCameraRecentering": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRecenterCancelled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AimAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AimAtPoint(Vector V)"
+    },
+    "CalculateOffsetHook": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector CalculateOffsetHook(optional float Distance)"
+    },
+    "ComputeClipPlaneRect": {
+      "documentation": null,
+      "signature_members": {
+        "fFov": {
+          "type": null,
+          "documentation": null
+        },
+        "fNearClipPlane": {
+          "type": null,
+          "documentation": null
+        },
+        "fWidth": {
+          "type": null,
+          "documentation": null
+        },
+        "fHeight": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeClipPlaneRect(float fFov, float fNearClipPlane, out float fWidth, out float fHeight)"
+    },
+    "DoCameraCollisionNative": {
+      "documentation": null,
+      "signature_members": {
+        "CollisionHook": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCameraCollisionNative(Vector CollisionHook, out Vector V, out Rotator R, Actor A)"
+    },
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {
+        "OutLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorCameraHook(out Vector OutLocation)"
+    },
+    "GetCameraHook": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraHook()"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "GetViewTargetAsController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Controller",
+      "signature": "Controller GetViewTargetAsController()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioCheatManager M)"
+    },
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        },
+        "OutViewRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "OutDeltaRot": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator OutViewRotation, out Rotator OutDeltaRot)"
+    },
+    "CheckLoop": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": null,
+          "documentation": null
+        },
+        "RecurseLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLoop(SFXCameraMode M, int RecurseLevel)"
+    },
+    "DoCameraCollision": {
+      "documentation": null,
+      "signature_members": {
+        "CamPosition": {
+          "type": null,
+          "documentation": null
+        },
+        "CamRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "Owner": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCameraCollision(out Vector CamPosition, out Rotator CamRotation, Actor Owner)"
+    },
+    "DoSniperCameraCollision": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DoSniperCameraCollision(out Vector V, out Rotator R, Actor A)"
+    },
+    "GetCurrentShake": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetCurrentShake()"
+    },
+    "GetViewTargetAsPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn GetViewTargetAsPawn()"
+    },
+    "IsCollisionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCollisionEnabled()"
+    },
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

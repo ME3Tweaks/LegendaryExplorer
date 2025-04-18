@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "INTERRUPTION_RENEGADE": {
+      "value": 0,
+      "documentation": null
+    },
+    "INTERRUPTION_PARAGON": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

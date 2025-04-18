@@ -1,0 +1,109 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_focusConfig": {
+      "type": "BioZoomFocusConfig",
+      "documentation": null
+    },
+    "m_magnificationConfig": {
+      "type": "BioZoomMagnificationConfig",
+      "documentation": null
+    },
+    "m_nCurrentMagnificationLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fFOVTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFOVRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFOVMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFOVMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCamStickScalarTarget": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCamStickScalarRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fCamStickScalarMin": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFocusDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fFocusDistanceTarget": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Focus": {
+      "documentation": null,
+      "signature_members": {
+        "fDistance": {
+          "type": null,
+          "documentation": null
+        },
+        "pWorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Focus(float fDistance, BioWorldInfo pWorldInfo)"
+    },
+    "GetCurrentMagnificationLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentMagnificationLevel()"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        },
+        "FOV": {
+          "type": null,
+          "documentation": null
+        },
+        "CamStickScalar": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta, float FOV, float CamStickScalar)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

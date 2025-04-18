@@ -1,0 +1,17 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "OutputObject": {
+      "type": "Object",
+      "documentation": null
+    },
+    "ObjectIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

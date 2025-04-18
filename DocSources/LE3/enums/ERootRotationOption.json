@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "RRO_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "RRO_Discard": {
+      "value": 1,
+      "documentation": null
+    },
+    "RRO_Extract": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

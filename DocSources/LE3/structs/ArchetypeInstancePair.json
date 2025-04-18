@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "ArchetypeBounds": {
+      "type": null,
+      "documentation": null
+    },
+    "InstanceBounds": {
+      "type": null,
+      "documentation": null
+    },
+    "WidgetArchetype": {
+      "type": null,
+      "documentation": null
+    },
+    "WidgetInstance": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

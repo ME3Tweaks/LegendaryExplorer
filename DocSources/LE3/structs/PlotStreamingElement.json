@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ChunkName": {
+      "type": null,
+      "documentation": null
+    },
+    "Conditional": {
+      "type": null,
+      "documentation": null
+    },
+    "bFallback": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

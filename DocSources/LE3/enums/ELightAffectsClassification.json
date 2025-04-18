@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "LAC_USER_SELECTED": {
+      "value": 0,
+      "documentation": null
+    },
+    "LAC_DYNAMIC_AFFECTING": {
+      "value": 1,
+      "documentation": null
+    },
+    "LAC_STATIC_AFFECTING": {
+      "value": 2,
+      "documentation": null
+    },
+    "LAC_DYNAMIC_AND_STATIC_AFFECTING": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

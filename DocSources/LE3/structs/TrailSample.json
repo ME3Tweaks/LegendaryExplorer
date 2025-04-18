@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "FirstEdgeSample": {
+      "type": null,
+      "documentation": null
+    },
+    "SecondEdgeSample": {
+      "type": null,
+      "documentation": null
+    },
+    "ControlPointSample": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

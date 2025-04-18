@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Arguments": {
+      "type": "string",
+      "documentation": null
+    },
+    "AreaName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "StartPoint": {
+      "type": "Name",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

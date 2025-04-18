@@ -1,0 +1,24 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "bRadarDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RadarType": {
+      "type": "EBioRadarType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

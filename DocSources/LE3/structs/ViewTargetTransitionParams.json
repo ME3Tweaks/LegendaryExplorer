@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "BlendTime": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendExp": {
+      "type": null,
+      "documentation": null
+    },
+    "bSkipCameraReset": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendFunction": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

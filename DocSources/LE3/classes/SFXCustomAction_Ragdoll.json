@@ -1,0 +1,137 @@
+{
+  "parent": "BioCustomAction",
+  "package": "SFXGame",
+  "variables": {
+    "impulse": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastRecoveryLocation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "HitBone": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LastRecoveryAttemptTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHeldInRagdoll": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bVelocityChange": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "StartCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartCustomAction()"
+    },
+    "CanBeInterrupted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBeInterrupted()"
+    },
+    "CanOverrideMoveWith": {
+      "documentation": null,
+      "signature_members": {
+        "OldCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "NewCustomAction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanOverrideMoveWith(int OldCustomAction, int NewCustomAction)"
+    },
+    "CheckBeginRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckBeginRecovery()"
+    },
+    "CheckEndRecovery": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckEndRecovery()"
+    },
+    "ClientDoCustomAction": {
+      "documentation": null,
+      "signature_members": {
+        "bForced": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientDoCustomAction(optional bool bForced)"
+    },
+    "OnRagdollPhysicsImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpactActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vImpactDir": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRagdollPhysicsImpact(Pawn Pawn, Actor oImpactActor, Vector vImpactDir)"
+    },
+    "PlayScream": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayScream()"
+    },
+    "RegisterRagdollVocCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterRagdollVocCallback()"
+    },
+    "Replicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Replicate()"
+    },
+    "RestartScream": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestartScream()"
+    },
+    "StopCustomAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopCustomAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

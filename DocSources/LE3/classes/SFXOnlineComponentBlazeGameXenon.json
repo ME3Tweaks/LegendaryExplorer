@@ -1,0 +1,71 @@
+{
+  "parent": "SFXOnlineComponentBlazeGame",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_Blaze::PlatformManagerXb360Listener": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "m_CallRestrictedFunctionPeriod": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_NextAllowedRestrictedFunctionCallTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_CallRestrictedFunctionMode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "PerformCallRestrictedFunction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformCallRestrictedFunction()"
+    },
+    "SetCallRestrictedFunctionMode": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCallRestrictedFunctionMode(bool bEnable)"
+    },
+    "SetPlatformPresence": {
+      "documentation": null,
+      "signature_members": {
+        "presencePrivate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlatformPresence(bool presencePrivate)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

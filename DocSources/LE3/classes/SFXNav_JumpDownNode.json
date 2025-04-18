@@ -1,0 +1,29 @@
+{
+  "parent": "SFXNav_BlockingPathNode",
+  "package": "SFXGame",
+  "variables": {
+    "JumpDownDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "TouchingCylinder": {
+      "type": "CylinderComponent",
+      "documentation": null
+    },
+    "JumpDownDistX": {
+      "type": "float",
+      "documentation": null
+    },
+    "JumpDownDistZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTopNode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

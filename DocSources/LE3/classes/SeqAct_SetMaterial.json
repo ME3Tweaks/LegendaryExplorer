@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "NewMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "MaterialIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

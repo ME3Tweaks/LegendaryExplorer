@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "RotationOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "ChildIndex": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

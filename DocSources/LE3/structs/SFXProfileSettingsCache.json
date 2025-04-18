@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "ReadDelegates": {
+      "type": null,
+      "documentation": null
+    },
+    "WriteDelegates": {
+      "type": null,
+      "documentation": null
+    },
+    "ProfileDataChangedDelegates": {
+      "type": null,
+      "documentation": null
+    },
+    "Profile": {
+      "type": null,
+      "documentation": null
+    },
+    "TrilogyProfile": {
+      "type": null,
+      "documentation": null
+    },
+    "ProfileTempNewCachedSettings": {
+      "type": null,
+      "documentation": null
+    },
+    "TrilogyProfileTempNewCachedSettings": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

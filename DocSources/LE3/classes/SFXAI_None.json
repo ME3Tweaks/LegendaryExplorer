@@ -1,0 +1,13 @@
+{
+  "parent": "SFXAI_Core",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {
+    "Idle": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

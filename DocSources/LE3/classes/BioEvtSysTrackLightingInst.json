@@ -1,0 +1,17 @@
+{
+  "parent": "SFXGameActorInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "InitialLightingData": {
+      "type": "BioConvLightingData",
+      "documentation": null
+    },
+    "ResetLightingData": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

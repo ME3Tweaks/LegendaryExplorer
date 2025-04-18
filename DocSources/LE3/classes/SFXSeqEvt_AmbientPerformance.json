@@ -1,0 +1,40 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmLinkedPerfName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmPoseSetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmPoseAnimName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmGestureSetName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_nmGestureAnimName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_eEventType": {
+      "type": "ESFXAmbPerfEventType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

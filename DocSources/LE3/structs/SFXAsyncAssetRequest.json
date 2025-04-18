@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "FullAssetPath": {
+      "type": null,
+      "documentation": null
+    },
+    "AssetClass": {
+      "type": null,
+      "documentation": null
+    },
+    "AltCookedPackageName": {
+      "type": null,
+      "documentation": null
+    },
+    "AssetReference": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,137 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Messages": {
+      "type": "OnlineFriendMessage",
+      "documentation": null
+    },
+    "SendingPlayerNameCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bIsFriendInviteCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bWasAcceptedCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "bWasDeniedCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "MessageCol": {
+      "type": "string",
+      "documentation": null
+    },
+    "LastInviteFrom": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnFriendInviteReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestingPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "RequestingNick": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendInviteReceived(byte LocalUserNum, UniqueNetId RequestingPlayer, string RequestingNick, string Message)"
+    },
+    "OnFriendMessageReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "SendingPlayer": {
+          "type": null,
+          "documentation": null
+        },
+        "SendingNick": {
+          "type": null,
+          "documentation": null
+        },
+        "Message": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendMessageReceived(byte LocalUserNum, UniqueNetId SendingPlayer, string SendingNick, string Message)"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnGameInviteReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "InviterName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameInviteReceived(byte LocalUserNum, string InviterName)"
+    },
+    "ReadMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReadMessages()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

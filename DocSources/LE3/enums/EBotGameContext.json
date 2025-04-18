@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BGC_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "BGC_Splash": {
+      "value": 1,
+      "documentation": null
+    },
+    "BGC_MainMenu": {
+      "value": 2,
+      "documentation": null
+    },
+    "BGC_LobbyCharacter": {
+      "value": 3,
+      "documentation": null
+    },
+    "BGC_LobbyMain": {
+      "value": 4,
+      "documentation": null
+    },
+    "BGC_InGame": {
+      "value": 5,
+      "documentation": null
+    },
+    "BGC_GameOver": {
+      "value": 6,
+      "documentation": null
+    },
+    "BGC_Prompt": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

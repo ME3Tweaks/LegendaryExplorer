@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "FocusedControl": {
+      "type": null,
+      "documentation": null
+    },
+    "LastFocusedControl": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

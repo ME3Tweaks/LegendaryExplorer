@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ChildNodes": {
+      "type": null,
+      "documentation": null
+    },
+    "ConnName": {
+      "type": null,
+      "documentation": null
+    },
+    "DrawY": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

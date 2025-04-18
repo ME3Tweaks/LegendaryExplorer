@@ -1,0 +1,29 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAlwaysReachable": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnCreatureReachedWayPoint": {
+      "documentation": null,
+      "signature_members": {
+        "PathFindingCreature": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnCreatureReachedWayPoint(Pawn PathFindingCreature)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

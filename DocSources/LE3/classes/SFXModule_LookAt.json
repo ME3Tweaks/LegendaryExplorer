@@ -1,0 +1,107 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_Controllers": {
+      "type": "BioActorLookAtController",
+      "documentation": null
+    },
+    "m_pTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "LookAtNoticeActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_Definition": {
+      "type": "BioLookAtDefinition",
+      "documentation": null
+    },
+    "m_nRank": {
+      "type": "int",
+      "documentation": null
+    },
+    "LookAtNoticeTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoticeDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoticeEnableDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "NoticeDisableDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReNoticeMinTime": {
+      "type": "int",
+      "documentation": null
+    },
+    "ReNoticeMaxTime": {
+      "type": "int",
+      "documentation": null
+    },
+    "bDisabling": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLookAtNotice": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableLookAtTargeting": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAutoLookAtPlayer": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ChangeTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "a_eTransition": {
+          "type": null,
+          "documentation": null
+        },
+        "nRank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeTarget(Actor Target, optional ELookAtTransitionType a_eTransition, optional int nRank)"
+    },
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "Setup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Setup()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

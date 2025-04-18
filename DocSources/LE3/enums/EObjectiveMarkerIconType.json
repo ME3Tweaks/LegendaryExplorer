@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EOMIT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EOMIT_Attack": {
+      "value": 1,
+      "documentation": null
+    },
+    "EOMIT_Supply": {
+      "value": 2,
+      "documentation": null
+    },
+    "EOMIT_Alert": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

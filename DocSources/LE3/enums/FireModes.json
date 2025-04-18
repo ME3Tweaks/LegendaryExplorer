@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "FireMode_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "FireMode_SemiAuto": {
+      "value": 1,
+      "documentation": null
+    },
+    "FireMode_FullAuto": {
+      "value": 2,
+      "documentation": null
+    },
+    "FireMode_Burst": {
+      "value": 3,
+      "documentation": null
+    },
+    "FireMode_Reload": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

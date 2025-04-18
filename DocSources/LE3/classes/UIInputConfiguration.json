@@ -1,0 +1,30 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "WidgetInputAliases": {
+      "type": "UIInputAliasClassMap",
+      "documentation": null
+    },
+    "AxisEmulationDefinitions": {
+      "type": "UIAxisEmulationDefinition",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "LoadInputAliasClasses": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadInputAliasClasses()"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

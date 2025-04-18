@@ -1,0 +1,102 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "DeathCam": {
+      "type": "BioCameraBehaviorFlourish",
+      "documentation": null
+    },
+    "ProlongLifeBoost": {
+      "type": "float",
+      "documentation": null
+    },
+    "ProlongLifeDecay": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartBoostTime": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "ClearHints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearHints()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": null,
+          "documentation": null
+        },
+        "PreserveTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "TransitionTime": {
+          "type": null,
+          "documentation": null
+        },
+        "Transition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "GetTotalPossibleBoost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTotalPossibleBoost()"
+    },
+    "ProlongLife": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ProlongLife()"
+    },
+    "ShouldShowTappingPrompt": {
+      "documentation": null,
+      "signature_members": {
+        "TimeLeft": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldShowTappingPrompt(float TimeLeft)"
+    },
+    "UseRevivePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UseRevivePower()"
+    },
+    "WasInstaKilled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WasInstaKilled()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

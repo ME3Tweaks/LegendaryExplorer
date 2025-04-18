@@ -1,0 +1,25 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "StateEventMap": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "GalaxyAtWarBoolVarIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "GalaxyAtWarIntVarIDs": {
+      "type": "int",
+      "documentation": null
+    },
+    "GalaxyAtWarFloatVarIDs": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

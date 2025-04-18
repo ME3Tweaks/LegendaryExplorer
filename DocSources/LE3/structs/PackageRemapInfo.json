@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PackageName": {
+      "type": null,
+      "documentation": null
+    },
+    "SeekFreePackageName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,456 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CachedPathParams": {
+      "type": "NavMeshPathParams",
+      "documentation": null
+    },
+    "PathCache": {
+      "type": "PathStore",
+      "documentation": null
+    },
+    "AnchorPoly": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "BestUnfinishedPathPoint": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "CurrentEdge": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "SubGoal_DestPoly": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "FinalDestination": {
+      "type": "BasedPosition",
+      "documentation": null
+    },
+    "AnchorPylon": {
+      "type": "Pylon",
+      "documentation": null
+    },
+    "PathConstraintList": {
+      "type": "NavMeshPathConstraint",
+      "documentation": null
+    },
+    "PathGoalList": {
+      "type": "NavMeshPathGoalEvaluator",
+      "documentation": null
+    },
+    "bSkipRouteCacheUpdates": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseORforEvaluateGoal": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDebugConstraintsAndGoalEvals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUltraVerbosePathDebugging": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ActorReachable": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActorReachable(Actor A)"
+    },
+    "AddGoalEvaluator": {
+      "documentation": null,
+      "signature_members": {
+        "Evaluator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGoalEvaluator(NavMeshPathGoalEvaluator Evaluator)"
+    },
+    "AddPathConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "Constraint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPathConstraint(NavMeshPathConstraint Constraint)"
+    },
+    "CalculatePathDistance": {
+      "documentation": null,
+      "signature_members": {
+        "FinalDest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculatePathDistance(optional Vector FinalDest)"
+    },
+    "ClearConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearConstraints()"
+    },
+    "ComputeValidFinalDestination": {
+      "documentation": null,
+      "signature_members": {
+        "out_ComputedPosition": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ComputeValidFinalDestination(out Vector out_ComputedPosition)"
+    },
+    "DrawPathCache": {
+      "documentation": null,
+      "signature_members": {
+        "DrawOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bPersistent": {
+          "type": null,
+          "documentation": null
+        },
+        "DrawColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawPathCache(optional Vector DrawOffset, optional bool bPersistent, optional Color DrawColor)"
+    },
+    "FindPath": {
+      "documentation": null,
+      "signature_members": {
+        "out_DestActor": {
+          "type": null,
+          "documentation": null
+        },
+        "out_DestItem": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindPath(optional out Actor out_DestActor, optional out int out_DestItem)"
+    },
+    "FindPylon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool FindPylon()"
+    },
+    "GetAllPolyCentersWithinBounds": {
+      "documentation": null,
+      "signature_members": {
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "out_PolyCtrs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllPolyCentersWithinBounds(Vector pos, Vector Extent, out array<Vector> out_PolyCtrs)"
+    },
+    "GetBestUnfinishedPathPoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetBestUnfinishedPathPoint()"
+    },
+    "GetFirstMoveLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetFirstMoveLocation()"
+    },
+    "GetNextMoveLocation": {
+      "documentation": null,
+      "signature_members": {
+        "out_MoveDest": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrivalDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNextMoveLocation(out Vector out_MoveDest, float ArrivalDistance)"
+    },
+    "GetPylonFromPos": {
+      "documentation": null,
+      "signature_members": {
+        "Position": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Pylon",
+      "signature": "Pylon GetPylonFromPos(Vector Position)"
+    },
+    "GetValidPositionsForBox": {
+      "documentation": null,
+      "signature_members": {
+        "pos": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "bMustBeReachableFromStartPos": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ValidPositions": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxPositions": {
+          "type": null,
+          "documentation": null
+        },
+        "MinRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "ValidBoxAroundStartPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetValidPositionsForBox(Vector pos, float Radius, Vector Extent, bool bMustBeReachableFromStartPos, out array<Vector> out_ValidPositions, optional int MaxPositions, optional float MinRadius, optional Vector ValidBoxAroundStartPos)"
+    },
+    "IsAnchorInescapable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAnchorInescapable()"
+    },
+    "LimitPathCacheDistance": {
+      "documentation": null,
+      "signature_members": {
+        "MaxDist": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LimitPathCacheDistance(float MaxDist)"
+    },
+    "LineCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "out_HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "out_HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LineCheck(Vector Start, Vector End, Vector Extent, optional out Vector out_HitLocation, optional out Vector out_HitNormal)"
+    },
+    "ObstacleLineCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Start": {
+          "type": null,
+          "documentation": null
+        },
+        "End": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "out_HitLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "out_HitNorm": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ObstacleLineCheck(Vector Start, Vector End, Vector Extent, optional out Vector out_HitLoc, optional out Vector out_HitNorm)"
+    },
+    "ObstaclePointCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Pt": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ObstaclePointCheck(Vector Pt, Vector Extent)"
+    },
+    "PathCache_Empty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PathCache_Empty()"
+    },
+    "PathCache_GetGoalPoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector PathCache_GetGoalPoint()"
+    },
+    "PathCache_RemoveIndex": {
+      "documentation": null,
+      "signature_members": {
+        "InIdx": {
+          "type": null,
+          "documentation": null
+        },
+        "Count": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PathCache_RemoveIndex(int InIdx, optional int Count)"
+    },
+    "PointCheck": {
+      "documentation": null,
+      "signature_members": {
+        "Pt": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PointCheck(Vector Pt, Vector Extent)"
+    },
+    "PointReachable": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PointReachable(Vector Point)"
+    },
+    "SetFinalDestination": {
+      "documentation": null,
+      "signature_members": {
+        "FinalDest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFinalDestination(Vector FinalDest)"
+    },
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "MovePt": {
+          "type": null,
+          "documentation": null
+        },
+        "C": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Vector MovePt, Controller C)"
+    },
+    "CreatePathConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "ConstraintClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "NavMeshPathConstraint",
+      "signature": "NavMeshPathConstraint CreatePathConstraint(Class<NavMeshPathConstraint> ConstraintClass)"
+    },
+    "CreatePathGoalEvaluator": {
+      "documentation": null,
+      "signature_members": {
+        "GoalEvalClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "NavMeshPathGoalEvaluator",
+      "signature": "NavMeshPathGoalEvaluator CreatePathGoalEvaluator(Class<NavMeshPathGoalEvaluator> GoalEvalClass)"
+    },
+    "GetPathCacheLength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPathCacheLength()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,589 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "GAWGUICategories": {
+      "type": "GAWGUICategory",
+      "documentation": null
+    },
+    "AllAssets": {
+      "type": "GAWAsset",
+      "documentation": null
+    },
+    "UnlockedGAWAssets": {
+      "type": "GAWAssetSaveInfo",
+      "documentation": null
+    },
+    "EndGameOptionSets": {
+      "type": "EndGameOptionSet",
+      "documentation": null
+    },
+    "ShepardLivesStates": {
+      "type": "int",
+      "documentation": null
+    },
+    "EndGameOptions": {
+      "type": "EndGameOption",
+      "documentation": null
+    },
+    "CutscenePlotStates": {
+      "type": "CutscenePlotState",
+      "documentation": null
+    },
+    "AllEndingPlotStates": {
+      "type": "int",
+      "documentation": null
+    },
+    "GAWTheatreData": {
+      "type": "GAWZoneData",
+      "documentation": null
+    },
+    "OverallWarAssetSummaries": {
+      "type": "WarAssetSummaryWithThreshold",
+      "documentation": null
+    },
+    "AchievementThreshold": {
+      "type": "int",
+      "documentation": null
+    },
+    "MinimumStrengthForGUI": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxStrengthForGUI": {
+      "type": "int",
+      "documentation": null
+    },
+    "ShepardLivesThreshold": {
+      "type": "int",
+      "documentation": null
+    },
+    "SaveAndersonPlotBool": {
+      "type": "int",
+      "documentation": null
+    },
+    "FinalGAWRatingID": {
+      "type": "int",
+      "documentation": null
+    },
+    "OverallReadinessRating": {
+      "type": "int",
+      "documentation": null
+    },
+    "GUIDescription_Formatter": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "GUIDescription_UpdatedTag": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "bBrainUsed": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetGAWAssetDebugConditionDescription": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetGAWAssetDebugConditionDescription(string AssetName)"
+    },
+    "AdjustEndingsForSavingAnderson": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdjustEndingsForSavingAnderson()"
+    },
+    "DoesCategoryHaveNewAssets": {
+      "documentation": null,
+      "signature_members": {
+        "categoryId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoesCategoryHaveNewAssets(int categoryId)"
+    },
+    "FlagAllUnlockedAssetsAsDisplayedInGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlagAllUnlockedAssetsAsDisplayedInGUI()"
+    },
+    "GAWAssetCreditRewardAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GAWAssetCreditRewardAvailable(int Id)"
+    },
+    "GAWAssetCreditRewardAvailableByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GAWAssetCreditRewardAvailableByName(string AssetName)"
+    },
+    "GetCategoryImagePath": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCategoryImagePath(int Id)"
+    },
+    "GetExplorationAssetCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetExplorationAssetCount()"
+    },
+    "GetFinalScore": {
+      "documentation": null,
+      "signature_members": {
+        "EndingGame": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetFinalScore(optional bool EndingGame)"
+    },
+    "GetGAWAssetGUIInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "GUIName": {
+          "type": null,
+          "documentation": null
+        },
+        "bGetDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "GUIDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetGAWAssetGUIInfo(int Id, out string GUIName, optional bool bGetDescription, optional out string GUIDescription)"
+    },
+    "GetGAWAssetGUIInfoByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        },
+        "GUIName": {
+          "type": null,
+          "documentation": null
+        },
+        "bGetDescription": {
+          "type": null,
+          "documentation": null
+        },
+        "GUIDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetGAWAssetGUIInfoByName(string AssetName, out string GUIName, optional bool bGetDescription, optional out string GUIDescription)"
+    },
+    "GetGAWAssetIndex": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetGAWAssetIndex(string AssetName)"
+    },
+    "GetGAWAssetsByType": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "UnlockedAssets": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetGAWAssetsByType(EGAWAssetType Type, out array<GAWAsset> UnlockedAssets)"
+    },
+    "GetGAWHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXGAWAssetsHandler",
+      "signature": "SFXGAWAssetsHandler GetGAWHandler()"
+    },
+    "GetGUIDescription": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "GUIDescription": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetGUIDescription(int Id, EGAWAssetType Type, stringref GUIDescription)"
+    },
+    "GetImagePath": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetImagePath(int Id)"
+    },
+    "GetOverallReadiness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetOverallReadiness()"
+    },
+    "GetOverallReadinessRating": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetOverallReadinessRating()"
+    },
+    "GetPVSeenInGUI": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetPVSeenInGUI(int Id)"
+    },
+    "GetTotalScore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTotalScore()"
+    },
+    "GetTotalStrengthByType": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "AssetCount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetTotalStrengthByType(EGAWAssetType Type, optional out int AssetCount)"
+    },
+    "GetWarAssetsSummaryText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetWarAssetsSummaryText()"
+    },
+    "GiveGAWCreditsForAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveGAWCreditsForAsset(int Id)"
+    },
+    "GiveGAWCreditsForAssetByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GiveGAWCreditsForAssetByName(string AssetName)"
+    },
+    "IsAssetNew": {
+      "documentation": null,
+      "signature_members": {
+        "AssetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAssetNew(int AssetID)"
+    },
+    "IsAssetUnlockedForGUICategory": {
+      "documentation": null,
+      "signature_members": {
+        "nAssetIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "nCategoryID": {
+          "type": null,
+          "documentation": null
+        },
+        "nCurrentStrength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAssetUnlockedForGUICategory(int nAssetIndex, int nCategoryID, optional out int nCurrentStrength)"
+    },
+    "IsGAWAssetUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentStrength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGAWAssetUnlocked(int Id, optional out int CurrentStrength)"
+    },
+    "IsGAWAssetUnlockedByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        },
+        "CurrentStrength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGAWAssetUnlockedByName(string AssetName, optional out int CurrentStrength)"
+    },
+    "MarkAssetAsNew": {
+      "documentation": null,
+      "signature_members": {
+        "AssetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkAssetAsNew(int AssetID)"
+    },
+    "MarkAssetAsRead": {
+      "documentation": null,
+      "signature_members": {
+        "AssetID": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkAssetAsRead(int AssetID)"
+    },
+    "NotifyCheatManagerEndGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyCheatManagerEndGameOptions(optional array<EEndGameOption> Options)"
+    },
+    "ResetAllGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAllGAWAssets()"
+    },
+    "ResetGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ResetGAWAsset(int Id)"
+    },
+    "ResetGAWAssetByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ResetGAWAssetByName(string AssetName)"
+    },
+    "SetEndGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "bBrain": {
+          "type": null,
+          "documentation": null
+        },
+        "bEvaluateAchievements": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEndGameOptions(bool bBrain, optional bool bEvaluateAchievements)"
+    },
+    "UnlockAllGAWAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllGAWAssets()"
+    },
+    "UnlockExplorationGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "srAssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockExplorationGAWAsset(optional out stringref srAssetName)"
+    },
+    "UnlockGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockGAWAsset(int Id)"
+    },
+    "UnlockGAWAssetByAssetName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockGAWAssetByAssetName(string AssetName)"
+    },
+    "UnlockNextGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "AssetType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnlockNextGAWAsset(EGAWAssetType AssetType)"
+    },
+    "UpdateEndings": {
+      "documentation": null,
+      "signature_members": {
+        "bUsedBrain": {
+          "type": null,
+          "documentation": null
+        },
+        "bEvaluateAchievements": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEndings(bool bUsedBrain, optional bool bEvaluateAchievements)"
+    },
+    "UpdateGAWAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": null,
+          "documentation": null
+        },
+        "NewStrength": {
+          "type": null,
+          "documentation": null
+        },
+        "bAddToTotal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateGAWAsset(int Id, int NewStrength, optional bool bAddToTotal)"
+    },
+    "UpdateGAWAssetByName": {
+      "documentation": null,
+      "signature_members": {
+        "AssetName": {
+          "type": null,
+          "documentation": null
+        },
+        "NewStrength": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateGAWAssetByName(string AssetName, int NewStrength)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

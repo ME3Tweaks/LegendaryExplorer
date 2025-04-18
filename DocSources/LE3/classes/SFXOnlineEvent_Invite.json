@@ -1,0 +1,13 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "SearchResult": {
+      "type": "OnlineGameSearchResult",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

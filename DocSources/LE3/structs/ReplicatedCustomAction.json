@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "TargetLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "Target": {
+      "type": null,
+      "documentation": null
+    },
+    "TriggerCounter": {
+      "type": null,
+      "documentation": null
+    },
+    "CustomActionType": {
+      "type": null,
+      "documentation": null
+    },
+    "PowerCustomActionType": {
+      "type": null,
+      "documentation": null
+    },
+    "Cmd": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,109 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "RTPCs": {
+      "type": "RTPCPair",
+      "documentation": null
+    },
+    "DefaultFootStepEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "FootstepCullDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fLastFootStepTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TimeBetweenFootsteps": {
+      "type": "float",
+      "documentation": null
+    },
+    "RunThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "bPlayFootstepSounds": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PlayFootStepSound": {
+      "documentation": null,
+      "signature_members": {
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor PlayFootStepSound(int FootDown, out TraceHitInfo HitInfo)"
+    },
+    "SFXSetAudioComponentRTPCs": {
+      "documentation": null,
+      "signature_members": {
+        "pWwiseAudioComponent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXSetAudioComponentRTPCs(ActorComponent pWwiseAudioComponent)"
+    },
+    "GetFootStepSound": {
+      "documentation": null,
+      "signature_members": {
+        "PhysMat": {
+          "type": null,
+          "documentation": null
+        },
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetFootStepSound(PhysicalMaterial PhysMat, int FootDown)"
+    },
+    "GetSpecificFootStepSound": {
+      "documentation": null,
+      "signature_members": {
+        "FootStepSounds": {
+          "type": null,
+          "documentation": null
+        },
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "WwiseEvent",
+      "signature": "WwiseEvent GetSpecificFootStepSound(SFXPhysicalMaterialFootSteps FootStepSounds, int FootDown)"
+    },
+    "PlayStepSound": {
+      "documentation": null,
+      "signature_members": {
+        "FootDown": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayStepSound(int FootDown, TraceHitInfo HitInfo)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

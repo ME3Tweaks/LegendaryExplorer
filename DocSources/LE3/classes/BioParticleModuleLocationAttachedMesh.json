@@ -1,0 +1,41 @@
+{
+  "parent": "ParticleModuleLocationBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_EmissionAreaWeights": {
+      "type": "EmissionAreaWeight",
+      "documentation": null
+    },
+    "m_ValidEmissionSet": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_EmissionAreaList": {
+      "type": "BioEmissionAreaList",
+      "documentation": null
+    },
+    "BoneUpdateTickTag": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bCheckAgainstValidEmissionSet": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseAttachedLocalSpace": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseRenderMeshAsSource": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_SpecificationType": {
+      "type": "EmissionAreaSpecificationType",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

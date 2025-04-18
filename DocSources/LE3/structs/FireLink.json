@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Interactions": {
+      "type": null,
+      "documentation": null
+    },
+    "PackedProperties_CoverPairRefAndDynamicInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "bFallbackLink": {
+      "type": null,
+      "documentation": null
+    },
+    "bDynamicIndexInited": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

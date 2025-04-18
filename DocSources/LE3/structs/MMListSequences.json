@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SeqID": {
+      "type": null,
+      "documentation": null
+    },
+    "ListID": {
+      "type": null,
+      "documentation": null
+    },
+    "FncOnEntry": {
+      "type": null,
+      "documentation": null
+    },
+    "SeqStep": {
+      "type": null,
+      "documentation": null
+    },
+    "Label": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

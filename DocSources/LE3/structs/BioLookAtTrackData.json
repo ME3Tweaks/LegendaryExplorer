@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "nmFindActor": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": null,
+      "documentation": null
+    },
+    "bInstantTransition": {
+      "type": null,
+      "documentation": null
+    },
+    "bLockedToTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "eFindActorMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

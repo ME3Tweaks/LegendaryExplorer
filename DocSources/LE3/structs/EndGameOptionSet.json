@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Brain": {
+      "type": null,
+      "documentation": null
+    },
+    "Heart": {
+      "type": null,
+      "documentation": null
+    },
+    "Threshold": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

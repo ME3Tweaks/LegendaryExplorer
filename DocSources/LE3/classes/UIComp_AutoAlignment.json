@@ -1,0 +1,17 @@
+{
+  "parent": "UIComponent",
+  "package": "Engine",
+  "variables": {
+    "HorzAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null
+    },
+    "VertAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

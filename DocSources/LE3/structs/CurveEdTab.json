@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "TabName": {
+      "type": null,
+      "documentation": null
+    },
+    "Curves": {
+      "type": null,
+      "documentation": null
+    },
+    "ViewStartInput": {
+      "type": null,
+      "documentation": null
+    },
+    "ViewEndInput": {
+      "type": null,
+      "documentation": null
+    },
+    "ViewStartOutput": {
+      "type": null,
+      "documentation": null
+    },
+    "ViewEndOutput": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "POV": {
+      "type": null,
+      "documentation": null
+    },
+    "Target": {
+      "type": null,
+      "documentation": null
+    },
+    "Controller": {
+      "type": null,
+      "documentation": null
+    },
+    "PRI": {
+      "type": null,
+      "documentation": null
+    },
+    "AspectRatio": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,48 @@
+{
+  "parent": "SFXOnlineComponentBlazeLogin",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnExternalUIChange__Delegate": {
+      "type": "OnExternalUIChange",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HasInternetConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasInternetConnection()"
+    },
+    "OnExternalUIChange": {
+      "documentation": null,
+      "signature_members": {
+        "bIsOpening": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnExternalUIChange(bool bIsOpening)"
+    },
+    "Show1stPartyServiceLoginImp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Show1stPartyServiceLoginImp()"
+    },
+    "XenonLoginResult": {
+      "documentation": null,
+      "signature_members": {
+        "isOpening": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "XenonLoginResult(bool isOpening)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

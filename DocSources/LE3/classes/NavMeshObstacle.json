@@ -1,0 +1,62 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IInterface_NavMeshPathObstacle": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPreserveInternalGeo": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "RegisterObstacle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterObstacle()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bInEnabled": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bInEnabled)"
+    },
+    "UnRegisterObstacle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnRegisterObstacle()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

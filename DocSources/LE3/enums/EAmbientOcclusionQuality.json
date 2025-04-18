@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AO_High": {
+      "value": 0,
+      "documentation": null
+    },
+    "AO_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "AO_Low": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

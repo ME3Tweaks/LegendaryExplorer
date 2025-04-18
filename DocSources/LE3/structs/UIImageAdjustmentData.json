@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ProtectedRegion": {
+      "type": null,
+      "documentation": null
+    },
+    "AdjustmentType": {
+      "type": null,
+      "documentation": null
+    },
+    "Alignment": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

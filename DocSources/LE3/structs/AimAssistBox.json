@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Width": {
+      "type": null,
+      "documentation": null
+    },
+    "Height": {
+      "type": null,
+      "documentation": null
+    },
+    "SoftMargin": {
+      "type": null,
+      "documentation": null
+    },
+    "NodeType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

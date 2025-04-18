@@ -1,0 +1,156 @@
+{
+  "parent": "OnlineStats",
+  "package": "Engine",
+  "variables": {
+    "StatMappings": {
+      "type": "StringIdToStringMapping",
+      "documentation": null
+    },
+    "Properties": {
+      "type": "SettingsProperty",
+      "documentation": null
+    },
+    "ViewIds": {
+      "type": "int",
+      "documentation": null
+    },
+    "ArbitratedViewIds": {
+      "type": "int",
+      "documentation": null
+    },
+    "__OnStatsWriteComplete__Delegate": {
+      "type": "OnStatsWriteComplete",
+      "documentation": null
+    },
+    "RatingId": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DecrementFloatStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        },
+        "DecBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DecrementFloatStat(int StatId, optional float DecBy)"
+    },
+    "DecrementIntStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        },
+        "DecBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DecrementIntStat(int StatId, optional int DecBy)"
+    },
+    "GetStatId": {
+      "documentation": null,
+      "signature_members": {
+        "StatName": {
+          "type": null,
+          "documentation": null
+        },
+        "StatId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStatId(Name StatName, out int StatId)"
+    },
+    "GetStatName": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStatName(int StatId)"
+    },
+    "IncrementFloatStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        },
+        "IncBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementFloatStat(int StatId, optional float IncBy)"
+    },
+    "IncrementIntStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        },
+        "IncBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementIntStat(int StatId, optional int IncBy)"
+    },
+    "OnStatsWriteComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStatsWriteComplete()"
+    },
+    "SetFloatStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatStat(int StatId, float Value)"
+    },
+    "SetIntStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntStat(int StatId, int Value)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

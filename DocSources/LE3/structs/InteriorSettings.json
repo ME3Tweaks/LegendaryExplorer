@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "ExteriorVolume": {
+      "type": null,
+      "documentation": null
+    },
+    "ExteriorTime": {
+      "type": null,
+      "documentation": null
+    },
+    "ExteriorLPF": {
+      "type": null,
+      "documentation": null
+    },
+    "ExteriorLPFTime": {
+      "type": null,
+      "documentation": null
+    },
+    "InteriorVolume": {
+      "type": null,
+      "documentation": null
+    },
+    "InteriorTime": {
+      "type": null,
+      "documentation": null
+    },
+    "InteriorLPF": {
+      "type": null,
+      "documentation": null
+    },
+    "InteriorLPFTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsWorldInfo": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

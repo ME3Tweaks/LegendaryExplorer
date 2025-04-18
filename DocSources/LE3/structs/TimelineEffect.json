@@ -1,0 +1,269 @@
+{
+  "Members": {
+    "TimeDilation": {
+      "type": null,
+      "documentation": null
+    },
+    "Reactions": {
+      "type": null,
+      "documentation": null
+    },
+    "AOEFunc": {
+      "type": null,
+      "documentation": null
+    },
+    "InputAlias": {
+      "type": null,
+      "documentation": null
+    },
+    "InputHandle": {
+      "type": null,
+      "documentation": null
+    },
+    "RumbleClass": {
+      "type": null,
+      "documentation": null
+    },
+    "ScreenShakeClass": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageType": {
+      "type": null,
+      "documentation": null
+    },
+    "AOEFilterClass": {
+      "type": null,
+      "documentation": null
+    },
+    "GameEffectClass": {
+      "type": null,
+      "documentation": null
+    },
+    "ScreenShake": {
+      "type": null,
+      "documentation": null
+    },
+    "ClientEffectID": {
+      "type": null,
+      "documentation": null
+    },
+    "PS_Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "PSC_Instance": {
+      "type": null,
+      "documentation": null
+    },
+    "RBC_BlurInstance": {
+      "type": null,
+      "documentation": null
+    },
+    "PS_Template": {
+      "type": null,
+      "documentation": null
+    },
+    "SocketName": {
+      "type": null,
+      "documentation": null
+    },
+    "Sound": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerSound": {
+      "type": null,
+      "documentation": null
+    },
+    "Rumble": {
+      "type": null,
+      "documentation": null
+    },
+    "ScreenShakeObject": {
+      "type": null,
+      "documentation": null
+    },
+    "AOEImpactTimeline": {
+      "type": null,
+      "documentation": null
+    },
+    "SyncPartnerImpactTimeline": {
+      "type": null,
+      "documentation": null
+    },
+    "TimelineTemplate": {
+      "type": null,
+      "documentation": null
+    },
+    "Func": {
+      "type": null,
+      "documentation": null
+    },
+    "BlurMaterial": {
+      "type": null,
+      "documentation": null
+    },
+    "CamAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "RVR_CrustTemplate": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeRemaining": {
+      "type": null,
+      "documentation": null
+    },
+    "CrustDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeDilationLength": {
+      "type": null,
+      "documentation": null
+    },
+    "RagdollForce": {
+      "type": null,
+      "documentation": null
+    },
+    "Damage": {
+      "type": null,
+      "documentation": null
+    },
+    "AOERadius": {
+      "type": null,
+      "documentation": null
+    },
+    "AOEConeAngle": {
+      "type": null,
+      "documentation": null
+    },
+    "nMatchedInputIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "BlurScale": {
+      "type": null,
+      "documentation": null
+    },
+    "BlurFalloffExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "BlurOpacity": {
+      "type": null,
+      "documentation": null
+    },
+    "CamStartTime": {
+      "type": null,
+      "documentation": null
+    },
+    "CamBlendInTime": {
+      "type": null,
+      "documentation": null
+    },
+    "CamBlendOutTime": {
+      "type": null,
+      "documentation": null
+    },
+    "CamPlayRate": {
+      "type": null,
+      "documentation": null
+    },
+    "CamDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "CEStartIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "GameEffectDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "GameEffectValue": {
+      "type": null,
+      "documentation": null
+    },
+    "bActivated": {
+      "type": null,
+      "documentation": null
+    },
+    "bActiveInput": {
+      "type": null,
+      "documentation": null
+    },
+    "bReceivedInput": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseWeaponMesh": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyBloodColorParam": {
+      "type": null,
+      "documentation": null
+    },
+    "bDilateSound": {
+      "type": null,
+      "documentation": null
+    },
+    "bAOEAffectsTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "bOnPress": {
+      "type": null,
+      "documentation": null
+    },
+    "bExclusive": {
+      "type": null,
+      "documentation": null
+    },
+    "bBufferedInput": {
+      "type": null,
+      "documentation": null
+    },
+    "bLoopCamAnim": {
+      "type": null,
+      "documentation": null
+    },
+    "bCEAllowCooldown": {
+      "type": null,
+      "documentation": null
+    },
+    "bCEStopAllMatching": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetType": {
+      "type": null,
+      "documentation": null
+    },
+    "VocID": {
+      "type": null,
+      "documentation": null
+    },
+    "Constraint": {
+      "type": null,
+      "documentation": null
+    },
+    "AOEType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

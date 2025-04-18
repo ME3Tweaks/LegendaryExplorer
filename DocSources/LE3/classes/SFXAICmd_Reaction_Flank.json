@@ -1,0 +1,13 @@
+{
+  "parent": "SFXAICommand_Base_Combat",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {
+    "ReactToFlank": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

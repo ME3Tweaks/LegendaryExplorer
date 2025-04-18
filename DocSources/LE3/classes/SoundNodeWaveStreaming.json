@@ -1,0 +1,52 @@
+{
+  "parent": "SoundNodeWave",
+  "package": "Engine",
+  "variables": {
+    "QueuedAudio": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AvailableAudioBytes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int AvailableAudioBytes()"
+    },
+    "GeneratePCMData": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": null,
+          "documentation": null
+        },
+        "SamplesNeeded": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GeneratePCMData(out array<byte> Buffer, int SamplesNeeded)"
+    },
+    "QueueAudio": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueAudio(array<byte> Data)"
+    },
+    "ResetAudio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAudio()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

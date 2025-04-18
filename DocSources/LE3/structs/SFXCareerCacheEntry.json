@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Career": {
+      "type": null,
+      "documentation": null
+    },
+    "firstName": {
+      "type": null,
+      "documentation": null
+    },
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "SaveTypes": {
+      "type": null,
+      "documentation": null
+    },
+    "Origin": {
+      "type": null,
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

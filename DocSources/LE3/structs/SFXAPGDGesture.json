@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "fPlayRate": {
+      "type": null,
+      "documentation": null
+    },
+    "fPlayWeight": {
+      "type": null,
+      "documentation": null
+    },
+    "nPlayChance": {
+      "type": null,
+      "documentation": null
+    },
+    "fRetriggerDelay": {
+      "type": null,
+      "documentation": null
+    },
+    "bOneShot": {
+      "type": null,
+      "documentation": null
+    },
+    "bEnterEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "bExitEvent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

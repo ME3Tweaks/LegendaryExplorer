@@ -1,0 +1,24 @@
+{
+  "parent": "BioSFHandler_ChoiceGUI",
+  "package": "SFXGame",
+  "variables": {
+    "PRCInfo": {
+      "type": "PRCInfo_t",
+      "documentation": null
+    },
+    "m_ChoiceDataNoStrRef": {
+      "type": "SFXGameChoiceGUIData_PRCShop",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ShowChoiceGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowChoiceGUI()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

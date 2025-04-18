@@ -1,0 +1,21 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "GameToCreate": {
+      "type": "SFXOnlineGameSettings",
+      "documentation": null
+    },
+    "GameId": {
+      "type": "int",
+      "documentation": null
+    },
+    "SearchOutcome": {
+      "type": "SFXOnlineQuickMatchOutcome",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

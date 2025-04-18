@@ -1,0 +1,37 @@
+{
+  "parent": "Trigger",
+  "package": "Engine",
+  "variables": {
+    "Levels": {
+      "type": "LevelStreamingData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": null,
+          "documentation": null
+        },
+        "OtherComp": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

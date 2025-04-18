@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "CurrentPriority": {
+      "type": null,
+      "documentation": null
+    },
+    "LastPriority": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

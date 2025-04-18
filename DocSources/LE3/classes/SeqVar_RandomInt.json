@@ -1,0 +1,17 @@
+{
+  "parent": "SeqVar_Int",
+  "package": "Engine",
+  "variables": {
+    "Min": {
+      "type": "int",
+      "documentation": null
+    },
+    "Max": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

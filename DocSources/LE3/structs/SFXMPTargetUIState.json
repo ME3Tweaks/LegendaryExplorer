@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "aBarPips": {
+      "type": null,
+      "documentation": null
+    },
+    "oResistBar": {
+      "type": null,
+      "documentation": null
+    },
+    "nNumVisible": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

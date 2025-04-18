@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "SoundClass": {
+      "type": null,
+      "documentation": null
+    },
+    "VolumeAdjuster": {
+      "type": null,
+      "documentation": null
+    },
+    "PitchAdjuster": {
+      "type": null,
+      "documentation": null
+    },
+    "bApplyToChildren": {
+      "type": null,
+      "documentation": null
+    },
+    "SoundClassName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

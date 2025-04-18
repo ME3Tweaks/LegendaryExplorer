@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Children": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendPctPerSecond": {
+      "type": null,
+      "documentation": null
+    },
+    "DefaultScalar": {
+      "type": null,
+      "documentation": null
+    },
+    "BlendInstant": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

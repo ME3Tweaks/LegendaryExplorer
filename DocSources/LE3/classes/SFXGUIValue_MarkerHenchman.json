@@ -1,0 +1,35 @@
+{
+  "parent": "SFXGUIValue_Marker",
+  "package": "SFXGame",
+  "variables": {
+    "Henchman": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "PreviousHenchmanIsDown": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "SceneView": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(const out SFXGUISceneView SceneView)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

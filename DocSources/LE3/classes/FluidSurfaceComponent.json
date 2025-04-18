@@ -1,0 +1,263 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "ClampMap": {
+      "type": "byte",
+      "documentation": null
+    },
+    "ShadowMaps": {
+      "type": "ShadowMap2D",
+      "documentation": null
+    },
+    "LightMap": {
+      "type": "LightMapRef",
+      "documentation": null
+    },
+    "FluidSimulation": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null
+    },
+    "SimulationPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "DetailPosition": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "FluidMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "TargetSimulation": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "TargetDetail": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "LightMapResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "SimulationQuadsX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SimulationQuadsY": {
+      "type": "int",
+      "documentation": null
+    },
+    "GridSpacing": {
+      "type": "float",
+      "documentation": null
+    },
+    "GridSpacingLowRes": {
+      "type": "float",
+      "documentation": null
+    },
+    "GPUTessellationFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "FluidDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "FluidTravelSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "FluidHeightScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "FluidUpdateRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceImpact": {
+      "type": "float",
+      "documentation": null
+    },
+    "ForceContinuous": {
+      "type": "float",
+      "documentation": null
+    },
+    "LightingContrast": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeactivationDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetailResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "DetailSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetailDamping": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetailTravelSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetailTransfer": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetailHeightScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "DetailUpdateRate": {
+      "type": "float",
+      "documentation": null
+    },
+    "NormalLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestRippleSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestRippleFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestRippleRadius": {
+      "type": "float",
+      "documentation": null
+    },
+    "FluidWidth": {
+      "type": "float",
+      "documentation": null
+    },
+    "FluidHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestRippleTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestRippleAngle": {
+      "type": "float",
+      "documentation": null
+    },
+    "DeactivationTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "ViewDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "EnableSimulation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EnableDetail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bPause": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowSimulationNormals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowSimulationPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowDetailNormals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowDetailPosition": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowFluidSimulation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowFluidDetail": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTestRipple": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTestRippleCenterOnDetail": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyForce": {
+      "documentation": null,
+      "signature_members": {
+        "WorldPos": {
+          "type": null,
+          "documentation": null
+        },
+        "Strength": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "bImpulse": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyForce(Vector WorldPos, float Strength, float Radius, optional bool bImpulse)"
+    },
+    "SetDetailPosition": {
+      "documentation": null,
+      "signature_members": {
+        "WorldPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDetailPosition(Vector WorldPos)"
+    },
+    "SetSimulationPosition": {
+      "documentation": null,
+      "signature_members": {
+        "WorldPos": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSimulationPosition(Vector WorldPos)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

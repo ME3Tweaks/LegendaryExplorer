@@ -1,0 +1,13 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IInterface_NavMeshPathObject": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

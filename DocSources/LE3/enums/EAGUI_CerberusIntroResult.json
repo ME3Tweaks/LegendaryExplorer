@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EAG_CI_REDEEM_CODE": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAG_CI_BUY_CODE": {
+      "value": 1,
+      "documentation": null
+    },
+    "EAG_CI_CANCEL": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

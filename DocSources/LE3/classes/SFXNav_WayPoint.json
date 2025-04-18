@@ -1,0 +1,25 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fMoveOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bPrecisionMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMaintainVelocity": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "GUI_STYLE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "GUI_STYLE_CHARM": {
+      "value": 1,
+      "documentation": null
+    },
+    "GUI_STYLE_INTIMIDATE": {
+      "value": 2,
+      "documentation": null
+    },
+    "GUI_STYLE_PLAYER_ALERT": {
+      "value": 3,
+      "documentation": null
+    },
+    "GUI_STYLE_ILLEGAL": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

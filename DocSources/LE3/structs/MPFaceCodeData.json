@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "firstName": {
+      "type": null,
+      "documentation": null
+    },
+    "faceCode": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

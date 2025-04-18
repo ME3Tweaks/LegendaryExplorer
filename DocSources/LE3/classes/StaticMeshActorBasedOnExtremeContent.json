@@ -1,0 +1,34 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ExtremeContent": {
+      "type": "SMMaterialSetterDatum",
+      "documentation": null
+    },
+    "NonExtremeContent": {
+      "type": "SMMaterialSetterDatum",
+      "documentation": null
+    },
+    "StaticMeshComponent": {
+      "type": "StaticMeshComponent",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetMaterialBasedOnExtremeContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetMaterialBasedOnExtremeContent()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

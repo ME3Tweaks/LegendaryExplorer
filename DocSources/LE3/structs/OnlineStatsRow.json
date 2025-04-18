@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "PlayerID": {
+      "type": null,
+      "documentation": null
+    },
+    "Rank": {
+      "type": null,
+      "documentation": null
+    },
+    "NickName": {
+      "type": null,
+      "documentation": null
+    },
+    "Columns": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

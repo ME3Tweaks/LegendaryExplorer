@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Prefix": {
+      "type": null,
+      "documentation": null
+    },
+    "Description": {
+      "type": null,
+      "documentation": null
+    },
+    "Color": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

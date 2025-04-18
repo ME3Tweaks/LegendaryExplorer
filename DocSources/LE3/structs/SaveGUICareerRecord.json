@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "CareerName": {
+      "type": null,
+      "documentation": null
+    },
+    "firstName": {
+      "type": null,
+      "documentation": null
+    },
+    "className": {
+      "type": null,
+      "documentation": null
+    },
+    "CareerSaves": {
+      "type": null,
+      "documentation": null
+    },
+    "CreationDate": {
+      "type": null,
+      "documentation": null
+    },
+    "DeviceID": {
+      "type": null,
+      "documentation": null
+    },
+    "bActiveCareer": {
+      "type": null,
+      "documentation": null
+    },
+    "Origin": {
+      "type": null,
+      "documentation": null
+    },
+    "Notoriety": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

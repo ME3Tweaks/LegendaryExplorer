@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendByAim_LevelFront": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_LevelLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_LevelRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_UpFront": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_UpLeft": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_UpRight": {
+      "value": 5,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_DownFront": {
+      "value": 6,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_DownLeft": {
+      "value": 7,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendByAim_DownRight": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

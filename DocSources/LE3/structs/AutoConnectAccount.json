@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "email": {
+      "type": null,
+      "documentation": null
+    },
+    "Password": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "VMO_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "VMO_Add": {
+      "value": 1,
+      "documentation": null
+    },
+    "VMO_Subtract": {
+      "value": 2,
+      "documentation": null
+    },
+    "VMO_Multiply": {
+      "value": 3,
+      "documentation": null
+    },
+    "VMO_Divide": {
+      "value": 4,
+      "documentation": null
+    },
+    "VMO_Power": {
+      "value": 5,
+      "documentation": null
+    },
+    "VMO_DotProduct": {
+      "value": 6,
+      "documentation": null
+    },
+    "VMO_CrossProduct": {
+      "value": 7,
+      "documentation": null
+    },
+    "VMO_Greater": {
+      "value": 8,
+      "documentation": null
+    },
+    "VMO_Less": {
+      "value": 9,
+      "documentation": null
+    },
+    "VMO_NearlyEqual": {
+      "value": 10,
+      "documentation": null
+    },
+    "VMO_NotNearlyEqual": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

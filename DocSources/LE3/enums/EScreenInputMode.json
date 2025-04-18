@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "INPUTMODE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "INPUTMODE_Locked": {
+      "value": 1,
+      "documentation": null
+    },
+    "INPUTMODE_Selective": {
+      "value": 2,
+      "documentation": null
+    },
+    "INPUTMODE_MatchingOnly": {
+      "value": 3,
+      "documentation": null
+    },
+    "INPUTMODE_ActiveOnly": {
+      "value": 4,
+      "documentation": null
+    },
+    "INPUTMODE_Free": {
+      "value": 5,
+      "documentation": null
+    },
+    "INPUTMODE_Simultaneous": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "EGO_ReapersDestroyedEarthDestroyed": {
+      "value": 0,
+      "documentation": null
+    },
+    "EGO_ReapersDestroyedEarthDevastated": {
+      "value": 1,
+      "documentation": null
+    },
+    "EGO_ReapersDestroyedEarthOk": {
+      "value": 2,
+      "documentation": null
+    },
+    "EGO_ReapersDestroyedEarthOkShepardAlive": {
+      "value": 3,
+      "documentation": null
+    },
+    "EGO_BecomeAReaperAndEarthDestroyedAndReapersLeave": {
+      "value": 4,
+      "documentation": null
+    },
+    "EGO_BecomeAReaperAndEarthOkAndReapersLeave": {
+      "value": 5,
+      "documentation": null
+    },
+    "EGO_HarmonyOfManAndMachine": {
+      "value": 6,
+      "documentation": null
+    },
+    "EGO_Demo": {
+      "value": 7,
+      "documentation": null
+    },
+    "EGO_None": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

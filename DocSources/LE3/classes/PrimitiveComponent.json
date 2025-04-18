@@ -1,0 +1,1000 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "Tag": {
+      "type": "int",
+      "documentation": null
+    },
+    "Bounds": {
+      "type": "BoxSphereBounds",
+      "documentation": null
+    },
+    "SceneInfo": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "DetachFence": {
+      "type": "int",
+      "documentation": null
+    },
+    "LocalToWorldDeterminant": {
+      "type": "float",
+      "documentation": null
+    },
+    "LocalToWorld": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "MotionBlurInfoIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "DecalList": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "DecalsToReattach": {
+      "type": "DecalComponent",
+      "documentation": null
+    },
+    "ShadowParent": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "ReplacementPrimitive": {
+      "type": "PrimitiveComponent",
+      "documentation": null
+    },
+    "FogVolumeComponent": {
+      "type": "FogVolumeDensityComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "PreviousLightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "MinDrawDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MassiveLODDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDrawDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "CachedMaxDrawDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DepthPriorityGroup": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    },
+    "ViewOwnerDepthPriorityGroup": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    },
+    "DetailMode": {
+      "type": "EDetailMode",
+      "documentation": null
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null
+    },
+    "RBDominanceGroup": {
+      "type": "byte",
+      "documentation": null
+    },
+    "MotionBlurScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseViewOwnerDepthPriorityGroup": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowCullDistanceVolume": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HiddenGame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "HiddenEditor": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOwnerNoSee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bOnlyOwnerSee": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreOwnerHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseAsOccluder": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowApproximateOcclusion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFirstFrameOcclusion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreNearPlaneIntersection": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSelectable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceMipStreaming": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsStaticDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsDynamicDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIsRefreshingDecals": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowDecalAutomaticReAttach": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsFoliage": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CastShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceDirectLightMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSelfShadowOnly": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsDynamicDominantLightShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastHiddenShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsDynamicLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseOnePassLightingOnTranslucency": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUsePrecomputedShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHasExplicitShadowParent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCullModulatedShadowOnBackfaces": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCullModulatedShadowOnEmissive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowAmbientOcclusion": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBioForcePrecomputedShadows": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CollideActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AlwaysCheckCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockActors": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockZeroExtent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockNonZeroExtent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CanBlockCamera": {
+      "type": "bool",
+      "documentation": null
+    },
+    "BlockRigidBody": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableAllRigidBody": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSkipRBGeomCreation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNotifyRigidBodyCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFluidDrain": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bFluidTwoWay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreRadialImpulse": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreRadialForce": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreForceField": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUseCompartment": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AlwaysLoadOnClient": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AlwaysLoadOnServer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bIgnoreHiddenActorsMembership": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AbsoluteTranslation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AbsoluteRotation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "AbsoluteScale": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowShadowFade": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bUmbraUpdated": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWasSNFiltered": {
+      "type": "bool",
+      "documentation": null
+    },
+    "OctreeNodes": {
+      "type": "int",
+      "documentation": null
+    },
+    "TranslucencySortPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "LocalTranslucencySortPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "LightingChannels": {
+      "type": "LightingChannelContainer",
+      "documentation": null
+    },
+    "RBCollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null
+    },
+    "PhysMaterialOverride": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "BodyInstance": {
+      "type": "RB_BodyInstance",
+      "documentation": null
+    },
+    "CachedParentToWorld": {
+      "type": "Matrix",
+      "documentation": null
+    },
+    "Translation": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null
+    },
+    "Scale3D": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "LastSubmitTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRenderTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastRenderTimeInMasterView": {
+      "type": "float",
+      "documentation": null
+    },
+    "UmbraObjectHandle": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "UmbraCameraMask": {
+      "type": "int",
+      "documentation": null
+    },
+    "ScriptRigidBodyCollisionThreshold": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddForce": {
+      "documentation": null,
+      "signature_members": {
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddForce(Vector Force, optional Vector Position, optional Name BoneName)"
+    },
+    "AddImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "impulse": {
+          "type": null,
+          "documentation": null
+        },
+        "Position": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        },
+        "bVelChange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddImpulse(Vector impulse, optional Vector Position, optional Name BoneName, optional bool bVelChange)"
+    },
+    "AddRadialForce": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Strength": {
+          "type": null,
+          "documentation": null
+        },
+        "Falloff": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRadialForce(Vector Origin, float Radius, float Strength, ERadialImpulseFalloff Falloff)"
+    },
+    "AddRadialImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": null,
+          "documentation": null
+        },
+        "Radius": {
+          "type": null,
+          "documentation": null
+        },
+        "Strength": {
+          "type": null,
+          "documentation": null
+        },
+        "Falloff": {
+          "type": null,
+          "documentation": null
+        },
+        "bVelChange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRadialImpulse(Vector Origin, float Radius, float Strength, ERadialImpulseFalloff Falloff, optional bool bVelChange)"
+    },
+    "AddTorque": {
+      "documentation": null,
+      "signature_members": {
+        "Torque": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTorque(Vector Torque, optional Name BoneName)"
+    },
+    "ClosestPointOnComponentToComponent": {
+      "documentation": null,
+      "signature_members": {
+        "OtherComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "PointOnComponentA": {
+          "type": null,
+          "documentation": null
+        },
+        "PointOnComponentB": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GJKResult",
+      "signature": "GJKResult ClosestPointOnComponentToComponent(out PrimitiveComponent OtherComponent, out Vector PointOnComponentA, out Vector PointOnComponentB)"
+    },
+    "ClosestPointOnComponentToPoint": {
+      "documentation": null,
+      "signature_members": {
+        "POI": {
+          "type": null,
+          "documentation": null
+        },
+        "Extent": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPointA": {
+          "type": null,
+          "documentation": null
+        },
+        "OutPointB": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GJKResult",
+      "signature": "GJKResult ClosestPointOnComponentToPoint(out Vector POI, out Vector Extent, out Vector OutPointA, out Vector OutPointB)"
+    },
+    "GetPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetPosition()"
+    },
+    "GetRootBodyInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "RB_BodyInstance",
+      "signature": "RB_BodyInstance GetRootBodyInstance()"
+    },
+    "GetRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetRotation()"
+    },
+    "InitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitRBPhys()"
+    },
+    "PutRigidBodyToSleep": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PutRigidBodyToSleep(optional Name BoneName)"
+    },
+    "RetardRBLinearVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "RetardDir": {
+          "type": null,
+          "documentation": null
+        },
+        "VelScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RetardRBLinearVelocity(Vector RetardDir, float VelScale)"
+    },
+    "RigidBodyIsAwake": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RigidBodyIsAwake(optional Name BoneName)"
+    },
+    "SetAbsolute": {
+      "documentation": null,
+      "signature_members": {
+        "NewAbsoluteTranslation": {
+          "type": null,
+          "documentation": null
+        },
+        "NewAbsoluteRotation": {
+          "type": null,
+          "documentation": null
+        },
+        "NewAbsoluteScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAbsolute(optional bool NewAbsoluteTranslation, optional bool NewAbsoluteRotation, optional bool NewAbsoluteScale)"
+    },
+    "SetActorCollision": {
+      "documentation": null,
+      "signature_members": {
+        "NewCollideActors": {
+          "type": null,
+          "documentation": null
+        },
+        "NewBlockActors": {
+          "type": null,
+          "documentation": null
+        },
+        "NewAlwaysCheckCollision": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorCollision(bool NewCollideActors, bool NewBlockActors, optional bool NewAlwaysCheckCollision)"
+    },
+    "SetBlockRigidBody": {
+      "documentation": null,
+      "signature_members": {
+        "bNewBlockRigidBody": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlockRigidBody(bool bNewBlockRigidBody)"
+    },
+    "SetCullDistance": {
+      "documentation": null,
+      "signature_members": {
+        "NewCullDistance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCullDistance(float NewCullDistance)"
+    },
+    "SetDepthPriorityGroup": {
+      "documentation": null,
+      "signature_members": {
+        "NewDepthPriorityGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDepthPriorityGroup(ESceneDepthPriorityGroup NewDepthPriorityGroup)"
+    },
+    "SetHidden": {
+      "documentation": null,
+      "signature_members": {
+        "NewHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHidden(bool NewHidden)"
+    },
+    "SetHiddenEditor": {
+      "documentation": null,
+      "signature_members": {
+        "NewHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHiddenEditor(bool NewHidden)"
+    },
+    "SetIgnoreOwnerHidden": {
+      "documentation": null,
+      "signature_members": {
+        "bNewIgnoreOwnerHidden": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIgnoreOwnerHidden(bool bNewIgnoreOwnerHidden)"
+    },
+    "SetLightEnvironment": {
+      "documentation": null,
+      "signature_members": {
+        "NewLightEnvironment": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLightEnvironment(LightEnvironmentComponent NewLightEnvironment)"
+    },
+    "SetLightingChannels": {
+      "documentation": null,
+      "signature_members": {
+        "NewLightingChannels": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLightingChannels(LightingChannelContainer NewLightingChannels)"
+    },
+    "SetNotifyRigidBodyCollision": {
+      "documentation": null,
+      "signature_members": {
+        "bNewNotifyRigidBodyCollision": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNotifyRigidBodyCollision(bool bNewNotifyRigidBodyCollision)"
+    },
+    "SetOnlyOwnerSee": {
+      "documentation": null,
+      "signature_members": {
+        "bNewOnlyOwnerSee": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlyOwnerSee(bool bNewOnlyOwnerSee)"
+    },
+    "SetOwnerNoSee": {
+      "documentation": null,
+      "signature_members": {
+        "bNewOwnerNoSee": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOwnerNoSee(bool bNewOwnerNoSee)"
+    },
+    "SetPhysMaterialOverride": {
+      "documentation": null,
+      "signature_members": {
+        "NewPhysMaterial": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPhysMaterialOverride(PhysicalMaterial NewPhysMaterial)"
+    },
+    "SetRBAngularVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "NewAngVel": {
+          "type": null,
+          "documentation": null
+        },
+        "bAddToCurrent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBAngularVelocity(Vector NewAngVel, optional bool bAddToCurrent)"
+    },
+    "SetRBChannel": {
+      "documentation": null,
+      "signature_members": {
+        "Channel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBChannel(ERBCollisionChannel Channel)"
+    },
+    "SetRBCollidesWithChannel": {
+      "documentation": null,
+      "signature_members": {
+        "Channel": {
+          "type": null,
+          "documentation": null
+        },
+        "bNewCollides": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBCollidesWithChannel(ERBCollisionChannel Channel, bool bNewCollides)"
+    },
+    "SetRBCollisionChannels": {
+      "documentation": null,
+      "signature_members": {
+        "Channels": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBCollisionChannels(RBCollisionChannelContainer Channels)"
+    },
+    "SetRBDominanceGroup": {
+      "documentation": null,
+      "signature_members": {
+        "InDomGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBDominanceGroup(byte InDomGroup)"
+    },
+    "SetRBLinearVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "NewVel": {
+          "type": null,
+          "documentation": null
+        },
+        "bAddToCurrent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBLinearVelocity(Vector NewVel, optional bool bAddToCurrent)"
+    },
+    "SetRBPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewPos": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBPosition(Vector NewPos, optional Name BoneName)"
+    },
+    "SetRBRotation": {
+      "documentation": null,
+      "signature_members": {
+        "NewRot": {
+          "type": null,
+          "documentation": null
+        },
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRBRotation(Rotator NewRot, optional Name BoneName)"
+    },
+    "SetRotation": {
+      "documentation": null,
+      "signature_members": {
+        "NewRotation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRotation(Rotator NewRotation)"
+    },
+    "SetScale": {
+      "documentation": null,
+      "signature_members": {
+        "NewScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScale(float NewScale)"
+    },
+    "SetScale3D": {
+      "documentation": null,
+      "signature_members": {
+        "NewScale3D": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScale3D(Vector NewScale3D)"
+    },
+    "SetShadowParent": {
+      "documentation": null,
+      "signature_members": {
+        "NewShadowParent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShadowParent(PrimitiveComponent NewShadowParent)"
+    },
+    "SetTraceBlocking": {
+      "documentation": null,
+      "signature_members": {
+        "NewBlockZeroExtent": {
+          "type": null,
+          "documentation": null
+        },
+        "NewBlockNonZeroExtent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTraceBlocking(bool NewBlockZeroExtent, bool NewBlockNonZeroExtent)"
+    },
+    "SetTranslation": {
+      "documentation": null,
+      "signature_members": {
+        "NewTranslation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTranslation(Vector NewTranslation)"
+    },
+    "SetViewOwnerDepthPriorityGroup": {
+      "documentation": null,
+      "signature_members": {
+        "bNewUseViewOwnerDepthPriorityGroup": {
+          "type": null,
+          "documentation": null
+        },
+        "NewViewOwnerDepthPriorityGroup": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetViewOwnerDepthPriorityGroup(bool bNewUseViewOwnerDepthPriorityGroup, ESceneDepthPriorityGroup NewViewOwnerDepthPriorityGroup)"
+    },
+    "ShouldComponentAddToScene": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldComponentAddToScene()"
+    },
+    "WakeRigidBody": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WakeRigidBody(optional Name BoneName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

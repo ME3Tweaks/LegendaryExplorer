@@ -1,0 +1,85 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SourceElement": {
+      "type": "LensFlareElement",
+      "documentation": null
+    },
+    "ScreenPercentageMap": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "Reflections": {
+      "type": "LensFlareElement",
+      "documentation": null
+    },
+    "FixedRelativeBoundingBox": {
+      "type": "Box",
+      "documentation": null
+    },
+    "ThumbnailAngle": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "SourceMesh": {
+      "type": "StaticMesh",
+      "documentation": null
+    },
+    "CurveEdSetup": {
+      "type": "InterpCurveEdSetup",
+      "documentation": null
+    },
+    "ThumbnailImage": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "OuterCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "InnerCone": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConeFudgeFactor": {
+      "type": "float",
+      "documentation": null
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null
+    },
+    "ReflectionCount": {
+      "type": "int",
+      "documentation": null
+    },
+    "ThumbnailDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseFixedRelativeBoundingBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderDebugLines": {
+      "type": "bool",
+      "documentation": null
+    },
+    "ThumbnailImageOutOfDate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SourceDPG": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    },
+    "ReflectionsDPG": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

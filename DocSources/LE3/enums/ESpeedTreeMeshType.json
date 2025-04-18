@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "STMT_MinMinusOne": {
+      "value": 0,
+      "documentation": null
+    },
+    "STMT_Branches1": {
+      "value": 1,
+      "documentation": null
+    },
+    "STMT_Branches2": {
+      "value": 2,
+      "documentation": null
+    },
+    "STMT_Fronds": {
+      "value": 3,
+      "documentation": null
+    },
+    "STMT_LeafCards": {
+      "value": 4,
+      "documentation": null
+    },
+    "STMT_LeafMeshes": {
+      "value": 5,
+      "documentation": null
+    },
+    "STMT_Billboards": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

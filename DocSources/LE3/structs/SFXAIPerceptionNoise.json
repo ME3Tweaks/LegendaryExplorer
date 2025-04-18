@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "NoiseMaker": {
+      "type": null,
+      "documentation": null
+    },
+    "NoiseType": {
+      "type": null,
+      "documentation": null
+    },
+    "Loudness": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

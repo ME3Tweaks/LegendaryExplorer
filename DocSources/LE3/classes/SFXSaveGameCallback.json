@@ -1,0 +1,47 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SaveCommandCompleteDelegates": {
+      "type": "SFXEngine.SFXSaveCommandCallback",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddSaveCommandCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "SaveCommandCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSaveCommandCompleteDelegate(delegate<SFXSaveCommandCallback> SaveCommandCompleteDelegate)"
+    },
+    "ClearSaveCommandCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "SaveCommandCompleteDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearSaveCommandCompleteDelegate(delegate<SFXSaveCommandCallback> SaveCommandCompleteDelegate)"
+    },
+    "SaveGameCommandComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameCommandComplete(SFXSaveGameCommandEventArgs Args)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

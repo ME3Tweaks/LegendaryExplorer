@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlotBool": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockDay": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

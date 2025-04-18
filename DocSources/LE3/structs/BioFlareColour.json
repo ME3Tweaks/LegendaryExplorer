@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Tint": {
+      "type": null,
+      "documentation": null
+    },
+    "IntensityThreshold": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

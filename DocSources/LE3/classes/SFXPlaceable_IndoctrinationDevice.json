@@ -1,0 +1,217 @@
+{
+  "parent": "SFXPlaceable_Reaper",
+  "package": "SFXGameContent",
+  "variables": {
+    "IndocClientEffectGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "DeviceCrustGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "CE_DestructionTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "CE_DeviceCrustTemplate": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    },
+    "WWise_Explosion": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WWise_Activate": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "WWise_Deactivate": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "UpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShieldUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "Range": {
+      "type": "float",
+      "documentation": null
+    },
+    "WakeRange": {
+      "type": "float",
+      "documentation": null
+    },
+    "RegenTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HealthBracketSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "bAwake": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "DamageAmount": {
+          "type": null,
+          "documentation": null
+        },
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "Momentum": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "HitInfo": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageCauser": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float DamageAmount, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)"
+    },
+    "ImpactWithPower": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactWithPower(EPowerResistance Resistance, Pawn Caster, Vector HitLocation, Vector HitNormal, float Damage, Vector Force, Class<DamageType> DamageType)"
+    },
+    "ActivatePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivatePlaceable()"
+    },
+    "DeactivatePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivatePlaceable()"
+    },
+    "GetDifficultyDebugStrings": {
+      "documentation": null,
+      "signature_members": {
+        "DifficultyDebugStrings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDifficultyDebugStrings(out array<string> DifficultyDebugStrings)"
+    },
+    "PlaceableDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlaceableDestroyed()"
+    },
+    "ResetPlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPlaceable()"
+    },
+    "SetDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDestroyed()"
+    },
+    "GrantShieldLoop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GrantShieldLoop()"
+    },
+    "PlayBeamEffect": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentPawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayBeamEffect(SFXPawn CurrentPawn)"
+    },
+    "WakeUpCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WakeUpCheck()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

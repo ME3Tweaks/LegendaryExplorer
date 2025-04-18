@@ -1,0 +1,141 @@
+{
+  "Members": {
+    "RelativeMatrix": {
+      "type": null,
+      "documentation": null
+    },
+    "WorldMatrix": {
+      "type": null,
+      "documentation": null
+    },
+    "Structure": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeCentroid": {
+      "type": null,
+      "documentation": null
+    },
+    "WorldCentroid": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "ActorIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "FragmentIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Index": {
+      "type": null,
+      "documentation": null
+    },
+    "MeshIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "BodyIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "Radius": {
+      "type": null,
+      "documentation": null
+    },
+    "ParentIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "FirstChildIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "NumChildren": {
+      "type": null,
+      "documentation": null
+    },
+    "Depth": {
+      "type": null,
+      "documentation": null
+    },
+    "Age": {
+      "type": null,
+      "documentation": null
+    },
+    "Damage": {
+      "type": null,
+      "documentation": null
+    },
+    "Size": {
+      "type": null,
+      "documentation": null
+    },
+    "FIFOIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "FirstOverlapIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "NumOverlaps": {
+      "type": null,
+      "documentation": null
+    },
+    "ShortestRoute": {
+      "type": null,
+      "documentation": null
+    },
+    "NumSupporters": {
+      "type": null,
+      "documentation": null
+    },
+    "NumChildrenDup": {
+      "type": null,
+      "documentation": null
+    },
+    "WorldCentroidValid": {
+      "type": null,
+      "documentation": null
+    },
+    "WorldMatrixValid": {
+      "type": null,
+      "documentation": null
+    },
+    "bCrumble": {
+      "type": null,
+      "documentation": null
+    },
+    "IsEnvironmentSupported": {
+      "type": null,
+      "documentation": null
+    },
+    "IsRouting": {
+      "type": null,
+      "documentation": null
+    },
+    "IsRouteValid": {
+      "type": null,
+      "documentation": null
+    },
+    "IsRouteBlocker": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

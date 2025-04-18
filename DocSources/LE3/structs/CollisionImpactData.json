@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ContactInfos": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalNormalForceVector": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalFrictionForceVector": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

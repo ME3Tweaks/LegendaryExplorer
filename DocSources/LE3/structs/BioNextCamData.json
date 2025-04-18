@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "vPos": {
+      "type": null,
+      "documentation": null
+    },
+    "rRot": {
+      "type": null,
+      "documentation": null
+    },
+    "tDOFData": {
+      "type": null,
+      "documentation": null
+    },
+    "sCameraName": {
+      "type": null,
+      "documentation": null
+    },
+    "fFov": {
+      "type": null,
+      "documentation": null
+    },
+    "fNearPlane": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseThis": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

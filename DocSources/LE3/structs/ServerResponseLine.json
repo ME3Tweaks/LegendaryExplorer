@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "IP": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerName": {
+      "type": null,
+      "documentation": null
+    },
+    "MapName": {
+      "type": null,
+      "documentation": null
+    },
+    "GameType": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "PlayerInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "ServerID": {
+      "type": null,
+      "documentation": null
+    },
+    "Port": {
+      "type": null,
+      "documentation": null
+    },
+    "QueryPort": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentPlayers": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxPlayers": {
+      "type": null,
+      "documentation": null
+    },
+    "Ping": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

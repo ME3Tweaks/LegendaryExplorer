@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "Attachment": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "RelativeRotation": {
+      "type": null,
+      "documentation": null
+    },
+    "BoneName": {
+      "type": null,
+      "documentation": null
+    },
+    "bDetach": {
+      "type": null,
+      "documentation": null
+    },
+    "bHardAttach": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseRelativeOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseRelativeRotation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Image": {
+      "type": null,
+      "documentation": null
+    },
+    "WaveClass": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "AllCapsName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,57 @@
+{
+  "parent": "SFXGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "SlowDown": {
+      "type": "InterpCurveFloat",
+      "documentation": null
+    },
+    "TimeRemainingBeforePause": {
+      "type": "float",
+      "documentation": null
+    },
+    "OwnerCounterScale": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "OnUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdate(float TimeDelta)"
+    },
+    "OnApplied": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnApplied()"
+    },
+    "OnPaused": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPaused()"
+    },
+    "OnUnpaused": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnpaused()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

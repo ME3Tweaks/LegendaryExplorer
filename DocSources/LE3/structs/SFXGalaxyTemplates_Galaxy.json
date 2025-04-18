@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "Cluster": {
+      "type": null,
+      "documentation": null
+    },
+    "ClusterCircle": {
+      "type": null,
+      "documentation": null
+    },
+    "GalaxySphere": {
+      "type": null,
+      "documentation": null
+    },
+    "Twinkle": {
+      "type": null,
+      "documentation": null
+    },
+    "Crosshair": {
+      "type": null,
+      "documentation": null
+    },
+    "Camera": {
+      "type": null,
+      "documentation": null
+    },
+    "ClusterPath": {
+      "type": null,
+      "documentation": null
+    },
+    "DisabledClusterCircle": {
+      "type": null,
+      "documentation": null
+    },
+    "ReaperIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "ReaperClusterCircle": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentLocationIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "PulsingCircleHighlight": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

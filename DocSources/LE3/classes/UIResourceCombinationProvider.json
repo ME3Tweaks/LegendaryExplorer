@@ -1,0 +1,235 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "StaticDataProvider": {
+      "type": "UIResourceDataProvider",
+      "documentation": null
+    },
+    "ProfileProvider": {
+      "type": "UIDataProvider_OnlineProfileSettings",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetCellFieldType": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        },
+        "FieldType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCellFieldType(Name FieldName, Name CellTag, out EUIDataProviderFieldType FieldType)"
+    },
+    "GetCellFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "CellTag": {
+          "type": null,
+          "documentation": null
+        },
+        "ListIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_FieldValue": {
+          "type": null,
+          "documentation": null
+        },
+        "ArrayIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCellFieldValue(Name FieldName, Name CellTag, int ListIndex, out UIProviderFieldValue out_FieldValue, optional int ArrayIndex)"
+    },
+    "GetElementCellSchemaProvider": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "out_SchemaProvider": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetElementCellSchemaProvider(Name FieldName, out UIListElementCellProvider out_SchemaProvider)"
+    },
+    "GetElementCellTags": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "CellFieldTags": {
+          "type": null,
+          "documentation": null
+        },
+        "ColumnHeaderDisplayText": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetElementCellTags(Name FieldName, out array<Name> CellFieldTags, optional out array<string> ColumnHeaderDisplayText)"
+    },
+    "GetElementCellValueProvider": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "ListIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "out_ValueProvider": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetElementCellValueProvider(Name FieldName, int ListIndex, out UIListElementCellProvider out_ValueProvider)"
+    },
+    "GetElementCount": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetElementCount(Name FieldName)"
+    },
+    "GetElementProviderTags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "array<Name> GetElementProviderTags()"
+    },
+    "GetListElements": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "out_Elements": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetListElements(Name FieldName, out array<int> out_Elements)"
+    },
+    "InitializeProvider": {
+      "documentation": null,
+      "signature_members": {
+        "bIsEditor": {
+          "type": null,
+          "documentation": null
+        },
+        "InStaticResourceProvider": {
+          "type": null,
+          "documentation": null
+        },
+        "InProfileProvider": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeProvider(bool bIsEditor, UIResourceDataProvider InStaticResourceProvider, UIDataProvider_OnlineProfileSettings InProfileProvider)"
+    },
+    "IsElementEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": null,
+          "documentation": null
+        },
+        "CollectionIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsElementEnabled(Name FieldName, int CollectionIndex)"
+    },
+    "ClearProviderReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearProviderReferences()"
+    },
+    "ReplaceProviderCollection": {
+      "documentation": null,
+      "signature_members": {
+        "out_Fields": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetFieldTag": {
+          "type": null,
+          "documentation": null
+        },
+        "ReplacementProviders": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceProviderCollection(out array<UIDataProviderField> out_Fields, Name TargetFieldTag, const out array<UIDataProvider> ReplacementProviders)"
+    },
+    "ReplaceProviderValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_Fields": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetFieldTag": {
+          "type": null,
+          "documentation": null
+        },
+        "ReplacementProvider": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceProviderValue(out array<UIDataProviderField> out_Fields, Name TargetFieldTag, UIDataProvider ReplacementProvider)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

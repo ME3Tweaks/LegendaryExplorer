@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "sPrettyName": {
+      "type": null,
+      "documentation": null
+    },
+    "nID": {
+      "type": null,
+      "documentation": null
+    },
+    "bFriends": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

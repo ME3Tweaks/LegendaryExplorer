@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BNCT_ICONIC": {
+      "value": 0,
+      "documentation": null
+    },
+    "BNCT_CUSTOM": {
+      "value": 1,
+      "documentation": null
+    },
+    "BNCT_IMPORTED": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

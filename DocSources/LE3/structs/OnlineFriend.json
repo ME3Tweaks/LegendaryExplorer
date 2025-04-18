@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "UniqueId": {
+      "type": null,
+      "documentation": null
+    },
+    "SessionId": {
+      "type": null,
+      "documentation": null
+    },
+    "NickName": {
+      "type": null,
+      "documentation": null
+    },
+    "PresenceInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsOnline": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsPlaying": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsPlayingThisGame": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsJoinable": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasVoiceSupport": {
+      "type": null,
+      "documentation": null
+    },
+    "bHaveInvited": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasInvitedYou": {
+      "type": null,
+      "documentation": null
+    },
+    "FriendState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

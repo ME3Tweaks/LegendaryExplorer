@@ -1,0 +1,39 @@
+{
+  "parent": "PathConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "EnemyList": {
+      "type": "EnemyCoverInfo",
+      "documentation": null
+    },
+    "AI": {
+      "type": "SFXAI_Core",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "AvoidFireFromCover": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        },
+        "bCheckPlayerOnly": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AvoidFireFromCover(Pawn P, bool bCheckPlayerOnly)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

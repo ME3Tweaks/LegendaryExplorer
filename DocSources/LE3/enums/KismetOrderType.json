@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "KISMET_ORDER_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "KISMET_ORDER_FIRE_WEAPON": {
+      "value": 1,
+      "documentation": null
+    },
+    "KISMET_ORDER_MOVE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

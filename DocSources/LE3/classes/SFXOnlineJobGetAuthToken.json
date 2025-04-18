@@ -1,0 +1,42 @@
+{
+  "parent": "SFXOnlineJob",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "__OnAuthTokenRetrieved__Delegate": {
+      "type": "OnAuthTokenRetrieved",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CreateGetAuthTokenJob": {
+      "documentation": null,
+      "signature_members": {
+        "AuthTokenRetrievedDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJobGetAuthToken",
+      "signature": "SFXOnlineJobGetAuthToken CreateGetAuthTokenJob(delegate<OnAuthTokenRetrieved> AuthTokenRetrievedDelegate)"
+    },
+    "OnAuthTokenRetrieved": {
+      "documentation": null,
+      "signature_members": {
+        "token": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAuthTokenRetrieved(string token)"
+    },
+    "DoExecute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoExecute()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

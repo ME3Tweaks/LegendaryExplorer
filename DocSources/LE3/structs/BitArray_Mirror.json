@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "IndirectData": {
+      "type": null,
+      "documentation": null
+    },
+    "InlineData": {
+      "type": null,
+      "documentation": null
+    },
+    "NumBits": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxBits": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

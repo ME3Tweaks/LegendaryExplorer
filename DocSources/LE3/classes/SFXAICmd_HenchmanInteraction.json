@@ -1,0 +1,160 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "InteractionPoint": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "PlayerPawn": {
+      "type": "Pawn",
+      "documentation": null
+    },
+    "fidelityTimeout": {
+      "type": "float",
+      "documentation": null
+    },
+    "bReachedInteractionPoint": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bStopInteraction": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCalledStopDelegate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTriedMoveToPlayer": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTriedTeleportToNearbyNode": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTriedDirectTeleport": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CurrentFallback": {
+      "type": "FallBackMethod",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CanPlayerSeeActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayerSeeActor(Actor oActor)"
+    },
+    "FallbackTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FallbackTimeout()"
+    },
+    "FidelityTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FidelityTimer()"
+    },
+    "FindClosestCover": {
+      "documentation": null,
+      "signature_members": {
+        "NearbyCover": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindClosestCover(out CoverInfo NearbyCover)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "ResurrectHenchman": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ResurrectHenchman()"
+    },
+    "StartWorldInteraction": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "oInteractionPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "fFidelityTimeout": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartWorldInteraction(SFXAI_Core AI, Actor oInteractionPoint, float fFidelityTimeout)"
+    },
+    "TeleportToNearbyNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TeleportToNearbyNode()"
+    }
+  },
+  "states": {
+    "RunHenchmanInteraction": {
+      "functions": {
+        "CancelCommand": {
+          "documentation": null,
+          "signature_members": {
+            "nReason": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "MoveToInteractionPoint": {
+      "functions": {
+        "CancelCommand": {
+          "documentation": null,
+          "signature_members": {
+            "nReason": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

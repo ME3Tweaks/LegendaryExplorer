@@ -1,0 +1,43 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "EnterCover": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnterCover(SFXAI_Cover AI)"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "SetCoverDirection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetCoverDirection()"
+    },
+    "SetCoverType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SetCoverType()"
+    }
+  },
+  "states": {
+    "EnteringCover": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

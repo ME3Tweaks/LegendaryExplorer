@@ -1,0 +1,17 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "VectorTrack": {
+      "type": "InterpCurveVector",
+      "documentation": null
+    },
+    "CurveTension": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

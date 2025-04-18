@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "SunColor": {
+      "type": null,
+      "documentation": null
+    },
+    "Brightness": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

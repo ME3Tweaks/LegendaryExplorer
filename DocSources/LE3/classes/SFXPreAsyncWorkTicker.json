@@ -1,0 +1,170 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "QueuedShots": {
+      "type": "SFXPreAsyncWorkQueuedShot",
+      "documentation": null
+    },
+    "QueuedPowerImpacts": {
+      "type": "SFXPreAsyncWorkQueuedPowerImpact",
+      "documentation": null
+    },
+    "__OnActorImpacted__Delegate": {
+      "type": "OnActorImpacted",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DoAreaExplosionForActor": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "ExplosionLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "Params": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRagdollOverride": {
+          "type": null,
+          "documentation": null
+        },
+        "bReplicateCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCallback": {
+          "type": null,
+          "documentation": null
+        },
+        "MaxRagdollDmgTypeOverride": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoAreaExplosionForActor(SFXPowerCustomActionBase Power, Actor Target, Vector ExplosionLocation, int ImpactCount, float Damage, Class<SFXDamageType> DamageType, float Force, const out AreaEffectParameters Params, int MaxRagdollOverride, bool bReplicateCustomAction, delegate<OnActorImpacted> ImpactCallback, optional Class<SFXDamageType> MaxRagdollDmgTypeOverride)"
+    },
+    "DoPowerDetonationForActor": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Target": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactCount": {
+          "type": null,
+          "documentation": null
+        },
+        "bFirstTarget": {
+          "type": null,
+          "documentation": null
+        },
+        "bReplicateCustomAction": {
+          "type": null,
+          "documentation": null
+        },
+        "Projectile": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoPowerDetonationForActor(SFXPowerCustomActionBase Power, Actor Target, Vector HitLocation, Vector HitNormal, int ImpactCount, bool bFirstTarget, bool bReplicateCustomAction, optional SFXProjectile_PowerCustomAction Projectile)"
+    },
+    "OnActorImpacted": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Impacted": {
+          "type": null,
+          "documentation": null
+        },
+        "PreviouslyImpacted": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnActorImpacted(EPowerResistance Resistance, Actor Impacted, int PreviouslyImpacted, Vector HitLocation, Vector HitNormal)"
+    },
+    "ProcessInstantHit": {
+      "documentation": null,
+      "signature_members": {
+        "Weapon": {
+          "type": null,
+          "documentation": null
+        },
+        "FiringMode": {
+          "type": null,
+          "documentation": null
+        },
+        "Impact": {
+          "type": null,
+          "documentation": null
+        },
+        "bSuppressAudio": {
+          "type": null,
+          "documentation": null
+        },
+        "NumHits": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessInstantHit(SFXWeapon_NativeBase Weapon, byte FiringMode, const out ImpactInfo Impact, bool bSuppressAudio, optional int NumHits)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

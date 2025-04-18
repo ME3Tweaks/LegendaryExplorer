@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "bProcessDuringSpawn": {
+      "type": null,
+      "documentation": null
+    },
+    "bProcessDuringUpdate": {
+      "type": null,
+      "documentation": null
+    },
+    "bUseEmitterTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

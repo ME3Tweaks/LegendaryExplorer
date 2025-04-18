@@ -1,0 +1,13 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "LightRig": {
+      "type": "SFXLightRig",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

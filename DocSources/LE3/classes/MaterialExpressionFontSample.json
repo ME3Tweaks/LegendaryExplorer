@@ -1,0 +1,17 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Font": {
+      "type": "Font",
+      "documentation": null
+    },
+    "FontTexturePage": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

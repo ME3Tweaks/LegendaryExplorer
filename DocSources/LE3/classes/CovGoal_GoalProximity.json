@@ -1,0 +1,25 @@
+{
+  "parent": "CoverGoalConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "BestGoalDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinGoalDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxGoalDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHardLimits": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

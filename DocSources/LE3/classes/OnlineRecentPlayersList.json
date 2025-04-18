@@ -1,0 +1,243 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LastParty": {
+      "type": "RecentParty",
+      "documentation": null
+    },
+    "RecentPlayers": {
+      "type": "UniqueNetId",
+      "documentation": null
+    },
+    "RecentParties": {
+      "type": "RecentParty",
+      "documentation": null
+    },
+    "CurrentPlayers": {
+      "type": "CurrentPlayerMet",
+      "documentation": null
+    },
+    "MaxRecentPlayers": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxRecentParties": {
+      "type": "int",
+      "documentation": null
+    },
+    "RecentPlayersAddIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "RecentPartiesAddIndex": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddPartyToRecentParties": {
+      "documentation": null,
+      "signature_members": {
+        "PartyLeader": {
+          "type": null,
+          "documentation": null
+        },
+        "PartyMembers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPartyToRecentParties(UniqueNetId PartyLeader, const out array<UniqueNetId> PartyMembers)"
+    },
+    "AddPlayerToRecentPlayers": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerToRecentPlayers(UniqueNetId NewPlayer)"
+    },
+    "ClearRecentParties": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearRecentParties()"
+    },
+    "ClearRecentPlayers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearRecentPlayers()"
+    },
+    "DumpPlayersList": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DumpPlayersList(const out array<CurrentPlayerMet> Players)"
+    },
+    "GetCurrentPlayersListCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentPlayersListCount()"
+    },
+    "GetPlayersFromCurrentPlayers": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayersFromCurrentPlayers(out array<UniqueNetId> Players)"
+    },
+    "GetPlayersFromRecentParties": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayersFromRecentParties(out array<UniqueNetId> Players)"
+    },
+    "GetSkillForCurrentPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSkillForCurrentPlayer(UniqueNetId Player)"
+    },
+    "GetTeamForCurrentPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetTeamForCurrentPlayer(UniqueNetId Player)"
+    },
+    "SetCurrentPlayersList": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentPlayersList(const array<CurrentPlayerMet> Players)"
+    },
+    "SetLastParty": {
+      "documentation": null,
+      "signature_members": {
+        "PartyLeader": {
+          "type": null,
+          "documentation": null
+        },
+        "PartyMembers": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLastParty(UniqueNetId PartyLeader, const out array<UniqueNetId> PartyMembers)"
+    },
+    "ShowCurrentPlayersList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Description": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowCurrentPlayersList(byte LocalUserNum, string Title, string Description)"
+    },
+    "ShowLastPartyPlayerList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Description": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowLastPartyPlayerList(byte LocalUserNum, string Title, string Description)"
+    },
+    "ShowRecentPartiesPlayerList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Description": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowRecentPartiesPlayerList(byte LocalUserNum, string Title, string Description)"
+    },
+    "ShowRecentPlayerList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "Description": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowRecentPlayerList(byte LocalUserNum, string Title, string Description)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

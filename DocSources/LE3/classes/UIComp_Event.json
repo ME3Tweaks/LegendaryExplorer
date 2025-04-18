@@ -1,0 +1,56 @@
+{
+  "parent": "UIComponent",
+  "package": "Engine",
+  "variables": {
+    "DefaultEvents": {
+      "type": "DefaultEventSpecification",
+      "documentation": null
+    },
+    "DisabledEventAliases": {
+      "type": "Name",
+      "documentation": null
+    },
+    "EventContainer": {
+      "type": "UISequence",
+      "documentation": null
+    },
+    "InputProcessor": {
+      "type": "UIEvent_ProcessInput",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "RegisterInputEvents": {
+      "documentation": null,
+      "signature_members": {
+        "InputEventOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterInputEvents(UIState InputEventOwner, int PlayerIndex)"
+    },
+    "UnregisterInputEvents": {
+      "documentation": null,
+      "signature_members": {
+        "InputEventOwner": {
+          "type": null,
+          "documentation": null
+        },
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterInputEvents(UIState InputEventOwner, int PlayerIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

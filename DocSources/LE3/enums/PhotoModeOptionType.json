@@ -1,0 +1,89 @@
+{
+  "EnumValues": {
+    "PhotoOption_CameraMode": {
+      "value": 0,
+      "documentation": null
+    },
+    "PhotoOption_Roll": {
+      "value": 1,
+      "documentation": null
+    },
+    "PhotoOption_FocalLength": {
+      "value": 2,
+      "documentation": null
+    },
+    "PhotoOption_DOF": {
+      "value": 3,
+      "documentation": null
+    },
+    "PhotoOption_DOFDistance": {
+      "value": 4,
+      "documentation": null
+    },
+    "PhotoOption_FStop": {
+      "value": 5,
+      "documentation": null
+    },
+    "PhotoOption_DOFIntensity": {
+      "value": 6,
+      "documentation": null
+    },
+    "PhotoOption_Saturation": {
+      "value": 7,
+      "documentation": null
+    },
+    "PhotoOption_Brightness": {
+      "value": 8,
+      "documentation": null
+    },
+    "PhotoOption_Contrast": {
+      "value": 9,
+      "documentation": null
+    },
+    "PhotoOption_Filters": {
+      "value": 10,
+      "documentation": null
+    },
+    "PhotoOption_BloomIntensity": {
+      "value": 11,
+      "documentation": null
+    },
+    "PhotoOption_BloomThreshold": {
+      "value": 12,
+      "documentation": null
+    },
+    "PhotoOption_FilmGrain": {
+      "value": 13,
+      "documentation": null
+    },
+    "PhotoOption_FilmGrainStrength": {
+      "value": 14,
+      "documentation": null
+    },
+    "PhotoOption_Vignette": {
+      "value": 15,
+      "documentation": null
+    },
+    "PhotoOption_HidePlayer": {
+      "value": 16,
+      "documentation": null
+    },
+    "PhotoOption_HideParty": {
+      "value": 17,
+      "documentation": null
+    },
+    "PhotoOption_HideEnemies": {
+      "value": 18,
+      "documentation": null
+    },
+    "PhotoOption_HideNPCs": {
+      "value": 19,
+      "documentation": null
+    },
+    "PhotoOption_HideVehicle": {
+      "value": 20,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

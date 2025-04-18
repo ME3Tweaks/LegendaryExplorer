@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "STYLE_EVENT_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "STYLE_EVENT_NONE": {
+      "value": 1,
+      "documentation": null
+    },
+    "STYLE_EVENT_VERYWEAK": {
+      "value": 2,
+      "documentation": null
+    },
+    "STYLE_EVENT_WEAK": {
+      "value": 3,
+      "documentation": null
+    },
+    "STYLE_EVENT_GOOD": {
+      "value": 4,
+      "documentation": null
+    },
+    "STYLE_EVENT_VERYGOOD": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

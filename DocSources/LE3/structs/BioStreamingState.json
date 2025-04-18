@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "StateName": {
+      "type": null,
+      "documentation": null
+    },
+    "InChunkName": {
+      "type": null,
+      "documentation": null
+    },
+    "VisibleChunkNames": {
+      "type": null,
+      "documentation": null
+    },
+    "VisibleSoonChunkNames": {
+      "type": null,
+      "documentation": null
+    },
+    "LoadChunkNames": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

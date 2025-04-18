@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "PEBM_Distance": {
+      "value": 0,
+      "documentation": null
+    },
+    "PEBM_EndPoints": {
+      "value": 1,
+      "documentation": null
+    },
+    "PEBM_EndPoints_Interpolated": {
+      "value": 2,
+      "documentation": null
+    },
+    "PEBM_UserSet_EndPoints": {
+      "value": 3,
+      "documentation": null
+    },
+    "PEBM_UserSet_EndPoints_Interpolated": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

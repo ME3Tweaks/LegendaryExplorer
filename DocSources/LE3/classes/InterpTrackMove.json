@@ -1,0 +1,69 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "PosTrack": {
+      "type": "InterpCurveVector",
+      "documentation": null
+    },
+    "EulerTrack": {
+      "type": "InterpCurveVector",
+      "documentation": null
+    },
+    "LookupTrack": {
+      "type": "InterpLookupTrack",
+      "documentation": null
+    },
+    "LookAtGroupName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "LinCurveTension": {
+      "type": "float",
+      "documentation": null
+    },
+    "AngCurveTension": {
+      "type": "float",
+      "documentation": null
+    },
+    "bUseQuatInterpolation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowArrowAtKeys": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bDisableMovement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowTranslationOnCurveEd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowRotationOnCurveEd": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHide3DTrack": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SFXCreatedBeforeStuntActorLocationChange": {
+      "type": "bool",
+      "documentation": null
+    },
+    "MoveFrame": {
+      "type": "EInterpTrackMoveFrame",
+      "documentation": null
+    },
+    "RotMode": {
+      "type": "EInterpTrackMoveRotMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

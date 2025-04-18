@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CA_Priority_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CA_Priority_Low": {
+      "value": 1,
+      "documentation": null
+    },
+    "CA_Priority_Medium": {
+      "value": 2,
+      "documentation": null
+    },
+    "CA_Priority_High": {
+      "value": 3,
+      "documentation": null
+    },
+    "CA_Priority_SuperHigh": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

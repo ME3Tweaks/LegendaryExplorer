@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "OJC_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "OJC_Storage": {
+      "value": 1,
+      "documentation": null
+    },
+    "OJC_Leaderboards": {
+      "value": 2,
+      "documentation": null
+    },
+    "OJC_FriendList": {
+      "value": 3,
+      "documentation": null
+    },
+    "OJC_HTTPSystem": {
+      "value": 4,
+      "documentation": null
+    },
+    "OJC_GetAuthToken": {
+      "value": 5,
+      "documentation": null
+    },
+    "OJC_ImageSystem": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

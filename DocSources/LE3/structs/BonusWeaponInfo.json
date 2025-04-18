@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "UnlockPlotName": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponClass": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

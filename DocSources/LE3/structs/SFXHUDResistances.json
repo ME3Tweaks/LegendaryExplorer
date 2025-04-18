@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "fHealthPct": {
+      "type": null,
+      "documentation": null
+    },
+    "fArmourPct": {
+      "type": null,
+      "documentation": null
+    },
+    "fBioticPct": {
+      "type": null,
+      "documentation": null
+    },
+    "fShieldPct": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasShield": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasArmour": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasBiotic": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasHealth": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

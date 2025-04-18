@@ -1,0 +1,17 @@
+{
+  "parent": "SFXDamageType_Default",
+  "package": "SFXGame",
+  "variables": {
+    "PowerReactionChance": {
+      "type": "float",
+      "documentation": null
+    },
+    "Discipline": {
+      "type": "EBioCapMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

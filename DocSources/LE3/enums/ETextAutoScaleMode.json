@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "UIAUTOSCALE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIAUTOSCALE_Normal": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIAUTOSCALE_Justified": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIAUTOSCALE_ResolutionBased": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

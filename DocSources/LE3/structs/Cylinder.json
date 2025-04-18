@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Radius": {
+      "type": null,
+      "documentation": null
+    },
+    "Height": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

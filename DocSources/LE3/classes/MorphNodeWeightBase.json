@@ -1,0 +1,13 @@
+{
+  "parent": "MorphNodeBase",
+  "package": "Engine",
+  "variables": {
+    "NodeConns": {
+      "type": "MorphNodeConn",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

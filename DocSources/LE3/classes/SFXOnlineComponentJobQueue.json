@@ -1,0 +1,258 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "PendingJobs": {
+      "type": "SFXOnlineJob",
+      "documentation": null
+    },
+    "ProcessingJobs": {
+      "type": "SFXOnlineJob",
+      "documentation": null
+    },
+    "__JobPredicate__Delegate": {
+      "type": "JobPredicate",
+      "documentation": null
+    },
+    "JobThrottlesMS": {
+      "type": "int",
+      "documentation": null
+    },
+    "ThrottleValuesMS": {
+      "type": "int",
+      "documentation": null
+    },
+    "NextJobId": {
+      "type": "int",
+      "documentation": null
+    },
+    "SkipJobProcessing": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddJob": {
+      "documentation": null,
+      "signature_members": {
+        "Job": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddJob(SFXOnlineJob Job)"
+    },
+    "CancelJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelJob(int JobId)"
+    },
+    "CancelJobs": {
+      "documentation": null,
+      "signature_members": {
+        "JobType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int CancelJobs(OnlineJobType JobType)"
+    },
+    "CheckForJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobType": {
+          "type": null,
+          "documentation": null
+        },
+        "Predicate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForJob(OnlineJobType JobType, optional delegate<JobPredicate> Predicate)"
+    },
+    "CheckForPendingJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobType": {
+          "type": null,
+          "documentation": null
+        },
+        "Predicate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForPendingJob(OnlineJobType JobType, optional delegate<JobPredicate> Predicate)"
+    },
+    "CheckForProcessingJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobType": {
+          "type": null,
+          "documentation": null
+        },
+        "Predicate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForProcessingJob(OnlineJobType JobType, optional delegate<JobPredicate> Predicate)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "GetFirstPendingJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJob",
+      "signature": "SFXOnlineJob GetFirstPendingJob(OnlineJobType JobType)"
+    },
+    "JobPredicate": {
+      "documentation": null,
+      "signature_members": {
+        "Job": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool JobPredicate(const out SFXOnlineJob Job)"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "OnlineSub": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem OnlineSub)"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "OnlineEvent": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent OnlineEvent)"
+    },
+    "ProcessJobs": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": null,
+          "documentation": null
+        },
+        "JobsToProcess": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int ProcessJobs(float TimeDelta, optional int JobsToProcess)"
+    },
+    "SetJobThrottle": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "valueMS": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetJobThrottle(OnlineJobCategory Category, int valueMS)"
+    },
+    "UpdateTime": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDeltaMS": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTime(int TimeDeltaMS)"
+    },
+    "CheckForJobInArray": {
+      "documentation": null,
+      "signature_members": {
+        "JobType": {
+          "type": null,
+          "documentation": null
+        },
+        "JobArray": {
+          "type": null,
+          "documentation": null
+        },
+        "Predicate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForJobInArray(OnlineJobType JobType, const out array<SFXOnlineJob> JobArray, delegate<JobPredicate> Predicate)"
+    },
+    "GetPendingJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJob",
+      "signature": "SFXOnlineJob GetPendingJob(int JobId)"
+    },
+    "GetProcessingJob": {
+      "documentation": null,
+      "signature_members": {
+        "JobId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXOnlineJob",
+      "signature": "SFXOnlineJob GetProcessingJob(int JobId)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

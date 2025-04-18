@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "pSubtitleRefObject": {
+      "type": null,
+      "documentation": null
+    },
+    "cSubtitleColour": {
+      "type": null,
+      "documentation": null
+    },
+    "fSubtitleLength": {
+      "type": null,
+      "documentation": null
+    },
+    "fDelayStarting": {
+      "type": null,
+      "documentation": null
+    },
+    "bSuppressSubtitlesIfVO": {
+      "type": null,
+      "documentation": null
+    },
+    "bAlert": {
+      "type": null,
+      "documentation": null
+    },
+    "bAlwaysHideSubtitle": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasPriority": {
+      "type": null,
+      "documentation": null
+    },
+    "nSubtitleMode": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "NodeName": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedNode": {
+      "type": null,
+      "documentation": null
+    },
+    "CachedSlotNode": {
+      "type": null,
+      "documentation": null
+    },
+    "ChildIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "WeightCheck": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

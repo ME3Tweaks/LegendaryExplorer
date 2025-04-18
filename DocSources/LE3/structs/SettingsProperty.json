@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Data": {
+      "type": null,
+      "documentation": null
+    },
+    "PropertyId": {
+      "type": null,
+      "documentation": null
+    },
+    "AdvertisementType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

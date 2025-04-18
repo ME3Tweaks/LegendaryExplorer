@@ -1,0 +1,32 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGameContentLiveKismet",
+  "variables": {
+    "LeaveMissionArray": {
+      "type": "LeaveMissionData",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "getWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioWorldInfo",
+      "signature": "BioWorldInfo getWorld()"
+    },
+    "GrantAutomaticGawAssets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GrantAutomaticGawAssets()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

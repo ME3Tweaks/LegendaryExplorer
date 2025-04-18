@@ -1,0 +1,17 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "PitchModulation": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    },
+    "VolumeModulation": {
+      "type": "RawDistributionFloat",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

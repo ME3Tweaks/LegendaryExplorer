@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "WoundSev_Light": {
+      "value": 0,
+      "documentation": null
+    },
+    "WoundSev_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "WoundSev_Heavy": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

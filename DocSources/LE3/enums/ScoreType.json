@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SCORETYPE_DAMAGE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SCORETYPE_POWER": {
+      "value": 1,
+      "documentation": null
+    },
+    "SCORETYPE_OBJECTIVE": {
+      "value": 2,
+      "documentation": null
+    },
+    "SCORETYPE_MEDAL": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

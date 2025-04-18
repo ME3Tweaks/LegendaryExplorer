@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "aPartSys": {
+      "type": null,
+      "documentation": null
+    },
+    "aClientEffects": {
+      "type": null,
+      "documentation": null
+    },
+    "pPropCmp": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

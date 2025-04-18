@@ -1,0 +1,13 @@
+{
+  "parent": "SequenceAction",
+  "package": "WwiseAudio",
+  "variables": {
+    "Trigger": {
+      "type": "string",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "NormalizedRotationAxisAndAngle": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "PositionOnAxis": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Position": {
+      "type": "ExpressionInput",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

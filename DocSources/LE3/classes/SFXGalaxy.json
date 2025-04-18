@@ -1,0 +1,52 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Clusters": {
+      "type": "SFXCluster",
+      "documentation": null
+    },
+    "m_fGalaxyRadius": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {
+        "oChild": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddChild(SFXGalaxyMapObject oChild)"
+    },
+    "EnumerateClusters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnumerateClusters()"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "GetLevelSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetLevelSize()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

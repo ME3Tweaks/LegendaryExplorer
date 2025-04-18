@@ -1,0 +1,41 @@
+{
+  "Members": {
+    "MapId": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneRatingIncrease": {
+      "type": null,
+      "documentation": null
+    },
+    "EnemyID": {
+      "type": null,
+      "documentation": null
+    },
+    "DifficultyID": {
+      "type": null,
+      "documentation": null
+    },
+    "Waves": {
+      "type": null,
+      "documentation": null
+    },
+    "TotalMatchTime": {
+      "type": null,
+      "documentation": null
+    },
+    "OverallRatingIncrease": {
+      "type": null,
+      "documentation": null
+    },
+    "bResult": {
+      "type": null,
+      "documentation": null
+    },
+    "ZoneID": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

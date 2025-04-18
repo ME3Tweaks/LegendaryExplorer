@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "Rotation": {
+      "type": null,
+      "documentation": null
+    },
+    "Scale": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

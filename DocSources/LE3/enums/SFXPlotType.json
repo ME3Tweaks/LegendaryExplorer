@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXPlotType_Float": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXPlotType_Integer": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXPlotType_Boolean": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

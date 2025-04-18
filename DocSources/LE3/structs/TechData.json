@@ -1,0 +1,49 @@
+{
+  "Members": {
+    "ChoiceEntry": {
+      "type": null,
+      "documentation": null
+    },
+    "stTech": {
+      "type": null,
+      "documentation": null
+    },
+    "stTreasure": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotName": {
+      "type": null,
+      "documentation": null
+    },
+    "TechId": {
+      "type": null,
+      "documentation": null
+    },
+    "PlotId": {
+      "type": null,
+      "documentation": null
+    },
+    "TreasureId": {
+      "type": null,
+      "documentation": null
+    },
+    "UnlockId": {
+      "type": null,
+      "documentation": null
+    },
+    "nContextId": {
+      "type": null,
+      "documentation": null
+    },
+    "RMode": {
+      "type": null,
+      "documentation": null
+    },
+    "DisableId": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

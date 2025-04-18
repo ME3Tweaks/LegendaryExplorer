@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "TUT_Storm": {
+      "value": 0,
+      "documentation": null
+    },
+    "TUT_Cover": {
+      "value": 1,
+      "documentation": null
+    },
+    "TUT_Mantle": {
+      "value": 2,
+      "documentation": null
+    },
+    "TUT_MeleeHeavy": {
+      "value": 3,
+      "documentation": null
+    },
+    "TUT_MeleeLight": {
+      "value": 4,
+      "documentation": null
+    },
+    "TUT_AmmoPickup": {
+      "value": 5,
+      "documentation": null
+    },
+    "TUT_Reload": {
+      "value": 6,
+      "documentation": null
+    },
+    "TUT_WeaponSwapWheel": {
+      "value": 7,
+      "documentation": null
+    },
+    "TUT_WeaponSwapButton": {
+      "value": 8,
+      "documentation": null
+    },
+    "TUT_CastPowerWheel": {
+      "value": 9,
+      "documentation": null
+    },
+    "TUT_CastPowerButton": {
+      "value": 10,
+      "documentation": null
+    },
+    "TUT_AssignedPower": {
+      "value": 11,
+      "documentation": null
+    },
+    "TUT_MeleeFromCover": {
+      "value": 12,
+      "documentation": null
+    },
+    "TUT_CoverSlip": {
+      "value": 13,
+      "documentation": null
+    },
+    "TUT_SWATRoll": {
+      "value": 14,
+      "documentation": null
+    },
+    "TUT_TurnCoverCorner": {
+      "value": 15,
+      "documentation": null
+    },
+    "TUT_SquadCommand": {
+      "value": 16,
+      "documentation": null
+    },
+    "TUT_ClimbUp": {
+      "value": 17,
+      "documentation": null
+    },
+    "TUT_ObjectiveCheck": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

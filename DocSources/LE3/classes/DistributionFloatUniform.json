@@ -1,0 +1,25 @@
+{
+  "parent": "DistributionFloat",
+  "package": "Engine",
+  "variables": {
+    "Min": {
+      "type": "float",
+      "documentation": null
+    },
+    "Max": {
+      "type": "float",
+      "documentation": null
+    },
+    "fCachedValue": {
+      "type": "CachedValue",
+      "documentation": null
+    },
+    "bConsistentValue": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

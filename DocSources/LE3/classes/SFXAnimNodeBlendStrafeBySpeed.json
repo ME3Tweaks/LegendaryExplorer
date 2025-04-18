@@ -1,0 +1,13 @@
+{
+  "parent": "SFXAnimNodeBlendStrafe",
+  "package": "SFXGame",
+  "variables": {
+    "BaseSpeeds": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

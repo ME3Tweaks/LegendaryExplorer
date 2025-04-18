@@ -1,0 +1,26 @@
+{
+  "parent": "SFXGUI_MainMenu_Message",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLoad()"
+    },
+    "CreateMessage": {
+      "documentation": null,
+      "signature_members": {
+        "nMessageId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUI_MainMenu_Message",
+      "signature": "SFXGUI_MainMenu_Message CreateMessage(int nMessageId)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

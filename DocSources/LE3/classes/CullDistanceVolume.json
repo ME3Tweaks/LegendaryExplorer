@@ -1,0 +1,17 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "CullDistances": {
+      "type": "CullDistanceSizePair",
+      "documentation": null
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

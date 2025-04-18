@@ -1,0 +1,17 @@
+{
+  "parent": "LevelBase",
+  "package": "Engine",
+  "variables": {
+    "LightmapTotalSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "ShadowmapTotalSize": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

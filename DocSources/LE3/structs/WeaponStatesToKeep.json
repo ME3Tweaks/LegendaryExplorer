@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Pawn": {
+      "type": null,
+      "documentation": null
+    },
+    "WeaponClassName": {
+      "type": null,
+      "documentation": null
+    },
+    "AmmoPowerName": {
+      "type": null,
+      "documentation": null
+    },
+    "AmmoPowerSourceTag": {
+      "type": null,
+      "documentation": null
+    },
+    "CurrentSpareAmmo": {
+      "type": null,
+      "documentation": null
+    },
+    "AmmoUsedCount": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "DamageType": {
+      "type": null,
+      "documentation": null
+    },
+    "Trigger": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

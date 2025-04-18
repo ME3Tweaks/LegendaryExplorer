@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "ACCUMULATE_DAMAGE": {
+      "type": null,
+      "documentation": null
+    },
+    "ASSET_DEFINED_SUPPORT": {
+      "type": null,
+      "documentation": null
+    },
+    "WORLD_SUPPORT": {
+      "type": null,
+      "documentation": null
+    },
+    "DEBRIS_TIMEOUT": {
+      "type": null,
+      "documentation": null
+    },
+    "DEBRIS_MAX_SEPARATION": {
+      "type": null,
+      "documentation": null
+    },
+    "CRUMBLE_SMALLEST_CHUNKS": {
+      "type": null,
+      "documentation": null
+    },
+    "ACCURATE_RAYCASTS": {
+      "type": null,
+      "documentation": null
+    },
+    "USE_VALID_BOUNDS": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

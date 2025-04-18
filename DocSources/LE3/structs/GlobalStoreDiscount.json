@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "PlayerVariable": {
+      "type": null,
+      "documentation": null
+    },
+    "DiscountStrength": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

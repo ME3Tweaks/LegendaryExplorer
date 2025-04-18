@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "m_sCatName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aoSliders": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iCatIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iStringRef": {
+      "type": null,
+      "documentation": null
+    },
+    "m_iDescriptionStringRef": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

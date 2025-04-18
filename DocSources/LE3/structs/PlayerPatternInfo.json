@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Stripe1Param": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe2Param": {
+      "type": null,
+      "documentation": null
+    },
+    "Stripe3Param": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

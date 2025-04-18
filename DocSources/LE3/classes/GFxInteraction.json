@@ -1,0 +1,71 @@
+{
+  "parent": "Interaction",
+  "package": "GFxUI",
+  "variables": {
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    },
+    "GetFocusMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GFxMovie",
+      "signature": "GFxMovie GetFocusMovie()"
+    },
+    "SetFocusMovie": {
+      "documentation": null,
+      "signature_members": {
+        "MovieName": {
+          "type": null,
+          "documentation": null
+        },
+        "captureInput": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFocusMovie(string MovieName, bool captureInput)"
+    },
+    "NotifyPlayerAdded": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "AddedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerAdded(int PlayerIndex, LocalPlayer AddedPlayer)"
+    },
+    "NotifyPlayerRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "RemovedPlayer": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerRemoved(int PlayerIndex, LocalPlayer RemovedPlayer)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,222 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "CachedTerrainMaterials": {
+      "type": "CachedTerrainMaterialArray",
+      "documentation": null
+    },
+    "Heights": {
+      "type": "TerrainHeight",
+      "documentation": null
+    },
+    "InfoData": {
+      "type": "TerrainInfoData",
+      "documentation": null
+    },
+    "AlphaMaps": {
+      "type": "AlphaMap",
+      "documentation": null
+    },
+    "WeightedMaterials": {
+      "type": "TerrainWeightedMaterial",
+      "documentation": null
+    },
+    "WeightedTextureMaps": {
+      "type": "TerrainWeightMapTexture",
+      "documentation": null
+    },
+    "CachedDisplacements": {
+      "type": "byte",
+      "documentation": null
+    },
+    "Layers": {
+      "type": "TerrainLayer",
+      "documentation": null
+    },
+    "DecoLayers": {
+      "type": "TerrainDecoLayer",
+      "documentation": null
+    },
+    "TerrainComponents": {
+      "type": "TerrainComponent",
+      "documentation": null
+    },
+    "SelectedVertices": {
+      "type": "SelectedTerrainVertex",
+      "documentation": null
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null
+    },
+    "LightingGuid": {
+      "type": "Guid",
+      "documentation": null
+    },
+    "TerrainPhysMaterialOverride": {
+      "type": "PhysicalMaterial",
+      "documentation": null
+    },
+    "NormalMapLayer": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumSectionsX": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumSectionsY": {
+      "type": "int",
+      "documentation": null
+    },
+    "SectionSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxCollisionDisplacement": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxTesselationLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "MinTessellationLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "TesselationDistanceScale": {
+      "type": "float",
+      "documentation": null
+    },
+    "TessellationCheckDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "CollisionTesselationLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumVerticesX": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumVerticesY": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumPatchesX": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumPatchesY": {
+      "type": "int",
+      "documentation": null
+    },
+    "MaxComponentSize": {
+      "type": "int",
+      "documentation": null
+    },
+    "StaticLightingResolution": {
+      "type": "int",
+      "documentation": null
+    },
+    "LightingChannels": {
+      "type": "LightingChannelContainer",
+      "documentation": null
+    },
+    "EditorTessellationLevel": {
+      "type": "int",
+      "documentation": null
+    },
+    "WireframeColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "bIsOverridingLightResolution": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBilinearFilterLightmapGeneration": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bForceDirectLightMap": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnableSpecular": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bBlockRigidBody": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAllowRigidBodyUnderneath": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoPhysCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bAcceptsDynamicLights": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMorphingEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bMorphingGradientsEnabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bLocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bHeightmapLocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowingCollision": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bShowWireframe": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CalcLayerBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CalcLayerBounds()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

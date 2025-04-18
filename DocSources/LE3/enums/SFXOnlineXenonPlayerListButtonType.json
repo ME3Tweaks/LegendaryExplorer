@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "SFXONLINE_XENON_PLAYERLIST_BUTTON_TYPE_TITLECUSTOM": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_XENON_PLAYERLIST_BUTTON_TYPE_PLAYERREVIEW": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_XENON_PLAYERLIST_BUTTON_TYPE_GAMEINVITE": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_XENON_PLAYERLIST_BUTTON_TYPE_MESSAGE": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_XENON_PLAYERLIST_BUTTON_TYPE_FRIENDREQUEST": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_XENON_PLAYERLIST_BUTTON_TYPE_NONE": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

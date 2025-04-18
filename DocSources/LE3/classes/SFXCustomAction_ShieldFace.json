@@ -1,0 +1,15 @@
+{
+  "parent": "SFXCustomAction_SingleAnim",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "EndShieldFaceAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndShieldFaceAction()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

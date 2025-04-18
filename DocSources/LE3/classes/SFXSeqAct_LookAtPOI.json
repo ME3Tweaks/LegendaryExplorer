@@ -1,0 +1,159 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "m_vTargetOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_vExploreModeOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "m_nmTargetBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_pTarget": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_fFov": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fDurationRemaining": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bAutoActivate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableOtherPOIs": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDisableMovementInput": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPOIActive": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bDurationUpdating": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ActivatePOI": {
+      "documentation": null,
+      "signature_members": {
+        "pBPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivatePOI(BioPlayerController pBPC)"
+    },
+    "AddPOITarget": {
+      "documentation": null,
+      "signature_members": {
+        "pBPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPOITarget(BioPlayerController pBPC)"
+    },
+    "CalcCameraPosition": {
+      "documentation": null,
+      "signature_members": {
+        "vCameraLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "vUnderneathCamLoc": {
+          "type": null,
+          "documentation": null
+        },
+        "vTargetLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "fTimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalcCameraPosition(out Vector vCameraLocation, const out Vector vUnderneathCamLoc, const out Vector vTargetLocation, float fTimeDelta)"
+    },
+    "CalcTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CalcTargetLocation(out Vector vLocation)"
+    },
+    "DeactivatePOI": {
+      "documentation": null,
+      "signature_members": {
+        "pBPC": {
+          "type": null,
+          "documentation": null
+        },
+        "bPlayerInputRequest": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivatePOI(BioPlayerController pBPC, bool bPlayerInputRequest)"
+    },
+    "RemovePOITarget": {
+      "documentation": null,
+      "signature_members": {
+        "pBPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePOITarget(BioPlayerController pBPC)"
+    },
+    "UpdateCamPOV": {
+      "documentation": null,
+      "signature_members": {
+        "pCamMode": {
+          "type": null,
+          "documentation": null
+        },
+        "fTimeDelta": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCamPOV(SFXCameraAction_FollowTarget pCamMode, float fTimeDelta)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

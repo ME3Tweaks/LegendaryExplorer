@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFXONLINE_NOTIFICATION_PURHASE_UNKNOWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PURHASE_COMPLETED": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_NOTIFICATION_PURHASE_NONE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

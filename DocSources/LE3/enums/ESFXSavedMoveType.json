@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "SavedMoveType_Walk": {
+      "value": 0,
+      "documentation": null
+    },
+    "SavedMoveType_Storm": {
+      "value": 1,
+      "documentation": null
+    },
+    "SavedMoveType_InCover": {
+      "value": 2,
+      "documentation": null
+    },
+    "SavedMoveType_AimBack": {
+      "value": 3,
+      "documentation": null
+    },
+    "SavedMoveType_RootMotion": {
+      "value": 4,
+      "documentation": null
+    },
+    "SavedMoveType_Standard": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "SFXONLINE_FIELD_UNKNOWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_PASSWORD": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_VERIFY_PASSWORD": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_EMAIL": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_PARENTAL_EMAIL": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_DISPLAY_NAME": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_STATUS": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_DOB": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_TOKEN": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXONLINE_FIELD_EXPIRATION": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "nCopies": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

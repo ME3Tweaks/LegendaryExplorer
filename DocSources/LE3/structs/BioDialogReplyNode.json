@@ -1,0 +1,33 @@
+{
+  "Members": {
+    "EntryList": {
+      "type": null,
+      "documentation": null
+    },
+    "nListenerIndex": {
+      "type": null,
+      "documentation": null
+    },
+    "bUnskippable": {
+      "type": null,
+      "documentation": null
+    },
+    "bIllegal": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsDefaultAction": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsMajorDecision": {
+      "type": null,
+      "documentation": null
+    },
+    "ReplyType": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,57 @@
+{
+  "Members": {
+    "m_sStartClusterLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "m_sEndClusterLabel": {
+      "type": null,
+      "documentation": null
+    },
+    "m_vLeftEndPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "m_vRightEndPosition": {
+      "type": null,
+      "documentation": null
+    },
+    "m_vMiddlePosition": {
+      "type": null,
+      "documentation": null
+    },
+    "m_vDrawScale": {
+      "type": null,
+      "documentation": null
+    },
+    "m_rOrientation": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pLeftEndActor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pRighEndActor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_pMiddleActor": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nStartClusterIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "m_nEndClusterIdx": {
+      "type": null,
+      "documentation": null
+    },
+    "m_bIsGlowing": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

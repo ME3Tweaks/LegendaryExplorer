@@ -1,0 +1,17 @@
+{
+  "parent": "WaveFormBase",
+  "package": "SFXGame",
+  "variables": {
+    "MinDetonationRumbleDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxDetonationRumbleDistance": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

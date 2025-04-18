@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "Quaternion": {
+      "type": null,
+      "documentation": null
+    },
+    "Translation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "HandleParticleModuleEventSendToGame": {
+      "documentation": null,
+      "signature_members": {
+        "InEvent": {
+          "type": null,
+          "documentation": null
+        },
+        "InCollideDirection": {
+          "type": null,
+          "documentation": null
+        },
+        "InHitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "InHitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "InBoneName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleParticleModuleEventSendToGame(ParticleModuleEventSendToGame InEvent, const out Vector InCollideDirection, const out Vector InHitLocation, const out Vector InHitNormal, const out Name InBoneName)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

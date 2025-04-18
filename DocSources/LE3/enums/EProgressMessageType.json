@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "PMT_Clear": {
+      "value": 0,
+      "documentation": null
+    },
+    "PMT_Information": {
+      "value": 1,
+      "documentation": null
+    },
+    "PMT_AdminMessage": {
+      "value": 2,
+      "documentation": null
+    },
+    "PMT_DownloadProgress": {
+      "value": 3,
+      "documentation": null
+    },
+    "PMT_ConnectionFailure": {
+      "value": 4,
+      "documentation": null
+    },
+    "PMT_SocketFailure": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

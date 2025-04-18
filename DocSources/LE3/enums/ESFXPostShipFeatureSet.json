@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "PSFS_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_1": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_2": {
+      "value": 2,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_3": {
+      "value": 3,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_4": {
+      "value": 4,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_5": {
+      "value": 5,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_6": {
+      "value": 6,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_7": {
+      "value": 7,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_8": {
+      "value": 8,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_9": {
+      "value": 9,
+      "documentation": null
+    },
+    "PSFS_FeatureSet_10": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

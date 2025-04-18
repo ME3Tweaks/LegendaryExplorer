@@ -1,0 +1,33 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "SplineLength": {
+      "type": "int",
+      "documentation": null
+    },
+    "EndSplineTension": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartSplineTension": {
+      "type": "float",
+      "documentation": null
+    },
+    "bInvertSplineBoneAxis": {
+      "type": "bool",
+      "documentation": null
+    },
+    "SplineBoneAxis": {
+      "type": "EAxis",
+      "documentation": null
+    },
+    "BoneRotMode": {
+      "type": "ESplineControlRotMode",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

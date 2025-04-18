@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "CurveWeights": {
+      "type": null,
+      "documentation": null
+    },
+    "CurveName": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

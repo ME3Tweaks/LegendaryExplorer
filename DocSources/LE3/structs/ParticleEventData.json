@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "location": {
+      "type": null,
+      "documentation": null
+    },
+    "Direction": {
+      "type": null,
+      "documentation": null
+    },
+    "Velocity": {
+      "type": null,
+      "documentation": null
+    },
+    "EventName": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    },
+    "EmitterTime": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

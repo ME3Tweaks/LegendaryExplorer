@@ -1,0 +1,109 @@
+{
+  "parent": "SFXGalaxyMapObject",
+  "package": "SFXGame",
+  "variables": {
+    "Systems": {
+      "type": "SFXSystem",
+      "documentation": null
+    },
+    "RelayConnections": {
+      "type": "SFXCluster",
+      "documentation": null
+    },
+    "StarColor": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "StarColor2": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "ClusterTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "NebularDensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "CloudTile": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereIntensity": {
+      "type": "float",
+      "documentation": null
+    },
+    "SphereSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "ExploredCluster": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddChild": {
+      "documentation": null,
+      "signature_members": {
+        "oChild": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddChild(SFXGalaxyMapObject oChild)"
+    },
+    "IsReaperControlled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsReaperControlled()"
+    },
+    "RemoveChild": {
+      "documentation": null,
+      "signature_members": {
+        "Child": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveChild(SFXGalaxyMapObject Child)"
+    },
+    "CountObjectsForExploration": {
+      "documentation": null,
+      "signature_members": {
+        "nObjectCount": {
+          "type": null,
+          "documentation": null
+        },
+        "nExploredCount": {
+          "type": null,
+          "documentation": null
+        },
+        "eMapLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "CountObjectsForExploration(out int nObjectCount, out int nExploredCount, EBioGalaxyMapState eMapLevel)"
+    },
+    "EnumerateSystems": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnumerateSystems()"
+    },
+    "GetLevelSize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetLevelSize()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

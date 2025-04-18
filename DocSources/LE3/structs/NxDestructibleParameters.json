@@ -1,0 +1,97 @@
+{
+  "Members": {
+    "DepthParameters": {
+      "type": null,
+      "documentation": null
+    },
+    "ValidBounds": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageToRadius": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageCap": {
+      "type": null,
+      "documentation": null
+    },
+    "ForceToDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "ImpactVelocityThreshold": {
+      "type": null,
+      "documentation": null
+    },
+    "DamageToPercentDeformation": {
+      "type": null,
+      "documentation": null
+    },
+    "DeformationPercentLimit": {
+      "type": null,
+      "documentation": null
+    },
+    "SupportDepth": {
+      "type": null,
+      "documentation": null
+    },
+    "DebrisDepth": {
+      "type": null,
+      "documentation": null
+    },
+    "EssentialDepth": {
+      "type": null,
+      "documentation": null
+    },
+    "DebrisLifetimeMin": {
+      "type": null,
+      "documentation": null
+    },
+    "DebrisLifetimeMax": {
+      "type": null,
+      "documentation": null
+    },
+    "DebrisMaxSeparationMin": {
+      "type": null,
+      "documentation": null
+    },
+    "DebrisMaxSeparationMax": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxChunkSpeed": {
+      "type": null,
+      "documentation": null
+    },
+    "MassScaleExponent": {
+      "type": null,
+      "documentation": null
+    },
+    "Flags": {
+      "type": null,
+      "documentation": null
+    },
+    "GrbVolumeLimit": {
+      "type": null,
+      "documentation": null
+    },
+    "GrbParticleSpacing": {
+      "type": null,
+      "documentation": null
+    },
+    "FractureImpulseScale": {
+      "type": null,
+      "documentation": null
+    },
+    "bFormExtendedStructures": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

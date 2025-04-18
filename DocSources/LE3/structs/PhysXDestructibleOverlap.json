@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "ChunkIndex0": {
+      "type": null,
+      "documentation": null
+    },
+    "ChunkIndex1": {
+      "type": null,
+      "documentation": null
+    },
+    "Adjacent": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

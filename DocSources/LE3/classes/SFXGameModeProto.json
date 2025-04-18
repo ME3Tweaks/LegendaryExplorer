@@ -1,0 +1,255 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "OldGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "OldCombatGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastJoyRightKey": {
+      "type": "EProtoInputTrapKey",
+      "documentation": null
+    },
+    "LastJoyUpKey": {
+      "type": "EProtoInputTrapKey",
+      "documentation": null
+    },
+    "LastLookRightKey": {
+      "type": "EProtoInputTrapKey",
+      "documentation": null
+    },
+    "LastLookUpKey": {
+      "type": "EProtoInputTrapKey",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "AButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AButton()"
+    },
+    "AButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AButtonOff()"
+    },
+    "BackButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BackButton()"
+    },
+    "BackButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BackButtonOff()"
+    },
+    "BButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BButton()"
+    },
+    "BButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BButtonOff()"
+    },
+    "DPadDownButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadDownButton()"
+    },
+    "DPadDownButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadDownButtonOff()"
+    },
+    "DPadLeftButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadLeftButton()"
+    },
+    "DPadLeftButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadLeftButtonOff()"
+    },
+    "DPadRightButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadRightButton()"
+    },
+    "DPadRightButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadRightButtonOff()"
+    },
+    "DPadUpButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadUpButton()"
+    },
+    "DPadUpButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DPadUpButtonOff()"
+    },
+    "LeftShoulderButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftShoulderButton()"
+    },
+    "LeftShoulderButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftShoulderButtonOff()"
+    },
+    "LeftThumbstickButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftThumbstickButton()"
+    },
+    "LeftThumbstickButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftThumbstickButtonOff()"
+    },
+    "LeftTriggerButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftTriggerButton()"
+    },
+    "LeftTriggerButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftTriggerButtonOff()"
+    },
+    "RightShoudlerButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightShoudlerButtonOff()"
+    },
+    "RightShoulderButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightShoulderButton()"
+    },
+    "RightThumbstickButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightThumbstickButton()"
+    },
+    "RightTriggerButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightTriggerButton()"
+    },
+    "RightTriggerButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightTriggerButtonOff()"
+    },
+    "RigthThumbstickButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RigthThumbstickButtonOff()"
+    },
+    "StartButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartButton()"
+    },
+    "StartButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartButtonOff()"
+    },
+    "TriggerInputTrap": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TriggerInputTrap(EProtoInputTrapKey Key)"
+    },
+    "UpdateAxes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAxes()"
+    },
+    "XButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "XButton()"
+    },
+    "XButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "XButtonOff()"
+    },
+    "YButton": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "YButton()"
+    },
+    "YButtonOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "YButtonOff()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

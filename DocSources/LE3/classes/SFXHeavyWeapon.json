@@ -1,0 +1,94 @@
+{
+  "parent": "SFXWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "bTossOnWeaponSwitch": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddAmmo(int Amount)"
+    },
+    "ConsumeAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "FireModeNum": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConsumeAmmo(byte FireModeNum)"
+    },
+    "PutDownWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PutDownWeapon()"
+    },
+    "AddHeavyAmmo": {
+      "documentation": null,
+      "signature_members": {
+        "Ammo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddHeavyAmmo(int Ammo)"
+    },
+    "DropGun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DropGun()"
+    },
+    "GetCurrentSpareAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentSpareAmmo()"
+    },
+    "GetStoreQualification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EAttachSlot",
+      "signature": "EAttachSlot GetStoreQualification()"
+    },
+    "PlayLowAmmoVocalization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayLowAmmoVocalization()"
+    }
+  },
+  "states": {
+    "Active": {
+      "functions": {
+        "BeginFire": {
+          "documentation": null,
+          "signature_members": {
+            "FireModeNum": {
+              "type": null,
+              "documentation": null
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

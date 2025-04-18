@@ -1,0 +1,135 @@
+{
+  "parent": "DroppedPickup",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "PickupMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null
+    },
+    "PickupSound": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "PickupTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "PlayerPickupTimer": {
+      "type": "float",
+      "documentation": null
+    },
+    "bTargetable": {
+      "type": "bool",
+      "documentation": null
+    },
+    "EquipWeaponToolTip": {
+      "type": "ETargetTipText",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Landed": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "FloorActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Landed(Vector HitNormal, Actor FloorActor)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SetPickupMesh": {
+      "documentation": null,
+      "signature_members": {
+        "NewPickupMesh": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPickupMesh(PrimitiveComponent NewPickupMesh)"
+    },
+    "PickedUpBy": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PickedUpBy(Pawn P)"
+    },
+    "GiveTo": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTo(Pawn P)"
+    },
+    "EnableUseModule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableUseModule()"
+    },
+    "InitPickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitPickup()"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Used(Actor User)"
+    }
+  },
+  "states": {
+    "Idle": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,73 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_nFSHandlerID": {
+      "type": "int",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleFSCommand": {
+      "documentation": null,
+      "signature_members": {
+        "nCommandID": {
+          "type": null,
+          "documentation": null
+        },
+        "aArgs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleFSCommand(byte nCommandID, const out array<string> aArgs)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nEventID": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents nEventID, optional float fValue)"
+    },
+    "OnAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAdded()"
+    },
+    "OnClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClosed()"
+    },
+    "OnRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemoved()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

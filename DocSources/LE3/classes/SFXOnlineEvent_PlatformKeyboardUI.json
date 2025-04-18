@@ -1,0 +1,41 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "Response": {
+      "type": "string",
+      "documentation": null
+    },
+    "TitleText": {
+      "type": "string",
+      "documentation": null
+    },
+    "DescriptionText": {
+      "type": "string",
+      "documentation": null
+    },
+    "DefaultText": {
+      "type": "string",
+      "documentation": null
+    },
+    "ResponseBuffer": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "ShouldValidate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "RouteThroughConsole": {
+      "type": "bool",
+      "documentation": null
+    },
+    "LocalUserNum": {
+      "type": "byte",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

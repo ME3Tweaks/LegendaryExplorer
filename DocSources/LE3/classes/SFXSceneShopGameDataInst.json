@@ -1,0 +1,25 @@
+{
+  "parent": "SFXSceneShopDataInstInterface",
+  "package": "Engine",
+  "variables": {
+    "m_mapSceneTree": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_mapPlayingScenes": {
+      "type": "Map_Mirror",
+      "documentation": null
+    },
+    "m_mapSceneGroups": {
+      "type": "MultiMap_Mirror",
+      "documentation": null
+    },
+    "m_bProcessingScenes": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

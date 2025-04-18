@@ -1,0 +1,57 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentColour": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "SeeThroughSmokeColour": {
+      "type": "LinearColor",
+      "documentation": null
+    },
+    "SmokeLineOfSightOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Source": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "RenderMaterial": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "GlowMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "ColourParam": {
+      "type": "Name",
+      "documentation": null
+    },
+    "MultiplierParam": {
+      "type": "Name",
+      "documentation": null
+    },
+    "BlendTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PostDeathGlowDuration": {
+      "type": "float",
+      "documentation": null
+    },
+    "LastDiedTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bSourceDied": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

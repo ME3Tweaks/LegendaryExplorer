@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "TM": {
+      "type": null,
+      "documentation": null
+    },
+    "Radius": {
+      "type": null,
+      "documentation": null
+    },
+    "Length": {
+      "type": null,
+      "documentation": null
+    },
+    "bNoRBCollision": {
+      "type": null,
+      "documentation": null
+    },
+    "bPerPolyShape": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

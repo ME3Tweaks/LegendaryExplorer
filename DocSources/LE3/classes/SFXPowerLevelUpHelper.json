@@ -1,0 +1,162 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_Powers": {
+      "type": "SFXPowerCustomActionBase",
+      "documentation": null
+    },
+    "m_SavedPawnPowerStates": {
+      "type": "SavedPawnPowerData",
+      "documentation": null
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null
+    },
+    "m_Pawn": {
+      "type": "BioPawn",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AutoLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoLevelUp()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(BioWorldInfo WorldInfo)"
+    },
+    "CanEvolvePower": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanEvolvePower(int nPowerIndex)"
+    },
+    "CanIncreaseRank": {
+      "documentation": null,
+      "signature_members": {
+        "PowerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "CostToIncrease": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanIncreaseRank(int PowerIndex, out int CostToIncrease)"
+    },
+    "CanMakePurchase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanMakePurchase()"
+    },
+    "EvolvePower": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalPower": {
+          "type": null,
+          "documentation": null
+        },
+        "nEvolveIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "EvolvePower(SFXPowerCustomActionBase OriginalPower, int nEvolveIndex)"
+    },
+    "GetCurrentRank": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCurrentRank(int nPowerIndex)"
+    },
+    "GetNextWheelDisplayIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNextWheelDisplayIndex()"
+    },
+    "GetRemainingPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRemainingPoints()"
+    },
+    "IncreaseRank": {
+      "documentation": null,
+      "signature_members": {
+        "PowerIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncreaseRank(int PowerIndex)"
+    },
+    "IsUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "RequiredLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUnlocked(int nPowerIndex, optional out int RequiredLevel)"
+    },
+    "SaveCurrentPowerStates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveCurrentPowerStates()"
+    },
+    "SetPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPawn(BioPawn Pawn)"
+    },
+    "UndoChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UndoChanges()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

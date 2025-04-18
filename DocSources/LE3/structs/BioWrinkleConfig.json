@@ -1,0 +1,13 @@
+{
+  "Members": {
+    "WrinkleParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "WrinkleTexture": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

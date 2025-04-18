@@ -1,0 +1,13 @@
+{
+  "parent": "SequenceAction",
+  "package": "GameFramework",
+  "variables": {
+    "Properties": {
+      "type": "PropertyInfo",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

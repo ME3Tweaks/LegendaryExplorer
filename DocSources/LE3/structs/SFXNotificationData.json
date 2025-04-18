@@ -1,0 +1,69 @@
+{
+  "Members": {
+    "sImageResource": {
+      "type": null,
+      "documentation": null
+    },
+    "nmType": {
+      "type": null,
+      "documentation": null
+    },
+    "nmRemoteEvent": {
+      "type": null,
+      "documentation": null
+    },
+    "nmSound": {
+      "type": null,
+      "documentation": null
+    },
+    "nmIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "srTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srSubTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srBody": {
+      "type": null,
+      "documentation": null
+    },
+    "srAltTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "srAltBody": {
+      "type": null,
+      "documentation": null
+    },
+    "srAltSubtitle": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayTime": {
+      "type": null,
+      "documentation": null
+    },
+    "Priority": {
+      "type": null,
+      "documentation": null
+    },
+    "nFlourishID": {
+      "type": null,
+      "documentation": null
+    },
+    "bCanBeMerged": {
+      "type": null,
+      "documentation": null
+    },
+    "bIsMini": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

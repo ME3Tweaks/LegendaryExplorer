@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Amplitude": {
+      "type": null,
+      "documentation": null
+    },
+    "Frequency": {
+      "type": null,
+      "documentation": null
+    },
+    "InitialOffset": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

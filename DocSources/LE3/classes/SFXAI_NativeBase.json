@@ -1,0 +1,366 @@
+{
+  "parent": "BioAiController",
+  "package": "SFXGame",
+  "variables": {
+    "PathWeightLog": {
+      "type": "SFXPathWeightLog",
+      "documentation": null
+    },
+    "CombatIdleNode": {
+      "type": "SFXNav_InteractionPoint",
+      "documentation": null
+    },
+    "m_nMantleCostModifier": {
+      "type": "int",
+      "documentation": null
+    },
+    "LastShotAtTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nEnabledFlags": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fNextTimeForReachableCheck": {
+      "type": "float",
+      "documentation": null
+    },
+    "NextTimeForBlockedReachSpecCheck": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bCanSkipNodes": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInitiallyDisabled": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CustomReachSpecBlocked": {
+      "type": "bool",
+      "documentation": null
+    },
+    "CombatMood": {
+      "type": "EAICombatMood",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AdjustSteeringMoveSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustSteeringMoveSpeed(Vector vSteering)"
+    },
+    "BioClearCrossLevelReferences": {
+      "documentation": null,
+      "signature_members": {
+        "oLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioClearCrossLevelReferences(Level oLevel)"
+    },
+    "CanInterruptCurrentState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanInterruptCurrentState()"
+    },
+    "CanNavFireIntoSector": {
+      "documentation": null,
+      "signature_members": {
+        "Nav": {
+          "type": null,
+          "documentation": null
+        },
+        "Sector": {
+          "type": null,
+          "documentation": null
+        },
+        "Distance": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanNavFireIntoSector(NavigationPoint Nav, int Sector, float Distance)"
+    },
+    "CanSkipCurrentPathNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSkipCurrentPathNode()"
+    },
+    "CheckLeaveCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckLeaveCover()"
+    },
+    "EnableAI": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": null,
+          "documentation": null
+        },
+        "nRequestedBy": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnableAI(bool bEnable, int nRequestedBy)"
+    },
+    "GetActorToFollow": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetActorToFollow(out Actor oActor, out Vector vLocation)"
+    },
+    "GetAimLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oAimTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetAimLocation(optional Actor oAimTarget)"
+    },
+    "GetRouteCacheDistance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRouteCacheDistance()"
+    },
+    "GetSectorForLine": {
+      "documentation": null,
+      "signature_members": {
+        "SectorLine": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSectorForLine(const out Vector SectorLine)"
+    },
+    "GetSteeringVector": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSteeringVector(out Vector vSteering)"
+    },
+    "HasApproximateSightBetweenNodes": {
+      "documentation": null,
+      "signature_members": {
+        "OriginNav": {
+          "type": null,
+          "documentation": null
+        },
+        "TargetNav": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasApproximateSightBetweenNodes(NavigationPoint OriginNav, NavigationPoint TargetNav)"
+    },
+    "HasEnemyWithinDistance": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": null,
+          "documentation": null
+        },
+        "out_EnemyPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "bExact": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEnemyWithinDistance(float Distance, optional out Pawn out_EnemyPawn, optional bool bExact)"
+    },
+    "IsActorInLevel": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": null,
+          "documentation": null
+        },
+        "oLevel": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActorInLevel(Actor oActor, Level oLevel)"
+    },
+    "IsCustomReachSpecBlocked": {
+      "documentation": null,
+      "signature_members": {
+        "ReachSpec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCustomReachSpecBlocked(SFXCustomReachSpec ReachSpec)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "IsSpecialMoveAfterMoveTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSpecialMoveAfterMoveTarget()"
+    },
+    "MoveTowardLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "fOffset": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveTowardLocation(Vector vLocation, optional float fOffset)"
+    },
+    "NotifyPlayerFocus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPlayerFocus()"
+    },
+    "ReachedMoveTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReachedMoveTarget()"
+    },
+    "RequiresCover": {
+      "documentation": null,
+      "signature_members": {
+        "ReachSpec": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RequiresCover(ReachSpec ReachSpec)"
+    },
+    "ResetToIdle": {
+      "documentation": null,
+      "signature_members": {
+        "bTeleport": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetToIdle(optional bool bTeleport)"
+    },
+    "SetMoveTimer": {
+      "documentation": null,
+      "signature_members": {
+        "vMove": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMoveTimer(out Vector vMove)"
+    },
+    "SetSpawnPoint": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnPoint": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpawnPoint(PathNode SpawnPoint)"
+    },
+    "SmoothPathMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SmoothPathMovement()"
+    },
+    "StartedSpawning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartedSpawning()"
+    },
+    "StoppedSpawning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StoppedSpawning()"
+    },
+    "UpdateMovementActions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMovementActions()"
+    },
+    "ValidateFireTargetLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ValidateFireTargetLocation()"
+    },
+    "GetCombatRange": {
+      "documentation": null,
+      "signature_members": {
+        "CombatRange": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCombatRange(EAICombatRange CombatRange)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

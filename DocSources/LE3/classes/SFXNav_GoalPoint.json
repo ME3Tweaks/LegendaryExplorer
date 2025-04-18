@@ -1,0 +1,45 @@
+{
+  "parent": "NavigationPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_nPriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_nOverridePriority": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_bIsFinalGoal": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetPriority": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPriority()"
+    },
+    "OverridePriority": {
+      "documentation": null,
+      "signature_members": {
+        "nNewPriority": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OverridePriority(int nNewPriority)"
+    },
+    "ResetPriority": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPriority()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

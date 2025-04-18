@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "WwiseEvent_Unprepared": {
+      "value": 0,
+      "documentation": null
+    },
+    "WwiseEvent_Preparing": {
+      "value": 1,
+      "documentation": null
+    },
+    "WwiseEvent_PrepareSuccess": {
+      "value": 2,
+      "documentation": null
+    },
+    "WwiseEvent_PrepareFailed": {
+      "value": 3,
+      "documentation": null
+    },
+    "WwiseEvent_UnPrepareFailed": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

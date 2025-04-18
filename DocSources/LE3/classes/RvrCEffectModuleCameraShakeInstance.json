@@ -1,0 +1,31 @@
+{
+  "parent": "RvrClientEffectModuleInstance",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "StartCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "pPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StartCameraShake(PlayerController pPC)"
+    },
+    "StopCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "pPC": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopCameraShake(PlayerController pPC)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

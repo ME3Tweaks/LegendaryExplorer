@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "Top": {
+      "type": null,
+      "documentation": null
+    },
+    "Left": {
+      "type": null,
+      "documentation": null
+    },
+    "Width": {
+      "type": null,
+      "documentation": null
+    },
+    "Height": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

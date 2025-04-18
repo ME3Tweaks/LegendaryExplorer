@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EPlotChoice_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPlotChoice_KaidenDies": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPlotChoice_AshleyDies": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

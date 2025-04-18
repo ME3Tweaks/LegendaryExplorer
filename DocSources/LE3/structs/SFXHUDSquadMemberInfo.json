@@ -1,0 +1,129 @@
+{
+  "Members": {
+    "sPath": {
+      "type": null,
+      "documentation": null
+    },
+    "sIconImagePath": {
+      "type": null,
+      "documentation": null
+    },
+    "sShieldPath": {
+      "type": null,
+      "documentation": null
+    },
+    "sBioticPath": {
+      "type": null,
+      "documentation": null
+    },
+    "sArmourPath": {
+      "type": null,
+      "documentation": null
+    },
+    "sHealthPath": {
+      "type": null,
+      "documentation": null
+    },
+    "sPowerPath": {
+      "type": null,
+      "documentation": null
+    },
+    "Resistances": {
+      "type": null,
+      "documentation": null
+    },
+    "DisplayedResistances": {
+      "type": null,
+      "documentation": null
+    },
+    "pPawn": {
+      "type": null,
+      "documentation": null
+    },
+    "pIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "pPowerIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "fCooldown": {
+      "type": null,
+      "documentation": null
+    },
+    "fElapsedFullResistTime": {
+      "type": null,
+      "documentation": null
+    },
+    "bCooldownVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bShieldVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bBioticVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bArmourVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bHealthVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bShieldDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "bBioticDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "bArmourDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "bHealthDamage": {
+      "type": null,
+      "documentation": null
+    },
+    "bInvalidated": {
+      "type": null,
+      "documentation": null
+    },
+    "bVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdateResistance": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdateHealth": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdatePower": {
+      "type": null,
+      "documentation": null
+    },
+    "bUpdateIcon": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisplayVisible": {
+      "type": null,
+      "documentation": null
+    },
+    "ePortraitState": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

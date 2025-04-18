@@ -1,0 +1,21 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "BlendIntoFallingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BlendIntoLandingTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "bRootMotionOverridden": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

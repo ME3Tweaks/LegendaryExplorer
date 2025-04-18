@@ -1,0 +1,1014 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ColorModulate": {
+      "type": "Plane",
+      "documentation": null
+    },
+    "Canvas": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "SceneView": {
+      "type": "Pointer",
+      "documentation": null
+    },
+    "Font": {
+      "type": "Font",
+      "documentation": null
+    },
+    "DefaultTexture": {
+      "type": "Texture2D",
+      "documentation": null
+    },
+    "OrgX": {
+      "type": "float",
+      "documentation": null
+    },
+    "OrgY": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClipX": {
+      "type": "float",
+      "documentation": null
+    },
+    "ClipY": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurX": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurY": {
+      "type": "float",
+      "documentation": null
+    },
+    "CurYL": {
+      "type": "float",
+      "documentation": null
+    },
+    "DrawColor": {
+      "type": "Color",
+      "documentation": null
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null
+    },
+    "bCenter": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bNoSmooth": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DeProject": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenPos": {
+          "type": null,
+          "documentation": null
+        },
+        "WorldOrigin": {
+          "type": null,
+          "documentation": null
+        },
+        "WorldDirection": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DeProject(Vector2D ScreenPos, out Vector WorldOrigin, out Vector WorldDirection)"
+    },
+    "Draw2DLine": {
+      "documentation": null,
+      "signature_members": {
+        "X1": {
+          "type": null,
+          "documentation": null
+        },
+        "Y1": {
+          "type": null,
+          "documentation": null
+        },
+        "X2": {
+          "type": null,
+          "documentation": null
+        },
+        "Y2": {
+          "type": null,
+          "documentation": null
+        },
+        "LineColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Draw2DLine(float X1, float Y1, float X2, float Y2, Color LineColor)"
+    },
+    "DrawColorizedTile": {
+      "documentation": null,
+      "signature_members": {
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        },
+        "LColor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawColorizedTile(Texture Tex, float XL, float YL, float U, float V, float UL, float VL, LinearColor LColor)"
+    },
+    "DrawMaterialTile": {
+      "documentation": null,
+      "signature_members": {
+        "Mat": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawMaterialTile(MaterialInterface Mat, float XL, float YL, optional float U, optional float V, optional float UL, optional float VL)"
+    },
+    "DrawMaterialTileClipped": {
+      "documentation": null,
+      "signature_members": {
+        "Mat": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawMaterialTileClipped(MaterialInterface Mat, float XL, float YL, optional float U, optional float V, optional float UL, optional float VL)"
+    },
+    "DrawRotatedMaterialTile": {
+      "documentation": null,
+      "signature_members": {
+        "Mat": {
+          "type": null,
+          "documentation": null
+        },
+        "Rotation": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        },
+        "AnchorX": {
+          "type": null,
+          "documentation": null
+        },
+        "AnchorY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawRotatedMaterialTile(MaterialInterface Mat, Rotator Rotation, float XL, float YL, optional float U, optional float V, optional float UL, optional float VL, optional float AnchorX, optional float AnchorY)"
+    },
+    "DrawRotatedTile": {
+      "documentation": null,
+      "signature_members": {
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "Rotation": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        },
+        "AnchorX": {
+          "type": null,
+          "documentation": null
+        },
+        "AnchorY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawRotatedTile(Texture Tex, Rotator Rotation, float XL, float YL, float U, float V, float UL, float VL, optional float AnchorX, optional float AnchorY)"
+    },
+    "DrawText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "CR": {
+          "type": null,
+          "documentation": null
+        },
+        "XScale": {
+          "type": null,
+          "documentation": null
+        },
+        "YScale": {
+          "type": null,
+          "documentation": null
+        },
+        "RenderInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawText(coerce string Text, optional bool CR, optional float XScale, optional float YScale, optional const out FontRenderInfo RenderInfo)"
+    },
+    "DrawTextScaled": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "fXScale": {
+          "type": null,
+          "documentation": null
+        },
+        "fYScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTextScaled(coerce string Text, float fXScale, float fYScale)"
+    },
+    "DrawTextureDoubleLine": {
+      "documentation": null,
+      "signature_members": {
+        "StartPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "EndPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "Perc": {
+          "type": null,
+          "documentation": null
+        },
+        "Spacing": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "LineColor": {
+          "type": null,
+          "documentation": null
+        },
+        "AltLineColor": {
+          "type": null,
+          "documentation": null
+        },
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTextureDoubleLine(Vector StartPoint, Vector EndPoint, float Perc, float Spacing, float Width, Color LineColor, Color AltLineColor, Texture Tex, float U, float V, float UL, float VL)"
+    },
+    "DrawTextureLine": {
+      "documentation": null,
+      "signature_members": {
+        "StartPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "EndPoint": {
+          "type": null,
+          "documentation": null
+        },
+        "Perc": {
+          "type": null,
+          "documentation": null
+        },
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "LineColor": {
+          "type": null,
+          "documentation": null
+        },
+        "LineTexture": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTextureLine(Vector StartPoint, Vector EndPoint, float Perc, float Width, Color LineColor, Texture LineTexture, float U, float V, float UL, float VL)"
+    },
+    "DrawTile": {
+      "documentation": null,
+      "signature_members": {
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTile(Texture Tex, float XL, float YL, float U, float V, float UL, float VL)"
+    },
+    "DrawTileClipped": {
+      "documentation": null,
+      "signature_members": {
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTileClipped(Texture Tex, float XL, float YL, float U, float V, float UL, float VL)"
+    },
+    "DrawTileStretched": {
+      "documentation": null,
+      "signature_members": {
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        },
+        "LColor": {
+          "type": null,
+          "documentation": null
+        },
+        "bStretchHorizontally": {
+          "type": null,
+          "documentation": null
+        },
+        "bStretchVertically": {
+          "type": null,
+          "documentation": null
+        },
+        "ScalingFactor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTileStretched(Texture Tex, float XL, float YL, float U, float V, float UL, float VL, LinearColor LColor, optional bool bStretchHorizontally, optional bool bStretchVertically, optional float ScalingFactor)"
+    },
+    "PopTransform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopTransform()"
+    },
+    "Project": {
+      "documentation": null,
+      "signature_members": {
+        "location": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector Project(Vector location)"
+    },
+    "PushTranslationMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "TranslationVector": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PushTranslationMatrix(Vector TranslationVector)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {
+        "bKeepOrigin": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Reset(optional bool bKeepOrigin)"
+    },
+    "SetDrawColor": {
+      "documentation": null,
+      "signature_members": {
+        "R": {
+          "type": null,
+          "documentation": null
+        },
+        "G": {
+          "type": null,
+          "documentation": null
+        },
+        "B": {
+          "type": null,
+          "documentation": null
+        },
+        "A": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDrawColor(byte R, byte G, byte B, optional byte A)"
+    },
+    "SetPos": {
+      "documentation": null,
+      "signature_members": {
+        "PosX": {
+          "type": null,
+          "documentation": null
+        },
+        "PosY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPos(float PosX, float PosY)"
+    },
+    "StrLen": {
+      "documentation": null,
+      "signature_members": {
+        "String": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StrLen(coerce string String, out float XL, out float YL)"
+    },
+    "TextSize": {
+      "documentation": null,
+      "signature_members": {
+        "String": {
+          "type": null,
+          "documentation": null
+        },
+        "XL": {
+          "type": null,
+          "documentation": null
+        },
+        "YL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "TextSize(coerce string String, out float XL, out float YL)"
+    },
+    "WrapStringToArray": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "OutArray": {
+          "type": null,
+          "documentation": null
+        },
+        "dx": {
+          "type": null,
+          "documentation": null
+        },
+        "EOL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "WrapStringToArray(string Text, out array<string> OutArray, float dx, optional string EOL)"
+    },
+    "CreateFontRenderInfo": {
+      "documentation": null,
+      "signature_members": {
+        "bClipText": {
+          "type": null,
+          "documentation": null
+        },
+        "bEnableShadow": {
+          "type": null,
+          "documentation": null
+        },
+        "GlowColor": {
+          "type": null,
+          "documentation": null
+        },
+        "GlowOuterRadius": {
+          "type": null,
+          "documentation": null
+        },
+        "GlowInnerRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "FontRenderInfo",
+      "signature": "FontRenderInfo CreateFontRenderInfo(optional bool bClipText, optional bool bEnableShadow, optional LinearColor GlowColor, optional Vector2D GlowOuterRadius, optional Vector2D GlowInnerRadius)"
+    },
+    "DrawBox": {
+      "documentation": null,
+      "signature_members": {
+        "Width": {
+          "type": null,
+          "documentation": null
+        },
+        "Height": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawBox(float Width, float Height)"
+    },
+    "DrawDebugGraph": {
+      "documentation": null,
+      "signature_members": {
+        "Title": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueX": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueY": {
+          "type": null,
+          "documentation": null
+        },
+        "UL_X": {
+          "type": null,
+          "documentation": null
+        },
+        "UL_Y": {
+          "type": null,
+          "documentation": null
+        },
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "H": {
+          "type": null,
+          "documentation": null
+        },
+        "RangeX": {
+          "type": null,
+          "documentation": null
+        },
+        "RangeY": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugGraph(coerce string Title, float ValueX, float ValueY, float UL_X, float UL_Y, float W, float H, Vector2D RangeX, Vector2D RangeY)"
+    },
+    "DrawIcon": {
+      "documentation": null,
+      "signature_members": {
+        "Icon": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawIcon(CanvasIcon Icon, float X, float Y, optional float Scale)"
+    },
+    "DrawIconSection": {
+      "documentation": null,
+      "signature_members": {
+        "Icon": {
+          "type": null,
+          "documentation": null
+        },
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        },
+        "UStartPct": {
+          "type": null,
+          "documentation": null
+        },
+        "VStartPct": {
+          "type": null,
+          "documentation": null
+        },
+        "UEndPct": {
+          "type": null,
+          "documentation": null
+        },
+        "VEndPct": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawIconSection(CanvasIcon Icon, float X, float Y, float UStartPct, float VStartPct, float UEndPct, float VEndPct, optional float Scale)"
+    },
+    "DrawRect": {
+      "documentation": null,
+      "signature_members": {
+        "RectX": {
+          "type": null,
+          "documentation": null
+        },
+        "RectY": {
+          "type": null,
+          "documentation": null
+        },
+        "Tex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawRect(float RectX, float RectY, optional Texture Tex)"
+    },
+    "DrawTextCentered": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "CR": {
+          "type": null,
+          "documentation": null
+        },
+        "XScale": {
+          "type": null,
+          "documentation": null
+        },
+        "YScale": {
+          "type": null,
+          "documentation": null
+        },
+        "RenderInfo": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTextCentered(coerce string Text, optional bool CR, optional float XScale, optional float YScale, optional const FontRenderInfo RenderInfo)"
+    },
+    "DrawTextRA": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": null,
+          "documentation": null
+        },
+        "CR": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTextRA(coerce string Text, optional bool CR)"
+    },
+    "DrawTexture": {
+      "documentation": null,
+      "signature_members": {
+        "Tex": {
+          "type": null,
+          "documentation": null
+        },
+        "Scale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawTexture(Texture Tex, float Scale)"
+    },
+    "MakeIcon": {
+      "documentation": null,
+      "signature_members": {
+        "Texture": {
+          "type": null,
+          "documentation": null
+        },
+        "U": {
+          "type": null,
+          "documentation": null
+        },
+        "V": {
+          "type": null,
+          "documentation": null
+        },
+        "UL": {
+          "type": null,
+          "documentation": null
+        },
+        "VL": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "CanvasIcon",
+      "signature": "CanvasIcon MakeIcon(Texture Texture, optional float U, optional float V, optional float UL, optional float VL)"
+    },
+    "SetClip": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClip(float X, float Y)"
+    },
+    "SetOrigin": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": null,
+          "documentation": null
+        },
+        "Y": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOrigin(float X, float Y)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimGetUp_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimGetUp_Start": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimGetUp_Processing": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

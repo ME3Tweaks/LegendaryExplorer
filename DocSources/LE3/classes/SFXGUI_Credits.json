@@ -1,0 +1,388 @@
+{
+  "parent": "SFXGUIMovie",
+  "package": "SFXGame",
+  "variables": {
+    "Credits": {
+      "type": "SFXCreditEntry",
+      "documentation": null
+    },
+    "DLCCredits": {
+      "type": "SFXCreditEntry",
+      "documentation": null
+    },
+    "EndCredits": {
+      "type": "SFXCreditEntry",
+      "documentation": null
+    },
+    "__OnCreditsFinished__Delegate": {
+      "type": "OnCreditsFinished",
+      "documentation": null
+    },
+    "m_nmCreditMusic": {
+      "type": "Name",
+      "documentation": null
+    },
+    "m_oFlashingCredit": {
+      "type": "GFxValue",
+      "documentation": null
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "HoldTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "BreakSpace": {
+      "type": "float",
+      "documentation": null
+    },
+    "ColumnPadding": {
+      "type": "float",
+      "documentation": null
+    },
+    "TotalRunningTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ScrollingCreditStartTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "ConfirmExitMessage": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ExitYes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ExitNo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_fElapsedPlayTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_nCreditIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "m_fScrollingCreditsEpoch": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_fTargetTransitionTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bPlaying": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bPlayingScrollingCredits": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFromMainMenu": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFromAdditionalContent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bFromPRCChoiceGUI": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bGameWasPausedOnStart": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bGameWasUsingVSync": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_eFlashingCreditState": {
+      "type": "EFlashingCreditState",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetVSync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetVSync()"
+    },
+    "OnCreditsFinished": {
+      "documentation": null,
+      "signature_members": {
+        "creditsMovie": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreditsFinished(SFXGUI_Credits creditsMovie)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "SetFromAdditionalContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromAdditionalContent()"
+    },
+    "SetFromPRCChoiceGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromPRCChoiceGUI()"
+    },
+    "SetVSync": {
+      "documentation": null,
+      "signature_members": {
+        "bVsync": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVSync(bool bVsync)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "AddScrollingCreditHeading": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "fSpace": {
+          "type": null,
+          "documentation": null
+        },
+        "fFontScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScrollingCreditHeading(string sTitle, float fSpace, float fFontScale)"
+    },
+    "AddScrollingCreditLineBreak": {
+      "documentation": null,
+      "signature_members": {
+        "fSpace": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScrollingCreditLineBreak(float fSpace)"
+    },
+    "AddScrollingCreditSection": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sNames": {
+          "type": null,
+          "documentation": null
+        },
+        "nColumns": {
+          "type": null,
+          "documentation": null
+        },
+        "fSpace": {
+          "type": null,
+          "documentation": null
+        },
+        "fFontScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScrollingCreditSection(string sTitle, string sNames, int nColumns, float fSpace, float fFontScale)"
+    },
+    "AppendScrollingCredit": {
+      "documentation": null,
+      "signature_members": {
+        "credit": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendScrollingCredit(const SFXCreditEntry credit)"
+    },
+    "ConfirmButtonPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "nContext": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmButtonPressed(bool bAPressed, int nContext)"
+    },
+    "CreditsFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreditsFinished()"
+    },
+    "InitializeCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeCredits()"
+    },
+    "InitializeFlashingCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float InitializeFlashingCredits()"
+    },
+    "InitializeScrollingCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeScrollingCredits()"
+    },
+    "OnCreditsMovieLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCreditsMovieLoaded()"
+    },
+    "PauseDisplay": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PauseDisplay(bool bPause)"
+    },
+    "ScrollToPosition": {
+      "documentation": null,
+      "signature_members": {
+        "fScrollPct": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollToPosition(float fScrollPct)"
+    },
+    "SetFlashingCredit": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": null,
+          "documentation": null
+        },
+        "sNames": {
+          "type": null,
+          "documentation": null
+        },
+        "fFontScale": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue SetFlashingCredit(string sTitle, string sNames, float fFontScale)"
+    },
+    "SetFromMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFromMainMenu()"
+    },
+    "SetParameters": {
+      "documentation": null,
+      "signature_members": {
+        "fColumnPadding": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParameters(float fColumnPadding)"
+    },
+    "TryExitCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryExitCredits()"
+    },
+    "UpdateFlashingCredits": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFlashingCredits(float fDeltaT)"
+    },
+    "UpdateScrollingCredits": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateScrollingCredits(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

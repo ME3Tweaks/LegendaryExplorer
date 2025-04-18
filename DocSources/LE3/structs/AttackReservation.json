@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "nID": {
+      "type": null,
+      "documentation": null
+    },
+    "nTicketCost": {
+      "type": null,
+      "documentation": null
+    },
+    "fTimeUntilExpiry": {
+      "type": null,
+      "documentation": null
+    },
+    "bUsingTicket": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

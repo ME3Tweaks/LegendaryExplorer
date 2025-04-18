@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "m_sName": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aRandMin": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aRandMax": {
+      "type": null,
+      "documentation": null
+    },
+    "m_aSliders": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

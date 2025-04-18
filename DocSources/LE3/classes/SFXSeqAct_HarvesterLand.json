@@ -1,0 +1,39 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "AnchorActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "EndMarker": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "bTakeOff": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

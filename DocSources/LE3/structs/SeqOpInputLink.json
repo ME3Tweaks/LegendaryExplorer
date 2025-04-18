@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "LinkDesc": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkAction": {
+      "type": null,
+      "documentation": null
+    },
+    "LinkedOp": {
+      "type": null,
+      "documentation": null
+    },
+    "QueuedActivations": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasImpulse": {
+      "type": null,
+      "documentation": null
+    },
+    "bDisabled": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

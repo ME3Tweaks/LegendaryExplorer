@@ -1,0 +1,52 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "Preloader": {
+      "type": "BioBinkAsyncPreloader",
+      "documentation": null
+    },
+    "m_sMovieName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_wwiseEvent": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "m_bFiredBinkStartEvent": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bKeepTryingToPlay": {
+      "type": "bool",
+      "documentation": null
+    },
+    "IsComplete": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

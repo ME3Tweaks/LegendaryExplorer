@@ -1,0 +1,17 @@
+{
+  "parent": "PathNode",
+  "package": "SFXGame",
+  "variables": {
+    "ClimbDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    },
+    "bTopNode": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

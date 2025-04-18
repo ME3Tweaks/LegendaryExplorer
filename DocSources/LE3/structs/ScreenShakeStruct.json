@@ -1,0 +1,73 @@
+{
+  "Members": {
+    "RotAmplitude": {
+      "type": null,
+      "documentation": null
+    },
+    "RotFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "RotSinOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "LocAmplitude": {
+      "type": null,
+      "documentation": null
+    },
+    "LocFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "LocSinOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "ShakeName": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeToGo": {
+      "type": null,
+      "documentation": null
+    },
+    "TimeDuration": {
+      "type": null,
+      "documentation": null
+    },
+    "RotParam": {
+      "type": null,
+      "documentation": null
+    },
+    "LocParam": {
+      "type": null,
+      "documentation": null
+    },
+    "FOVAmplitude": {
+      "type": null,
+      "documentation": null
+    },
+    "FOVFrequency": {
+      "type": null,
+      "documentation": null
+    },
+    "FOVSinOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "TargetingDampening": {
+      "type": null,
+      "documentation": null
+    },
+    "bOverrideTargetingDampening": {
+      "type": null,
+      "documentation": null
+    },
+    "FOVParam": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

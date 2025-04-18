@@ -1,0 +1,17 @@
+{
+  "parent": "WwiseBaseSoundObject",
+  "package": "WwiseAudio",
+  "variables": {
+    "Play": {
+      "type": "WwiseEvent",
+      "documentation": null
+    },
+    "Stop": {
+      "type": "WwiseEvent",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

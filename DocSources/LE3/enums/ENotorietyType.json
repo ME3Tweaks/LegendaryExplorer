@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "NotorietyType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "NotorietyType_Survivor": {
+      "value": 1,
+      "documentation": null
+    },
+    "NotorietyType_Warhero": {
+      "value": 2,
+      "documentation": null
+    },
+    "NotorietyType_Ruthless": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

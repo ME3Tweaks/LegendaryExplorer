@@ -1,0 +1,76 @@
+{
+  "parent": "SFXGameChoiceGUIData",
+  "package": "SFXGame",
+  "variables": {
+    "ElevatorDestinations": {
+      "type": "ElevatorDestinationData",
+      "documentation": null
+    },
+    "DefaultImage": {
+      "type": "string",
+      "documentation": null
+    },
+    "ElevatorName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "srElevatorTitle": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srElevatorDescription": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultAButtonText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srDefaultBButtonText": {
+      "type": "stringref",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "DestinationDescString": {
+      "documentation": null,
+      "signature_members": {
+        "Elevator": {
+          "type": null,
+          "documentation": null
+        },
+        "Destination": {
+          "type": null,
+          "documentation": null
+        },
+        "Desc": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DestinationDescString(SFXGUIMovie Elevator, ElevatorDestinationData Destination, out string Desc)"
+    },
+    "DestinationTitleString": {
+      "documentation": null,
+      "signature_members": {
+        "Elevator": {
+          "type": null,
+          "documentation": null
+        },
+        "Destination": {
+          "type": null,
+          "documentation": null
+        },
+        "Title": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "DestinationTitleString(SFXGUIMovie Elevator, ElevatorDestinationData Destination, out string Title)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

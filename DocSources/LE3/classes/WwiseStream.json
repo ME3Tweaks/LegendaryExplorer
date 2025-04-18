@@ -1,0 +1,17 @@
+{
+  "parent": "WwiseFile",
+  "package": "WwiseAudio",
+  "variables": {
+    "Filename": {
+      "type": "Name",
+      "documentation": null
+    },
+    "Bank": {
+      "type": "WwiseBank",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "Registrants": {
+      "type": null,
+      "documentation": null
+    },
+    "ArbitrationRegistrants": {
+      "type": null,
+      "documentation": null
+    },
+    "SessionInfo": {
+      "type": null,
+      "documentation": null
+    },
+    "SessionName": {
+      "type": null,
+      "documentation": null
+    },
+    "GameSettings": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,24 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_bCopyHeadGearMesh": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bCopyHairMesh": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "UpdateScars": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateScars()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

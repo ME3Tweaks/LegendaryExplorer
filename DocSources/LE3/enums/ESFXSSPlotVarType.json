@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PlotVar_Unset": {
+      "value": 0,
+      "documentation": null
+    },
+    "PlotVar_State": {
+      "value": 1,
+      "documentation": null
+    },
+    "PlotVar_Int": {
+      "value": 2,
+      "documentation": null
+    },
+    "PlotVar_Float": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

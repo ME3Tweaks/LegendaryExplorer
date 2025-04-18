@@ -1,0 +1,37 @@
+{
+  "parent": "RvrClientEffectInterface",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstImpacts": {
+      "type": "CEImpactByMaterial",
+      "documentation": null
+    },
+    "DefaultEffect": {
+      "type": "RvrClientEffectInterface",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ApplyParameters": {
+      "documentation": null,
+      "signature_members": {
+        "pComponent": {
+          "type": null,
+          "documentation": null
+        },
+        "pInstance": {
+          "type": null,
+          "documentation": null
+        },
+        "nIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyParameters(RvrClientEffectComponent pComponent, RvrClientEffectModuleInstance pInstance, int nIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

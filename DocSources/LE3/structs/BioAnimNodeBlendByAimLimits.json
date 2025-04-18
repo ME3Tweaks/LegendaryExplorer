@@ -1,0 +1,21 @@
+{
+  "Members": {
+    "DegreesLeft": {
+      "type": null,
+      "documentation": null
+    },
+    "DegreesRight": {
+      "type": null,
+      "documentation": null
+    },
+    "DegreesUp": {
+      "type": null,
+      "documentation": null
+    },
+    "DegreesDown": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

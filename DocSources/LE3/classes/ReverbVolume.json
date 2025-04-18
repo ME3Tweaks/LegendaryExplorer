@@ -1,0 +1,25 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "AmbientZoneSettings": {
+      "type": "InteriorSettings",
+      "documentation": null
+    },
+    "Settings": {
+      "type": "ReverbSettings",
+      "documentation": null
+    },
+    "NextLowerPriorityVolume": {
+      "type": "ReverbVolume",
+      "documentation": null
+    },
+    "Priority": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

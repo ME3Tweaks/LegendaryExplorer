@@ -1,0 +1,13 @@
+{
+  "parent": "PathNode",
+  "package": "SFXGame",
+  "variables": {
+    "MantleDest": {
+      "type": "NavigationPoint",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

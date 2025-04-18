@@ -1,0 +1,146 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "Pages": {
+      "type": "PhotoModeOptionPage",
+      "documentation": null
+    },
+    "SliderOptions": {
+      "type": "PhotoModeSliderOption",
+      "documentation": null
+    },
+    "RangeSliderOptions": {
+      "type": "PhotoModeRangeSliderOption",
+      "documentation": null
+    },
+    "TextSliderOptions": {
+      "type": "PhotoModeTextSliderOption",
+      "documentation": null
+    },
+    "PhotoMode": {
+      "type": "SFXGameModePhoto",
+      "documentation": null
+    },
+    "bOptionsHidden": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "bIsUsingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool bIsUsingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": null,
+          "documentation": null
+        },
+        "fValue": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "SetOption": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "ValueIdx": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOption(PhotoModeOptionType OptionId, float ValueIdx)"
+    },
+    "GetDefaultBoolOption": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDefaultBoolOption(PhotoModeOptionType OptionId)"
+    },
+    "GetDefaultFloatOption": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDefaultFloatOption(PhotoModeOptionType OptionId)"
+    },
+    "HandleOptionChanged": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleOptionChanged(PhotoModeOptionType OptionId, float Value)"
+    },
+    "InitializePhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePhotoMode()"
+    },
+    "MovieLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MovieLoaded()"
+    },
+    "ToggleOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleOptions()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

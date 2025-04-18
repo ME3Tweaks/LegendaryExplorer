@@ -1,0 +1,506 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Powers": {
+      "type": "SFXPowerCustomActionBase",
+      "documentation": null
+    },
+    "PowerReleasedDelegates": {
+      "type": "OnPowerReleased",
+      "documentation": null
+    },
+    "BioticComboDelegates": {
+      "type": "OnBioticCombo",
+      "documentation": null
+    },
+    "PowerImpactedDelegates": {
+      "type": "OnPowerImpacted",
+      "documentation": null
+    },
+    "__OnPowerReleased__Delegate": {
+      "type": "OnPowerReleased",
+      "documentation": null
+    },
+    "__OnBioticCombo__Delegate": {
+      "type": "OnBioticCombo",
+      "documentation": null
+    },
+    "__OnPowerImpacted__Delegate": {
+      "type": "OnPowerImpacted",
+      "documentation": null
+    },
+    "MyPawn": {
+      "type": "BioPawn",
+      "documentation": null
+    },
+    "LastPowerAnimSet": {
+      "type": "AnimSet",
+      "documentation": null
+    },
+    "RankUnlockText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "RequiredUnlockText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "PassiveRankIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "LockedRankIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "UnlockedRankIcon": {
+      "type": "int",
+      "documentation": null
+    },
+    "EvolveRank": {
+      "type": "int",
+      "documentation": null
+    },
+    "CooldownMethod": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumFreePowers": {
+      "type": "int",
+      "documentation": null
+    },
+    "PowerCastCounter": {
+      "type": "int",
+      "documentation": null
+    },
+    "DisableCasterCrusts": {
+      "type": "int",
+      "documentation": null
+    },
+    "SharedCooldownDisabled": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "CombatEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CombatEnded()"
+    },
+    "GetPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerCustomActionBase",
+      "signature": "SFXPowerCustomActionBase GetPower(Name nmPowerName)"
+    },
+    "GetPowerByClass": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerCustomActionBase",
+      "signature": "SFXPowerCustomActionBase GetPowerByClass(Class<Object> PowerClass)"
+    },
+    "GetPowerWheelPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPowerWheelPowers(out array<SFXPowerCustomActionBase> PowerList)"
+    },
+    "OnBioticCombo": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oImpacted": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnBioticCombo(SFXPowerCustomAction oPower, BioPawn oImpacted)"
+    },
+    "OnPowerImpacted": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPowerImpacted(SFXPowerCustomAction oPower)"
+    },
+    "OnPowerReleased": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPowerReleased(SFXPowerCustomAction oPower)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "AddPower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerCustomActionBase",
+      "signature": "SFXPowerCustomActionBase AddPower(Class<Object> PowerClass)"
+    },
+    "AddPowerByClassName": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClassName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXPowerCustomActionBase",
+      "signature": "SFXPowerCustomActionBase AddPowerByClassName(Name PowerClassName)"
+    },
+    "ApplyPowerBonus": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Parameter": {
+          "type": null,
+          "documentation": null
+        },
+        "Bonus": {
+          "type": null,
+          "documentation": null
+        },
+        "Duration": {
+          "type": null,
+          "documentation": null
+        },
+        "Category": {
+          "type": null,
+          "documentation": null
+        },
+        "SourcePower": {
+          "type": null,
+          "documentation": null
+        },
+        "bApplyToSourcePower": {
+          "type": null,
+          "documentation": null
+        },
+        "bApplyToBiotics": {
+          "type": null,
+          "documentation": null
+        },
+        "bApplyToTech": {
+          "type": null,
+          "documentation": null
+        },
+        "bApplyToCombat": {
+          "type": null,
+          "documentation": null
+        },
+        "bApplyToWeapons": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyPowerBonus(BioPawn oPawn, Name Parameter, float Bonus, float Duration, optional Name Category, optional SFXPowerCustomActionBase SourcePower, optional bool bApplyToSourcePower, optional bool bApplyToBiotics, optional bool bApplyToTech, optional bool bApplyToCombat, optional bool bApplyToWeapons)"
+    },
+    "BioticCombo": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        },
+        "oTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "BioticCombo(SFXPowerCustomAction oPower, BioPawn oTarget)"
+    },
+    "GetCheatManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioCheatManager",
+      "signature": "BioCheatManager GetCheatManager()"
+    },
+    "GetRefundAmount": {
+      "documentation": null,
+      "signature_members": {
+        "Power": {
+          "type": null,
+          "documentation": null
+        },
+        "Rank": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRefundAmount(Class<SFXPowerCustomActionBase> Power, int Rank)"
+    },
+    "GetSharedCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSharedCooldown()"
+    },
+    "GetSquadRecordPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSquadRecordPowers(out array<SFXPowerCustomActionBase> PowerList)"
+    },
+    "InitializeJoinInProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeJoinInProgress()"
+    },
+    "InitializePowerList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePowerList()"
+    },
+    "IsInForcedCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInForcedCooldown()"
+    },
+    "LoadPowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPowers(out array<PowerSaveInfo> PowerList)"
+    },
+    "OnOwnerDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnOwnerDestroyed()"
+    },
+    "OnPawnEquippedNewWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPawnEquippedNewWeapon()"
+    },
+    "OnPawnLoadedWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPawnLoadedWeapons()"
+    },
+    "PowerImpacted": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PowerImpacted(SFXPowerCustomAction oPower)"
+    },
+    "PowerReleased": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PowerReleased(SFXPowerCustomAction oPower)"
+    },
+    "ProcessWheelDisplayOrder": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessWheelDisplayOrder()"
+    },
+    "RefundAllTalentPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefundAllTalentPoints()"
+    },
+    "RegisterBioticComboCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterBioticComboCallback(delegate<OnBioticCombo> oCallback)"
+    },
+    "RegisterPowerImpactedCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oImpactedCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterPowerImpactedCallback(delegate<OnPowerImpacted> oImpactedCallback)"
+    },
+    "RegisterPowerReleasedCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oReleasedCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterPowerReleasedCallback(delegate<OnPowerReleased> oReleasedCallback)"
+    },
+    "RemovePower": {
+      "documentation": null,
+      "signature_members": {
+        "PowerClass": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePower(Class<Object> PowerClass)"
+    },
+    "ResetForcedCooldown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetForcedCooldown()"
+    },
+    "SavePowers": {
+      "documentation": null,
+      "signature_members": {
+        "PowerList": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePowers(out array<PowerSaveInfo> PowerList)"
+    },
+    "SetForcedCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "Cooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForcedCooldown(float Cooldown)"
+    },
+    "SetSharedCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "fCooldown": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSharedCooldown(float fCooldown)"
+    },
+    "StartFirstTimeDelay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartFirstTimeDelay()"
+    },
+    "UnregisterBioticComboCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterBioticComboCallback(delegate<OnBioticCombo> oCallback)"
+    },
+    "UnregisterPowerImpactedCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oImpactedCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterPowerImpactedCallback(delegate<OnPowerImpacted> oImpactedCallback)"
+    },
+    "UnregisterPowerReleasedCallback": {
+      "documentation": null,
+      "signature_members": {
+        "oReleasedCallback": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterPowerReleasedCallback(delegate<OnPowerReleased> oReleasedCallback)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

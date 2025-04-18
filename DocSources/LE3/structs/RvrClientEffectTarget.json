@@ -1,0 +1,53 @@
+{
+  "Members": {
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "HitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "RefinedHitLocation": {
+      "type": null,
+      "documentation": null
+    },
+    "RefinedRayDir": {
+      "type": null,
+      "documentation": null
+    },
+    "HitNormal": {
+      "type": null,
+      "documentation": null
+    },
+    "RayDir": {
+      "type": null,
+      "documentation": null
+    },
+    "SpawnValue": {
+      "type": null,
+      "documentation": null
+    },
+    "Instigator": {
+      "type": null,
+      "documentation": null
+    },
+    "HitActor": {
+      "type": null,
+      "documentation": null
+    },
+    "HitBone": {
+      "type": null,
+      "documentation": null
+    },
+    "HitMaterial": {
+      "type": null,
+      "documentation": null
+    },
+    "bHasRefinedHitLocation": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

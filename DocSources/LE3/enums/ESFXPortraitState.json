@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PORTRAIT_STATE_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "PORTRAIT_STATE_DEAD": {
+      "value": 1,
+      "documentation": null
+    },
+    "PORTRAIT_STATE_BUSY": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

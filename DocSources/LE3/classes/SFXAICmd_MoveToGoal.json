@@ -1,0 +1,225 @@
+{
+  "parent": "SFXAICommand",
+  "package": "SFXGame",
+  "variables": {
+    "m_oTempGoalActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "m_bAllowedToFire": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bUsePartialPaths": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bRotateBeforeMoving": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bMovingToFireTarget": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "OnEnteredPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnEnteredPlaypen()"
+    },
+    "Paused": {
+      "documentation": null,
+      "signature_members": {
+        "NewCommand": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Paused(GameAICommand NewCommand)"
+    },
+    "UpdateMovementActions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMovementActions()"
+    },
+    "NotifyWeaponFinishedFiring": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": null,
+          "documentation": null
+        },
+        "FireMode": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFinishedFiring(Weapon W, byte FireMode)"
+    },
+    "ApplyPathConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ApplyPathConstraints()"
+    },
+    "CancelCommand": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelCommand(optional int nReason)"
+    },
+    "CanSkipNodeAfterTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "oMoveTarget": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSkipNodeAfterTimeout(Actor oMoveTarget)"
+    },
+    "CanStartFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanStartFiring()"
+    },
+    "CheckPawnInPlaypen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckPawnInPlaypen()"
+    },
+    "FinishPathGeneration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishPathGeneration()"
+    },
+    "GetFirstMoveTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetFirstMoveTarget()"
+    },
+    "GetMoveOffset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMoveOffset()"
+    },
+    "GetPeriodicMoveInterval": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPeriodicMoveInterval()"
+    },
+    "HasReachedGoal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasReachedGoal()"
+    },
+    "IsSpecialMoveAfterCurrentMoveTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSpecialMoveAfterCurrentMoveTarget()"
+    },
+    "LogRoute": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogRoute()"
+    },
+    "MoveToGoal": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveGoal": {
+          "type": null,
+          "documentation": null
+        },
+        "NewMoveOffset": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowedToFire": {
+          "type": null,
+          "documentation": null
+        },
+        "bInAllowPartialPath": {
+          "type": null,
+          "documentation": null
+        },
+        "bInRotateBeforeMoving": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MoveToGoal(SFXAI_Core AI, Actor NewMoveGoal, optional float NewMoveOffset, optional bool bInAllowedToFire, optional bool bInAllowPartialPath, optional bool bInRotateBeforeMoving)"
+    },
+    "Popped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Popped()"
+    },
+    "Pushed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pushed()"
+    },
+    "StartFiringWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartFiringWeapon()"
+    },
+    "StopFiringWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "bReleaseAttackTicket": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "StopFiringWeapon(optional bool bReleaseAttackTicket)"
+    },
+    "UpdateFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateFiring()"
+    }
+  },
+  "states": {
+    "MovingToGoal": {
+      "functions": {},
+      "documentation": null
+    },
+    "PathFinding": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

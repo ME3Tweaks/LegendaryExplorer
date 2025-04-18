@@ -1,0 +1,97 @@
+{
+  "Members": {
+    "TEXTUREGROUP_World": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_WorldNormalMap": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_WorldSpecular": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Character": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_CharacterNormalMap": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_CharacterSpecular": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Weapon": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_WeaponNormalMap": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_WeaponSpecular": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Vehicle": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VehicleNormalMap": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_VehicleSpecular": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Cinematic": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Effects": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_EffectsNotFiltered": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Skybox": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_UI": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Lightmap": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_RenderTarget": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_MobileFlattened": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_ProcBuilding_Face": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_ProcBuilding_LightMap": {
+      "type": null,
+      "documentation": null
+    },
+    "TEXTUREGROUP_Shadowmap": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

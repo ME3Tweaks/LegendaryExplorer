@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "CameraSensitivity": {
+      "type": "Vector2D",
+      "documentation": null
+    },
+    "TimeToReachFullSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxCameraRotationSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "StickDeadZone": {
+      "type": "float",
+      "documentation": null
+    },
+    "MouseClampMax": {
+      "type": "float",
+      "documentation": null
+    },
+    "m_bUseExplorationSensitivity": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bSwitchSticks": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClampMouse": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

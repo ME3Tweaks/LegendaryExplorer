@@ -1,0 +1,17 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Realtime": {
+      "type": "ExpressionInput",
+      "documentation": null
+    },
+    "Lightmass": {
+      "type": "ExpressionInput",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,84 @@
+{
+  "parent": "SFXRpgPickupFactory",
+  "package": "SFXGame",
+  "variables": {
+    "WeaponModClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "LastUpdateTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "UpdateFrequency": {
+      "type": "float",
+      "documentation": null
+    },
+    "bStopCustomTicking": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "InitializePickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePickup()"
+    },
+    "DisabilityCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DisabilityCheck()"
+    },
+    "GetPickupMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PrimitiveComponent",
+      "signature": "PrimitiveComponent GetPickupMesh()"
+    },
+    "HasPickup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasPickup()"
+    },
+    "HideDrop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideDrop()"
+    },
+    "SetTooltips": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetTooltips()"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Used(Actor User)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,133 @@
+{
+  "parent": "SFXPlaceableBase",
+  "package": "SFXGameContent",
+  "variables": {
+    "bReplicatedIsDestroyed": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bReplicatedIsDeactivated": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "ImpactWithPower": {
+      "documentation": null,
+      "signature_members": {
+        "Resistance": {
+          "type": null,
+          "documentation": null
+        },
+        "Caster": {
+          "type": null,
+          "documentation": null
+        },
+        "HitLocation": {
+          "type": null,
+          "documentation": null
+        },
+        "HitNormal": {
+          "type": null,
+          "documentation": null
+        },
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactWithPower(EPowerResistance Resistance, Pawn Caster, Vector HitLocation, Vector HitNormal, float Damage, Vector Force, Class<DamageType> DamageType)"
+    },
+    "ActivatePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivatePlaceable()"
+    },
+    "DeactivatePlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivatePlaceable()"
+    },
+    "PlaceableDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlaceableDestroyed()"
+    },
+    "ResetPlaceable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPlaceable()"
+    },
+    "AllowPlaceableDamageEvents": {
+      "documentation": null,
+      "signature_members": {
+        "EventInstigator": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowPlaceableDamageEvents(Controller EventInstigator)"
+    },
+    "AreaDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": null,
+          "documentation": null
+        },
+        "Force": {
+          "type": null,
+          "documentation": null
+        },
+        "DamageType": {
+          "type": null,
+          "documentation": null
+        },
+        "ImpactRadius": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AreaDamage(float Damage, float Force, Class<SFXDamageType> DamageType, float ImpactRadius)"
+    },
+    "AreaDamageForActor": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AreaDamageForActor(Actor HitActor)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

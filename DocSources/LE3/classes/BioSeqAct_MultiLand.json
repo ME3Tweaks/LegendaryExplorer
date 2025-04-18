@@ -1,0 +1,71 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "ReticleRotStart": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotMaxClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "ReticleRotMinClamp": {
+      "type": "Rotator",
+      "documentation": null
+    },
+    "Planet": {
+      "type": "InterpActor",
+      "documentation": null
+    },
+    "Reticle": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "LandingSiteMarker": {
+      "type": "ParticleSystem",
+      "documentation": null
+    },
+    "CurrentPlanet": {
+      "type": "BioPlanet",
+      "documentation": null
+    },
+    "LandingSiteScale": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "EndAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndAction()"
+    },
+    "GetGalaxyCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioCameraBehaviorGalaxy",
+      "signature": "BioCameraBehaviorGalaxy GetGalaxyCamera()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

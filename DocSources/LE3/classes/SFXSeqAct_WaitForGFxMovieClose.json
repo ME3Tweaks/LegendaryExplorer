@@ -1,0 +1,17 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "movie": {
+      "type": "SFXGUIMovieKismet",
+      "documentation": null
+    },
+    "DeferredClose": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

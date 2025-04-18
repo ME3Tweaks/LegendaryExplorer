@@ -1,0 +1,60 @@
+{
+  "parent": "SFXModule_SavedUse",
+  "package": "SFXGame",
+  "variables": {
+    "ResourcePercent": {
+      "type": "int",
+      "documentation": null
+    },
+    "bUseAbsuluteAmount": {
+      "type": "bool",
+      "documentation": null
+    },
+    "TreasureType": {
+      "type": "ETreasureType",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "HandlePostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePostBeginPlay()"
+    },
+    "IsDefaultActionPossible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDefaultActionPossible()"
+    },
+    "OnUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUsed(Actor User)"
+    },
+    "SetTargetable": {
+      "documentation": null,
+      "signature_members": {
+        "bTargetable": {
+          "type": null,
+          "documentation": null
+        },
+        "bSetTargetSave": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetable(bool bTargetable, optional bool bSetTargetSave)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

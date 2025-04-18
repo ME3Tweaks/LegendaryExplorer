@@ -1,0 +1,161 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Materials": {
+      "type": "MaterialInterface",
+      "documentation": null
+    },
+    "m_aEffectsMaterialMICs": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null
+    },
+    "CachedTextures": {
+      "type": "Texture",
+      "documentation": null
+    },
+    "CachedTexturesTimer": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "ClearEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearEffectsMaterial()"
+    },
+    "GetBaseMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInterface",
+      "signature": "MaterialInterface GetBaseMaterial(int ElementIndex)"
+    },
+    "GetEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetEffectsMaterial()"
+    },
+    "GetFractionOfEffectEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFractionOfEffectEnabled()"
+    },
+    "GetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInterface",
+      "signature": "MaterialInterface GetMaterial(int ElementIndex)"
+    },
+    "GetNumElements": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumElements()"
+    },
+    "GetUnscaledBounds": {
+      "documentation": null,
+      "signature_members": {
+        "UnscaledBounds": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUnscaledBounds(out BoxSphereBounds UnscaledBounds)"
+    },
+    "PrestreamTextures": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": null,
+          "documentation": null
+        },
+        "bPrioritizeCharacterTextures": {
+          "type": null,
+          "documentation": null
+        },
+        "CinematicTextureGroups": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "PrestreamTextures(float Seconds, bool bPrioritizeCharacterTextures, optional int CinematicTextureGroups)"
+    },
+    "SetEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "nmEffect": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterial(Name nmEffect)"
+    },
+    "SetFractionOfEffectEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "fFraction": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFractionOfEffectEnabled(float fFraction)"
+    },
+    "SetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        },
+        "Material": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterial(int ElementIndex, MaterialInterface Material)"
+    },
+    "CreateAndSetMaterialInstanceConstant": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInstanceConstant",
+      "signature": "MaterialInstanceConstant CreateAndSetMaterialInstanceConstant(int ElementIndex)"
+    },
+    "CreateAndSetMaterialInstanceTimeVarying": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "MaterialInstanceTimeVarying",
+      "signature": "MaterialInstanceTimeVarying CreateAndSetMaterialInstanceTimeVarying(int ElementIndex)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

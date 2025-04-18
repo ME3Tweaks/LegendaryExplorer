@@ -1,0 +1,42 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "NextEvaluator": {
+      "type": "NavMeshPathGoalEvaluator",
+      "documentation": null
+    },
+    "MaxPathVisits": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumNodesThrownOut": {
+      "type": "int",
+      "documentation": null
+    },
+    "NumNodesProcessed": {
+      "type": "int",
+      "documentation": null
+    },
+    "bAlwaysCallEvaluateGoal": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

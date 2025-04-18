@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "Label": {
+      "type": null,
+      "documentation": null
+    },
+    "Name": {
+      "type": null,
+      "documentation": null
+    },
+    "Panel": {
+      "type": null,
+      "documentation": null
+    },
+    "ParameterName": {
+      "type": null,
+      "documentation": null
+    },
+    "Params": {
+      "type": null,
+      "documentation": null
+    },
+    "Type": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "Members": {
+    "sTitle": {
+      "type": null,
+      "documentation": null
+    },
+    "sShortDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "sLongDescription": {
+      "type": null,
+      "documentation": null
+    },
+    "sPrice": {
+      "type": null,
+      "documentation": null
+    },
+    "Id": {
+      "type": null,
+      "documentation": null
+    },
+    "nPrice": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

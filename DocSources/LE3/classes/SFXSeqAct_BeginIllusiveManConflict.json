@@ -1,0 +1,113 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "Difficulty": {
+      "type": "float",
+      "documentation": null
+    },
+    "Shake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null
+    },
+    "AndersonOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "IllusiveManOffset": {
+      "type": "Vector",
+      "documentation": null
+    },
+    "Anderson": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "IllusiveMan": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "AndersonBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "IllusiveManBoneName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "PushSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "PushInputLockoutTime": {
+      "type": "float",
+      "documentation": null
+    },
+    "PushMiniGameStartingPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "PushMiniGameVictoryPercent": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxStrength": {
+      "type": "float",
+      "documentation": null
+    },
+    "Threshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "BaseDamageAmount": {
+      "type": "float",
+      "documentation": null
+    },
+    "CameraShakeMinDot": {
+      "type": "float",
+      "documentation": null
+    },
+    "StartingDifficulty": {
+      "type": "int",
+      "documentation": null
+    },
+    "bLastSideWasAnderson": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRunning": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Update(float DeltaTime)"
+    },
+    "AndersonTargetLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector AndersonTargetLocation()"
+    },
+    "IllusiveManTargetLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector IllusiveManTargetLocation()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

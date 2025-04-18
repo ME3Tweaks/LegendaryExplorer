@@ -1,0 +1,13 @@
+{
+  "parent": "MaterialExpressionParameter",
+  "package": "Engine",
+  "variables": {
+    "DefaultValue": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

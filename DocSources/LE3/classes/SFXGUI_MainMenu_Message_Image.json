@@ -1,0 +1,41 @@
+{
+  "parent": "SFXGUI_MainMenu_Message_Text",
+  "package": "SFXGame",
+  "variables": {
+    "ImagePath": {
+      "type": "string",
+      "documentation": null
+    },
+    "ImageReference": {
+      "type": "Texture",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "Cleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cleanup()"
+    },
+    "CreateMessage": {
+      "documentation": null,
+      "signature_members": {
+        "nMessageId": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "SFXGUI_MainMenu_Message",
+      "signature": "SFXGUI_MainMenu_Message CreateMessage(int nMessageId)"
+    },
+    "FailLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FailLoad()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

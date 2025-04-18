@@ -1,0 +1,29 @@
+{
+  "parent": "SeqVar_Float",
+  "package": "SFXGame",
+  "variables": {
+    "m_sRefName": {
+      "type": "string",
+      "documentation": null
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null
+    },
+    "Float": {
+      "type": "EBioAutoSet",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

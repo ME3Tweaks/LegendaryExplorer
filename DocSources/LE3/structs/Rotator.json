@@ -1,0 +1,17 @@
+{
+  "Members": {
+    "Pitch": {
+      "type": null,
+      "documentation": null
+    },
+    "Yaw": {
+      "type": null,
+      "documentation": null
+    },
+    "Roll": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

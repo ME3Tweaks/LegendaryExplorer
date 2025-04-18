@@ -1,0 +1,61 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "ControlEdgeName": {
+      "type": "Name",
+      "documentation": null
+    },
+    "SheetsPerTrail": {
+      "type": "int",
+      "documentation": null
+    },
+    "TilingDistance": {
+      "type": "float",
+      "documentation": null
+    },
+    "DistanceTessellationStepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "TangentTessellationScalar": {
+      "type": "float",
+      "documentation": null
+    },
+    "bDeadTrailsOnDeactivate": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bClipSourceSegement": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bEnablePreviousTangentRecalculation": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bTangentRecalculationEveryFrame": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderGeometry": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderSpawnPoints": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderTangents": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bRenderTessellation": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeLocomotionSpeed_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionSpeed_Walk": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeLocomotionSpeed_Run": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

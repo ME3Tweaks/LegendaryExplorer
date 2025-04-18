@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "UIFACE_Left": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIFACE_Top": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIFACE_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIFACE_Bottom": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

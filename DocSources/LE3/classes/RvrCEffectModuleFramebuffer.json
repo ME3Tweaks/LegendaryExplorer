@@ -1,0 +1,25 @@
+{
+  "parent": "RvrClientEffectModule",
+  "package": "SFXGame",
+  "variables": {
+    "m_pPostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null
+    },
+    "m_bResetTime": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bInstantiateMaterials": {
+      "type": "bool",
+      "documentation": null
+    },
+    "m_bSendTimeParam": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {},
+  "states": {},
+  "documentation": null
+}

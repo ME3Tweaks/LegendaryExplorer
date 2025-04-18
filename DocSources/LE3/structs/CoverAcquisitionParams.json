@@ -1,0 +1,25 @@
+{
+  "Members": {
+    "MinCameraDotCover": {
+      "type": null,
+      "documentation": null
+    },
+    "MinSlotDotPlayer": {
+      "type": null,
+      "documentation": null
+    },
+    "MinPlayerDotCoverOffset": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxDist": {
+      "type": null,
+      "documentation": null
+    },
+    "MaxCoverHeightFactor": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

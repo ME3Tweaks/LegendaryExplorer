@@ -1,0 +1,592 @@
+{
+  "parent": "SFXGUIMovieLegacyAdapter",
+  "package": "SFXGame",
+  "variables": {
+    "m_aContentOptions": {
+      "type": "SFXGUI_OptionsObject",
+      "documentation": null
+    },
+    "m_lstOptsToReset": {
+      "type": "int",
+      "documentation": null
+    },
+    "TelemetryInfo": {
+      "type": "OptionTelemetryInfo",
+      "documentation": null
+    },
+    "TextSliderOptions": {
+      "type": "TextSliderOption",
+      "documentation": null
+    },
+    "RadioGroupOptions": {
+      "type": "RadioGroupOption",
+      "documentation": null
+    },
+    "SliderOptions": {
+      "type": "SliderOption",
+      "documentation": null
+    },
+    "GamePopulatedOptionPages": {
+      "type": "GamePopulatedOptionPage",
+      "documentation": null
+    },
+    "OptionPages": {
+      "type": "OptionPage",
+      "documentation": null
+    },
+    "NewGameOptionPages": {
+      "type": "OptionPage",
+      "documentation": null
+    },
+    "MPOptionPages": {
+      "type": "OptionPage",
+      "documentation": null
+    },
+    "IgnoreDifficultyMapNames": {
+      "type": "Name",
+      "documentation": null
+    },
+    "__AddTelem__Delegate": {
+      "type": "AddTelem",
+      "documentation": null
+    },
+    "__OnCloseCallback__Delegate": {
+      "type": "OnCloseCallback",
+      "documentation": null
+    },
+    "NewSettings": {
+      "type": "SFXProfileSettings",
+      "documentation": null
+    },
+    "ResetToDefaultsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmResetToDefaultsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelResetToDefaultsText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ExitConfirmText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ConfirmExitFromMenuText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CancelExitFromMenuText": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srSkipConfirm": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srYes": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "srNo": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "ResolutionStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "GammaStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "VCInputStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "VCOutputStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "HDREnabledStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "HDRBrightnessStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "HDRContrastStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "MonitorStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "CappedFramerateStory": {
+      "type": "stringref",
+      "documentation": null
+    },
+    "m_bSelfPanelClose": {
+      "type": "bool",
+      "documentation": null
+    },
+    "bWaitingOnMsgBox": {
+      "type": "bool",
+      "documentation": null
+    },
+    "GuiMode": {
+      "type": "EOptionsGuiMode",
+      "documentation": null
+    },
+    "CachedDifficulty": {
+      "type": "EDifficultyOptions",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AddTelem": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_Language": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_Language(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_Resolution": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_Resolution(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_VCInput": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_VCInput(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_VCOutput": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_VCOutput(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelemetryInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelemetryInfo(out array<TelemetryAttribute> Attributes, EGuiOptions eOptionId, int Value)"
+    },
+    "GetProfileSettingForOption": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "EProfileSetting",
+      "signature": "EProfileSetting GetProfileSettingForOption(int Type)"
+    },
+    "GetProfileSettingsForOptions": {
+      "documentation": null,
+      "signature_members": {
+        "lstProfSettings": {
+          "type": null,
+          "documentation": null
+        },
+        "lstTypes": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProfileSettingsForOptions(out array<EProfileSetting> lstProfSettings, const out array<int> lstTypes)"
+    },
+    "InitSystemSettingsCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitSystemSettingsCache()"
+    },
+    "OnCloseCallback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCloseCallback()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStart()"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "sPackedIDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetToDefaults(string sPackedIDs)"
+    },
+    "SendTelemetryChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendTelemetryChanges()"
+    },
+    "SendTelemetryDump": {
+      "documentation": null,
+      "signature_members": {
+        "Hook": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTelemetryDump(Name Hook)"
+    },
+    "SetOption": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOption(int Type, int Value)"
+    },
+    "SetOptionsOnGUI": {
+      "documentation": null,
+      "signature_members": {
+        "Settings": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOptionsOnGUI(SFXProfileSettings Settings)"
+    },
+    "UpdateSpeechLanguageOptions": {
+      "documentation": null,
+      "signature_members": {
+        "TextOption": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSpeechLanguageOptions(SFXGUI_Option_TextLanguage TextOption)"
+    },
+    "AddTelem_Bool": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_Bool(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_Brightness": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_Brightness(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_Int": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_Int(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "AddTelem_InvBool": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": null,
+          "documentation": null
+        },
+        "TelemetryKey": {
+          "type": null,
+          "documentation": null
+        },
+        "eOptionId": {
+          "type": null,
+          "documentation": null
+        },
+        "Value": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTelem_InvBool(out array<TelemetryAttribute> Attributes, const out string TelemetryKey, EGuiOptions eOptionId, int Value)"
+    },
+    "Callback_ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": null,
+          "documentation": null
+        },
+        "Context": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ResetToDefaults(bool bAPressed, int Context)"
+    },
+    "CloseGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseGui()"
+    },
+    "HandleButtonHelpRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonHelpRefresh(bool usingGamepad)"
+    },
+    "Helper_CreateResetConfirmPopup": {
+      "documentation": null,
+      "signature_members": {
+        "GuiMan": {
+          "type": null,
+          "documentation": null
+        },
+        "pInputDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_CreateResetConfirmPopup(SFXGUIInteraction GuiMan, delegate<InputCallback> pInputDelegate)"
+    },
+    "Helper_ExtractPackedOptIDs": {
+      "documentation": null,
+      "signature_members": {
+        "lstOptIDs": {
+          "type": null,
+          "documentation": null
+        },
+        "sPackedIDs": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "Helper_ExtractPackedOptIDs(out array<int> lstOptIDs, string sPackedIDs)"
+    },
+    "MovieLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MovieLoaded()"
+    },
+    "SaveAndExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveAndExit()"
+    },
+    "SetHDRStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetHDRStatus()"
+    },
+    "SetOnCloseCallback": {
+      "documentation": null,
+      "signature_members": {
+        "fn_OnCloseDelegate": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnCloseCallback(delegate<OnCloseCallback> fn_OnCloseDelegate)"
+    },
+    "SetVsyncStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetVsyncStatus()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

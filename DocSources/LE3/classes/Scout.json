@@ -1,0 +1,116 @@
+{
+  "parent": "Pawn",
+  "package": "Engine",
+  "variables": {
+    "PathSizes": {
+      "type": "PathSizeInfo",
+      "documentation": null
+    },
+    "DefaultReachSpecClass": {
+      "type": "Class",
+      "documentation": null
+    },
+    "TestJumpZ": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestGroundSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestMaxFallSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "TestFallSpeed": {
+      "type": "float",
+      "documentation": null
+    },
+    "MaxLandingVelocity": {
+      "type": "float",
+      "documentation": null
+    },
+    "MinNumPlayerStarts": {
+      "type": "int",
+      "documentation": null
+    },
+    "NavMeshGen_StepSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_EntityHalfHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_StartingHeightOffset": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MaxDropHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MaxStepHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_VertZDeltaSnapThresh": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MinPolyArea": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_BorderBackfill_CheckDist": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MinMergeDotAreaThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MinMergeDotSmallArea": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MinMergeDotLargeArea": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MaxPolyHeight": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_HeightMergeThreshold": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_EdgeMaxDelta": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MaxGroundCheckSize": {
+      "type": "float",
+      "documentation": null
+    },
+    "NavMeshGen_MinEdgeLength": {
+      "type": "float",
+      "documentation": null
+    },
+    "bHightlightOneWayReachSpecs": {
+      "type": "bool",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

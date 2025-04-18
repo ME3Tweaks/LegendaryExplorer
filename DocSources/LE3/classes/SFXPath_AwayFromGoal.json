@@ -1,0 +1,37 @@
+{
+  "parent": "PathConstraint",
+  "package": "SFXGame",
+  "variables": {
+    "GoalActor": {
+      "type": "Actor",
+      "documentation": null
+    },
+    "fDistAway": {
+      "type": "float",
+      "documentation": null
+    }
+  },
+  "functions": {
+    "AwayFromGoal": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": null,
+          "documentation": null
+        },
+        "Goal": {
+          "type": null,
+          "documentation": null
+        },
+        "fDist": {
+          "type": null,
+          "documentation": null
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AwayFromGoal(BioPawn Pawn, Actor Goal, float fDist)"
+    }
+  },
+  "states": {},
+  "documentation": null
+}

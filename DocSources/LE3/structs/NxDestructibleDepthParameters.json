@@ -1,0 +1,37 @@
+{
+  "Members": {
+    "TAKE_IMPACT_DAMAGE": {
+      "type": null,
+      "documentation": null
+    },
+    "IGNORE_POSE_UPDATES": {
+      "type": null,
+      "documentation": null
+    },
+    "IGNORE_RAYCAST_CALLBACKS": {
+      "type": null,
+      "documentation": null
+    },
+    "IGNORE_CONTACT_CALLBACKS": {
+      "type": null,
+      "documentation": null
+    },
+    "USER_FLAG_0": {
+      "type": null,
+      "documentation": null
+    },
+    "USER_FLAG_1": {
+      "type": null,
+      "documentation": null
+    },
+    "USER_FLAG_2": {
+      "type": null,
+      "documentation": null
+    },
+    "USER_FLAG_3": {
+      "type": null,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}
